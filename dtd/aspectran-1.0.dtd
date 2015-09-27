@@ -50,7 +50,7 @@ translet CDATA #REQUIRED
 disabled (true | false) #IMPLIED
 >
 
-<!ELEMENT bean (features?, constructor?, property?)>
+<!ELEMENT bean (filter?, features?, constructor?, property?)>
 <!ATTLIST bean
 id CDATA #IMPLIED
 class CDATA #IMPLIED
