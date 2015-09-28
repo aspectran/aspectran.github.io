@@ -65,7 +65,7 @@ important (true | false) #IMPLIED
 
 <!ELEMENT filter (#PCDATA)>
 <!ATTLIST filter
-bean CDATA #IMPLIED
+class CDATA #IMPLIED
 >
 
 <!ELEMENT features (class?, scope?, factoryMethod?, initMethod?, destroyMethod?, lazyInit?, important?)>
