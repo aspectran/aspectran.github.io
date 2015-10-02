@@ -22,7 +22,7 @@ alias CDATA #REQUIRED
 type CDATA #REQUIRED
 >
 
-<!ELEMENT aspect (joinpoint?, settings?, advice?, exceptionRaised?)>
+<!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exceptionRaised?)>
 <!ATTLIST aspect
 id ID #IMPLIED
 for (translet | scheduler) #IMPLIED
