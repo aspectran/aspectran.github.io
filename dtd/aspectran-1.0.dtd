@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!ELEMENT aspectran (settings? | typeAliases* | aspect* | bean* | translet* | import*)*>
+<!ELEMENT aspectran (
+		description?,
+		(settings? | typeAliases* | aspect* | bean* | translet* | import*)*
+)>
+
+<!ELEMENT description (#PCDATA)>
 
 <!ELEMENT settings (#PCDATA | setting)*>
 <!ELEMENT setting (#PCDATA)>
@@ -50,7 +55,7 @@ translet CDATA #REQUIRED
 disabled (true | false) #IMPLIED
 >
 
-<!ELEMENT bean (filter?, features?, constructor?, property?)>
+<!ELEMENT bean (description?, filter?, features?, constructor?, property?)>
 <!ATTLIST bean
 id CDATA #IMPLIED
 class CDATA #IMPLIED
@@ -79,7 +84,11 @@ class CDATA #IMPLIED
 <!ELEMENT important (#PCDATA)>
 <!ELEMENT constructor (argument?)>
 
-<!ELEMENT translet ((request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) | (request?, content*, contents?, (transform | dispatch | redirect | forward)?) | (request?, content*, contents?, response*, exception?))>
+<!ELEMENT translet (
+		(description?, request?, (echo? | action? | include?)*, (transform | dispatch | redirect | forward)?) |
+		(description?, request?, content*, contents?, (transform | dispatch | redirect | forward)?) |
+		(description?, request?, content*, contents?, response*, exception?)
+)>
 <!ATTLIST translet
 name CDATA #REQUIRED
 restVerb (GET | POST | PUT | PATCH | DELETE | HEAD | OPTIONS | TRACE | CONNECT) #IMPLIED
