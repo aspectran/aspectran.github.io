@@ -47,7 +47,7 @@ bean CDATA #IMPLIED
 <!ELEMENT after (echo | action)>
 <!ELEMENT around (echo | action)>
 <!ELEMENT finally (echo | action)>
-<!ELEMENT exceptionRaised (action?, responseByContentType*)>
+<!ELEMENT exceptionRaised (description?, action?, responseByContentType*)>
 
 <!ELEMENT job EMPTY>
 <!ATTLIST job
