@@ -150,7 +150,7 @@ characterEncoding CDATA #IMPLIED
 exceptionType CDATA #IMPLIED
 >
 
-<!ELEMENT transform ((echo? | action? | include?)*, template)>
+<!ELEMENT transform ((echo? | action? | include?)*, template?)>
 <!ATTLIST transform
 type CDATA #IMPLIED
 contentType CDATA #IMPLIED
@@ -168,7 +168,7 @@ encoding CDATA #IMPLIED
 noCache (true | false) #IMPLIED
 >
 
-<!ELEMENT dispatch ((echo? | action? | include?)*, template?)>
+<!ELEMENT dispatch ((echo? | action? | include?)*, template)>
 <!ATTLIST dispatch
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
