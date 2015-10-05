@@ -168,7 +168,7 @@ encoding CDATA #IMPLIED
 noCache (true | false) #IMPLIED
 >
 
-<!ELEMENT dispatch ((echo? | action? | include?)*, template)>
+<!ELEMENT dispatch ((echo? | action? | include?)*, template?)>
 <!ATTLIST dispatch
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
