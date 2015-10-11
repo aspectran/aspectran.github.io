@@ -7,6 +7,7 @@ subheadline: "Are you ready?"
 teaser: "Aspectran의 사용법을 익히고, 간단한 예제의 실행 결과를 확인해 볼 수 있습니다."
 header:
    image_fullwidth: "header_gettingstarted.jpg"
+   caption: "My cute second daughter"
 permalink: "/getting-started/"
 ---
 

@@ -6,6 +6,7 @@ subheadline: "How to use Aspectran"
 teaser: "본 문서는 Aspectran을 활용하는 방법을 설명합니다."
 header:
    image_fullwidth: "header_documentation.jpg"
+   caption: "My two daughters draw a picture on the car-free roads."
 permalink: "/documentation/"
 ---
 
