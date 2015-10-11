@@ -1,0 +1,46 @@
+- title: Aspectran
+  url: "/"
+  side: left
+
+- title: Getting Started
+  url: "/getting-started/"
+  side: left
+  dropdown:
+  - title: "Aspectran Tutorial"
+    url: "/getting-started/tutorial/"
+  - title: "Running the Examples"
+    url: "/getting-started/examples/"
+
+- title: Documentation
+  url: "/documentation/"
+  side: left
+  dropdown:
+  - title: "Developers Guide"
+    url: "/documentation/guide/"
+  - title: "Aspectran API"
+    url: "/documentation/javadoc-api/"
+  - title: "FAQs"
+    url: "/documentation/faqs/"
+  - title: "Changelog"
+    url: "/documentation/changelog/"
+  - title: "Roadmap"
+    url: "/documentation/roadmap/"
+
+- title: Downloads
+  url: "/downloads/"
+  side: left
+
+- title: Blog
+  url: "/blog/"
+  side: right
+  dropdown:
+  - title: "Blog Archive"
+    url: "/blog/archive/"
+
+- title: "Search"
+  url: "/search/"
+  side: right
+
+#- title: "Contact"
+#  url: "/contact/"
+#  side: right

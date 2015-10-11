@@ -1,0 +1,21 @@
+- menu_name: "navigation"
+
+- name: "Getting-Started"
+  url: "/getting-started/"
+  class: ""
+  title: ""
+
+- name: "Documentation"
+  url: "/documentation/"
+  class: ""
+  title: ""
+
+- name: "Downloads"
+  url: "/downloads/"
+  class: ""
+  title: ""
+
+- name: "Blog"
+  url: "/blog/"
+  class: ""
+  title: ""
