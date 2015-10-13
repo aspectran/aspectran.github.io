@@ -1,7 +1,7 @@
-- name: YouTube
-  url: http://www.youtube.com/aspectran
-  class: icon-youtube
-  title: "Videos, video tutorials and movies from aspectran on YouTube"
+- name: GitHub
+  url: http://github.com/topframe/aspectran
+  class: icon-github
+  title: "Code and more ..."
 
 - name: Twitter
   url: http://twitter.com/aspectran
@@ -9,20 +9,19 @@
   title: "Always the latest news from aspectran there on Twitter"
 
 - name: Facebook
-  url: http://www.facebook.com/aspectran.media
+  url: http://www.facebook.com/aspectran
   class: icon-facebook
   title: "Let's be friends!"
-
-- name: GitHub
-  url: http://github.com/topframe/aspectran
-  class: icon-github
-  title: "Code and more ..."
 
 - name: Instagram
   url: http://instagram.com/aspectran
   class: icon-instagram
   title: "Images and impressions with and without filter ..."
 
+- name: YouTube
+  url: http://www.youtube.com/aspectran
+  class: icon-youtube
+  title: "Videos, video tutorials and movies from aspectran on YouTube"
 
 # - name: Xing
 #   url: https://www.xing.com/profile/Moritzmo_Sauer
