@@ -6,6 +6,7 @@ meta_title: "Aspectran Changelog"
 subheadline: "Aspectran Changelog"
 teaser: "History and changelog of Aspectran"
 breadcrumb: true
+comments: true
 permalink: "/documentation/changelog/"
 ---
 {: .t50 }
@@ -23,3 +24,5 @@ permalink: "/documentation/changelog/"
 
 2015-09-01 // Version 1.0.0
 :   Initial release of Aspectran! 2008년 봄부터 개발을 시작한 이후로 7년 만에 처음으로 정식 버전을 출시했습니다.
+
+{% include alert info='상세한 변경이력은 [GitHub](https://github.com/topframe/aspectran/releases)에서 볼 수 있습니다.' %}

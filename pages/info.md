@@ -7,6 +7,7 @@ teaser: "Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 �
 header:
     image_fullwidth: "header_info.jpg"
     caption: "Hot summer 2015"
+comments: true
 permalink: "/info/"
 ---
 *Aspectran* 을 활용하기 위해 거창한 개념을 이해할 필요가 없습니다.  
