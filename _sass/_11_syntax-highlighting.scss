@@ -3,7 +3,9 @@
 ------------------------------------------------------------------- */
 
 .highlight {
-    background: #fff;
+    background: $highlight-background;
+    border: 1px solid $highlight-border-color;
+    border-radius: $global-radius;
     .c     { color: #998; font-style: italic } // Comment
     .err   { color: #a61717; background-color: #e3d2d2 } // Error
     .k     { font-weight: bold } // Keyword

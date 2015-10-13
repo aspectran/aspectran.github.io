@@ -41,9 +41,9 @@ $ci-6: #fff;      // green
 $primary-color: $ci-1;
 $secondary-color: $ci-6;
 $alert-color: $ci-5;
-$success-color: $ci-6;
+$success-color: #569E92;
 $warning-color: $ci-4;
-$info-color: $ci-1;
+$info-color: #E4E4E4;
 
 
 
@@ -86,9 +86,10 @@ $subfooter-link-color: $grey-5;
 /* Code
 ------------------------------------------------------------------- */
 
-$code-background-color: scale-color($secondary-color, $lightness: 70%);
+$code-background-color: #f5f5f5;
 
-$highlight-background: #ffffff;
+$highlight-background: #f5f5f5;
+$highlight-border-color: scale-color($highlight-background, $lightness: -10%);
 $highlight-comment: #999988;
 $highlight-error: #a61717;
 $highlight-comment-special: #999999;
