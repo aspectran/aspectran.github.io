@@ -13,10 +13,10 @@
   class: icon-facebook
   title: "Let's be friends!"
 
-- name: Instagram
-  url: http://instagram.com/aspectran
-  class: icon-instagram
-  title: "Images and impressions with and without filter ..."
+#- name: Instagram
+#  url: http://instagram.com/aspectran
+#  class: icon-instagram
+#  title: "Images and impressions with and without filter ..."
 
 #- name: YouTube
 #  url: http://www.youtube.com/aspectran
