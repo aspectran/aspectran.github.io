@@ -14,7 +14,7 @@ widget2:
     title: "Getting Started"
     url: '/getting-started/'
     image: header_gettingstarted.jpg
-    text: 'Installation<br/>Aspectran Configuration<br/>Running the Examples'
+    text: 'Quick Start<br/>Aspectran Tutorial<br/>Running the Examples'
 widget3:
     title: "Documentation"
     url: '/documentation/'

@@ -3,10 +3,8 @@ layout: page-fullwidth
 show_meta: false
 title: "Aspectran Tutorial"
 subheadline: ""
-teaser: "본 문서는 Aspectran 입문자를 위한 간략한 사용법을 설명합니다."
+teaser: "본 문서는 Aspectran 입문자를 설명서입니다."
 breadcrumb: true
-header:
-   image_fullwidth: "header_gettingstarted.jpg"
 permalink: "/getting-started/tutorial/"
 ---
 <!--more-->
@@ -26,27 +24,40 @@ permalink: "/getting-started/tutorial/"
 {% include improve_content %}
 
 ## 1. Installation
-Aspectran을 사용하려면 aspectran-x.x.x.jar 파일이 필요합니다.
-추가적으로 다음과 같은 의존 라이브러리를 필요로 합니다.
+Aspectran은 라이브러리 의존성 문제를 최소화 하기 위해 최소한의 외부 라이브러리를 사용합니다.
+Aspectran을 사용하려면 aspectran-x.x.x.jar 파일과 아래와 같은 필수 의존 라이브러리를 필요로 합니다.
 
-* cglib
+* javassist or cglib
 * commons-fileupload
 * commons-io
 * logging 라이브러리(commons-logging, log4j, slf4j)
+
+현재 Aspectran 홈페이지의 [다운로드](http://www.aspectran.com/download/) 페이지에서 수동으로 jar 라이브러리의 복사본을 받을 수 있습니다.
 
 Maven을 사용한다면 [pom.xml](https://github.com/topframe/aspectran/blob/master/pom.xml) 파일을 참고해서 의존 라이브러리를 추가해 주세요.
 
 - - -
 
 ## 2. 작동 환경
-Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니다.
+Aspectran을 사용해서 Java 웹 어플리케이션을 개발하기 위해서는 다음 요건을 충족해야 합니다.
+
 * Java 6 이상
 * Servlet 2.5 이상
 
 - - -
 
 ## 3. 웹 컨테이너에 서블릿으로 등록하기
-`web.xml `파일을 다음과 같이 수정합니다.
+
+### 3.1 web.xml 설정
+
+Aspectran Configuration에 필요한 초기화 파라메터 `aspectran:config`를 정의하고,
+`AspectranServiceListener`를 등록해서 `ActivityContext`를 생성하도록 했습니다.
+요청 URI가 `/example/`이면 `WebActivityServlet`라는 서블릿이 처리하도록 했습니다.
+스케쥴러를 사용할 경우 개발환경에서 Job을 직접 실행해 볼 수 있도록 `/scheduler/`로 시작하는 URL도 맵핑했습니다.
+
+만약 `WebActivityServlet`라는 서블릿이 처리하지 못하는 요청은 `DefaultServlet`으로 처리권을 넘겨줍니다.
+`DefaultServlet`의 이름은 명시적으로 지정하지 않았지만, 내부적으로 웹어플리케이션 서버 종류에 따라서 자동으로 판단합니다.
+잘 알려진 웹어플리케이션 서버가 아닐 경우 `DefaultServlet`의 이름을 수동으로 명시할 수도 있습니다.
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
@@ -57,33 +68,32 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
   <display-name>aspectran-examples</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
   <context-param>
     <param-name>aspectran:config</param-name>
     <param-value>
-			context: {
-				root: "/WEB-INF/aspectran/config/getting-started.xml"
-				encoding: "utf-8"
-				resources: [
-					"/WEB-INF/aspectran/config"
-					"/WEB-INF/aspectran/classes"
-					"/WEB-INF/aspectran/lib"
-				]
-				hybridLoading: true
-				autoReloading: {
-					reloadMethod: hard
-					observationInterval: 5
-					startup: true
-				}
-			}
-			scheduler: {
-				startDelaySeconds: 10
-				waitOnShutdown: true
-				startup: false
-			}
-	</param-value>
+      context: {
+        root: "/WEB-INF/aspectran/config/getting-started.xml"
+        encoding: "utf-8"
+        resources: [
+          "/WEB-INF/aspectran/config"
+          "/WEB-INF/aspectran/classes"
+          "/WEB-INF/aspectran/lib"
+        ]
+        hybridLoading: false
+        autoReloading: {
+          reloadMethod: hard
+          observationInterval: 5
+          startup: true
+        }
+      }
+      scheduler: {
+        startDelaySeconds: 10
+        waitOnShutdown: true
+        startup: false
+      }
+    </param-value>
   </context-param>
   <listener>
     <listener-class>com.aspectran.web.startup.listener.AspectranServiceListener</listener-class>
@@ -97,7 +107,7 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
     <servlet-name>aspectran-example</servlet-name>
     <url-pattern>/example/*</url-pattern>
   </servlet-mapping>
-  <!-- 실제 운영환경에서는 스케쥴러에 직접 접근할 수 없도록 서블릿매핑을 제거하도록 합니다. -->
+  <!-- 실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿매핑을 제거하도록 합니다. -->
   <servlet-mapping>
     <servlet-name>aspectran-example</servlet-name>
     <url-pattern>/scheduler/*</url-pattern>
@@ -105,9 +115,11 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 </web-app>
 {% endhighlight %}
 
-### 3.1 초기화 파라메터 정의
-먼저 컨텍스트 초기화 파라메터 "aspectran:config"를 정의합니다.
-"aspectran:config" 파라메터는 ***APON***(Aspectran Parameter Object Notation) 문서형식의 설정 값을 가질 수 있습니다.
+### 3.2 초기화 파라메터 정의
+
+먼저 컨텍스트 초기화 파라메터 `aspectran:config`를 정의합니다.
+`aspectran:config` 파라메터는 **APON**(*Aspectran Parameter Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
+
 > ***APON***(Aspectran Parameter Object Notation)은 ***JSON*** 과 표기법이 비슷합니다.
 > 미리 정해진 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
 
@@ -128,212 +140,306 @@ Aspectran은 다음 요건만 충족을 하면 원할한 작동이 보장됩니�
 | **scheduler.startup** | 스케쥴러를 기동할지 여부를 지정 |
 
 ### 3.2 AspectranServiceListener 등록
-웹 어플리케이션이 시작되면서 Aspectran 서비스도 함께 기동되도록 하기 위해 ***AspectranServiceListener*** 를 등록합니다.
-`<listner-class>`에  "com.aspectran.web.startup.listener.AspectranServiceListener"를 지정합니다.
-컨텍스트 초기화 파라메터 "aspectran:config"를 참조해서 Aspectran 서비스 환경이 구성됩니다.
+`<listner-class>`에  `com.aspectran.web.startup.listener.AspectranServiceListener`를 지정합니다.
+AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:config`의 설정 내용으로 Aspectran 서비스 환경을 구성하고, Application Scope를 가지고 있습니다.
 
 > AspectranServiceListener에 의해 기동된 Aspectran 서비스는 여러 WebActivityServlet에서 사용될 수 있습니다.
 > 즉, 전역적인 하나의 Aspectran 서비스 환경을 구성할 수 있습니다.
 
 ### 3.3 WebActivityServlet 등록
-`<servlet-class>`에 "com.aspectran.web.startup.servlet.WebActivityServlet"을 지정합니다.
+`<servlet-class>`에 `com.aspectran.web.startup.servlet.WebActivityServlet`을 지정합니다.
 `<servlet-name>`에는 Aspectran 서비스를 위한 서블릿이라는 의미의 고유한 서블릿 이름을 부여해 주기 바랍니다.
 
-> 서블릿 초기화 파라메터로 "aspectran:cofnig"를 정의하면 독자적인 Aspectran 서비스 환경을 구성합니다.
+> 서블릿 초기화 파라메터로 `aspectran:cofnig`를 정의하면 서블릿만의 단독 Aspectran 서비스 환경을 구성합니다.
 > 즉, 전역 Aspectran 서비스를 사용하지 않습니다.
 
 ### 3.4 서블릿 URL 패턴 등록
-`<url-pattern>`  해당하는 요청은 Aspectran 서비스가 처리할 수 있도록 합니다.
-만약 `<url-pattern>` 이 `/example/*`이라면 `/example/`로 시작하는 Aspectran의 Translet이 실행됩니다.
+`<url-pattern>`에 해당하는 요청은 `WebActivityServlet`이 처리할 수 있도록 합니다.
+만약 `<url-pattern>`을 `/example/*`로 지정하면 `/example/`로 시작하는 이름을 가진 Translet이 실행됩니다.
 
 > Aspectran의 Translet이란?
-> 요청을 받고 결과 값을 적절히 가공해서 응답하는 처리자를 Aspectran 내부에서는 "Translet"이라고 명명하였습니다.
+> 요청을 받고 결과 값을 적절히 가공해서 응답하는 처리자를 Aspectran 내부에서는 Translet이라고 명명하였습니다.
 > Translet은 고유 이름을 가지고 있으며, 요청 URI와 직접적으로 매핑이 됩니다.
+> 스케쥴러의 Job도 Translet을 통해서 실행이 됩니다.
 
 ### 3.5 DefaultServlet 이름 지정하기
-요청 URI에 해당하는 Translet이 존재하지 않을 경우 서블릿 컨테이너의 DefaultServlet에게 넘겨주는 역할을 하는 핸들러가 항상 동작하고 있습니다. 그 핸들러의 이름은 DefaultServletHttpRequestHandler입니다. DefaultServletHttpRequestHandler는 DefaultServlet의 이름이 무엇인지 자동으로 판단합니다. 만약 DefaultServlet의 이름이 다르게 지정되어야 할 경우 아래와 같은 초기화 파라메터를 추가합니다.
-```xml
+요청 URI에 해당하는 Translet이 존재하지 않을 경우 서블릿 컨테이너의 DefaultServlet에게 넘겨주는 역할을 하는 핸들러가 항상 동작하고 있습니다.
+그 핸들러의 이름은 DefaultServletHttpRequestHandler입니다. DefaultServletHttpRequestHandler는 DefaultServlet의 이름이 무엇인지 자동으로 판단합니다.
+만약 DefaultServlet의 이름이 다르게 지정되어야 할 경우 아래와 같은 초기화 파라메터를 추가합니다.
+
+{% highlight xml %}
 <context-param>
-	<param-name>aspectran:defaultServletName</param-name>
-	<param-value>default</param-value>
+    <param-name>aspectran:defaultServletName</param-name>
+    <param-value>default</param-value>
 </context-param>
-```
+{% endhighlight %}
 
 - - -
 
-## 4. 환경 설정 파일 작성하기
-위 `web.xml` 파일에서 `context.root`를 "/WEB-INF/aspectran/config/getting-started.xml"이라고 지정했었습니다.
+## 4. 환경 설정
 
-###### getting-started.xml
-```xml
+### 4.1 Aspectran Configuration
+Aspectran Configuration은 XML 파일로 작성을 합니다.
+DTD(*Document Type Definition*)에는 루트 엘리멘트 `aspectran`은 7개의 자식 엘리멘트를 가질 수 있다고 정의되어 있습니다.
+7개 중에 3개의 엘리멘트(*aspect, bean, translet*)는 Aspectran을 대표하는 가장 핵심적인 엘리멘트입니다.
+
+**Aspectran의 핵심 구성요소**
+* ***aspect*** - 관점 지향 프로그래밍(AOP) 지원. Bean과 Translet을 관통하여 특정 기능을 주입할 수 있는 기능을 제공
+* ***bean*** - IoC, DI의 대상이 되는 객체를 정의
+* ***translet*** - 요청 URI와 맵핑되어 비지니스 로직을 처리하고 응답하는 역할을 담당
+
+{% highlight dtd %}
+<!ELEMENT aspectran (
+		description?,
+		(settings? | typeAliases* | aspect* | bean* | translet* | import*)*
+)>
+{% endhighlight %}
+
+가장 간단한
+
+
+
+web.xml 파일에서 `context.root`의 값을 "/WEB-INF/aspectran/config/getting-started.xml"로 지정했습니다.
+`getting-started.xml` 파일은 Aspectran의 몇 가지 특징을 설명하기 위해 작성되었습니다.
+
+***getting-started.xml***
+{% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
                            "http://aspectran.github.io/dtd/aspectran-1.0.dtd">
 
 <aspectran>
 
-	<!-- 기본 설정 -->
-	<settings>
-		<setting name="transletNamePattern" value="/example/*"/>
-		<setting name="pointcutPatternVerifiable" value="true"/>
-	</settings>
+  <description>
+    Aspectran Tutorial 작성을 위한 Aspectran Configuration입니다.
+  </description>
 
-	<!-- Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다. -->
-	<bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton">
-		<property>
-			<item name="templatePathPrefix">/WEB-INF/jsp/</item>
-			<item name="templatePathSuffix">.jsp</item>
-		</property>
-	</bean>
+  <!-- 기본 설정 -->
+  <settings>
+    <setting name="transletNamePattern" value="/example/*"/>
+  </settings>
 
-	<!-- com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Action"으로 끝나는 클래스를 모두 찾아서 Bean으로 등록합니다. -->
-	<!-- ex) com.aspectran.example.sample.SampleAction 클래스의 bean id는 "sample.SampleAction"이 됩니다. -->
-	<bean id="*" class="com.aspectran.example.**.*Action" scope="singleton">
-		<filter>
-			exclude: [
-				"com.aspectran.example.common.**.*"
-				"com.aspectran.example.sample.**.*"
-			]
-		</filter>
-	</bean>
+  <bean id="*" mask="com.aspectran.example.**.*" class="com.aspectran.example.**.*Action" scope="singleton">
+    <description>
+      com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Action"으로 끝나는 클래스를
+      모두 찾아서 Bean으로 등록합니다.
+      만약 com.aspectran.example.sample.SampleAction 클래스가 검색되었다면
+      Mask 패턴 "com.aspectran.example.**.*"에 의해 최종적으로 Bean ID는 "sample.SampleAction"이 됩니다.
+    </description>
+    <filter>
+      exclude: [
+        "com.aspectran.example.common.**.*"
+        "com.aspectran.example.sample.**.*"
+      ]
+    </filter>
+  </bean>
 
-	<!-- com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Advice"으로 끝나는 클래스를 모두 찾아서 ID가 "advice."으로 시작하는 Bean으로 등록합니다. -->
-	<!-- ex) com.aspectran.example.sample.SampleAdvice 클래스의 bean id는 "advice.sample.SampleAdvice"이 됩니다. -->
-	<bean id="advice.*" class="com.aspectran.example.**.*Advice" scope="singleton"/>
+  <bean id="advice.*" mask="com.aspectran.example.**.*" class="com.aspectran.example.**.*Advice" scope="singleton">
+    <description>
+      com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Advice"으로 끝나는 클래스를
+      모두 찾아서 ID가 "advice."으로 시작하는 Bean으로 등록합니다.
+      만약 com.aspectran.example.sample.SampleAction 클래스가 검색되었다면
+      Mask 패턴 "com.aspectran.example.**.*"에 의해 최종적으로 Bean ID는 "advice.sample.SampleAction"이 됩니다.
+    </description>
+    <filter class="com.aspectran.example.common.UserClassScanFilter"/>
+  </bean>
 
-	<bean id="sampleBean" class="com.aspectran.example.sample.SampleBean" scope="singleton"/>
+  <bean id="sampleBean" class="com.aspectran.example.sample.SampleBean" scope="singleton"/>
 
-	<!-- 요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다. -->
-	<aspect id="defaultRequestRule">
-		<joinpoint scope="request"/>
-		<settings>
-			<setting name="characterEncoding" value="utf-8"/>
-			<setting name="multipart.maxRequestSize" value="10M"/>
-			<setting name="multipart.temporaryFilePath" value="/d:/"/>
-		</settings>
-	</aspect>
+  <bean id="multipartRequestWrapperResolver" class="com.aspectran.support.http.multipart.MultipartRequestWrapperResolver" scope="singleton">
+    <description>
+      multipart/form-data request를 처리하기 위해서 반드시 지정해야 합니다.
+    </description>
+    <property>
+      <item name="maxRequestSize" value="10M"/>
+      <item name="temporaryFilePath" value="/d:/temp"/>
+      <item name="allowedFileExtensions" value=""/>
+      <item name="deniedFileExtensions" value=""/>
+    </property>
+  </bean>
 
-	<!-- 요청에 대해 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다. -->
-	<aspect id="defaultResponseRule">
-		<joinpoint scope="response"/>
-		<settings>
-			<setting name="characterEncoding" value="utf-8"/>
-			<setting name="defaultContentType" value="text/html"/>
-			<setting name="viewDispatcher" value="jspViewDispatcher"/>
-		</settings>
-	</aspect>
+  <bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton">
+    <description>
+      Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다.
+    </description>
+    <property>
+      <item name="templateFilePrefix">/WEB-INF/jsp/</item>
+      <item name="templateFileSuffix">.jsp</item>
+    </property>
+  </bean>
 
-	<!-- Translet의 이름이 "/example"로 시작하는 Translet을 실행하는 중에 발생하는 에러 처리 규칙을 정의합니다.  -->
-	<!-- 에러요인과 응답 컨텐츠의 형식에 따라 처리방식을 다르게 정할 수 있습니다. -->
-	<aspect id="defaultExceptionHandlingRule">
-		<joinpoint scope="translet">
-			<pointcut>
-				target: {
-					translet: "/example/*"
-				}
-			</pointcut>
-		</joinpoint>
-		<exceptionRaised>
-			<responseByContentType exceptionType="java.lang.reflect.InvocationTargetException">
-				<transform type="transform/xml" contentType="text/xml">
-					<echo id="result">
-						<item type="map">
-							<value name="errorCode">E0001</value>
-							<value name="message">error occured.</value>
-						</item>
-					</echo>
-				</transform>
-				<transform type="transform/json" contentType="application/json">
-					<echo id="result">
-						<item type="map">
-							<value name="errorCode">E0001</value>
-							<value name="message">error occured.</value>
-						</item>
-					</echo>
-				</transform>
-			</responseByContentType>
-		</exceptionRaised>
-	</aspect>
+  <aspect id="defaultRequestRule">
+    <description>
+      요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다.
+      multipart/form-data request를 처리하기 위해 multipartRequestWrapperResolver를 지정합니다.
+    </description>
+    <joinpoint scope="request"/>
+    <settings>
+      <setting name="characterEncoding" value="utf-8"/>
+      <setting name="multipartRequestWrapperResolver" value="multipartRequestWrapperResolver"/>
+    </settings>
+  </aspect>
 
-	<!-- "helloworld.HelloWorld.Action" 빈에서 echo, helloWorld, counting 메쏘드 호출 전 후로 환영인사와 작별인사를 건넵니다. -->
-	<aspect id="helloWorldAdvice">
-		<joinpoint scope="translet">
-			<pointcut>
-				target: {
-					+: "/example/**/*@helloworld.HelloWorldAction^echo|helloWorld|counting"
-				}
-			</pointcut>
-		</joinpoint>
-		<advice bean="advice.helloworld.HelloWorldAdvice">
-			<before>
-				<action method="wellcome"/>
-			</before>
-			<after>
-				<action method="goodbye"/>
-			</after>
-		</advice>
-	</aspect>
+  <aspect id="defaultResponseRule">
+    <description>
+      요청에 대해 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다.
+      기본 viewDispatcher를 지정합니다.
+    </description>
+    <joinpoint scope="response"/>
+    <settings>
+      <setting name="characterEncoding" value="utf-8"/>
+      <setting name="defaultContentType" value="text/html"/>
+      <setting name="viewDispatcher" value="jspViewDispatcher"/>
+    </settings>
+  </aspect>
 
-	<!-- "/example/counting" Translet이 호출되면 요청정보를 분석을 완료한 시점에 실행되는 지정된 Adivce가 실행됩니다. -->
-	<!-- 카운팅할 숫자의 범위에 대한 유효성을 검사합니다. -->
-	<aspect id="checkCountRangeAdvice">
-		<joinpoint scope="request">
-			<pointcut>
-				target: {
-					+: "/example/counting"
-				}
-			</pointcut>
-		</joinpoint>
-		<advice bean="advice.helloworld.HelloWorldAdvice">
-			<after>
-				<action method="checkCountRange"/>
-			</after>
-		</advice>
-	</aspect>
+  <aspect id="defaultExceptionHandlingRule">
+    <description>
+      Translet의 이름이 "/example"로 시작하는 Translet을 실행하는 중에 발생하는 에러 처리 규칙을 정의합니다.
+    </description>
+    <joinpoint scope="translet">
+      <pointcut>
+        target: {
+          translet: "/example/*"
+        }
+      </pointcut>
+    </joinpoint>
+    <exceptionRaised>
+      <description>
+        에러요인과 응답 컨텐츠의 형식에 따라 처리방식을 다르게 정할 수 있습니다.
+        exceptionType을 지정하지 않으면 모든 exception에 반응합니다.
+      </description>
+      <responseByContentType exceptionType="java.lang.reflect.InvocationTargetException">
+        <transform type="transform/xml" contentType="text/xml">
+          <echo id="result">
+            <item type="map">
+              <value name="errorCode">E0001</value>
+              <value name="message">error occured.</value>
+            </item>
+          </echo>
+        </transform>
+        <transform type="transform/json" contentType="application/json">
+          <echo id="result">
+            <item type="map">
+              <value name="errorCode">E0001</value>
+              <value name="message">error occured.</value>
+            </item>
+          </echo>
+        </transform>
+      </responseByContentType>
+    </exceptionRaised>
+  </aspect>
 
-	<!-- "Hello, World."라는 문구를 텍스트 형식의 컨텐츠로 응답합니다.  -->
-	<translet name="echo/${name}/${age}">
-		<transform type="transform/text" contentType="text/plain">
-			<template>
-				Hello, World.
-			</template>
-		</transform>
-	</translet>
+  <aspect id="helloWorldAdvice">
+    <description>
+      요청 URI가 "/example/"로 시작하고,
+      helloworld.HelloWorldAction 빈에서 echo, helloWorld, counting 메쏘드 호출 전 후로
+      환영인사와 작별인사를 건넵니다.
+    </description>
+    <joinpoint scope="translet">
+      <pointcut>
+        target: {
+          +: "/example/**/*@helloworld.HelloWorldAction^echo|helloWorld|counting"
+        }
+      </pointcut>
+    </joinpoint>
+    <advice bean="advice.helloworld.HelloWorldAdvice">
+      <before>
+        <action method="wellcome"/>
+      </before>
+      <after>
+        <action method="goodbye"/>
+      </after>
+    </advice>
+  </aspect>
 
-	<!-- helloworld.HelloWorldAction 빈에서 helloWorld 메쏘드를 실행해서 "Hello, World."라는 문구를 텍스트 형식의 컨텐츠로 응답합니다. -->
-	<translet name="helloWorld">
-		<transform type="transform/text" contentType="text/plain">
-			<action bean="helloworld.HelloWorldAction" method="helloWorld"/>
-		</transform>
-	</translet>
+  <aspect id="checkCountRangeAdvice">
+    <description>
+      요청 URI가 "/example/counting"이고,
+      요청 헤더 분석을 완료한 시점에 advice.helloworld.HelloWorldAdvice 빈의 checkCountRange 메쏘드가 실행됩니다.
+      checkCountRange 메쏘드는 카운팅할 숫자의 범위가 적합한지 검사합니다.
+      만약 적합하지 않을 경우 안전한 값으로 변경합니다.
+    </description>
+    <joinpoint scope="request">
+      <pointcut>
+        target: {
+          +: "/example/counting"
+        }
+      </pointcut>
+    </joinpoint>
+    <advice bean="advice.helloworld.HelloWorldAdvice">
+      <after>
+        <action method="checkCountRange"/>
+      </after>
+    </advice>
+  </aspect>
 
-	<!-- 숫자를 세는 Translet입니다. 시작 값과 마지막 값을 파라메터로 받습니다. -->
-	<!-- 숫자의 범위가 유효한지를 검사합니다. -->
-	<translet name="counting">
-		<request>
-			<attribute>
-				<item name="from"/>
-				<item name="to"/>
-			</attribute>
-		</request>
-		<content>
-			<action id="count1" bean="helloworld.HelloWorldAction" method="counting">
-				<argument>
-					<item valueType="int">@{from}</item>
-					<item valueType="int">@{to}</item>
-				</argument>
-			</action>
-		</content>
-		<response>
-			<transform type="transform/xml"/>
-		</response>
-	</translet>
+  <translet name="echo">
+    <description>
+      "Hello, World."라는 문구를 텍스트 형식의 컨텐츠로 응답합니다.
+      특정 Action을 실행하지 않아도 간단한 텍스트 기반의 컨텐츠를 생산할 수 있습니다.
+    </description>
+    <transform type="transform/text" contentType="text/plain">
+      <template>
+        Hello, World.
+      </template>
+    </transform>
+  </translet>
 
-	<!-- 스케쥴러 환경설정을 불러들입니다. -->
-	<import file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
+  <translet name="helloWorld">
+    <description>
+      helloworld.HelloWorldAction 빈에서 helloWorld 메쏘드를 실행해서 "Hello, World."라는
+      문구를 텍스트 형식의 컨텐츠로 응답합니다.
+    </description>
+    <transform type="transform/text" contentType="text/plain">
+      <action bean="helloworld.HelloWorldAction" method="helloWorld"/>
+    </transform>
+  </translet>
+
+  <translet name="counting">
+    <description>
+      시작 값과 마지막 값을 파라메터로 받아서 숫자를 출력하는 Translet입니다.
+      request 영역의 attribute가 생성된 후에 숫자의 범위가 유효한지를 검사하는
+      checkCountRangeAdvice Aspect가 작동됩니다.
+    </description>
+    <request>
+      <attribute>
+        <item name="from"/>
+        <item name="to"/>
+      </attribute>
+    </request>
+    <content>
+      <action id="count1" bean="helloworld.HelloWorldAction" method="counting">
+        <argument>
+          <item valueType="int">@{from}</item>
+          <item valueType="int">@{to}</item>
+        </argument>
+      </action>
+    </content>
+    <response>
+      <transform type="transform/xml"/>
+    </response>
+  </translet>
+
+  <translet name="*" path="/WEB-INF/jsp/**/*.jsp">
+    <description>
+      '/WEB-INF/jsp/' 디렉토리 하위 경로에서 모든 JSP 파일을 찾아서 Translet 등록을 자동으로 합니다.
+      viewDispatcher는 defaultResponseRule Aspect에서 지정한 jspViewDispatcher를 사용합니다.
+      검색된 jsp 파일의 경로는 template 요소의 file 속성 값으로 지정됩니다.
+    </description>
+    <dispatch>
+      <template/>
+    </dispatch>
+  </translet>
+
+  <!-- RESTful 방식의 Translet을 불러들입니다. -->
+  <import file="/WEB-INF/aspectran/config/restful-translets.xml"/>
+
+  <!-- 스케쥴러 환경설정을 불러들입니다. -->
+  <import file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
 
 </aspectran>
-```
+{% endhighlight %}
 
 ### 4.1 환경 설정 상수
 Aspectran의 기본 설정 항목에 대해 설명합니다.

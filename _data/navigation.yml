@@ -2,6 +2,8 @@
   url: "/getting-started/"
   side: left
   dropdown:
+  - title: "Quick Start"
+    url: "/getting-started/quickstart/"
   - title: "Aspectran Tutorial"
     url: "/getting-started/tutorial/"
   - title: "Running the Examples"

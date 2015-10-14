@@ -11,12 +11,15 @@ header:
 permalink: "/getting-started/"
 ---
 
-## [Aspectran Tutorial][1]
-Aspectran 입문자를 위한 사용법을 설명합니다.
+## [Quick Start][1]
+Aspectran의 특징을 파악할 수 있도록 아주 간단한 사용법을 예를 들어서 설명합니다.
 
-## [Running the Examples][2]
-간단한 예제를 준비했습니다.
-예제는 구글 앱엔진(GAE)에서 실행이 됩니다.
+## [Aspectran Tutorial][2]
+Aspectran 입문자를 위한 설명서입니다.
 
-[1]: {{ side.baseurl }}/getting-started/tutorial/
-[2]: {{ side.baseurl }}/getting-started/examples/
+## [Running the Examples][3]
+실제로 구글 앱엔진에서 구동되고 있는 예제 사이트를 중심으로 Aspectran의 다양한 기능에 대해 설명합니다.
+
+[1]: {{ side.baseurl }}/getting-started/quickstart/
+[2]: {{ side.baseurl }}/getting-started/tutorial/
+[3]: {{ side.baseurl }}/getting-started/examples/
