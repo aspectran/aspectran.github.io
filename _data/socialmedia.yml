@@ -18,10 +18,10 @@
   class: icon-instagram
   title: "Images and impressions with and without filter ..."
 
-- name: YouTube
-  url: http://www.youtube.com/aspectran
-  class: icon-youtube
-  title: "Videos, video tutorials and movies from aspectran on YouTube"
+#- name: YouTube
+#  url: http://www.youtube.com/aspectran
+#  class: icon-youtube
+#  title: "Videos, video tutorials and movies from aspectran on YouTube"
 
 # - name: Xing
 #   url: https://www.xing.com/profile/Moritzmo_Sauer
