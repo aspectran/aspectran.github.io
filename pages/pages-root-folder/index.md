@@ -27,10 +27,11 @@ widget4:
   text: 'Aspectran은 Apache 2.0 License에 의거하여 무료로 제공되는 오픈소스입니다. 소스코드는 <a href="https://github.com/topframe/aspectran">GitHub</a>에서 다운로드 할 수 있습니다.'
 permalink: /index.html
 ---
-
+{% comment %}
 <div id="videoModal" class="reveal-modal large" data-reveal="">
   <div class="flex-video widescreen vimeo" style="display: block;">
-    <iframe width="1280" height="720" src="https://www.youtube.com/embed/3b5zCFSmVvU" frameborder="0" allowfullscreen></iframe>
+    <iframe width="1280" height="720" src="" frameborder="0" allowfullscreen></iframe>
   </div>
   <a class="close-reveal-modal">&#215;</a>
 </div>
+{% endcomment %}
