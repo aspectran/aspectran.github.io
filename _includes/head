@@ -5,7 +5,7 @@
 
 	<script>
 		WebFontConfig = {
-	    google: { families: [ 'Lato:400,700,400italic:latin', 'Volkhov::latin' ] }
+	    google: { families: [ 'Open+Sans:400,700,400italic:latin', 'Roboto+Slab::latin' ] }
 	  };
 		(function() {
 	    var wf = document.createElement('script');
