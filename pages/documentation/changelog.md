@@ -10,7 +10,10 @@ comments: true
 permalink: "/documentation/changelog/"
 ---
 {: .t50 }
-2015-10-08 // Version 1.2.0
+2015-10-14 // Version 1.3.1
+:   Bean을 얻을 수 있는 메쏘드를 추가하고, Bean 자동 스캔 시 Bean ID 부여 규칙을 수정했습니다.
+
+2015-10-08 // Version 1.3.0
 :   Bean 일괄 등록시에 필터링 기능을 추가하고, Translet을 일괄 등록할 수 있는 기능을 추가했습니다.
 
 2015-10-03 // Version 1.2.0
