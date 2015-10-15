@@ -42,7 +42,7 @@ JSON에 비해 특화된 점은 다음과 같습니다.
 * 문자열 표현을 위한 `string` Value Type 외에 `text` Value Type이 추가되었습니다. 긴 문자열을 표현할 때 `text` Value Type은 가독성을 확연히 향상시켜 줍니다.
 
 <small id="data-representation" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ## APON의 데이터 표현 방식
 
@@ -61,7 +61,7 @@ Value Type은 소문자로 표기해야 합니다.
 * Curly Bracket, Square Bracket, Round Bracket은 모두 Bracket이 시작된 후에 반드시 개행을 해야 하고, Brakcket이 끝난 뒤에도 반드시 개행을 해야 합니다.
 
 <small id="value-types" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ## APON의 Value Type
 APON은 매개변수가 가질 수 있는 값의 Type을 다음과 같이 정의합니다.
@@ -90,7 +90,7 @@ desc: (
 {% endhighlight %}
 
 <small id="examples" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ## APON 활용 예제
 실제로 Aspectran Configuration을 불러들일때 필요한 파라메터를 다음과 같이 사용하고 있습니다.
@@ -163,7 +163,7 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
 {% endhighlight %}
 
 <small markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ***AspectranContextConfig.java***  
 `context` Parameters의 멤버 Parameter로는 `root`, `encoding`, `resources`, `hybridLoading`, `autoReloading`이 있습니다. `autoReloading`은 Parameters를 Value로 가집니다.
@@ -214,7 +214,7 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 {% endhighlight %}
 
 <small markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ***AspectranContextAutoReloadingConfig.java***  
 `autoReloading` Parameters의 멤버 Parameter로는 `reloadMethod`, `observationInterval`, `startup`이 있습니다.
@@ -259,7 +259,7 @@ public class AspectranContextAutoReloadingConfig extends AbstractParameters impl
 {% endhighlight %}
 
 <small markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ***AspectranSchedulerConfig.java***
 `scheduler` Parameters의 멤버 Parameter로는 `startDelaySeconds`, `waitOnShutdown`, `startup`이 있습니다.
@@ -304,7 +304,7 @@ public class AspectranSchedulerConfig extends AbstractParameters implements Para
 {% endhighlight %}
 
 <small markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ### APON 형식의 텍스트 문서를 Parameters Object로 변환하기
 
@@ -342,7 +342,7 @@ public class AponReaderTest {
 {% endhighlight %}
 
 <small markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ### APON 형식의 텍스트 문서를 Parameters Object로 변환하고, 다시 APON 형식의 문자열로 변환하기
 
@@ -395,7 +395,7 @@ public class AponWriterTest {
 {% endhighlight %}
 
 <small id="apon-libarary" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ## APON 라이브러리
 현재 APON은 Aspectran 라이브러리의 일부로 포함되어 있고, Java 언어만 지원하고 있습니다.

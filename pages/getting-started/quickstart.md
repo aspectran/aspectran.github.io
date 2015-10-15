@@ -98,7 +98,7 @@ toc:
 {% endhighlight %}
 
 <small id="create-bean" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ## 2. Bean 작성하기
 
@@ -162,7 +162,7 @@ public class SimplestAdvice {
 {% endhighlight %}
 
 <small id="excution" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
+{: .gototop-anchor-wrap }
 
 ## 3. 실행
 
