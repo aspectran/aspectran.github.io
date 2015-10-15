@@ -17,7 +17,7 @@ toc:
     anchor: "top-of-page"
   - title: "APON 특징"
     anchor: "features"
-  - title: "APON의 데이터 표현 방식"
+  - title: "APON의 데이터 표기 방식"
     anchor: "data-representation"
   - title: "APON의 Value Type"
     anchor: "value-types"
@@ -38,13 +38,13 @@ APON 라이브러리에서 지원하는 Parameters 객체를 이용하면 서로
 JSON에 비해 특화된 점은 다음과 같습니다.
 
 * 매개변수가 가지고 있는 값(Value)의 Type을 명시할 수 있습니다. Value Type을 명시하지 않으면 `variable` Type이 기본 Type이 됩니다.
-* 여러 개의 Name/Value 쌍 또는 배열로 된 여러 값을 구분하기 위해 `,` (comma) 문자를 사용하지 않고 `\n` 개행 문자를 사용합니다.
-* 문자열 표현을 위한 `string` Value Type 외에 `text` Value Type이 추가되었습니다. 긴 문자열을 표현할 때 `text` Value Type은 가독성을 확연히 향상시켜 줍니다.
+* 여러 개의 Name/Value 쌍 또는 배열로 된 여러 값을 구분하기 위해 `,` (comma) 문자를 사용하지 않고 `\n` (개행 문자)를 사용합니다.
+* 문자열 표기를 위한 `string` Value Type 외에 `text` Value Type이 추가되었습니다. 긴 문자열을 표기할 때 `text` Value Type은 가독성을 확연히 향상시켜 줍니다.
 
 <small id="data-representation" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
 {: .gototop-anchor-wrap }
 
-## APON의 데이터 표현 방식
+## APON의 데이터 표기 방식
 
 * 매개변수의 이름과 값에 해당하는 Name/Value 쌍을 `Parameter`라고 합니다. Name 뒤에 `:` (colon) 문자를 붙여서 Name/Value를 구분합니다.
 * `Parameter`가 여러 모아 놓은 것을 `Parameters`라고 합니다.
@@ -54,9 +54,9 @@ Value는 `null` 값도 가질 수 있습니다.
 * Value의 Type을 명시하기 위해서는 Name과 `:` (colon) 문자 사이에 Value Type을 `( )` (Round Bracket)으로 감싸서 넣으면 됩니다.  
 ex) param1(long): 1234  
 Value Type은 소문자로 표기해야 합니다.
-* `Parameter`의 Value Type이 `parameters`이면 `{ }` (Curly Bracket)으로 감싸서 표현합니다. Curly Bracket 내에서 각 `Parameter`를 구분하기 위해 `,` (comma) 문자가 아닌 `\n` (개행문자)를 사용합니다.
-* `Parameter`의 값이 Array 형식이면 `[ ]` (Square Braket)으로 감싸서 표현합니다. Square Bracket 내에서 각 Array 요소를 구분하기 위해 `,` (comma) 문자가 아닌 `\n` (개행문자)를 사용합니다.
-* `Parameter`의 Value Type이 `string`이면 `"` (큰 쌍따옴표)로 감싸야 합니다. 큰 쌍따옴표 안에서 큰 쌍따옴표 또는 개행문자를 표현하기 위해서는 `\` (Escape 문자)를 사용할 수 있습니다.
+* `Parameter`의 Value Type이 `parameters`이면 `{ }` (Curly Bracket)으로 감싸서 표기합니다. Curly Bracket 내에서 각 `Parameter`를 구분하기 위해 `,` (comma) 문자가 아닌 `\n` (개행문자)를 사용합니다.
+* `Parameter`의 값이 Array 형식이면 `[ ]` (Square Braket)으로 감싸서 표기합니다. Square Bracket 내에서 각 Array 요소를 구분하기 위해 `,` (comma) 문자가 아닌 `\n` (개행문자)를 사용합니다.
+* `Parameter`의 Value Type이 `string`이면 `"` (큰 쌍따옴표)로 감싸야 합니다. 큰 쌍따옴표 안에서 큰 쌍따옴표 또는 개행문자를 사용하기 위해서는 `\` (Escape 문자)를 사용할 수 있습니다.
 * `Parameter`의 Value Type이 `text`이면 `( )` (Round Bracket)으로 감싸야 하고, 각 라인의 선두에 `|` 문자를 붙여야 합니다. 라인 수 만큼 `|` (수직선 문자)를 사용하게 됩니다.
 * Curly Bracket, Square Bracket, Round Bracket은 모두 Bracket이 시작된 후에 반드시 개행을 해야 하고, Brakcket이 끝난 뒤에도 반드시 개행을 해야 합니다.
 
