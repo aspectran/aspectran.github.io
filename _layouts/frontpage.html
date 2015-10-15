@@ -58,12 +58,11 @@ format: blog-index
             </p>
             {% endif %}
             {% else post.image.homepage == NULL %}
-            <h2>{{ site.data.language.new_blog_entries }}</h2>
+            <!--<h2>{{ site.data.language.new_blog_entries }}</h2>-->
             {% endif %}
             {% endfor %}
         </div><!-- /.small-12.columns -->
     </div><!-- /.row -->
-
 
     <div class="row">
         <div class="medium-6 columns">
@@ -76,8 +75,6 @@ format: blog-index
             </p>
             {% endfor %}
         </div><!-- /.medium-5.columns -->
-
-
         <div class="medium-6 columns">
             <p><strong>{{ site.data.language.more_articles }}</strong></p>
             {% include list-posts entries='3' offset='1' %}

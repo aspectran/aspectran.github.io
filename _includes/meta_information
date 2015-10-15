@@ -1,4 +1,4 @@
-			<div id="page-meta" class="t30">
+			<div id="page-meta" class="t50">
 				<p>
 					<!-- Look the author details up from the site config. -->
 					{% assign author = site.data.authors[page.author] %}
@@ -18,12 +18,22 @@
 			</p>
 
 			<div id="post-nav" class="row">
+				<div class="small-5 columns">
 				{% if page.previous.url %}
-				<div class="small-5 columns"><a class="button small radius prev" href="{{ site.baseurl }}{{page.previous.url}}">&laquo; {{page.previous.title}}</a></div><!-- /.small-4.columns -->
+					<a class="button small radius prev" href="{{ site.baseurl }}{{page.previous.url}}">&laquo; {{page.previous.title}}</a>
+				{% else %}
+					&nbsp;
 				{% endif %}
-				<div class="small-2 columns text-center"><a class="radius button small" href="{{ site.baseurl }}/blog/archive/" title="Blog {{ site.data.language.archive }}">{{ site.data.language.archive }}</a></div><!-- /.small-4.columns -->
+				</div><!-- /.small-5.columns -->
+				<div class="small-2 columns text-center">
+					<a class="radius button small" href="{{ site.baseurl }}/blog/archive/" title="Blog {{ site.data.language.archive }}">{{ site.data.language.archive }}</a>
+				</div><!-- /.small-2.columns -->
+				<div class="small-5 columns text-right">
 				{% if page.next.url %}
-				<div class="small-5 columns text-right"><a class="button small radius next" href="{{ site.baseurl }}{{page.next.url}}">{{page.next.title}} &raquo;</a></div><!-- /.small-4.columns -->
+					<a class="button small radius next" href="{{ site.baseurl }}{{page.next.url}}">{{page.next.title}} &raquo;</a>
+				{% else %}
+					&nbsp;
 				{% endif %}
+				</div><!-- /.small-5.columns -->
 			</div>
 			</div><!--  /.page-meta -->

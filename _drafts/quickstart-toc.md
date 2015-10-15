@@ -1,25 +1,27 @@
 ---
-layout: page
+layout: page-fullwidth
 show_meta: false
 title: "Quick Start"
 subheadline: ""
 teaser: "본 문서는 Aspectran의 특징을 파악할 수 있도록 아주 간단한 사용법을 예를 들어서 설명합니다."
 breadcrumb: true
 permalink: "/getting-started/quickstart/"
-sidebar: toc
-toc:
-  - title: "Aspectran Configuration"
-    anchor: "configuration"
-  - title: "Bean 작성하기"
-    anchor: "create-bean"
-  - title: "실행"
-    anchor: "excution"
 ---
 <!--more-->
 
-<a name="configuration"></a>
+<div class="row">
 
-## 1. Aspectran Configuration
+<div class="medium-4 medium-push-8 columns" markdown="1">
+<div class="panel radius" markdown="1">
+**Table of Contents**
+{: #toc }
+*  TOC
+{:toc}
+</div>
+</div><!-- /.medium-4.columns -->
+
+<div class="medium-8 medium-pull-4 columns" markdown="1">
+## 1. Aspectran Configuration  {#configuration}
 
 ***Aspectran Configuration***은 다음과 같은 3개의 핵심 구성요소를 이용해서 XML 파일로 작성을 합니다.
 
@@ -97,10 +99,7 @@ toc:
 </aspectran>
 {% endhighlight %}
 
-<small id="create-bean" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
-
-## 2. Bean 작성하기
+## 2. Bean 작성하기  {#create-bean}
 
 ***SimplestAction.java***
 
@@ -161,10 +160,7 @@ public class SimplestAdvice {
 }
 {% endhighlight %}
 
-<small id="excution" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .text-right }
-
-## 3. 실행
+## 3. 실행  {#excution}
 
 `helloWorld` Translet을 실행하기 위해 웹브라우저에서 다음 URL로 접근을 합니다.
 
@@ -198,3 +194,6 @@ INFO  Goodbye! ~com.aspectran.example.simplest.SimplestAdvice^goodbye:26
 {% endhighlight %}
 
 > 구체적인 환경설정 및 핵심 구성요소에 대한 상세한 설명은 [***Aspectran Tutorial***]({{ site.baseurl}}/getting-started/tutorial) 문서에 기재되어 있습니다.
+
+ </div><!-- /.medium-8.columns -->
+ </div><!-- /.row -->
