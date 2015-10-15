@@ -21,8 +21,6 @@ permalink: "/getting-started/quickstart/"
 </div><!-- /.medium-4.columns -->
 
 <div class="medium-8 medium-pull-4 columns" markdown="1">
-{% include improve_content %}
-
 ## 1. Aspectran Configuration
 
 ***Aspectran Configuration***은 다음과 같은 3개의 핵심 구성요소를 이용해서 XML 파일로 작성을 합니다.
