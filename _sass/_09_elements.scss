@@ -66,11 +66,20 @@
   .alert-box a:hover {
     border-bottom: 1px solid $ci-1;
   }
+  .alert-box.warning a {
+    color: #FFFF59;
+  }
+  .alert-box.success a {
+    color: #32FFFF;
+  }
   .alert-box.terminal {
     background: $grey-12;
     color: #fff;
     border-color: scale-color($grey-12, $lightness: -14%);
     font-family: $font-family-monospace;
+  }
+  .alert-box.terminal a {
+    color: #35D300;
   }
   .alert-box.terminal::before {
     content: "$ ";
@@ -95,6 +104,10 @@ button, .button         { letter-spacing: 1px; }
   .button.grey:focus      { background-color: $grey-16; }
 
 
+/* Top-Nav
+------------------------------------------------------------------- */
+
+.menu-item-back { background-color: $ci-2; border-radius: $global-radius; padding: 1px 10px; font-weight: normal; }
 
 /* Side-Nav
 ------------------------------------------------------------------- */
