@@ -1,6 +1,6 @@
 
 <div id="navigation" class="sticky contain-to-grid">
-  <nav class="top-bar" role="navigation" data-topbar data-options="back_text:&lt;&lt;">
+  <nav class="top-bar" role="navigation" data-topbar data-options="back_text:<span class='menu-item-back'>back</span>">
     <ul class="title-area">
       <li class="name">
         <h1><a href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/aspectran-icon.png" alt="Aspectran"/></a></h1>
