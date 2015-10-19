@@ -13,10 +13,10 @@ permalink: "/downloads/"
 * Example Applications:
   - aspectran-1.3.1-apps.zip (2M)
 * Source:
-  - aspectran-1.3.1-src.zip (2M)
+  - [aspectran-1.3.1-src.zip][1] (583KB)
 
 ### 필수 의존 라이브러리
-Maven을 사용한다면 [pom.xml][1] 파일을 참고해서 의존 라이브러리를 추가해 주세요.
+Maven을 사용한다면 [pom.xml][2] 파일을 참고해서 의존 라이브러리를 추가해 주세요.
 
 * javassist or cglib
 * commons-fileupload
@@ -24,4 +24,5 @@ Maven을 사용한다면 [pom.xml][1] 파일을 참고해서 의존 라이브러
 * logging 라이브러리(commons-logging, log4j, slf4j)
 
 
-[1]: https://github.com/topframe/aspectran/blob/master/pom.xml
+[1]: {{ site.baseurl }}/downloads/1.3/aspectran-1.3.1-src.zip
+[2]: https://github.com/topframe/aspectran/blob/master/pom.xml
