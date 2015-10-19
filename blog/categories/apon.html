@@ -9,7 +9,8 @@ breadcrumb: true
 permalink: "/blog/apon/"
 ---
 <ul>
-    {% for post in site.categories.apon %}
+    {% assign sortedlist = site.categories.apon | sort %}
+    {% for post in sortedlist %}
     <li><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
     {% endfor %}
 </ul>
