@@ -7,10 +7,6 @@ permalink: /naver_syndication.xml
 <feed xmlns="http://webmastertool.naver.com">
 	<id>{{ site.url }}{{ site.baseurl }}/</id>
 	<title>{{ site.title | xml_escape }}</title>
-	<updated>{{ site.time | date_to_xmlschema }}</updated>
-
-	<subtitle>{{ site.description | xml_escape }}</subtitle>
-
 	{% if site.author %}
 		{% assign author = site.data.authors[site.author] %}
 		<author>
@@ -22,24 +18,14 @@ permalink: /naver_syndication.xml
 			{% if author.email %}
 				<email>{{ author.email | xml_escape }}</email>
 			{% endif %}
-			{% if author.uri %}
-				<uri>{{ author.uri | xml_escape }}</uri>
-			{% endif %}
 		</author>
 	{% endif %}
-
-	<link href="{{ site.url }}{{ site.baseurl }}{{page.url }}" rel="self" type="application/rss+xml" />
-	<link href="{{ site.url }}{{ site.baseurl }}/" rel="alternate" type="text/html" />
-
-	<generator uri="http://jekyllrb.com" version="{{ jekyll.version }}">Jekyll</generator>
-
+	<updated>{{ site.time | date_to_xmlschema }}</updated>
+	<link title="Aspectran Blog" href="{{ site.url }}{{ site.baseurl }}/" rel="site" />
 	{% for post in site.posts limit: 10 %}
 		<entry>
 			<id>{{ site.url }}{{ site.baseurl }}{{ post.url }}</id>
 			<title>{{ post.title | strip_html | strip_newlines | xml_escape }}</title>
-			<link href="{{ site.url }}{{ site.baseurl }}{{ post.url }}" rel="alternate" type="text/html" title="{{ post.title | xml_escape }}" />
-			<updated>{{ post.date | date_to_xmlschema }}</updated>
-
 			{% if post.author %}
 				{% assign author = site.data.authors[post.author] %}
 				<author>
@@ -56,8 +42,11 @@ permalink: /naver_syndication.xml
 					{% endif %}
 				</author>
 			{% endif %}
-			<summary>{{ post.teaser | xml_escape }}</summary>
-			<content type="html" xml:base="{{ site.url }}{{ site.baseurl }}{{ post.url }}">{{ post.content | xml_escape }}</content>
+			<updated>{{ post.date | date_to_xmlschema }}</updated>
+			<published>{{ post.date | date_to_xmlschema }}</published>
+			<link href="{{ site.url }}{{ site.baseurl }}{{ post.url }}" rel="via" title="{{ post.title | xml_escape }}" />
+			<content type="html">{{ post.content | xml_escape }}</content>
+			<summary type="text">{{ post.teaser | xml_escape }}</summary>
 
 			{% for category in post.categories %}
 				<category term="{{ category | xml_escape }}" />
@@ -66,7 +55,6 @@ permalink: /naver_syndication.xml
 				<category term="{{ tag | xml_escape }}" />
 			{% endfor %}
 
-			<published>{{ post.date | date_to_xmlschema }}</published>
 		</entry>
 	{% endfor %}
 </feed>
