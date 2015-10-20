@@ -4,6 +4,9 @@ sidebar: right
 title: "Aspectran Releases"
 subheadline: "Download a Release of Aspectran"
 teaser: "Aspectran은 Apache 2.0 License에 의거하여 무료로 제공되는 오픈소스입니다."
+header:
+    image_fullwidth: "header_downloads.jpg"
+    caption: "Photo by Juho Jeong"
 permalink: "/downloads/"
 ---
 

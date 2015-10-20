@@ -23,7 +23,7 @@ widget3:
 widget4:
   title: "Downloads"
   url: '/downloads/'
-  image: header_downloads.jpg
+  image: header_downloads_thumb.jpg
   text: 'Aspectran은 Apache 2.0 License에 의거하여 무료로 제공되는 오픈소스입니다. 소스코드는 <a href="https://github.com/topframe/aspectran">GitHub</a>에서 다운로드 할 수 있습니다.'
 permalink: /index.html
 ---

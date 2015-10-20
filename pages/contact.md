@@ -5,6 +5,9 @@ meta_title:
 subheadline:
 teaser:
 comments: true
+header:
+    image_fullwidth: "header_contact.jpg"
+    caption: "Photo by Juho Jeong"
 permalink: "/contact/"
 ---
 
