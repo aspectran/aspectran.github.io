@@ -9,16 +9,16 @@ widget1:
   title: "About Aspectran"
   url: '/info/'
   text: 'POJO 방식의 경량 프레임워크<br/>제어 반전(IoC) 지원<br/>의존성 주입(DI) 지원<br/>관점 지향 프로그래밍(AOP) 지원<br/>RESTful 웹서비스 구축 환경 지원'
-  image: header_info.jpg
+  image: header_aspectran_thumb.png
 widget2:
     title: "Getting Started"
     url: '/getting-started/'
-    image: header_gettingstarted.jpg
+    image: header_gettingstarted_thumb.jpg
     text: 'Quick Start<br/>Aspectran Tutorial<br/>Running the Examples'
 widget3:
     title: "Documentation"
     url: '/documentation/'
-    image: header_documentation.jpg
+    image: header_documentation_thumb.jpg
     text: 'Developers Guides<br/>Java API Docs<br/>FAQs<br/>Changelog &amp; Roadmap'
 widget4:
   title: "Downloads"

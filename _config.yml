@@ -40,8 +40,10 @@ improve_content: https://github.com/aspectran/aspectran.github.io/edit/master
 urlimg: '/images/'
 
 
-# Logo size is 600x80 pixels
-logo: "slogan.png"
+# Logo size is 425x170 pixels
+slogan: "aspectran-slogan.png"
+
+# Footer Logo size is 100x100 pixels
 logo_footer: "aspectran-logo-x100.png"
 
 

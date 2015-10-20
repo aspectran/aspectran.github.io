@@ -83,7 +83,7 @@ body.video cite { color: #fff; }
 #masthead-no-image-header {
   height: 185px;
 }
-#masthead-no-image-header #logo img {
+#masthead-no-image-header #slogan img {
   margin-top: 7px;
   position: relative;
 }
@@ -92,7 +92,7 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 @media #{$small-only} {
-    #logo img {
+    #slogan img {
         display: none;
     }
     #masthead {
@@ -119,7 +119,7 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 @media #{$medium-only} {
-    #logo img {
+    #slogan img {
         margin-top: 7px;
     }
     #masthead {
@@ -142,7 +142,7 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 @media #{$large-only} {
-    #logo img {
+    #slogan img {
         margin-top: 7px;
     }
     #masthead {
@@ -165,7 +165,7 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 @media #{$xlarge-up} {
-    #logo img {
+    #slogan img {
         margin-top: 30px;
     }
     #masthead {
