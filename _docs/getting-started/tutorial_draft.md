@@ -1,5 +1,6 @@
 ---
-layout: page-fullwidth
+layout: page
+sidebar: toc
 show_meta: false
 title: "Aspectran Tutorial"
 subheadline: ""
@@ -7,21 +8,6 @@ teaser: "본 문서는 Aspectran 입문자를 설명서입니다."
 breadcrumb: true
 draft: true
 ---
-<!--more-->
-
-<div class="row">
-
-<div class="medium-4 medium-push-8 columns" markdown="1">
-<div class="panel radius" markdown="1">
-**Table of Contents**
-{: #toc }
-*  TOC
-{:toc}
-</div>
-</div><!-- /.medium-4.columns -->
-
-<div class="medium-8 medium-pull-4 columns" markdown="1">
-{% include improve_content %}
 
 ## 1. Installation
 Aspectran은 라이브러리 의존성 문제를 최소화 하기 위해 최소한의 외부 라이브러리를 사용합니다.
@@ -610,6 +596,3 @@ Aspectran은 외부의 접속 요청을 Translet이 받아서 처리합니다. T
 
 
  [1]: {{ site.baseurl }}/documentation/
-
- </div><!-- /.medium-8.columns -->
- </div><!-- /.row -->

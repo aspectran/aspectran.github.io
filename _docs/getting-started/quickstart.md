@@ -6,17 +6,7 @@ subheadline: ""
 teaser: "본 문서는 Aspectran의 특징을 파악할 수 있도록 아주 간단한 사용법을 예를 들어서 설명합니다."
 breadcrumb: true
 sidebar: toc
-toc:
-  - title: "Aspectran Configuration"
-    anchor: "configuration"
-  - title: "Bean 작성하기"
-    anchor: "create-bean"
-  - title: "실행"
-    anchor: "excution"
 ---
-<!--more-->
-
-<a name="configuration"></a>
 
 ## 1. Aspectran Configuration
 
@@ -96,9 +86,6 @@ toc:
 </aspectran>
 {% endhighlight %}
 
-<small id="create-bean" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
-
 ## 2. Bean 작성하기
 
 ***SimplestAction.java***
@@ -159,9 +146,6 @@ public class SimplestAdvice {
 
 }
 {% endhighlight %}
-
-<small id="excution" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
 
 ## 3. 실행
 

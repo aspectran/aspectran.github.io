@@ -4,14 +4,11 @@ format: post
 ---
 <div class="row t30">
 
-	{% if page.sidebar == "toc" && page.toc %}
-	<div class="medium-4 medium-push-8 columns" markdown="1">
-	<div class="panel radius" markdown="1">
+	{% if page.sidebar == "toc" %}
+	<div class="medium-4 medium-push-8 columns">
+	<div id="toc" class="panel radius">
 		<p><strong>Table of Contents</strong></p>
-		<ul id="toc">
-		{% for toc in page.toc %}
-		  <li><a href="#{{ toc.anchor }}">{{ toc.title }}</a></li>
-		{% endfor %}
+		<ul>
 		</ul>
 	</div>
 	</div><!-- /.medium-4.columns -->
