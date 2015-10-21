@@ -37,9 +37,6 @@ permalink: /naver_syndication.xml
 					{% if author.email %}
 						<email>{{ author.email | xml_escape }}</email>
 					{% endif %}
-					{% if author.uri %}
-						<uri>{{ author.uri | xml_escape }}</uri>
-					{% endif %}
 				</author>
 			{% endif %}
 			<updated>{{ post.date | date_to_xmlschema }}</updated>
@@ -71,9 +68,6 @@ permalink: /naver_syndication.xml
 					{% endif %}
 					{% if author.email %}
 						<email>{{ author.email | xml_escape }}</email>
-					{% endif %}
-					{% if author.uri %}
-						<uri>{{ author.uri | xml_escape }}</uri>
 					{% endif %}
 				</author>
 			{% endif %}
