@@ -70,9 +70,6 @@ body.video cite { color: #fff; }
 #masthead img {
   border-radius: 0;
 }
-#masthead-no-image-header {
-  background-color: $primary-color;
-}
 #masthead-with-text {
   text-align: center;
   font-size: rem-calc(54);
@@ -80,9 +77,12 @@ body.video cite { color: #fff; }
   color: #fff;
   text-transform: uppercase;
   text-shadow: 0 2px 3px rgba(0,0,0,.4);
+  margin-top: -1px;
 }
 #masthead-no-image-header {
+  background-color: $primary-color;
   height: 185px;
+  margin-top: -1px;
 }
 #masthead-no-image-header #slogan img {
   margin-top: 7px;
