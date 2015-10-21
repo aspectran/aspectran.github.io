@@ -7,7 +7,6 @@ subheadline: "Aspectran Changelog"
 teaser: "History and changelog of Aspectran"
 breadcrumb: true
 comments: true
-permalink: "/documentation/changelog/"
 ---
 {: .t50 }
 2015-10-14 // Version 1.3.1

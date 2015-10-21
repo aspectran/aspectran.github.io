@@ -8,7 +8,6 @@ teaser: "Aspectran의 사용법을 익히고, 간단한 예제의 실행 결과�
 header:
    image_fullwidth: "header_gettingstarted.jpg"
    caption: "My cute second daughter"
-permalink: "/getting-started/"
 ---
 
 ## [Quick Start][1]

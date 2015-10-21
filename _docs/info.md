@@ -8,7 +8,6 @@ header:
     image_fullwidth: "header_aspectran.png"
     slogan_hidden: true
 comments: true
-permalink: "/info/"
 ---
 *Aspectran* 을 활용하기 위해 거창한 개념을 이해할 필요가 없습니다.  
 *Aspectran* 을 활용하기 위해 새로운 개념을 받아들일 필요도 없습니다.  

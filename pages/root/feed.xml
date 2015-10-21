@@ -21,5 +21,16 @@ permalink: /feed.xml
 				<guid isPermaLink="true">{{ site.url }}{{ site.baseurl }}{{ post.url }}</guid>
 			</item>
 		{% endfor %}
+		{% for doc in site.docs %}
+		{% unless doc.draft == true %}
+		<item>
+			<title>{{ doc.title | xml_escape }}</title>
+			<link>{{ site.url }}{{ site.baseurl }}{{ doc.url }}</link>
+			<pubDate>{{ doc.date | date: "%a, %d %b %Y %H:%M:%S %z" }}</pubDate>
+			<description>{{ doc.content | xml_escape }}</description>
+			<guid isPermaLink="true">{{ site.url }}{{ site.baseurl }}{{ docs.url }}</guid>
+		</item>
+		{% endunless %}
+		{% endfor %}
 	</channel>
 </rss>

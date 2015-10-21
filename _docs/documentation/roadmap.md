@@ -6,7 +6,6 @@ subheadline: "ToDo-List &amp; Ideas"
 teaser: "Here are some ideas and features I want to implement in the future."
 breadcrumb: true
 comments: true
-permalink: "/documentation/roadmap/"
 ---
 
 ## Ideas and possible new features

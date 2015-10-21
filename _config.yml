@@ -104,7 +104,7 @@ defaults:
       show_meta: false 	# Hide metadata for all pages
       # sidebar:    		# Possible values › left, right › by default there will be no sidebar
       comments: false
-      author: "Juho Jeong"     # Default author for pages
+      author: "juho_jeong"     # Default author for pages
   -
     scope:
       path: ""
@@ -113,7 +113,21 @@ defaults:
       show_meta: true   # Show metadata for all posts
       # sidebar:        # Possible values › left, right › by default there will be no sidebar
       comments: false
-      author: "Juho Jeong"     # Default author for posts
+      author: "juho_jeong"     # Default author for posts
+  -
+    scope:
+      path: ""
+      type: "docs"
+    values:
+      show_meta: false   # Show metadata for all posts
+      # sidebar:        # Possible values › left, right › by default there will be no sidebar
+      comments: false
+      author: "juho_jeong"     # Default author for posts
+      date: "2015-10-21"
+collections:
+  docs:
+    output: true
+    permalink: "/:path/"
 
 
 

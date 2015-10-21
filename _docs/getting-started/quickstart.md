@@ -5,7 +5,6 @@ title: "Quick Start"
 subheadline: ""
 teaser: "본 문서는 Aspectran의 특징을 파악할 수 있도록 아주 간단한 사용법을 예를 들어서 설명합니다."
 breadcrumb: true
-permalink: "/getting-started/quickstart/"
 sidebar: toc
 toc:
   - title: "Aspectran Configuration"
