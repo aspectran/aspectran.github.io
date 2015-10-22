@@ -11,23 +11,8 @@ categories:
 tags:
     - apon
 sidebar: toc
-toc:
-  - title: "APON을 소개합니다."
-    anchor: "top-of-page"
-  - title: "APON 특징"
-    anchor: "features"
-  - title: "APON의 데이터 표기 방식"
-    anchor: "data-representation"
-  - title: "APON의 Value Type"
-    anchor: "value-types"
-  - title: "APON 활용 예제"
-    anchor: "examples"
-  - title: "APON 라이브러리"
-    anchor: "apon-libarary"
 published: true
 ---
-
-<a name="features"></a>
 
 ## APON 특징
 Aspectran은 대량의 XML 문서를 파싱하는데 드는 비용을 줄이기 위해 XML 문서를 APON 문서로 변환해서 사용하는 기능을 가지고 있습니다.
@@ -39,9 +24,6 @@ JSON에 비해 특화된 점은 다음과 같습니다.
 * 매개변수가 가지고 있는 값(Value)의 Type을 명시할 수 있습니다. Value Type을 명시하지 않으면 `variable` Type이 기본 Type이 됩니다.
 * 여러 개의 Name/Value 쌍 또는 배열로 된 여러 값을 구분하기 위해 `,` (comma) 문자를 사용하지 않고 `\n` (개행 문자)를 사용합니다.
 * 문자열 표기를 위한 `string` Value Type 외에 `text` Value Type이 추가되었습니다. 긴 문자열을 표기할 때 `text` Value Type은 가독성을 확연히 향상시켜 줍니다.
-
-<small id="data-representation" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
 
 ## APON의 데이터 표기 방식
 
@@ -58,9 +40,6 @@ Value Type은 소문자로 표기해야 합니다.
 * `Parameter`의 Value Type이 `string`이면 `"` (큰 쌍따옴표)로 감싸야 합니다. 큰 쌍따옴표 안에서 큰 쌍따옴표 또는 개행문자를 사용하기 위해서는 `\` (Escape 문자)를 사용할 수 있습니다.
 * `Parameter`의 Value Type이 `text`이면 `( )` (Round Bracket)으로 감싸야 하고, 각 라인의 선두에 `|` 문자를 붙여야 합니다. 라인 수 만큼 `|` (수직선 문자)를 사용하게 됩니다.
 * Curly Bracket, Square Bracket, Round Bracket은 모두 Bracket이 시작된 후에 반드시 개행을 해야 하고, Brakcket이 끝난 뒤에도 반드시 개행을 해야 합니다.
-
-<small id="value-types" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
 
 ## APON의 Value Type
 APON은 매개변수가 가질 수 있는 값의 Type을 다음과 같이 정의합니다.
@@ -87,9 +66,6 @@ desc: (
     | 수직문자가 시작되면 특수문자 사용이 자유로워집니다.
 )
 {% endhighlight %}
-
-<small id="examples" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
 
 ## APON 활용 예제
 실제로 Aspectran Configuration을 불러들일때 필요한 파라메터를 다음과 같이 사용하고 있습니다.
@@ -161,9 +137,6 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
 }
 {% endhighlight %}
 
-<small markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
-
 ***AspectranContextConfig.java***  
 `context` Parameters의 멤버 Parameter로는 `root`, `encoding`, `resources`, `hybridLoading`, `autoReloading`이 있습니다. `autoReloading`은 Parameters를 Value로 가집니다.
 
@@ -212,9 +185,6 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 }
 {% endhighlight %}
 
-<small markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
-
 ***AspectranContextAutoReloadingConfig.java***  
 `autoReloading` Parameters의 멤버 Parameter로는 `reloadMethod`, `observationInterval`, `startup`이 있습니다.
 
@@ -256,9 +226,6 @@ public class AspectranContextAutoReloadingConfig extends AbstractParameters impl
 
 }
 {% endhighlight %}
-
-<small markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
 
 ***AspectranSchedulerConfig.java***
 `scheduler` Parameters의 멤버 Parameter로는 `startDelaySeconds`, `waitOnShutdown`, `startup`이 있습니다.
@@ -302,9 +269,6 @@ public class AspectranSchedulerConfig extends AbstractParameters implements Para
 }
 {% endhighlight %}
 
-<small markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
-
 ### APON 형식의 텍스트 문서를 Parameters Object로 변환하기
 
 {% highlight java %}
@@ -339,9 +303,6 @@ public class AponReaderTest {
 
 }
 {% endhighlight %}
-
-<small markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
 
 ### APON 형식의 텍스트 문서를 Parameters Object로 변환하고, 다시 APON 형식의 문자열로 변환하기
 
@@ -392,9 +353,6 @@ public class AponWriterTest {
 
 }
 {% endhighlight %}
-
-<small id="apon-libarary" markdown="1">[{{ site.data.language.go_to_top_of_page }}](#top-of-page)</small>
-{: .gototop-anchor-wrap }
 
 ## APON 라이브러리
 현재 APON은 Aspectran 라이브러리의 일부로 포함되어 있고, Java 언어만 지원하고 있습니다.
