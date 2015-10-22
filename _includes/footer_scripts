@@ -14,6 +14,7 @@
   var tocOffsetTopBase = $("#toc").offset().top;
   var tocOffsetTop = 0;
   var tocHeight = 0;
+  var tocWinHeight = $(window).height();
   var tocScrollTimer = null;
   $(document).ready(function(){
     $("article h2, article h3, article h4, article h5, article h6").each(function(index, item) {
@@ -40,8 +41,8 @@
       }, 400);
     });
     tocHeight = $("#toc").height();
-    $(document).scroll(function() {
-      var scrollTop = $(document).scrollTop();
+    $(window).scroll(function() {
+      var scrollTop = $(window).scrollTop();
       if(scrollTop < tocOffsetTopBase) {
         if(tocScrollTimer) {
           clearInterval(tocScrollTimer);
@@ -57,7 +58,7 @@
           tocScrollTimer = null;
         }, 700);
       } else {
-        if(scrollTop > tocOffsetTop + tocOffsetTopBase + tocHeight || scrollTop < tocOffsetTop - tocOffsetTopBase - tocHeight) {
+        if(scrollTop > tocOffsetTop + tocOffsetTopBase + tocHeight || scrollTop < tocOffsetTop + tocOffsetTopBase - tocWinHeight) {
           var tocOffsetLeftBase = $("#toc").offset().left;
           if(tocOffsetLeftBase > 100) {
             if(tocScrollTimer) {
@@ -66,10 +67,13 @@
             }
             tocScrollTimer = setInterval(function() {
               scrollTop = $(document).scrollTop();
-              if(scrollTop < tocOffsetTopBase)
+              if(scrollTop < tocOffsetTopBase) {
                 scrollTop = 0;
-              else
+              } else if(scrollTop > $(document).height() - $("#footer-content").height() - tocHeight - 100) {
+                scrollTop = $(document).height() - $("#footer-content").height() - tocHeight - tocOffsetTopBase - 100;
+              } else {
                 scrollTop = scrollTop - tocOffsetTopBase + 70;
+              }
               tocOffsetTop = scrollTop;
               $("#toc").css({
                 position: "relative",
@@ -77,13 +81,14 @@
               });
               clearInterval(tocScrollTimer);
               tocScrollTimer = null;
+              tocWinHeight = $(window).height();
             }, 700);
           }
         }
       }
     });
-    if($(document).scrollTop() > tocOffsetTopBase) {
-      $(document).scroll();
+    if($(window).scrollTop() > tocOffsetTopBase) {
+      $(window).scroll();
     }
   });
 </script>
