@@ -82,6 +82,9 @@
         }
       }
     });
+    if($(document).scrollTop() > tocOffsetTopBase) {
+      $(document).scroll();
+    }
   });
 </script>
 {% endif %}
@@ -90,6 +93,16 @@
 <script>
     $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 700});
     $("#masthead-with-text").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 700});
+</script>
+{% endif %}
+{% if page.header.image_slide and page.header.image_slide[0] %}
+<script>
+    $("#masthead").backstretch([
+      "{{ site.urlimg }}{{ page.header.image_slide[0] }}"
+    {% for image in page.header.image_slide %}
+    {% if forloop.index > 1 %}, "{{ site.urlimg }}{{ image }}"{% endif %}
+    {% endfor %}
+    ], {duration: 3300, fade: 700});
 </script>
 {% endif %}
 

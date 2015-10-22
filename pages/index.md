@@ -5,6 +5,14 @@
 # this work, you have to use › layout: frontpage
 #
 layout: frontpage
+header:
+  image_slide:
+    - header_gettingstarted.jpg
+    - header_documentation.jpg
+    - header_downloads.jpg
+    - header_blog.jpg
+    - header_search.jpg
+    - header_contact.jpg
 widget1:
   title: "About Aspectran"
   url: '/info/'
