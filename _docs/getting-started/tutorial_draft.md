@@ -4,12 +4,40 @@ sidebar: toc
 show_meta: false
 title: "Aspectran Tutorial"
 subheadline: ""
-teaser: "본 문서는 Aspectran 입문자를 설명서입니다."
+teaser: "본 문서는 Aspectran의 핵심 기능에 대한 설명서입니다."
 breadcrumb: true
 draft: true
 ---
 
-## 1. Installation
+## 1. 개요
+
+Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축에 필요한 가장 핵심적인 기능을 제공하는 프레임워크입니다.  
+구축환경에 따라 달라질 수 있는 부가적인 기능은 직접적으로 제공을 하지 않고,
+핵심 기능을 확장 또는 외부 라이브러와 연동을 통해서 부가 기능을 쉽게 추가할 수 있도록 설계되었습니다.
+
+*Aspectran* 의 주요 기능은 다음과 같습니다.
+
+* POJO(*Plain Old Java Object*) 방식의 경량 프레임워크입니다.  
+  기능 구현을 위해 특정 인터페이스를 구현하거나 상속을 받을 필요가 없습니다.
+  결과 값은 가장 간단한 자바 오브젝트에 담아서 반환하면 됩니다.
+* 제어 반전(*Inversion of Control, IoC*)을 지원합니다.  
+  프레임워크가 전체적인 흐름을 제어하면서 개발자가 작성한 모듈의 기능을 호출하는 방식입니다.
+  객체에 대한 생성 및 생명주기를 관리할 수 있는 기능을 제공하며, 개발자는 비즈니스 로직에 집중하여 개발할 수 있게 됩니다.
+* 의존성 주입(*Dependency Injection, DI*)을 지원합니다.  
+  프레임워크가 실행시에 서로 의존하는 모듈을 연결합니다.
+  모듈 간의 낮은 결합도를 유지할 수 있고, 코드 재사용성을 높일 수 있습니다.
+* 관점 지향 프로그래밍(*Aspect-Oriented Programming, AOP*)을 지원합니다.  
+  핵심 기능과 부가적인 기능을 분리해서 코드를 작성할 수 있습니다.
+  핵심 기능이 구현된 이후에 트랜잭션이나 로깅, 보안, 예외처리와 관련된 기능을 핵심 기능과 결합할 수 있습니다.
+* RESTful 웹서비스 구축 환경을 지원합니다.
+
+본 문서는 Aspectran의 핵심 기능에 대한 설명서입니다.
+
+- - -
+
+## 2. 시작
+
+### 2.1 설치
 Aspectran은 라이브러리 의존성 문제를 최소화 하기 위해 최소한의 외부 라이브러리를 사용합니다.
 Aspectran을 사용하려면 aspectran-x.x.x.jar 파일과 아래와 같은 필수 의존 라이브러리를 필요로 합니다.
 
@@ -22,17 +50,13 @@ Aspectran을 사용하려면 aspectran-x.x.x.jar 파일과 아래와 같은 필�
 
 Maven을 사용한다면 [pom.xml](https://github.com/topframe/aspectran/blob/master/pom.xml) 파일을 참고해서 의존 라이브러리를 추가해 주세요.
 
-- - -
-
-## 2. 작동 환경
+### 2.2 작동 환경
 Aspectran을 사용해서 Java 웹 어플리케이션을 개발하기 위해서는 다음 요건을 충족해야 합니다.
 
 * Java 6 이상
 * Servlet 2.5 이상
 
-- - -
-
-## 3. 웹 컨테이너에 서블릿으로 등록하기
+### 2.3 웹 컨테이너에 서블릿으로 등록하기
 
 Aspectran Configuration에 필요한 초기화 파라메터 `aspectran:config`를 정의하고,
 `AspectranServiceListener`를 등록해서 `ActivityContext`를 생성하도록 합니다.
@@ -101,7 +125,7 @@ Aspectran Configuration에 필요한 초기화 파라메터 `aspectran:config`�
 </web-app>
 {% endhighlight %}
 
-### 3.1 초기화 파라메터 정의
+#### 2.3.1 초기화 파라메터 정의
 
 먼저 컨텍스트 초기화 파라메터 `aspectran:config`를 정의합니다.
 `aspectran:config` 파라메터는 **APON**(*Aspectran Parameter Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
@@ -158,10 +182,10 @@ XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고, 
 **scheduler.startup**
 : 스케쥴러를 기동할지 여부를 지정
 
-#### 파라메터 별 기본 값
+각 초기화 파라메터 별로 기본 값은 다음과 같습니다.
 
 | 파라메터 | 기본 값 |
-|-----------|-------|
+|--------- |--------|
 | **context** |  |
 | **context.root** | /WEB-INF/aspectran/root.xml |
 | **context.encoding** |  |
@@ -176,21 +200,21 @@ XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고, 
 | **scheduler.waitOnShutdown** | false |
 | **scheduler.startup** | false |
 
-### 3.2 AspectranServiceListener 등록
+#### 2.3.2 AspectranServiceListener 등록
 `<listner-class>`에  `com.aspectran.web.startup.listener.AspectranServiceListener`를 지정합니다.
 AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:config`의 설정 내용으로 Aspectran 서비스 환경을 구성하고, Application Scope를 가지고 있습니다.
 
 > AspectranServiceListener에 의해 기동된 Aspectran 서비스는 여러 WebActivityServlet에서 사용될 수 있습니다.
 > 즉, 전역적인 하나의 Aspectran 서비스 환경을 구성할 수 있습니다.
 
-### 3.3 WebActivityServlet 등록
+#### 2.3.3 WebActivityServlet 등록
 `<servlet-class>`에 `com.aspectran.web.startup.servlet.WebActivityServlet`을 지정합니다.
 `<servlet-name>`에는 Aspectran 서비스를 위한 서블릿이라는 의미의 고유한 서블릿 이름을 부여해 주기 바랍니다.
 
 > 서블릿 초기화 파라메터로 `aspectran:cofnig`를 정의하면 서블릿만의 단독 Aspectran 서비스 환경을 구성합니다.
 > 즉, 전역 Aspectran 서비스를 사용하지 않습니다.
 
-### 3.4 서블릿 URL 패턴 등록
+#### 2.3.4 서블릿 URL 패턴 등록
 `<url-pattern>`에 해당하는 요청은 `WebActivityServlet`이 처리할 수 있도록 합니다.
 만약 `<url-pattern>`을 `/example/*`로 지정하면 `/example/`로 시작하는 이름을 가진 Translet이 실행됩니다.
 
@@ -199,7 +223,7 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 > Translet은 고유 이름을 가지고 있으며, 요청 URI와 직접적으로 매핑이 됩니다.
 > 스케쥴러의 Job도 Translet을 통해서 실행이 됩니다.
 
-### 3.5 DefaultServlet 이름 지정하기
+#### 2.3.5 DefaultServlet 이름 지정하기
 요청 URI에 해당하는 Translet이 존재하지 않을 경우 서블릿 컨테이너의 DefaultServlet에게 넘겨주는 역할을 하는 핸들러가 항상 동작하고 있습니다.
 그 핸들러의 이름은 DefaultServletHttpRequestHandler입니다. DefaultServletHttpRequestHandler는 DefaultServlet의 이름이 무엇인지 자동으로 판단합니다.
 만약 DefaultServlet의 이름이 다르게 지정되어야 할 경우 아래와 같은 초기화 파라메터를 추가합니다.
@@ -213,27 +237,37 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 
 - - -
 
-## 4. Aspectran Configuration
+## 3. Aspectran Configuration
 
-Aspectran Configuration은 XML 파일로 작성을 합니다.
-DTD(*Document Type Definition*)에는 루트 엘리멘트 `aspectran`은 7개의 자식 엘리멘트를 가질 수 있다고 정의되어 있습니다.
-7개 중에 3개의 엘리멘트(*aspect, bean, translet*)는 Aspectran을 대표하는 가장 핵심적인 엘리멘트입니다.
+Aspectran이 구동되기 위해서는 구조화된 설정 메타데이터를 필요로 합니다.  
+설정 메타데이터는 전통적인 XML 형식 또는 APON 형식의 파일로 작성해야 하며, 계층적으로 모듈화되어 여러 개의 파일로 나눌 수도 있습니다.
 
-**Aspectran의 핵심 구성요소**
+Aspectran은 설정 메타데이터를 자바 소스코드와 완전히 분리하는 것을 기본 원칙으로 합니다.  
+어플리케이션 개발자가 작성하는 자바 소스코드는 POJO 형태를 최대한 유지할 수 있습니다.  
+또한, 설정 메타데이터 구성에 필요한 요소는 오래 시간에 걸쳐서 최적화가 되었기 때문에
+최소한의 구성요소를 가지고도 다양한 설정이 가능합니다.
 
-* ***aspect*** - Bean과 Translet이 가진 원래의 기능에 다른 부가 기능을 주입하는 방법을 정의
-* ***bean*** - IoC, DI의 대상이 되고, Action Method를 가진 객체를 정의
-* ***translet*** - 요청 URI와 맵핑되어 비지니스 로직을 처리하고 응답 컨텐츠를 출력하는 방법을 정의
+설정 메타데이터를 구성하는 대표적인 구성요소는 다음과 같습니다.
 
-{% highlight dtd %}
-<!ELEMENT aspectran (
-    description?,
-    (settings? | typeAliases* | aspect* | bean* | translet* | import*)*
-)>
-{% endhighlight %}
+***settings***
+: 기본 설정항목을 정의합니다.  
+하위 설정 파일은 상위 설정 파일의 기본 설정 값을 물려 받습니다.
 
-위의 web.xml 파일에서 `context.root`의 값을 "/WEB-INF/aspectran/config/getting-started.xml"로 지정했습니다.
-`getting-started.xml` 파일은 Aspectran의 몇 가지 특징을 설명하기 위해 다음과 같이 작성되었습니다.
+***aspect***
+: Bean과 Translet이 가진 원래의 기능에 다른 부가 기능을 주입하는 방법을 정의합니다.  
+관점지향프로그래밍(AOP)을 지원하기 위한 핵심 요소입니다.
+
+***bean***
+: IoC, DI의 대상이 되고, 기능을 가진 객체를 정의합니다.  
+객체를 인스턴스화 하는 방법, 객체의 생명주기, 객체의 속성 값, 객체의 의존관계를 설정할 수 있습니다.
+
+***translet***
+: 요청 URI와 맵핑되어 비지니스 로직을 가지고 있는 Action Method를 호출하는 방법 및 응답 컨텐츠를 출력하는 방법을 정의합니다.
+
+***import***
+: 다른 설정 파일을 불러오는 방법을 정의합니다.
+
+다음 예제는 XML 기반의 설정 메타데이터의 기본 구조를 보여주기 위해 작성되었습니다.
 
 ***getting-started.xml***
 {% highlight xml %}
@@ -474,7 +508,7 @@ DTD(*Document Type Definition*)에는 루트 엘리멘트 `aspectran`은 7개의
 </aspectran>
 {% endhighlight %}
 
-### 4.1 기본 설정
+### 3.1 기본 설정
 `settings` 엘리먼트는 다음과 같은 Aspectran의 기본 설정 항목을 가질 수 있습니다.
 
 **transletNamePattern**
@@ -502,7 +536,7 @@ DTD(*Document Type Definition*)에는 루트 엘리멘트 `aspectran`은 7개의
 : pointcut 패턴의 유효성을 체크할지 여부를 지정합니다.
 
 
-#### 기본 설정 항목 별로 사용가능한 값과 기본 값
+기본 설정 항목 별로 사용가능한 값과 기본 값은 다음과 같습니다.
 
 | 기본 설정 항목 | 사용가능한 값 | 기본 값 |
 |---|---|---|
@@ -516,7 +550,7 @@ DTD(*Document Type Definition*)에는 루트 엘리멘트 `aspectran`은 7개의
 | **beanProxifier** | javassist, cglib, jdk | javassist |
 | **pointcutPatternVerifiable** | true, false | true |
 
-#### 기본 설정 항목을 모두 사용한 `settings` 엘리먼트
+기본 설정 항목을 모두 사용한 `settings` 엘리먼트의 예제입니다.
 
 {% highlight xml %}
 <settings>
@@ -530,10 +564,12 @@ DTD(*Document Type Definition*)에는 루트 엘리멘트 `aspectran`은 7개의
 </settings>
 {% endhighlight %}
 
-### 4.2 Bean 정의
-Bean을 정의하는 방법은 두 가지가 있습니다.
+### 3.2 Bean 정의
 
-#### 4.2.1 단일 Bean 정의
+특정 기능을 가진 객체를 모두 Bean으로 정의할 수 있습니다.
+Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정, 생명주기 관리등의 기능을 제공합니다.
+
+#### 3.2.1 단일 Bean 정의
 중요한 역할을 하는 Bean 또는 별도의 속성을 가지는 Bean은 단독으로 정의합니다.
 
 {% highlight xml %}
@@ -546,17 +582,23 @@ Bean을 정의하는 방법은 두 가지가 있습니다.
 </bean>
 {% endhighlight %}
 {% highlight xml %}
-<bean id="sampleBean" class="com.aspectran.example.sample.SampleBean" scope="singleton"/>
+<bean id="*" class="com.aspectran.example.sample.SampleBean" scope="singleton"/>
 {% endhighlight %}
 
-#### 4.2.2 일괄 Bean 정의
+> `id` 속성값으로 `*` 문자를 지정하면 클래스명이 Bean ID로 지정됩니다.
+
+#### 3.2.2 일괄 Bean 정의
 
 와일드카드를 사용하면 클래스패스에 존재하는 Bean을 일괄 검색해서 한꺼번에 정의할 수 있습니다.
+
+> `class` 속성 값에 사용할 수 있는 와일드카드 문자들은  `*, ?, +` 이고, Escape 문자로 `\` 문자를 사용할 수 있습니다.
+> 여러 패키지를 포함할 경우 `.**.` 문자를 중간에 사용하면 되는데, 예를들어 `com.**.service.*.*Action`과 같이 사용할 수 있습니다.
 
 {% highlight xml %}
 <beans id="*" class="com.aspectran.example.**.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
 {% endhighlight %}
 
+> 위 예제에 대한 설명입니다.  
 > `com.aspectran.eaxmple` 패키지 하위의 모든 경로에서 클래스 이름이 "Action"으로 끝나는 클래스를
 > 모두 찾아서 Bean으로 등록합니다.
 > 만약 `com.aspectran.example.sample.SampleAction` 클래스가 검색되었다면
@@ -576,6 +618,7 @@ Bean을 정의하는 방법은 두 가지가 있습니다.
 </bean>
 {% endhighlight %}
 
+> 위 예제에 대한 설명입니다.  
 > `com.aspectran.eaxmple` 패키지 하위의 모든 경로에서 클래스 이름이 "Advice"으로 끝나는 클래스를
 > 모두 찾아서 ID가 `advice.`으로 시작하는 Bean으로 등록합니다.
 > 만약 `com.aspectran.example.sample.SampleAction` 클래스가 검색되었다면
@@ -608,26 +651,28 @@ public class UserClassScanFilter implements BeanClassScanFilter {
 }
 {% endhighlight %}
 
-##### 와일드카드를 사용해서 여러 클래스를 지정하기
-`class` 속성 값에 사용할 수 있는 와일드카드 문자들은  `*, ?, +` 이고, Escape 문자로 `\` 문자를 사용할 수 있습니다.
-여러 패키지를 포함할 경우 `.**.` 문자를 중간에 사용하면 되는데, 예를들어 `com.**.service.*.*Action`과 같이 사용할 수 있습니다.
 
-##### Bean ID 부여 규칙
+#### 3.2.3 Bean ID 부여 규칙
+
 1. 일차적으로 검색된 클래스명을 Bean의 ID로 사용합니다.
 2. Mask 패턴을 지정하면 Bean ID에서 불필요한 문자열을 제거할 수 있습니다.  
-3. `id` 속성의 값이 `*`이면 검색된 Bean의 ID를 그대로 사용합니다.
+3. `id` 속성의 값이 `*`이면 검색된 Bean ID 또는 클래스명을 그대로 사용합니다.
 4. `id` 속성의 값이 `advice.*`이면 Bean ID 앞에 `advice.` 문자열을 붙입니다.
 5. `id` 속성의 값이 `*Action`이면 Bean ID 뒤에 `Action` 문자열을 붙입니다.
 
-> 예를 들어  
-> id가 `advice.*`이고,  
-> mask가 `com.aspectran.example.**.*`이고,  
-> class가 `com.aspectran.example.**.*Action`이고,  
-> 검색된 클래스의 이름이 `com.aspectran.example.hellloworld.HelloWorldAction`이면  
-> 최종적으로 Bean의 ID는  
-> `advice.hellloworld.HelloWorldAction` 됩니다.
+예를 들어  
+id가 `advice.*`이고,  
+mask가 `com.aspectran.example.**.*`이고,  
+class가 `com.aspectran.example.**.*Action`이고,  
+검색된 클래스의 이름이 `com.aspectran.example.hellloworld.HelloWorldAction`이면  
+최종적으로 Bean의 ID는  
+`advice.hellloworld.HelloWorldAction` 됩니다.
 
-#### 4.2.3 Bean을 다음과 같이 상세하게 정의할 수도 있습니다.
+#### 3.2.4 상세한 Bean 정의 방법
+
+#### 3.2.4 상세한 Bean 정의 방법
+
+다음 예제를 기준으로 Bean을 정의하기 위해 사용된 엘리멘트에 대해 설명합니다.
 
 {% highlight xml %}
 <bean id="sampleBean">
@@ -639,16 +684,16 @@ public class UserClassScanFilter implements BeanClassScanFilter {
         <lazyInit>true</lazyInit>
     </features>
     <constructor>
-        <arguments>
+        <argument>
             <item>arg1</item>
             <item type="list" valueType="int">
               <value>1</value>
               <value>2</value>
               <value>3</value>
             </item>
-        </arguments>
+        </argument>
     </constructor>
-    <properties>
+    <property>
         <item name="name">david</item>
         <item name="grade" type="list">
             <value>A</value>
@@ -661,11 +706,22 @@ public class UserClassScanFilter implements BeanClassScanFilter {
         <item name="anotherBean">
             <reference bean="anotherBean"/>
         </item>
-    </properties>
+    </property>
 </bean>
 {% endhighlight %}
 
-### 4.3 Aspect 정의
+**bean**
+: Bean을 정의하기 위한 최상위 엘리멘트입니다.
+`mask` 속성 외에 `features` 엘리멘트의 하위 엘리멘트를 속성으로 가질 수 있습니다.
+
+**bean.features**
+: Bean의 기본 스펙을 정의하는 엘리멘트입니다.
+
+**bean.features.class**
+: Bean의 클래스명을
+
+
+### 3.3 Aspect 정의
 Aspectran이 지원하는 AOP(Aspect Oriented Programming)는 다른 프레임웤에 비해 사용법이 쉽습니다.
 Aspectran의 AOP는 Translet, Bean 영역 내에서의 메쏘드 호출 조인포인트(Joingpoint)를 지원합니다.
 
