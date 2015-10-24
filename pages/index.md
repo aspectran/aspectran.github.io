@@ -22,12 +22,12 @@ widget2:
     title: "Getting Started"
     url: '/getting-started/'
     image: header_gettingstarted_thumb.jpg
-    text: 'Quick Start<br/>Aspectran Tutorial<br/>Running the Examples'
+    text: 'Quick Start<br/>Running the Examples'
 widget3:
     title: "Documentation"
-    url: '/documentation/'
+    url: '/docs/'
     image: header_documentation_thumb.jpg
-    text: 'Developers Guides<br/>Java API Docs<br/>FAQs<br/>Changelog &amp; Roadmap'
+    text: 'User Guide<br/>Java API Reference<br/>FAQs<br/>Changelog &amp; Roadmap'
 widget4:
   title: "Downloads"
   url: '/downloads/'

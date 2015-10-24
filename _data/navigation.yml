@@ -4,25 +4,23 @@
   dropdown:
   - title: "Quick Start"
     url: "/getting-started/quickstart/"
-  - title: "Aspectran Tutorial"
-    url: "/getting-started/tutorial/"
   - title: "Running the Examples"
     url: "/getting-started/examples/"
 
 - title: Documentation
-  url: "/documentation/"
+  url: "/docs/"
   side: left
   dropdown:
-  - title: "Developers Guide"
-    url: "/documentation/guide/"
-  - title: "Aspectran API"
-    url: "/documentation/javadoc-api/"
+  - title: "User Guide"
+    url: "/docs/guide/"
+  - title: "API Reference"
+    url: "/docs/api/"
   - title: "FAQs"
-    url: "/documentation/faqs/"
+    url: "/docs/faqs/"
   - title: "Changelog"
-    url: "/documentation/changelog/"
+    url: "/docs/changelog/"
   - title: "Roadmap"
-    url: "/documentation/roadmap/"
+    url: "/docs/roadmap/"
 
 - title: Downloads
   url: "/downloads/"

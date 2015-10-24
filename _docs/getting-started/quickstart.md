@@ -2,7 +2,7 @@
 layout: page
 show_meta: false
 title: "Quick Start"
-subheadline: ""
+subheadline: "Getting Started"
 teaser: "본 문서는 Aspectran의 특징을 파악할 수 있도록 아주 간단한 사용법을 예를 들어서 설명합니다."
 breadcrumb: true
 sidebar: toc
@@ -10,11 +10,16 @@ sidebar: toc
 
 ## 1. Aspectran Configuration
 
-***Aspectran Configuration***은 다음과 같은 3개의 핵심 구성요소를 이용해서 XML 파일로 작성을 합니다.
+***Aspectran***이 구동되기 위해서는 구조화된 설정 메타데이터를 필요로 합니다.  
+설정 메타데이터는 전통적인 XML 형식 또는 APON 형식의 파일로 작성해야 하며, 계층적으로 모듈화되어 여러 개의 파일로 나뉠 수 있습니다.
 
-* ***aspect*** - Bean과 Translet이 가진 원래의 기능에 다른 부가 기능을 주입하는 방법을 정의
-* ***bean*** - IoC, DI의 대상이 되고, Action Method를 가진 객체를 정의
-* ***translet*** - 요청 URI와 맵핑되어 비지니스 로직을 처리하고 응답 컨텐츠를 출력하는 방법을 정의
+***Aspectran***을 대표하는 3개의 핵심 구성요소는 다음과 같습니다.
+
+* ***aspect*** - Bean과 Translet이 가진 원래의 기능에 다른 부가 기능을 주입하는 방법을 정의합니다.  
+관점지향프로그래밍(AOP)을 지원하기 위한 핵심 요소입니다.
+* ***bean*** - IoC, DI의 대상이 되고, 기능을 가진 객체를 정의합니다.  
+객체를 인스턴스화 하는 방법, 객체의 생명주기, 객체의 속성 값, 객체의 의존관계를 설정할 수 있습니다.
+* ***translet*** - 요청 URI와 맵핑되어 비지니스 로직을 가지고 있는 Action Method를 호출하는 방법 및 응답 컨텐츠를 출력하는 방법을 정의합니다.
 
 3개의 핵심 구성요소를 이용해서 "Hello, World." 문자열을 출력하는 "Aspectran Configuration XML 파일을 다음과 같이 간단하게 작성하였습니다.
 
@@ -180,4 +185,4 @@ DEBUG response {transformType=transform/text, contentType=text/plain, characterE
 INFO  Goodbye! ~com.aspectran.example.simplest.SimplestAdvice^goodbye:26
 {% endhighlight %}
 
-> 구체적인 환경설정 및 핵심 구성요소에 대한 상세한 설명은 [***Aspectran Tutorial***]({{ site.baseurl}}/getting-started/tutorial) 문서에 기재되어 있습니다.
+> 구체적인 환경설정 및 핵심 구성요소에 대한 상세한 설명은 [***Aspectran Tutorial***]({{ site.baseurl}}/docs/tutorial) 문서에 기재되어 있습니다.

@@ -4,7 +4,7 @@ sidebar: toc
 show_meta: false
 title: "Aspectran Tutorial"
 subheadline: ""
-teaser: "본 문서는 Aspectran의 핵심 기능에 대한 설명서입니다."
+teaser: "본 문서는 Aspectran의 주요 기능에 대한 설명서입니다."
 breadcrumb: true
 draft: true
 ---
@@ -31,7 +31,7 @@ Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축에 �
   핵심 기능이 구현된 이후에 트랜잭션이나 로깅, 보안, 예외처리와 관련된 기능을 핵심 기능과 결합할 수 있습니다.
 * RESTful 웹서비스 구축 환경을 지원합니다.
 
-본 문서는 Aspectran의 핵심 기능에 대한 설명서입니다.
+본 문서는 Aspectran의 주요 기능에 대한 설명서입니다.
 
 - - -
 
@@ -239,10 +239,10 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 
 ## 3. Aspectran Configuration
 
-Aspectran이 구동되기 위해서는 구조화된 설정 메타데이터를 필요로 합니다.  
+***Aspectran***이 구동되기 위해서는 구조화된 설정 메타데이터를 필요로 합니다.  
 설정 메타데이터는 전통적인 XML 형식 또는 APON 형식의 파일로 작성해야 하며, 계층적으로 모듈화되어 여러 개의 파일로 나눌 수도 있습니다.
 
-Aspectran은 설정 메타데이터를 자바 소스코드와 완전히 분리하는 것을 기본 원칙으로 합니다.  
+***Aspectran***은 설정 메타데이터를 자바 소스코드와 완전히 분리하는 것을 기본 원칙으로 합니다.  
 어플리케이션 개발자가 작성하는 자바 소스코드는 POJO 형태를 최대한 유지할 수 있습니다.  
 또한, 설정 메타데이터 구성에 필요한 요소는 오래 시간에 걸쳐서 최적화가 되었기 때문에
 최소한의 구성요소를 가지고도 다양한 설정이 가능합니다.
@@ -761,7 +761,7 @@ Aspectran은 외부의 접속 요청을 Translet이 받아서 처리합니다. T
 {% endhighlight %}
 
 
-<a class="radius button small" href="{{ site.baseurl }}/documentation/">Check out the documentation for all the tricks ›</a>
+<a class="radius button small" href="{{ site.baseurl }}/docs/">Check out the documentation for all the tricks ›</a>
 
 
- [1]: {{ site.baseurl }}/documentation/
+ [1]: {{ site.baseurl }}/docs/
