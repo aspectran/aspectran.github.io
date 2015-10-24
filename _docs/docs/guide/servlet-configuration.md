@@ -8,7 +8,7 @@ teaser: "Aspectran을 웹컨테이너의 서블릿으로 등록하는 방법에 
 breadcrumb: true
 ---
 
-### 1. 웹 컨테이너에 서블릿으로 등록하기
+## 1. 웹 컨테이너에 서블릿으로 등록하기
 
 ***Aspectran*** 구동에 필요한 초기화 파라메터 `aspectran:config`를 정의하고,
 `AspectranServiceListener`를 등록해서 `ActivityContext`를 생성하도록 합니다.
@@ -77,7 +77,7 @@ breadcrumb: true
 </web-app>
 {% endhighlight %}
 
-#### 1.1 초기화 파라메터 정의
+### 1.1 초기화 파라메터 정의
 
 먼저 컨텍스트 초기화 파라메터 `aspectran:config`를 정의합니다.
 `aspectran:config` 파라메터는 **APON**(*Aspectran Parameter Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
@@ -152,21 +152,21 @@ XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고, 
 | **scheduler.waitOnShutdown** | false |
 | **scheduler.startup** | false |
 
-#### 1.2 AspectranServiceListener 등록
+### 1.2 AspectranServiceListener 등록
 `<listner-class>`에  `com.aspectran.web.startup.listener.AspectranServiceListener`를 지정합니다.
 AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:config`의 설정 내용으로 Aspectran 서비스 환경을 구성하고, Application Scope를 가지고 있습니다.
 
 > AspectranServiceListener에 의해 기동된 Aspectran 서비스는 여러 WebActivityServlet에서 사용될 수 있습니다.
 > 즉, 전역적인 하나의 Aspectran 서비스 환경을 구성할 수 있습니다.
 
-#### 1.3 WebActivityServlet 등록
+### 1.3 WebActivityServlet 등록
 `<servlet-class>`에 `com.aspectran.web.startup.servlet.WebActivityServlet`을 지정합니다.
 `<servlet-name>`에는 Aspectran 서비스를 위한 서블릿이라는 의미의 고유한 서블릿 이름을 부여해 주기 바랍니다.
 
 > 서블릿 초기화 파라메터로 `aspectran:cofnig`를 정의하면 서블릿만의 단독 Aspectran 서비스 환경을 구성합니다.
 > 즉, 전역 Aspectran 서비스를 사용하지 않습니다.
 
-#### 1.4 서블릿 URL 패턴 등록
+### 1.4 서블릿 URL 패턴 등록
 `<url-pattern>`에 해당하는 요청은 `WebActivityServlet`이 처리할 수 있도록 합니다.
 만약 `<url-pattern>`을 `/example/*`로 지정하면 `/example/`로 시작하는 이름을 가진 Translet이 실행됩니다.
 
@@ -175,7 +175,7 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 > Translet은 고유 이름을 가지고 있으며, 요청 URI와 직접적으로 매핑이 됩니다.
 > 스케쥴러의 Job도 Translet을 통해서 실행이 됩니다.
 
-#### 1.5 DefaultServlet 이름 지정하기
+### 1.5 DefaultServlet 이름 지정하기
 요청 URI에 해당하는 Translet이 존재하지 않을 경우 서블릿 컨테이너의 DefaultServlet에게 넘겨주는 역할을 하는 핸들러가 항상 동작하고 있습니다.
 그 핸들러의 이름은 DefaultServletHttpRequestHandler입니다. DefaultServletHttpRequestHandler는 DefaultServlet의 이름이 무엇인지 자동으로 판단합니다.
 만약 DefaultServlet의 이름이 다르게 지정되어야 할 경우 아래와 같은 초기화 파라메터를 추가합니다.

@@ -8,15 +8,17 @@ teaser: "Aspectran 설정 메타데이터 구성요소에 대해서 설명합니
 breadcrumb: true
 ---
 
+## 1. 주요 구성요소
+
 ***Aspectran***이 구동되기 위해서는 구조화된 설정 메타데이터를 필요로 합니다.  
 설정 메타데이터는 전통적인 XML 형식 또는 APON 형식의 파일로 작성해야 하며, 계층적으로 모듈화되어 여러 개의 파일로 나눌 수도 있습니다.
 
 ***Aspectran***은 설정 메타데이터를 자바 소스코드와 완전히 분리하는 것을 기본 원칙으로 합니다.  
 어플리케이션 개발자가 작성하는 자바 소스코드는 POJO 형태를 최대한 유지할 수 있습니다.  
-또한, 설정 메타데이터 구성에 필요한 요소는 오래 시간에 걸쳐서 최적화가 되었기 때문에
+또한, 설정 메타데이터 구성에 필요한 요소는 오랜 시간에 걸쳐서 최적화가 되었기 때문에
 최소한의 구성요소를 가지고도 다양한 설정이 가능합니다.
 
-설정 메타데이터를 구성하는 대표적인 구성요소는 다음과 같습니다.
+설정 메타데이터를 구성하는 대표적인 요소는 다음과 같습니다.
 
 ***settings***
 : 기본 설정항목을 정의합니다.  
@@ -37,6 +39,7 @@ breadcrumb: true
 : 다른 설정 파일을 불러오는 방법을 정의합니다.
 
 다음 예제는 XML 기반의 설정 메타데이터의 기본 구조를 보여주기 위해 작성되었습니다.
+이 예제를 통하여 구성요소를 정의하는 방법에 대해서 알아 보겠습니다.
 
 ***getting-started.xml***
 {% highlight xml %}
@@ -277,7 +280,12 @@ breadcrumb: true
 </aspectran>
 {% endhighlight %}
 
-### 1. 기본 설정
+## 2. 기본 설정 항목
+
+설정 메타데이터 파일은 기본 설정 구성요소인 `settings` 엘리먼트를 가질 수 있습니다.
+만약 설정 메타데이터 파일이 다른 설정 메타데이터 파일을 포함하고 있다면, 기본 설정 항목은 하위 설정 메타데이터 파일로 상속이 됩니다.
+하위 설정 메타데이터 파일은 상속 받은 기본 설정 항목을 재설정해서 사용할 수 있습니다.
+
 `settings` 엘리먼트는 다음과 같은 Aspectran의 기본 설정 항목을 가질 수 있습니다.
 
 **transletNamePattern**
@@ -303,7 +311,6 @@ breadcrumb: true
 
 **pointcutPatternVerifiable**
 : pointcut 패턴의 유효성을 체크할지 여부를 지정합니다.
-
 
 기본 설정 항목 별로 사용가능한 값과 기본 값은 다음과 같습니다.
 
@@ -333,12 +340,12 @@ breadcrumb: true
 </settings>
 {% endhighlight %}
 
-### 2. Bean 정의
+## 3. Bean 정의
 
 특정 기능을 가진 객체를 모두 Bean으로 정의할 수 있습니다.
 Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정, 생명주기 관리등의 기능을 제공합니다.
 
-#### 2.1 단일 Bean 정의
+### 3.1 단일 Bean 정의
 중요한 역할을 하는 Bean 또는 별도의 속성을 가지는 Bean은 단독으로 정의합니다.
 
 {% highlight xml %}
@@ -356,7 +363,7 @@ Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정
 
 > `id` 속성값으로 `*` 문자를 지정하면 클래스명이 Bean ID로 지정됩니다.
 
-#### 2.2 일괄 Bean 정의
+### 3.2 일괄 Bean 정의
 
 와일드카드를 사용하면 클래스패스에 존재하는 Bean을 일괄 검색해서 한꺼번에 정의할 수 있습니다.
 
@@ -421,7 +428,7 @@ public class UserClassScanFilter implements BeanClassScanFilter {
 {% endhighlight %}
 
 
-#### 2.3 Bean ID 부여 규칙
+### 3.3 Bean ID 부여 규칙
 
 1. 일차적으로 검색된 클래스명을 Bean의 ID로 사용합니다.
 2. Mask 패턴을 지정하면 Bean ID에서 불필요한 문자열을 제거할 수 있습니다.  
@@ -437,7 +444,7 @@ class가 `com.aspectran.example.**.*Action`이고,
 최종적으로 Bean의 ID는  
 `advice.hellloworld.HelloWorldAction` 됩니다.
 
-#### 2.4 상세한 Bean 정의 방법
+### 3.4 상세한 Bean 정의 방법
 
 다음 예제를 기준으로 Bean을 정의하기 위해 사용되는 엘리멘트에 대해 설명합니다.
 
@@ -488,7 +495,8 @@ class가 `com.aspectran.example.**.*Action`이고,
 : Bean의 클래스명을 지정합니다.
 
 
-### 3. Aspect 정의
+## 4. Aspect 정의
+
 ***Aspectran***이 지원하는 AOP(Aspect Oriented Programming)는 다른 프레임웤에 비해 사용법이 쉽습니다.
 Aspectran의 AOP는 Translet, Bean 영역 내에서의 메쏘드 호출 조인포인트(Joingpoint)를 지원합니다.
 
@@ -500,33 +508,56 @@ Aspect는 주로 다음과 같은 용도로 사용될 수 있습니다.
 트랜잭션 처리
 : 주로 데이터베이스 트랜잭션 기능을 지원하기 사용합니다.
 
-#### 3.1 Aspect를 이용해서 환경변수 선언하기
-Aspectran은 외부의 접속 요청을 Translet이 받아서 처리합니다. Translet의 내부에는 Request, Contents, Response 라는 세 가지 영역이 있습니다. Translet과 Request, Contents, Response 영역에서 참조할 수 있는 공통 환경변수를 선언할 수 있습니다.
-> Translet 내부의 세 가지 영역
-> * Request: 요청 정보를 분석하는 영역
-> * Contents: 액션을 실행하고 결과 값을 생산하는 영역
-> * Response: 생산된 결과 값을 출력하는 영역
+### 4.1 Aspect를 이용해서 환경변수 선언하기
+
+Aspectran은 외부의 접속 요청을 Translet이 받아서 처리합니다.
+Translet의 내부에는 Request, Contents, Response 라는 세 가지 영역이 있습니다.
+Aspect를 이용하면 Translet과 Request, Contents, Response 영역에서 필요로 하는 공통 환경변수에 값을 주입할 수 있습니다.
+
+> **Translet 내부의 세 가지 영역**  
+> Request: 요청 정보를 분석하는 영역  
+> Contents: 액션을 실행하고 결과 값을 생산하는 영역  
+> Response: 생산된 결과 값을 출력하는 영역
 
 {% highlight xml %}
-<!-- 요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다. -->
 <aspect id="defaultRequestRule">
-	<joinpoint scope="request"/>
-	<settings>
-		<setting name="characterEncoding" value="utf-8"/>
-		<setting name="multipart.maxRequestSize" value="10M"/>
-		<setting name="multipart.temporaryFilePath" value="/d:/"/>
-	</settings>
+    <description>
+        요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다.
+        multipart/form-data request를 처리하기 위해 multipartRequestWrapperResolver를 지정합니다.
+    </description>
+    <joinpoint scope="request"/>
+    <settings>
+        <setting name="characterEncoding" value="utf-8"/>
+        <setting name="multipartRequestWrapperResolver" value="multipartRequestWrapperResolver"/>
+    </settings>
 </aspect>
 
-<!-- 요청에 대해 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다. -->
 <aspect id="defaultResponseRule">
-	<joinpoint scope="response"/>
-	<settings>
-		<setting name="characterEncoding" value="utf-8"/>
-		<setting name="defaultContentType" value="text/html"/>
-		<setting name="viewDispatcher" value="jspViewDispatcher"/>
-	</settings>
+    <description>
+        요청에 대해 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다.
+        기본 viewDispatcher를 지정합니다.
+    </description>
+    <joinpoint scope="response"/>
+    <settings>
+        <setting name="characterEncoding" value="utf-8"/>
+        <setting name="defaultContentType" value="text/html"/>
+        <setting name="viewDispatcher" value="jspViewDispatcher"/>
+    </settings>
 </aspect>
 {% endhighlight %}
+
+**각 영역에서 환경변수의 값을 참조하는 방법**
+
+## 5. Translet 정의
+
+## 6. 다른 설정 메타데이터 파일 포함하기
+
+## 7. 변수 정의 및 값의 할당
+
+### 7.1 변수 정의하고 값을 할당하는 방법
+
+### 7.2 동적으로 변수의 값을 할당하는 방법
+
+### 7.3 Aspectran Expression Language
 
 (계속 작성 중입니다.)
