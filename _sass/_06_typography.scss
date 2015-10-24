@@ -5,6 +5,7 @@ Check typography variables › _3_typography_settings.scss
 - Links
 - Customize Foundation Typography
 - Headlines
+- Table of Contents (Index)
 - Images
 - Lists
 - Tables
@@ -16,7 +17,6 @@ Check typography variables › _3_typography_settings.scss
 - Footnotes
 - Icon Font
 - Go go top of page
-- Table of Contents (Index)
 
 */
 
@@ -109,6 +109,54 @@ h4 {
 h5 {
     font-size: $font-size-h5;
     margin: 1em 0 .7em 0;
+}
+
+
+
+/* Table of Contents (Index)
+------------------------------------------------------------------- */
+
+#toc {
+  overflow: auto;
+  white-space: nowrap;
+  .toc-title {
+    border-bottom: 2px solid darken( $panel-bg, 7% );
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+  }
+  ul {
+    margin: 0;
+    list-style-type: none;
+    li.toc-h1 {
+      font-weight: bold;
+      margin: 0 0 10px 0;
+    }
+    li.toc-h2 {
+      margin-left: 0;
+    }
+    li.toc-h3 {
+      margin-left: 20px;
+    }
+    li.toc-h4 {
+      margin-left: 40px;
+    }
+    li.toc-h5 {
+      margin-left: 60px;
+    }
+    li.toc-h6 {
+      margin-left: 80px;
+    }
+  }
+}
+
+article {
+  a.toc-anchor {
+    border: 0;
+    font-size: 1px;
+    line-height: 1px;
+    padding: 0;
+    margin: 0;
+  }
 }
 
 
@@ -497,31 +545,4 @@ p.gototop-anchor-wrap {
   margin: 0;
   padding: 0;
   line-height: 1em;
-}
-
-/* Table of Contents (Index)
-------------------------------------------------------------------- */
-
-#toc {
-  overflow: auto;
-  white-space: nowrap;
-  ul {
-    margin: 0;
-    list-style-type: none;
-    a.toc-h2 {
-      margin-left: 0;
-    }
-    a.toc-h3 {
-      margin-left: 20px;
-    }
-    a.toc-h4 {
-      margin-left: 40px;
-    }
-    a.toc-h5 {
-      margin-left: 60px;
-    }
-    a.toc-h6 {
-      margin-left: 80px;
-    }
-  }
 }

@@ -19,27 +19,27 @@
   $(document).ready(function(){
     $("article h1, article h2, article h3, article h4, article h5, article h6").each(function(index, item) {
       var tagn = item.localName;
-      var id = "top-of-page";
+      var anchor = "top-of-page";
       if(tagn != "h1") {
-        id = "anchor-" + (index + 1);
-        $(this).before("<p class='gototop-anchor-wrap'><a name='" + id + "'>&nbsp;</a></p>");
+        anchor = "anchor-" + (index + 1);
+        $(this).before("<a class='toc-anchor " + anchor + "' id='" + anchor + "' name='" + anchor + "'></a>");
       }
-      $("#toc ul").append("<li><a class='toc-" + tagn + "' href='#" + id + "'>" + $(item).text() + "</a></li>");
-    });
-    $("#toc ul a").click(function() {
-      setTimeout(function() {
-        var scrollTop = $(document).scrollTop();
-        if(scrollTop < tocOffsetTopBase)
-          scrollTop = 0;
-        else
-          scrollTop = scrollTop - tocOffsetTopBase + 60;
-        $("#toc").css({
-          position: "relative",
-          top: scrollTop + "px"
-        });
-      }, 400);
+      $("#toc ul").append("<li class='toc-" + tagn + "'><a anchor='" + anchor + "' href='#" + anchor + "'>" + $(item).text() + "</a></li>");
     });
     tocHeight = $("#toc").height();
+    $("#toc ul a").click(function(e) {
+      var anchor = $(this).attr("anchor");
+      if(anchor != "top-of-page") {
+        setTimeout(function() {
+          var offset = $("#" + anchor).offset();
+          if(offset) {
+            e.preventDefault();
+            tocOffsetTop = 0 - tocOffsetTopBase;
+            $(window).scrollTop(offset.top - 50);
+          }
+        }, 500);
+      }
+    });
     $(window).scroll(function() {
       var scrollTop = $(window).scrollTop();
       if(scrollTop < tocOffsetTopBase) {
@@ -53,9 +53,10 @@
               top: 0
             });
           }
+          tocOffsetTop = 0;
           clearInterval(tocScrollTimer);
           tocScrollTimer = null;
-        }, 700);
+        }, 600);
       } else {
         if(scrollTop > tocOffsetTop + tocOffsetTopBase + tocHeight || scrollTop < tocOffsetTop + tocOffsetTopBase - tocWinHeight) {
           var tocOffsetLeftBase = $("#toc").offset().left;
@@ -81,7 +82,7 @@
               clearInterval(tocScrollTimer);
               tocScrollTimer = null;
               tocWinHeight = $(window).height();
-            }, 700);
+            }, 600);
           }
         }
       }
