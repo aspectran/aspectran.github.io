@@ -1,0 +1,44 @@
+---
+layout: default
+---
+<div class="row t30">
+  <div class="medium-12 columns">
+    <article itemscope itemtype="http://schema.org/Article">
+			<header>
+				<span itemprop="name">
+					{% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
+					<h1>{{ page.title }}</h1>
+				</span>
+			</header>
+
+			{% if page.teaser %}
+			<p class="teaser" itemprop="description">
+				{{ page.teaser }}
+			</p>
+			{% endif %}
+
+      <dl class="tabs" data-tab>
+        <dd class="active"><a href="#details">Details</a></dd>
+        <dd><a href="#download">Download</a></dd>
+        <dd><a href="#comments">Review</a></dd>
+      </dl>
+
+			<span itemprop="articleSection">
+        <div class="tabs-content">
+          <div class="content active" id="details">
+            {{ content }}
+          </div>
+
+          <div class="content" id="download">
+            아직 준비된 내용이 없습니다.
+          </div>
+
+          <div class="content" id="comments">
+            {% include comments %}
+          </div>
+        </div>
+			</span>
+
+		</article>
+  </div>
+</div>
