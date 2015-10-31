@@ -10,8 +10,8 @@
   class: ""
   title: ""
 
-- name: "Downloads"
-  url: "/downloads/"
+- name: "Modules"
+  url: "/modules/"
   class: ""
   title: ""
 
