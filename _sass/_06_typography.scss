@@ -25,23 +25,21 @@ Check typography variables › _3_typography_settings.scss
 /* Links
 ------------------------------------------------------------------- */
 
-a,
-a:link {}
-
-a:visited {
-        border-bottom: $grey-2;
-}
-
-a:hover {
-        color: lighten( $anchor-color, 10% );
-}
-
-a:focus {
-        color: lighten( $anchor-color, 20% );
-}
-
-a:active {
-        color: darken( $anchor-color, 20% );
+a {
+  &:link {
+  }
+  &:visited {
+    border-bottom: $grey-2;
+  }
+  &:hover {
+    color: lighten($anchor-color, 10%);
+  }
+  &:focus {
+    color: lighten($anchor-color, 20%);
+  }
+  &:active {
+    color: darken($anchor-color, 20%);
+  }
 }
 
 
@@ -82,33 +80,32 @@ p.button a {
 ------------------------------------------------------------------- */
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: $header-font-family;
-    font-weight: normal;
-    padding: 0;
+  font-family: $header-font-family;
+  font-weight: normal;
+  padding: 0;
 }
-
 h1 {
-    font-size: $font-size-h1;
-    margin-top: 0;
+  font-size: $font-size-h1;
+  margin-top: 0;
 }
 h2 {
-    font-size: $font-size-h2;
-    margin: 1.563em 0 1em 0;
+  font-size: $font-size-h2;
+  margin: 1.363em 0 1em 0;
 }
-    .blog-index h2 {
-        margin-top: 0;
-    }
 h3 {
-    font-size: $font-size-h3;
-    margin: 1.152em 0 .9em 0;
+  font-size: $font-size-h3;
+  margin: 1.152em 0 .9em 0;
 }
 h4 {
-    font-size: $font-size-h4;
-    margin: 1.152em 0 .8em 0;
+  font-size: $font-size-h4;
+  margin: 1.152em 0 .8em 0;
 }
 h5 {
-    font-size: $font-size-h5;
-    margin: 1em 0 .7em 0;
+  font-size: $font-size-h5;
+  margin: 1em 0 .7em 0;
+}
+.blog-index h2 {
+  margin-top: 0;
 }
 
 
