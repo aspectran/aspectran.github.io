@@ -2,10 +2,10 @@
 layout: default
 format: post
 ---
-<div class="row t30">
+<div class="row">
 
 	{% if page.sidebar == "toc" %}
-	<div class="medium-4 medium-push-8 columns">
+	<div class="t30 medium-4 medium-push-8 columns">
 	<div id="toc" class="panel radius">
 		<div class="toc-title">Table of Contents</div>
 		<ul>
@@ -14,7 +14,7 @@ format: post
 	</div><!-- /.medium-4.columns -->
 	{% endif %}
 
-	<div class="medium-8{% if page.sidebar == "toc" && page.toc %} medium-pull-4{% endif %} columns{% if page.sidebar == NULL %} medium-offset-2 end{% endif %}{% if page.sidebar == "left" %} medium-push-4{% endif %}">
+	<div class="t30 medium-8{% if page.sidebar == "toc" && page.toc %} medium-pull-4{% endif %} columns{% if page.sidebar == NULL %} medium-offset-2 end{% endif %}{% if page.sidebar == "left" %} medium-push-4{% endif %}">
 		<article itemscope itemtype="http://schema.org/Article">
 			<header>
 				{% if page.image.title %}
@@ -60,13 +60,13 @@ format: post
 	</div><!-- /.medium-8.columns -->
 
 	{% if page.sidebar == "left" %}
-	<div class="medium-4 columns medium-pull-8">
+	<div class="t30 medium-4 columns medium-pull-8">
 		{% include sidebar %}
 	</div><!-- /.medium-4.columns -->
 	{% endif %}
 
 	{% if page.sidebar == "right" %}
-	<div class="medium-4 columns">
+	<div class="t30 medium-4 columns">
 		{% include sidebar %}
 	</div><!-- /.medium-4.columns -->
 	{% endif %}

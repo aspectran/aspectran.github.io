@@ -1,6 +1,5 @@
 ---
 layout: page
-show_meta: false
 sidebar: toc
 title: "Installation"
 subheadline: "User Guide"

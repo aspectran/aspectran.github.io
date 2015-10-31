@@ -10,10 +10,8 @@
 # Title of your website
 title: "Aspectran"
 
-
 # The slogan describes your website and is used on homepage in <title> and other important places
 slogan: "Aspectran is a lightweight and extensible framework for building enterprise-ready Java Web applications."
-
 
 # The description is used on homepage and in the footer to quickly describe your website. Use a maximum of 150 characters for SEO-purposes.
 description: "Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축하기 위한 가볍고 확장 가능한 프레임워크입니다. Apache 2.0 License에 의거하여 무료로 사용할 수 있습니다."
@@ -29,7 +27,7 @@ baseurl: ''
 
 # This is for the editing function in _/includes/improve_content
 # Leave it empty if your site is not on GitHub/GitHub Pages
-improve_content: https://github.com/aspectran/aspectran.github.io/edit/master
+improve_content: 'https://github.com/aspectran/aspectran.github.io/edit/master'
 
 # This URL points directly to the images directory making
 # things easier to link to images in posts and templates. It needs a slash at the end.
@@ -39,9 +37,11 @@ improve_content: https://github.com/aspectran/aspectran.github.io/edit/master
 #
 urlimg: '/images/'
 
+# Logo Icon size is 36x36 pixels
+logo_icon: "aspectran-icon.png"
 
 # Logo size is 425x170 pixels
-slogan: "aspectran-slogan.png"
+slogan_img: "aspectran-slogan.png"
 
 # Footer Logo size is 100x100 pixels
 logo_footer: "aspectran-logo-x100.png"
@@ -50,14 +50,13 @@ logo_footer: "aspectran-logo-x100.png"
 # Paginates all X entries
 paginate: 5
 
-
 # Pagination path › Important for blog page in /blog/ to work
 paginate_path: "blog/page:num"
 
 
 # Theme works best with Kramdown (using the table of contents function)
 markdown: kramdown
-permalink: /:categories/:title/
+permalink: /blog/:categories/:title/
 highlight: pygments
 excerpt_separator: "<!--more-->"
 include: ['.htaccess']
@@ -80,7 +79,7 @@ language: "ko"
 compress_html:
   clippings: all
   comments: ["<!-- ", " -->"]
-  endings: all
+  endings: []
   profile: false
   ignore:
     envs: [development]
@@ -94,6 +93,14 @@ compress_html:
 #   /_____/\___/_/  \__,_/\__,_/_/\__/
 #
 # Default Settings
+
+collections:
+  docs:
+    output: true
+    permalink: "/:path/"
+  modules:
+    output: true
+    permalink: "/modules/:path/"
 
 defaults:
   -
@@ -124,10 +131,16 @@ defaults:
       comments: false
       author: "juho_jeong"     # Default author for posts
       date: "2015-10-21"
-collections:
-  docs:
-    output: true
-    permalink: "/:path/"
+  -
+    scope:
+      path: ""
+      type: "modules"
+    values:
+      breadcrumb: true
+      breadcrumb_nolink: true
+      comments: true
+      author: "juho_jeong"     # Default author for posts
+      date: "2015-10-29"
 
 
 

@@ -1,11 +1,12 @@
 ---
 layout: page
-show_meta: false
 sidebar: toc
 title: "Overview"
 subheadline: "User Guide"
 teaser: "Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축에 필요한 가장 핵심적인 기능을 제공하는 프레임워크입니다. 구축환경에 따라 달라질 수 있는 부가적인 기능은 직접적으로 제공을 하지 않고, 핵심 기능을 확장 또는 외부 라이브러와 연동을 통해서 부가 기능을 쉽게 추가할 수 있도록 설계되었습니다."
 breadcrumb: true
+categories:
+    - Documentation
 ---
 
 ### Aspectran의 특징

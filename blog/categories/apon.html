@@ -1,16 +1,27 @@
 ---
-layout: page
-sidebar: right
-show_meta: false
-title: "About APON"
-subheadline: "Aspectran Parameter Object Notation"
+layout: default
+title: "APON"
+subheadline: "Blog Category"
 header:
     image_fullwidth: "header_blog.jpg"
 breadcrumb: true
 permalink: "/blog/apon/"
 ---
-<ul>
-    {% for post in site.categories.apon | sort %}
-    <li><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
-    {% endfor %}
-</ul>
+
+<div class="row">
+	<div class="medium-8 columns t30">
+    {% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
+    <h1>{{ page.title }}</h1>
+    {% if page.teaser %}<p class="teaser">{{ page.teaser }}</p>{% endif %}
+
+    <ul class="t30">
+        {% for post in site.categories.apon reversed %}
+        <li><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+	</div><!-- /.medium-8.columns -->
+
+	<div class="medium-4 columns t30">
+		{% include sidebar %}
+	</div><!-- /.medium-4.columns -->
+</div><!-- /.row -->

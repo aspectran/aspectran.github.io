@@ -9,30 +9,30 @@ header:
   image_slide:
     - header_gettingstarted.jpg
     - header_documentation.jpg
-    - header_downloads.jpg
+    - header_modules.jpg
     - header_blog.jpg
     - header_search.jpg
     - header_contact.jpg
 widget1:
   title: "About Aspectran"
   url: '/info/'
-  text: 'POJO 방식의 경량 프레임워크<br/>제어 반전(IoC) 지원<br/>의존성 주입(DI) 지원<br/>관점 지향 프로그래밍(AOP) 지원<br/>RESTful 웹서비스 구축 환경 지원'
+  text: 'POJO 방식의 경량 프레임워크<br/>제어 반전(IoC) 및 의존성 주입(DI) 지원<br/>관점 지향 프로그래밍(AOP) 지원<br/>RESTful 웹서비스 구축 환경 지원'
   image: header_aspectran_thumb.png
 widget2:
     title: "Getting Started"
     url: '/getting-started/'
     image: header_gettingstarted_thumb.jpg
-    text: 'Quick Start<br/>Running the Examples'
+    text: 'About Aspectran<br/>Quick Start<br/>Running the Examples<br/>Downloads'
 widget3:
     title: "Documentation"
     url: '/docs/'
     image: header_documentation_thumb.jpg
     text: 'User Guide<br/>Java API Reference<br/>FAQs<br/>Changelog &amp; Roadmap'
 widget4:
-  title: "Downloads"
-  url: '/downloads/'
-  image: header_downloads_thumb.jpg
-  text: 'Aspectran은 Apache 2.0 License에 의거하여 무료로 제공되는 오픈소스입니다. 소스코드는 <a href="https://github.com/topframe/aspectran">GitHub</a>에서 다운로드 할 수 있습니다.'
+  title: "Modules"
+  url: '/modules/'
+  image: header_modules_thumb.jpg
+  text: '다양한 외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이타를 모듈 형태로 제공합니다. Aspectran을 사용해서 개발된 공통 모듈을 공유해 보세요.'
 permalink: /index.html
 ---
 {% comment %}

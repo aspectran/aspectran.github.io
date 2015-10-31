@@ -2,10 +2,14 @@
   url: "/getting-started/"
   side: left
   dropdown:
+  - title: "About Aspectran"
+    url: "/info/"
   - title: "Quick Start"
     url: "/getting-started/quickstart/"
   - title: "Running the Examples"
     url: "/getting-started/examples/"
+  - title: "Downloads"
+    url: "/downloads/"
 
 - title: Documentation
   url: "/docs/"
@@ -22,8 +26,8 @@
   - title: "Roadmap"
     url: "/docs/roadmap/"
 
-- title: Downloads
-  url: "/downloads/"
+- title: Modules
+  url: "/modules/"
   side: left
 
 - title: Blog

@@ -6,7 +6,6 @@ teaser: "APON(Aspectran Parameter Object Notation)은 Aspectran 내부에서 매
 breadcrumb: true
 comments: true
 categories:
-    - blog
     - apon
 tags:
     - apon

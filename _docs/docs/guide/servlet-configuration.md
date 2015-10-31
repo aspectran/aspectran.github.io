@@ -1,6 +1,5 @@
 ---
 layout: page
-show_meta: false
 sidebar: toc
 title: "Servlet Configuration"
 subheadline: "User Guide"

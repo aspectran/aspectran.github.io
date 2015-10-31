@@ -6,18 +6,15 @@ teaser: "Aspectran은 내부적으로 XML을 APON으로 변환 또는 APON을 XM
 breadcrumb: true
 comments: true
 categories:
-    - blog
     - apon
 tags:
     - apon
 published: true
 ---
 
-## getting-started.xml
+예제로 사용되는 getting-started.xml 파일을 APON 파일로 변환합니다.
 
- 예제로 사용되는 getting-started.xml 파일을 APON으로 변환했습니다.
-
-## getting-started.xml
+### getting-started.xml
 
 {% highlight xml  %}
 <?xml version="1.0" encoding="utf-8"?>
@@ -256,7 +253,7 @@ published: true
 </aspectran>
 {% endhighlight %}
 
-## getting-started.xml.apon
+### getting-started.xml.apon
 
 {% highlight text  %}
 # C:\Projects\topframe\ADE\workspace\aspectran-examples\src\main\webapp\WEB-INF\aspectran\config\getting-started.xml.apon
