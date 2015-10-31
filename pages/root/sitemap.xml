@@ -14,5 +14,6 @@ layout: null
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {% include sitemap_collection.xml links=site.pages name="Pages" priority=0.3 changefreq='monthly' %}
 {% include sitemap_collection.xml links=site.docs name="Docs" priority=0.5 changefreq='weekly' %}
-{% include sitemap_collection.xml links=site.posts name="Posts" priority=0.7 changefreq='weekly' %}
+{% include sitemap_collection.xml links=site.modules name="Modules" priority=0.7 changefreq='weekly' %}
+{% include sitemap_collection.xml links=site.posts name="Posts" priority=0.9 changefreq='weekly' %}
 </urlset>
