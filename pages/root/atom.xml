@@ -76,7 +76,7 @@ permalink: /atom.xml
 			<id>{{ site.url }}{{ site.baseurl }}{{ doc.url }}</id>
 			<title>{{ doc.title | strip_html | strip_newlines | xml_escape }}</title>
 			<link href="{{ site.url }}{{ site.baseurl }}{{ doc.url }}" rel="alternate" type="text/html" title="{{ doc.title | xml_escape }}" />
-			<updated>{{ doc.date | date_to_xmlschema }}</updated>
+			<updated>{{ site.time | date_to_xmlschema }}</updated>
 
 			{% if doc.author %}
 				{% assign author = site.data.authors[doc.author] %}
