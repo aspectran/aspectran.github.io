@@ -18,29 +18,32 @@ layout: default
 			{% endif %}
 
       <dl class="tabs t30" data-tab>
-        <dd class="active"><a href="#details"><span class="iconfont"></span> Details</a></dd>
-        <dd><a href="#download"><span class="iconfont"></span> Download</a></dd>
-        <dd><a href="#comments" id="comments"><span class="iconfont"></span> Review <span class="icon-chat"></span><span class="disqus-comment-count" data-disqus-identifier="{{ page.url }}">0 Comments</span></a></dd>
+        <dd class="active"><a href="#overview"><span class="iconfont"></span> OVERVIEW</a></dd>
+        <dd><a href="#download"><span class="iconfont"></span> DOWNLOAD</a></dd>
+        <dd><a href="#reviews" id="reviews"><span class="iconfont"></span> REVIEWS <span class="icon-chat"></span><span class="disqus-comment-count" data-disqus-identifier="{{ page.url }}">0 Comments</span></a></dd>
       </dl>
 
 			<span itemprop="articleSection">
         <div class="tabs-content">
-          <div class="content active" id="details">
+          <div class="content active" id="overview">
             {{ content }}
           </div>
 
           <div class="content" id="download">
-            아직 준비된 내용이 없습니다.
+            {% if page.download.source %}
+            <h3>Source</h3>
+            <a href="{{ page.download.source }}" target="_blank">{{ page.download.source }}</a>
+            {% endif %}
           </div>
 
-          <div class="content" id="comments">
+          <div class="content" id="reviews">
             <div id="disqus_thread"></div>
             <script type="text/javascript">
                 /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
                 var disqus_shortname = '{{ site.disqus_shortname }}';
                 var disqus_identifier = '{{ page.url }}';
 
-                $("#comments").on("click", function() {
+                $("#reviews").on("click", function() {
                   if(typeof(disqus_loaded) == "undefined" || !disqus_loaded) {
                       disqus_loaded = true;
                       /* * * DON'T EDIT BELOW THIS LINE * * */

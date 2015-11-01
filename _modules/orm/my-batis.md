@@ -4,6 +4,8 @@ title:  "MyBatis support for Aspectran"
 subheadline: "Aspectran Modules - ORM"
 teaser: "MyBatis와 연동하기 위한 모듈입니다. Aspectran의 AOP 기능을 통하여 MyBatis 트랜잭션(transaction)을 완벽히 처리할 수 있습니다."
 category: orm
+download:
+  source: https://github.com/aspectran/aspectran-modules/tree/master/aspectran-orm/src/main/java/com/aspectran/support/orm/mybatis
 ---
 
 ## Configuration
@@ -29,7 +31,7 @@ category: orm
   </property>
 </bean>
 
-<aspect id="mybatisTxAspect"">
+<aspect id="mybatisTxAspect">
     <joinpoint scope="translet">
         <pointcut>
             target: {
