@@ -71,8 +71,8 @@ permalink: /naver_syndication.xml
 					{% endif %}
 				</author>
 			{% endif %}
-			<updated>{{ doc.date | date_to_xmlschema }}</updated>
-			<published>{{ doc.date | date_to_xmlschema }}</published>
+			<updated>{{ site.time | date_to_xmlschema }}</updated>
+			<published>{{ site.time | date_to_xmlschema }}</published>
 			<link href="{{ site.url }}{{ site.baseurl }}{{ doc.url }}" rel="via" title="{{ doc.title | xml_escape }}" />
 			<link href="{{ site.url }}{{ site.baseurl }}{{ doc.url }}" rel="mobile" title="{{ doc.title | xml_escape }}" />
 			<content type="html">{{ doc.content | xml_escape }}</content>

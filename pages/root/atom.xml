@@ -104,7 +104,7 @@ permalink: /atom.xml
 				<category term="{{ tag | xml_escape }}" />
 			{% endfor %}
 
-			<published>{{ doc.date | date_to_xmlschema }}</published>
+			<published>{{ site.time | date_to_xmlschema }}</published>
 		</entry>
 	{% endunless %}
 	{% endfor %}
