@@ -131,7 +131,6 @@ defaults:
       # sidebar:        # Possible values › left, right › by default there will be no sidebar
       comments: false
       author: "juho_jeong"     # Default author for posts
-      date: "2015-11-02"
   -
     scope:
       path: ""
@@ -141,7 +140,6 @@ defaults:
       breadcrumb_nolink: true
       comments: true
       author: "juho_jeong"     # Default author for posts
-      date: "2015-11-02"
 
 
 
