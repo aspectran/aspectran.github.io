@@ -6,7 +6,7 @@ teaser: "iBatis와 연동하기 위한 모듈입니다. Aspectran의 AOP 기능�
 category: orm
 ---
 
-## 설정 메타데이터
+## Configuration
 
 {% highlight xml %}
 <bean id="sqlMapClientFactory" class="com.aspectran.support.orm.ibatis.SqlMapClientFactoryBean" scope="singleton">

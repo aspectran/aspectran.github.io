@@ -6,7 +6,7 @@ teaser: "Enabling Cross Origin Requests for a RESTful Web Service"
 category: http
 ---
 
-## 설정 메타데이터
+## Configuration
 
 {% highlight xml %}
 <bean id="httpAccessControlAllowOriginFilter" class="com.aspectran.support.http.HttpAccessControlAllowOriginFilter" scope="singleton">
