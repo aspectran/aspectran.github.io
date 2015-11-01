@@ -15,7 +15,7 @@ category: orm
     </property>
 </bean>
 
-<bean id="sqlSessionTransactionAdvice" class="com.aspectran.support.orm.ibatis.SqlSessionTransactionAdvice" scope="prototype">
+<bean id="sqlSessionTxAdvice" class="com.aspectran.support.orm.ibatis.SqlSessionTransactionAdvice" scope="prototype">
     <constructor>
         <argument>
             <item><reference bean="sqlSessionFactory"/></item>
@@ -23,7 +23,13 @@ category: orm
     </constructor>
 </bean>
 
-<aspect id="mybatis">
+<bean id="*" class="com.aspectran.example.mybatis.dao.*Dao" scope="singleton">
+  <property>
+    <item name="revelentAspectId" value="sqlmapTxAspect"/>
+  </property>
+</bean>
+
+<aspect id="mybatisTxAspect"">
     <joinpoint scope="translet">
         <pointcut>
             target: {
@@ -31,7 +37,7 @@ category: orm
             }
         </pointcut>
     </joinpoint>
-    <advice bean="sqlSessionTransactionAdvice">
+    <advice bean="sqlSessionTxAdvice">
         <before>
             <action method="open"/>
         </before>
@@ -57,30 +63,29 @@ import java.sql.SQLException;
 import org.apache.ibatis.session.SqlSession;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.support.orm.mybatis.MyBatisDaoSupport;
 
-public class MyBatisSampleDao {
+public class MyBatisSampleDao extends MyBatisDaoSupport {
 
-	private static final String MYBATIS_ASPECT_ID = "mybatis";
+  public Object selectOne(Translet translet) throws SQLException {
+    SqlSession sqlSession = getSqlSession(translet);
+    return sqlSession.selectOne("sample.selectOne", translet.getRequestAdapter().getParameterMap());
+  }
 
-	public Object selectOne(Translet translet) throws SQLException {
-		SqlSession sqlSession = translet.getBeforeAdviceResult(MYBATIS_ASPECT_ID);
-		return sqlSession.selectOne("sample.selectOne", translet.getRequestAdapter().getParameterMap());
-	}
+  public void insertOne(Translet translet) throws SQLException {
+    SqlSession sqlSession = getSqlSession(translet);
+    sqlSession.insert("sample.insertOne", translet.getRequestAdapter().getParameterMap());
+  }
 
-	public void insertOne(Translet translet) throws SQLException {
-		SqlSession sqlSession = translet.getBeforeAdviceResult(MYBATIS_ASPECT_ID);
-		sqlSession.insert("sample.insertOne", translet.getRequestAdapter().getParameterMap());
-	}
+  public void updateOne(Translet translet) throws SQLException {
+    SqlSession sqlSession = getSqlSession(translet);
+    sqlSession.update("sample.updateOne", translet.getRequestAdapter().getParameterMap());
+  }
 
-	public void updateOne(Translet translet) throws SQLException {
-		SqlSession sqlSession = translet.getBeforeAdviceResult(MYBATIS_ASPECT_ID);
-		sqlSession.update("sample.updateOne", translet.getRequestAdapter().getParameterMap());
-	}
-
-	public void deleteOne(Translet translet) throws SQLException {
-		SqlSession sqlSession = translet.getBeforeAdviceResult(MYBATIS_ASPECT_ID);
-		sqlSession.delete("sample.deleteOne", translet.getRequestAdapter().getParameterMap());
-	}
+  public void deleteOne(Translet translet) throws SQLException {
+    SqlSession sqlSession = getSqlSession(translet);
+    sqlSession.delete("sample.deleteOne", translet.getRequestAdapter().getParameterMap());
+  }
 
 }
 {% endhighlight %}
