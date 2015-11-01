@@ -48,26 +48,27 @@ logo_footer: "aspectran-logo-x100.png"
 
 
 # Paginates all X entries
-paginate: 5
+paginate: 1
 
 # Pagination path › Important for blog page in /blog/ to work
-paginate_path: "blog/page:num"
+paginate_path: "/blog/page:num"
 
 
 # Theme works best with Kramdown (using the table of contents function)
 markdown: kramdown
 permalink: /blog/:categories/:title/
-highlight: pygments
+highlighter: rouge
 excerpt_separator: "<!--more-->"
 include: ['.htaccess']
 # Exclude these files from your production _site
 exclude:
-    - .sass-cache
-    - Gemfile
-    - Gemfile.lock
-    - LICENSE
-    - README.md
-    - INSTALL.md
+  - .sass-cache
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE
+  - README.md
+  - INSTALL.md
+  - CNAME
 
 
 # The language setting is used in /includes/header.html for html-settings
@@ -130,7 +131,6 @@ defaults:
       # sidebar:        # Possible values › left, right › by default there will be no sidebar
       comments: false
       author: "juho_jeong"     # Default author for posts
-      date: "2015-10-21"
   -
     scope:
       path: ""
@@ -140,7 +140,6 @@ defaults:
       breadcrumb_nolink: true
       comments: true
       author: "juho_jeong"     # Default author for posts
-      date: "2015-10-29"
 
 
 
