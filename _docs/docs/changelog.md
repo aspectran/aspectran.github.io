@@ -9,6 +9,9 @@ breadcrumb: true
 comments: true
 ---
 {: .t50 }
+2015-11-01 // Version 1.4.0
+:   외부 라이브러리 연동 정책이 수정됨에 따라 패키지 구조가 변경되었습니다.
+
 2015-10-14 // Version 1.3.1
 :   Bean을 얻을 수 있는 메쏘드를 추가하고, Bean 자동 스캔 시 Bean ID 부여 규칙을 수정했습니다.
 
