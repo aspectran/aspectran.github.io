@@ -81,12 +81,13 @@ body.video cite { color: #fff; }
 }
 #masthead-no-image-header {
   background-color: $primary-color;
-  height: 185px;
+  height: 175px;
   margin-top: -1px;
 }
 #masthead-no-image-header #slogan img {
-  margin-top: 7px;
+  margin-top: 20px;
   position: relative;
+  height: 130px
 }
 
 /* Masthead › small-only
