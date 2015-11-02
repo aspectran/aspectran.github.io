@@ -25,4 +25,4 @@ Maven을 사용한다면 [pom.xml][2] 파일을 참고해서 의존 라이브러
 
 
 [1]: {{ site.baseurl }}/downloads/1.4/aspectran-1.4.0-src.zip
-[2]: https://github.com/topframe/aspectran/blob/master/pom.xml
+[2]: https://github.com/aspectran/aspectran/blob/master/pom.xml
