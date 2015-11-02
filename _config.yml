@@ -42,19 +42,28 @@ slogan_img: "aspectran-slogan.png"
 logo_footer: "aspectran-logo-x100.png"
 
 
+#-------------------------------------------------------------------
+# Build settings
+#-------------------------------------------------------------------
+
+encoding: UTF-8
+
 # Paginates all X entries
 paginate: 5
 
 # Pagination path › Important for blog page in /blog/ to work
 paginate_path: "/blog/page:num"
 
+permalink: /blog/:categories/:title/
+
+excerpt_separator: "<!--more-->"
 
 # Theme works best with Kramdown (using the table of contents function)
 markdown: kramdown
-permalink: /blog/:categories/:title/
 highlighter: pygments
-excerpt_separator: "<!--more-->"
+
 include: ['.htaccess']
+
 # Exclude these files from your production _site
 exclude:
   - Gemfile

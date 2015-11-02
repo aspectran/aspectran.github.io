@@ -1,5 +1,6 @@
 ---
 layout: module
+format: article
 title:  "HttpAccessControlAllowOriginFilter"
 subheadline: "Aspectran Modules - HTTP"
 teaser: "Enabling Cross Origin Requests for a RESTful Web Service"

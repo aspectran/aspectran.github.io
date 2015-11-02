@@ -9,7 +9,7 @@
 gems: [jekyll-paginate]
 host: 0.0.0.0
 port: 4000
-encoding: UTF-8
+
 
 #url: ''
 #baseurl: ''

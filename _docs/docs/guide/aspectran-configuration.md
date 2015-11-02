@@ -1,5 +1,6 @@
 ---
 layout: page
+format: article
 sidebar: toc
 title: "Aspectran Configuration"
 subheadline: "User Guide"

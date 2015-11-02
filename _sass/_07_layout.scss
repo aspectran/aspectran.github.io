@@ -45,8 +45,8 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 #navigation {
-    -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,.2);
-    box-shadow: 0 2px 3px 0 rgba(0,0,0,.2);
+  -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,.2);
+  box-shadow: 0 2px 3px 0 rgba(0,0,0,.2);
 }
 
 
@@ -64,8 +64,8 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 #masthead {
-    background-color: $primary-color;
-    margin-top: -1px;
+  background-color: $primary-color;
+  margin-top: -1px;
 }
 #masthead img {
   border-radius: 0;
@@ -227,31 +227,33 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 #page-meta, #page-meta a {
-    color: $grey-5;
+  color: $grey-5;
 }
 
 #page-meta .button {
-    background: $grey-5;
-    border: 0;
+  background: $grey-5;
+  border: 0;
 }
 #page-meta .button {
-    color: #fff;
+  color: #fff;
 }
 #page-meta .button:hover {
-    background: $primary-color;
+  background: $primary-color;
 }
-.meta-info p {
-  font-size: rem-calc(13);
-  color: scale-color($grey-1, $lightness: 40%);
-}
-  .meta-info a {
-    text-decoration: underline;
+.meta-info {
+  p {
+    font-size: rem-calc(13);
     color: scale-color($grey-1, $lightness: 40%);
   }
-  .meta-info a:hover {
-    text-decoration: none;
-    color: $secondary-color;
+  a {
+    text-decoration: underline;
+    color: scale-color($grey-1, $lightness: 40%);
+    &:hover {
+      text-decoration: none;
+      color: $secondary-color;
+    }
   }
+}
 
 
 

@@ -10,62 +10,74 @@ breadcrumb: false
 permalink: "/modules/"
 ---
 
-<div id="blog-index" class="row">
+<div class="row">
 	<div class="small-12 columns t30">
-    {% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
-		<h1>{{ page.title }}</h1>
-		{% if page.teaser %}<p class="teaser">{{ page.teaser }}</p>{% endif %}
+    <header>
+      {% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
+  		<h1>{{ page.title }}</h1>
+  		{% if page.teaser %}<p class="teaser">{{ page.teaser }}</p>{% endif %}
+    </header>
 
-    <h2><a href="orm">ORM</a></h2>
-    <p>현재 iBatis, My Batis의 트랜잭션 관리와 연동을 지원합니다.</p>
-    <dl class="accordion" data-accordion>
-			{% assign counter = 1 %}
-      {% assign modules = site.modules | where: "category", "orm" %}
-			{% for module in modules limit:1000 %}
-			<dd class="accordion-navigation">
-			<a href="#orm-panel{{ counter }}"><span class="iconfont"></span> {% if module.subheadline %}{{ module.subheadline }} › {% endif %}<strong>{{ module.title }}</strong></a>
-				<div id="orm-panel{{ counter }}" class="content">
-					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
-					<a href="{{ site.baseurl }}{{ module.url }}" title="Read {{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a><br><br>
-				</div>
-			</dd>
-			{% assign counter=counter | plus:1 %}
-			{% endfor %}
-		</dl>
+    <div class="row">
+      <div class="large-6 columns b20">
+        <h2><a href="orm">ORM</a></h2>
+        <p>현재 iBatis, My Batis의 트랜잭션 관리와 연동을 지원합니다.</p>
+        <dl class="accordion" data-accordion>
+    			{% assign counter = 1 %}
+          {% assign modules = site.modules | where: "category", "orm" %}
+    			{% for module in modules limit:1000 %}
+    			<dd class="accordion-navigation">
+    			<a href="#orm-panel{{ counter }}"><span class="iconfont"></span> {% if module.subheadline %}{{ module.subheadline }} › {% endif %}<strong>{{ module.title }}</strong></a>
+    				<div id="orm-panel{{ counter }}" class="content">
+    					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
+    					<a href="{{ site.baseurl }}{{ module.url }}" title="Read {{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a><br><br>
+    				</div>
+    			</dd>
+    			{% assign counter=counter | plus:1 %}
+    			{% endfor %}
+    		</dl>
+      </div>
 
-    <h2><a href="http">HTTP</a></h2>
-    <p>주로 HTTP 헤더를 다루는 공통 모듈을 제공합니다.</p>
-    <dl class="accordion" data-accordion>
-			{% assign counter = 1 %}
-      {% assign modules = site.modules | where: "category", "http" %}
-			{% for module in modules limit:1000 %}
-			<dd class="accordion-navigation">
-			<a href="#http-panel{{ counter }}"><span class="iconfont"></span> {% if module.subheadline %}{{ module.subheadline }} › {% endif %}<strong>{{ module.title }}</strong></a>
-				<div id="http-panel{{ counter }}" class="content">
-					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
-					<a href="{{ site.baseurl }}{{ module.url }}" title="Read {{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a><br><br>
-				</div>
-			</dd>
-			{% assign counter=counter | plus:1 %}
-			{% endfor %}
-		</dl>
+      <div class="large-6 columns b20">
+        <h2><a href="http">HTTP</a></h2>
+        <p>주로 HTTP 헤더를 다루는 공통 모듈을 제공합니다.</p>
+        <dl class="accordion" data-accordion>
+    			{% assign counter = 1 %}
+          {% assign modules = site.modules | where: "category", "http" %}
+    			{% for module in modules limit:1000 %}
+    			<dd class="accordion-navigation">
+    			<a href="#http-panel{{ counter }}"><span class="iconfont"></span> {% if module.subheadline %}{{ module.subheadline }} › {% endif %}<strong>{{ module.title }}</strong></a>
+    				<div id="http-panel{{ counter }}" class="content">
+    					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
+    					<a href="{{ site.baseurl }}{{ module.url }}" title="Read {{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a><br><br>
+    				</div>
+    			</dd>
+    			{% assign counter=counter | plus:1 %}
+    			{% endfor %}
+    		</dl>
+      </div>
+    </div>
 
-    <h2><a href="web-template-engine">Web Template Engine</a></h2>
-    <p>다양한 웹 템플릿 엔진을 지원할 예정입니다.</p>
-    <dl class="accordion" data-accordion>
-			{% assign counter = 1 %}
-      {% assign modules = site.modules | where: "category", "Web Template Engine" %}
-			{% for module in modules limit:1000 %}
-			<dd class="accordion-navigation">
-			<a href="#wte-panel{{ counter }}"><span class="iconfont"></span> {% if module.subheadline %}{{ module.subheadline }} › {% endif %}<strong>{{ module.title }}</strong></a>
-				<div id="wte-panel{{ counter }}" class="content">
-					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
-					<a href="{{ site.baseurl }}{{ module.url }}" title="Read {{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a><br><br>
-				</div>
-			</dd>
-			{% assign counter=counter | plus:1 %}
-			{% endfor %}
-		</dl>
+    <div class="row">
+      <div class="large-6 columns b20">
+        <h2><a href="web-template-engine">Web Template Engine</a></h2>
+        <p>다양한 웹 템플릿 엔진을 지원할 예정입니다.</p>
+        <dl class="accordion" data-accordion>
+    			{% assign counter = 1 %}
+          {% assign modules = site.modules | where: "category", "Web Template Engine" %}
+    			{% for module in modules limit:1000 %}
+    			<dd class="accordion-navigation">
+    			<a href="#wte-panel{{ counter }}"><span class="iconfont"></span> {% if module.subheadline %}{{ module.subheadline }} › {% endif %}<strong>{{ module.title }}</strong></a>
+    				<div id="wte-panel{{ counter }}" class="content">
+    					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
+    					<a href="{{ site.baseurl }}{{ module.url }}" title="Read {{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a><br><br>
+    				</div>
+    			</dd>
+    			{% assign counter=counter | plus:1 %}
+    			{% endfor %}
+    		</dl>
+      </div>
+    </div>
 
 	</div><!-- /.small-12.columns -->
 </div><!-- /.row -->

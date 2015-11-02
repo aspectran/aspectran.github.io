@@ -1,5 +1,6 @@
 ---
 layout: page
+format: article
 title: "Aspectran Tutorial"
 subheadline: ""
 teaser: "본 문서는 Aspectran의 주요 기능에 대한 설명서입니다."

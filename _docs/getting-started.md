@@ -1,7 +1,6 @@
 ---
 layout: page
 sidebar: right
-show_meta: false
 title: "Getting Started"
 subheadline: "Are you ready?"
 teaser: "Aspectran의 특징을 살펴보고, 간단한 예제의 실행 결과를 확인해 볼 수 있습니다."
