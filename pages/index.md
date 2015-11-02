@@ -7,9 +7,9 @@
 layout: frontpage
 header:
   image_slide:
-    - header_gettingstarted.jpg
-    - header_documentation.jpg
     - header_modules.jpg
+    - header_documentation.jpg
+    - header_gettingstarted.jpg
     - header_blog.jpg
     - header_search.jpg
     - header_contact.jpg
