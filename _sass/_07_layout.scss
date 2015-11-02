@@ -66,9 +66,9 @@ body.video cite { color: #fff; }
 #masthead {
   background-color: $primary-color;
   margin-top: -1px;
-}
-#masthead img {
-  border-radius: 0;
+  img {
+    border-radius: 0;
+  }
 }
 #masthead-with-text {
   text-align: center;
@@ -83,11 +83,11 @@ body.video cite { color: #fff; }
   background-color: $primary-color;
   height: 175px;
   margin-top: -1px;
-}
-#masthead-no-image-header #slogan img {
-  margin-top: 20px;
-  position: relative;
-  height: 130px
+  #slogan img {
+    margin-top: 20px;
+    position: relative;
+    height: 130px
+  }
 }
 
 /* Masthead › small-only
