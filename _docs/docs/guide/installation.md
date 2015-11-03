@@ -28,4 +28,4 @@ Aspectran을 사용하려면 aspectran-x.x.x.jar 파일과 아래와 같은 필�
 * commons-io
 * logging 라이브러리(commons-logging, log4j, slf4j)
 
-Maven을 사용한다면 [pom.xml](https://github.com/topframe/aspectran/blob/master/pom.xml) 파일을 참고해서 의존 라이브러리를 추가해 주세요.
+Maven을 사용한다면 [pom.xml](https://github.com/aspectran/aspectran/blob/master/pom.xml) 파일을 참고해서 의존 라이브러리를 추가해 주세요.
