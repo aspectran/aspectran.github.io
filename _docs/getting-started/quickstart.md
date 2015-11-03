@@ -4,6 +4,7 @@ format: article
 title: "Quick Start"
 subheadline: "Getting Started"
 teaser: "본 문서는 Aspectran의 특징을 파악할 수 있도록 아주 간단한 사용법을 예를 들어서 설명합니다."
+article_heading: true
 breadcrumb: true
 sidebar: toc
 ---

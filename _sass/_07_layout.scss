@@ -1,6 +1,5 @@
 /* TOC
 
-- Adjustments: Video Layout
 - Navigation
 - Search
 - Masthead
@@ -14,31 +13,9 @@
 - Footer
 - Subfooter
 - CSS-Classes to add margin at top or bottom
+- Adjustments: Video Layout
 
 */
-
-
-
-/* Adjustments: Video Layout
-------------------------------------------------------------------- */
-
-body.video,
-body.video #masthead-no-image-header { background: #000; }
-body.video #masthead-no-image-header { margin-bottom: 60px; }
-body.video h1,
-body.video h2,
-body.video h3,
-body.video h4,
-body.video h5,
-body.video h6,
-body.video p,
-body.video a,
-body.video blockquote:before,
-body.video blockquote:after,
-body.video cite a, { color: #fff; }
-body.video cite a:visited, { color: #fff; }
-body.video cite { color: #fff; }
-
 
 
 /* Navigation
@@ -66,11 +43,48 @@ body.video cite { color: #fff; }
 #masthead {
   background-color: $primary-color;
   margin-top: -1px;
+  color: $ci-6;
+  min-width: 320px;
   img {
     border-radius: 0;
   }
+  header {
+    h1 {
+      color: $ci-6;
+    }
+  }
+  .breadcrumbs-bar {
+    color: $ci-6;
+    padding-left: 1em;
+    margin-top: 20px;
+    border: 0;
+    background-color: darken($primary-color, 6%);
+    opacity: .7;
+    a {
+      color: $ci-6;
+      font-weight: normal;
+      &:link {
+      }
+      &:visited {
+        border: 0;
+      }
+      &:hover {
+        color: lighten($anchor-color, 10%);
+      }
+      &:focus {
+        color: lighten($anchor-color, 20%);
+      }
+      &:active {
+        color: darken($anchor-color, 20%);
+      }
+      &.current {
+        color: $ci-6;
+        font-weight: bold;
+      }
+    }
+  }
 }
-#masthead-with-text {
+.masthead-with-text {
   text-align: center;
   font-size: rem-calc(54);
   font-family: $header-font-family;
@@ -79,7 +93,7 @@ body.video cite { color: #fff; }
   text-shadow: 0 2px 3px rgba(0,0,0,.4);
   margin-top: -1px;
 }
-#masthead-no-image-header {
+.masthead-no-image-header {
   background-color: $primary-color;
   height: 175px;
   margin-top: -1px;
@@ -89,31 +103,38 @@ body.video cite { color: #fff; }
     height: 130px
   }
 }
+.masthead-width-article-header {
+  padding-top: 2em;
+}
+
 
 /* Masthead › small-only
 ------------------------------------------------------------------- */
 
 @media #{$small-only} {
-    #slogan img {
-        display: none;
+  #slogan img {
+    display: none;
+  }
+  .masthead-with-pattern {
+    padding: 15px 0;
+  }
+  .masthead-with-background-color {
+    padding: 15px 0;
+  }
+  .masthead-with-text {
+    height: 220px;
+    padding: 30px 0;
+    font-size: rem-calc(36);
+  }
+  .masthead-no-image-header {
+    display: none;
+  }
+  .masthead-with-image-header {
+    height: 240px;
+    header {
+      margin-top: 1em;
     }
-    #masthead {
-        height: 200px;
-    }
-    #masthead-with-pattern {
-        padding: 15px 0;
-    }
-    #masthead-with-background-color {
-        padding: 15px 0;
-    }
-    #masthead-with-text {
-        height: 220px;
-        padding: 30px 0;
-        font-size: rem-calc(36);
-    }
-    #masthead-no-image-header {
-        display: none;
-    }
+  }
 }
 
 
@@ -121,22 +142,27 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 @media #{$medium-only} {
-    #slogan img {
-        margin-top: 7px;
+  #slogan img {
+    margin-top: 70px;
+    margin-left: 33px;
+    height: 170px;
+  }
+  .masthead-with-pattern {
+    padding: 20px 0;
+  }
+  .masthead-with-background-color {
+    padding: 20px 0;
+  }
+  .masthead-with-text {
+    padding: 60px 0;
+    height: 300px;
+  }
+  .masthead-with-image-header {
+    height: 280px;
+    header {
+      margin-top: 100px;
     }
-    #masthead {
-        height: 280px;
-    }
-    #masthead-with-pattern {
-        padding: 20px 0;
-    }
-    #masthead-with-background-color {
-        padding: 20px 0;
-    }
-    #masthead-with-text {
-        padding: 60px 0;
-        height: 300px;
-    }
+  }
 }
 
 
@@ -144,22 +170,27 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 @media #{$large-only} {
-    #slogan img {
-        margin-top: 7px;
+  #slogan img {
+    margin-top: 90px;
+    margin-left: 33px;
+    height: 170px;
+  }
+  .masthead-with-pattern {
+    padding: 30px 0;
+  }
+  .masthead-with-background-color {
+    padding: 30px 0;
+  }
+  .masthead-with-text {
+    height: 330px;
+    padding: 60px 0;
+  }
+  .masthead-with-image-header {
+    height: 310px;
+    header {
+      margin-top: 130px;
     }
-    #masthead {
-        height: 310px;
-    }
-    #masthead-with-pattern {
-        padding: 30px 0;
-    }
-    #masthead-with-background-color {
-        padding: 30px 0;
-    }
-    #masthead-with-text {
-        height: 330px;
-        padding: 60px 0;
-    }
+  }
 }
 
 
@@ -167,36 +198,26 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 @media #{$xlarge-up} {
-    #slogan img {
-        margin-top: 30px;
+  #slogan img {
+    margin-top: 140px;
+    height: 170px;
+  }
+  .masthead-with-pattern {
+    padding: 45px 0;
+  }
+  .masthead-with-background-color {
+    padding: 45px 0;
+  }
+  .masthead-with-text {
+    padding: 95px 0;
+    height: 400px;
+  }
+  .masthead-with-image-header {
+    height: 380px;
+    header {
+      margin-top: 190px;
     }
-    #masthead {
-        height: 380px;
-    }
-    #masthead-with-pattern {
-        padding: 45px 0;
-    }
-    #masthead-with-background-color {
-        padding: 45px 0;
-    }
-    #masthead-with-text {
-        padding: 95px 0;
-        height: 400px;
-    }
-}
-
-
-#title-image-small {
-    height: 240px;
-}
-#title-image-large {
-    height: 520px;
-}
-#title-image-index-small {
-    height: 120px;
-}
-#title-image-index-large {
-    height: 260px;
+  }
 }
 
 
@@ -205,21 +226,13 @@ body.video cite { color: #fff; }
 ------------------------------------------------------------------- */
 
 .breadcrumbs-bar {
-  background: scale-color($grey-1, $lightness: 55%);
-  border-top: 1px solid scale-color($grey-1, $lightness: 45%);
-  border-bottom: 1px solid scale-color($grey-1, $lightness: 45%);
-}
-.breadcrumbs {
-  background: red;
-  border-top: 1px solid scale-color($grey-1, $lightness: 45%);
-  border-bottom: 1px solid scale-color($grey-1, $lightness: 45%);
-}
-.breadcrumbs-bar .breadcrumbs {
-  background: none;
-  border: none;
-}
-.breadcrumbs>.current {
-  font-weight: bold;
+  background: scale-color($grey-1, $lightness: 50%);
+  .breadcrumbs {
+    background: none;
+    >.current {
+      font-weight: bold;
+    }
+  }
 }
 
 
@@ -366,3 +379,24 @@ body.video cite { color: #fff; }
 .pr5  { padding-right: 5px !important; }
 .pr10 { padding-right: 10px !important; }
 .pr20 { padding-right: 20px !important; }
+
+
+/* Adjustments: Video Layout
+------------------------------------------------------------------- */
+
+body.video,
+body.video #masthead-no-image-header { background: #000; }
+body.video #masthead-no-image-header { margin-bottom: 60px; }
+body.video h1,
+body.video h2,
+body.video h3,
+body.video h4,
+body.video h5,
+body.video h6,
+body.video p,
+body.video a,
+body.video blockquote:before,
+body.video blockquote:after,
+body.video cite a, { color: #fff; }
+body.video cite a:visited, { color: #fff; }
+body.video cite { color: #fff; }

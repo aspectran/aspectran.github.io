@@ -4,6 +4,7 @@ sidebar: right
 title: "Running the Examples"
 subheadline: "The Aspectran has an ever growing number of examples available for developers to learn from."
 teaser: "구글 앱엔진에서 임시로 구동되고 있는 예제 사이트입니다."
+article_heading: true
 breadcrumb: true
 ---
 

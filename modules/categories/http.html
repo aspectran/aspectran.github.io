@@ -4,17 +4,14 @@ title: "HTTP"
 subheadline: "Aspectran Modules"
 teaser: "주로 HTTP 헤더를 다루는 공통 모듈을 제공합니다."
 header:
-    image_fullwidth: "header_modules.jpg"
+  image_fullwidth: "header_modules.jpg"
+article_heading: true
 breadcrumb: true
 permalink: "/modules/http/"
 ---
 
 <div class="row">
 	<div class="medium-8 columns t30">
-    {% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
-    <h1>{{ page.title }}</h1>
-    {% if page.teaser %}<p class="teaser">{{ page.teaser }}</p>{% endif %}
-
     {% assign modules = site.modules | where: "category", "http" %}
     {% for module in modules limit:1000 %}
     <div class="row">

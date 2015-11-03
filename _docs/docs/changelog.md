@@ -5,10 +5,13 @@ title: "Changelog"
 meta_title: "Aspectran Changelog"
 subheadline: "Aspectran Changelog"
 teaser: "History and changelog of Aspectran"
+article_heading: true
 breadcrumb: true
 comments: true
 ---
-{: .t50 }
+
+{% include alert info='상세한 변경이력은 [GitHub](https://github.com/aspectran/aspectran/releases){:target="_blank"}에서 볼 수 있습니다.' %}
+
 2015-11-01 // Version 1.4.0
 :   외부 라이브러리 연동 정책이 수정됨에 따라 패키지 구조가 변경되었습니다.
 
@@ -29,5 +32,3 @@ comments: true
 
 2015-09-01 // Version 1.0.0
 :   Initial release of Aspectran! 2008년 봄부터 개발을 시작한 이후로 7년 만에 처음으로 정식 버전을 출시했습니다.
-
-{% include alert info='상세한 변경이력은 [GitHub](https://github.com/topframe/aspectran/releases)에서 볼 수 있습니다.' %}

@@ -7,6 +7,8 @@ teaser: "Aspectran의 특징을 살펴보고, 간단한 예제의 실행 결과�
 header:
    image_fullwidth: "header_gettingstarted.jpg"
    caption: "My cute second daughter"
+article_heading: true
+breadcrumb: true
 ---
 
 ## [About Aspectran][1]

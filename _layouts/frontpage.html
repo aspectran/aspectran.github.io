@@ -6,27 +6,25 @@ layout: default
 * First check, if widget is empty or not by checking if there is a title
 *
 {% endcomment %}
-<div class="row t60">
-	{% if page.widget1.title %}
-		{% include frontpage-widget widget=page.widget1 %}
-	{% endif %}
+<div style="background-color:#F2F2F2;padding-top:60px;">
+  <div class="row">
+  	{% if page.widget1.title %}
+  		{% include frontpage-widget widget=page.widget1 %}
+  	{% endif %}
 
+  	{% if page.widget2.title %}
+  		{% include frontpage-widget widget=page.widget2 %}
+  	{% endif %}
 
-	{% if page.widget2.title %}
-		{% include frontpage-widget widget=page.widget2 %}
-	{% endif %}
+  	{% if page.widget3.title %}
+  		{% include frontpage-widget widget=page.widget3 %}
+  	{% endif %}
 
-
-	{% if page.widget3.title %}
-		{% include frontpage-widget widget=page.widget3 %}
-	{% endif %}
-
-
-	{% if page.widget4.title %}
-		{% include frontpage-widget widget=page.widget4 %}
-	{% endif %}
-</div><!-- /.row -->
-
+  	{% if page.widget4.title %}
+  		{% include frontpage-widget widget=page.widget4 %}
+  	{% endif %}
+  </div><!-- /.row -->
+</div>
 
 {% comment %}
 *
@@ -43,7 +41,7 @@ layout: default
                 <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title escape_once }}"><img width="100%" src="{{ site.urlimg }}{{ post.image.homepage }}" alt="{{ page.title escape_once }}"></a>
             </p>
 
-            {% if post.image.caption_url && post.image.caption %}
+            {% if post.image.caption_url and post.image.caption %}
             <p class="text-right caption">
                 <a href="{{ post.image.caption_url }}">{{ post.image.caption }}</a>
             </p>

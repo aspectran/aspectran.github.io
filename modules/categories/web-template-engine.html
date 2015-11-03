@@ -4,17 +4,14 @@ title: "Web Template Engine"
 subheadline: "Aspectran Modules"
 teaser: "다양한 웹 템플릿 엔진을 지원할 예정입니다."
 header:
-    image_fullwidth: "header_modules.jpg"
+  image_fullwidth: "header_modules.jpg"
+article_heading: true
 breadcrumb: true
 permalink: "/modules/web-template-engine/"
 ---
 
 <div class="row">
 	<div class="medium-8 columns t30">
-    {% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
-    <h1>{{ page.title }}</h1>
-    {% if page.teaser %}<p class="teaser">{{ page.teaser }}</p>{% endif %}
-
     {% assign modules = site.modules | where: "category", "Web Template Engine" %}
     {% for module in modules limit:1000 %}
     <div class="row">

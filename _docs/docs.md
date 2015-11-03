@@ -1,12 +1,14 @@
 ---
 layout: page
 sidebar: right
-title: "Aspectran Documentation"
+title: "Documentation"
 subheadline: "How to use Aspectran"
-teaser: "Aspectran과 관련된 기술 문서를 공유합니다."
+teaser: "Aspectran과 관련된 기술 문서를 제공합니다."
 header:
    image_fullwidth: "header_documentation.jpg"
    caption: "My two daughters draw a picture on the car-free roads."
+article_heading: true
+breadcrumb: true
 ---
 
 ## [User Guide][1]

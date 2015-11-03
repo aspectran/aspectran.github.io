@@ -4,6 +4,7 @@ sidebar: right
 title: "Roadmap"
 subheadline: "ToDo-List &amp; Ideas"
 teaser: "Here are some ideas and features I want to implement in the future."
+article_heading: true
 breadcrumb: true
 comments: true
 ---
