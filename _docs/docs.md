@@ -12,10 +12,10 @@ breadcrumb: true
 ---
 
 ## [User Guide][1]
-개발자가 Aspectran을 활용할 수 있도록 기술적인 방법론을 각 주제 별로 설명합니다.
+Aspectran 사용자를 위한 설명서를 제공합니다.
 
 ## [API Reference][2]
-Aspectran의 Java API 문서를 볼 수 있습니다.
+Aspectran API 문서를 제공합니다.
 
 ## [FAQs][3]
 Aspectran을 활용하는 과정에서 생길 수 있는 질문에 대한 응답입니다.

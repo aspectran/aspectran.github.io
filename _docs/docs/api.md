@@ -3,7 +3,7 @@ layout: page
 sidebar: right
 title: "API Reference"
 subheadline: "This is the public API documentation for the Aspectran."
-teaser: ""
+teaser: "Aspectran API 문서를 제공합니다."
 article_heading: true
 breadcrumb: true
 ---

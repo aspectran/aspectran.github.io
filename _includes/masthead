@@ -2,7 +2,7 @@
 
 {% if page.article_heading == true %}
 
-<div id="masthead" class="masthead-width-article-header">
+<div id="masthead" class="masthead-with-article-header">
 	<div class="row">
 		<div class="small-12 columns">
     <header>
