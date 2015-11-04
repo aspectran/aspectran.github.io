@@ -237,7 +237,7 @@ google_analytics_tracking_id: UA-66807210-2
 #
 #  To load the script add tawkto: true in front matter of each page
 #
-# used in _includes/footer_scripts
+# used in _includes/footer-scripts
 #-------------------------------------------------------------------
 
 # tawkto_embed_uri:
