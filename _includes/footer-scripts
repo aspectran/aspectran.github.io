@@ -30,22 +30,25 @@
     $(".lazy-sticky").each(function() {
       var $window = $(window);
       var $this = $(this);
-      var baseOffsetTop = $this.offset().top;
+      var topNavHeight = $("#navigation").height();
+      var footerHeight = $("#footer-content").height() + $("#up-to-top").height() + 20;
+      var baseOffsetTop = $this.offset().top - topNavHeight;
       var offsetTop = 0;
       var thisHeight = $this.height();
       var winHeight = $window.height();
       var scrollTimer = null;
+      var immediate = false;
       $this.find("#toc ul a").click(function(e) {
+        immediate = true;
         var anchor = $(this).attr("anchor");
         if(anchor != "top-of-page") {
           setTimeout(function() {
             var offset = $("#" + anchor).offset();
             if(offset) {
-              e.preventDefault();
-              offsetTop = 0 - baseOffsetTop;
-              $window.scrollTop(offset.top - 50);
+              immediate = true;
+              $window.scrollTop(offset.top - topNavHeight);
             }
-          }, 500);
+          }, 100);
         }
       });
       $window.scroll(function() {
@@ -64,9 +67,10 @@
             offsetTop = 0;
             clearInterval(scrollTimer);
             scrollTimer = null;
-          }, 600);
+            immediate = false;
+          }, immediate ? 250 : 600);
         } else {
-          if(scrollTop > offsetTop + baseOffsetTop + thisHeight || scrollTop < offsetTop + baseOffsetTop - winHeight) {
+          if(immediate || scrollTop > baseOffsetTop + offsetTop + thisHeight - 20 || scrollTop < baseOffsetTop + offsetTop) {
             var tocOffsetLeftBase = $this.offset().left;
             if(tocOffsetLeftBase > 100) {
               if(scrollTimer) {
@@ -74,13 +78,14 @@
                 scrollTimer = null;
               }
               scrollTimer = setInterval(function() {
-                scrollTop = $(document).scrollTop();
+                scrollTop = $window.scrollTop();
                 if(scrollTop < baseOffsetTop) {
                   scrollTop = 0;
-                } else if(scrollTop > $(document).height() - $("#footer-content").height() - thisHeight - 100) {
-                  scrollTop = $(document).height() - $("#footer-content").height() - thisHeight - baseOffsetTop - 100;
                 } else {
-                  scrollTop = scrollTop - baseOffsetTop + 70;
+                  scrollTop = scrollTop - baseOffsetTop;
+                }
+                if(scrollTop > $(document).height() - footerHeight - thisHeight - baseOffsetTop - topNavHeight) {
+                  scrollTop = $(document).height() - footerHeight - thisHeight - baseOffsetTop - topNavHeight;
                 }
                 offsetTop = scrollTop;
                 $this.css({
@@ -91,7 +96,9 @@
                 scrollTimer = null;
                 winHeight = $window.height();
                 thisHeight = $this.height();
-              }, 600);
+                footerHeight = $("#footer-content").height() + $("#up-to-top").height() + 20;
+                immediate = false;
+              }, immediate ? 250 : 600);
             }
           }
         }
