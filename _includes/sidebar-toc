@@ -1,0 +1,7 @@
+<aside class="lazy-sticky">
+  <div id="toc" class="panel radius">
+    <div class="toc-title">Table of Contents</div>
+    <ul>
+    </ul>
+  </div>
+</aside>

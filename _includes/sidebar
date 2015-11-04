@@ -1,4 +1,4 @@
-<aside>
+<aside class="lazy-sticky">
 	<div class="panel radius">
 		<h3 class="icon-github"> GitHub Project</h3>
 		<p>

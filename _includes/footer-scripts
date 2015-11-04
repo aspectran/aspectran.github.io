@@ -1,0 +1,140 @@
+<script src="{{ site.baseurl }}/assets/js/foundation.min.js"></script>
+<script src="{{ site.baseurl }}/assets/js/jquery.backstretch.min.js"></script>
+<script>
+  $(document).foundation({
+    reveal : {
+      animation: 'fade',
+      animation_speed: 250
+    }
+  });
+</script>
+
+{% if page.sidebar == "toc" %}
+<script>
+  $(document).ready(function() {
+    $("#masthead h1, article h1, article h2, article h3, article h4, article h5, article h6").each(function(index, item) {
+      var tagn = item.localName;
+      var anchor = "top-of-page";
+      if(tagn != "h1") {
+        anchor = "anchor-" + (index + 1);
+        $(this).before("<a class='toc-anchor " + anchor + "' id='" + anchor + "' name='" + anchor + "'></a>");
+      }
+      $("#toc ul").append("<li class='toc-" + tagn + "'><a anchor='" + anchor + "' href='#" + anchor + "'>" + $(item).text() + "</a></li>");
+    });
+  });
+</script>
+{% endif %}
+
+<script>
+  $(document).ready(function() {
+    $(".lazy-sticky").each(function() {
+      var $window = $(window);
+      var $this = $(this);
+      var baseOffsetTop = $this.offset().top;
+      var offsetTop = 0;
+      var thisHeight = $this.height();
+      var winHeight = $window.height();
+      var scrollTimer = null;
+      $this.find("#toc ul a").click(function(e) {
+        var anchor = $(this).attr("anchor");
+        if(anchor != "top-of-page") {
+          setTimeout(function() {
+            var offset = $("#" + anchor).offset();
+            if(offset) {
+              e.preventDefault();
+              offsetTop = 0 - baseOffsetTop;
+              $window.scrollTop(offset.top - 50);
+            }
+          }, 500);
+        }
+      });
+      $window.scroll(function() {
+        var scrollTop = $window.scrollTop();
+        if(scrollTop < baseOffsetTop) {
+          if(scrollTimer) {
+            clearInterval(scrollTimer);
+            scrollTimer = null;
+          }
+          scrollTimer = setInterval(function() {
+            if(offsetTop != 0) {
+              $this.css({
+                top: 0
+              });
+            }
+            offsetTop = 0;
+            clearInterval(scrollTimer);
+            scrollTimer = null;
+          }, 600);
+        } else {
+          if(scrollTop > offsetTop + baseOffsetTop + thisHeight || scrollTop < offsetTop + baseOffsetTop - winHeight) {
+            var tocOffsetLeftBase = $this.offset().left;
+            if(tocOffsetLeftBase > 100) {
+              if(scrollTimer) {
+                clearInterval(scrollTimer);
+                scrollTimer = null;
+              }
+              scrollTimer = setInterval(function() {
+                scrollTop = $(document).scrollTop();
+                if(scrollTop < baseOffsetTop) {
+                  scrollTop = 0;
+                } else if(scrollTop > $(document).height() - $("#footer-content").height() - thisHeight - 100) {
+                  scrollTop = $(document).height() - $("#footer-content").height() - thisHeight - baseOffsetTop - 100;
+                } else {
+                  scrollTop = scrollTop - baseOffsetTop + 70;
+                }
+                offsetTop = scrollTop;
+                $this.css({
+                  position: "relative",
+                  top: scrollTop + "px"
+                });
+                clearInterval(scrollTimer);
+                scrollTimer = null;
+                winHeight = $window.height();
+                thisHeight = $this.height();
+              }, 600);
+            }
+          }
+        }
+      });
+      if($window.scrollTop() > baseOffsetTop) {
+        $window.scroll();
+      }
+    });
+  });
+</script>
+
+{% if page.header.image_fullwidth %}
+<script>
+    $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 700});
+</script>
+{% endif %}
+{% if page.header.image_slide and page.header.image_slide[0] %}
+<script>
+    $("#masthead").backstretch([
+      "{{ site.urlimg }}{{ page.header.image_slide[0] }}"
+    {% for image in page.header.image_slide %}
+    {% if forloop.index > 1 %}, "{{ site.urlimg }}{{ image }}"{% endif %}
+    {% endfor %}
+    ], {duration: 3300, fade: 700});
+</script>
+{% endif %}
+
+{% comment %}
+#  Start of Tawk.to Script
+#
+#  More information in _config.yml
+#
+{% endcomment %}
+{% if site.tawkto_embed_uri and page.tawkto == true %}
+<script type="text/javascript">
+  var $_Tawk_API={},$_Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='{{ site.tawkto_embed_uri }}';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+</script>
+{% endif %}
