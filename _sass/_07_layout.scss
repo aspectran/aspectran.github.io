@@ -135,6 +135,14 @@
       margin-top: 1em;
     }
   }
+  #toc {
+    padding: 0 0 1em 0;
+    border-left: 0;
+    border-bottom: 3px solid $ci-3;
+    .toc-title {
+      border-bottom: 3px solid $ci-3;
+    }
+  }
 }
 
 
@@ -164,17 +172,6 @@
       h1 {
         font-weight: 700;
       }
-    }
-  }
-  #toc {
-    padding-left: 1em;
-    padding-right: 0;
-    border-left: 4px solid $ci-3;
-    border-radius: 0;
-    background: none;
-    .toc-title {
-      color: darken($ci-3, 10%);
-      border-bottom: 1px solid $grey-2;
     }
   }
 }
@@ -208,17 +205,6 @@
       }
     }
   }
-  #toc {
-    padding-left: 1em;
-    padding-right: 0;
-    border-left: 4px solid $ci-3;
-    border-radius: 0;
-    background: none;
-    .toc-title {
-      color: darken($ci-3, 10%);
-      border-bottom: 1px solid $grey-2;
-    }
-  }
 }
 
 
@@ -247,17 +233,6 @@
       h1 {
         font-weight: 700;
       }
-    }
-  }
-  #toc {
-    padding-left: 1em;
-    padding-right: 0;
-    border-left: 3px solid $ci-3;
-    border-radius: 0;
-    background: none;
-    .toc-title {
-      color: darken($ci-3, 10%);
-      border-bottom: 1px solid $grey-2;
     }
   }
 }
@@ -322,7 +297,7 @@
 #up-to-top a {
     font-size: 32px;
     padding: 5px;
-    border-radius: 3px;
+    border-radius: $global-radius;
 }
 #up-to-top a:hover {
     background: $grey-2;

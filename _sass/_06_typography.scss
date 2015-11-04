@@ -135,10 +135,11 @@ body.article article {
 ------------------------------------------------------------------- */
 
 #toc {
-  overflow: auto;
-  border: 0;
+  padding: 1em 0 1em 1em;
+  border-left: 4px solid $ci-3;
   .toc-title {
-    border-bottom: 2px solid darken($panel-bg, 7%);
+    color: darken($ci-3, 10%);
+    border-bottom: 1px solid $grey-2;
     padding-bottom: 5px;
     margin-bottom: 10px;
   }
