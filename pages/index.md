@@ -22,12 +22,12 @@ widget2:
     title: "Getting Started"
     url: '/getting-started/'
     image: header_gettingstarted_thumb.jpg
-    text: 'About Aspectran<br/>Quick Start<br/>Running the Examples<br/>Downloads'
+    text: 'Overview<br/>Quick Start Guide<br/>Running the Examples<br/>Downloads'
 widget3:
     title: "Documentation"
     url: '/docs/'
     image: header_documentation_thumb.jpg
-    text: 'User Guide<br/>Java API Reference<br/>FAQs<br/>Changelog &amp; Roadmap'
+    text: 'User Guides<br/>Java API Reference<br/>FAQs<br/>Changelog &amp; Roadmap'
 widget4:
   title: "Modules"
   url: '/modules/'
