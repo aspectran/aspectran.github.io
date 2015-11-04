@@ -137,6 +137,7 @@ body.article article {
 #toc {
   overflow: auto;
   white-space: nowrap;
+  border: 0;
   .toc-title {
     border-bottom: 2px solid darken($panel-bg, 7%);
     padding-bottom: 5px;

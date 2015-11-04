@@ -17,7 +17,7 @@
   var tocWinHeight = $(window).height();
   var tocScrollTimer = null;
   $(document).ready(function(){
-    $("article h1, article h2, article h3, article h4, article h5, article h6").each(function(index, item) {
+    $("#masthead h1, article h1, article h2, article h3, article h4, article h5, article h6").each(function(index, item) {
       var tagn = item.localName;
       var anchor = "top-of-page";
       if(tagn != "h1") {
