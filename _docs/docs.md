@@ -7,8 +7,6 @@ teaser: "Aspectran과 관련된 기술 문서를 제공합니다."
 header:
    image_fullwidth: "header_documentation.jpg"
    caption: "My two daughters draw a picture on the car-free roads."
-article_heading: true
-breadcrumb: true
 ---
 
 ## [User Guides][1]

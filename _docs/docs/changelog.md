@@ -5,8 +5,6 @@ title: "Changelog"
 meta_title: "Aspectran Changelog"
 subheadline: "Aspectran Changelog"
 teaser: "History and changelog of Aspectran"
-article_heading: true
-breadcrumb: true
 comments: true
 ---
 

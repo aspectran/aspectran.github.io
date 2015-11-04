@@ -5,7 +5,6 @@ sidebar: toc
 title: "Aspectran Configuration"
 subheadline: "User Guides"
 teaser: "Aspectran 설정 메타데이터 구성요소에 대해서 설명합니다."
-breadcrumb: true
 ---
 
 > Draft 문서 입니다. 작성된 사항은 변경될 수 있음을 알려둡니다.

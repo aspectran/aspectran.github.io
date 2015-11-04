@@ -4,8 +4,6 @@ sidebar: right
 title: "API Reference"
 subheadline: "This is the public API documentation for the Aspectran."
 teaser: "Aspectran API 문서를 제공합니다."
-article_heading: true
-breadcrumb: true
 ---
 
 ## [Aspectran API 1.4](http://api.aspectran.com/1.4/){:target="_blank"}

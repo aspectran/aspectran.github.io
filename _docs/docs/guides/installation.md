@@ -5,7 +5,6 @@ sidebar: toc
 title: "Installation"
 subheadline: "User Guides"
 teaser: "Aspectran을 사용하기 위해 필요한 라이브러리에 대해 설명합니다."
-breadcrumb: true
 ---
 
 ## 1. 작동 환경

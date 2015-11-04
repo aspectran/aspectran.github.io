@@ -171,6 +171,10 @@
     border-left: 4px solid $ci-3;
     border-radius: 0;
     background: none;
+    .toc-title {
+      color: darken($ci-3, 10%);
+      border-bottom: 1px solid $grey-2;
+    }
   }
 }
 
@@ -208,6 +212,10 @@
     border-left: 4px solid $ci-3;
     border-radius: 0;
     background: none;
+    .toc-title {
+      color: darken($ci-3, 10%);
+      border-bottom: 1px solid $grey-2;
+    }
   }
 }
 
@@ -241,9 +249,13 @@
   }
   #toc {
     padding-left: 1em;
-    border-left: 4px solid $ci-3;
+    border-left: 3px solid $ci-3;
     border-radius: 0;
     background: none;
+    .toc-title {
+      color: darken($ci-3, 10%);
+      border-bottom: 1px solid $grey-2;
+    }
   }
 }
 

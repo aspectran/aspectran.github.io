@@ -4,8 +4,6 @@ sidebar: right
 title: "User Guides"
 subheadline: "How to use Aspectran"
 teaser: "Aspectran 사용자를 위한 설명서입니다."
-article_heading: true
-breadcrumb: true
 ---
 
 ## [Installation][1]
