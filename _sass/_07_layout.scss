@@ -41,10 +41,11 @@
 ------------------------------------------------------------------- */
 
 #masthead {
-  background-color: $primary-color;
+  position: relative;
+  min-width: 320px;
   margin-top: -1px;
   color: $ci-6;
-  min-width: 320px;
+  background-color: $primary-color;
   img {
     border-radius: 0;
   }
@@ -112,8 +113,13 @@
 ------------------------------------------------------------------- */
 
 @media #{$small-only} {
-  #slogan img {
-    display: none;
+  #masthead {
+    #slogan img {
+      display: none;
+    }
+    #forkme-ribbon {
+      display: none;
+    }
   }
   .masthead-with-pattern {
     padding: 15px 0;
@@ -150,10 +156,12 @@
 ------------------------------------------------------------------- */
 
 @media #{$medium-only} {
-  #slogan img {
-    margin-top: 70px;
-    margin-left: 33px;
-    height: 170px;
+  #masthead {
+    #slogan img {
+      margin-top: 70px;
+      margin-left: 33px;
+      height: 170px;
+    }
   }
   .masthead-with-pattern {
     padding: 20px 0;
@@ -181,10 +189,12 @@
 ------------------------------------------------------------------- */
 
 @media #{$large-only} {
-  #slogan img {
-    margin-top: 90px;
-    margin-left: 33px;
-    height: 170px;
+  #masthead {
+    #slogan img {
+      margin-top: 90px;
+      margin-left: 33px;
+      height: 170px;
+    }
   }
   .masthead-with-pattern {
     padding: 30px 0;
@@ -212,9 +222,11 @@
 ------------------------------------------------------------------- */
 
 @media #{$xlarge-up} {
-  #slogan img {
-    margin-top: 140px;
-    height: 170px;
+  #masthead {
+    #slogan img {
+      margin-top: 140px;
+      height: 170px;
+    }
   }
   .masthead-with-pattern {
     padding: 45px 0;
