@@ -1,0 +1,24 @@
+{% capture widget_url %}{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ site.baseurl }}{{ include.widget.url }}{% endif %}{% endcapture %}
+<div class="small-3 medium-3 columns t10">
+	<a href="{{ widget_url }}">
+		{% if include.widget.image %}
+			{%comment%}TODO lazy loading{%endcomment%}
+			{%comment%}<img class="lazy" data-src="{{ site.urlimg }}{{ include.widget.image }}" width="100%" alt="" />{%endcomment%}
+			{%comment%}<noscript>{%endcomment%}
+				<img src="{{ site.urlimg }}{{ include.widget.image }}" width="100%" alt="" />
+			{%comment%}</noscript>{%endcomment%}
+		{% endif %}
+		{% if include.widget.video %}{{ include.widget.video }}{% endif %}
+	</a>
+</div>
+<div class="small-12 medium-4 columns">
+  <p>Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축하기 위한 가볍고 확장 가능한 프레임워크입니다.</p>
+  <p><a class="button radius small" href="{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ site.baseurl }}{{ include.widget.url }}{% endif %}">{% if include.widget.button_text %}{{ include.widget.button_text }}{% else %}{{ site.data.language.details }}{% endif %}</a></p>
+</div>
+<div class="small-9 medium-5 columns">
+	<!--h2 class="font-size-h3 t10">{{ include.widget.title }}</h2-->
+	<p>{{ include.widget.text }}</p>
+  <!--
+	<p><a class="button radius small" href="{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ site.baseurl }}{{ include.widget.url }}{% endif %}">{% if include.widget.button_text %}{{ include.widget.button_text }}{% else %}{{ site.data.language.details }}{% endif %}</a></p>
+  -->
+</div>
