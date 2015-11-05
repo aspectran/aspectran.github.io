@@ -1,0 +1,8 @@
+<div class="row collapse">
+  <div class="small-9 medium-10 large-10 columns">
+    <input type="text" value="{{ include.href }}" readonly>
+  </div>
+  <div class="small-3 medium-2 large-2 columns">
+    <a href="{{ include.href }}" target="_blank" class="button postfix">Go</a>
+  </div>
+</div>
