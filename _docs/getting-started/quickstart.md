@@ -33,7 +33,7 @@ Aspectran을 사용해서 Java 웹 어플리케이션을 개발하기 위해서�
 빠른 시작을 위해 다음 GitHub 저장소를 Clone 또는 소스 파일을 다운로드해서 새로운 웹 프로젝트를 생성해 주세요.
 이클립스 프로젝트 설정 파일과 본 문서에서 필요로 하는 모든 파일이 포함되어 있습니다.
 
-[https://github.com/aspectran-guides/quick-start.git](https://github.com/aspectran-guides/quick-start.git){:target="_blank"}
+{% include link-box href="https://github.com/aspectran-guides/quick-start.git" %}
 
 
 ## 3. 웹 컨테이너에 서블릿으로 등록하기

@@ -19,10 +19,16 @@ article_heading: true
           </div>
 
           <div class="content" id="download">
-            {% if page.download.source %}
-            <h3>Source</h3>
-            <a href="{{ page.download.source }}" target="_blank">{{ page.download.source }}</a>
-            {% endif %}
+            <div class="row">
+              <div class="medium-8 columns">
+                {% if page.download.source %}
+                {% include label-link-box label="Source" href="https://github.com/aspectran-guides/quick-start.git" %}
+                {% endif %}
+            	</div><!-- /.medium-8.columns -->
+            	<div class="medium-4 columns">
+            		{% include sidebar-modules %}
+            	</div><!-- /.medium-4.columns -->
+            </div>
           </div>
 
           <div class="content" id="reviews">

@@ -25,6 +25,7 @@
 </script>
 {% endif %}
 
+{% if page.sidebar %}
 <script>
   $(document).ready(function() {
     $(".lazy-sticky").each(function() {
@@ -89,9 +90,11 @@
                 }
                 offsetTop = scrollTop;
                 $this.css({
-                  position: "relative",
-                  top: scrollTop + "px"
+                  position: "relative"
                 });
+                $this.animate({
+                  top: scrollTop + "px"
+                }, 300);
                 clearInterval(scrollTimer);
                 scrollTimer = null;
                 winHeight = $window.height();
@@ -109,6 +112,7 @@
     });
   });
 </script>
+{% endif %}
 
 {% if page.header.image_fullwidth %}
 <script>

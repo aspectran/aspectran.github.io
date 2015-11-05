@@ -1,13 +1,17 @@
 <aside class="lazy-sticky">
 	<div class="panel radius">
-		<h3 class="icon-github"> GitHub Project</h3>
-		<p>
-			Aspectran은 Apache 2.0 License에 의거하여 무료로 제공되는 오픈소스입니다.
-			GitHub Project 페이지에서 개발 현황을 살펴보고 참여하실 수 있습니다.
-		</p>
-		<p>
-			<a class="button radius icon-check" href="https://github.com/aspectran" title="Aspectran - GitHub Project"> View the GitHub project</a>
-			<br/>Aspectran is open source. It's hosted, developed, and maintained on GitHub.
-		</p>
+		<h3 class="icon-github"> Aspectran projects on GitHub</h3>
+    <p>GitHub에서 개발 현황을 살펴보고 참여하실 수 있습니다.</p>
+    {% include link-box href="https://github.com/aspectran/aspectran" %}
+
+    <h4>Aspectran Modules</h4>
+    <p>다양한 외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이타를 모듈 형태로 제공합니다.</p>
+    {% include link-box href="https://github.com/aspectran/aspectran-modules" %}
+
+    <h4>Aspectran Guides</h4>
+    <p>예제에 사용된 소스 코드를 모아둔 저장소입니다.</p>
+    {% include link-box href="https://github.com/aspectran-guides" %}
+
+		<p>Aspectran is open source. It's hosted, developed, and maintained on GitHub.</p>
 	</div>
 </aside>

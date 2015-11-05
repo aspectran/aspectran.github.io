@@ -36,4 +36,6 @@ Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축에 �
 
 각 문서에 사용된 예제 응용프로그램의 소스는 [GitHub 저장소][1]{:target="_blank"}에서 보관하고 있습니다.
 
+{% include link-box href="https://github.com/aspectran-guides" %}
+
 [1]: https://github.com/aspectran-guides "Aspectran Guides "
