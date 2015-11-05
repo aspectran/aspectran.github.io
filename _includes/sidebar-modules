@@ -1,0 +1,13 @@
+<aside class="lazy-sticky">
+  <div class="panel radius">
+    <h3 class="icon-github"> Aspectran Modules</h3>
+    <p>
+      다양한 외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이타를 모듈 형태로 제공합니다.
+      모든 소스 코드는 GitHub에서 공유하고 있습니다.
+    </p>
+    {% include link-box href="https://github.com/aspectran/aspectran-modules" %}
+    <p>
+      Aspectran is open source. It's hosted, developed, and maintained on GitHub.
+    </p>
+  </div>
+</aside>
