@@ -1,0 +1,11 @@
+<div class="row collapse">
+  <div class="small-2 large-1 columns">
+    <span class="prefix">{{ include.label }}</span>
+  </div>
+  <div class="small-8 large-10 columns">
+    <input type="text" value="{{ include.href }}" readonly>
+  </div>
+  <div class="small-2 large-1 columns">
+    <a href="{{ include.href }}" target="_blank" class="button postfix">Go</a>
+  </div>
+</div>
