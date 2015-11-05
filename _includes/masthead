@@ -2,7 +2,7 @@
 
 {% if page.article_heading == true %}
 
-<div id="masthead" class="masthead-with-article-header">
+<div id="masthead" class="masthead-no-image-header masthead-with-article-header">
 	<div class="row">
     {% include forkme-ribbon %}
 		<div class="small-12 columns">
@@ -49,9 +49,11 @@
     {% include forkme-ribbon %}
 		<div class="small-12 columns">
       {% unless page.header.slogan_hidden %}
-			<a id="slogan" href="{{ site.baseurl }}/" title="{{ site.title }} – {{ site.slogan }}">
-				<img src="{{ site.baseurl }}/assets/img/{{ site.slogan_img }}" alt="{{ site.title }} – {{ site.slogan }}">
-			</a>
+      <div id="slogan">
+			  <a href="{{ site.baseurl }}/" title="{{ site.slogan }}">
+			     <img src="{{ site.baseurl }}/assets/img/{{ site.slogan_img }}" alt="">
+        </a>
+			</div>
       {% endunless %}
 		</div><!-- /.small-12.columns -->
 	</div><!-- /.row -->
@@ -96,7 +98,7 @@
 
 {% if page.article_heading == true %}
 
-<div id="masthead" class="masthead-with-image-header">
+<div id="masthead" class="masthead-with-image-header masthead-with-article-header">
 	<div class="row">
     {% include forkme-ribbon %}
 		<div class="small-12 columns">
@@ -144,9 +146,11 @@
     {% include forkme-ribbon %}
 		<div class="small-12 columns">
       {% unless page.header.slogan_hidden %}
-			<a id="slogan" href="{{ site.baseurl }}/" title="{{ site.title }} – {{ site.slogan }}">
-				<img src="{{ site.baseurl }}/assets/img/{{ site.slogan_img }}" alt="{{ site.title }} – {{ site.slogan }}">
-			</a>
+      <div id="slogan">
+			  <a href="{{ site.baseurl }}/" title="{{ site.slogan }}">
+			     <img src="{{ site.baseurl }}/assets/img/{{ site.slogan_img }}" alt="">
+        </a>
+			</div>
       {% endunless %}
 		</div><!-- /.small-12.columns -->
 	</div><!-- /.row -->

@@ -93,20 +93,17 @@
   color: #fff;
   text-transform: uppercase;
   text-shadow: 0 2px 3px rgba(0,0,0,.4);
-  margin-top: -1px;
 }
 .masthead-no-image-header {
-  background-color: $primary-color;
-  height: 175px;
-  margin-top: -1px;
-  #slogan img {
-    margin-top: 20px;
-    position: relative;
-    height: 130px
+  #slogan {
+    margin: 10px 0;
+    img {
+      height: 128px;
+    }
   }
-}
-.masthead-with-article-header {
-  padding-top: 2em;
+  header {
+    padding-top: 2em;
+  }
 }
 
 
@@ -115,12 +112,12 @@
 
 @media #{$small-only} {
   #masthead {
-    #slogan img {
-      display: none;
-    }
     #forkme-ribbon {
       display: none;
     }
+  }
+  .masthead-caption {
+    display: none;
   }
   .masthead-with-pattern {
     padding: 15px 0;
@@ -133,11 +130,15 @@
     padding: 30px 0;
     font-size: rem-calc(36);
   }
-  .masthead-no-image-header {
-    display: none;
-  }
   .masthead-with-image-header {
     height: 240px;
+    #slogan {
+      margin-top: 50px;
+      margin-left: 0;
+      img {
+        height: 170px;
+      }
+    }
     header {
       margin-top: 1em;
     }
@@ -150,6 +151,9 @@
       border-bottom: 3px solid $ci-3;
     }
   }
+  dl.tabs dd {
+    clear: both;
+  }
 }
 
 
@@ -157,13 +161,6 @@
 ------------------------------------------------------------------- */
 
 @media #{$medium-only} {
-  #masthead {
-    #slogan img {
-      margin-top: 70px;
-      margin-left: 33px;
-      height: 170px;
-    }
-  }
   .masthead-with-pattern {
     padding: 20px 0;
   }
@@ -176,6 +173,13 @@
   }
   .masthead-with-image-header {
     height: 280px;
+    #slogan {
+      margin-top: 70px;
+      margin-left: 33px;
+      img {
+        height: 170px;
+      }
+    }
     header {
       margin-top: 100px;
       h1 {
@@ -190,13 +194,6 @@
 ------------------------------------------------------------------- */
 
 @media #{$large-only} {
-  #masthead {
-    #slogan img {
-      margin-top: 90px;
-      margin-left: 33px;
-      height: 170px;
-    }
-  }
   .masthead-with-pattern {
     padding: 30px 0;
   }
@@ -209,6 +206,13 @@
   }
   .masthead-with-image-header {
     height: 310px;
+    #slogan {
+      margin-top: 90px;
+      margin-left: 33px;
+      img {
+        height: 170px;
+      }
+    }
     header {
       margin-top: 130px;
       h1 {
@@ -223,12 +227,6 @@
 ------------------------------------------------------------------- */
 
 @media #{$xlarge-up} {
-  #masthead {
-    #slogan img {
-      margin-top: 140px;
-      height: 170px;
-    }
-  }
   .masthead-with-pattern {
     padding: 45px 0;
   }
@@ -241,6 +239,12 @@
   }
   .masthead-with-image-header {
     height: 380px;
+    #slogan {
+      margin-top: 140px;
+      img {
+        height: 170px;
+      }
+    }
     header {
       margin-top: 190px;
       h1 {
@@ -439,11 +443,5 @@ body.frontpage {
   .grey-ground {
     padding: 30px 0 20px;
     background-color: #F2F2F2;
-  }
-}
-
-@media #{$small-only} {
-  body.frontpage #masthead {
-    display: none;
   }
 }
