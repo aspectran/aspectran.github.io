@@ -145,7 +145,7 @@ $row-width: rem-calc(1410);
 
 // We use these to make sure border radius matches unless we want it different.
 $global-radius: 3px;
-// $global-rounded: 1000px;
+$global-rounded: 1000px;
 
 // We use these to control inset shadow shiny edges and depressions.
 // $shiny-edge-size: 0 1px 0;
@@ -462,8 +462,8 @@ $button-font-lrg: rem-calc(17);
 // $alert-button-border-color: $alert-button-bg-hover;
 
 // We use this to set the default radius used throughout the core.
-// $button-radius: $global-radius;
-// $button-round: $global-rounded;
+$button-radius: $global-radius;
+$button-round: $global-rounded;
 
 // We use this to set default opacity and cursor for disabled buttons.
 // $button-disabled-opacity: 0.7;
