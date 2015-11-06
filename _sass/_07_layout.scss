@@ -389,6 +389,7 @@
 /* CSS-Classes to add margin at top or bottom
 ------------------------------------------------------------------- */
 
+.t5 { margin-top: 5px !important; }
 .t10 { margin-top: 10px !important; }
 .t15 { margin-top: 15px !important; }
 .t20 { margin-top: 20px !important; }
@@ -399,6 +400,8 @@
 .t80 { margin-top: 80px !important; }
 .t90 { margin-top: 90px !important; }
 
+.b5 { margin-bottom: 5px !important; }
+.b10 { margin-bottom: 10px !important; }
 .b15 { margin-bottom: 15px !important; }
 .b20 { margin-bottom: 20px !important; }
 .b30 { margin-bottom: 30px !important; }
@@ -441,7 +444,7 @@ body.video cite { color: #fff; }
 
 body.frontpage {
   .grey-ground {
-    padding: 30px 0 20px;
+    padding: 40px 0 20px;
     background-color: #F2F2F2;
   }
 }

@@ -11,6 +11,9 @@ format: frontpage
   <div class="row">
     <div class="medium-6 large-8 columns">
       <div class="row">
+        <div class="large-12 columns hide-for-small-only hide-for-medium-only b10">
+          {% include frontpage-widget2 widget=page.widget1 %}
+        </div>
         <div class="medium-12 large-4 columns">
           {% include frontpage-widget widget=page.widget2 %}
         </div>
@@ -20,14 +23,9 @@ format: frontpage
         <div class="medium-12 large-4 columns">
           {% include frontpage-widget widget=page.widget4 %}
         </div>
-        <div class="large-12 columns hide-for-small-only hide-for-medium-only">
-          <div class="row">
-            {% include frontpage-widget2 widget=page.widget1 %}
-          </div>
-        </div>
       </div>
     </div>
-    <div class="medium-6 large-4 columns t20">
+    <div class="medium-6 large-4 columns">
       {% include sidebar %}
     </div>
   </div><!-- /.row -->
