@@ -48,7 +48,7 @@ Aspectran을 사용해서 Java 웹 어플리케이션을 개발하기 위해서�
 `DefaultServlet`의 이름은 명시적으로 지정하지 않았지만, 내부적으로 웹어플리케이션 서버 종류에 따라서 자동으로 판단합니다.
 잘 알려진 웹어플리케이션 서버가 아닐 경우 `DefaultServlet`의 이름을 수동으로 명시할 수도 있습니다.
 
-***web.xml***
+[***web.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/web.xml){:target="_blank"}
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
@@ -234,7 +234,7 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 3개의 핵심 구성요소를 이용해서 "Hello, World." 문자열을 출력하는 설정 메타데이터를 XML 파일로 다음과 같이 작성하였습니다.
 Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하는 Action을 호출하기 전과 후에 특정 동작을 주입합니다.
 
-***simplest-configuration.xml***
+[***simplest-configuration.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/aspectran/config/simplest-configuration.xml){:target="_blank"}
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
@@ -306,7 +306,7 @@ Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하�
 
 "Hello, World." 문자열을 출력하는 Action을 담고 있는 자바 클래스를 작성합니다.
 
-***SimplestAction.java***
+[***SimplestAction.java***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/java/hello/SimplestAction.java){:target="_blank"}
 
 {% highlight java %}
 package hello;
@@ -331,7 +331,7 @@ public class SimplestAction {
 
 "Hello, World." 문자열을 출력하는 Action을 호출하기 전과 후에 실행되는 Action을 담고 있는 자바 클래스를 작성합니다.
 
-***SimplestAdvice.java***
+[***SimplestAdvice.java***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/java/hello/SimplestAdvice.java){:target="_blank"}
 
 {% highlight java %}
 package hello;
