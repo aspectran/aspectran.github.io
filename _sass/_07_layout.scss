@@ -25,6 +25,12 @@
 #navigation {
   -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,.2);
   box-shadow: 0 2px 3px 0 rgba(0,0,0,.2);
+  &.fixed {
+    opacity: .85;
+    #masthead {
+      margin-top: -1px;
+    }
+  }
 }
 
 
@@ -44,7 +50,6 @@
 #masthead {
   position: relative;
   min-width: 320px;
-  margin-top: -1px;
   color: $ci-6;
   background-color: $primary-color;
   img {

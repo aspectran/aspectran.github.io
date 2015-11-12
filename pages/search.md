@@ -7,4 +7,4 @@ header:
 permalink: /search/
 ---
 
-{% include google_search %}
+{% include google-search-form %}

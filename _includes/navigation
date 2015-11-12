@@ -1,5 +1,5 @@
 
-<div id="navigation" class="contain-to-grid fixed">
+<div id="navigation" class="contain-to-grid">
   <nav class="top-bar" role="navigation" data-topbar data-options="back_text:<span class='menu-item-back'>back</span>">
     <ul class="title-area">
       <li class="name">

@@ -7,6 +7,25 @@
       animation_speed: 250
     }
   });
+  $(document).ready(function() {
+    var navigationFixed = false;
+    var navigationHeight = $("#navigation").height();
+    var $window = $(window);
+    $window.scroll(function() {
+      var scrollTop = $window.scrollTop();
+      if(navigationFixed) {
+       if(scrollTop < navigationHeight) {
+         navigationFixed = false;
+         $("#navigation").removeClass("fixed");
+       }
+      } else {
+        if(scrollTop > navigationHeight) {
+          navigationFixed = true;
+          $("#navigation").addClass("fixed");
+        }
+      }
+    });
+  });
 </script>
 
 {% if page.sidebar == "toc" %}
@@ -148,4 +167,8 @@
   s0.parentNode.insertBefore(s1,s0);
   })();
 </script>
+{% endif %}
+
+{% if site.google_translate_website == true %}
+{% include google-translate-website %}
 {% endif %}
