@@ -56,7 +56,7 @@
       var topNavHeight = $("#navigation").height();
       var upToTopHeight = $("#up-to-top").height() + 30;
       var footerHeight = $("#footer-content").height() + upToTopHeight;
-      var baseOffsetTop = $this.offset().top - topNavHeight;
+      var baseOffsetTop = $this.offset().top - ($("#navigation").hasClass("fixed") ? topNavHeight : topNavHeight * 2);
       var offsetTop = 0;
       var thisHeight = $this.height();
       var winHeight = $window.height();
