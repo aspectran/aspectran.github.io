@@ -1,10 +1,10 @@
 ---
 layout: module
 format: article
-title:  "HttpAccessControlAllowOriginFilter"
-subheadline: "Aspectran Modules - HTTP"
-teaser: "Enabling Cross Origin Requests for a RESTful Web Service"
-category: http
+title:  HttpAccessControlAllowOriginFilter
+subheadline: Aspectran Modules - HTTP
+teaser: Enabling Cross Origin Requests for a RESTful Web Service
+category: HTTP
 download:
   source: https://github.com/aspectran/aspectran-modules/blob/master/aspectran-http/src/main/java/com/aspectran/support/http/HttpAccessControlAllowOriginFilter.java
 ---

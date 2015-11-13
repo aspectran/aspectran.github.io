@@ -1,33 +1,30 @@
 ---
 layout: default
-title: "HTTP"
-subheadline: "Aspectran Modules"
-teaser: "주로 HTTP 헤더를 다루는 공통 모듈을 제공합니다."
-header:
-  image_fullwidth: "header_modules.jpg"
+title: HTTP
+subheadline: Aspectran Modules
+teaser: 주로 HTTP 헤더를 다루는 공통 모듈을 제공합니다.
 article_heading: true
 breadcrumb: true
-permalink: "/modules/http/"
+permalink: /modules/http/
 ---
 
 <div class="row">
 	<div class="medium-8 columns t30">
-    {% assign modules = site.modules | where: "category", "http" %}
-    {% for module in modules limit:1000 %}
-    <div class="row">
+
+    {% assign modules = site.modules | where: "category", "HTTP" %}
+    {% for module in modules %}
+    <div class="row b10">
       <div class="small-12 columns">
         <h2><a href="{{ site.baseurl }}{{ module.url }}">{{ module.title }}</a></h2>
         <p>
           {% if module.image.thumb %}<a href="{{ site.baseurl }}{{ module.url }}" title="{{ module.title escape_once }}"><img src="{{ site.urlimg }}{{ module.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title escape_once }}"></a>{% endif %}
           {% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
-          <a href="{{ site.baseurl }}{{ module.url }}" title="{{ site.data.language.read }} {{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a>
         </p>
       </div><!-- /.small-12.columns -->
     </div><!-- /.row -->
     {% endfor %}
 
 	</div><!-- /.medium-8.columns -->
-
 	<div class="medium-4 columns t30">
 		{% include sidebar %}
 	</div><!-- /.medium-4.columns -->

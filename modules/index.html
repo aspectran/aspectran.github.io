@@ -1,78 +1,55 @@
 ---
 layout: default
-title: "Modules"
-subheadline: "Aspectran Integration with Other Libraries"
-teaser: "다양한 외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다."
+title: Modules
+subheadline: Aspectran Integration with Other Libraries
+teaser: 다양한 외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다.
 header:
-   image_fullwidth: "header_modules.jpg"
-   caption: "Photo by Juho Jeong"
+   image_fullwidth: header_modules.jpg
+   caption: Photo by Juho Jeong
 article_heading: true
 breadcrumb: true
-permalink: "/modules/"
+permalink: /modules/
+categories:
+  - name: ORM
+    path: orm
+    description: 현재 iBatis, My Batis의 트랜잭션 관리와 연동을 지원합니다.
+  - name: HTTP
+    path: http
+    description: 주로 HTTP 헤더를 다루는 공통 모듈을 제공합니다.
+  - name: Web Template Engine
+    path: web-template-engine
+    description: 다양한 웹 템플릿 엔진을 지원할 예정입니다.
 ---
 
 <div class="row">
-	<div class="small-12 columns t30">
-    <div class="row">
-      <div class="large-6 columns b20">
-        <h2><a href="orm">ORM</a></h2>
-        <p>현재 iBatis, My Batis의 트랜잭션 관리와 연동을 지원합니다.</p>
-        <dl class="accordion" data-accordion>
-    			{% assign counter = 1 %}
-          {% assign modules = site.modules | where: "category", "orm" %}
-    			{% for module in modules limit:1000 %}
-    			<dd class="accordion-navigation">
-    			<a href="#orm-panel{{ counter }}"><span class="iconfont"></span> <strong>{{ module.title }}</strong></a>
-    				<div id="orm-panel{{ counter }}" class="content">
-    					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
-    					<a href="{{ site.baseurl }}{{ module.url }}" title="Read {{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a><br><br>
-    				</div>
-    			</dd>
-    			{% assign counter=counter | plus:1 %}
-    			{% endfor %}
-    		</dl>
-      </div>
+	<div class="medium-8 columns t30">
 
-      <div class="large-6 columns b20">
-        <h2><a href="http">HTTP</a></h2>
-        <p>주로 HTTP 헤더를 다루는 공통 모듈을 제공합니다.</p>
+    {% for category in page.categories %}
+    <div class="row">
+      <div class="small-12 columns b30">
+        <h2><a href="{{ category.path }}">{{ category.name }}</a></h2>
+        <p>{{ category.description }}</p>
         <dl class="accordion" data-accordion>
     			{% assign counter = 1 %}
-          {% assign modules = site.modules | where: "category", "http" %}
+          {% assign modules = site.modules | where: "category", category.name %}
     			{% for module in modules limit:1000 %}
     			<dd class="accordion-navigation">
-    			<a href="#http-panel{{ counter }}"><span class="iconfont"></span> <strong>{{ module.title }}</strong></a>
-    				<div id="http-panel{{ counter }}" class="content">
+    			  <a href="#{{ category.path }}-panel{{ counter }}"><span class="iconfont"></span> <strong>{{ module.title }}</strong></a>
+    				<div id="{{ category.path }}-panel{{ counter }}" class="content">
     					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
-    					<a href="{{ site.baseurl }}{{ module.url }}" title="Read {{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a><br><br>
+    					<a href="{{ site.baseurl }}{{ module.url }}" title="{{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a>
     				</div>
     			</dd>
-    			{% assign counter=counter | plus:1 %}
+    			{% assign counter = counter | plus:1 %}
     			{% endfor %}
     		</dl>
       </div>
     </div>
+    {% endfor %}
 
-    <div class="row">
-      <div class="large-6 columns b20">
-        <h2><a href="web-template-engine">Web Template Engine</a></h2>
-        <p>다양한 웹 템플릿 엔진을 지원할 예정입니다.</p>
-        <dl class="accordion" data-accordion>
-    			{% assign counter = 1 %}
-          {% assign modules = site.modules | where: "category", "Web Template Engine" %}
-    			{% for module in modules limit:1000 %}
-    			<dd class="accordion-navigation">
-    			<a href="#wte-panel{{ counter }}"><span class="iconfont"></span> <strong>{{ module.title }}</strong></a>
-    				<div id="wte-panel{{ counter }}" class="content">
-    					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
-    					<a href="{{ site.baseurl }}{{ module.url }}" title="Read {{ module.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a><br><br>
-    				</div>
-    			</dd>
-    			{% assign counter=counter | plus:1 %}
-    			{% endfor %}
-    		</dl>
-      </div>
-    </div>
+	</div><!-- /.medium-8.columns -->
 
-	</div><!-- /.small-12.columns -->
+	<div class="medium-4 columns t30">
+		{% include sidebar %}
+	</div><!-- /.medium-4.columns -->
 </div><!-- /.row -->
