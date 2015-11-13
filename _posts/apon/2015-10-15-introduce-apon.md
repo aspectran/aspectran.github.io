@@ -105,7 +105,7 @@ scheduler: {
 {% endhighlight %}
 
 
-### Parameters 객체 생성하기
+### Parameters 객체 생성
 
 Parameters 객체는 여러 파라메터를 포함하며, 각 파라메터의 속성을 정의하는 역할을 합니다.
 위의 APON 형식의 텍스트 데이터를 Object로 변환하기 위해 4개의 Parameters 클래스를 작성했습니다.
