@@ -77,7 +77,9 @@ desc: (
 
 ## APON 활용 예제
 
-실제로 Aspectran Configuration을 불러들일때 필요한 파라메터를 다음과 같이 사용하고 있습니다.
+Aspectran을 구동하기 위해 필요한 초기화 파라메터를 예로 들어 설명합니다.
+
+> `web.xml`에서 초기화 파라메터 `aspectran:config`를 정의하면서 다음과 같은 긴 문자열 값을 지정하고 있습니다.
 
 {% highlight text %}
 context: {
@@ -105,9 +107,10 @@ scheduler: {
 
 ### Parameters 객체 생성하기
 
-위의 APON 형식의 텍스트 데이터를 Object로 변환하기 위해 5개의 Parameters 클래스를 작성했습니다.
+Parameters 객체는 여러 파라메터를 포함하며, 각 파라메터의 속성을 정의하는 역할을 합니다.
+위의 APON 형식의 텍스트 데이터를 Object로 변환하기 위해 4개의 Parameters 클래스를 작성했습니다.
 
-> 아래 Parameters 클래스들은 [`com.aspectran.core.util.apon.Parameters`](https://github.com/topframe/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/Parameters.java) 인터페이스의 구현체입니다.
+> 아래 4개의 Parameters 클래스는 [`com.aspectran.core.util.apon.Parameters`](https://github.com/topframe/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/Parameters.java) 인터페이스의 구현체입니다.
 
 
 ***AspectranConfig.java***  
@@ -149,7 +152,7 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
 {% endhighlight %}
 
 ***AspectranContextConfig.java***  
-`context` Parameters의 멤버 Parameter로는 `root`, `encoding`, `resources`, `hybridLoading`, `autoReloading`이 있습니다. `autoReloading`은 Parameters를 Value로 가집니다.
+`context` Parameters의 멤버 Parameter로는 `root`, `encoding`, `resources`, `hybridLoading`, `autoReloading`이 있습니다.
 
 {% highlight java %}
 package com.aspectran.core.context.loader.config;
@@ -281,7 +284,10 @@ public class AspectranSchedulerConfig extends AbstractParameters implements Para
 {% endhighlight %}
 
 
-### APON 형식의 텍스트 문서를 Parameters Object로 변환하기
+### AponReader 사용 예제
+
+[`AponReader`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponReader.java) 클래스를
+사용하면 APON 형식의 텍스트 문서를 Parameters Object로 쉽게 변환할 수 있습니다.
 
 {% highlight java %}
 package com.aspectran.core.util.apon;
@@ -317,7 +323,12 @@ public class AponReaderTest {
 {% endhighlight %}
 
 
-### APON 형식의 텍스트 문서를 Parameters Object로 변환하고, 다시 APON 형식의 문자열로 변환하기
+### AponWriter 사용 예제
+
+[`AponWriter`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponWriter.java) 클래스를
+사용하면 Parameters Object를 APON 형식의 텍스트 문서로 쉽게 변환할 수 있습니다.
+
+> APON 형식의 텍스트 문서를 Parameters Object로 변환하고, 다시 Parameters Object를 APON 형식의 문자열로 변환해서 콘솔에 출력하는 예제입니다.
 
 {% highlight java %}
 package com.aspectran.core.util.apon;
