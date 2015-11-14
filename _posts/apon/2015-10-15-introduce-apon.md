@@ -113,8 +113,9 @@ Parameters 객체는 여러 파라메터를 포함하며, 각 파라메터의 �
 > 아래 4개의 Parameters 클래스는 [`com.aspectran.core.util.apon.Parameters`](https://github.com/topframe/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/Parameters.java) 인터페이스의 구현체입니다.
 
 
-***AspectranConfig.java***  
-루트 Parameters로 `context`, `scheduler` Parameter를 가지고 있습니다.
+***AspectranConfig.java***
+
+> 루트 Parameters로 `context`, `scheduler` Parameter를 가지고 있습니다.
 
 {% highlight java %}
 package com.aspectran.core.context.loader.config;
@@ -151,8 +152,9 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
 }
 {% endhighlight %}
 
-***AspectranContextConfig.java***  
-`context` Parameters의 멤버 Parameter로는 `root`, `encoding`, `resources`, `hybridLoading`, `autoReloading`이 있습니다.
+***AspectranContextConfig.java***
+
+> `context` Parameters의 멤버 Parameter로는 `root`, `encoding`, `resources`, `hybridLoading`, `autoReloading`이 있습니다.
 
 {% highlight java %}
 package com.aspectran.core.context.loader.config;
@@ -199,8 +201,9 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 }
 {% endhighlight %}
 
-***AspectranContextAutoReloadingConfig.java***  
-`autoReloading` Parameters의 멤버 Parameter로는 `reloadMethod`, `observationInterval`, `startup`이 있습니다.
+***AspectranContextAutoReloadingConfig.java***
+
+> `autoReloading` Parameters의 멤버 Parameter로는 `reloadMethod`, `observationInterval`, `startup`이 있습니다.
 
 {% highlight java %}
 package com.aspectran.core.context.loader.config;
@@ -241,8 +244,9 @@ public class AspectranContextAutoReloadingConfig extends AbstractParameters impl
 }
 {% endhighlight %}
 
-***AspectranSchedulerConfig.java***  
-`scheduler` Parameters의 멤버 Parameter로는 `startDelaySeconds`, `waitOnShutdown`, `startup`이 있습니다.
+***AspectranSchedulerConfig.java***
+
+> `scheduler` Parameters의 멤버 Parameter로는 `startDelaySeconds`, `waitOnShutdown`, `startup`이 있습니다.
 
 {% highlight java %}
 package com.aspectran.core.context.loader.config;
@@ -284,48 +288,9 @@ public class AspectranSchedulerConfig extends AbstractParameters implements Para
 {% endhighlight %}
 
 
-### AponReader 사용 예제
+### AponSerializer 사용 예제
 
-[`AponReader`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponReader.java) 클래스를
-사용하면 APON 형식의 텍스트 문서를 Parameters Object로 쉽게 변환할 수 있습니다.
-
-{% highlight java %}
-package com.aspectran.core.util.apon;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
-
-import com.aspectran.core.context.loader.config.AspectranConfig;
-
-public class AponReaderTest {
-
-  public static void main(String argv[]) {
-    try {
-      Reader fileReader = new FileReader(new File(argv[0]));
-      AponReader reader = new AponReader(fileReader);
-
-      try {
-        Parameters aspectranConfig = new AspectranConfig();  
-
-        reader.read(aspectranConfig);
-
-        System.out.println(aspectranConfig);
-      } finally {
-        reader.close();
-      }
-    } catch(Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-}
-{% endhighlight %}
-
-
-### AponWriter 사용 예제
-
-[`AponWriter`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponWriter.java) 클래스를
+[`AponSerializer`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponSerializer.java) 클래스를
 사용하면 Parameters Object를 APON 형식의 텍스트 문서로 쉽게 변환할 수 있습니다.
 
 > APON 형식의 텍스트 문서를 Parameters Object로 변환하고, 다시 Parameters Object를 APON 형식의 문자열로 변환해서 콘솔에 출력하는 예제입니다.
@@ -337,39 +302,71 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 
 import com.aspectran.core.context.loader.config.AspectranConfig;
 
-public class AponWriterTest {
+public class AponSerializerTest {
+
+  public static void main(String argv[]) {
+    try {
+      Reader reader = new FileReader(new File(argv[0]));
+
+      Parameters aspectranConfig = new AspectranConfig();
+
+      AponDeserializer deserializer = new AponDeserializer(reader);
+      deserializer.read(aspectranConfig);
+      deserializer.close();
+
+      System.out.println(aspectranConfig);
+
+      Writer writer = new StringWriter();
+
+      AponSerializer serializer = new AponSerializer(writer);
+      serializer.write(aspectranConfig);
+      serializer.close();
+
+      System.out.println(writer.toString());
+
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+}
+{% endhighlight %}
+
+
+### AponDeserializer 사용 예제
+
+[`AponDeserializer`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponDeserializer.java) 클래스를
+사용하면 APON 형식의 텍스트 문서를 Parameters Object로 쉽게 변환할 수 있습니다.
+
+{% highlight java %}
+package com.aspectran.core.util.apon;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
+
+import com.aspectran.core.context.loader.config.AspectranConfig;
+
+public class AponDeserializerTest {
 
   public static void main(String argv[]) {
     try {
       Reader fileReader = new FileReader(new File(argv[0]));
-
-      AponReader reader = new AponReader(fileReader);
-
-      Parameters aspectranConfig = new AspectranConfig();
+      AponDeserializer reader = new AponDeserializer(fileReader);
 
       try {
+        Parameters aspectranConfig = new AspectranConfig();  
+
         reader.read(aspectranConfig);
 
         System.out.println(aspectranConfig);
       } finally {
         reader.close();
       }
-
-      StringWriter stringWriter = new StringWriter();
-
-      AponWriter writer = new AponWriter(stringWriter);
-
-      try {
-        writer.write(aspectranConfig);
-      } finally {
-        writer.close();
-      }
-
-      System.out.println(stringWriter.toString());
-
     } catch(Exception e) {
       e.printStackTrace();
     }
