@@ -64,7 +64,7 @@ public class Customer extends AbstractParameters implements Parameters {
     id = new ParameterDefine("id", ParameterValueType.STRING);
     name = new ParameterDefine("name", ParameterValueType.STRING);
     age = new ParameterDefine("age", ParameterValueType.INT);
-    episode = new ParameterDefine("age", ParameterValueType.TEXT);
+    episode = new ParameterDefine("episode", ParameterValueType.TEXT);
     approved = new ParameterDefine("approved", ParameterValueType.BOOLEAN);
 
     parameterDefines = new ParameterDefine[] {
