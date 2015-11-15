@@ -110,7 +110,7 @@
                 if(scrollTop < baseOffsetTop) {
                   scrollTop = 0;
                 } else {
-                  scrollTop = scrollTop - baseOffsetTop;
+                  scrollTop = scrollTop - baseOffsetTop + 10;
                 }
                 if(scrollTop > $(document).height() - footerHeight - thisHeight - baseOffsetTop - topNavHeight) {
                   scrollTop = $(document).height() - footerHeight - thisHeight - baseOffsetTop - topNavHeight;
