@@ -23,6 +23,7 @@
 ------------------------------------------------------------------- */
 
 #navigation {
+  text-shadow: rgba(0, 0, 0, .498039) 0px 1px 2px;
   &.fixed {
     opacity: .85;
     #masthead {
@@ -50,6 +51,7 @@
   min-width: 320px;
   color: $ci-6;
   background-color: $primary-color;
+  text-shadow: rgba(0, 0, 0, .498039) 0px 1px 2px;
   img {
     border-radius: 0;
   }
