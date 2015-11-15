@@ -16,8 +16,8 @@
         {% else %}
           <div class="medium-6 large-5 columns">
         {% endif %}
-            <h5 class="shadow-black">{{ site.data.language.info_website }}</h5>
-            <p class="shadow-black">
+            <h5>{{ site.data.language.info_website }}</h5>
+            <p>
               {{ site.description }}
               <a href="{{ site.baseurl }}/info/">{{ site.data.language.details }}</a>
             </p>
@@ -27,7 +27,7 @@
           <div class="small-6 medium-3 large-3 large-offset-1 columns">
             {% for network_item in site.data.network %}
               {% if forloop.first == true and network_item.menu_name %}
-                <h5 class="shadow-black">{{ network_item.menu_name }}</h5>
+                <h5>{{ network_item.menu_name }}</h5>
               {% endif %}
             {% endfor %}
             <ul class="no-bullet shadow-black">
@@ -44,7 +44,7 @@
           <div class="small-6 medium-3 large-3 columns">
             {% for service_item in site.data.services %}
               {% if forloop.first == true %}
-                <h5 class="shadow-black">{{ service_item.menu_name }}</h5>
+                <h5>{{ service_item.menu_name }}</h5>
               {% endif %}
             {% endfor %}
 

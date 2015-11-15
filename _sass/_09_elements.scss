@@ -117,17 +117,27 @@ dl.accordion {
   border-top: 1px solid $grey-2;
   dd {
     border-bottom: 1px solid $grey-2;
-  }
-  dd.accordion-navigation {
-    span {
-      padding-right: 12px;
-      &:before {
-        content: "\F107"
+    &.accordion-navigation {
+      > a {
+        background-color: transparent;
+        span.iconfont {
+          padding-right: .5em;
+          &:before {
+            content: "\F107"
+          }
+        }
       }
-    }
-    &.active {
-      span:before {
-        content: "\F105"
+      &.active {
+        a {
+          border-radius: 0 0 6px 6px;
+          span.iconfont:before {
+            content: "\F105"
+          }
+        }
+      }
+      .button {
+        margin:.2em 0;
+        padding: .5em 1em;
       }
     }
   }
