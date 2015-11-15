@@ -128,7 +128,7 @@ dl.accordion {
         }
       }
       &.active {
-        a {
+        > a {
           border-radius: 0 0 6px 6px;
           span.iconfont:before {
             content: "\F105"
