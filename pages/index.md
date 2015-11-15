@@ -6,9 +6,9 @@
 #
 layout: frontpage
 header:
-  image_slide:
-    - header_modules.jpg
+  slide_images:
     - header_documentation.jpg
+    - header_modules.jpg
     - header_gettingstarted.jpg
     - header_blog.jpg
     - header_search.jpg

@@ -1,4 +1,4 @@
-{% if page.header == NULL and page.header.image_fullwidth == NULL and page.header.image_slide == NULL and page.header.pattern == NULL and page.header.background-color == NULL and page.header.title == NULL %}
+{% if page.header == NULL and page.header.image_fullwidth == NULL and page.header.slide_images == NULL and page.header.pattern == NULL and page.header.background-color == NULL and page.header.title == NULL %}
 
 {% if page.article_heading == true %}
 
@@ -93,7 +93,7 @@
 {% endif %}
 
 
-{% elsif page.header.image_fullwidth or page.header.image_slide %}
+{% elsif page.header.image_fullwidth or page.header.slide_images %}
 
 
 {% if page.article_heading == true %}
