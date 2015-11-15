@@ -18,7 +18,7 @@
          navigationFixed = false;
          $("#navigation").hide();
          $("#navigation").removeClass("fixed");
-         $("#navigation").slideDown(250);
+         $("#navigation").slideDown(220);
        }
       } else {
         if(scrollTop > navigationHeight) {
