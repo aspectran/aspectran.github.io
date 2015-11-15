@@ -16,12 +16,16 @@
       if(navigationFixed) {
        if(scrollTop < navigationHeight) {
          navigationFixed = false;
+         $("#navigation").hide();
          $("#navigation").removeClass("fixed");
+         $("#navigation").slideDown(250);
        }
       } else {
         if(scrollTop > navigationHeight) {
           navigationFixed = true;
+          $("#navigation").hide();
           $("#navigation").addClass("fixed");
+          $("#navigation").fadeIn(450);
         }
       }
     });
