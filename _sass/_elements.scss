@@ -1,0 +1,254 @@
+// Go go top of page
+//-------------------
+
+p.gototop-anchor-wrap {
+  text-align: right;
+  margin: 0;
+  padding: 0;
+  line-height: 1em;
+}
+
+// Table of Contents (Index)
+//--------------------------
+
+#toc {
+  @include breakpoint(medium down) {
+    padding: 0 0 1em 0;
+    border-bottom: 3px solid $ci-3;
+    .toc-title {
+      color: darken($ci-3, 10%);
+      border-bottom: 3px solid $ci-3;
+      padding-bottom: .5em;
+      margin-bottom: 1em;
+    }
+  }
+  @include breakpoint(large) {
+    padding: .8em 0 .8em .9em;
+    border-left: 3px solid $ci-3;
+    .toc-title {
+      color: darken($ci-3, 10%);
+      border-bottom: 1px solid $grey-2;
+      padding-bottom: .5em;
+      margin-bottom: 1em;
+    }
+  }
+  ul {
+    margin: 0;
+    list-style-type: none;
+    li.toc-h1 {
+      font-weight: bold;
+      margin: 0 0 .5em 0;
+    }
+    li.toc-h2 {
+      margin-left: 0;
+    }
+    li.toc-h3 {
+      margin-left: 20px;
+    }
+    li.toc-h4 {
+      margin-left: 40px;
+    }
+    li.toc-h5 {
+      margin-left: 60px;
+    }
+    li.toc-h6 {
+      margin-left: 80px;
+    }
+  }
+}
+
+article {
+  a.toc-anchor {
+    border: 0;
+    font-size: 1px;
+    line-height: 1px;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+// Accordion
+//-----------
+
+.accordion {
+  border: 0;
+  border-top: 1px solid $grey-2;
+  border-radius: 0;
+  .accordion-item {
+    border-bottom: 1px solid $grey-2;
+    .accordion-title {
+      font-size: 100%;
+      padding: .7rem;
+      border: 0;
+      background-color: transparent;
+      span.iconfont {
+        padding-right: .5rem;
+        &:before {
+          content: "\F107"
+        }
+      }
+    }
+    &.is-active {
+      .accordion-title {
+        background-color: $grey-1;
+        border-radius: 0 0 6px 6px;
+        span.iconfont:before {
+          content: "\F105"
+        }
+      }
+    }
+  }
+  .accordion-content {
+    padding: .7rem;
+    border: 0;
+    p {
+      margin: 0;
+    }
+    .button {
+      margin:.2em 0;
+      padding: .5em 1em;
+    }
+  }
+}
+
+// Brief List
+//----------
+
+.brief-list {
+  list-style: none;
+  margin: 0;
+  border-top: 1px solid $grey-2;
+  li {
+    border-bottom: 1px solid $grey-2;
+    padding: .7rem 0;
+    &.more {
+      border-bottom: 0;
+      text-align: right;
+    }
+  }
+}
+
+// Tabs
+//------
+
+dl.tabs {
+  border: 0;
+  border-bottom: 1px solid $ci-2;
+  dd {
+    float: left;
+    margin: 0;
+    text-align: left;
+    > a {
+      padding: .7rem 2rem .7rem 1rem;
+      border: 0;
+      background-image: linear-gradient(-110deg, $grey-1 80%, $grey-2 100%);
+      &:hover {
+        border: 0;
+      }
+      span.iconfont:before {
+        content: "\F107"
+      }
+      span.disqus-comment-count {
+        color: $ci-5;
+        padding-left: .5rem;
+        font-weight: normal;
+      }
+      span.icon-chat {
+        color: $ci-3;
+        font-weight: normal;
+      }
+    }
+    &.is-active {
+      border: 0;
+      > a {
+        color: $ci-6;
+        background-color: $ci-2;
+        background-image: linear-gradient(-110deg, $ci-2 20%, $ci-1 100%);
+        span.iconfont:before {
+            content: "\F105"
+        }
+      }
+    }
+  }
+}
+.tabs-content {
+  border: 0;
+  .tabs-panel {
+    padding: 1em 0 0 0;
+  }
+}
+
+// Panel
+//-------
+
+.panel {
+  padding: 1rem;
+  border: 1px solid #cbcbcb;
+  background-color: #f5f5f5;
+  border-radius: $global-radius;
+}
+
+// Alerts
+//--------
+
+.alert-box {
+  border: 1px solid #ccc;
+  p {
+    margin-bottom: 0;
+  }
+  a {
+    border-bottom: 1px dotted $ci-1;
+    &:hover {
+      border-bottom: 1px solid $ci-1;
+    }
+  }
+  &.info {
+    background-color: #ececec;
+  }
+  &.success a {
+    background-color: #E2F2FC;
+  }
+  &.warning a {
+    background-color: #FCE9E6;
+  }
+  &.terminal {
+    background-color: $grey-12;
+    color: #fff;
+    border-color: scale-color($grey-12, $lightness: -14%);
+    font-family: $font-family-monospace;
+    a {
+      color: #35D300;
+    }
+    &::before {
+      content: "$ ";
+      color: $ci-6;
+    }
+  }
+  &.text {
+    background-color: $grey-2;
+    border-color: scale-color($grey-2, $lightness: -14%);
+    color: $grey-12;
+  }
+}
+
+/* Lazy Load XT
+------------------------------------------------------------------- */
+
+/*! Lazy Load XT v1.0.6 2014-11-19
+ * http://ressio.github.io/lazy-load-xt
+ * (C) 2014 RESS.io
+ * Licensed under MIT */
+img.lazy {
+  display: none;
+}
+.lazy-hidden {
+    opacity: 0;
+}
+.lazy-loaded {
+    -webkit-transition: opacity 0.7s;
+    -moz-transition: opacity 0.7s;
+    -ms-transition: opacity 0.7s;
+    -o-transition: opacity 0.7s;
+    transition: opacity 0.7s;
+    opacity: 1;
+}

@@ -14,9 +14,9 @@ permalink: "/blog/apon/"
     <h1>{{ page.title }}</h1>
     {% if page.teaser %}<p class="teaser">{{ page.teaser }}</p>{% endif %}
 
-    <ul class="t30">
+    <ul class="brief-list t30">
         {% for post in site.categories.apon reversed %}
-        <li><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+        <li><span class="icon-chevron-right"></span> <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
         {% endfor %}
     </ul>
 	</div><!-- /.medium-8.columns -->

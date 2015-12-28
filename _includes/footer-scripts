@@ -1,15 +1,13 @@
 <script src="{{ site.baseurl }}/assets/js/foundation.min.js"></script>
 <script src="{{ site.baseurl }}/assets/js/jquery.backstretch.min.js"></script>
 <script>
-  $(document).foundation({
-    reveal : {
-      animation: 'fade',
-      animation_speed: 250
-    }
+  $(document).foundation();
+  $(document).ready(function() {
+    $("article h2:eq(0)").addClass("first");
   });
   $(document).ready(function() {
     var navigationFixed = false;
-    var navigationHeight = $("#navigation").height();
+    var navigationHeight = $("#masthead").height() - $("#navigation").height();
     var $window = $(window);
     $window.scroll(function() {
       var scrollTop = $window.scrollTop();

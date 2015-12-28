@@ -1,0 +1,554 @@
+/* TOC
+
+- Navigation
+- Search
+- Masthead
+- Masthead › small-only
+- Masthead › medium-only
+- Masthead › large-only
+- Masthead › xlarge-up
+- Breadcrumb
+- Meta
+- Jump to top
+- Footer
+- Subfooter
+- CSS-Classes to add margin at top or bottom
+- Adjustments: Video Layout
+- Frontpage
+
+*/
+
+
+// Navigation
+//-----------
+
+#navigation {
+  text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
+  text-transform: uppercase;
+  &.fixed {
+    position: fixed;
+    width: 100%;
+    opacity: .87;
+    z-index: 1;
+  }
+  .title-bar {
+    display: none;
+    padding: rem-calc(2 8);
+    line-height: 36px;
+    background-color: $ci-0;
+    .title-bar-title {
+      cursor: pointer;
+    }
+    .title-bar-logo {
+      float: right;
+    }
+  }
+  .top-bar {
+    @include breakpoint(small only) {
+      .top-bar-logo {
+        display: none;
+      }
+    }
+    @include breakpoint(medium) {
+      .top-bar-logo {
+        float: left;
+        padding: rem-calc(0 8);
+      }
+    }
+    ul.dropdown {
+      @include breakpoint(small only) {
+        background-color: darken($ci-0, 10%);
+        > li {
+          display: block;
+        }
+      }
+      li {
+        @include breakpoint(medium) {
+          &.active {
+            background-color: lighten($ci-0, 5%);
+          }
+        }
+        &:hover {
+          background-color: darken($ci-0, 5%);
+          a {
+            color: #fff;
+          }
+        }
+      }
+      ul.submenu {
+        li {
+          @include breakpoint(small only) {
+            &.submenu-closer {
+              display: block;
+            }
+          }
+          @include breakpoint(medium) {
+            &.submenu-closer {
+              display: none;
+            }
+            &.active {
+              background-color: $ci-0;
+            }
+          }
+          &:hover {
+            background-color: darken($ci-0, 5%);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Search
+//--------
+
+.no-js form#search {
+  display: none;
+}
+
+// Masthead
+//---------
+
+#masthead {
+  position: relative;
+  min-width: 320px;
+  color: $ci-6;
+  background-color: $ci-1;
+  text-shadow: rgba(0, 0, 0, .498039) 0px 1px 2px;
+  @include breakpoint(small only) {
+    #forkme-ribbon {
+      display: none;
+    }
+  }
+  img {
+    border-radius: 0;
+  }
+  header {
+    h1 {
+      color: $ci-6;
+    }
+  }
+  .breadcrumbs-bar {
+    padding: 0;
+    margin-top: 1rem;
+    background-color: darken($ci-1, 6%);
+    .row {
+      margin: 0;
+    }
+    .breadcrumbs {
+      margin: 0 .6em;
+      color: $ci-6;
+      border: 0;
+      a {
+        color: $ci-6;
+        font-weight: normal;
+        &:link {
+        }
+        &:visited {
+          border: 0;
+        }
+        &:hover {
+          color: lighten($anchor-color, 10%);
+        }
+        &:focus {
+          color: lighten($anchor-color, 20%);
+        }
+        &:active {
+          color: darken($anchor-color, 20%);
+        }
+        &.current {
+          color: $ci-6;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+.masthead-with-text {
+  text-align: center;
+  font-size: rem-calc(54);
+  font-family: $header-font-family;
+  color: #fff;
+  text-transform: uppercase;
+  text-shadow: 0 2px 3px rgba(0,0,0,.4);
+}
+.masthead-no-image-header {
+  #slogan {
+    margin: 10px 0;
+    img {
+      height: 128px;
+    }
+  }
+  header {
+    padding-top: 2em;
+  }
+}
+
+// Masthead › small-only
+//-----------------------
+
+@include breakpoint(small only) {
+  .masthead-caption {
+    display: none;
+  }
+  .masthead-with-pattern {
+    padding: 15px 0;
+  }
+  .masthead-with-background-color {
+    padding: 15px 0;
+  }
+  .masthead-with-text {
+    height: 220px;
+    padding: 30px 0;
+    font-size: rem-calc(36);
+  }
+  .masthead-with-image-header {
+    height: 240px;
+    #slogan {
+      margin-top: 110px;
+      margin-left: 0;
+      img {
+        height: 115px;
+      }
+    }
+    header {
+      margin-top: 1em;
+    }
+  }
+  .masthead-no-image-header {
+    header {
+      padding-top: 1em;
+    }
+  }
+  dl.tabs dd {
+    clear: both;
+  }
+}
+
+// Masthead › medium-only
+//------------------------
+
+@include breakpoint(medium only) {
+  .masthead-with-pattern {
+    padding: 20px 0;
+  }
+  .masthead-with-background-color {
+    padding: 20px 0;
+  }
+  .masthead-with-text {
+    padding: 60px 0;
+    height: 300px;
+  }
+  .masthead-with-image-header {
+    height: 280px;
+    #slogan {
+      margin-top: 70px;
+      margin-left: 33px;
+      img {
+        height: 170px;
+      }
+    }
+    header {
+      margin-top: 100px;
+      h1 {
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// Masthead › large-only
+//-----------------------
+
+@include breakpoint(large only) {
+  .masthead-with-pattern {
+    padding: 30px 0;
+  }
+  .masthead-with-background-color {
+    padding: 30px 0;
+  }
+  .masthead-with-text {
+    height: 330px;
+    padding: 60px 0;
+  }
+  .masthead-with-image-header {
+    height: 310px;
+    #slogan {
+      margin-top: 90px;
+      margin-left: 33px;
+      img {
+        height: 170px;
+      }
+    }
+    header {
+      margin-top: 130px;
+      h1 {
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// Masthead › xlarge-up
+//----------------------
+
+@include breakpoint(xlarge) {
+  .masthead-with-pattern {
+    padding: 45px 0;
+  }
+  .masthead-with-background-color {
+    padding: 45px 0;
+  }
+  .masthead-with-text {
+    padding: 95px 0;
+    height: 400px;
+  }
+  .masthead-with-image-header {
+    height: 380px;
+    #slogan {
+      margin-top: 140px;
+      img {
+        height: 170px;
+      }
+    }
+    header {
+      margin-top: 190px;
+      h1 {
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+// Breadcrumb
+//------------
+
+.breadcrumbs-bar {
+  background: scale-color($grey-1, $lightness: 50%);
+  .breadcrumbs {
+    font-size: 74%;
+    background: none;
+    margin: 0 1.1rem;
+    padding: .2em;
+    > a {
+      text-transform: uppercase;
+      &.current {
+        font-weight: bold;
+      }
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    > :first-child::before {
+      content: "";
+      margin: 0;
+    }
+    > *::before {
+      color: #AAA;
+      content: "/";
+      margin: 0 .3em;
+      position: relative;
+    }
+  }
+}
+
+// Meta
+//------
+
+#page-meta, #page-meta a {
+  color: $grey-5;
+}
+
+#page-meta .button {
+  background: $grey-5;
+  border: 0;
+}
+#page-meta .button {
+  color: #fff;
+}
+#page-meta .button:hover {
+  background: $primary-color;
+}
+.meta-info {
+  p {
+    font-size: rem-calc(13);
+    color: scale-color($grey-1, $lightness: 40%);
+  }
+  a {
+    text-decoration: underline;
+    color: scale-color($grey-1, $lightness: 40%);
+    &:hover {
+      text-decoration: none;
+      color: $secondary-color;
+    }
+  }
+}
+
+// Jump to top
+//-------------
+
+#up-to-top {
+  padding: 100px 0 10px 0;
+  a {
+    font-size: 32px;
+    padding: 5px;
+    border-radius: $global-radius;
+    &:hover {
+      background: $grey-2;
+    }
+  }
+}
+
+// Footer
+//--------
+
+#footer-content {
+  #footer {
+    font-size: 90%;
+    font-weight: 300;
+    padding-top: 30px;
+    padding-bottom: 20px;
+    background: $footer-bg;
+    color: $footer-color;
+    text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
+    h4, h5 {
+      letter-spacing: 1px;
+      color: #fff;
+      text-transform: uppercase;
+    }
+    p {
+      font-size: 95%;
+    }
+    a {
+      color: $footer-link-color;
+      &:hover {
+        color: $footer-link-hover-color;
+      }
+    }
+  }
+}
+
+
+// Subfooter
+//-----------
+
+#subfooter {
+  background: $subfooter-bg;
+  color: $subfooter-color;
+  padding-top: 30px;
+  padding-bottom: 10px;
+  .credits {
+    font-size: 90%;
+    font-weight: bold;
+    text-shadow: rgba(0, 0, 0, .498039) 0px 1px 2px;
+    a {
+      color: $subfooter-link-color;
+      border: 0;
+      text-transform: uppercase;
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+  .social-icons {
+    font-size: 90%;
+    ul {
+      margin: 0;
+      list-style: none;
+      @include breakpoint(small only) {
+        float: right;
+      }
+    }
+    li {
+      float: left;
+      margin-right: rem-calc(15);
+      a {
+        font-size: rem-calc(23);
+        display: block;
+        width: 36px;
+        border-radius: 50%;
+        color: $subfooter-bg;
+        background: $subfooter-color;
+        text-align: center;
+        &:hover {
+          background: $subfooter-bg;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+// CSS-Classes to add margin at top or bottom
+//--------------------------------------------
+
+.t5 { margin-top: 5px !important; }
+.t10 { margin-top: 10px !important; }
+.t15 { margin-top: 15px !important; }
+.t20 { margin-top: 20px !important; }
+.t30 { margin-top: 30px !important; }
+.t50 { margin-top: 50px !important; }
+.t60 { margin-top: 60px !important; }
+.t70 { margin-top: 70px !important; }
+.t80 { margin-top: 80px !important; }
+.t90 { margin-top: 90px !important; }
+
+.b5 { margin-bottom: 5px !important; }
+.b10 { margin-bottom: 10px !important; }
+.b15 { margin-bottom: 15px !important; }
+.b20 { margin-bottom: 20px !important; }
+.b30 { margin-bottom: 30px !important; }
+.b40 { margin-bottom: 40px !important; }
+.b50 { margin-bottom: 50px !important; }
+.b60 { margin-bottom: 60px !important; }
+
+.l15 { margin-left: 15px !important; }
+.r15 { margin-right: 15px !important; }
+
+.pl20 { padding-left: 20px !important; }
+.pr5  { padding-right: 5px !important; }
+.pr10 { padding-right: 10px !important; }
+.pr20 { padding-right: 20px !important; }
+
+// Adjustments: Video Layout
+//---------------------------
+
+body.video {
+  background: #000;
+  #masthead-no-image-header {
+    background: #000;
+    margin-bottom: 60px;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  a,
+  blockquote:before,
+  blockquote:after,
+  cite,
+  cite a,
+  cite a:visited {
+    color: #fff;
+  }
+}
+
+// Frontpage
+//-----------
+
+body.frontpage {
+  .grey-ground {
+    padding: 40px 0 20px;
+    background-color: #F2F2F2;
+  }
+  .homepage {
+    p {
+      margin: 0;
+      padding: 0;
+      color: $grey-10;
+    }
+  }
+}

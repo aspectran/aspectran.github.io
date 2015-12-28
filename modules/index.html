@@ -28,25 +28,23 @@ categories:
 	<div class="medium-8 columns t30">
 
     {% for category in page.categories %}
-    <div class="row">
-      <div class="small-12 columns b30">
-        <h2><a href="{{ category.path }}">{{ category.name }}</a></h2>
-        <p>{{ category.description }}</p>
-        <dl class="accordion" data-accordion>
-    			{% assign counter = 1 %}
-          {% assign modules = site.modules | where: "category", category.name %}
-    			{% for module in modules limit:1000 %}
-    			<dd class="accordion-navigation">
-    			  <a href="#{{ category.path }}-panel{{ counter }}"><span class="iconfont"></span><strong>{{ module.title }}</strong></a>
-    				<div id="{{ category.path }}-panel{{ counter }}" class="content">
-    					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
-    					<p class="text-right"><a class="button radius small" href="{{ site.baseurl }}{{ module.url }}" title="{{ module.title escape_once }}">{{ site.data.language.read_more }}</a></p>
-    				</div>
-    			</dd>
-    			{% assign counter = counter | plus:1 %}
-    			{% endfor %}
-    		</dl>
-      </div>
+    <div class="coloumns b30">
+      <h2><a href="{{ category.path }}">{{ category.name }}</a></h2>
+      <p>{{ category.description }}</p>
+      <ul class="accordion" data-accordion data-allow-all-closed="true">
+  			{% assign counter = 1 %}
+        {% assign modules = site.modules | where: "category", category.name %}
+  			{% for module in modules limit:1000 %}
+  			<li class="accordion-item">
+  			  <a href="#{{ category.path }}-panel{{ counter }}" role="tab" class="accordion-title" id="{{ category.path }}-panel{{ counter }}-heading" aria-controls="{{ category.path }}-panel{{ counter }}"><span class="iconfont"></span><strong>{{ module.title }}</strong></a>
+  				<div id="{{ category.path }}-panel{{ counter }}" data-tab-content role="tabpanel" class="accordion-content" aria-labelledby="{{ category.path }}-panel{{ counter }}-heading">
+  					{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
+  					<p class="text-right"><a class="button small" href="{{ site.baseurl }}{{ module.url }}" title="{{ module.title escape_once }}">{{ site.data.language.read_more }}</a></p>
+  				</div>
+  			</li>
+  			{% assign counter = counter | plus:1 %}
+  			{% endfor %}
+  		</ul>
     </div>
     {% endfor %}
 

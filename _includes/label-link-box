@@ -1,11 +1,7 @@
-<div class="row collapse">
-  <div class="small-2 large-1 columns">
-    <span class="prefix">{{ include.label }}</span>
-  </div>
-  <div class="small-8 large-10 columns">
-    <input type="text" value="{{ include.href }}" readonly>
-  </div>
-  <div class="small-2 large-1 columns">
-    <a href="{{ include.href }}" target="_blank" class="button postfix">Go</a>
+<div class="input-group">
+  <span class="input-group-label">{{ include.label }}</span>
+  <input class="input-group-field" type="text" value="{{ include.href }}" readonly>
+  <div class="input-group-button">
+    <a href="{{ include.href }}" target="_blank" class="button">Go</a>
   </div>
 </div>

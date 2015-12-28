@@ -1,7 +1,7 @@
 ---
 layout: null
 source: 'http://www.evagoras.com/2011/02/10/improving-an-xml-feed-display-through-css-and-xslt/'
-breadcrumbs: true
+breadcrumb: true
 ---
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" {{ page.stylesheetAttributes }}>
@@ -18,7 +18,11 @@ breadcrumbs: true
 		<xsl:text disable-output-escaping="yes"><![CDATA[
 		{% include navigation %}
 		{% include masthead %}
-		{% include alert warning=page.disclaimer classes="text-center" %}
+		<div class="row t20">
+			<div class="columns">
+				{% include alert warning=page.disclaimer classes="text-center" %}
+			</div>
+		</div>
 		]]></xsl:text>
 		{{ content }}
 		<xsl:text disable-output-escaping="yes"><![CDATA[

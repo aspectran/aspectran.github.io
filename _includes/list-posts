@@ -24,14 +24,14 @@
 
 {% assign category = include.category %}
 {% assign tag = include.tag %}
-<ul class="side-nav">
+<ul class="brief-list">
 
   {% if category == NULL and tag == NULL %}
 
     {% for post in site.posts limit:include.entries offset:include.offset %}
-      <li><a href="{{ site.baseurl }}{{ post.url }}"><span class="icon-chevron-right"></span> {% if post.subheadline %}{{ post.subheadline }} &middot; {% endif %}<strong>{{ post.title }}</strong></a></li>
+      <li><a href="{{ site.baseurl }}{{ post.url }}"><span class="icon-chevron-right"></span> {% if post.subheadline %}<small>{{ post.subheadline }}</small> &middot; {% endif %}<strong>{{ post.title }}</strong></a></li>
     {% endfor %}
-      <li class="text-right"><a href="{{ site.baseurl }}/blog/archive/"><strong>{{ site.data.language.more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a></li>
+      <li class="more"><a href="{{ site.baseurl }}/blog/archive/"><strong>{{ site.data.language.more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a></li>
 
   {% elsif category %}
 

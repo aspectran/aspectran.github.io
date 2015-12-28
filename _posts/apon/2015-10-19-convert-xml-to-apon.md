@@ -2,8 +2,10 @@
 layout: page-fullwidth
 format: article
 subheadline: Aspectran Parameter Object Notation
-title:  "XML을 APON으로 변환 Sample"
-teaser: "Aspectran은 내부적으로 XML을 APON으로 변환 또는 APON을 XML로 변환해서 사용하는 기능을 가지고 있습니다. 반복적으로 XML 데이터를 로딩하는 부분을 APON으로 교체하면 서버의 부하를 줄이고, 개발시간을 단축할 수 있습니다."
+title:  XML을 APON으로 변환 Sample
+teaser: |
+  Aspectran은 내부적으로 XML을 APON으로 변환 또는 APON을 XML로 변환해서 사용하는 기능을 가지고 있습니다.
+  반복적으로 XML 데이터를 로딩하는 부분을 APON으로 교체하면 서버의 부하를 줄이고, 개발시간을 단축할 수 있습니다.
 breadcrumb: true
 comments: true
 categories:

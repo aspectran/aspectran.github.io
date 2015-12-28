@@ -14,13 +14,13 @@ permalink: /modules/utility/
     {% assign modules = site.modules | where: "category", "Utility" %}
     {% for module in modules %}
     <div class="row b10">
-      <div class="small-12 columns">
-        <h2><a href="{{ site.baseurl }}{{ module.url }}">{{ module.title }}</a></h2>
+      <div class="columns">
+        <h3><a href="{{ site.baseurl }}{{ module.url }}">{{ module.title }}</a></h3>
         <p>
           {% if module.image.thumb %}<a href="{{ site.baseurl }}{{ module.url }}" title="{{ module.title escape_once }}"><img src="{{ site.urlimg }}{{ module.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title escape_once }}"></a>{% endif %}
           {% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
         </p>
-      </div><!-- /.small-12.columns -->
+      </div><!-- /.columns -->
     </div><!-- /.row -->
     {% endfor %}
 

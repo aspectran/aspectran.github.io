@@ -10,7 +10,7 @@
 *
 {% endcomment %}
 
-<ul class="side-nav">
+<ul class="brief-list">
   {% for page in site.[include.collection] %}
     {% unless page.published == false %}
     <li><a href="{{ site.baseurl }}{{ page.url }}">{{ page.title }}</a></li>

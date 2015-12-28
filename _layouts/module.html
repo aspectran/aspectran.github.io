@@ -6,19 +6,19 @@ article_heading: true
   <div class="medium-12 columns">
     <article itemscope itemtype="http://schema.org/Article">
 
-      <dl class="tabs" data-tab>
-        <dd class="active"><a href="#overview"><span class="iconfont"></span> USAGE</a></dd>
-        <dd><a href="#download"><span class="iconfont"></span> DOWNLOAD</a></dd>
-        <dd><a href="#reviews" id="reviews"><span class="iconfont"></span> REVIEWS <span class="icon-chat"></span><span class="disqus-comment-count" data-disqus-identifier="{{ page.url }}">0 Comments</span></a></dd>
+      <dl class="tabs" data-tabs id="module-tabs">
+        <dd class="tabs-title is-active"><a href="#overview"><span class="iconfont"></span> USAGE</a></dd>
+        <dd class="tabs-title"><a href="#download"><span class="iconfont"></span> DOWNLOAD</a></dd>
+        <dd class="tabs-title"><a href="#reviews" id="reviews"><span class="iconfont"></span> REVIEWS <span class="icon-chat"></span><span class="disqus-comment-count" data-disqus-identifier="{{ page.url }}">0 Comments</span></a></dd>
       </dl>
 
 			<span itemprop="articleSection">
-        <div class="tabs-content">
-          <div class="content active" id="overview">
+        <div class="tabs-content" data-tabs-content="module-tabs">
+          <div class="tabs-panel is-active" id="overview">
             {{ content }}
           </div>
 
-          <div class="content" id="download">
+          <div class="tabs-panel" id="download">
             <div class="row">
               <div class="medium-8 columns">
                 {% if page.download.source %}
@@ -31,7 +31,7 @@ article_heading: true
             </div>
           </div>
 
-          <div class="content" id="reviews">
+          <div class="tabs-panel" id="reviews">
             <div id="disqus_thread"></div>
             <script type="text/javascript">
                 /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */

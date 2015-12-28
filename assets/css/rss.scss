@@ -2,15 +2,10 @@
 sitemap:
   exclude: true
 ---
-@charset "utf-8";
+@charset 'utf-8';
 
-@import "functions.scss";
-
-$include-html-classes: false;
-@import "01_settings_colors.scss";
-@import "02_settings_typography.scss";
-@import "03_settings_mixins_media_queries.scss";
-@import "04_settings_global.scss";
+@import 'colors';
+@import 'settings/settings';
 
 * {
 	display: block;
@@ -18,7 +13,7 @@ $include-html-classes: false;
 
 :root {
 	margin: 3em;
-	background: $body-bg;
+	background: $body-background;
 	color: $body-font-color;
 	font-family: $body-font-family;
 }
@@ -27,8 +22,6 @@ channel {
 	> title {
 		text-align: center;
 		color: lighten($primary-color, 25%);
-		font-family: $header-font-family;
-		font-size: $font-size-h1 * 1.5;
 		font-weight: bolder;
 		&::before {
 			content: 'RSS Feed for ';
@@ -45,7 +38,7 @@ channel {
 			letter-spacing: initial;
 		}
 	}
-	
+
 	> description,
 	> link {
 		display: none;
@@ -54,15 +47,13 @@ channel {
 
 item {
 	padding: 1em 0;
-	border-bottom: 1px solid invert($body-bg);
+	border-bottom: 1px solid invert($body-background);
 	&:last-child {
 		border-bottom: none;
 	}
 
 	> title {
 		color: $secondary-color;
-		font-family: $header-font-family;
-		font-size: $font-size-h1;
 		margin-bottom: 0.5em;
 	}
 
