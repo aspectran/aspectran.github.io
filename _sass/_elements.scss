@@ -139,11 +139,15 @@ dl.tabs {
     margin: 0;
     text-align: left;
     > a {
-      padding: .7rem 2rem .7rem 1rem;
+      font-weight: bold;
+      margin-right: 1px;
+      padding: .7em 2em .7em 1em;
       border: 0;
       background-image: linear-gradient(-110deg, $grey-1 80%, $grey-2 100%);
+      border-radius: 5px 12px 0 0;
       &:hover {
         border: 0;
+        background-image: linear-gradient(-110deg, $grey-2 90%, $grey-1 100%);
       }
       span.iconfont:before {
         content: "\F107"
@@ -186,6 +190,9 @@ dl.tabs {
   border: 1px solid #cbcbcb;
   background-color: #f5f5f5;
   border-radius: $global-radius;
+  h3, h4 {
+    margin-top: 0 !important;
+  }
 }
 
 // Alerts
