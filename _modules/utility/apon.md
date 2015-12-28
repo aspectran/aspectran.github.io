@@ -12,7 +12,7 @@ download:
   source: https://github.com/aspectran/aspectran/tree/master/src/main/java/com/aspectran/core/util/apon
 ---
 
-APON에 대한 자세한 소개 내용은 다음 페이지에서 보실 수 있습니다.
+APON에 대한 자세한 소개 내용은 다음 페이지에서 볼 수 있습니다.
 
 {% include label-link-box label="페이지" href="/blog/apon/introduce-apon/" %}
 
