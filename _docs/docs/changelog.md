@@ -10,6 +10,19 @@ comments: true
 
 {% include alert info='상세한 변경이력은 [GitHub](https://github.com/aspectran/aspectran/releases){:target="_blank"}에서 볼 수 있습니다.' %}
 
+2015-12-29 // Version 1.5.0
+: Adds the session joinpoint-scope.  
+  Advice Action can be executed at the session start and end.
+: Recognizes the APON Object when converting ProcessResult object to JSON or XML string.
+: Updated quartz to 2.2.2
+: Updated slf4j to 1.7.13
+: Updated slf4j-log4j12 to 1.7.13
+: Updated travis settings
+: Deleted unnecessary files.
+: Removed “Project Specific Settings” files.
+: Clean up source code and update comments in java code.
+: Many bugfixes and optimizations.
+
 2015-11-01 // Version 1.4.0
 :   외부 라이브러리 연동 정책이 수정됨에 따라 패키지 구조가 변경되었습니다.
 
