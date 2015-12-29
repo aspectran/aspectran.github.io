@@ -35,7 +35,10 @@
     {% endif %}
 
     {% if page.breadcrumb == true %}
+		<div class="breadcrumbs-bar">
     {% include breadcrumb %}
+		</div>
+		</div>
     {% endif %}
 		</div><!-- /.small-12.columns -->
 		{% include forkme-ribbon %}
@@ -60,7 +63,11 @@
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
-{% include breadcrumb %}
+<div class="breadcrumbs-bar">
+  <div class="row">
+		{% include breadcrumb %}
+	</div>
+</div>
 {% endif %}
 
 {% endif %}
@@ -79,7 +86,11 @@
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
-{% include breadcrumb %}
+<div class="breadcrumbs-bar">
+  <div class="row">
+		{% include breadcrumb %}
+	</div>
+</div>
 {% endif %}
 
 {% if page.header.caption_url && page.header.caption %}
@@ -136,7 +147,11 @@
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
-{% include breadcrumb %}
+<div class="breadcrumbs-bar">
+  <div class="row">
+		{% include breadcrumb %}
+	</div>
+</div>
 {% endif %}
 
 {% else %}
@@ -157,7 +172,11 @@
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
-{% include breadcrumb %}
+<div class="breadcrumbs-bar">
+  <div class="row">
+		{% include breadcrumb %}
+	</div>
+</div>
 {% endif %}
 
 {% endif %}
@@ -186,7 +205,11 @@
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
-{% include breadcrumb %}
+<div class="breadcrumbs-bar">
+  <div class="row">
+		{% include breadcrumb %}
+	</div>
+</div>
 {% endif %}
 
 {% if page.header.caption_url && page.header.caption %}
@@ -213,7 +236,11 @@
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
-{% include breadcrumb %}
+<div class="breadcrumbs-bar">
+  <div class="row">
+		{% include breadcrumb %}
+	</div>
+</div>
 {% endif %}
 
 {% if page.header.caption_url && page.header.caption %}
@@ -231,7 +258,11 @@
 
 
 {% if page.breadcrumb == true %}
-{% include breadcrumb %}
+<div class="breadcrumbs-bar">
+  <div class="row">
+		{% include breadcrumb %}
+	</div>
+</div>
 {% endif %}
 
 
