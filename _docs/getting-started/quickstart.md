@@ -11,7 +11,7 @@ sidebar: toc
 
 ## 1. Aspectran 라이브러리 다운로드
 
-Aspectran 홈페이지의 [다운로드](http://www.aspectran.com/downloads/) 페이지에서 수동으로 jar 라이브러리의 복사본을 받을 수 있습니다.
+Aspectran 홈페이지의 [다운로드](http://www.aspectran.com/downloads/) 페이지에서 jar 라이브러리의 복사본을 받을 수 있습니다.
 
 또한 다음과 같은 필수 의존 라이브러리를 필요로 합니다.
 
@@ -20,7 +20,15 @@ Aspectran 홈페이지의 [다운로드](http://www.aspectran.com/downloads/) �
 * commons-io
 * logging 라이브러리(commons-logging, log4j, slf4j)
 
-Maven을 사용한다면 [pom.xml](https://github.com/aspectran/aspectran/blob/master/pom.xml) 파일을 참고해서 의존 라이브러리를 추가해 주세요.
+Maven을 사용한다면 pom.xml에 다음 설정을 추가하세요.
+
+{% highlight xml %}
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran</artifactId>
+  <version>1.5.0</version>
+</dependency>
+{% endhighlight %}
 
 
 ## 2. 웹 프로젝트 생성

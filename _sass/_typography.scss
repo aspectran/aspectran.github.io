@@ -28,8 +28,13 @@ header {
 }
 
 body.article article {
-  h2:nth-child(n+3) {
+  h2 {
     margin: 1.363em 0 .7em 0;
+    &:nth-child(0),
+    &:nth-child(1),
+    &:nth-child(2) {
+      margin-top: 0.2em;
+    }
   }
   h3 {
     margin: 1.152em 0 .6em 0;
@@ -187,14 +192,15 @@ dt:first-child {
 }
 dt {
   font-weight: bold;
-  padding-top: rem-calc(24);
+  padding-top: rem-calc(20);
 }
 dd {
 }
 article dl dt {
+  line-height: 1.5;
 }
 article dl dd {
-  line-height: 1.6;
+  line-height: 1.5;
   margin-left: rem-calc(24);
 }
 

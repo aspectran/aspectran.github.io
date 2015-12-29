@@ -7,22 +7,49 @@ subheadline: "Download a Release of Aspectran"
 teaser: "Aspectran은 Apache 2.0 License에 의거하여 무료로 제공되는 오픈소스입니다."
 ---
 
-## Latest stable release: 1.4.0
-* Full Distribution:
-  - aspectran-1.4.0-all.zip (includes binary, documentation and source code)
-* Example Applications:
-  - aspectran-1.4.0-apps.zip
-* Source:
-  - [aspectran-1.4.0-src.zip][1] (556KB)
+## Latest stable release: 1.5.0
+
+Core Libarary
+: [aspectran-1.5.0.jar][1] (689KB)
+
+Source
+: [aspectran-1.5.0-sources.jar][2] (510KB)
+
+Javadoc
+: [aspectran-1.5.0-javadoc.jar][3] (2.4MB)
+
+
+## Maven
+
+Maven을 사용한다면 pom.xml에 다음 설정을 추가하세요.
+
+{% highlight xml %}
+<project>
+  <dependencies>
+    <dependency>
+      <groupId>com.aspectran</groupId>
+      <artifactId>aspectran</artifactId>
+      <version>1.5.0</version>
+    </dependency>
+  </dependencies>
+</project>
+{% endhighlight %}
+
+See [all versions available on the Maven Central Repository][4].
+
 
 ## 필수 의존 라이브러리
-Maven을 사용한다면 [pom.xml][2] 파일을 참고해서 의존 라이브러리를 추가해 주세요.
 
 * javassist or cglib
 * commons-fileupload
 * commons-io
 * logging 라이브러리(commons-logging, log4j, slf4j)
 
+의존 라이브러리에 대한 상세한 정보는 [pom.xml][5]을 참고하시기 바랍니다.
 
-[1]: {{ site.baseurl }}/downloads/1.4/aspectran-1.4.0-src.zip
-[2]: https://github.com/aspectran/aspectran/blob/master/pom.xml
+
+[1]: {{ site.baseurl }}/downloads/1.5.x/aspectran-1.5.0.jar
+[2]: {{ site.baseurl }}/downloads/1.5.x/aspectran-1.5.0-sources.jar
+[3]: {{ site.baseurl }}/downloads/1.5.x/aspectran-1.5.0-javadoc.jar
+[4]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.aspectran%22
+[5]: https://github.com/aspectran/aspectran/blob/master/pom.xml
