@@ -12,16 +12,18 @@ download:
   source: https://github.com/aspectran/aspectran/tree/master/src/main/java/com/aspectran/core/util/apon
 ---
 
-APON에 대한 자세한 소개 내용은 다음 페이지에서 볼 수 있습니다.
+APON에 대한 자세한 내용은 다음 페이지를 참고하세요.
 
-{% include label-link-box label="페이지" href="/blog/apon/introduce-apon/" %}
+{% include label-link-box label="APON을 소개합니다." href="/blog/apon/introduce-apon/" %}
+
+- - -
 
 ## Parameters 객체 활용
 
-- APON 라이브러리를 이용하면 여러 개의 매개변수를 구조화된 하나의 Object로 만들 수도 있습니다.
+- APON 라이브러리를 이용하면 여러 개의 매개변수를 구조화된 하나의 Object로 만들 수 있습니다.
 - 구조화된 하나의 Object를 Parameters라고 합니다.
-- APON 표기법을 따르는 텍스트 형식의 문자열 데이터를 Parameters Obejct로 변환하기 위해서 AponDeserializer 클래스를 사용합니다.
-- Parameters Obejct를 APON 표기법에 따라 텍스트 형식의 문자열로 변환하기 위해서 AponSerializer 클래스를 사용합니다.
+- APON 표기법을 따르는 텍스트 형식의 문자열 데이터를 Parameters Obejct로 변환하기 위해 AponDeserializer 클래스를 사용합니다.
+- Parameters Obejct를 APON 표기법에 따라 텍스트 형식의 문자열로 변환하기 위해 AponSerializer 클래스를 사용합니다.
 
 Parameters 인터페이스를 구현한 Curtomer 클래스를 예로 들어 설명합니다.
 Customer 클래스는 간단한 고객정보 관련 필드를 몇 개 가지고 있습니다.
