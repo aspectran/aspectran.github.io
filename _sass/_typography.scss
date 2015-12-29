@@ -1,5 +1,5 @@
 // Headlines
-//------------
+//-----------
 
 h1 {
   margin: 0;
@@ -28,11 +28,8 @@ header {
 }
 
 body.article article {
-  h2 {
+  h2:nth-child(n+3) {
     margin: 1.363em 0 .7em 0;
-    &.first {
-      margin-top: 0;
-    }
   }
   h3 {
     margin: 1.152em 0 .6em 0;
@@ -61,7 +58,7 @@ a {
     color: lighten($anchor-color, 20%);
   }
   &:active {
-    color: darken($anchor-color, 20%);
+    color: darken($anchor-color, 5%);
   }
 }
 

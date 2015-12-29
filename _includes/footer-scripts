@@ -3,9 +3,6 @@
 <script>
   $(document).foundation();
   $(document).ready(function() {
-    $("article h2:eq(0)").addClass("first");
-  });
-  $(document).ready(function() {
     var navigationFixed = false;
     var navigationHeight = $("#masthead").height() - $("#navigation").height();
     var $window = $(window);
