@@ -52,7 +52,7 @@
     @include breakpoint(medium) {
       .top-bar-logo {
         float: left;
-        padding: rem-calc(0 8);
+        margin: rem-calc(0 12 0 15);
       }
     }
     ul.dropdown {
