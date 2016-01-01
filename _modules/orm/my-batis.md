@@ -28,7 +28,7 @@ download:
 
 <bean id="*" class="com.aspectran.example.mybatis.dao.*Dao" scope="singleton">
   <property>
-    <item name="revelentAspectId" value="sqlmapTxAspect"/>
+    <item name="revelentAspectId" value="mybatisTxAspect"/>
   </property>
 </bean>
 
