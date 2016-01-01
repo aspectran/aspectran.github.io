@@ -9,42 +9,22 @@ breadcrumb: true
 sidebar: toc
 ---
 
-## 1. Aspectran 라이브러리 다운로드
+## 1. 웹 프로젝트 생성
 
-Aspectran 홈페이지의 [다운로드](http://www.aspectran.com/downloads/) 페이지에서 jar 라이브러리의 복사본을 받을 수 있습니다.
-
-또한 다음과 같은 필수 의존 라이브러리를 필요로 합니다.
-
-* javassist or cglib
-* commons-fileupload
-* commons-io
-* logging 라이브러리(commons-logging, log4j, slf4j)
-
-Maven을 사용한다면 pom.xml에 다음 설정을 추가하세요.
-
-{% highlight xml %}
-<dependency>
-  <groupId>com.aspectran</groupId>
-  <artifactId>aspectran</artifactId>
-  <version>1.5.0</version>
-</dependency>
-{% endhighlight %}
-
-
-## 2. 웹 프로젝트 생성
-
-Aspectran을 사용해서 Java 웹 어플리케이션을 개발하기 위해서는 다음 요건을 충족해야 합니다.
+Aspectran을 이용해서 Java 웹 어플리케이션을 개발하기 위해서는 다음 요건을 충족해야 합니다.
 
 * Java 6 이상
 * Servlet 2.5 이상
 
-빠른 시작을 위해 다음 GitHub 저장소를 Clone 또는 소스 파일을 다운로드해서 새로운 웹 프로젝트를 생성해 주세요.
-이클립스 프로젝트 설정 파일과 본 문서에서 필요로 하는 모든 파일이 포함되어 있습니다.
+빠른 시작을 위해 다음 GitHub 저장소를 Clone 또는 소스 파일을 다운로드해서 새로운 Maven 프로젝트를 생성해 주세요.  
+본 문서에서 사용된 모든 소스 파일이 포함되어 있습니다.
 
 {% include link-box href="https://github.com/aspectran-guides/quick-start.git" %}
 
+Maven 프로젝트가 아닌 경우 [다운로드](http://www.aspectran.com/downloads/) 페이지에서 jar 라이브러리의 복사본을 받아서 구성하시기 바랍니다.
 
-## 3. 웹 컨테이너에 서블릿으로 등록하기
+
+## 2. 웹 컨테이너에 서블릿으로 등록하기
 
 ***Aspectran*** 구동에 필요한 초기화 파라메터 `aspectran:config`를 정의하고,
 `AspectranServiceListener`를 등록해서 `ActivityContext`를 생성하도록 합니다.
@@ -113,7 +93,7 @@ Aspectran을 사용해서 Java 웹 어플리케이션을 개발하기 위해서�
 </web-app>
 {% endhighlight %}
 
-### 3.1 초기화 파라메터 정의
+### 2.1 초기화 파라메터 정의
 
 먼저 컨텍스트 초기화 파라메터 `aspectran:config`를 정의합니다.
 `aspectran:config` 파라메터는 **APON**(*Aspectran Parameter Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
@@ -188,21 +168,21 @@ XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고, 
 | **scheduler.waitOnShutdown** | false |
 | **scheduler.startup** | false |
 
-### 3.2 AspectranServiceListener 등록
+### 2.2 AspectranServiceListener 등록
 `<listner-class>`에  `com.aspectran.web.startup.listener.AspectranServiceListener`를 지정합니다.
 AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:config`의 설정 내용으로 Aspectran 서비스 환경을 구성하고, Application Scope를 가지고 있습니다.
 
 > AspectranServiceListener에 의해 기동된 Aspectran 서비스는 여러 WebActivityServlet에서 사용될 수 있습니다.
 > 즉, 전역적인 하나의 Aspectran 서비스 환경을 구성할 수 있습니다.
 
-### 3.3 WebActivityServlet 등록
+### 2.3 WebActivityServlet 등록
 `<servlet-class>`에 `com.aspectran.web.startup.servlet.WebActivityServlet`을 지정합니다.
 `<servlet-name>`에는 Aspectran 서비스를 위한 서블릿이라는 의미의 고유한 서블릿 이름을 부여해 주기 바랍니다.
 
 > 서블릿 초기화 파라메터로 `aspectran:cofnig`를 정의하면 서블릿만의 단독 Aspectran 서비스 환경을 구성합니다.
 > 즉, 전역 Aspectran 서비스를 사용하지 않습니다.
 
-### 3.4 서블릿 URL 패턴 등록
+### 2.4 서블릿 URL 패턴 등록
 `<url-pattern>`에 해당하는 요청은 `WebActivityServlet`이 처리할 수 있도록 합니다.
 만약 `<url-pattern>`을 `/ga-quick-start/*`로 지정하면 `/ga-quick-start/`로 시작하는 이름을 가진 Translet이 실행됩니다.
 
@@ -211,7 +191,7 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 > Translet은 고유 이름을 가지고 있으며, 요청 URI와 직접적으로 매핑이 됩니다.
 > 스케쥴러의 Job도 Translet을 통해서 실행이 됩니다.
 
-### 3.5 DefaultServlet 이름 지정하기
+### 2.5 DefaultServlet 이름 지정하기
 요청 URI에 해당하는 Translet이 존재하지 않을 경우 서블릿 컨테이너의 DefaultServlet에게 넘겨주는 역할을 하는 핸들러가 항상 동작하고 있습니다.
 그 핸들러의 이름은 DefaultServletHttpRequestHandler입니다. DefaultServletHttpRequestHandler는 DefaultServlet의 이름이 무엇인지 자동으로 판단합니다.
 만약 DefaultServlet의 이름이 다르게 지정되어야 할 경우 아래와 같은 초기화 파라메터를 추가합니다.
@@ -224,7 +204,7 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 {% endhighlight %}
 
 
-## 4. 설정 메타데이터 작성
+## 3. 설정 메타데이터 작성
 
 ***Aspectran***이 구동되기 위해서는 구조화된 설정 메타데이터를 필요로 합니다.  
 설정 메타데이터는 전통적인 XML 형식 또는 APON 형식의 파일로 작성해야 하며, 계층적으로 모듈화되어 여러 개의 파일로 나뉠 수 있습니다.
@@ -310,7 +290,7 @@ Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하�
 </aspectran>
 {% endhighlight %}
 
-## 5. Bean 작성하기
+## 4. Bean 작성하기
 
 "Hello, World." 문자열을 출력하는 Action을 담고 있는 자바 클래스를 작성합니다.
 
@@ -375,18 +355,18 @@ public class SimplestAdvice {
 }
 {% endhighlight %}
 
-## 6. 실행 및 결과
+## 5. 실행 및 결과
 
 `helloWorld` Translet을 실행하기 위해 웹브라우저에서 다음 URL로 접근을 합니다.
 
 * http://localhost:8080/ga-quick-start/helloWorld
 
-다음과 같은 결과 화면이 출력됩니다.
+다음과 같은 결과 화면이 출력됩니다.  
 ![실행 결과 화면]({{ site.baseurl}}/images/quickstart/quickstart-result1.png)
 
 ***전체 실행 과정을 요약하면 다음 순서와 같습니다.***
 
-<div class="panel radius" markdown="1">
+<div class="panel radius b20" markdown="1">
 1. 요청 URI가 `/ga-quick-start/helloWorld`인 요청이 들어오면 요청 URI와 맵핑된 Translet이 요청을 건네받습니다.
 2. Translet이 내부의 `simplestAction` Bean의 `helloWorld` Method를 실행하려고 하지만, Proxy Method입니다.
 3. `simplestAction` Bean의 `helloWorld` Proxy Method는 자신이 실행되려면 먼저 Aspect 규칙을 처리해야 한다는 것을 Translet에게 통보합니다.

@@ -49,9 +49,9 @@ See [all versions available on the Maven Central Repository][5].
 의존 라이브러리에 대한 상세한 정보는 [pom.xml][6]을 참고하시기 바랍니다.
 
 
-[1]: {{ site.baseurl }}/downloads/1.5.x/aspectran-1.5.0.jar
-[2]: {{ site.baseurl }}/downloads/1.5.x/aspectran-1.5.0-sources.jar
-[3]: {{ site.baseurl }}/downloads/1.5.x/aspectran-1.5.0-javadoc.jar
+[1]: /downloads/1.5.x/aspectran-1.5.0.jar
+[2]: /downloads/1.5.x/aspectran-1.5.0-sources.jar
+[3]: /downloads/1.5.x/aspectran-1.5.0-javadoc.jar
 [4]: http://repo1.maven.org/maven2/com/aspectran/aspectran/
 [5]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.aspectran%22
 [6]: https://github.com/aspectran/aspectran/blob/master/pom.xml
