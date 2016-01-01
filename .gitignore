@@ -1,7 +1,10 @@
+/.classpath
+/.settings
+/.project
 /*.iml
 /*.ipr
 /*.iws
 /.idea
-_site/
-.sass-cache/
+/_site
+/.sass-cache
 /.jekyll-metadata
