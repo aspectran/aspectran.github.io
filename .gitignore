@@ -1,5 +1,7 @@
-.idea
-aspectran.github.io.iml
+/*.iml
+/*.ipr
+/*.iws
+/.idea
 _site/
 .sass-cache/
 /.jekyll-metadata
