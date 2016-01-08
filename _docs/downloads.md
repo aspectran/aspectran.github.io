@@ -7,7 +7,7 @@ subheadline: "Download a Release of Aspectran"
 teaser: "Aspectran은 Apache 2.0 License에 의거하여 무료로 제공되는 오픈소스입니다."
 ---
 
-## Latest stable release: 1.5.0
+## Latest stable release: 1.5.0 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
 
 Core Libarary
 : [aspectran-1.5.0.jar][1] (689KB)
