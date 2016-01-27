@@ -185,6 +185,7 @@ pretty (true | false) #IMPLIED
 
 <!ELEMENT dispatch ((echo? | action? | include?)*, template)>
 <!ATTLIST dispatch
+name CDATA #REQUIRED
 contentType CDATA #IMPLIED
 characterEncoding CDATA #IMPLIED
 default (true | false) #IMPLIED
@@ -209,8 +210,8 @@ translet CDATA #IMPLIED
 
 <!ELEMENT import EMPTY>
 <!ATTLIST import
-resource CDATA #IMPLIED
 file CDATA #IMPLIED
+resource CDATA #IMPLIED
 url CDATA #IMPLIED
 >
 
