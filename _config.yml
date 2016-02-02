@@ -60,7 +60,7 @@ excerpt_separator: "<!--more-->"
 
 # Theme works best with Kramdown (using the table of contents function)
 markdown: kramdown
-highlighter: pygments
+highlighter: rouge
 
 include: ['.htaccess']
 
