@@ -366,7 +366,6 @@ public class SimplestAdvice {
 
 ***전체 실행 과정을 요약하면 다음 순서와 같습니다.***
 
-<div class="panel radius b20" markdown="1">
 1. 요청 URI가 `/ga-quick-start/helloWorld`인 요청이 들어오면 요청 URI와 맵핑된 Translet이 요청을 건네받습니다.
 2. Translet이 내부의 `simplestAction` Bean의 `helloWorld` Method를 실행하려고 하지만, Proxy Method입니다.
 3. `simplestAction` Bean의 `helloWorld` Proxy Method는 자신이 실행되려면 먼저 Aspect 규칙을 처리해야 한다는 것을 Translet에게 통보합니다.
@@ -374,7 +373,6 @@ public class SimplestAdvice {
 5. Translet 내부의 `simplestAction` Bean의 `helloWorld` Method가 실행됩니다.
 6. Translet은 실행 결과 값을 집계하여 `plain/text` 형식의 컨텐츠로 출력을 합니다.
 7. `simplestAdvice` Bean의 `goodbye` Method가 실행되면서 Console에 로그를 출력합니다.
-</div>
 
 ***Console에 기록된 로그***
 

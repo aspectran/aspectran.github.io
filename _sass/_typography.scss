@@ -155,7 +155,7 @@ code {
 }
 
 pre {
-  overflow: auto;
+  overflow-x: auto;
   margin-bottom: rem-calc(20);
   padding: .6rem;
   background-color: #f5f5f5;
@@ -180,9 +180,12 @@ pre {
   }
   .gutter {
     border-right: 1px solid #ccc;
+    padding-right: 0.6rem;
+    text-align: right;
     .lineno {
       border: none;
       border-radius: 0;
+      padding: 0;
       opacity: .6;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
@@ -190,6 +193,13 @@ pre {
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
+    }
+  }
+  .code {
+    padding-left: 0.6rem;
+    pre {
+      padding: 0;
+      overflow-x: auto;
     }
   }
   table {
@@ -200,6 +210,7 @@ pre {
       background: none;
       td {
         padding: 0;
+        font-size: 93%;
       }
     }
   }
