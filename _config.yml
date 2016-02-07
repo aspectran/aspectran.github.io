@@ -18,7 +18,7 @@ author: juho_jeong
 # This URL is the main address for absolute links. Don't include a slash at the end.
 #
 url: 'http://www.aspectran.com'
-baseurl: ''
+baseurl: '' # does not include hostname
 
 # This is for the editing function in _/includes/improve_content
 # Leave it empty if your site is not on GitHub/GitHub Pages
@@ -42,30 +42,20 @@ slogan_img: "aspectran-slogan.png"
 logo_footer: "aspectran-logo-grey-x100.png"
 
 
+
 #-------------------------------------------------------------------
 # Build settings
 #-------------------------------------------------------------------
 
-encoding: UTF-8
+# The language setting is used in /includes/header.html for html-settings
+language: "ko"
 
-# Paginates all X entries
-paginate: 5
 
-# Pagination path › Important for blog page in /blog/ to work
-paginate_path: "/blog/page:num"
-
-permalink: /blog/:categories/:title/
-
-excerpt_separator: "<!--more-->"
-
-# Theme works best with Kramdown (using the table of contents function)
-markdown: kramdown
-highlighter: rouge
-
-kramdown:
-  input: GFM
-
-include: ['.htaccess']
+# Handling Reading
+safe: false
+encoding: "utf-8"
+keep_files: [".git"]
+include: [".htaccess"]
 
 # Exclude these files from your production _site
 exclude:
@@ -77,8 +67,23 @@ exclude:
   - CNAME
 
 
-# The language setting is used in /includes/header.html for html-settings
-language: "ko"
+# Paginates all X entries
+paginate: 5
+
+# Pagination path › Important for blog page in /blog/ to work
+paginate_path: "/blog/page:num"
+permalink: /blog/:categories/:title/
+
+excerpt_separator: "<!--more-->"
+
+
+# Theme works best with Kramdown (using the table of contents function)
+markdown: kramdown
+highlighter: rouge
+markdown_ext: "md"
+
+kramdown:
+  input: GFM
 
 
 # Used › default.html front-matter and compress.html
@@ -90,7 +95,6 @@ compress_html:
   profile: false
   ignore:
     envs: [development]
-
 
 
 
@@ -148,7 +152,6 @@ defaults:
 
 
 
-
 #-------------------------------------------------------------------
 # SEO
 # Verify Website to Webmaster Tools
@@ -158,7 +161,6 @@ defaults:
 #google_site_verification:  "Vk0IOJ2jwG_qEoG7fuEXYqv0m2rLa8P778Fi_GrsgEQ"
 #bing_webmastertools_id:    "0FB4C028ABCF07C908C54386ABD2D97F"
 # alexa_verify_id:         ""
-
 
 
 
@@ -180,7 +182,6 @@ apple-touch-icon-72x72-precomposed:     "apple-touch-icon-72x72-precomposed.png"
 apple-touch-icon-precomposed:           "apple-touch-icon-precomposed.png"
 msapplication_tileimage:                "msapplication_tileimage.png"               # Size 144x144
 msapplication_tilecolor:                "#fabb00"
-
 
 
 
@@ -217,7 +218,6 @@ disqus_shortname: aspectran
 sass:
     sass_dir: _sass
     style: :compressed
-
 
 
 
