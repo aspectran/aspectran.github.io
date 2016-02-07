@@ -5,6 +5,7 @@
 # this work, you have to use › layout: frontpage
 #
 layout: frontpage
+format: frontpage
 header:
   slide_images:
     - header_documentation.jpg
