@@ -61,6 +61,9 @@ excerpt_separator: "<!--more-->"
 # Theme works best with Kramdown (using the table of contents function)
 markdown: kramdown
 highlighter: rouge
+lsi: false
+excerpt_separator: "\n\n"
+incremental: false
 input: GFM
 
 include: ['.htaccess']
