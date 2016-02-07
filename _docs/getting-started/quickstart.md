@@ -378,7 +378,7 @@ public class SimplestAdvice {
 
 ***Console에 기록된 로그***
 
-{% highlight text %}
+{% highlight text linenos %}
 DEBUG translet {name=/ga-quick-start/helloWorld, requestRule={method=null, characterEncoding=null}, responseRule={name=null, characterEncoding=null, response=com.aspectran.core.activity.response.transform.TextTransform@5506e8ba} } ~com.aspectran.core.activity.CoreActivity^ready:144
 DEBUG action {qualifiedActionId=null, actionType=bean, beanActionRule={id=null, bean=simplestAction, method=helloWorld, hidden=null}} ~com.aspectran.core.activity.CoreActivity^execute:611
 DEBUG register AspectRule {id=simplestAdvice, for=translet, joinpointScope=translet, pointcutRule={pointcutType=null}, settingsAdviceRule=null, aspectAdviceRuleList=[{aspectId=simplestAdvice, aspectAdviceType=before, action={qualifiedActionId=null, actionType=bean, beanActionRule={id=null, bean=null, method=wellcome, hidden=null}}}, {aspectId=simplestAdvice, aspectAdviceType=after, action={qualifiedActionId=null, actionType=bean, beanActionRule={id=null, bean=null, method=goodbye, hidden=null}}}], exceptionHandlingRule=null, onlyTransletRelevanted=false} ~com.aspectran.core.activity.CoreActivity^registerAspectRule:822
