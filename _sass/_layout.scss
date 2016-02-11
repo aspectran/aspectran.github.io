@@ -36,10 +36,17 @@
     padding: rem-calc(2 8);
     line-height: 36px;
     background-color: $ci-0;
-    .title-bar-title {
-      cursor: pointer;
+    .title-bar-left {
+      float: left;
     }
-    .title-bar-logo {
+    .title-bar-center {
+      position: absolute;
+      left: 20%;
+      right: 20%;
+      text-align: center;
+    }
+    .title-bar-right {
+      cursor: pointer;
       float: right;
     }
   }
@@ -63,21 +70,32 @@
         }
       }
       li {
-        @include breakpoint(medium) {
-          &.active {
+        a {
+          color: #fff;
+          background: none;
+        }
+        &.active {
+          @include breakpoint(small only) {
+            background-color: darken($ci-0, 5%);
+          }
+          @include breakpoint(medium only) {
             background-color: lighten($ci-0, 5%);
+          }
+          a {
+            background: none;
           }
         }
         &:hover {
           background-color: darken($ci-0, 5%);
-          a {
-            color: #fff;
-          }
         }
       }
       ul.submenu {
         border-radius: 0 0 $global-radius $global-radius;
         opacity: .93;
+        @include breakpoint(small only) {
+          left: auto;
+          right: 1.5rem;
+        }
         li {
           @include breakpoint(small only) {
             &.submenu-closer {

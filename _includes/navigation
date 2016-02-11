@@ -1,9 +1,13 @@
 <nav id="navigation">
   <div class="title-bar" data-responsive-toggle="dropdownmenu" data-hide-for="medium">
-    <button class="menu-icon" type="button" data-toggle></button>
-    <div class="title-bar-title" data-toggle>Menu</div>
-    <div class="title-bar-logo">
+    <div class="title-bar-left">
+      <button class="menu-icon" type="button" data-toggle></button>
+    </div>
+    <div class="title-bar-center">
       <a href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_icon }}" alt="Aspectran"/></a>
+    </div>
+    <div class="title-bar-right" data-toggle>
+      Menu
     </div>
   </div>
 

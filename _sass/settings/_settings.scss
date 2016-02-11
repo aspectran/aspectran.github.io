@@ -73,7 +73,7 @@ $global-text-direction: ltr;
 
 $breakpoints: (
   small: 0,
-  medium: 640px,
+  medium: 770px,
   large: 1024px,
   xlarge: 1200px,
   xxlarge: 1440px,
@@ -85,7 +85,7 @@ $breakpoint-classes: (small medium large);
 
 $grid-row-width: $global-width;
 $grid-column-count: 12;
-$grid-column-responsive-gutter: (
+$grid-column-gutter: (
   small: 20px,
   medium: 30px,
 );
@@ -226,7 +226,7 @@ $breadcrumbs-item-slash: true;
 // 11. Button
 // ----------
 
-$button-padding: 1em;
+$button-padding: 0.85em 1em;
 $button-margin: 0 0 $global-margin 0;
 $button-fill: solid;
 $button-background: $primary-color;
@@ -287,7 +287,7 @@ $drilldown-background: $white;
 
 $dropdown-padding: 1rem;
 $dropdown-border: 1px solid $medium-gray;
-$dropdown-font-size: 14rem;
+$dropdown-font-size: 1rem;
 $dropdown-width: 300px;
 $dropdown-radius: $global-radius;
 $dropdown-sizes: (
@@ -300,9 +300,9 @@ $dropdown-sizes: (
 // -----------------
 
 $dropdownmenu-arrows: true;
-$dropdownmenu-arrow-color: lighten( $ci-0, 16% );
+$dropdownmenu-arrow-color: lighten($ci-0, 16%);
 $dropdownmenu-min-width: 220px;
-$dropdownmenu-background: lighten( $ci-0, 5% );
+$dropdownmenu-background: lighten($ci-0, 5%);
 $dropdownmenu-border: 0;
 
 // 18. Flex Video
@@ -528,6 +528,8 @@ $titlebar-icon-spacing: 0.25rem;
 // 34. Tooltip
 // -----------
 
+$has-tip-font-weight: $global-weight-bold;
+$has-tip-border-bottom: dotted 1px $dark-gray;
 $tooltip-background-color: $black;
 $tooltip-color: $white;
 $tooltip-padding: 0.75rem;
@@ -543,4 +545,5 @@ $tooltip-radius: $global-radius;
 $topbar-padding: 0;
 $topbar-background: $ci-0;
 $topbar-link-color: $ci-6;
+$topbar-color: $ci-6;
 $topbar-input-width: 200px;
