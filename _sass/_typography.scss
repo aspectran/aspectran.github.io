@@ -107,40 +107,51 @@ p.teaser {
 // Images
 //--------
 
-img { border-radius: $global-radius;}
-    img.alignleft,
-    img.left        { float: left; margin:5px 15px 5px 0; }
-    img.alignright,
-    img.right       { float: right; margin:5px 0 5px 15px; }
-    img.aligncenter,
-    img.center      { display: block; margin:0 auto 10px; }
+img {
+  border-radius: $global-radius;
+  &.alignleft,
+  &.left {
+    float: left;
+    margin:5px 15px 5px 0;
+  }
+  &.alignright,
+  &.right {
+    float: right;
+    margin:5px 0 5px 15px;
+  }
+  &.aligncenter,
+  &.center {
+    display: block;
+    margin:0 auto 10px;
+  }
+}
 
 figure {
-    margin: 0 0 rem-calc(30) 0;
+  margin: 0 0 rem-calc(30) 0;
 }
 #masthead-with-background-color figure,
 #masthead-with-pattern figure {
-    margin: 0;
+  margin: 0;
 }
 figcaption,
 .masthead-caption {
-    color: $grey-10;
-    font-size: rem-calc(13);
-    padding-top: rem-calc(2);
+  color: $grey-10;
+  font-size: rem-calc(13);
+  padding-top: rem-calc(2);
 }
 figcaption a,
 .masthead-caption a {
-    border-bottom: 1px dotted $grey-4;
-    color: $grey-10;
+  border-bottom: 1px dotted $grey-4;
+  color: $grey-10;
 }
 figcaption a:hover,
 .masthead-caption a:hover {
-    border-bottom: 2px solid $primary-color;
-    color: $primary-color;
+  border-bottom: 2px solid $primary-color;
+  color: $primary-color;
 }
 .masthead-caption {
-    padding-right: 10px;
-    text-align: right;
+  padding-right: 10px;
+  text-align: right;
 }
 
 // Code
@@ -212,6 +223,13 @@ pre {
         padding: 0;
         font-size: 93%;
       }
+    }
+  }
+}
+@include breakpoint(large) {
+  div.large-pull-4 figure.highlight {
+    &:hover {
+      width: 151.7%;
     }
   }
 }
