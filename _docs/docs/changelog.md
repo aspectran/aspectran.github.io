@@ -10,7 +10,7 @@ comments: true
 
 {% include alert info='상세한 변경이력은 [GitHub](https://github.com/aspectran/aspectran/releases){:target="_blank"}에서 볼 수 있습니다.' %}
 
-2016.3.20. // Version 1.5.0
+2016.3.20. // Version 2.0.0
 : Aspectran 2 is designed to run on Java 8 and later.
 : Support for Annotation-based metadata configuration.
 : Support for Template engines. (FreeMarker, Pebble)

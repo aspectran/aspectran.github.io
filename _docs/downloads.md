@@ -21,7 +21,7 @@ Maven을 사용한다면 pom.xml에 다음 설정을 추가하세요.
     <dependency>
       <groupId>com.aspectran</groupId>
       <artifactId>aspectran</artifactId>
-      <version>1.5.0</version>
+      <version>2.0.0</version>
     </dependency>
   </dependencies>
 </project>
