@@ -3,7 +3,7 @@ layout: page
 format: article
 title: "Quick Start Guide"
 subheadline: "Getting Started with Aspectran"
-teaser: "Aspectran의 사용법을 빠르게 습득할 수 있도록 간단한 예제와 함께 설명합니다."
+teaser: "Aspectran을 이용해서 간단한 Java 웹 어플리케이션을 만드는 방법에 대해 설명합니다."
 article_heading: true
 breadcrumb: true
 sidebar: toc
@@ -13,8 +13,8 @@ sidebar: toc
 
 Aspectran을 이용해서 Java 웹 어플리케이션을 개발하기 위해서는 다음 요건을 충족해야 합니다.
 
-* Java 6 이상
-* Servlet 2.5 이상
+* Java 8 이상
+* Servlet 3.1.0 이상
 
 빠른 시작을 위해 다음 GitHub 저장소를 Clone 또는 소스 파일을 다운로드해서 새로운 Maven 프로젝트를 생성해 주세요.  
 본 문서에서 사용된 모든 소스 파일이 포함되어 있습니다.
@@ -26,17 +26,20 @@ Maven 프로젝트가 아닌 경우 [다운로드](http://www.aspectran.com/down
 
 ## 2. 웹 컨테이너에 서블릿으로 등록하기
 
-***Aspectran*** 구동에 필요한 초기화 파라메터 `aspectran:config`를 정의하고,
-`AspectranServiceListener`를 등록해서 `ActivityContext`를 생성하도록 합니다.
+초기화 파라메터 `aspectran:config`를 정의하고, 리스너 `AspectranServiceListener`와 서블릿 `WebActivityServlet`를 지정합니다.
+`AspectranServiceListener`는 ***Aspectran Service*** 인스턴스를 생성하는 역할을 합니다.
+`WebActivityServlet`은 클라이언트로부터 받은 요청을 ***Aspectran Service*** 에 위임하는 역할을 합니다.
 
-요청 URI가 `/ga-quick-start/`이면 `WebActivityServlet`라는 서블릿이 처리하도록 했습니다.
-스케쥴러를 사용할 경우 개발환경에서 Job을 직접 실행해 볼 수 있도록 `/scheduler/`로 시작하는 URL도 맵핑했습니다.
+> 만약 `WebActivityServlet`이 처리하지 못하는 요청은 `DefaultServlet`으로 처리권을 넘겨줍니다.
+> `DefaultServlet`의 이름은 명시적으로 지정하지 않았지만, 내부적으로 웹어플리케이션 서버 종류에 따라서 자동으로 판단합니다.
+> 잘 알려진 웹어플리케이션 서버가 아닐 경우 `DefaultServlet`의 이름을 수동으로 명시할 수도 있습니다.
 
-만약 `WebActivityServlet`라는 서블릿이 처리하지 못하는 요청은 `DefaultServlet`으로 처리권을 넘겨줍니다.
-`DefaultServlet`의 이름은 명시적으로 지정하지 않았지만, 내부적으로 웹어플리케이션 서버 종류에 따라서 자동으로 판단합니다.
-잘 알려진 웹어플리케이션 서버가 아닐 경우 `DefaultServlet`의 이름을 수동으로 명시할 수도 있습니다.
+`/ga-quick-start/`로 시작되는 요청 URI에 대해서는 `aspectran-activity`라는 이름을 가진 서블릿이 처리하도록 설정했습니다.
 
-[***web.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/web.xml){:target="_blank"}
+`/scheduler/`로 시작되는 요청 URI도 `aspectran-activity` 서블릿이 처리하도록 설정되어 있습니다.
+이는 스케쥴러에 의해 실행되는 Job을 웹브라우저에서도 실행할 수 있도록 하기 위한 것이며, 실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿매핑을 반드시 제거해야 합니다.
+
+[***web.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/web.xml)
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
@@ -51,43 +54,46 @@ Maven 프로젝트가 아닌 경우 [다운로드](http://www.aspectran.com/down
   <context-param>
     <param-name>aspectran:config</param-name>
     <param-value>
-    context: {
-      root: "/WEB-INF/aspectran/config/simplest-configuration.xml"
-      encoding: "utf-8"
-      resources: [
-        "/WEB-INF/aspectran/config"
-        "/WEB-INF/aspectran/classes"
-        "/WEB-INF/aspectran/lib"
-      ]
-      hybridLoading: false
-      autoReloading: {
-        reloadMethod: hard
-        observationInterval: 5
-        startup: true
+      context: {
+        root: "/WEB-INF/aspectran/config/simplest-configuration.xml"
+        encoding: "utf-8"
+        resources: [
+          "/WEB-INF/aspectran/config"
+          "/WEB-INF/aspectran/classes"
+          "/WEB-INF/aspectran/lib"
+        ]
+        hybridLoading: false
+        autoReloading: {
+          reloadMethod: hard
+          observationInterval: 5
+          startup: true
+        }
       }
-    }
-    scheduler: {
-      startDelaySeconds: 10
-      waitOnShutdown: true
-      startup: false
-    }
+      scheduler: {
+        startDelaySeconds: 10
+        waitOnShutdown: true
+        startup: false
+      }
+      web: {
+        uriDecoding: "utf-8"
+      }
     </param-value>
   </context-param>
   <listener>
     <listener-class>com.aspectran.web.startup.listener.AspectranServiceListener</listener-class>
   </listener>
   <servlet>
-    <servlet-name>aspectran-example</servlet-name>
+    <servlet-name>aspectran-activity</servlet-name>
     <servlet-class>com.aspectran.web.startup.servlet.WebActivityServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
-    <servlet-name>aspectran-example</servlet-name>
-    <url-pattern>/*</url-pattern>
+    <servlet-name>aspectran-activity</servlet-name>
+    <url-pattern>/ga-quick-start/*</url-pattern>
   </servlet-mapping>
   <!-- 실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿매핑을 제거하도록 합니다. -->
   <servlet-mapping>
-    <servlet-name>aspectran-example</servlet-name>
+    <servlet-name>aspectran-activity</servlet-name>
     <url-pattern>/scheduler/*</url-pattern>
   </servlet-mapping>
 </web-app>
@@ -98,8 +104,10 @@ Maven 프로젝트가 아닌 경우 [다운로드](http://www.aspectran.com/down
 먼저 컨텍스트 초기화 파라메터 `aspectran:config`를 정의합니다.
 `aspectran:config` 파라메터는 **APON**(*Aspectran Parameter Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
 
-> ***APON***(Aspectran Parameter Object Notation)은 ***JSON*** 과 표기법이 비슷합니다.
-> 미리 정해진 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
+> ***APON***(Aspectran Parameter Object Notation)은 ***JSON*** 과 표기법이 유사하며,
+> 정해진 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
+> 주로 초기 설정 값을 작성하기에 매우 편리하고, 자동으로 Java Object로 맵핑을 하기 때문에 설정 값을 정확하게 전달받을 수 있습니다.  
+> 참고로 ***Aspectran*** 은 설정 메터데이터를 XML 형식뿐만 아니라 APON 형식으로도 작성할 수 있습니다.
 
 **context**
 : Aspectran 환경설정을 위한 정의
@@ -206,28 +214,33 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 
 ## 3. 설정 메타데이터 작성
 
-***Aspectran***이 구동되기 위해서는 구조화된 설정 메타데이터를 필요로 합니다.  
+***Aspectran*** 이 구동되기 위해서는 구조화된 설정 메타데이터를 필요로 합니다.  
 설정 메타데이터는 전통적인 XML 형식 또는 APON 형식의 파일로 작성해야 하며, 계층적으로 모듈화되어 여러 개의 파일로 나뉠 수 있습니다.
 
-***Aspectran***을 대표하는 3개의 핵심 구성요소는 다음과 같습니다.
+***Aspectran*** 을 대표하는 4개의 핵심 구성요소는 다음과 같습니다.
 
 * ***aspect*** - Bean과 Translet이 가진 원래의 기능에 다른 부가 기능을 주입하는 방법을 정의합니다.  
 관점지향프로그래밍(AOP)을 지원하기 위한 핵심 요소입니다.
 * ***bean*** - IoC, DI의 대상이 되고, 기능을 가진 객체를 정의합니다.  
 객체를 인스턴스화 하는 방법, 객체의 생명주기, 객체의 속성 값, 객체의 의존관계를 설정할 수 있습니다.
 * ***translet*** - 요청 URI와 맵핑되어 비지니스 로직을 가지고 있는 Action Method를 호출하는 방법 및 응답 컨텐츠를 출력하는 방법을 정의합니다.
+* ***template*** - Java Template Engine을 사용해서 형식화된 텍스트를 생산하는 역할을 합니다.
 
-> 설정 메타데이터 작성법에 관한 상세한 설명은 Aspectran Configuration 문서를 참조해 주시기 바랍니다.
+> 주로 많이 작성하는 ***bean*** 과 ***translet*** 은 Java 소스코드에서 직접 설정할 수 있는 Annotation 기반의 설정도 지원하고 있습니다.
+> 설정 메타데이터 작성법에 관한 자세한 설명은 Aspectran Configuration 문서를 참조해 주시기 바랍니다.
 
-3개의 핵심 구성요소를 이용해서 "Hello, World." 문자열을 출력하는 설정 메타데이터를 XML 파일로 다음과 같이 작성하였습니다.
-Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하는 Action을 호출하기 전과 후에 특정 동작을 주입합니다.
+"Hello, World." 문자열을 출력하는 웹어플리케이션을 위한 설정 메타데이터를 XML 형식으로 아래와 같이 작성하였습니다.
 
-[***simplest-configuration.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/aspectran/config/simplest-configuration.xml){:target="_blank"}
+"Hello, World." 문자열을 출력하기 위한 `simplestAction` ***bean*** 과 `helloWorld` ***translet*** 이 정의되어 있고,
+Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하는 Action을 호출하기 전과 후에 특정 동작을 주입하는 `simplestAdvice` ***aspect*** 가 정의되어 있습니다.
+`helloWorld` ***translet*** 은 `simplestAction` ***bean*** 의 `helloWorld` Method를 실행하고, 결과를 텍스트형식으로 출력하는 역할을 합니다.
+
+[***simplest-configuration.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/aspectran/config/simplest-configuration.xml)
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-1.0.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-2.0.dtd">
 
 <aspectran>
 
@@ -242,14 +255,14 @@ Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하�
 
   <bean id="simplestAction" class="hello.SimplestAction" scope="singleton">
     <description>
-      Action Method를 가지고 있는 singleton 스코프를 가지는 Bean을 정의합니다.
+      Action Method를 가지고 있는 singleton 스코프에 해당하는 Bean을 정의합니다.
     </description>
   </bean>
 
   <bean id="simplestAdvice" class="hello.SimplestAdvice" scope="singleton">
     <description>
       Action Method 실행 전 후에 주입할 Advice Action Method를 가지고 있는
-      singleton 스코프를 가지는 Bean을 정의합니다.
+      singleton 스코프에 해당하는 Bean을 정의합니다.
     </description>
   </bean>
 
@@ -290,11 +303,12 @@ Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하�
 </aspectran>
 {% endhighlight %}
 
+
 ## 4. Bean 작성하기
 
 "Hello, World." 문자열을 출력하는 Action을 담고 있는 자바 클래스를 작성합니다.
 
-[***SimplestAction.java***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/java/hello/SimplestAction.java){:target="_blank"}
+[***SimplestAction.java***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/java/hello/SimplestAction.java)
 
 {% highlight java %}
 package hello;
@@ -319,7 +333,7 @@ public class SimplestAction {
 
 "Hello, World." 문자열을 출력하는 Action을 호출하기 전과 후에 실행되는 Action을 담고 있는 자바 클래스를 작성합니다.
 
-[***SimplestAdvice.java***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/java/hello/SimplestAdvice.java){:target="_blank"}
+[***SimplestAdvice.java***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/java/hello/SimplestAdvice.java)
 
 {% highlight java %}
 package hello;
