@@ -4,37 +4,58 @@ format: article
 sidebar: right
 title: "Aspectran Releases"
 subheadline: "Download a Release of Aspectran"
-teaser: "Aspectran은 Apache 2.0 License에 의거하여 무료로 제공되는 오픈소스입니다."
+teaser: "Aspectran is an open source, free of charge, based on the Apache 2.0 License."
 ---
 
-## Latest stable release: 2.0.0 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
+## Latest stable release: 2.0.0
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran) [![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
 
-Aspectran Library is published as a Maven artifact at the [Maven Central Repository][1].
-
-## Maven
-
-Maven을 사용한다면 pom.xml에 다음 설정을 추가하세요.
-
-{% highlight xml %}
-<project>
-  <dependencies>
-    <dependency>
-      <groupId>com.aspectran</groupId>
-      <artifactId>aspectran</artifactId>
-      <version>2.0.0</version>
-    </dependency>
-  </dependencies>
-</project>
-{% endhighlight %}
+If you're using Maven, you will find all Aspectran Maven artifacts directly in the central Maven repository here: [http://repo1.maven.org/maven2/com/aspectran/aspectran/][1]
 
 See [all versions available on the Maven Central Repository][2].
 
+## Maven
 
-## Dependencies [![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
+***Artifact information (Maven Central)***
 
-의존 라이브러리에 대한 상세한 정보는 [pom.xml][3]을 참고하시기 바랍니다.
+| Group Id | Artifact Id | Version | Download |
+|----------|-------------|---------|----------|
+| com.aspectran | [aspectran][3] | [2.0.0][4] | [pom][5] [jar][6] [javadoc (jar)][7] [sources (jar)][8] |
+
+Add the following dependency to your pom.xml:
+
+{% highlight xml %}
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran</artifactId>
+  <version>2.0.0</version>
+</dependency>
+{% endhighlight %}
+
+Note that Aspectran 2 requires Java 8, so an explicit declaration of 1.8 compatibility to the compiler may also be required:
+
+{% highlight xml %}
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <configuration>
+        <compilerVersion>1.8</compilerVersion>
+        <source>1.8</source>
+        <target>1.8</target>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+{% endhighlight %}
 
 
 [1]: http://repo1.maven.org/maven2/com/aspectran/aspectran/
 [2]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.aspectran%22
-[3]: https://github.com/aspectran/aspectran/blob/master/pom.xml
+[3]: http://search.maven.org/#search|ga|1|a%3A%22aspectran%22
+[4]: http://search.maven.org/#artifactdetails|com.aspectran|aspectran|2.0.0|jar
+[5]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/2.0.0/aspectran-2.0.0.pom
+[6]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/2.0.0/aspectran-2.0.0.jar
+[7]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/2.0.0/aspectran-2.0.0-javadoc.jar
+[8]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/2.0.0/aspectran-2.0.0-sources.jar
