@@ -21,7 +21,7 @@ Aspectran을 이용해서 Java 웹 어플리케이션을 개발하기 위해서�
 
 {% include link-box href="https://github.com/aspectran-guides/quick-start.git" %}
 
-Maven 프로젝트가 아닌 경우 [다운로드](http://www.aspectran.com/downloads/) 페이지에서 jar 라이브러리의 복사본을 받아서 구성하시기 바랍니다.
+Maven 프로젝트가 아닌 경우 [다운로드](/downloads/) 페이지에서 jar 라이브러리의 복사본을 받아서 구성하시기 바랍니다.
 
 
 ## 2. 웹 컨테이너에 서블릿으로 등록하기
