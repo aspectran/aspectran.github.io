@@ -36,6 +36,7 @@ $menu-icon-spacing: 0.25rem !default;
   list-style-type: none;
 
   @if $global-flexbox {
+    width: 100%;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -109,6 +110,11 @@ $menu-icon-spacing: 0.25rem !default;
         flex: 0 0 100%;
         max-width: 100%;
       }
+
+      > li  > a {
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
     }
     @else {
       > li {
@@ -148,8 +154,6 @@ $menu-icon-spacing: 0.25rem !default;
     @if $global-flexbox {
       > li > a {
         display: flex;
-        align-items: center;
-        justify-content: center;
       }
     }
     @else {
@@ -175,9 +179,10 @@ $menu-icon-spacing: 0.25rem !default;
 
       img,
       i {
+        margin-#{$global-right}: $menu-icon-spacing;
+
         @if not $global-flexbox {
           display: inline-block;
-          margin-#{$global-right}: $menu-icon-spacing;
         }
       }
     }
@@ -191,11 +196,16 @@ $menu-icon-spacing: 0.25rem !default;
         text-align: center;
       }
 
-      > img,
-      > i {
+      img,
+      i {
         @if not $global-flexbox {
           display: block;
           margin: 0 auto $menu-icon-spacing;
+        }
+        @else {
+          align-self: stretch;
+          text-align: center;
+          margin-bottom: $menu-icon-spacing;
         }
       }
     }
@@ -224,7 +234,7 @@ $menu-icon-spacing: 0.25rem !default;
     }
 
     @each $size in $breakpoint-classes {
-      @if $size != small {
+      @if $size != $-zf-zero-breakpoint {
         @include breakpoint($size) {
           &.#{$size}-horizontal {
             @include menu-direction(horizontal);
@@ -248,6 +258,8 @@ $menu-icon-spacing: 0.25rem !default;
         justify-content: flex-end;
       }
       @else {
+        @include clearfix;
+
         > li {
           float: $global-right;
         }
@@ -282,6 +294,15 @@ $menu-icon-spacing: 0.25rem !default;
 
   .menu-text {
     @include menu-text;
+  }
+
+  // Align center
+  .menu-centered {
+    text-align: center;
+
+    > .menu {
+      display: inline-block;
+    }
   }
 
   // Prevent FOUC when using the Responsive Menu plugin
