@@ -9,7 +9,7 @@ breadcrumb: true
 sidebar: toc
 ---
 
-## 1. 웹 프로젝트 생성
+## 1. 웹 어플리케이션 프로젝트 생성
 
 Aspectran을 이용해서 Java 웹 어플리케이션을 개발하기 위해서는 다음 요건을 충족해야 합니다.
 
@@ -24,17 +24,20 @@ Aspectran을 이용해서 Java 웹 어플리케이션을 개발하기 위해서�
 Maven 프로젝트가 아닌 경우 [다운로드](/downloads/) 페이지에서 jar 라이브러리의 복사본을 받아서 구성하시기 바랍니다.
 
 
-## 2. 웹 컨테이너에 서블릿으로 등록하기
+## 2. Aspectran 서비스 구동환경 설정
 
-초기화 파라메터 `aspectran:config`를 정의하고, 리스너 `AspectranServiceListener`와 서블릿 `WebActivityServlet`를 지정합니다.
-`AspectranServiceListener`는 ***Aspectran Service*** 인스턴스를 생성하는 역할을 합니다.
-`WebActivityServlet`은 클라이언트로부터 받은 요청을 ***Aspectran Service*** 에 위임하는 역할을 합니다.
+Aspectran을 웹 컨테이너 안에서 구동하기 위해서 web.xml 파일을 수정해야 합니다.
 
-> 만약 `WebActivityServlet`이 처리하지 못하는 요청은 `DefaultServlet`으로 처리권을 넘겨줍니다.
+Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `aspectran:config`를 정의하고,
+리스너 `AspectranServiceListener`와 서블릿 `WebActivityServlet`를 지정합니다.
+
+> `AspectranServiceListener`는 ***Aspectran Service*** 인스턴스를 생성하는 역할을 합니다.  
+> `WebActivityServlet`은 클라이언트로부터 받은 요청을 ***Aspectran Service*** 에 위임하는 역할을 합니다.  
+> 만약 `WebActivityServlet`이 처리하지 못하는 요청은 `DefaultServlet`으로 처리권을 넘겨줍니다.  
 > `DefaultServlet`의 이름은 명시적으로 지정하지 않았지만, 내부적으로 웹어플리케이션 서버 종류에 따라서 자동으로 판단합니다.
 > 잘 알려진 웹어플리케이션 서버가 아닐 경우 `DefaultServlet`의 이름을 수동으로 명시할 수도 있습니다.
 
-`/ga-quick-start/`로 시작되는 요청 URI에 대해서는 `aspectran-activity`라는 이름을 가진 서블릿이 처리하도록 설정했습니다.
+`/ga-quick-start/`로 시작되는 요청 URI에 대해서는 `aspectran-activity`라는 이름을 가진 서블릿이 처리하도록 설정을 합니다.
 
 `/scheduler/`로 시작되는 요청 URI도 `aspectran-activity` 서블릿이 처리하도록 설정되어 있습니다.
 이는 스케쥴러에 의해 실행되는 Job을 웹브라우저에서도 실행할 수 있도록 하기 위한 것이며, 실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿매핑을 반드시 제거해야 합니다.
@@ -99,15 +102,17 @@ Maven 프로젝트가 아닌 경우 [다운로드](/downloads/) 페이지에서 
 </web-app>
 {% endhighlight %}
 
-### 2.1 초기화 파라메터 정의
+### 2.1 Aspectran 서비스 구동환경 설정
 
-먼저 컨텍스트 초기화 파라메터 `aspectran:config`를 정의합니다.
-`aspectran:config` 파라메터는 **APON**(*Aspectran Parameter Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
+Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `aspectran:config`는
+**APON**(*Aspectran Parameter Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
 
 > ***APON***(Aspectran Parameter Object Notation)은 ***JSON*** 과 표기법이 유사하며,
 > 정해진 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
 > 주로 초기 설정 값을 작성하기에 매우 편리하고, 자동으로 Java Object로 맵핑을 하기 때문에 설정 값을 정확하게 전달받을 수 있습니다.  
-> 참고로 ***Aspectran*** 은 설정 메터데이터를 XML 형식뿐만 아니라 APON 형식으로도 작성할 수 있습니다.
+> 참고로 Aspectran은 설정 메터데이터를 XML 형식뿐만 아니라 APON 형식으로도 작성할 수 있습니다.
+
+다음은 Aspectran 서비스 구동환경 설정에 필요한 세부 항목을 설명합니다.
 
 **context**
 : Aspectran 환경설정을 위한 정의
@@ -227,7 +232,7 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 * ***template*** - Java Template Engine을 사용해서 형식화된 텍스트를 생산하는 역할을 합니다.
 
 > 주로 많이 작성하는 ***bean*** 과 ***translet*** 은 Java 소스코드에서 직접 설정할 수 있는 Annotation 기반의 설정도 지원하고 있습니다.
-> 설정 메타데이터 작성법에 관한 자세한 설명은 Aspectran Configuration 문서를 참조해 주시기 바랍니다.
+> 설정 메타데이터 작성법에 관한 자세한 설명은 Aspectran Configuration 문서를 참조하세요.
 
 "Hello, World." 문자열을 출력하는 웹어플리케이션을 위한 설정 메타데이터를 XML 형식으로 아래와 같이 작성하였습니다.
 
