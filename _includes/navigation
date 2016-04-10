@@ -1,4 +1,4 @@
-<nav id="navigation">
+<nav id="navigation" class="no-js">
   <div class="title-bar" data-responsive-toggle="dropdownmenu" data-hide-for="medium">
     <div class="title-bar-left">
       <button class="menu-icon" type="button" data-toggle></button>
