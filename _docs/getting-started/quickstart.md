@@ -31,16 +31,17 @@ Aspectran을 웹 컨테이너 안에서 구동하기 위해서 web.xml 파일을
 Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `aspectran:config`를 정의하고,
 리스너 *AspectranServiceListener* 와 서블릿 *WebActivityServlet* 를 지정합니다.
 
-> `AspectranServiceListener`는 ***Aspectran Service*** 인스턴스를 생성하는 역할을 합니다.  
-> `WebActivityServlet`은 클라이언트로부터 받은 요청을 ***Aspectran Service*** 에 위임하는 역할을 합니다.  
-> 만약 `WebActivityServlet`이 처리하지 못하는 요청은 `DefaultServlet`으로 처리권을 넘겨줍니다.  
-> `DefaultServlet`의 이름은 명시적으로 지정하지 않았지만, 내부적으로 웹어플리케이션 서버 종류에 따라서 자동으로 판단합니다.
-> 잘 알려진 웹어플리케이션 서버가 아닐 경우 `DefaultServlet`의 이름을 수동으로 명시할 수도 있습니다.
+> AspectranServiceListener는 Aspectran Service 인스턴스를 생성하는 역할을 합니다.  
+> WebActivityServlet은 클라이언트로부터 받은 요청을 Aspectran Service에 위임하는 역할을 합니다.  
+> 만약 WebActivityServlet이 처리하지 못하는 요청은 DefaultServlet으로 처리권을 넘겨줍니다.  
+> DefaultServlet의 이름은 명시적으로 지정하지 않았지만, 내부적으로 웹어플리케이션 서버 종류에 따라서 자동으로 판단합니다.
+> 잘 알려진 웹어플리케이션 서버가 아닐 경우 DefaultServlet의 이름을 수동으로 명시할 수도 있습니다.
 
 `/ga-quick-start/`로 시작되는 요청 URI에 대해서는 `aspectran-activity`라는 이름을 가진 서블릿이 처리하도록 설정을 합니다.
 
 `/scheduler/`로 시작되는 요청 URI도 `aspectran-activity` 서블릿이 처리하도록 설정되어 있습니다.
-이는 스케쥴러에 의해 실행되는 Job을 웹브라우저에서도 실행할 수 있도록 하기 위한 것이며, 실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿매핑을 반드시 제거해야 합니다.
+이는 스케쥴러에 의해 실행되는 Job을 웹브라우저에서도 실행할 수 있도록 하기 위한 것이며,
+실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿 맵핑을 반드시 제거해야 합니다.
 
 [***web.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/web.xml)
 {% highlight xml %}
