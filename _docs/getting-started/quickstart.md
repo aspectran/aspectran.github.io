@@ -29,7 +29,7 @@ Maven 프로젝트가 아닌 경우 [다운로드](/downloads/) 페이지에서 
 Aspectran을 웹 컨테이너 안에서 구동하기 위해서 web.xml 파일을 수정해야 합니다.
 
 Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `aspectran:config`를 정의하고,
-리스너 `AspectranServiceListener`와 서블릿 `WebActivityServlet`를 지정합니다.
+리스너 *AspectranServiceListener* 와 서블릿 *WebActivityServlet* 를 지정합니다.
 
 > `AspectranServiceListener`는 ***Aspectran Service*** 인스턴스를 생성하는 역할을 합니다.  
 > `WebActivityServlet`은 클라이언트로부터 받은 요청을 ***Aspectran Service*** 에 위임하는 역할을 합니다.  
@@ -102,20 +102,21 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
 </web-app>
 {% endhighlight %}
 
-### 2.1 Aspectran 서비스 구동환경 설정
+### 2.1 초기화 파라메터 설정
 
 Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `aspectran:config`는
-**APON**(*Aspectran Parameter Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
+**APON**(*Aspectran Parameter Object Notation*) 형식의 설정 값을 가질 수 있습니다.
 
 > ***APON***(Aspectran Parameter Object Notation)은 ***JSON*** 과 표기법이 유사하며,
 > 정해진 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
 > 주로 초기 설정 값을 작성하기에 매우 편리하고, 자동으로 Java Object로 맵핑을 하기 때문에 설정 값을 정확하게 전달받을 수 있습니다.  
 > 참고로 Aspectran은 설정 메터데이터를 XML 형식뿐만 아니라 APON 형식으로도 작성할 수 있습니다.
 
-다음은 Aspectran 서비스 구동환경 설정에 필요한 세부 항목을 설명합니다.
+다음은 초기화 파라메터를 구성하는 세부 항목에 대한 설명입니다.
 
+---
 **context**
-: Aspectran 환경설정을 위한 정의
+: Aspectran 구동환경 설정
 
 **context.root**
 : 환경 설정을 위해 가장 먼저 참조할 xml 파일의 경로
@@ -133,9 +134,9 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
 *file:/c:/Users//Projects/java/classes*
 
 **context.hybridLoading**
-: 환경 설정을 빠르게 로딩하기 위해 다수의 XML 파일을 APON 문서형식으로 변환할지 여부를 지정합니다.
-XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고, 다음 기동 시에 XML 파일을 로딩하는 것이 아니라 APON 파일을 찾아서 로딩합니다.
-다수의 XML 파일을 파싱하는 걸리는 시간을 단축할 수 있습니다.
+: 설정 메타데이터를 빠르게 로딩하기 위해 다수의 XML 파일을 APON 문서형식으로 변환할지 여부를 지정합니다.
+XML 형식의 설정 메타데이터 파일이 수정되면 APON 파일로 변환되고, 다음 기동 시에 XML 파일을 로딩하는 것이 아니라 APON 파일을 찾아서 로딩합니다.
+다수의 XML 파일을 파싱하는데 걸리는 시간을 단축할 수 있습니다.
 
 **context.autoReloading**
 : 리소스 자동 갱신 기능에 대한 정의
@@ -143,7 +144,7 @@ XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고, 
 
 **context.autoReloading.reloadMethod**
 : 리소스의 갱신 방법을 지정
-(hard: Java Class 갱신 가능 , soft: 환경 설정 내역만 갱신 가능)
+(hard: Java Class 갱신 가능, soft: 환경 설정 내역만 갱신 가능)
 
 **context.autoReloading.observationInterval**
 : 리소스가 수정 여부를 관찰하는 시간 간격을 초 단위로 지정
@@ -152,7 +153,7 @@ XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고, 
 : 리소스 자동 갱신 기능을 사용할지 여부를 지정
 
 **scheduler**
-: 스케쥴러 동작환경을 위한 정의
+: 스케쥴러 동작환경 설정
 
 **scheduler.startDelaySeconds**
 : 모든 환경이 초기화된 후 스케쥴러가 기동 지연 시간을 초 단위로 지정
@@ -163,51 +164,61 @@ XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고, 
 **scheduler.startup**
 : 스케쥴러를 기동할지 여부를 지정
 
-각 초기화 파라메터 별로 기본 값은 다음과 같습니다.
+**web**
+: 웹 환경을 위한 설정
+
+**web.uriDecoding**
+: get 방식으로 전달되는 파라메터에 대한 문자열 디코딩 방식을 지정
+
+---
+각 세부 항목의 기본 값은 다음과 같습니다.
 
 | 파라메터 | 기본 값 |
-|--------- |--------|
-| **context** |  |
-| **context.root** | /WEB-INF/aspectran/root.xml |
-| **context.encoding** |  |
-| **context.resources** |  |
-| **context.hybridLoading** | false |
-| **context.autoReloading** | false |
-| **context.autoReloading.reloadMethod** | soft |
-| **context.autoReloading.observationInterval** | 10 |
-| **context.autoReloading.startup** | false |
-| **scheduler** |  |
-| **scheduler.startDelaySeconds** | 5 |
-| **scheduler.waitOnShutdown** | false |
-| **scheduler.startup** | false |
+|--------|-------|
+| context |  |
+| context.root | /WEB-INF/aspectran/root.xml |
+| context.encoding |  |
+| context.resources |  |
+| context.hybridLoading | false |
+| context.autoReloading | false |
+| context.autoReloading.reloadMethod | soft |
+| context.autoReloading.observationInterval | 10 |
+| context.autoReloading.startup | false |
+| scheduler |  |
+| scheduler.startDelaySeconds | 5 |
+| scheduler.waitOnShutdown | false |
+| scheduler.startup | false |
 
-### 2.2 AspectranServiceListener 등록
-`<listner-class>`에  `com.aspectran.web.startup.listener.AspectranServiceListener`를 지정합니다.
-AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:config`의 설정 내용으로 Aspectran 서비스 환경을 구성하고, Application Scope를 가지고 있습니다.
+### 2.2 AspectranServiceListener 지정
+`<listner-class>`에  *com.aspectran.web.startup.listener.AspectranServiceListener* 를 지정합니다.
+*AspectranServiceListener* 는 컨텍스트 초기화 파라메터 `aspectran:config`의 설정 내용으로 Aspectran 서비스 환경을 구성하고, Application Scope를 가지고 있습니다.
 
 > AspectranServiceListener에 의해 기동된 Aspectran 서비스는 여러 WebActivityServlet에서 사용될 수 있습니다.
 > 즉, 전역적인 하나의 Aspectran 서비스 환경을 구성할 수 있습니다.
 
-### 2.3 WebActivityServlet 등록
-`<servlet-class>`에 `com.aspectran.web.startup.servlet.WebActivityServlet`을 지정합니다.
-`<servlet-name>`에는 Aspectran 서비스를 위한 서블릿이라는 의미의 고유한 서블릿 이름을 부여해 주기 바랍니다.
+### 2.3 WebActivityServlet 지정
+`<servlet-class>`에 *com.aspectran.web.startup.servlet.WebActivityServlet* 을 지정합니다.
+`<servlet-name>`에는 Aspectran을 위한 서블릿이라는 의미의 고유한 이름을 부여해 주기 바랍니다.
 
 > 서블릿 초기화 파라메터로 `aspectran:cofnig`를 정의하면 서블릿만의 단독 Aspectran 서비스 환경을 구성합니다.
 > 즉, 전역 Aspectran 서비스를 사용하지 않습니다.
 
-### 2.4 서블릿 URL 패턴 등록
-`<url-pattern>`에 해당하는 요청은 `WebActivityServlet`이 처리할 수 있도록 합니다.
-만약 `<url-pattern>`을 `/ga-quick-start/*`로 지정하면 `/ga-quick-start/`로 시작하는 이름을 가진 Translet이 실행됩니다.
+### 2.4 서블릿 URL 패턴 지정
+`<servlet-name>`에 서블릿 *WebActivityServlet* 의 고유 이름을 지정합니다.  
+`<url-pattern>`에 서블릿 *WebActivityServlet* 이 처리해야 하는 URL의 패턴을 지정합니다.  
 
-> Aspectran의 Translet이란?
-> 요청을 받고 결과 값을 적절히 가공해서 응답하는 처리자를 Aspectran 내부에서는 Translet이라고 명명하였습니다.
+만약 `<url-pattern>`을 `/ga-quick-start/*`로 지정하면 최종적으로 `/ga-quick-start/`로 시작하는 이름을 가진 *Translet* 이 실행됩니다.
+
+> Translet이란?  
+> 클라이언트의 요청 정보를 분석해서 정해진 내부 비지니스 로직을 수행한 후에 결과 값을 특정한 형태로 가공해서 응답하는 처리자를
+> Aspectran 내부에서는 Translet이라고 명명하였습니다.
 > Translet은 고유 이름을 가지고 있으며, 요청 URI와 직접적으로 매핑이 됩니다.
-> 스케쥴러의 Job도 Translet을 통해서 실행이 됩니다.
+> 참고로 스케쥴러의 Job도 Translet을 통해서 실행이 됩니다.
 
 ### 2.5 DefaultServlet 이름 지정하기
-요청 URI에 해당하는 Translet이 존재하지 않을 경우 서블릿 컨테이너의 DefaultServlet에게 넘겨주는 역할을 하는 핸들러가 항상 동작하고 있습니다.
-그 핸들러의 이름은 DefaultServletHttpRequestHandler입니다. DefaultServletHttpRequestHandler는 DefaultServlet의 이름이 무엇인지 자동으로 판단합니다.
-만약 DefaultServlet의 이름이 다르게 지정되어야 할 경우 아래와 같은 초기화 파라메터를 추가합니다.
+요청 URI에 해당하는 *Translet* 이 존재하지 않을 경우 서블릿 컨테이너의 *DefaultServlet* 에게 넘겨주는 역할을 하는 핸들러가 항상 동작하고 있습니다.
+그 핸들러의 이름은 *DefaultServletHttpRequestHandler* 입니다. *DefaultServletHttpRequestHandler* 는 *DefaultServlet* 의 이름이 무엇인지 자동으로 판단합니다.
+만약 *DefaultServlet* 의 이름이 다르게 지정되어야 할 경우 아래와 같은 초기화 파라메터를 추가합니다.
 
 {% highlight xml %}
 <context-param>
