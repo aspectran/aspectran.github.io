@@ -185,7 +185,7 @@ teaser: "Aspectran 설정 메타데이터 구성요소에 대해서 설명합니
     </joinpoint>
     <advice bean="advice.helloworld.HelloWorldAdvice">
       <before>
-        <action method="wellcome"/>
+        <action method="welcome"/>
       </before>
       <after>
         <action method="goodbye"/>

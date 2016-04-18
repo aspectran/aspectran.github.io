@@ -411,7 +411,7 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
     </joinpoint>
     <advice bean="advice.helloworld.HelloWorldAdvice">
       <before>
-        <action method="wellcome"/>
+        <action method="welcome"/>
       </before>
       <after>
         <action method="goodbye"/>

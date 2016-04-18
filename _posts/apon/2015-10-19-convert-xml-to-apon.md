@@ -162,7 +162,7 @@ published: true
         </joinpoint>
         <advice bean="advice.helloworld.HelloWorldAdvice">
             <before>
-                <action method="wellcome"/>
+                <action method="welcome"/>
             </before>
             <after>
                 <action method="goodbye"/>
@@ -385,7 +385,7 @@ aspectran: {
             bean: "advice.helloworld.HelloWorldAdvice"
             before: {
                 action: {
-                    method: "wellcome"
+                    method: "welcome"
                 }
             }
             after: {
