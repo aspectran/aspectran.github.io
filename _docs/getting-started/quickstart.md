@@ -58,29 +58,29 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
   <context-param>
     <param-name>aspectran:config</param-name>
     <param-value>
-      context: {
-        root: "/WEB-INF/aspectran/config/simplest-configuration.xml"
-        encoding: "utf-8"
-        resources: [
-          "/WEB-INF/aspectran/config"
-          "/WEB-INF/aspectran/classes"
-          "/WEB-INF/aspectran/lib"
-        ]
-        hybridLoading: false
-        autoReloading: {
-          reloadMethod: hard
-          observationInterval: 5
-          startup: true
+        context: {
+            root: "/WEB-INF/aspectran/config/simplest-configuration.xml"
+            encoding: "utf-8"
+            resources: [
+                "/WEB-INF/aspectran/config"
+                "/WEB-INF/aspectran/classes"
+                "/WEB-INF/aspectran/lib"
+            ]
+            hybridLoading: false
+            autoReloading: {
+                reloadMethod: hard
+                observationInterval: 5
+                startup: true
+            }
         }
-      }
-      scheduler: {
-        startDelaySeconds: 10
-        waitOnShutdown: true
-        startup: false
-      }
-      web: {
-        uriDecoding: "utf-8"
-      }
+        scheduler: {
+            startDelaySeconds: 10
+            waitOnShutdown: true
+            startup: false
+        }
+        web: {
+            uriDecoding: "utf-8"
+        }
     </param-value>
   </context-param>
   <listener>
