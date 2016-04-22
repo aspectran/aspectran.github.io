@@ -66,8 +66,8 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
                 "/WEB-INF/aspectran/classes"
                 "/WEB-INF/aspectran/lib"
             ]
-            hybridLoading: false
-            autoReloading: {
+            hybridLoad: false
+            autoReload: {
                 reloadMethod: hard
                 observationInterval: 5
                 startup: true
@@ -134,23 +134,23 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
 */WEB-INF/aspectran/lib*  
 *file:/c:/Users//Projects/java/classes*
 
-**context.hybridLoading**
+**context.hybridLoad**
 : 설정 메타데이터를 빠르게 로딩하기 위해 다수의 XML 파일을 APON 문서형식으로 변환할지 여부를 지정합니다.
 XML 형식의 설정 메타데이터 파일이 수정되면 APON 파일로 변환되고, 다음 기동 시에 XML 파일을 로딩하는 것이 아니라 APON 파일을 찾아서 로딩합니다.
 다수의 XML 파일을 파싱하는데 걸리는 시간을 단축할 수 있습니다.
 
-**context.autoReloading**
+**context.autoReload**
 : 리소스 자동 갱신 기능에 대한 정의
 (Aspectran에서 별도로 관리하는 리소스에 대해서는 WAS를 재시작을 하지 않더라도 자동 갱신이 가능합니다.)
 
-**context.autoReloading.reloadMethod**
+**context.autoReload.reloadMethod**
 : 리소스의 갱신 방법을 지정
 (hard: Java Class 갱신 가능, soft: 환경 설정 내역만 갱신 가능)
 
-**context.autoReloading.observationInterval**
+**context.autoReload.observationInterval**
 : 리소스가 수정 여부를 관찰하는 시간 간격을 초 단위로 지정
 
-**context.autoReloading.startup**
+**context.autoReload.startup**
 : 리소스 자동 갱신 기능을 사용할지 여부를 지정
 
 **scheduler**
@@ -180,11 +180,11 @@ XML 형식의 설정 메타데이터 파일이 수정되면 APON 파일로 변�
 | context.root | /WEB-INF/aspectran/root.xml |
 | context.encoding |  |
 | context.resources |  |
-| context.hybridLoading | false |
-| context.autoReloading | false |
-| context.autoReloading.reloadMethod | soft |
-| context.autoReloading.observationInterval | 10 |
-| context.autoReloading.startup | false |
+| context.hybridLoad | false |
+| context.autoReload | false |
+| context.autoReload.reloadMethod | soft |
+| context.autoReload.observationInterval | 10 |
+| context.autoReload.startup | false |
 | scheduler |  |
 | scheduler.startDelaySeconds | 5 |
 | scheduler.waitOnShutdown | false |

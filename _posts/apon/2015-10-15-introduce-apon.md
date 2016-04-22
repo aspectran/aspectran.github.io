@@ -90,8 +90,8 @@ context: {
         "/WEB-INF/aspectran/classes"
         "/WEB-INF/aspectran/lib"
     ]
-    hybridLoading: false
-    autoReloading: {
+    hybridLoad: false
+    autoReload: {
         reloadMethod: hard
         observationInterval: 5
         startup: true
@@ -154,7 +154,7 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
 
 ***AspectranContextConfig.java***
 
-> `context` Parameters의 멤버 Parameter로는 `root`, `encoding`, `resources`, `hybridLoading`, `autoReloading`이 있습니다.
+> `context` Parameters의 멤버 Parameter로는 `root`, `encoding`, `resources`, `hybridLoad`, `autoReload`가 있습니다.
 
 {% highlight java %}
 package com.aspectran.core.context.loader.config;
@@ -169,8 +169,8 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
   public static final ParameterDefine root;
   public static final ParameterDefine encoding;
   public static final ParameterDefine resources;
-  public static final ParameterDefine hybridLoading;
-  public static final ParameterDefine autoReloading;
+  public static final ParameterDefine hybridLoad;
+  public static final ParameterDefine autoReload;
 
   private final static ParameterDefine[] parameterDefines;
 
@@ -178,15 +178,15 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
     root = new ParameterDefine("root", ParameterValueType.STRING);
     encoding = new ParameterDefine("encoding", ParameterValueType.STRING);
     resources = new ParameterDefine("resources", ParameterValueType.STRING, true);
-    hybridLoading = new ParameterDefine("hybridLoading", ParameterValueType.BOOLEAN);
-    autoReloading = new ParameterDefine("autoReloading", AspectranContextAutoReloadingConfig.class);
+    hybridLoad = new ParameterDefine("hybridLoad", ParameterValueType.BOOLEAN);
+    autoReload = new ParameterDefine("autoReload", AspectranContextAutoReloadConfig.class);
 
     parameterDefines = new ParameterDefine[] {
         root,
         encoding,
         resources,
-        hybridLoading,
-        autoReloading
+        hybridLoad,
+        autoReload
     };
   }
 
@@ -201,9 +201,9 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 }
 {% endhighlight %}
 
-***AspectranContextAutoReloadingConfig.java***
+***AspectranContextAutoReloadConfig.java***
 
-> `autoReloading` Parameters의 멤버 Parameter로는 `reloadMethod`, `observationInterval`, `startup`이 있습니다.
+> `autoReload` Parameters의 멤버 Parameter로는 `reloadMethod`, `observationInterval`, `startup`이 있습니다.
 
 {% highlight java %}
 package com.aspectran.core.context.loader.config;
@@ -213,7 +213,7 @@ import com.aspectran.core.util.apon.ParameterDefine;
 import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
-public class AspectranContextAutoReloadingConfig extends AbstractParameters implements Parameters {
+public class AspectranContextAutoReloadConfig extends AbstractParameters implements Parameters {
 
   public static final ParameterDefine reloadMethod;
   public static final ParameterDefine observationInterval;
@@ -233,11 +233,11 @@ public class AspectranContextAutoReloadingConfig extends AbstractParameters impl
     };
   }
 
-  public AspectranContextAutoReloadingConfig() {
+  public AspectranContextAutoReloadConfig() {
     super(parameterValues);
   }
 
-  public AspectranContextAutoReloadingConfig(String text) {
+  public AspectranContextAutoReloadConfig(String text) {
     super(parameterValues, text);
   }
 
