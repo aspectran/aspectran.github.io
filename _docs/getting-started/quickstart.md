@@ -72,6 +72,8 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
                 observationInterval: 5
                 startup: true
             }
+            profiles: {
+            }
         }
         scheduler: {
             startDelaySeconds: 10
@@ -153,6 +155,15 @@ XML 형식의 설정 메타데이터 파일이 수정되면 APON 파일로 변�
 **context.autoReload.startup**
 : 리소스 자동 갱신 기능을 사용할지 여부를 지정
 
+**context.profiles**
+: 빌드 대상에 따라 설정을 다르게 적용할 수 있는 Profile을 설정
+
+**context.profiles.active**
+: 활성 Profile을 지정
+
+**context.profiles.default**
+: 활성 Profile을 지정하지 않았을 경우 기본 Profile을 지정
+
 **scheduler**
 : 스케쥴러 동작환경 설정
 
@@ -185,6 +196,9 @@ XML 형식의 설정 메타데이터 파일이 수정되면 APON 파일로 변�
 | context.autoReload.reloadMethod | soft |
 | context.autoReload.observationInterval | 10 |
 | context.autoReload.startup | false |
+| profiles |  |
+| profiles.active |  |
+| profiles.default |  |
 | scheduler |  |
 | scheduler.startDelaySeconds | 5 |
 | scheduler.waitOnShutdown | false |
