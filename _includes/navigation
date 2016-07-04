@@ -7,7 +7,6 @@
       <a href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_icon }}" alt="Aspectran"/></a>
     </div>
     <div class="title-bar-right" data-toggle>
-      Menu
     </div>
   </div>
 
