@@ -233,40 +233,28 @@ pre {
   }
 }
 
-
 // Lists
 //-------
 
-ul, ol {
-  margin-left: 20px;
-  padding: 0;
-}
-li {
-  margin-left: 0;
-  > ul,
-  > ol {
-       margin-bottom: 0;
+dl {
+  dt:first-child {
+    padding-top: 0;
+  }
+  dt {
+    font-weight: bold;
+    padding-top: rem-calc(20);
+  }
+  dd {
   }
 }
-
-dl {
-
-}
-dt:first-child {
-  padding-top: 0;
-}
-dt {
-  font-weight: bold;
-  padding-top: rem-calc(20);
-}
-dd {
-}
-article dl dt {
-  line-height: 1.5;
-}
-article dl dd {
-  line-height: 1.5;
-  margin-left: rem-calc(24);
+article dl {
+  dt {
+    line-height: 1.5;
+  }
+  dd {
+    line-height: 1.5;
+    margin-left: rem-calc(24);
+  }
 }
 
 // Quotes
