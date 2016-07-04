@@ -12,7 +12,7 @@ download:
 ## Configuration
 
 {% highlight xml %}
-<bean id="sqlSessionFactory" class="com.aspectran.support.orm.mybatis.SqlSessionFactoryBean" scope="singleton">
+<bean id="sqlSessionFactory" class="com.aspectran.support.orm.mybatis.SqlSessionFactoryBean">
     <property>
         <item name="configLocation" value="/WEB-INF/mybatis/mybatis-configuration.xml"/>
     </property>
@@ -26,17 +26,17 @@ download:
     </constructor>
 </bean>
 
-<bean id="*" class="com.aspectran.example.mybatis.dao.*Dao" scope="singleton">
-  <property>
-    <item name="revelentAspectId" value="mybatisTxAspect"/>
-  </property>
+<bean id="*" class="com.aspectran.example.mybatis.dao.*Dao" mask="com.aspectran.**.*" scope="singleton">
+    <property>
+        <item name="revelentAspectId" value="mybatisTxAspect"/>
+    </property>
 </bean>
 
 <aspect id="mybatisTxAspect">
     <joinpoint scope="translet">
         <pointcut>
             target: {
-              +: "/example/**/*@**.mybatis.dao.*Dao"
+              +: "/example/**/*@**.dao.*Dao"
             }
         </pointcut>
     </joinpoint>
@@ -70,25 +70,25 @@ import com.aspectran.support.orm.mybatis.MyBatisDaoSupport;
 
 public class MyBatisSampleDao extends MyBatisDaoSupport {
 
-  public Object selectOne(Translet translet) throws SQLException {
-    SqlSession sqlSession = getSqlSession(translet);
-    return sqlSession.selectOne("sample.selectOne", translet.getRequestAdapter().getParameterMap());
-  }
+    public Object selectOne(Translet translet) throws SQLException {
+        SqlSession sqlSession = getSqlSession(translet);
+        return sqlSession.selectOne("sample.selectOne", translet.getParameterMap());
+    }
 
-  public void insertOne(Translet translet) throws SQLException {
-    SqlSession sqlSession = getSqlSession(translet);
-    sqlSession.insert("sample.insertOne", translet.getRequestAdapter().getParameterMap());
-  }
+    public void insertOne(Translet translet) throws SQLException {
+        SqlSession sqlSession = getSqlSession(translet);
+        sqlSession.insert("sample.insertOne", translet.getParameterMap());
+    }
 
-  public void updateOne(Translet translet) throws SQLException {
-    SqlSession sqlSession = getSqlSession(translet);
-    sqlSession.update("sample.updateOne", translet.getRequestAdapter().getParameterMap());
-  }
+    public void updateOne(Translet translet) throws SQLException {
+        SqlSession sqlSession = getSqlSession(translet);
+        sqlSession.update("sample.updateOne", translet.getParameterMap());
+    }
 
-  public void deleteOne(Translet translet) throws SQLException {
-    SqlSession sqlSession = getSqlSession(translet);
-    sqlSession.delete("sample.deleteOne", translet.getRequestAdapter().getParameterMap());
-  }
+    public void deleteOne(Translet translet) throws SQLException {
+        SqlSession sqlSession = getSqlSession(translet);
+        sqlSession.delete("sample.deleteOne", translet.getParameterMap());
+    }
 
 }
 {% endhighlight %}

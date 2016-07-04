@@ -12,29 +12,29 @@ download:
 ## Configuration
 
 {% highlight xml %}
-<bean id="httpAccessControlAllowOriginFilter" class="com.aspectran.support.http.HttpAccessControlAllowOriginFilter" scope="singleton">
-  <property>
-    <item name="withCredentials" valueType="boolean">true</item>
-    <item name="origins" type="set">
-      <value>http://www.aspectran.com</value>
-      <value>http://localhost:4000</value>
-    </item>
-  </property>
+<bean id="httpAccessControlAllowOriginFilter" class="com.aspectran.support.http.HttpAccessControlAllowOriginFilter">
+    <property>
+        <item name="withCredentials" valueType="boolean">true</item>
+        <item name="origins" type="set">
+            <value>http://www.aspectran.com</value>
+            <value>http://localhost:4000</value>
+        </item>
+    </property>
 </bean>
 
 <aspect id="httpAccessControlAllowOriginFilterAspect">
-  <joinpoint scope="translet">
-    <pointcut>
-      target: {
-        +: "/example/**/*.json"
-        +: "/example/**/*.xml"
-      }
-    </pointcut>
-  </joinpoint>
-  <advice bean="httpAccessControlAllowOriginFilter">
-    <after>
-      <action method="checkAccessControlAllowCredentials"/>
-    </after>
-  </advice>
+    <joinpoint scope="translet">
+        <pointcut>
+            target: {
+                +: "/example/**/*.json"
+                +: "/example/**/*.xml"
+            }
+        </pointcut>
+    </joinpoint>
+    <advice bean="httpAccessControlAllowOriginFilter">
+        <after>
+            <action method="checkAccessControlAllowCredentials"/>
+        </after>
+    </advice>
 </aspect>
 {% endhighlight %}

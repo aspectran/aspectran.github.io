@@ -12,45 +12,45 @@ download:
 ## Configuration
 
 {% highlight xml %}
-<bean id="sqlMapClientFactory" class="com.aspectran.support.orm.ibatis.SqlMapClientFactoryBean" scope="singleton">
-  <property>
-    <item name="configLocation" value="/WEB-INF/sqlmap/sql-map-config.xml"/>
-  </property>
+<bean id="sqlMapClientFactory" class="com.aspectran.support.orm.ibatis.SqlMapClientFactoryBean">
+    <property>
+        <item name="configLocation" value="/WEB-INF/sqlmap/sql-map-config.xml"/>
+    </property>
 </bean>
 
 <bean id="sqlMapClientTxAdvice" class="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice" scope="prototype">
-  <constructor>
-    <argument>
-      <item><reference bean="sqlMapClientFactory"/></item>
-    </argument>
-  </constructor>
+    <constructor>
+        <argument>
+            <item><reference bean="sqlMapClientFactory"/></item>
+        </argument>
+    </constructor>
 </bean>
 
-<bean id="*" class="com.aspectran.example.ibatis.dao.*Dao" scope="singleton">
-  <property>
-    <item name="revelentAspectId" value="sqlmapTxAspect"/>
-  </property>
+<bean id="*" class="com.aspectran.example.ibatis.dao.*Dao" mask="com.aspectran.**.*" scope="singleton">
+    <property>
+        <item name="revelentAspectId" value="sqlmapTxAspect"/>
+    </property>
 </bean>
 
 <aspect id="sqlmapTxAspect">
-  <joinpoint scope="translet">
-    <pointcut>
-      target: {
-        +: "/example/**/*@**.ibatis.dao.*Dao"
-      }
-    </pointcut>
-  </joinpoint>
-  <advice bean="sqlMapClientTxAdvice">
-    <before>
-      <action method="start"/>
-    </before>
-    <after>
-      <action method="commit"/>
-    </after>
-    <finally>
-      <action method="end"/>
-    </finally>
-  </advice>
+    <joinpoint scope="translet">
+        <pointcut>
+            target: {
+                +: "/example/**/*@**.dao.*Dao"
+            }
+        </pointcut>
+    </joinpoint>
+    <advice bean="sqlMapClientTxAdvice">
+        <before>
+            <action method="start"/>
+        </before>
+        <after>
+            <action method="commit"/>
+        </after>
+        <finally>
+            <action method="end"/>
+        </finally>
+    </advice>
 </aspect>
 {% endhighlight %}
 
@@ -69,25 +69,25 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 
 public class IBatisSampleDao extends IBatisDaoSupport {
 
-  public Object selectOne(Translet translet) throws SQLException {
-    SqlMapClient sqlMapClient = getSqlMapClient(translet);
-    return sqlMapClient.queryForObject("sample.selectOne", translet.getRequestAdapter().getParameterMap());
-  }
+    public Object selectOne(Translet translet) throws SQLException {
+        SqlMapClient sqlMapClient = getSqlMapClient(translet);
+        return sqlMapClient.queryForObject("sample.selectOne", translet.getParameterMap());
+    }
 
-  public void insertOne(Translet translet) throws SQLException {
-    SqlMapClient sqlMapClient = getSqlMapClient(translet);
-    sqlMapClient.insert("sample.insertOne", translet.getRequestAdapter().getParameterMap());
-  }
+    public void insertOne(Translet translet) throws SQLException {
+        SqlMapClient sqlMapClient = getSqlMapClient(translet);
+        sqlMapClient.insert("sample.insertOne", translet.getParameterMap());
+    }
 
-  public void updateOne(Translet translet) throws SQLException {
-    SqlMapClient sqlMapClient = getSqlMapClient(translet);
-    sqlMapClient.update("sample.updateOne", translet.getRequestAdapter().getParameterMap());
-  }
+    public void updateOne(Translet translet) throws SQLException {
+        SqlMapClient sqlMapClient = getSqlMapClient(translet);
+        sqlMapClient.update("sample.updateOne", translet.getParameterMap());
+    }
 
-  public void deleteOne(Translet translet) throws SQLException {
-    SqlMapClient sqlMapClient = getSqlMapClient(translet);
-    sqlMapClient.delete("sample.deleteOne", translet.getRequestAdapter().getParameterMap());
-  }
+    public void deleteOne(Translet translet) throws SQLException {
+        SqlMapClient sqlMapClient = getSqlMapClient(translet);
+        sqlMapClient.delete("sample.deleteOne", translet.getParameterMap());
+    }
 
 }
 {% endhighlight %}
