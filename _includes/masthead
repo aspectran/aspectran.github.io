@@ -38,7 +38,6 @@
 		<div class="breadcrumbs-bar">
     {% include breadcrumb %}
 		</div>
-		</div>
     {% endif %}
 		</div><!-- /.small-12.columns -->
 		{% include forkme-ribbon %}
