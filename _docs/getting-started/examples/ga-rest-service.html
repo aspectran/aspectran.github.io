@@ -1,0 +1,104 @@
+---
+layout: page-fullwidth
+title: "RESTful 웹서비스를 이용하는 예제"
+subheadline: "Building a RESTful Web Service"
+teaser: "GET, PUT, POST, DELETE 등과 같은 HTTP 지원 메소드를 사용해서 RESTful 웹서비스를 이용하는 예제 페이지입니다."
+article_heading: true
+breadcrumb: true
+---
+
+<div class="row">
+  <div class="t30 large-4 columns">
+    <h2>Customer List</h2>
+    <select name="customerList" size="13" style="height:auto;background-image:none;">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+    <div style="float:right;">
+      <button type="button" class="button">Add</button>
+      <button type="button" class="alert button">Delete</button>
+    </div>
+  </div>
+  <div class="t30 large-8 columns">
+    <div class="panel radius">
+      <h2>Customer Details</h2>
+      <form>
+        <label>
+          No.
+          <input type="text"/>
+        </label>
+        <label>
+          Name
+          <input type="text"/>
+        </label>
+        <label>
+          Age
+          <input type="number"/>
+        </label>
+        <fieldset>
+          <legend>Approval Status</legend>
+          <input type="radio" name="approveStatus" id="approved" required><label for="approved">Approved</label>
+          <input type="radio" name="approveStatus" id="denied" required><label for="denied">Denied</label>
+        </fieldset>
+      </form>
+    </div>
+    <div class="t10" style="float:right;">
+      <button type="button" class="success button">Save</button>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="large-12 columns">
+    <div class="input-group">
+      <span class="input-group-label" style="white-space: nowrap;">POST</span>
+      <input class="input-group-field" type="text" value="{{ include.href }}" readonly>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function() {
+  $("select[name=customerList]").change(function() {
+    getCustomer($(this).val());
+  });
+
+  getCustomerList();
+});
+
+function getCustomerList() {
+  $.ajax({
+    type: "GET",
+    url: "http://localhost:8080/ga-rest-service/customers",
+    dataType: "json",
+    success: function(data) {
+      var list = $("select[name=customerList]");
+      list.empty();
+      for(var i = 0; i < data.customers.length; i++) {
+        var id = data.customers[i].id;
+        var name = data.customers[i].name;
+        list.append($("<option/>").attr("value", id).text(id + ". " + name));
+      }
+    },
+    error: function() {
+      alert("error");
+    }
+  });
+}
+
+function getCustomer(id) {
+  $.ajax({
+    type: "GET",
+    url: "http://localhost:8080/ga-rest-service/customers/" + id,
+    dataType: "json",
+    success: function(data) {
+      alert(data.customer.name);
+    },
+    error: function() {
+      alert("error");
+    }
+  });
+}
+
+</script>
