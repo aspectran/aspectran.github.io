@@ -46,6 +46,7 @@
 <!ELEMENT joinpoint (pointcut*)>
 <!ATTLIST joinpoint
   scope (session | translet | request | response | content | bean) #IMPLIED
+  method CDATA #IMPLIED
 >
 
 <!ELEMENT pointcut (#PCDATA)>
