@@ -111,7 +111,7 @@ published: true
         </settings>
     </aspect>
 
-    <aspect id="defaultExceptionHandlingRule">
+    <aspect id="defaultExceptionRule">
         <description>
             Translet의 이름이 "/example"로 시작하는 Translet을 실행하는 중에 발생하는 에러 처리 규칙을 정의합니다.
         </description>
@@ -122,7 +122,7 @@ published: true
                 }
             </pointcut>
         </joinpoint>
-        <exceptionRaised>
+        <exception>
             <description>
                 에러요인과 응답 컨텐츠의 형식에 따라 처리방식을 다르게 정할 수 있습니다.
                 exceptionType을 지정하지 않으면 모든 exception에 반응합니다.
@@ -145,7 +145,7 @@ published: true
                     </echo>
                 </transform>
             </responseByContentType>
-        </exceptionRaised>
+        </exception>
     </aspect>
 
     <aspect id="helloWorldAdvice">
@@ -310,7 +310,7 @@ aspectran: {
             |            Translet의 이름이 "/example"로 시작하는 Translet을 실행하는 중에 발생하는 에러 처리 규칙을 정의합니다.
             |        
         )
-        id: "defaultExceptionHandlingRule"
+        id: "defaultExceptionRule"
         for: "translet"
         joinpoint: {
             scope: "translet"

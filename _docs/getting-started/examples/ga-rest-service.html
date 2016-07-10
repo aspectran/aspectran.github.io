@@ -17,35 +17,36 @@ breadcrumb: true
       <option value="4">4</option>
     </select>
     <div style="float:right;">
-      <button type="button" class="button">Add</button>
-      <button type="button" class="alert button">Delete</button>
+      <button id="add" type="button" class="button">Add</button>
+      <button id="delete" type="button" class="alert button">Delete</button>
     </div>
   </div>
   <div class="t30 large-8 columns">
     <div class="panel radius">
       <h2>Customer Details</h2>
       <form>
+        <input type="hidden" name="mode"/>
         <label>
           No.
-          <input type="text"/>
+          <input type="text" name="id" disabled="disabled"/>
         </label>
         <label>
           Name
-          <input type="text"/>
+          <input type="text" name="name"/>
         </label>
         <label>
           Age
-          <input type="number"/>
+          <input type="number" name="age"/>
         </label>
         <fieldset>
           <legend>Approval Status</legend>
-          <input type="radio" name="approveStatus" id="approved" required><label for="approved">Approved</label>
-          <input type="radio" name="approveStatus" id="denied" required><label for="denied">Denied</label>
+          <input type="radio" name="approvalStatus" id="approved" value="Y" required><label for="approved">Approved</label>
+          <input type="radio" name="approvalStatus" id="denied" value="N" required><label for="denied">Denied</label>
         </fieldset>
       </form>
     </div>
     <div class="t10" style="float:right;">
-      <button type="button" class="success button">Save</button>
+      <button id="save" type="button" class="success button">Save</button>
     </div>
   </div>
 </div>
@@ -62,6 +63,17 @@ breadcrumb: true
 $(function() {
   $("select[name=customerList]").change(function() {
     getCustomer($(this).val());
+  });
+  $("button#add").click(function() {
+    $("select[name=customerList] option:selected").removeAttr("selected");
+    $("input[name=mode]").val("add");
+    clearForm();
+  });
+  $("button#save").click(function() {
+    saveCustomer();
+  });
+  $("button#delete").click(function() {
+    deleteCustomer();
   });
 
   getCustomerList();
@@ -93,12 +105,73 @@ function getCustomer(id) {
     url: "http://localhost:8080/ga-rest-service/customers/" + id,
     dataType: "json",
     success: function(data) {
-      alert(data.customer.name);
+      $("input[name=mode]").val("modify");
+      $("input[name=id]").val(data.customer.id);
+      $("input[name=name]").val(data.customer.name);
+      $("input[name=age]").val(data.customer.age);
+      $("input[name=approvalStatus][value=" + (data.customer.approved ? "Y" : "N") + "]").attr("checked", true);
     },
     error: function() {
       alert("error");
     }
   });
+}
+
+function saveCustomer() {
+  var type, url;
+  if($("input[name=mode]").val() == "add") {
+    type = "POST";
+    url = "http://localhost:8080/ga-rest-service/customers";
+  } else {
+    var id = $("input[name=id]").val();
+    type = "PUT";
+    url = "http://localhost:8080/ga-rest-service/customers/" + id;
+  }
+  alert($("input[name=age]").val());
+  $.ajax({
+    type: type,
+    url: url,
+    data: {
+      name: $("input[name=name]").val(),
+      age: $("input[name=age]").val(),
+      approved: $("input[name=approvalStatus]:selected").val()
+    },
+    dataType: "json",
+    success: function(data) {
+      clearForm();
+      getCustomerList();
+    },
+    error: function() {
+      alert("error");
+    }
+  });
+}
+
+function deleteCustomer() {
+  var id = $("input[name=id]").val();
+  if(!id) {
+    alert("삭제할 고객을 선택하세요.");
+    return;
+  }
+  $.ajax({
+    type: "DELETE",
+    url: "http://localhost:8080/ga-rest-service/customers/" + id,
+    dataType: "json",
+    success: function(data) {
+      clearForm();
+      getCustomerList();
+    },
+    error: function() {
+      alert("error");
+    }
+  });
+}
+
+function clearForm() {
+  $("input[name=id]").val("");
+  $("input[name=name]").val("");
+  $("input[name=age]").val("");
+  $("input[name=approvalStatus]").attr("checked", false);
 }
 
 </script>
