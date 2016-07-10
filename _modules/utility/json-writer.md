@@ -1,14 +1,14 @@
 ---
 layout: module
 format: article
-title:  JSON Serializer
+title:  JSON Writer
 subheadline: Aspectran Modules - Utility
 teaser: |
   Java Object를 JSON(JavaScript Object Notation) 형식의 문자열로 변환하는 클래스입니다.
-  별도의 JSON 라이브러리를 필요로 하지 않고, 상당히 빠른 속도로 변환을 해 줍니다.
+  별도의 JSON 라이브러리를 필요로 하지 않고, 변환 속도가 상당히 빠른 것이 특징입니다.
 category: Utility
 download:
-  source: https://github.com/aspectran/aspectran/tree/master/src/main/java/com/aspectran/core/util/json/JsonSerializer.java
+  source: https://github.com/aspectran/aspectran/tree/master/src/main/java/com/aspectran/core/util/json/JsonWriter.java
 ---
 
 ## Java Source
@@ -23,38 +23,38 @@ import java.util.Map;
 
 import com.aspectran.core.util.apon.Customer;
 
-public class JsonSerializerTest {
+public class JsonWriterTest {
 
-  public static void main(String argv[]) {
-    try {
-      Map<String, Object> map = new LinkedHashMap<String, Object>();
-      map.put("message", "Start Testing Now!");
-      map.put("one", 1);
-      map.put("two", 2);
-      map.put("three", 3);
-      map.put("four", 4);
+    public static void main(String argv[]) {
+        try {
+            Map<String, Object> map = new LinkedHashMap<String, Object>();
+            map.put("message", "Start Testing Now!");
+            map.put("one", 1);
+            map.put("two", 2);
+            map.put("three", 3);
+            map.put("four", 4);
 
-      List<Customer> customerList = new ArrayList<Customer>();
+            List<Customer> customerList = new ArrayList<Customer>();
 
-      for(int i = 1; i <= 10; i++) {
-        Customer customer = new Customer();
-        customer.putValue(Customer.id, "guest-" + i);
-        customer.putValue(Customer.name, "Guest" + i);
-        customer.putValue(Customer.age, 20 + i);
-        customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
-        customer.putValue(Customer.approved, true);
+            for(int i = 1; i <= 10; i++) {
+                Customer customer = new Customer();
+                customer.putValue(Customer.id, "guest-" + i);
+                customer.putValue(Customer.name, "Guest" + i);
+                customer.putValue(Customer.age, 20 + i);
+                customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
+                customer.putValue(Customer.approved, true);
 
-        customerList.add(customer);
-      }			
+                customerList.add(customer);
+            }			
 
-      map.put("customers", customerList);
+            map.put("customers", customerList);
 
-      System.out.println(JsonSerializer.serialize(map, true, "  "));
+            System.out.println(JsonWriter.stringify(map, true, "  "));
 
-    } catch(Exception e) {
-      e.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
-  }
 
 }
 {% endhighlight %}
