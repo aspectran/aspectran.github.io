@@ -127,7 +127,6 @@ function saveCustomer() {
     type = "PUT";
     url = "http://localhost:8080/ga-rest-service/customers/" + id;
   }
-  alert($("input[name=age]").val());
   $.ajax({
     type: type,
     url: url,
