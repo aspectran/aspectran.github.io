@@ -41,7 +41,7 @@ Value는 `null` 값도 가질 수 있습니다.
 ex) param1(long): 1234  
 Value Type은 소문자로 표기해야 합니다.
 * `Parameter`의 Value Type이 `parameters`이면 `{ }` (Curly Bracket)으로 감싸서 표기합니다. Curly Bracket 내에서 각 `Parameter`를 구분하기 위해 `,` (comma) 문자가 아닌 `\n` (개행문자)를 사용합니다.
-* `Parameter`의 값이 Array 형식이면 `[ ]` (Square Braket)으로 감싸서 표기합니다. Square Bracket 내에서 각 Array 요소를 구분하기 위해 `,` (comma) 문자가 아닌 `\n` (개행문자)를 사용합니다.
+* `Parameter`의 값이 Array 형식이면 `[ ]` (Square Bracket)으로 감싸서 표기합니다. Square Bracket 내에서 각 Array 요소를 구분하기 위해 `,` (comma) 문자가 아닌 `\n` (개행문자)를 사용합니다.
 * `Parameter`의 Value Type이 `string`이면 `"` (큰 쌍따옴표)로 감싸야 합니다. 큰 쌍따옴표 안에서 큰 쌍따옴표 또는 개행문자를 사용하기 위해서는 `\` (Escape 문자)를 사용할 수 있습니다.
 * `Parameter`의 Value Type이 `text`이면 `( )` (Round Bracket)으로 감싸야 하고, 각 라인의 선두에 `|` 문자를 붙여야 합니다. 라인 수 만큼 `|` (수직선 문자)를 사용하게 됩니다.
 * Curly Bracket, Square Bracket, Round Bracket은 모두 Bracket이 시작된 후에 반드시 개행을 해야 하고, Brakcket이 끝난 뒤에도 반드시 개행을 해야 합니다.
@@ -121,32 +121,32 @@ Parameters 객체는 여러 파라메터를 포함하며, 각 파라메터의 �
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.Parameters;
 
 public class AspectranConfig extends AbstractParameters implements Parameters {
 
-  public static final ParameterDefine context;
-  public static final ParameterDefine scheduler;
+  public static final ParameterDefinition context;
+  public static final ParameterDefinition scheduler;
 
-  private static final ParameterDefine[] parameterDefines;
+  private static final ParameterDefinition[] parameterDefinitions;
 
   static {
-    context = new ParameterDefine("context", AspectranContextConfig.class);
-    scheduler = new ParameterDefine("scheduler", AspectranSchedulerConfig.class);
+    context = new ParameterDefinition("context", AspectranContextConfig.class);
+    scheduler = new ParameterDefinition("scheduler", AspectranSchedulerConfig.class);
 
-    parameterDefines = new ParameterDefine[] {
+    parameterDefinitions = new ParameterDefinition[] {
         context,
         scheduler
     };
   }
 
   public AspectranConfig() {
-    super(parameterDefines);
+    super(parameterDefinitions);
   }
 
   public AspectranConfig(String text) {
-    super(parameterDefines, text);
+    super(parameterDefinitions, text);
   }
 
 }
@@ -160,28 +160,28 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
 public class AspectranContextConfig extends AbstractParameters implements Parameters {
 
-  public static final ParameterDefine root;
-  public static final ParameterDefine encoding;
-  public static final ParameterDefine resources;
-  public static final ParameterDefine hybridLoad;
-  public static final ParameterDefine autoReload;
+  public static final ParameterDefinition root;
+  public static final ParameterDefinition encoding;
+  public static final ParameterDefinition resources;
+  public static final ParameterDefinition hybridLoad;
+  public static final ParameterDefinition autoReload;
 
-  private final static ParameterDefine[] parameterDefines;
+  private final static ParameterDefinition[] parameterDefinitions;
 
   static {
-    root = new ParameterDefine("root", ParameterValueType.STRING);
-    encoding = new ParameterDefine("encoding", ParameterValueType.STRING);
-    resources = new ParameterDefine("resources", ParameterValueType.STRING, true);
-    hybridLoad = new ParameterDefine("hybridLoad", ParameterValueType.BOOLEAN);
-    autoReload = new ParameterDefine("autoReload", AspectranContextAutoReloadConfig.class);
+    root = new ParameterDefinition("root", ParameterValueType.STRING);
+    encoding = new ParameterDefinition("encoding", ParameterValueType.STRING);
+    resources = new ParameterDefinition("resources", ParameterValueType.STRING, true);
+    hybridLoad = new ParameterDefinition("hybridLoad", ParameterValueType.BOOLEAN);
+    autoReload = new ParameterDefinition("autoReload", AspectranContextAutoReloadConfig.class);
 
-    parameterDefines = new ParameterDefine[] {
+    parameterDefinitions = new ParameterDefinition[] {
         root,
         encoding,
         resources,
@@ -191,11 +191,11 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
   }
 
   public AspectranContextConfig() {
-    super(parameterDefines);
+    super(parameterDefinitions);
   }
 
   public AspectranContextConfig(String text) {
-    super(parameterDefines, text);
+    super(parameterDefinitions, text);
   }
 
 }
@@ -209,24 +209,24 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
 public class AspectranContextAutoReloadConfig extends AbstractParameters implements Parameters {
 
-  public static final ParameterDefine reloadMethod;
-  public static final ParameterDefine observationInterval;
-  public static final ParameterDefine startup;
+  public static final ParameterDefinition reloadMethod;
+  public static final ParameterDefinition observationInterval;
+  public static final ParameterDefinition startup;
 
-  private final static ParameterDefine[] parameterValues;
+  private final static ParameterDefinition[] parameterValues;
 
   static {
-    reloadMethod = new ParameterDefine("reloadMethod", ParameterValueType.STRING);
-    observationInterval = new ParameterDefine("observationInterval", ParameterValueType.INT);
-    startup = new ParameterDefine("startup", ParameterValueType.BOOLEAN);
+    reloadMethod = new ParameterDefinition("reloadMethod", ParameterValueType.STRING);
+    observationInterval = new ParameterDefinition("observationInterval", ParameterValueType.INT);
+    startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
 
-    parameterValues = new ParameterDefine[] {
+    parameterValues = new ParameterDefinition[] {
         reloadMethod,
         observationInterval,
         startup
@@ -252,24 +252,24 @@ public class AspectranContextAutoReloadConfig extends AbstractParameters impleme
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
 public class AspectranSchedulerConfig extends AbstractParameters implements Parameters {
 
-  public static final ParameterDefine startDelaySeconds;
-  public static final ParameterDefine waitOnShutdown;
-  public static final ParameterDefine startup;
+  public static final ParameterDefinition startDelaySeconds;
+  public static final ParameterDefinition waitOnShutdown;
+  public static final ParameterDefinition startup;
 
-  private final static ParameterDefine[] parameterDefines;
+  private final static ParameterDefinition[] parameterDefinitions;
 
   static {
-    startDelaySeconds = new ParameterDefine("startDelaySeconds", ParameterValueType.INT);
-    waitOnShutdown = new ParameterDefine("waitOnShutdown", ParameterValueType.BOOLEAN);
-    startup = new ParameterDefine("startup", ParameterValueType.BOOLEAN);
+    startDelaySeconds = new ParameterDefinition("startDelaySeconds", ParameterValueType.INT);
+    waitOnShutdown = new ParameterDefinition("waitOnShutdown", ParameterValueType.BOOLEAN);
+    startup = new ParameterDefinition("startup", ParameterValueType.BOOLEAN);
 
-    parameterDefines = new ParameterDefine[] {
+    parameterDefinitions = new ParameterDefinition[] {
         startDelaySeconds,
         waitOnShutdown,
         startup
@@ -277,11 +277,11 @@ public class AspectranSchedulerConfig extends AbstractParameters implements Para
   }
 
   public AspectranSchedulerConfig() {
-    super(parameterDefines);
+    super(parameterDefinitions);
   }
 
   public AspectranSchedulerConfig(String plaintext) {
-    super(parameterDefines, plaintext);
+    super(parameterDefinitions, plaintext);
   }
 
 }

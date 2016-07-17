@@ -39,37 +39,37 @@ Parameters 인터페이스를 구현하였습니다.
 package hello;
 
 import com.aspectran.core.util.apon.AbstractParameters;
-import com.aspectran.core.util.apon.ParameterDefine;
+import com.aspectran.core.util.apon.ParameterDefinition;
 import com.aspectran.core.util.apon.ParameterValueType;
 import com.aspectran.core.util.apon.Parameters;
 
 public class Customer extends AbstractParameters implements Parameters {
 
   /** 고객번호 */
-  public static final ParameterDefine id;
+  public static final ParameterDefinition id;
 
   /** 이름 */
-  public static final ParameterDefine name;
+  public static final ParameterDefinition name;
 
   /** 나이 */
-  public static final ParameterDefine age;
+  public static final ParameterDefinition age;
 
   /** 에피소드 */
-  public static final ParameterDefine episode;
+  public static final ParameterDefinition episode;
 
   /** 승인 여부 */
-  public static final ParameterDefine approved;
+  public static final ParameterDefinition approved;
 
-  private static final ParameterDefine[] parameterDefines;
+  private static final ParameterDefinition[] parameterDefinitions;
 
   static {
-    id = new ParameterDefine("id", ParameterValueType.STRING);
-    name = new ParameterDefine("name", ParameterValueType.STRING);
-    age = new ParameterDefine("age", ParameterValueType.INT);
-    episode = new ParameterDefine("episode", ParameterValueType.TEXT);
-    approved = new ParameterDefine("approved", ParameterValueType.BOOLEAN);
+    id = new ParameterDefinition("id", ParameterValueType.STRING);
+    name = new ParameterDefinition("name", ParameterValueType.STRING);
+    age = new ParameterDefinition("age", ParameterValueType.INT);
+    episode = new ParameterDefinition("episode", ParameterValueType.TEXT);
+    approved = new ParameterDefinition("approved", ParameterValueType.BOOLEAN);
 
-    parameterDefines = new ParameterDefine[] {
+    parameterDefinitions = new ParameterDefinition[] {
         id,
         name,
         age,
@@ -82,7 +82,7 @@ public class Customer extends AbstractParameters implements Parameters {
    * Instantiates a new customer.
    */
   public Customer() {
-    super(parameterDefines);
+    super(parameterDefinitions);
   }
 
   /**
@@ -91,7 +91,7 @@ public class Customer extends AbstractParameters implements Parameters {
    * @param text the Text string of APON format
    */
   public Customer(String text) {
-    super(parameterDefines, text);
+    super(parameterDefinitions, text);
   }
 
 }
