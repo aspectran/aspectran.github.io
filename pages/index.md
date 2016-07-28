@@ -8,6 +8,7 @@ layout: frontpage
 format: frontpage
 header:
   slide_images:
+    - header_examples.jpg
     - header_documentation.jpg
     - header_modules.jpg
     - header_gettingstarted.jpg

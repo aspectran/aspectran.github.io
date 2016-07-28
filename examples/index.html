@@ -1,0 +1,41 @@
+---
+layout: default
+title: "Examples"
+subheadline: "The Aspectran has an ever growing number of examples available for developers to learn from."
+teaser: "Aspectran을 이용해서 만들었습니다."
+header:
+   image_fullwidth: header_examples.jpg
+   caption: Photo by Juho Jeong
+article_heading: true
+breadcrumb: true
+permalink: /examples/
+---
+
+<div class="row">
+	<div class="medium-8 columns t30">
+
+  	{% assign counter = 1 %}
+    {% assign examples = site.examples %}
+  	{% for example in examples limit:1000 %}
+    <div class="row">
+      <div class="columns b30">
+        <p class="subheadline">{% if example.subheadline %}{{ example.subheadline }}{% endif %}</p>
+        <h2><a href="{{ site.baseurl }}{{ example.url }}">{{ example.title }}</a></h2>
+        <p>
+          {% if example.image.thumb %}<a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><img src="{{ site.urlimg }}{{ example.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title escape_once }}"></a>{% endif %}
+
+          {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
+
+          <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
+        </p>
+      </div><!-- /.columns -->
+    </div><!-- /.row -->
+  	{% assign counter = counter | plus:1 %}
+  	{% endfor %}
+
+	</div><!-- /.medium-8.columns -->
+
+	<div class="medium-4 columns t30">
+		{% include sidebar %}
+	</div><!-- /.medium-4.columns -->
+</div><!-- /.row -->

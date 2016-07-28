@@ -109,6 +109,9 @@ collections:
   modules:
     output: true
     permalink: "/modules/:path/"
+  examples:
+    output: true
+    permalink: "/examples/:path/"
 
 defaults:
   -
@@ -144,6 +147,15 @@ defaults:
     scope:
       path: ""
       type: "modules"
+    values:
+      article_heading: true
+      breadcrumb: true
+      comments: true
+      author: "juho_jeong"     # Default author for posts
+  -
+    scope:
+      path: ""
+      type: "examples"
     values:
       article_heading: true
       breadcrumb: true

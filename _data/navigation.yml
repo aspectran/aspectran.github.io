@@ -30,6 +30,10 @@
   url: "/modules/"
   side: left
 
+- title: Examples
+  url: "/examples/"
+  side: left
+
 - title: Blog
   url: "/blog/"
   side: right
