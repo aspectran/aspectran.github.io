@@ -1,5 +1,5 @@
 ---
-layout: page-fullwidth
+layout: example
 title: "RESTful 웹서비스 활용 예제"
 subheadline: "Building a RESTful Web Service"
 teaser: "GET, PUT, POST, DELETE 등과 같은 HTTP 지원 메소드를 사용해서 RESTful 웹서비스를 이용하는 예제 페이지입니다."
@@ -7,7 +7,14 @@ article_heading: true
 breadcrumb: true
 image:
   thumb: "examples/ga-rest-service.png"
+download:
+- label: "Front-end Sources"
+  url: https://github.com/aspectran/aspectran-examples-backend/tree/master/src/main/java/com/aspectran/examples/customers
+- label: "Back-end Sources"
+  url: https://github.com/aspectran/aspectran-examples-backend/tree/master/src/main/java/com/aspectran/examples/customers
 ---
+
+{% include alert warning='현재 본 예제 페이지는 정상작동하지 않습니다. Back-end 시스템 구축이 완료되는 대로 정상화될 예정입니다. ^^;' %}
 
 <div class="row">
   <div class="t10 large-4 columns" style="position:relative;">
@@ -101,7 +108,7 @@ $(function() {
 	 $(this).removeClass("is-invalid-input");
   });
 
-  getCustomerList();
+  //getCustomerList();
 });
 
 function getCustomerList() {
