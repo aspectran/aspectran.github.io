@@ -114,7 +114,7 @@ $(function() {
 function getCustomerList() {
   $.ajax({
     type: "GET",
-    url: "http://localhost:8080/ga-rest-service/customers",
+    url: "http://107.167.178.46/ga-rest-service/customers",
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe("GET", this.url, xhr);
@@ -137,7 +137,7 @@ function getCustomer(id) {
     $("input.is-invalid-input").removeClass("is-invalid-input");
   $.ajax({
     type: "GET",
-    url: "http://localhost:8080/ga-rest-service/customers/" + id,
+    url: "http://107.167.178.46/ga-rest-service/customers/" + id,
     dataType: "json",
     success: function(data, textStatus, xhr) {
         describe(this.type, this.url, xhr);
@@ -167,10 +167,10 @@ function saveCustomer() {
   var id = $("input[name=id]").val();
   if(id == "") {
     type = "POST";
-    url = "http://localhost:8080/ga-rest-service/customers";
+    url = "http://107.167.178.46/ga-rest-service/customers";
   } else {
     type = "PUT";
-    url = "http://localhost:8080/ga-rest-service/customers/" + id;
+    url = "http://107.167.178.46/ga-rest-service/customers/" + id;
   }
   $.ajax({
     type: type,
@@ -211,7 +211,7 @@ function deleteCustomer() {
   }
   $.ajax({
     type: "DELETE",
-    url: "http://localhost:8080/ga-rest-service/customers/" + id,
+    url: "http://107.167.178.46/ga-rest-service/customers/" + id,
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
@@ -231,7 +231,7 @@ function updateApproval(approved) {
   }
   $.ajax({
     type: "PUT",
-    url: "http://localhost:8080/ga-rest-service/customers/" + id + "/approve/" + (approved ? "true" : "false"),
+    url: "http://107.167.178.46/ga-rest-service/customers/" + id + "/approve/" + (approved ? "true" : "false"),
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
