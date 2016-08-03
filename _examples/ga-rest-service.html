@@ -186,7 +186,6 @@ function saveCustomer() {
       if(id == "") {
           $("#total").fadeOut(300);
           $("select[name=customerList]").append($("<option/>").attr("value", data.id).text("#" + data.id + ". " + data.name));
-          //$("select[name=customerList]").prop('selectedIndex', $("select[name=customerList] option").size() - 1);
           $("select[name=customerList]").val(data.id);
           $("input[name=id]").val(data.id);
           $("#cust-no").text(data.id);
