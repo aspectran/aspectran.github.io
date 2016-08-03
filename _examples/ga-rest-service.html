@@ -112,7 +112,6 @@ $(function() {
 });
 
 function getCustomerList() {
-	alert(1);
   $.ajax({
     type: "GET",
     url: "http://107.167.178.46/ga-rest-service/customers",
@@ -248,7 +247,6 @@ function clearForm() {
   $("input[name=name]").val("");
   $("input[name=age]").val("");
   $("input[name=approvalStatus]").attr("checked", false);
-  //$("select[name=customerList]").prop('selectedIndex', -1);
   $("#total").text($("select[name=customerList] option").size());
   $("#cust-no").text("-");
   $("input.is-invalid-input").removeClass("is-invalid-input");
