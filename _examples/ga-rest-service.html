@@ -193,8 +193,7 @@ function saveCustomer() {
       } else {
    	      $("select[name=customerList] option[value=" + data.id + "]").text("#" + data.id + ". " + data.name);
    	  }
-        $("select[name=customerList] option:selected").css("color", "blue");
-      //clearForm();
+	  $("select[name=customerList] option:selected").css("color", "blue");
     },
 	error: function(xhr, status, error) {
       alert("code: " + xhr.status + "\nmessage: " + xhr.responseText + "\nerror: " + error);
