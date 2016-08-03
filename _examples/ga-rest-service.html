@@ -81,9 +81,9 @@ download:
 <script>
 $(function() {
   $("select[name=customerList]").change(function() {
-      $("#details form, #cust-no").fadeOut(300);
+    $("#details form, #cust-no").fadeOut(300);
     getCustomer($(this).val());
-      $("#details form, #cust-no").fadeIn(200);
+    $("#details form, #cust-no").fadeIn(200);
   });
   $("button#refresh").click(function() {
 	  $("#customer-list-board, #total").fadeOut(300);
@@ -114,7 +114,7 @@ $(function() {
 function getCustomerList() {
   $.ajax({
     type: "GET",
-    url: "http://107.167.178.46/ga-rest-service/customers",
+    url: "http://backend.aspectran.com/ga-rest-service/customers",
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe("GET", this.url, xhr);
@@ -134,14 +134,14 @@ function getCustomerList() {
 }
 
 function getCustomer(id) {
-    $("input.is-invalid-input").removeClass("is-invalid-input");
+  $("input.is-invalid-input").removeClass("is-invalid-input");
   $.ajax({
     type: "GET",
-    url: "http://107.167.178.46/ga-rest-service/customers/" + id,
+    url: "http://backend.aspectran.com/ga-rest-service/customers/" + id,
     dataType: "json",
     success: function(data, textStatus, xhr) {
-        describe(this.type, this.url, xhr);
-        $("input[name=id]").val(data.customer.id);
+      describe(this.type, this.url, xhr);
+      $("input[name=id]").val(data.customer.id);
       $("input[name=name]").val(data.customer.name);
       $("input[name=age]").val(data.customer.age);
       $("input[name=approvalStatus][value=" + (data.customer.approved ? "Y" : "N") + "]").prop("checked", true);
@@ -167,10 +167,10 @@ function saveCustomer() {
   var id = $("input[name=id]").val();
   if(id == "") {
     type = "POST";
-    url = "http://107.167.178.46/ga-rest-service/customers";
+    url = "http://backend.aspectran.com/ga-rest-service/customers";
   } else {
     type = "PUT";
-    url = "http://107.167.178.46/ga-rest-service/customers/" + id;
+    url = "http://backend.aspectran.com/ga-rest-service/customers/" + id;
   }
   $.ajax({
     type: type,
@@ -184,18 +184,18 @@ function saveCustomer() {
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
       if(id == "") {
-          $("#total").fadeOut(300);
-          $("select[name=customerList]").append($("<option/>").attr("value", data.id).text("#" + data.id + ". " + data.name));
-          $("select[name=customerList]").val(data.id);
-          $("input[name=id]").val(data.id);
-          $("#cust-no").text(data.id);
-          $("#total").fadeIn(200);
+        $("#total").fadeOut(300);
+        $("select[name=customerList]").append($("<option/>").attr("value", data.id).text("#" + data.id + ". " + data.name));
+        $("select[name=customerList]").val(data.id);
+        $("input[name=id]").val(data.id);
+        $("#cust-no").text(data.id);
+        $("#total").fadeIn(200);
       } else {
-   	      $("select[name=customerList] option[value=" + data.id + "]").text("#" + data.id + ". " + data.name);
+   	    $("select[name=customerList] option[value=" + data.id + "]").text("#" + data.id + ". " + data.name);
    	  }
-	  $("select[name=customerList] option:selected").css("color", "blue");
+      $("select[name=customerList] option:selected").css("color", "blue");
     },
-	error: function(xhr, status, error) {
+  	error: function(xhr, status, error) {
       alert("code: " + xhr.status + "\nmessage: " + xhr.responseText + "\nerror: " + error);
     }
   });
@@ -209,7 +209,7 @@ function deleteCustomer() {
   }
   $.ajax({
     type: "DELETE",
-    url: "http://107.167.178.46/ga-rest-service/customers/" + id,
+    url: "http://backend.aspectran.com/ga-rest-service/customers/" + id,
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
@@ -229,12 +229,12 @@ function updateApproval(approved) {
   }
   $.ajax({
     type: "PUT",
-    url: "http://107.167.178.46/ga-rest-service/customers/" + id + "/approve/" + (approved ? "true" : "false"),
+    url: "http://backend.aspectran.com/ga-rest-service/customers/" + id + "/approve/" + (approved ? "true" : "false"),
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
-	},
-	error: function(xhr, status, error) {
+  	},
+  	error: function(xhr, status, error) {
       alert("code: " + xhr.status + "\nmessage: " + xhr.responseText + "\nerror: " + error);
     }
   });
@@ -253,12 +253,12 @@ function clearForm() {
 function describe(method, url, xhr) {
 	$("#describe span").text(method);
 	$("#describe input").val(url);
-    $("#response-status-code").fadeOut(300);
-    $("#response-status-code").text(xhr.status);
-    $("#response-text").text(xhr.responseText);
-    if (xhr.status == "201") {
-        $("#response-text").prepend("<strong>Location: " + xhr.getResponseHeader('Location') + "</strong>\n");
-    }
-    $("#response-status-code").fadeIn(200);
+  $("#response-status-code").fadeOut(300);
+  $("#response-status-code").text(xhr.status);
+  $("#response-text").text(xhr.responseText);
+  if(xhr.status == "201") {
+    $("#response-text").prepend("<strong>Location: " + xhr.getResponseHeader('Location') + "</strong>\n");
+  }
+  $("#response-status-code").fadeIn(200);
 }
 </script>
