@@ -20,4 +20,4 @@ Aspectran 라이브러리와 소스코드를 다운로드할 수 있습니다.
 
 [1]: /getting-started/overview/
 [2]: /getting-started/quickstart/
-[4]: /download/
+[3]: /download/
