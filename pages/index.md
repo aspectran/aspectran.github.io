@@ -46,8 +46,7 @@ widget4:
   url: /modules/
   image: header_modules_thumb.jpg
   text: |
-    다양한 외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다.
-    Aspectran을 사용해서 개발된 공통 모듈을 공유해 보세요.
+    외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다.
 permalink: /index.html
 ---
 {% comment %}
