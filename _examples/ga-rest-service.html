@@ -21,8 +21,8 @@ download:
     <h2 class="float-left">Customer List</h2>
     <span id="total" class="float-right warning badge" style="font-size:1.8em;position:absolute;top:0;right:0;">0</span>
     <div id="customer-list-board" style="clear:both;border-radius:3px;padding:2px;margin-bottom:.5em;background:linear-gradient(to right, #626D73, yellow);">
-	    <select name="customerList" size="13" style="height:auto;background-image:none;margin:0;">
-	    </select>
+      <select name="customerList" size="13" style="height:auto;background-image:none;margin:0;">
+      </select>
     </div>
     <div style="float:left;">
       <button id="refresh" type="button" class="button warning">Refresh</button>
@@ -50,10 +50,10 @@ download:
           Age
           <input type="number" name="age" min="1" max="199" maxlength="3" oninput="if(this.value.length >= this.maxLength) this.value = this.value.slice(0, this.maxLength);"/>
         </label>
-          <legend>Approval Status:
+        <legend>Approval Status:
           <input type="radio" name="approvalStatus" id="approved" value="Y" required><label for="approved">Approved</label>
           <input type="radio" name="approvalStatus" id="denied" value="N" required><label for="denied">Denied</label>
-          </legend>
+        </legend>
       </form>
     </div>
     <div class="t10" style="float:right;">
@@ -71,10 +71,10 @@ download:
 </div>
 <div class="row" style="margin-top:10px;">
   <div class="large-12 columns" style="position:relative;">
-      <span id="response-status-code" class="float-left badge" style="font-size:1.7em;position:absolute;top:0;left:0;margin-left:.4em;margin-top:-.35em;">200</span>
-      <pre id="response-text" style="padding-left:4em;max-height:300px;">
+    <span id="response-status-code" class="float-left badge" style="font-size:1.7em;position:absolute;top:0;left:0;margin-left:.4em;margin-top:-.35em;">200</span>
+    <pre id="response-text" style="padding-left:4em;max-height:300px;">
 
-      </pre>
+    </pre>
   </div>
 </div>
 
@@ -86,9 +86,9 @@ $(function() {
     $("#details form, #cust-no").fadeIn(200);
   });
   $("button#refresh").click(function() {
-	  $("#customer-list-board, #total").fadeOut(300);
-	  getCustomerList();
-	  $("#customer-list-board, #total").fadeIn(200);
+    $("#customer-list-board, #total").fadeOut(300);
+    getCustomerList();
+    $("#customer-list-board, #total").fadeIn(200);
   });
   $("button#add").click(function() {
     $("select[name=customerList] option:selected").removeAttr("selected");
@@ -105,7 +105,7 @@ $(function() {
     updateApproval($(this).val() == "Y");
   });
   $("input").focus(function() {
-	 $(this).removeClass("is-invalid-input");
+   $(this).removeClass("is-invalid-input");
   });
 
   getCustomerList();
@@ -154,14 +154,14 @@ function getCustomer(id) {
 }
 
 function saveCustomer() {
-	if($("input[name=name]").val() == "") {
-		$("input[name=name]").addClass("is-invalid-input");
-	}
-	if($("input[name=age]").val() == "") {
-		$("input[name=age]").addClass("is-invalid-input");
-	}
-	if($("input.is-invalid-input").size() > 0) {
-		return;
+  if($("input[name=name]").val() == "") {
+    $("input[name=name]").addClass("is-invalid-input");
+  }
+  if($("input[name=age]").val() == "") {
+    $("input[name=age]").addClass("is-invalid-input");
+  }
+  if($("input.is-invalid-input").size() > 0) {
+    return;
   }
   var type, url;
   var id = $("input[name=id]").val();
@@ -191,11 +191,11 @@ function saveCustomer() {
         $("#cust-no").text(data.id);
         $("#total").fadeIn(200);
       } else {
-   	    $("select[name=customerList] option[value=" + data.id + "]").text("#" + data.id + ". " + data.name);
-   	  }
+        $("select[name=customerList] option[value=" + data.id + "]").text("#" + data.id + ". " + data.name);
+      }
       $("select[name=customerList] option:selected").css("color", "blue");
     },
-  	error: function(xhr, status, error) {
+    error: function(xhr, status, error) {
       alert("code: " + xhr.status + "\nmessage: " + xhr.responseText + "\nerror: " + error);
     }
   });
@@ -233,8 +233,8 @@ function updateApproval(approved) {
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
-  	},
-  	error: function(xhr, status, error) {
+    },
+    error: function(xhr, status, error) {
       alert("code: " + xhr.status + "\nmessage: " + xhr.responseText + "\nerror: " + error);
     }
   });
@@ -251,8 +251,8 @@ function clearForm() {
 }
 
 function describe(method, url, xhr) {
-	$("#describe span").text(method);
-	$("#describe input").val(url);
+  $("#describe span").text(method);
+  $("#describe input").val(url);
   $("#response-status-code").fadeOut(300);
   $("#response-status-code").text(xhr.status);
   $("#response-text").text(xhr.responseText);
