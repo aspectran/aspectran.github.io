@@ -10,16 +10,15 @@
         <div class="row">
         {% if site.logo_footer %}
           <div class="medium-2 large-1 columns hide-for-small-only t5">
-            <h5><a href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_footer }}" width="100" height="100" title="{{ site.title }}"/></a></h5>
+            <h5><a href="{{ site.baseurl }}/info/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_footer }}" width="100" height="100" title="{{ site.title }}"/></a></h5>
           </div>
           <div class="medium-4 large-4 columns">
         {% else %}
           <div class="medium-6 large-5 columns">
         {% endif %}
-            <h5>{{ site.data.language.info_website }}</h5>
+            <a href="{{ site.baseurl }}/info/"><h5>{{ site.data.language.info_website }}</h5></a>
             <p>
-              {{ site.description }}
-              <a href="{{ site.baseurl }}/info/">{{ site.data.language.details }}</a>
+              <a href="{{ site.baseurl }}/info/">{{ site.description }}</a>
             </p>
           </div><!-- /.large-6.columns -->
 
