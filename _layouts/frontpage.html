@@ -8,27 +8,38 @@ layout: default
 {% endcomment %}
 <div class="grey-ground">
   <div class="row">
+    <div class="medium-12 columns b10 text-right">
+      <a href="https://travis-ci.org/aspectran/aspectran" target="_blank" title="Build Status"><img src="https://travis-ci.org/aspectran/aspectran.svg" alt=""/></a>
+      <a href="https://github.com/aspectran/aspectran" target="_blank" title="Apache License 2.0"><img src="http://img.shields.io/badge/license-Apache%202-red.svg" alt=""/></a>
+    </div>
     <div class="medium-6 large-8 columns">
       <div class="row">
-        <div class="medium-12 columns hide-for-large">
-          <a href="https://travis-ci.org/aspectran/aspectran" target="_blank" title="Build Status"><img src="https://travis-ci.org/aspectran/aspectran.svg" alt=""/></a>
-          <a href="https://github.com/aspectran/aspectran" target="_blank" title="Apache License 2.0"><img src="http://img.shields.io/badge/license-Apache%202-red.svg" alt=""/></a>
-        </div>
-      </div>
-      <div class="row">
-        <div class="large-12 columns hide-for-small-only hide-for-medium-only b10">
-          {% include frontpage-widget2 widget=page.widget1 %}
-        </div>
-        <div class="medium-12 large-4 columns">
+        <div class="medium-12 large-4 columns b10">
           {% include frontpage-widget widget=page.widget2 %}
         </div>
-        <div class="medium-12 large-4 columns">
+        <div class="medium-12 large-4 columns b10">
           {% include frontpage-widget widget=page.widget3 %}
         </div>
-        <div class="medium-12 large-4 columns">
+        <div class="medium-12 large-4 columns b10">
           {% include frontpage-widget widget=page.widget4 %}
         </div>
       </div>
+      {% assign counter = 1 %}
+      {% assign examples = site.examples %}
+    	{% for example in examples limit:1 %}
+      <div class="row t20">
+        <div class="columns">
+          <p class="subheadline">{% if example.subheadline %}{{ example.subheadline }}{% endif %}</p>
+          <h2><a href="{{ site.baseurl }}{{ example.url }}">{{ example.title }}</a></h2>
+          <p>
+            {% if example.image.thumb %}<a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><img src="{{ site.urlimg }}{{ example.image.thumb }}" class="alignleft" width="180" height="180" alt="{{ page.title escape_once }}"></a>{% endif %}
+            {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
+            <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
+          </p>
+        </div><!-- /.columns -->
+      </div><!-- /.row -->
+    	{% assign counter = counter | plus:1 %}
+    	{% endfor %}
     </div>
     <div class="medium-6 large-4 columns hide-for-small-only">
       {% include sidebar %}
