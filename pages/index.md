@@ -25,22 +25,22 @@ widget1:
     RESTful 웹서비스 구축 환경 지원
   image: header_aspectran_thumb.png
 widget2:
-    title: Getting Started
-    url: '/getting-started/'
-    image: header_gettingstarted_thumb.jpg
-    text: |
-      Overview<br/>
-      Quick Start Guide<br/>
-      Download
+  title: Getting Started
+  url: '/getting-started/'
+  image: header_gettingstarted_thumb.jpg
+  text: |
+    Overview<br/>
+    Quick Start Guide<br/>
+    Download
 widget3:
-    title: Documentation
-    url: /docs/
-    image: header_documentation_thumb.jpg
-    text: |
-      User Guides<br/>
-      Java API Reference<br/>
-      FAQs<br/>
-      Changelog &amp; Roadmap
+  title: Documentation
+  url: /docs/
+  image: header_documentation_thumb.jpg
+  text: |
+    User Guides<br/>
+    Java API Reference<br/>
+    FAQs<br/>
+    Changelog &amp; Roadmap
 widget4:
   title: Modules
   url: /modules/
