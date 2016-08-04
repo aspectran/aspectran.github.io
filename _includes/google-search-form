@@ -1,13 +1,6 @@
 {% comment %}TODO consider https://developers.google.com/custom-search/docs/element{% endcomment %}
 {% capture google_search_site %}{{ site.url }}{{ site.baseurl }}/{% endcapture %}
-<script type="text/javascript">
-  function google_search() {
-    var keyword = $("form[name=google-search] input[name=keyword]").val();
-    window.open("https://www.google.com/search?q=" + keyword + "+site:" + "{{ google_search_site | cgi_escape }}");
-  }
-</script>
-
-<form name="google-search" onsubmit="google_search(); return false;">
+<form name="google-search" onsubmit="window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ google_search_site | cgi_escape }}'); return false;">
   <div class="row">
     <div class="large-12 columns">
       <div class="input-group">

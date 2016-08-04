@@ -4,7 +4,7 @@
       <a href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_icon }}" alt="Aspectran"/></a>
     </div>
     <div class="title-bar-center">
-      Aspectran
+      <a href="#top-of-page">Aspectran</a>
     </div>
     <div class="title-bar-right">
       <button class="menu-icon" type="button" data-toggle></button>
@@ -20,13 +20,13 @@
         <ul class="dropdown menu" data-dropdown-menu>
           {% for link in site.data.navigation %}
 
-                {% if link.url contains 'http' %}
-                  {% assign domain = '' %}
-                {% elsif link.url == '#' %}
-                  {% assign domain = '' %}
-                {% else %}
-                  {% assign domain = site.url %}
-                {% endif %}
+            {% if link.url contains 'http' %}
+              {% assign domain = '' %}
+            {% elsif link.url == '#' %}
+              {% assign domain = '' %}
+            {% else %}
+              {% assign domain = site.url %}
+            {% endif %}
 
             {% comment %}   If there are links for left side begin   {% endcomment %}
             {% if link.side == 'left' %}
@@ -66,13 +66,13 @@
 
         {% for link in site.data.navigation %}
 
-              {% if link.url contains 'http' %}
-                {% assign domain = '' %}
-              {% elsif link.url == '#' %}
-                {% assign domain = '' %}
-              {% else %}
-                {% assign domain = site.url %}
-              {% endif %}
+          {% if link.url contains 'http' %}
+            {% assign domain = '' %}
+          {% elsif link.url == '#' %}
+            {% assign domain = '' %}
+          {% else %}
+            {% assign domain = site.url %}
+          {% endif %}
 
           {% comment %}   If there are links for right side begin   {% endcomment %}
           {% if link.side == 'right' %}
@@ -105,6 +105,19 @@
         {% endfor %}
 
         </ul>
+      </div>
+    </div>
+    <div class="row search-bar show-for-small-only">
+      <div class="large-12 columns">
+        {% capture google_search_site %}{{ site.url }}{{ site.baseurl }}/{% endcapture %}
+        <form name="google-search" onsubmit="window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ google_search_site | cgi_escape }}'); return false;">
+        <div class="input-group">
+          <input class="input-group-field" type="text" name="keyword" placeholder="{{ site.data.language.enter_search_term }}" style="width:100%">
+          <div class="input-group-button">
+            <button type="submit" class="button">Search</button>
+          </div>
+        </div>
+        </form>
       </div>
     </div>
   </div>
