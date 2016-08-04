@@ -39,8 +39,7 @@ widget3:
   text: |
     User Guides<br/>
     Java API Reference<br/>
-    FAQs<br/>
-    Changelog &amp; Roadmap
+    FAQs &amp; Changelog
 widget4:
   title: Modules
   url: /modules/
