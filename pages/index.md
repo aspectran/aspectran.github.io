@@ -31,8 +31,7 @@ widget2:
     text: |
       Overview<br/>
       Quick Start Guide<br/>
-      Running the Examples<br/>
-      Downloads
+      Download
 widget3:
     title: Documentation
     url: /docs/

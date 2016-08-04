@@ -6,10 +6,8 @@
     url: "/getting-started/overview/"
   - title: "Quick Start Guide"
     url: "/getting-started/quickstart/"
-  - title: "Running the Examples"
-    url: "/getting-started/examples/"
-  - title: "Downloads"
-    url: "/downloads/"
+  - title: "Download"
+    url: "/download/"
 
 - title: Documentation
   url: "/docs/"

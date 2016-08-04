@@ -15,13 +15,9 @@ header:
 ## [Quick Start Guide][2]
 Aspectran을 이용해서 간단한 웹 어플리케이션을 만드는 방법을 설명합니다.
 
-## [Running the Examples][3]
-실제로 구글 앱엔진에서 구동되고 있는 예제 사이트를 중심으로 Aspectran의 다양한 기능에 대해 설명합니다.
-
-## [Downloads][4]
+## [Download][3]
 Aspectran 라이브러리와 소스코드를 다운로드할 수 있습니다.
 
 [1]: /getting-started/overview/
 [2]: /getting-started/quickstart/
-[3]: /getting-started/examples/
-[4]: /downloads/
+[4]: /download/
