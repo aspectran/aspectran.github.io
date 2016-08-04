@@ -18,25 +18,24 @@ download:
 -->
 <div class="row">
   <div class="t10 large-4 columns" style="position:relative;">
-    <h2 class="float-left">Customer List</h2>
-    <span id="total" class="float-right warning badge" style="font-size:1.8em;position:absolute;top:0;right:0;">0</span>
-    <div id="customer-list-board" style="clear:both;border-radius:3px;padding:2px;margin-bottom:.5em;background:linear-gradient(to right, #626D73, yellow);">
-      <select name="customerList" size="13" style="height:auto;background-image:none;margin:0;">
+    <h2>Customer List</h2>
+    <span id="total" class="float-right warning badge" style="font-size:2em;position:absolute;top:0;right:0;">0</span>
+    <div id="customer-list-board" style="clear:both;border-radius:3px;padding:2px;margin-bottom:.5em;">
+      <select name="customerList" size="12" style="height:auto;background-image:none;margin:0;">
       </select>
     </div>
-    <div style="float:left;">
+    <div class="float-left">
       <button id="refresh" type="button" class="button warning">Refresh</button>
     </div>
-    <div style="float:right;">
+    <div class="float-right">
       <button id="add" type="button" class="button">Add</button>
       <button id="delete" type="button" class="button alert">Delete</button>
     </div>
   </div>
-  <div class="t30 large-8 columns">
-    <div id="details" class="panel radius t10" style="position:relative;">
-        <span id="cust-no" class="success badge" style="font-size:1.3em;position:absolute;top:0;left:0;margin-top:-25px;margin-left:-10px;"></span>
-        <h2 class="float-left">Customer Details</h2>
-      <div style="clear:both;"></div>
+  <div class="t10 large-8 columns" style="position:relative;">
+    <h2>Customer Details</h2>
+    <span id="cust-no" class="float-right success badge" style="font-size:2em;position:absolute;top:0;right:0;"></span>
+    <div id="details" class="panel radius t10 b5">
       <form>
         <label>
           No.
@@ -71,7 +70,7 @@ download:
 </div>
 <div class="row" style="margin-top:10px;">
   <div class="large-12 columns" style="position:relative;">
-    <span id="response-status-code" class="float-left badge" style="font-size:1.7em;position:absolute;top:0;left:0;margin-left:.4em;margin-top:-.35em;">200</span>
+    <span id="response-status-code" class="float-left badge" style="font-size:2em;position:absolute;top:0;left:0;margin-left:0;margin-top:-.35em;">200</span>
     <pre id="response-text" style="padding-left:4em;max-height:300px;">
 
     </pre>
