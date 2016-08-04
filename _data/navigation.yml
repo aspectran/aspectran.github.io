@@ -21,8 +21,6 @@
     url: "/docs/faqs/"
   - title: "Changelog"
     url: "/docs/changelog/"
-  - title: "Roadmap"
-    url: "/docs/roadmap/"
 
 - title: Modules
   url: "/modules/"
