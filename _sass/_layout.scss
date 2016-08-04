@@ -94,7 +94,7 @@
         opacity: .93;
         @include breakpoint(small only) {
           left: auto;
-          right: 1.5rem;
+          right: 2.5rem;
         }
         li {
           @include breakpoint(small only) {
@@ -271,20 +271,20 @@
     padding: 30px 0;
   }
   .masthead-with-text {
-    height: 330px;
+    height: 350px;
     padding: 60px 0;
   }
   .masthead-with-image-header {
-    height: 310px;
+    height: 330px;
     #slogan {
-      margin-top: 90px;
+      margin-top: 110px;
       margin-left: 33px;
       img {
         height: 170px;
       }
     }
     header {
-      margin-top: 130px;
+      margin-top: 150px;
       h1 {
         font-size: 3em;
         font-weight: 700;
@@ -305,18 +305,18 @@
   }
   .masthead-with-text {
     padding: 95px 0;
-    height: 500px;
+    height: 480px;
   }
   .masthead-with-image-header {
-    height: 480px;
+    height: 460px;
     #slogan {
-      margin-top: 240px;
+      margin-top: 220px;
       img {
         height: 170px;
       }
     }
     header {
-      margin-top: 290px;
+      margin-top: 270px;
       h1 {
         font-size: 3.3em;
         font-weight: 700;
