@@ -2,8 +2,8 @@
 layout: page
 format: article
 sidebar: right
-title: "Aspectran Releases"
-subheadline: "Download a Release of Aspectran"
+title: "Download"
+subheadline: "Aspectran Releases"
 teaser: "Aspectran is an open source, free of charge, based on the Apache 2.0 License."
 ---
 
