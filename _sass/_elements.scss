@@ -175,6 +175,18 @@ dl.tabs {
     }
   }
 }
+@include breakpoint(small only) {
+  dl.tabs {
+    border-bottom: 0;
+    dl.tabs dd {
+      clear: both;
+      margin-bottom: 2px;
+      a {
+        border-radius: 35px;
+      }
+    }
+  }
+}
 .tabs-content {
   border: 0;
   .tabs-panel {
