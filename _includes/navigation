@@ -33,20 +33,19 @@
 
               {% comment %}   If left side WITHOUT dropdown menu do   {% endcomment %}
               {% if link.dropdown == nil %}
-                <li{% if link.url == page.url %} class="active"{% endif %}><a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a></li>
+                <li{% if page.url contains link.url %} class="active"{% endif %}><a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a></li>
 
               {% comment %}   If left side WITH dropdown menu do   {% endcomment %}
               {% else %}
 
-                <li{% if link.url == page.url %} class="active"{% endif %}>
+                <li{% if page.url contains link.url %} class="active"{% endif %}>
                   <a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a>
-
                   <ul class="menu vertical">
                     {% for dropdown_link in link.dropdown %}
 
                       {% if dropdown_link.url contains 'http' %}
                         {% assign domain = '' %}
-                        {% else %}
+                      {% else %}
                         {% assign domain = site.url %}
                       {% endif %}
 
@@ -78,14 +77,13 @@
           {% if link.side == 'right' %}
             {% comment %}   If right side WITHOUT dropdown menu do   {% endcomment %}
             {% if link.dropdown == nil %}
-              <li{% if link.url == page.url %} class="active"{% endif %}><a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a></li>
+              <li{% if page.url contains link.url %} class="active"{% endif %}><a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a></li>
 
             {% comment %}   If right side WITH dropdown menu do   {% endcomment %}
             {% else %}
 
-              <li{% if link.url == page.url %} class="active"{% endif %}>
+              <li{% if page.url contains link.url %} class="active"{% endif %}>
                 <a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a>
-
                 <ul class="menu vertical">
                   {% for dropdown_link in link.dropdown %}
 
