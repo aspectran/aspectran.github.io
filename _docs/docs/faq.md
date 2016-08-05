@@ -1,7 +1,7 @@
 ---
 layout: page
 sidebar: right
-title: "FAQs"
+title: "FAQ"
 subheadline: "Frequently Asked Questions about the Aspectran"
 teaser: ""
 comments: true

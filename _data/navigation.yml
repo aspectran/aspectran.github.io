@@ -7,7 +7,7 @@
   - title: "Quick Start Guide"
     url: "/getting-started/quickstart/"
   - title: "Download"
-    url: "/download/"
+    url: "/getting-started/download/"
 
 - title: Documentation
   url: "/docs/"
@@ -17,8 +17,8 @@
     url: "/docs/guides/"
   - title: "API Reference"
     url: "/docs/api/"
-  - title: "FAQs"
-    url: "/docs/faqs/"
+  - title: "FAQ"
+    url: "/docs/faq/"
   - title: "Changelog"
     url: "/docs/changelog/"
 
