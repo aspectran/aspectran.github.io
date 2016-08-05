@@ -150,30 +150,30 @@
 
 {% if page.header.image_fullwidth %}
 <script>
-    $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 700});
+  $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 700});
 </script>
 {% endif %}
 {% if page.header.slide_images and page.header.slide_images[0] %}
 <script>
-    $("#masthead").backstretch([
-      "{{ site.urlimg }}{{ page.header.slide_images[0] }}"
-    {% for image in page.header.slide_images %}
-    {% if forloop.index > 1 %}, "{{ site.urlimg }}{{ image }}"{% endif %}
-    {% endfor %}
-    ], {duration: 3300, fade: 700});
+  $("#masthead").backstretch([
+    "{{ site.urlimg }}{{ page.header.slide_images[0] }}"
+  {% for image in page.header.slide_images %}
+  {% if forloop.index > 1 %}, "{{ site.urlimg }}{{ image }}"{% endif %}
+  {% endfor %}
+  ], {duration: 3300, fade: 700});
 </script>
 {% endif %}
 
 <script>
-  // Creating custom :external selector
+  /* Creating custom :external selector */
   $.expr[':'].external = function(obj){
-      return !obj.href.match(/^mailto\:/)
-              && (obj.hostname != location.hostname);
+    return !obj.href.match(/^mailto\:/)
+            && (obj.hostname != location.hostname);
   };
   $(function(){
-    // Add 'external' CSS class to all external links
+    /* Add 'external' CSS class to all external links */
     $('a:external').addClass('external');
-    // turn target into target=_blank for elements w external class
+    /* turn target into target=_blank for elements w external class */
     $(".external").attr('target','_blank');
   })
 </script>
