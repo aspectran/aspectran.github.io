@@ -10,13 +10,14 @@ header:
 ---
 
 ## [Overview][1]
-빠른 시작을 위한 안내 문서입니다.
+Aspectran을 사용하기 위해 필요한 전반적인 정보를 제공하고자 합니다.
 
 ## [Quick Start Guide][2]
-Aspectran을 이용해서 간단한 웹 어플리케이션을 만드는 방법을 설명합니다.
+간단한 웹 어플리케이션을 만드는 과정을 예로 들면서 Aspectran의 기본적인 사용방법과 특징을 파악할 수 있습니다.
 
 ## [Download][3]
-Aspectran 라이브러리와 소스코드를 다운로드할 수 있습니다.
+Aspectran 라이브러리를 적접 다운로드 받는 경로를 안내하고, Maven 사용자를 위한 Aspectran Atifact 정보를 제공합니다.
+{% include label-link-box label="Maven Central Repository" href="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.aspectran%22" %}
 
 [1]: /getting-started/overview/
 [2]: /getting-started/quickstart/

@@ -20,7 +20,7 @@ Aspectran의 탄생 배경 및 주요 기능을 소개합니다.
 Aspectran 라이브러리를 적접 다운로드 받는 경로를 안내하고, Maven 사용자를 위한 Aspectran Atifact 정보를 제공합니다.
 
 ## [User Guides][4]
-Aspectran 라이브러리를 적접 다운로드 받는 경로를 안내하고, Maven 사용자를 위한 Aspectran Atifact 정보를 제공합니다.
+Aspectran 사용자를 위한 유저 가이드 문서를 제공합니다.
 
 ## [API Reference][5]
 Aspectran API 문서를 제공합니다.
