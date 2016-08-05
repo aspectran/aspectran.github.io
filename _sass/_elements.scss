@@ -178,10 +178,10 @@ dl.tabs {
 @include breakpoint(small only) {
   dl.tabs {
     border-bottom: 0;
-    dl.tabs dd {
+    dd {
       clear: both;
       margin-bottom: 2px;
-      a {
+      > a {
         border-radius: 35px;
       }
     }
