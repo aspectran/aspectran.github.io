@@ -4,11 +4,11 @@
     <p>GitHub Project에서 개발 현황을 살펴보고 참여할 수 있습니다.</p>
     {% include link-box href="https://github.com/aspectran/aspectran" %}
 
-    <h4>Aspectran Modules</h4>
+    <h4 class="icon-github"> Aspectran Modules</h4>
     <p>외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다.</p>
     {% include link-box href="https://github.com/aspectran/aspectran-modules" %}
 
-    <h4>Aspectran Guides</h4>
+    <h4 class="icon-github"> Aspectran Guides</h4>
     <p>예제 응용 프로그램을 제공합니다.</p>
     {% include link-box href="https://github.com/aspectran-guides" %}
 
