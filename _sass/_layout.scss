@@ -73,6 +73,16 @@
         }
       }
     }
+    .search-bar {
+      padding: .8rem .4rem;
+      .input-group {
+        margin: 0;
+        input {
+          max-width: none;
+          background-color: lighten($ci-0, 50%);
+        }
+      }
+    }
     ul.dropdown {
       @include breakpoint(small only) {
         background-color: darken($ci-0, 10%);
@@ -100,6 +110,10 @@
         &:hover {
           background-color: darken($ci-0, 5%);
         }
+        &.search-bar {
+          padding: 0 .3rem;
+          max-width: 260px;
+        }
       }
       ul.submenu {
         border-radius: 0 0 $global-radius $global-radius;
@@ -125,16 +139,6 @@
           &:hover {
             background-color: darken($ci-0, 5%);
           }
-        }
-      }
-    }
-    .search-bar {
-      padding: .8rem .4rem;
-      .input-group {
-        margin: 0;
-        input {
-          max-width: none;
-          background-color: lighten($ci-0, 50%);
         }
       }
     }
