@@ -60,9 +60,9 @@
 
         </ul>
       </div>
+
       <div class="top-bar-right">
         <ul class="dropdown menu" data-dropdown-menu>
-
         {% for link in site.data.navigation %}
 
           {% if link.url contains 'http' %}
@@ -101,24 +101,24 @@
             {% endif %}
           {% endif %}
         {% endfor %}
+        </ul>
 
-          <li class="search-bar show-for-medium">
-            {% capture google_search_site %}{{ site.url }}{{ site.baseurl }}/{% endcapture %}
-            <form name="google-search-1" onsubmit="window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ google_search_site | cgi_escape }}'); return false;">
+        <div class="quick-search-box show-for-medium">
+          <form name="google_quick_search">
             <div class="input-group">
               <input class="input-group-field" type="text" name="keyword">
               <div class="input-group-button">
-                <button type="submit" class="button">Search</button>
+                <button type="submit" class="button"><i class="fi-magnifying-glass"></i></button>
               </div>
             </div>
-            </form>
-          </li>
-        </ul>
+          </form>
+        </div>
+
       </div>
     </div>
-    <div class="row search-bar show-for-small-only">
+    <div class="row quick-search-box show-for-small-only">
       <div class="small-12 columns">
-        <form name="google-search-2" onsubmit="window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ google_search_site | cgi_escape }}'); return false;">
+        <form name="google_quick_search">
         <div class="input-group">
           <input class="input-group-field" type="text" name="keyword">
           <div class="input-group-button">
