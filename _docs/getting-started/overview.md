@@ -27,14 +27,14 @@ Aspectran API 문서를 제공합니다.
 {% include label-link-box label="Aspectran API 2.3.0" href="http://api.aspectran.com/2.3.0/" %}
 
 ## [FAQ][6]
-Aspectran에 대한 간단한 질문에 대한 답변을 미리 제공합니다.  
+Aspectran과 관련해 자주 묻는 질문을 모았습니다.  
 찾으시는 질문이 없거나 더 자세한 문의를 원하시면 [Contact][10] 페이지 또는 GitHub Issues에 질문 또는 의견을 남겨 주시기 바랍니다.
 {% include label-link-box label="GitHub Issues" href="https://github.com/aspectran/aspectran/issues" %}
 
 ## [Changelog][7]
 Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.  
 소스 코드에 대한 상세한 변경이력은 GitHub에서 볼 수 있습니다.
-{% include label-link-box label="GitHub Commits" href="https://github.com/aspectran/aspectran/commits/master" %}
+{% include label-link-box label="GitHub Releases" href="https://github.com/aspectran/aspectran/releases" %}
 
 ## [Modules][8]
 외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다.

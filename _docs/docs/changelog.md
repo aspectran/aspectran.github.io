@@ -8,7 +8,11 @@ teaser: "History and changelog of Aspectran"
 comments: true
 ---
 
-{% include alert info='상세한 변경이력은 [GitHub](https://github.com/aspectran/aspectran/releases){:target="_blank"}에서 볼 수 있습니다.' %}
+<div class="callout info radius b30">
+  <p>Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.<br/>
+  소스 코드에 대한 상세한 변경이력은 GitHub에서 볼 수 있습니다.</p>
+  {% include label-link-box label="GitHub Releases" href="https://github.com/aspectran/aspectran/releases" %}
+</div>
 
 2016.3.20. // Version 2.0.0
 : Aspectran 2 is designed to run on Java 8 and later.
