@@ -49,7 +49,7 @@ download:
 1. `ga-hello-world-master/app` 경로로 이동하세요.
 2. `run.sh` 파일을 실행하세요. (Windows 환경에서는 `run.bat` 파일을 실행하세요.)
 3. 실행이 되면 `Aspectran>` 프롬프트가 나옵니다.
-3. 프롬프트에서 명령어 `helloWorld`를 입력하면 "Hello, World!" 문자열이 출력됩니다.
+3. 프롬프트에서 명령어 `hello`를 입력하면 "Hello, World!" 문자열이 출력됩니다.
 4. 명령어 `quit`를 입력하면 프로그램을 종료할 수 있습니다.
 
 > 실행이 안 될 경우 다음 2가지 사항에 대해 점검해 보세요.  
