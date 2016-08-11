@@ -40,7 +40,7 @@ download:
 
 ### 실행 방법
 
-먼저 다음 링크를 통하여 ZIP 파일을 다운 받은 후 적당한 경로에 압축을 풀어 주세요.
+먼저 다음 링크를 통하여 ZIP 파일을 내려받은 후 적당한 경로에 압축을 풀어 주세요.
 {% include label-link-box label="ga-hello-world" href="https://github.com/aspectran-guides/ga-hello-world/archive/master.zip" %}
 
 본 Hello World 어플리케이션은 Windows, Unix/Linux 및 Mac OS의 콘솔 환경에서 실행이 가능합니다.
