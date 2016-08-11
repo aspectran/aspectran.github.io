@@ -11,6 +11,8 @@ image:
 download:
 - label: "ga-hello-world"
   url: https://github.com/aspectran-guides/ga-hello-world
+- label: "Download ZIP"
+  url: https://github.com/aspectran-guides/ga-hello-world/archive/master.zip
 ---
 
 ## Aspectran으로 만드는 가장 간단한 Hello World 프로그램
