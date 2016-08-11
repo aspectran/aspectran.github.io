@@ -1,9 +1,9 @@
 ---
 layout: example
 format: article
-title: "Aspectran Hello World Example"
+title: "Aspectran - Hello World Example"
 subheadline: "Running the \"Hello World\" application"
-teaser: "\"Hello, World!\" 문자열을 출력하는 웹 응용프로그램의 예제 소스 코드와 실행 결과 화면을 직접 보실 수 있습니다."
+teaser: "Aspectran으로 만드는 가장 간단한 Hello World 프로그램에 대해 소개합니다."
 article_heading: true
 breadcrumb: true
 image:
