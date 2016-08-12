@@ -6,15 +6,6 @@
 #
 layout: frontpage
 format: frontpage
-header:
-  slide_images:
-    - header_examples.jpg
-    - header_documentation.jpg
-    - header_modules.jpg
-    - header_gettingstarted.jpg
-    - header_blog.jpg
-    - header_search.jpg
-    - header_contact.jpg
 widget1:
   title: Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축하기 위한 가볍고 확장 가능한 프레임워크입니다.
   url: /info/
