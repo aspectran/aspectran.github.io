@@ -46,6 +46,12 @@ widget4:
   image: header_modules_thumb.jpg
   text: |
     외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다.
+widget5:
+  title: Examples
+  url: /examples/
+  image: header_examples_thumb.jpg
+  text: |
+    Aspectran을 이용해서 만든 예제 응용 프로그램을 소개하고, 완전한 응용 프로그램을 효과적으로 구축할 수 있는 방법을 제공합니다.
 permalink: /index.html
 ---
 {% comment %}
