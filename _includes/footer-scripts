@@ -171,8 +171,9 @@
 
 <script>
   /* Creating custom :external selector */
-  $.expr[':'].external = function(obj){
-    return !obj.href.match(/^mailto\:/)
+  $.expr[':'].external = function(obj) {
+    return !obj.href.match(/^javascript\:/)
+            && !obj.href.match(/^mailto\:/)
             && (obj.hostname != location.hostname);
   };
   $(function(){
