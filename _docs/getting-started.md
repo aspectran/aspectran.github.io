@@ -21,4 +21,4 @@ Aspectran 라이브러리를 적접 다운로드 받는 경로를 안내하고, 
 
 [1]: /getting-started/overview/
 [2]: /getting-started/quickstart/
-[3]: /download/
+[3]: /getting-started/download/
