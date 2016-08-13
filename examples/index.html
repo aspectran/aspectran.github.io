@@ -14,22 +14,35 @@ permalink: /examples/
 <div class="row">
 	<div class="large-8 columns t30">
 
-  	{% assign counter = 1 %}
     {% assign examples = site.examples %}
-  	{% for example in examples limit:1000 %}
-    <div class="row">
-      <div class="columns b30">
-        <p class="subheadline">{% if example.subheadline %}{{ example.subheadline }}{% endif %}</p>
-        <h2><a href="{{ site.baseurl }}{{ example.url }}">{{ example.title }}</a></h2>
-        <p>
-          {% if example.image.thumb %}<a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><img src="{{ site.urlimg }}{{ example.image.thumb }}" class="alignleft" width="180" height="180" alt="{{ page.title escape_once }}"></a>{% endif %}
-          {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
-          <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
-        </p>
-      </div><!-- /.columns -->
-    </div><!-- /.row -->
-  	{% assign counter = counter | plus:1 %}
-  	{% endfor %}
+    {% for example in examples limit:2 %}
+    <div class="panel white b20">
+      <div class="row">
+        <div class="small-12 columns">
+          <p class="subheadline">{% if example.subheadline %}{{ example.subheadline }}{% endif %}</p>
+          <h3><a href="{{ site.baseurl }}{{ example.url }}">{{ example.title }}</a></h3>
+        </div>
+      {% if example.image.thumb %}
+        <div class="small-5 medium-4 columns">
+          <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><img src="{{ site.urlimg }}{{ example.image.thumb }}" class="alignleft" width="100%" alt="{{ example.title escape_once }}"></a>
+        </div>
+        <div class="small-7 medium-8 columns">
+          <p>
+            {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
+            <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
+          </p>
+        </div>
+      {% else %}
+        <div class="small-12 columns">
+          <p>
+            {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
+            <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
+          </p>
+        </div>
+      {% endif %}
+      </div>
+    </div>
+    {% endfor %}
 
 	</div><!-- /.medium-8.columns -->
 

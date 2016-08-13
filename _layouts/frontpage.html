@@ -47,15 +47,24 @@ layout: default
               <p class="subheadline">{% if example.subheadline %}{{ example.subheadline }}{% endif %}</p>
               <h3><a href="{{ site.baseurl }}{{ example.url }}">{{ example.title }}</a></h3>
             </div>
-            <div class="small-5 columns">
-              {% if example.image.thumb %}<a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><img src="{{ site.urlimg }}{{ example.image.thumb }}" class="alignleft" width="100%" alt="{{ example.title escape_once }}"></a>{% endif %}
+          {% if example.image.thumb %}
+            <div class="small-5 medium-4 columns">
+              <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><img src="{{ site.urlimg }}{{ example.image.thumb }}" class="alignleft" width="100%" alt="{{ example.title escape_once }}"></a>
             </div>
-            <div class="small-7 columns">
+            <div class="small-7 medium-8 columns">
               <p>
                 {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
                 <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
               </p>
             </div>
+          {% else %}
+            <div class="small-12 columns">
+              <p>
+                {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
+                <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
+              </p>
+            </div>
+          {% endif %}
           </div>
         </div>
         {% endfor %}
