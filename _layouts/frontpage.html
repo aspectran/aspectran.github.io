@@ -43,7 +43,7 @@ layout: default
         {% for example in examples limit:2 %}
         <div class="medium-6 columns">
           <div class="row">
-            <div class="small-12 columns t10">
+            <div class="small-12 columns">
               <p class="subheadline">{% if example.subheadline %}{{ example.subheadline }}{% endif %}</p>
               <h3><a href="{{ site.baseurl }}{{ example.url }}">{{ example.title }}</a></h3>
             </div>
@@ -68,12 +68,12 @@ layout: default
   </div>
 </div>
 {% endunless %}
-<div class="row t20">
+<div class="row t30">
   <div class="medium-12 large-8 columns">
   {% unless site.posts == empty %}
-    <div class="row">
-      {% for post in site.posts limit:2 %}
-      <div class="small-12 columns t20">
+    {% for post in site.posts limit:2 %}
+    <div class="row b20">
+      <div class="small-12 columns">
         <p class="subheadline">{% if post.subheadline %}{{ post.subheadline }}{% endif %}</p>
         <h3><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3>
       </div>
@@ -95,15 +95,17 @@ layout: default
         </p>
       </div>
       {% endif %}
-      {% endfor %}
-      <div class="small-12 columns t20">
+    </div>
+    {% endfor %}
+    <div class="row">
+      <div class="small-12 columns">
         <p><strong>{{ site.data.language.more_articles }}</strong></p>
         {% include list-posts entries='3' offset='2' %}
       </div>
     </div>
   {% endunless %}
   </div>
-  <div class="medium-12 large-4 columns t20">
+  <div class="medium-12 large-4 columns">
     {% include sidebar %}
   </div>
 </div>
