@@ -1,5 +1,5 @@
 <aside class="lazy-sticky">
-  <div class="panel radius">
+  <div class="panel radius white">
     <h4 class="fi-social-github"> Aspectran projects on GitHub</h3>
     <p>GitHub Project에서 개발 현황을 살펴보고 참여할 수 있습니다.</p>
     {% include link-box href="https://github.com/aspectran/aspectran" %}

@@ -1,7 +1,6 @@
 ---
 layout: page
 format: article
-sidebar: right
 title: "About Aspectran"
 subheadline: "What is Aspectran?"
 teaser: "Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축하기 위한 가볍고 확장 가능한 프레임워크입니다."

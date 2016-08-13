@@ -6,8 +6,8 @@ layout: default
 * First check, if widget is empty or not by checking if there is a title
 *
 {% endcomment %}
-<div class="grey-ground">
-  <div class="row t50">
+<div id="masthead" class="grey-ground">
+  <div class="row">
     <div class="medium-12 columns b10">
       <a href="https://travis-ci.org/aspectran/aspectran" target="_blank" title="Build Status"><img src="https://travis-ci.org/aspectran/aspectran.svg" alt=""/></a>
       <a href="https://github.com/aspectran/aspectran" target="_blank" title="Apache License 2.0"><img src="http://img.shields.io/badge/license-Apache%202-red.svg" alt=""/></a>
@@ -24,6 +24,7 @@ layout: default
     <div class="medium-6 large-3 columns b10">
       {% include frontpage-widget widget=page.widget5 %}
     </div>
+    {% include forkme-ribbon %}
   </div>
 </div>
 
@@ -36,7 +37,7 @@ layout: default
 {% unless site.examples == empty %}
 <div class="row t30">
   <div class="columns">
-    <div class="panel" style="background-color:#fff;">
+    <div class="panel white">
       <div class="row">
         {% assign examples = site.examples %}
         {% for example in examples limit:2 %}

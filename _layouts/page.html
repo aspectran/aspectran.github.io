@@ -4,12 +4,12 @@ layout: default
 <div class="row">
 
 	{% if page.sidebar == "toc" %}
-	<div class="t30 large-4 large-push-8 columns">
+	<div class="t30 large-3 large-push-9 columns">
     {% include sidebar-toc %}
 	</div><!-- /.medium-4.columns -->
 	{% endif %}
 
-	<div class="t30 large-8{% if page.sidebar == "toc" %} large-pull-4{% endif %} columns{% if page.sidebar == NULL %} large-offset-2 end{% endif %}{% if page.sidebar == "left" %} large-push-4{% endif %}">
+	<div class="t30 columns {% if page.sidebar == "toc" %}large-9 large-pull-3{% elsif page.sidebar == "left" %}large-8 large-push-4{% elsif page.sidebar == "right" %}large-8{% else %}large-10 large-offset-1{% endif %}">
 		<article itemscope itemtype="http://schema.org/Article">
       {% if page.article_heading != true %}
 

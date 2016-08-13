@@ -207,6 +207,15 @@
       }
     }
   }
+  &.grey-ground {
+    padding: 30px 0 20px 0;
+    background-color: #F2F2F2;
+    color: $text-color;
+    text-shadow: none;
+    img {
+      border-radius: $global-radius;
+    }
+  }
 }
 .masthead-with-text {
   text-align: center;
@@ -348,13 +357,13 @@
   .masthead-with-image-header {
     height: 460px;
     #slogan {
-      margin-top: 220px;
+      margin-top: 200px;
       img {
         height: 170px;
       }
     }
     header {
-      margin-top: 270px;
+      margin-top: 250px;
       h1 {
         font-size: 3.3em;
         font-weight: 700;
@@ -524,6 +533,7 @@
 .t15 { margin-top: 15px !important; }
 .t20 { margin-top: 20px !important; }
 .t30 { margin-top: 30px !important; }
+.t40 { margin-top: 40px !important; }
 .t50 { margin-top: 50px !important; }
 .t60 { margin-top: 60px !important; }
 .t70 { margin-top: 70px !important; }
@@ -577,10 +587,6 @@ body.video {
 //-----------
 
 body.frontpage {
-  .grey-ground {
-    padding: 40px 0 20px;
-    background-color: #F2F2F2;
-  }
   .homepage {
     p {
       margin: 0;

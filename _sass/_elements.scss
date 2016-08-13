@@ -211,6 +211,9 @@ dl.tabs {
   h3, h4 {
     margin-top: 0 !important;
   }
+  &.white {
+    background-color: #fff;
+  }
 }
 
 // Alerts
