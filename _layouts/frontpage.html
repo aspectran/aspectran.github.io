@@ -1,11 +1,7 @@
 ---
 layout: default
 ---
-{% comment %}
-*
-* First check, if widget is empty or not by checking if there is a title
-*
-{% endcomment %}
+
 <div id="masthead" class="grey-ground">
   <div class="row">
     <div class="medium-12 columns b10">
@@ -27,12 +23,6 @@ layout: default
     {% include forkme-ribbon %}
   </div>
 </div>
-
-{% comment %}
-*
-* First check, if there are any posts at all
-*
-{% endcomment %}
 
 {% unless site.examples == empty %}
 <div class="row t30">
@@ -77,6 +67,7 @@ layout: default
   </div>
 </div>
 {% endunless %}
+
 <div class="row t30">
   <div class="medium-12 large-8 columns">
   {% unless site.posts == empty %}
@@ -118,12 +109,6 @@ layout: default
     {% include sidebar %}
   </div>
 </div>
-
-{% comment %}
-*
-* Finally, if there is content, spit it out.
-*
-{% endcomment %}
 
 <div class="row">
   {{ content }}
