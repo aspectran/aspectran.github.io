@@ -68,8 +68,8 @@ layout: default
 </div>
 {% endunless %}
 
-<div class="row t30">
-  <div class="medium-12 large-8 columns">
+<div class="row">
+  <div class="medium-12 large-8 columns t30">
   {% unless site.posts == empty %}
     {% for post in site.posts limit:2 %}
     <div class="row b20">
@@ -105,7 +105,7 @@ layout: default
     </div>
   {% endunless %}
   </div>
-  <div class="medium-12 large-4 columns">
+  <div class="medium-12 large-4 columns t30">
     {% include sidebar %}
   </div>
 </div>
