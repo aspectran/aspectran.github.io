@@ -1,27 +1,15 @@
 ---
-layout: default
+layout: plate
 title: "APON"
 subheadline: "Blog Category"
 header:
-    image_fullwidth: "header_blog.jpg"
+  image_fullwidth: "header_blog.jpg"
 breadcrumb: true
 permalink: "/blog/apon/"
 ---
 
-<div class="row">
-	<div class="medium-8 columns t30">
-    {% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
-    <h1>{{ page.title }}</h1>
-    {% if page.teaser %}<p class="teaser">{{ page.teaser }}</p>{% endif %}
-
-    <ul class="brief-list t30">
-        {% for post in site.categories.apon reversed %}
-        <li><span class="icon-chevron-right"></span> <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
-        {% endfor %}
-    </ul>
-	</div><!-- /.medium-8.columns -->
-
-	<div class="medium-4 columns t30">
-		{% include sidebar %}
-	</div><!-- /.medium-4.columns -->
-</div><!-- /.row -->
+<ul class="brief-list">
+  {% for post in site.categories.apon reversed %}
+  <li><span class="icon-chevron-right"></span> <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+</ul>

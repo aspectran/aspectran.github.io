@@ -1,6 +1,5 @@
 ---
-layout: page
-sidebar: right
+layout: plate
 title: "Changelog"
 meta_title: "Aspectran Changelog"
 subheadline: "Aspectran Changelog"

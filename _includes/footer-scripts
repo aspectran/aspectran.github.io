@@ -6,21 +6,26 @@
     var navigationFixed = false;
     var navigationHeight = $("#masthead").height() - $("#navigation").height();
     var $window = $(window);
+    var plateLayout = $("body").hasClass("plate");
     $window.scroll(function() {
       var scrollTop = $window.scrollTop();
       if(navigationFixed) {
-       if(scrollTop < navigationHeight) {
-         navigationFixed = false;
-         $("#navigation").hide();
-         $("#navigation").removeClass("fixed");
-         $("#navigation").slideDown(220);
-       }
+        if(scrollTop < navigationHeight) {
+          navigationFixed = false;
+          $("#navigation").removeClass("fixed");
+          if(!plateLayout) {
+            $("#navigation").hide();
+            $("#navigation").slideDown(220);
+          }
+        }
       } else {
         if(scrollTop > navigationHeight) {
           navigationFixed = true;
-          $("#navigation").hide();
           $("#navigation").addClass("fixed");
-          $("#navigation").fadeIn(450);
+          if(!plateLayout) {
+            $("#navigation").hide();
+            $("#navigation").fadeIn(450);
+          }
         }
       }
     });

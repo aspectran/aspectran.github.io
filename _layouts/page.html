@@ -54,11 +54,11 @@ layout: default
 
 		</article>
 
+		{% if page.comments == true %}
 		<div class="t50">
-			{% if page.comments == true %}
 			{% include comments %}
-			{% endif %}
 		</div>
+		{% endif %}
 
 	</div><!-- /.medium-8.columns -->
 

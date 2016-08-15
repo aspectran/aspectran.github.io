@@ -1,9 +1,9 @@
 ---
-layout: page
+layout: plate
 title: "Search"
 header:
-    image_fullwidth: "header_search.jpg"
-    caption: "Photo by Juho Jeong"
+  image_fullwidth: "header_search.jpg"
+  caption: "Photo by Juho Jeong"
 permalink: /search/
 ---
 
