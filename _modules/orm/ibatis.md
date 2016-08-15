@@ -20,9 +20,9 @@ download:
 
 <bean id="sqlMapClientTxAdvice" class="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice" scope="prototype">
     <constructor>
-        <argument>
+        <arguments>
             <item><reference bean="sqlMapClientFactory"/></item>
-        </argument>
+        </arguments>
     </constructor>
 </bean>
 

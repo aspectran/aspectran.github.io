@@ -68,22 +68,22 @@ published: true
         <description>
             multipart/form-data request를 처리하기 위해서 반드시 지정해야 합니다.
         </description>
-        <property>
+        <properties>
             <item name="maxRequestSize" value="10M"/>
             <item name="temporaryFilePath" value="/d:/temp"/>
             <item name="allowedFileExtensions" value=""/>
             <item name="deniedFileExtensions" value=""/>
-        </property>
+        </properties>
     </bean>
 
     <bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton">
         <description>
             Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다.
         </description>
-        <property>
+        <properties>
             <item name="templateFilePrefix">/WEB-INF/jsp/</item>
             <item name="templateFileSuffix">.jsp</item>
-        </property>
+        </properties>
     </bean>
 
     <aspect id="defaultRequestRule">
@@ -225,10 +225,10 @@ published: true
         </request>
         <content>
             <action id="count1" bean="helloworld.HelloWorldAction" method="counting">
-                <argument>
+                <arguments>
                     <item valueType="int">@{from}</item>
                     <item valueType="int">@{to}</item>
-                </argument>
+                </arguments>
             </action>
         </content>
         <response>
@@ -480,7 +480,7 @@ aspectran: {
         id: "multipartRequestWrapperResolver"
         class: "com.aspectran.support.http.multipart.MultipartRequestWrapperResolver"
         scope: "singleton"
-        property: {
+        properties: {
             item: {
                 name: "maxRequestSize"
                 value: "10M"
@@ -506,7 +506,7 @@ aspectran: {
         id: "jspViewDispatcher"
         class: "com.aspectran.web.view.JspViewDispatcher"
         scope: "singleton"
-        property: {
+        properties: {
             item: {
                 name: "templateFilePrefix"
                 value: "/WEB-INF/jsp/"

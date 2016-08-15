@@ -25,7 +25,7 @@ download:
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN"
-    "http://aspectran.github.io/dtd/aspectran-2.0.dtd">
+    "http://aspectran.github.io/dtd/aspectran-2.dtd">
 
 <aspectran>
 

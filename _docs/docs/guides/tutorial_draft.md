@@ -476,10 +476,10 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
     </request>
     <content>
       <action id="count1" bean="helloworld.HelloWorldAction" method="counting">
-        <argument>
+        <arguments>
           <item valueType="int">@{from}</item>
           <item valueType="int">@{to}</item>
-        </argument>
+        </arguments>
       </action>
     </content>
     <response>
@@ -683,14 +683,14 @@ class가 `com.aspectran.example.**.*Action`이고,
         <lazyInit>true</lazyInit>
     </features>
     <constructor>
-        <argument>
+        <arguments>
             <item>arg1</item>
             <item type="list" valueType="int">
               <value>1</value>
               <value>2</value>
               <value>3</value>
             </item>
-        </argument>
+        </arguments>
     </constructor>
     <property>
         <item name="name">david</item>

@@ -288,9 +288,9 @@ public class AspectranSchedulerConfig extends AbstractParameters implements Para
 {% endhighlight %}
 
 
-### AponSerializer 사용 예제
+### AponWriter 사용 예제
 
-[`AponSerializer`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponSerializer.java) 클래스를
+[`AponWriter`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponWriter.java) 클래스를
 사용하면 Parameters Object를 APON 형식의 텍스트 문서로 쉽게 변환할 수 있습니다.
 
 > APON 형식의 텍스트 문서를 Parameters Object로 변환하고, 다시 Parameters Object를 APON 형식의 문자열로 변환해서 콘솔에 출력하는 예제입니다.
@@ -306,7 +306,7 @@ import java.io.Writer;
 
 import com.aspectran.core.context.loader.config.AspectranConfig;
 
-public class AponSerializerTest {
+public class AponWriterTest {
 
   public static void main(String argv[]) {
     try {
@@ -314,17 +314,17 @@ public class AponSerializerTest {
 
       Parameters aspectranConfig = new AspectranConfig();
 
-      AponDeserializer deserializer = new AponDeserializer(reader);
-      deserializer.read(aspectranConfig);
-      deserializer.close();
+      AponReader aponReader = new AponReader(reader);
+      aponReader.read(aspectranConfig);
+      aponReader.close();
 
       System.out.println(aspectranConfig);
 
       Writer writer = new StringWriter();
 
-      AponSerializer serializer = new AponSerializer(writer);
-      serializer.write(aspectranConfig);
-      serializer.close();
+      AponWriter aponWriter = new AponWriter(writer);
+      aponWriter.write(aspectranConfig);
+      aponWriter.close();
 
       System.out.println(writer.toString());
 
@@ -337,9 +337,9 @@ public class AponSerializerTest {
 {% endhighlight %}
 
 
-### AponDeserializer 사용 예제
+### AponReader 사용 예제
 
-[`AponDeserializer`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponDeserializer.java) 클래스를
+[`AponReader`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponReader.java) 클래스를
 사용하면 APON 형식의 텍스트 문서를 Parameters Object로 쉽게 변환할 수 있습니다.
 
 {% highlight java %}
@@ -351,12 +351,12 @@ import java.io.Reader;
 
 import com.aspectran.core.context.loader.config.AspectranConfig;
 
-public class AponDeserializerTest {
+public class AponReaderTest {
 
   public static void main(String argv[]) {
     try {
       Reader fileReader = new FileReader(new File(argv[0]));
-      AponDeserializer reader = new AponDeserializer(fileReader);
+      AponReader reader = new AponReader(fileReader);
 
       try {
         Parameters aspectranConfig = new AspectranConfig();  

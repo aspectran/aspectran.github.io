@@ -20,9 +20,9 @@ download:
 
 <bean id="sqlSessionTxAdvice" class="com.aspectran.support.orm.ibatis.SqlSessionTransactionAdvice" scope="prototype">
     <constructor>
-        <argument>
+        <arguments>
             <item><reference bean="sqlSessionFactory"/></item>
-        </argument>
+        </arguments>
     </constructor>
 </bean>
 

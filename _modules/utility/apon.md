@@ -22,8 +22,8 @@ APON에 대한 자세한 내용은 다음 페이지를 참고하세요.
 
 - APON 라이브러리를 이용하면 여러 개의 매개변수를 구조화된 하나의 Object로 만들 수 있습니다.
 - 구조화된 하나의 Object를 Parameters라고 합니다.
-- APON 표기법을 따르는 텍스트 형식의 문자열 데이터를 Parameters Obejct로 변환하기 위해 AponDeserializer 클래스를 사용합니다.
-- Parameters Obejct를 APON 표기법에 따라 텍스트 형식의 문자열로 변환하기 위해 AponSerializer 클래스를 사용합니다.
+- APON 표기법을 따르는 텍스트 형식의 문자열 데이터를 Parameters Obejct로 변환하기 위해 AponWriter 클래스를 사용합니다.
+- Parameters Obejct를 APON 표기법에 따라 텍스트 형식의 문자열로 변환하기 위해 AponReader 클래스를 사용합니다.
 
 Parameters 인터페이스를 구현한 Curtomer 클래스를 예로 들어 설명합니다.
 Customer 클래스는 간단한 고객정보 관련 필드를 몇 개 가지고 있습니다.
@@ -124,7 +124,7 @@ Boolean approved = customer.getBoolean(Customer.approved);
 ### APON 형식의 텍스트 문자열로 변환
 
 {% highlight java %}
-String text = AponSerializer.serialize(customer);
+String text = AponReader.read(customer);
 System.out.println(text);
 {% endhighlight %}
 
@@ -145,7 +145,7 @@ approved: false
 
 {% highlight java %}
 Customer customer2 = new Customer();
-AponDeserializer.deserialize(text, customer2);
+AponWriter.write(text, customer2);
 {% endhighlight %}
 
 
@@ -154,7 +154,7 @@ AponDeserializer.deserialize(text, customer2);
 {% highlight java %}
 package com.aspectran.core.util.apon;
 
-public class AponDeserializerTest {
+public class AponWriterTest {
 
   public static void main(String argv[]) {
     try {
@@ -165,12 +165,12 @@ public class AponDeserializerTest {
       customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
       customer.putValue(Customer.approved, false);
 
-      String text = AponSerializer.serialize(customer);
+      String text = AponReader.read(customer);
 
       Customer customer2 = new Customer();
-      customer2 = AponDeserializer.deserialize(text, customer2);
+      customer2 = AponWriter.write(text, customer2);
 
-      String text2 = AponSerializer.serialize(customer2);
+      String text2 = AponReader.read(customer2);
 
       System.out.println("---------------------------------------------------");
       System.out.print(text);
