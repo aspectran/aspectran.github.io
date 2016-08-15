@@ -28,7 +28,7 @@
     position: fixed;
     z-index: 101;
     width: 100%;
-    opacity: .97;
+    opacity: .96;
   }
   .title-bar {
     display: none;
@@ -165,7 +165,7 @@
 #forkme-ribbon {
   position: absolute;
   z-index: 1;
-  top: 42px;
+  top: 43px;
   right: 0;
   width: 149px;
   height: 149px;
@@ -387,8 +387,13 @@
   .breadcrumbs {
     font-size: 74%;
     background: none;
-    margin: 0 1.1rem;
     padding: .2em;
+    @include breakpoint(small only) {
+      margin: 0 .55rem;
+    }
+    @include breakpoint(medium) {
+      margin: 0 1.1rem;
+    }
     a {
       color: $grey-8;
       &:hover {
@@ -417,26 +422,17 @@ body.plate {
       background-color: $grey-0;
     }
   }
-  #navigation {
-    width: 100%;
-  }
   #masthead {
     position: fixed;
-    top: 0;
     z-index: -1;
+    margin-top: -50px;
     width: 100%;
-    #forkme-ribbon {
-      top: 43px;
-    }
-    @include breakpoint(small only) {
-      height: 1000px;
-    }
   }
   .row.header {
     position: relative;
     header {
-      margin-top: 25px;
-      margin-bottom: 10px;
+      margin-top: 30px;
+      margin-bottom: 7px;
       min-width: 320px;
       min-height: 120px;
       color: $ci-6;
@@ -444,6 +440,9 @@ body.plate {
     }
   }
   .breadcrumbs-bar {
+    .breadcrumbs {
+      margin: 0;
+    }
     @include breakpoint(medium) {
       border-radius: 10px 10px 0 0;
     }
