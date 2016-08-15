@@ -1,5 +1,5 @@
 <script src="{{ site.baseurl }}/assets/js/foundation.min.js"></script>
-<script src="{{ site.baseurl }}/assets/js/jquery.backstretch.min.js"></script>
+<script src="{{ site.baseurl }}/assets/js/jquery.backstretch.js"></script>
 <script>
   $(document).foundation();
   $(document).ready(function() {
@@ -160,7 +160,7 @@
 
 {% if page.header.image_fullwidth %}
 <script>
-  $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 700});
+  $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 500, bgcolor: '#707D83'});
 </script>
 {% endif %}
 {% if page.header.slide_images and page.header.slide_images[0] %}
@@ -170,7 +170,7 @@
   {% for image in page.header.slide_images %}
   {% if forloop.index > 1 %}, "{{ site.urlimg }}{{ image }}"{% endif %}
   {% endfor %}
-  ], {duration: 3300, fade: 700});
+  ], {duration: 3300, fade: 500, bgcolor: '#707D83'}});
 </script>
 {% endif %}
 

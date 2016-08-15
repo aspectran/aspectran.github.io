@@ -146,7 +146,7 @@
       this.$container.css({
           position: position === 'static' ? 'relative' : position
         , zIndex: zIndex === 'auto' ? 0 : zIndex
-        , background: '#4B555A'
+        , background: this.options.bgcolor||'none'
       });
 
       // Needs a higher z-index
