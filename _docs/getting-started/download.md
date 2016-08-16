@@ -1,6 +1,6 @@
 ---
-layout: plate
-format: article
+layout: page
+format: "plate"
 title: "Download"
 subheadline: "Aspectran Releases"
 teaser: "Aspectran is an open source, free of charge, based on the Apache 2.0 License."

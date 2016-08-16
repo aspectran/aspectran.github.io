@@ -11,11 +11,10 @@ noindex: true
 
 	{% include navigation %}
 
-	{% if page.format != "solid" %}
+	<div id="masthead" class="masthead-with-image-header">
+		&nbsp;
+	</div><!-- /#masthead -->
 
-	{% endif %}
-
-<div id="masthead">
 	{% include forkme-ribbon %}
 	<div class="row header">
 		<div class="columns">
@@ -53,19 +52,18 @@ noindex: true
 			</header>
 		</div><!-- /.small-12.columns -->
 	</div><!-- /.row -->
-	<div class="row breadcrumbs-bar">
-		<div class="columns">
-			{% if page.breadcrumb == true %}
-			{% include breadcrumb %}
-			{% else %}
-			&nbsp;
-			{% endif %}
-		</div>
-	</div>
-</div>
 
 	<div class="row">
 		<div class="medium-10 medium-offset-1 large-12 large-offset-0 columns">
+			<div class="row breadcrumbs-bar">
+				<div class="columns">
+					{% if page.breadcrumb == true %}
+					{% include breadcrumb %}
+					{% else %}
+					&nbsp;
+					{% endif %}
+				</div>
+			</div>
 			<div class="row content">
 				<div class="medium-12 medium-offset-0 large-10 large-offset-1 columns t50 b50">
 					<span itemprop="articleSection">

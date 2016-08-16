@@ -1,6 +1,6 @@
 ---
 layout: page
-format: article
+format: "plate article"
 subheadline: Aspectran Parameter Object Notation
 title:  APON을 소개합니다.
 teaser: |

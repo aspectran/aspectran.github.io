@@ -1,6 +1,6 @@
 ---
 layout: page
-format: article
+format: "plate article"
 title: "Quick Start Guide"
 subheadline: "Getting Started with Aspectran"
 teaser: "Aspectran을 이용해서 간단한 Java 웹 어플리케이션을 만드는 방법에 대해 설명합니다."

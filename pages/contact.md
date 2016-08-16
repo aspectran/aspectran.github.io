@@ -1,5 +1,6 @@
 ---
-layout: plate
+layout: page
+format: plate
 title: "Contact"
 meta_title:
 subheadline:

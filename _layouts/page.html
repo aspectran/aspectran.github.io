@@ -1,6 +1,13 @@
 ---
 layout: default
 ---
+{% if page.format contains "plate" %}
+<div class="row">
+	<div class="columns">
+		<div class="row content">
+			<div class="xlarge-10 xlarge-offset-1 columns">
+{% endif %}
+
 <div class="row">
 
 	{% if page.sidebar == "toc" %}
@@ -11,7 +18,7 @@ layout: default
 
 	<div class="t30 columns {% if page.sidebar == "toc" %}large-9 large-pull-3{% elsif page.sidebar == "left" %}large-8 large-push-4{% elsif page.sidebar == "right" %}large-8{% else %}large-10 large-offset-1{% endif %}">
 		<article itemscope itemtype="http://schema.org/Article">
-      {% if page.article_heading != true %}
+      {% if page.article_heading != NULL and page.article_heading != true %}
 
 			<header>
 				{% if page.image.title %}
@@ -75,3 +82,10 @@ layout: default
 	{% endif %}
 
 </div><!-- /.row -->
+
+{% if page.format contains "plate" %}
+</div>
+</div>
+</div>
+</div>
+{% endif %}

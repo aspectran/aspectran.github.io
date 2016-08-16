@@ -18,6 +18,53 @@
 
 */
 
+// Plate Format
+//--------------
+
+body.plate {
+  @include breakpoint(small only) {
+    .row.breadcrumbs-bar {
+      background-color: transparent !important;
+    }
+  }
+  @include breakpoint(medium only) {
+    .row.breadcrumbs-bar {
+      background-color: transparent !important;
+    }
+  }
+  @include breakpoint(medium) {
+    background-color: $grey-0;
+  }
+  &.solid {
+    @include breakpoint(large) {
+      background-color: $ci-1;
+      #up-to-top {
+        padding-top: 20px;
+        a {
+          color: $ci-6;
+        }
+      }
+    }
+    .row.content {
+      padding-top: 20px;
+    }
+    #footer {
+      padding-top: 20px;
+    }
+  }
+  .row.content {
+    padding-bottom: 50px;
+    background-color: $ci-6;
+    min-height: 400px;
+    @include breakpoint(medium) {
+      border-radius: 0 0 10px 10px;
+      -webkit-box-shadow: 4px 4px 40px -30px rgba(50, 50, 50, 0.33);
+      -moz-box-shadow: 4px 4px 40px -30px rgba(50, 50, 50, 0.33);
+      box-shadow: 4px 4px 40px -30px rgba(50, 50, 50, 0.33);
+    }
+  }
+}
+
 // Navigation
 //-----------
 
@@ -26,8 +73,9 @@
   text-transform: uppercase;
   &.fixed {
     position: fixed;
+    left: 0;
+    right: 0;
     z-index: 101;
-    width: 100%;
     opacity: .96;
   }
   .title-bar {
@@ -165,7 +213,6 @@
 #forkme-ribbon {
   position: absolute;
   z-index: 1;
-  top: 43px;
   right: 0;
   width: 149px;
   height: 149px;
@@ -185,6 +232,10 @@
   color: $ci-6;
   background-color: $ci-1;
   text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
+  header {
+    padding-top: 1.5em;
+    min-height: 150px;
+  }
   img {
     border-radius: 0;
   }
@@ -195,8 +246,23 @@
   }
   .breadcrumbs-bar {
     padding: 0;
-    margin-top: 1rem;
-    background-color: darken($ci-1, 6%);
+    background-color: $ci-1;
+    @include breakpoint(small only) {
+      nav {
+        background-color: darken($ci-1, 6%);
+        border-radius: 10px 10px 0 0;
+      }
+    }
+    @include breakpoint(medium only) {
+      nav {
+        background-color: darken($ci-1, 6%);
+        border-radius: 10px 10px 0 0;
+      }
+    }
+    @include breakpoint(large) {
+      background-color: darken($ci-1, 6%);
+      border-radius: 10px 10px 0 0;
+    }
     .breadcrumbs {
       margin: 0 .8em;
       color: $ci-6;
@@ -223,6 +289,12 @@
       display: block;
     }
   }
+  .masthead-caption {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    color: #fff;
+  }
 }
 .masthead-with-text {
   text-align: center;
@@ -238,9 +310,6 @@
     img {
       height: 128px;
     }
-  }
-  header {
-    padding-top: 2em;
   }
 }
 
@@ -410,55 +479,6 @@
   }
 }
 
-// Plate Layout
-//--------------
-
-body.plate {
-  @include breakpoint(medium) {
-    background-color: $grey-0;
-  }
-  @include breakpoint(small only) {
-    #up-to-top {
-      background-color: $grey-0;
-    }
-  }
-  #masthead {
-    position: fixed;
-    z-index: -1;
-    margin-top: -50px;
-    width: 100%;
-  }
-  .row.header {
-    position: relative;
-    header {
-      margin-top: 30px;
-      margin-bottom: 7px;
-      min-width: 320px;
-      min-height: 120px;
-      color: $ci-6;
-      text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
-    }
-  }
-  .breadcrumbs-bar {
-    .breadcrumbs {
-      margin: 0;
-    }
-    @include breakpoint(medium) {
-      border-radius: 10px 10px 0 0;
-    }
-  }
-  .row.content {
-    background-color: $ci-6;
-    min-height: 400px;
-    @include breakpoint(medium) {
-      border-radius: 0 0 10px 10px;
-      -webkit-box-shadow: 4px 4px 40px -30px rgba(50, 50, 50, 0.33);
-      -moz-box-shadow: 4px 4px 40px -30px rgba(50, 50, 50, 0.33);
-      box-shadow: 4px 4px 40px -30px rgba(50, 50, 50, 0.33);
-    }
-  }
-}
-
 // Meta
 //------
 
@@ -495,7 +515,7 @@ body.plate {
 //-------------
 
 #up-to-top {
-  padding: 80px 0 10px 0;
+  padding: 40px 0 10px 0;
   a {
     font-size: 32px;
     padding: 5px;

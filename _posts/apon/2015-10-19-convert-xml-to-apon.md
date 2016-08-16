@@ -1,6 +1,6 @@
 ---
-layout: page-fullwidth
-format: article
+layout: page
+format: "plate article"
 subheadline: Aspectran Parameter Object Notation
 title:  XML을 APON으로 변환 Sample
 teaser: |
