@@ -226,9 +226,9 @@ pre {
   }
 }
 @include breakpoint(large) {
-  div.large-pull-4 figure.highlight {
+  div.large-pull-3 figure.highlight {
     &:hover {
-      width: 151.7%;
+      width: 134.3%;
     }
   }
 }
