@@ -114,8 +114,8 @@ $(function() {
 function getCustomerList() {
   $.ajax({
     type: "GET",
-    url: "http://backend.aspectran.com/ga-rest-service/customers&callback=?",
-    dataType: "json",
+    url: "http://backend.aspectran.com/ga-rest-service/customers",
+    dataType: "jsonp",
     success: function(data, textStatus, xhr) {
       describe("GET", this.url, xhr);
       var list = $("select[name=customerList]");
