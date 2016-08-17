@@ -138,7 +138,7 @@ function getCustomer(id) {
   $.ajax({
     type: "GET",
     url: "http://backend.aspectran.com/ga-rest-service/customers/" + id,
-    dataType: "json",
+    dataType: "jsonp",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
       $("input[name=id]").val(data.customer.id);
@@ -180,7 +180,7 @@ function saveCustomer() {
       age: $("input[name=age]").val(),
       approved: $("input[name=approvalStatus]:checked").val()
     },
-    dataType: "json",
+    dataType: "jsonp",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
       if(id == "") {
@@ -211,7 +211,7 @@ function deleteCustomer() {
   $.ajax({
     type: "DELETE",
     url: "http://backend.aspectran.com/ga-rest-service/customers/" + id,
-    dataType: "json",
+    dataType: "jsonp",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
       $("select[name=customerList] option[value=" + id + "]").remove();
@@ -231,7 +231,7 @@ function updateApproval(approved) {
   $.ajax({
     type: "PUT",
     url: "http://backend.aspectran.com/ga-rest-service/customers/" + id + "/approve/" + (approved ? "true" : "false"),
-    dataType: "json",
+    dataType: "jsonp",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
     },
