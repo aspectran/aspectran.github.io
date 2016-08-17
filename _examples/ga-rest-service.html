@@ -78,7 +78,6 @@ download:
 </div>
 
 <script>
-$.support.cors = true;
 var backend = "http://backend.aspectran.com";
 $(function() {
   $("select[name=customerList]").change(function() {
@@ -116,7 +115,7 @@ function getCustomerList() {
   $.ajax({
     type: "GET",
     url: backend + "/ga-rest-service/customers",
-    dataType: "jsonp",
+    dataType: "json",
     success: function(data, textStatus, xhr) {
       describe("GET", this.url, xhr);
       var list = $("select[name=customerList]");
@@ -139,7 +138,7 @@ function getCustomer(id) {
   $.ajax({
     type: "GET",
     url: backend + "/ga-rest-service/customers/" + id,
-    dataType: "jsonp",
+    dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
       $("input[name=id]").val(data.customer.id);
@@ -174,7 +173,7 @@ function saveCustomer() {
     url = backend + "/ga-rest-service/customers/" + id;
   }
   $.ajax({
-		type: type,
+    type: type,
     url: url,
     data: {
       name: $("input[name=name]").val(),
@@ -210,11 +209,8 @@ function deleteCustomer() {
     return;
   }
   $.ajax({
+    type: "DELETE",
     url: backend + "/ga-rest-service/customers/" + id,
-		type: "POST",
-		headers: {
-			"X-HTTP-Method-Override": "DELETE"
-		},
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
@@ -233,11 +229,8 @@ function updateApproval(approved) {
     return;
   }
   $.ajax({
+    type: "PUT",
     url: backend + "/ga-rest-service/customers/" + id + "/approve/" + (approved ? "true" : "false"),
-		type: "POST",
-		headers: {
-			"X-HTTP-Method-Override": "PUT"
-		},
 		dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
