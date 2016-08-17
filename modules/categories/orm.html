@@ -1,31 +1,23 @@
 ---
-layout: default
+layout: page
+format: plate
+sidebar: right
 title: ORM
 subheadline: Aspectran Modules
 teaser: 현재 iBatis, My Batis의 트랜잭션 관리와 연동을 지원합니다.
-article_heading: true
 breadcrumb: true
 permalink: /modules/orm/
 ---
 
+{% assign modules = site.modules | where: "category", "ORM" %}
+{% for module in modules %}
 <div class="row">
-	<div class="medium-8 columns t30">
-
-    {% assign modules = site.modules | where: "category", "ORM" %}
-    {% for module in modules %}
-    <div class="row b10">
-      <div class="columns">
-        <h3><a href="{{ site.baseurl }}{{ module.url }}">{{ module.title }}</a></h3>
-        <p>
-          {% if module.image.thumb %}<a href="{{ site.baseurl }}{{ module.url }}" title="{{ module.title escape_once }}"><img src="{{ site.urlimg }}{{ module.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title escape_once }}"></a>{% endif %}
-          {% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
-        </p>
-      </div><!-- /.columns -->
-    </div><!-- /.row -->
-    {% endfor %}
-
-	</div><!-- /.medium-8.columns -->
-	<div class="medium-4 columns t30">
-		{% include sidebar %}
-	</div><!-- /.medium-4.columns -->
+  <div class="columns">
+    <h3><a href="{{ site.baseurl }}{{ module.url }}">{{ module.title }}</a></h3>
+    <p>
+      {% if module.image.thumb %}<a href="{{ site.baseurl }}{{ module.url }}" title="{{ module.title escape_once }}"><img src="{{ site.urlimg }}{{ module.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title escape_once }}"></a>{% endif %}
+      {% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
+    </p>
+  </div><!-- /.columns -->
 </div><!-- /.row -->
+{% endfor %}

@@ -18,53 +18,6 @@
 
 */
 
-// Plate Format
-//--------------
-
-body.plate {
-  @include breakpoint(small only) {
-    .row.breadcrumbs-bar {
-      background-color: transparent !important;
-    }
-  }
-  @include breakpoint(medium only) {
-    .row.breadcrumbs-bar {
-      background-color: transparent !important;
-    }
-  }
-  @include breakpoint(medium) {
-    background-color: $grey-0;
-  }
-  &.solid {
-    @include breakpoint(large) {
-      background-color: $ci-1;
-      #up-to-top {
-        padding-top: 20px;
-        a {
-          color: $ci-6;
-        }
-      }
-    }
-    .row.content {
-      padding-top: 20px;
-    }
-    #footer {
-      padding-top: 20px;
-    }
-  }
-  .row.content {
-    padding-bottom: 50px;
-    background-color: $ci-6;
-    min-height: 400px;
-    @include breakpoint(medium) {
-      border-radius: 0 0 10px 10px;
-      -webkit-box-shadow: 4px 4px 40px -30px rgba(50, 50, 50, 0.33);
-      -moz-box-shadow: 4px 4px 40px -30px rgba(50, 50, 50, 0.33);
-      box-shadow: 4px 4px 40px -30px rgba(50, 50, 50, 0.33);
-    }
-  }
-}
-
 // Navigation
 //-----------
 
@@ -208,6 +161,53 @@ body.plate {
   }
 }
 
+// Plate Format
+//--------------
+
+body.plate {
+  @include breakpoint(small only) {
+    .row.breadcrumbs-bar {
+      background-color: transparent !important;
+    }
+  }
+  @include breakpoint(medium only) {
+    .row.breadcrumbs-bar {
+      background-color: transparent !important;
+    }
+  }
+  @include breakpoint(medium) {
+    background-color: $grey-1;
+  }
+  &.solid {
+    @include breakpoint(large) {
+      background-color: $ci-1;
+      #up-to-top {
+        padding-top: 20px;
+        a {
+          color: $ci-6;
+        }
+      }
+    }
+    .row.content {
+      padding-top: 20px;
+    }
+    #footer {
+      padding-top: 20px;
+    }
+  }
+  .row.content {
+    padding-bottom: 50px;
+    background-color: $ci-6;
+    min-height: 400px;
+    @include breakpoint(medium) {
+      border-radius: 0 0 10px 10px;
+      -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+      -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+      box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+    }
+  }
+}
+
 // Fork- Ribbon
 //--------------
 #forkme-ribbon {
@@ -279,9 +279,12 @@ body.plate {
   }
   &.grey-ground {
     padding: 30px 0 10px 0;
-    background-color: #F2F2F2;
+    background-color: $grey-1;
     color: $text-color;
     text-shadow: none;
+    -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+    -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+    box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
     img {
       border-radius: $global-radius;
     }

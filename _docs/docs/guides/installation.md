@@ -1,6 +1,6 @@
 ---
 layout: page
-format: article
+format: "plate article"
 sidebar: toc
 title: "Installation"
 subheadline: "User Guides"

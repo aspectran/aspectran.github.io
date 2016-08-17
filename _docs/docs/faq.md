@@ -1,5 +1,6 @@
 ---
-layout: plate
+layout: page
+format: "plate solid"
 title: "FAQ"
 subheadline: "Frequently Asked Questions about Aspectran"
 teaser: "Aspectran과 관련해 자주 묻는 질문을 모았습니다."

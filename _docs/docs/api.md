@@ -1,6 +1,6 @@
 ---
 layout: page
-format: plate
+format: "plate article"
 sidebar: right
 title: "API Reference"
 subheadline: "This is the public API documentation for the Aspectran."
