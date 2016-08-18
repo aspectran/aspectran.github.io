@@ -264,7 +264,6 @@ body.plate {
       border-radius: 10px 10px 0 0;
     }
     .breadcrumbs {
-      margin: 0;
       color: $ci-6;
       border: 0;
       a {
@@ -460,12 +459,7 @@ body.plate {
     font-size: 74%;
     background: none;
     padding: .2em;
-    @include breakpoint(small only) {
-      margin: 0 .55rem;
-    }
-    @include breakpoint(medium) {
-      margin: 0 1.1rem;
-    }
+    margin: 0;
     a {
       color: $grey-8;
       &:hover {
