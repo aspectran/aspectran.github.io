@@ -266,7 +266,7 @@ XML 형식의 설정 메타데이터 파일이 수정되면 APON 파일로 변�
 Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하는 Action을 호출하기 전과 후에 특정 동작을 주입하는 `simplestAdvice` ***aspect*** 가 정의되어 있습니다.
 `helloWorld` ***translet*** 은 `simplestAction` ***bean*** 의 `helloWorld` Method를 실행하고, 결과를 텍스트형식으로 출력하는 역할을 합니다.
 
-[***simplest-configuration.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/aspectran/config/simplest-configuration.xml)
+[***root-configuration.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/aspectran/config/root-configuration.xml)
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>

@@ -24,6 +24,8 @@ download:
 
 ***ga-hello-world-master/app/config/hello-world-config.xml***
 
+[***ga-hello-world-master/app/config/hello-world-config.xml***](https://github.com/aspectran-guides/ga-hello-world/blob/master/src/main/webapp/WEB-INF/aspectran/config/hello-world-config.xml)
+
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN"
