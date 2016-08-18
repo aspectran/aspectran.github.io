@@ -22,6 +22,8 @@ download:
 "Hello, World!" 문자열을 출력하는 가장 간단한 설정 구성은 다음과 같이 작성될 수 있습니다.   
 자바 소스 코드를 작성하지 않고 "Hello, World!" 문자열만 출력하는 Translet을 한 개만 정의했습니다.
 
+***ga-hello-world-master/app/config/hello-world-config.xml***
+
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN"
@@ -49,8 +51,8 @@ download:
 1. `ga-hello-world-master/app` 경로로 이동하세요.
 2. `run.sh` 파일을 실행하세요. (Windows 환경에서는 `run.bat` 파일을 실행하세요.)
 3. 실행이 되면 `Aspectran>` 프롬프트가 나옵니다.
-3. 프롬프트에서 명령어 `hello`를 입력하면 "Hello, World!" 문자열이 출력됩니다.
-4. 명령어 `quit`를 입력하면 프로그램을 종료할 수 있습니다.
+4. 프롬프트에서 명령어 `hello`를 입력하면 "Hello, World!" 문자열이 출력됩니다.
+5. 명령어 `quit`를 입력하면 프로그램을 종료할 수 있습니다.
 
 > 실행이 안 될 경우 다음 2가지 사항에 대해 점검해 보세요.  
 > - java 명령어를 실행할 수 있도록 환경변수가 설정되어 있는지 확인하세요.  

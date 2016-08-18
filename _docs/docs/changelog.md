@@ -17,6 +17,8 @@ comments: true
 2016.8.15. // Version 2.4.0
 : New Features
 : * Can be added the custom parameters into &lt;request&gt; element.
+  * Added support for X-HTTP Methods override.
+  * Added support for JSONP callbacks.
 : Changed the name of some elements in DTD
 : * property ==&gt; properties
   * parameter ==&gt; parameters
@@ -36,12 +38,12 @@ comments: true
 : Bug Fixes and Minor Improvements
 
 2016.5.9. // Version 2.2.0
-: * Adds support for Environment Variables
+: * Added support for Environment Variables
   * Aspectran Profiles Improvements
 
 2016.5.2. // Version 2.1.0
 : New Features
-: * Adds support for configuration profiles
+: * Added support for configuration profiles.
   * Adds Annotation @Profile and @Value
 : Profiles allow for environment-specific bean definitions.  
   Activated with:
@@ -52,13 +54,13 @@ comments: true
 2016.3.20. // Version 2.0.0
 : Aspectran 2 is designed to run on Java 8 and later.  
   New Features
-: * Support for Annotation-based metadata configuration.
-  * Support for Template engines. (FreeMarker, Pebble)
-  * Support for Internationalization.
-  * Support for Run service as a console application.
+: * Added support for Annotation-based metadata configuration.
+  * Added support for Template engines. (FreeMarker, Pebble)
+  * Added support for Internationalization.
+  * Added support for Run service as a console application.
 
 2015.12.29. // Version 1.5.0
-: * Adds the session joinpoint-scope.  
+: * Added support for Session Joinpoint-scope.  
     Advice Action can be executed at the session start and end.
   * Recognizes the APON Object when converting ProcessResult object to JSON or XML string.
   * Updated travis settings
