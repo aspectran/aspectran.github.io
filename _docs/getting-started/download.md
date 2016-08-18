@@ -7,13 +7,18 @@ teaser: "Aspectran is an open source, free of charge, based on the Apache 2.0 Li
 ---
 
 ## Latest stable release: 2.4.0
+
+Aspectran is open source. It's hosted, developed, and maintained on GitHub.
+
+{% include label-link-box label="Aspectran projects on GitHubz" href="https://github.com/aspectran/aspectran" %}
+
+## Maven
+
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran) [![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
 
 If you're using Maven, you will find all Aspectran Maven artifacts directly in the central Maven repository here: [http://repo1.maven.org/maven2/com/aspectran/aspectran/][1]
 
 See [all versions available on the Maven Central Repository][2].
-
-## Maven
 
 ***Artifact information (Maven Central)***
 
