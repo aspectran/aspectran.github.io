@@ -22,9 +22,7 @@ download:
 "Hello, World!" 문자열을 출력하는 가장 간단한 설정 구성은 다음과 같이 작성될 수 있습니다.   
 자바 소스 코드를 작성하지 않고 "Hello, World!" 문자열만 출력하는 Translet을 한 개만 정의했습니다.
 
-***ga-hello-world-master/app/config/hello-world-config.xml***
-
-[***ga-hello-world-master/app/config/hello-world-config.xml***](https://github.com/aspectran-guides/ga-hello-world/blob/master/src/main/webapp/WEB-INF/aspectran/config/hello-world-config.xml)
+[***ga-hello-world-master/app/config/hello-world-config.xml***](https://github.com/aspectran-guides/ga-hello-world/blob/master/app/config/hello-world-config.xml)
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
