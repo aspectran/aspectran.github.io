@@ -213,7 +213,9 @@
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
   <div class="row">
-		{% include breadcrumb %}
+		<div class="columns">
+			{% include breadcrumb %}
+		</div>
 	</div>
 </div>
 {% endif %}
