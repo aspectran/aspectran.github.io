@@ -281,3 +281,20 @@ img.lazy {
     transition: opacity 0.7s;
     opacity: 1;
 }
+
+// google_translate_website
+//--------------------------
+#google_translate_element {
+  float: left;
+  opacity: .5;
+  border: 2px $ci-1 solid;
+  border-radius: 4px;
+  @include breakpoint(small only) {
+    margin-top: -74px;
+    margin-left: 10px;
+  }
+  @include breakpoint(medium) {
+    margin-top: -50px;
+    margin-left: 15px;
+  }
+}

@@ -1,7 +1,7 @@
 /* TOC
 
 - Navigation
-- Search
+- Plate Format
 - Masthead
 - Masthead › small-only
 - Masthead › medium-only
@@ -26,8 +26,7 @@
   text-transform: uppercase;
   &.fixed {
     position: fixed;
-    left: 0;
-    right: 0;
+    width: 100%;
     z-index: 101;
     opacity: .96;
   }
@@ -264,6 +263,12 @@ body.plate {
       border-radius: 10px 10px 0 0;
     }
     .breadcrumbs {
+      @include breakpoint(small only) {
+        margin: 0 8px;
+      }
+      @include breakpoint(medium only) {
+        margin: 0 10px;
+      }
       color: $ci-6;
       border: 0;
       a {
@@ -551,7 +556,6 @@ body.plate {
     }
   }
 }
-
 
 // Subfooter
 //-----------
