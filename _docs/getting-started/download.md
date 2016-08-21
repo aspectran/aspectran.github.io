@@ -6,7 +6,7 @@ subheadline: "Aspectran Releases"
 teaser: "Aspectran is an open source, free of charge, based on the Apache 2.0 License."
 ---
 
-## Latest stable release: 2.4.0
+## Latest release: 2.4.0
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)
 [![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
