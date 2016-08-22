@@ -14,6 +14,10 @@ comments: true
   {% include label-link-box label="GitHub Releases" href="https://github.com/aspectran/aspectran/releases" %}
 </div>
 
+2016.8.23. // Version 2.4.1
+: Optimized the Aspectran service control function.
+: Some bugs fixed and code improvements.
+
 2016.8.15. // Version 2.4.0
 : New Features
 : * Can be added the custom parameters into &lt;request&gt; element.
