@@ -51,15 +51,9 @@
   isolated (true | false) #IMPLIED
 >
 
-<!ELEMENT joinpoint (pointcut*)>
+<!ELEMENT joinpoint (#PCDATA)>
 <!ATTLIST joinpoint
   type   (session | translet | bean) #IMPLIED
-  method  CDATA #IMPLIED
->
-
-<!ELEMENT pointcut (#PCDATA)>
-<!ATTLIST pointcut
-  type    (wildcard | regexp) #IMPLIED
 >
 
 <!ELEMENT advice (before?, after?, around?, finally?)>
