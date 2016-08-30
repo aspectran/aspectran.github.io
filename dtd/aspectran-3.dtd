@@ -53,7 +53,7 @@
 
 <!ELEMENT joinpoint (pointcut*)>
 <!ATTLIST joinpoint
-  scope   (session | translet | request | response | content | bean) #IMPLIED
+  type   (session | translet | bean) #IMPLIED
   method  CDATA #IMPLIED
 >
 
