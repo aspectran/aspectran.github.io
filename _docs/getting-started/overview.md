@@ -28,12 +28,12 @@ Aspectran API 문서를 제공합니다.
 ## [FAQ](/docs/faq/)
 Aspectran과 관련해 자주 묻는 질문을 모았습니다.  
 찾으시는 질문이 없거나 더 자세한 문의를 원하시면 [Contact](/contact/) 페이지 또는 GitHub Issues에 질문 또는 의견을 남겨 주시기 바랍니다.
-{% include label-link-box label="Aspectran Issues" href="https://github.com/aspectran/aspectran/issues" %}
+{% include label-link-box label="Aspectran Issues" href="https://github.com/aspectran-projects/aspectran/issues" %}
 
 ## [Changelog](/docs/changelog/)
 Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.  
 소스 코드에 대한 상세한 변경이력은 GitHub에서 볼 수 있습니다.
-{% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
+{% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran-projects/aspectran/releases" %}
 
 ## [Modules](/modules/)
 외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다.

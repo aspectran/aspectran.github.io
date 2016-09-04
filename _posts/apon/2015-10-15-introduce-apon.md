@@ -290,7 +290,7 @@ public class AspectranSchedulerConfig extends AbstractParameters implements Para
 
 ### AponWriter 사용 예제
 
-[`AponWriter`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponWriter.java) 클래스를
+[`AponWriter`](https://github.com/aspectran-projects/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponWriter.java) 클래스를
 사용하면 Parameters Object를 APON 형식의 텍스트 문서로 쉽게 변환할 수 있습니다.
 
 > APON 형식의 텍스트 문서를 Parameters Object로 변환하고, 다시 Parameters Object를 APON 형식의 문자열로 변환해서 콘솔에 출력하는 예제입니다.
@@ -339,7 +339,7 @@ public class AponWriterTest {
 
 ### AponReader 사용 예제
 
-[`AponReader`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponReader.java) 클래스를
+[`AponReader`](https://github.com/aspectran-projects/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponReader.java) 클래스를
 사용하면 APON 형식의 텍스트 문서를 Parameters Object로 쉽게 변환할 수 있습니다.
 
 {% highlight java %}
@@ -382,4 +382,4 @@ public class AponReaderTest {
 
 APON 패키지: **com.aspectran.core.util.apon**
 
-{% include label-link-box label="Source" href="https://github.com/aspectran/aspectran/tree/master/src/main/java/com/aspectran/core/util/apon" %}
+{% include label-link-box label="Source" href="https://github.com/aspectran-projects/aspectran/tree/master/src/main/java/com/aspectran/core/util/apon" %}
