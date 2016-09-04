@@ -37,7 +37,7 @@ Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.
 
 ## [Modules](/modules/)
 외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다.
-{% include link-box href="https://github.com/aspectran/aspectran-modules" %}
+{% include link-box href="https://github.com/aspectran-projects/aspectran-modules" %}
 
 ## [Examples](/examples/)
 Aspectran을 이용해서 만든 예제 응용 프로그램을 제공하고 있습니다.  

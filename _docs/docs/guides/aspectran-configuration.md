@@ -92,7 +92,7 @@ teaser: "Aspectran 설정 메타데이터 구성요소에 대해서 설명합니
     </description>
     <property>
       <item name="maxRequestSize" value="10M"/>
-      <item name="temporaryFilePath" value="/d:/temp"/>
+      <item name="tempDirectoryPath" value="/d:/temp"/>
       <item name="allowedFileExtensions" value=""/>
       <item name="deniedFileExtensions" value=""/>
     </property>

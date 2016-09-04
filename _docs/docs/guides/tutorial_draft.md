@@ -318,7 +318,7 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
     </description>
     <property>
       <item name="maxRequestSize" value="10M"/>
-      <item name="temporaryFilePath" value="/d:/temp"/>
+      <item name="tempDirectoryPath" value="/d:/temp"/>
       <item name="allowedFileExtensions" value=""/>
       <item name="deniedFileExtensions" value=""/>
     </property>
@@ -744,7 +744,7 @@ Aspectran은 외부의 접속 요청을 Translet이 받아서 처리합니다. T
 	<settings>
 		<setting name="characterEncoding" value="utf-8"/>
 		<setting name="multipart.maxRequestSize" value="10M"/>
-		<setting name="multipart.temporaryFilePath" value="/d:/"/>
+		<setting name="multipart.tempDirectoryPath" value="/d:/"/>
 	</settings>
 </aspect>
 

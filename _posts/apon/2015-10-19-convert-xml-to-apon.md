@@ -70,7 +70,7 @@ published: true
         </description>
         <properties>
             <item name="maxRequestSize" value="10M"/>
-            <item name="temporaryFilePath" value="/d:/temp"/>
+            <item name="tempDirectoryPath" value="/d:/temp"/>
             <item name="allowedFileExtensions" value=""/>
             <item name="deniedFileExtensions" value=""/>
         </properties>
@@ -486,7 +486,7 @@ aspectran: {
                 value: "10M"
             }
             item: {
-                name: "temporaryFilePath"
+                name: "tempDirectoryPath"
                 value: "/d:/temp"
             }
             item: {
