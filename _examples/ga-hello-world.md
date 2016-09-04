@@ -1,15 +1,15 @@
 ---
 layout: example
 format: article
-title: "Aspectran - Hello World Example"
-subheadline: "Running the \"Hello World\" application"
-teaser: "Aspectran으로 만드는 가장 간단한 Hello World 어플리케이션에 대해 소개합니다."
+title: Aspectran - Hello World Example
+subheadline: Running the "Hello World" application
+teaser: Aspectran으로 만드는 가장 간단한 Hello World 어플리케이션에 대해 소개합니다.
 article_heading: true
 breadcrumb: true
 image:
-  thumb: "examples/ga-hello-world.png"
+  thumb: examples/ga-hello-world.png
 download:
-- label: "ga-hello-world"
+- label: ga-hello-world
   url: https://github.com/aspectran-guides/ga-hello-world
 - label: "Download ZIP"
   url: https://github.com/aspectran-guides/ga-hello-world/archive/master.zip
@@ -26,8 +26,8 @@ download:
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN"
-    "http://aspectran.github.io/dtd/aspectran-2.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 3.0//EN"
+    "http://aspectran.github.io/dtd/aspectran-3.dtd">
 
 <aspectran>
 
