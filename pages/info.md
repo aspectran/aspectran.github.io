@@ -3,7 +3,7 @@ layout: page
 format: article
 title: "About Aspectran"
 subheadline: "What is Aspectran?"
-teaser: "Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축하기 위한 가볍고 확장 가능한 프레임워크입니다."
+teaser: "Aspectran is a lightweight and extensible framework for building enterprise-ready Java Web and Console-based applications."
 header:
   image_fullwidth: "header_aspectran.png"
   slogan_hidden: true

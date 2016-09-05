@@ -7,6 +7,7 @@ header:
   caption: "Photo by Juho Jeong"
 breadcrumb: true
 permalink: /search/
+noindex: true
 ---
 
 {% include google-search-form %}
