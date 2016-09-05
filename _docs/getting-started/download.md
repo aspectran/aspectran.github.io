@@ -3,7 +3,7 @@ layout: page
 format: "plate solid article"
 title: "Download"
 subheadline: "Aspectran Releases"
-teaser: "Aspectran is an open source, free of charge, based on the Apache 2.0 License."
+teaser: "Aspectran is a free and open source Java Framework. It’s hosted, developed, and maintained on GitHub."
 ---
 
 ## Latest release: 2.4.1
