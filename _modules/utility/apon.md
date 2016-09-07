@@ -9,7 +9,7 @@ teaser: |
   구조화된 형식의 데이터 교환을 위한 새로운 표기법입니다.
 category: Utility
 download:
-  source: https://github.com/aspectran-projects/aspectran/tree/master/src/main/java/com/aspectran/core/util/apon
+  source: https://github.com/aspectran/aspectran/tree/master/src/main/java/com/aspectran/core/util/apon
 ---
 
 APON에 대한 자세한 내용은 다음 페이지를 참고하세요.

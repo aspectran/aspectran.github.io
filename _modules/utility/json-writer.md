@@ -8,7 +8,7 @@ teaser: |
   별도의 JSON 라이브러리를 필요로 하지 않고, 변환 속도가 상당히 빠른 것이 특징입니다.
 category: Utility
 download:
-  source: https://github.com/aspectran-projects/aspectran/tree/master/src/main/java/com/aspectran/core/util/json/JsonWriter.java
+  source: https://github.com/aspectran/aspectran/tree/master/src/main/java/com/aspectran/core/util/json/JsonWriter.java
 ---
 
 ## Java Source

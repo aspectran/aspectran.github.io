@@ -11,7 +11,7 @@ comments: true
 <div class="callout info radius b30">
   <p>Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.<br/>
   소스 코드에 대한 상세한 변경이력은 GitHub에서 볼 수 있습니다.</p>
-  {% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran-projects/aspectran/releases" %}
+  {% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
 </div>
 
 2016.8.23. // Version 2.4.1
