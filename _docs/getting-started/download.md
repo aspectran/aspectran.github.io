@@ -9,7 +9,7 @@ teaser: "Aspectran is a free and open source Java Framework. It’s hosted, deve
 ## Latest release: 2.4.1
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)
-[![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
+[![Coverage Status](https://coveralls.io/repos/aspectran/aspectran/badge.svg?branch=master&service=github)](https://coveralls.io/github/aspectran/aspectran?branch=master)
 
 Aspectran is a free and open source Java Framework. It's hosted, developed, and maintained on GitHub.
 
