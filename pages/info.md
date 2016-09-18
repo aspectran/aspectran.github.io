@@ -3,7 +3,7 @@ layout: page
 format: article
 title: "About Aspectran"
 subheadline: "What is Aspectran?"
-teaser: "Aspectran is a lightweight and extensible framework for building enterprise-ready Java Web and Console-based applications."
+teaser: "Aspectran is a lightweight Java framework for building Enterprise-ready Web applications. Also, It will be able to launch as a Console-based and Embedded application."
 header:
   image_fullwidth: "header_aspectran.png"
   slogan_hidden: true
