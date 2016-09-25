@@ -6,7 +6,7 @@ subheadline: "Aspectran Releases"
 teaser: "Aspectran is a free and open source Java Framework. It’s hosted, developed, and maintained on GitHub."
 ---
 
-## Latest release: 2.4.1
+## Latest release: 3.0.0
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/aspectran/aspectran/badge.svg?branch=master&service=github)](https://coveralls.io/github/aspectran/aspectran?branch=master)
@@ -28,7 +28,7 @@ See [all versions available on the Maven Central Repository][2].
 
 | Group Id | Artifact Id | Version | Download |
 |----------|-------------|---------|----------|
-| com.aspectran | [aspectran][3] | [2.4.1][4] | [pom][5] [jar][6] [javadoc (jar)][7] [sources (jar)][8] |
+| com.aspectran | [aspectran][3] | [3.0.0][4] | [pom][5] [jar][6] [javadoc (jar)][7] [sources (jar)][8] |
 
 Add the following dependency to your pom.xml:
 
@@ -36,7 +36,7 @@ Add the following dependency to your pom.xml:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran</artifactId>
-  <version>2.4.1</version>
+  <version>3.0.0</version>
 </dependency>
 {% endhighlight %}
 
@@ -62,8 +62,8 @@ Note that Aspectran 2 requires Java 8, so an explicit declaration of 1.8 compati
 [1]: http://repo1.maven.org/maven2/com/aspectran/aspectran/
 [2]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.aspectran%22
 [3]: http://search.maven.org/#search|ga|1|a%3A%22aspectran%22
-[4]: http://search.maven.org/#artifactdetails|com.aspectran|aspectran|2.4.1|jar
-[5]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/2.4.1/aspectran-2.4.1.pom
-[6]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/2.4.1/aspectran-2.4.1.jar
-[7]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/2.4.1/aspectran-2.4.1-javadoc.jar
-[8]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/2.4.1/aspectran-2.4.1-sources.jar
+[4]: http://search.maven.org/#artifactdetails|com.aspectran|aspectran|3.0.0|jar
+[5]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/3.0.0/aspectran-3.0.0.pom
+[6]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/3.0.0/aspectran-3.0.0.jar
+[7]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/3.0.0/aspectran-3.0.0-javadoc.jar
+[8]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/3.0.0/aspectran-3.0.0-sources.jar

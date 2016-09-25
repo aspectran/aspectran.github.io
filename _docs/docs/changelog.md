@@ -14,6 +14,12 @@ comments: true
   {% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
 </div>
 
+2016.9.26. // Version 3.0.0
+: New Features
+: * Aspectran을 다른 응용 프로그램의 내부에서 실행할 수 있는 기능을 지원하는 임베디드 패키지 추가
+: Notable Changes
+: * 내부적으로 대폭적인 안정성 향상 및 세부 기능의 완성도 향상
+
 2016.8.23. // Version 2.4.1
 : * Optimized the Aspectran service control function.
   * Some bugs fixes and code improvements.
