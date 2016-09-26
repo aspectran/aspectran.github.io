@@ -40,7 +40,7 @@ Add the following dependency to your pom.xml:
 </dependency>
 {% endhighlight %}
 
-Note that Aspectran 2 requires Java 8, so an explicit declaration of 1.8 compatibility to the compiler may also be required:
+Note that Aspectran 3 requires Java 8, so an explicit declaration of 1.8 compatibility to the compiler may also be required:
 
 {% highlight xml %}
 <build>
