@@ -225,6 +225,13 @@ pre {
     }
   }
 }
+div.highlighter-rouge {
+  pre.highlight {
+    code {
+      background-color: transparent;
+    }
+  }
+}
 @include breakpoint(large) {
   div.large-pull-3 figure.highlight {
     &:hover {
