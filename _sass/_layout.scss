@@ -174,7 +174,7 @@ body.plate {
       background-color: transparent !important;
     }
   }
-  @include breakpoint(medium) {
+  @include breakpoint(large) {
     background-color: $grey-1;
   }
   &.solid {
@@ -198,7 +198,7 @@ body.plate {
     padding-bottom: 50px;
     background-color: $ci-6;
     min-height: 400px;
-    @include breakpoint(medium) {
+    @include breakpoint(large) {
       border-radius: 0 0 10px 10px;
       -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
       -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
