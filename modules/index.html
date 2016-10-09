@@ -31,7 +31,7 @@ categories:
 		  <a href="#{{ category.path }}-panel{{ counter }}" role="tab" class="accordion-title" id="{{ category.path }}-panel{{ counter }}-heading" aria-controls="{{ category.path }}-panel{{ counter }}"><span class="iconfont"></span><strong>{{ module.title }}</strong></a>
 			<div id="{{ category.path }}-panel{{ counter }}" data-tab-content role="tabpanel" class="accordion-content" aria-labelledby="{{ category.path }}-panel{{ counter }}-heading">
 				{% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
-				<p class="text-right"><a class="button small" href="{{ site.baseurl }}{{ module.url }}" title="{{ module.title escape_once }}">{{ site.data.language.read_more }}</a></p>
+				<p class="text-right"><a class="button small" href="{{ site.baseurl }}{{ module.url }}" title="{{ module.title | escape_once }}">{{ site.data.language.read_more }}</a></p>
 			</div>
 		</li>
 		{% assign counter = counter | plus:1 %}

@@ -20,7 +20,7 @@ noindex: true
         <a href="#panel{{ counter }}" role="tab" class="accordion-title" id="panel{{ counter }}-heading" aria-controls="panel{{ counter }}"><span class="iconfont"></span>{% if post.subheadline %}{{ post.subheadline }} › {% endif %}<strong>{{ post.title }}</strong></a>
         <div id="panel{{ counter }}" data-tab-content role="tabpanel" class="accordion-content" aria-labelledby="panel{{ counter }}-heading">
           {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% endif %}
-          <p class="text-right"><a class="button small" href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title escape_once }}">{{ site.data.language.read_more }}</a></p>
+          <p class="text-right"><a class="button small" href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}">{{ site.data.language.read_more }}</a></p>
         </div>
       </li>
       {% assign counter=counter | plus:1 %}
