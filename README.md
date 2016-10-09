@@ -1,4 +1,5 @@
 # The Official Website of Aspectran
+[![Gem Version](https://img.shields.io/gem/v/github-pages.svg)](https://rubygems.org/gems/github-pages)
 ![aspectran](http://www.aspectran.com/images/header_aspectran.png)
 
 ## Essentials
