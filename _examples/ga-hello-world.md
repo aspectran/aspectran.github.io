@@ -31,7 +31,7 @@ download:
 
 <aspectran>
 
-    <translet name="helloWorld">
+    <translet name="hello">
         <transform type="transform/text" contentType="text/plain">
             <template>Hello, World!</template>
         </transform>
