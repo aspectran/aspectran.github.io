@@ -59,12 +59,12 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
     <param-name>aspectran:config</param-name>
     <param-value>
         context: {
-            root: "/WEB-INF/aspectran/config/simplest-configuration.xml"
-            encoding: "utf-8"
+            root: /WEB-INF/aspectran/config/simplest-configuration.xml
+            encoding: utf-8
             resources: [
-                "/WEB-INF/aspectran/config"
-                "/WEB-INF/aspectran/classes"
-                "/WEB-INF/aspectran/lib"
+                /WEB-INF/aspectran/config
+                /WEB-INF/aspectran/classes
+                /WEB-INF/aspectran/lib
             ]
             hybridLoad: false
             autoReload: {
@@ -81,7 +81,7 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
             startup: false
         }
         web: {
-            uriDecoding: "utf-8"
+            uriDecoding: utf-8
         }
     </param-value>
   </context-param>
@@ -237,8 +237,8 @@ XML 형식의 설정 메타데이터 파일이 수정되면 APON 파일로 변�
 
 {% highlight xml %}
 <context-param>
-    <param-name>aspectran:defaultServletName</param-name>
-    <param-value>default</param-value>
+  <param-name>aspectran:defaultServletName</param-name>
+  <param-value>default</param-value>
 </context-param>
 {% endhighlight %}
 
@@ -304,12 +304,10 @@ Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하�
       해당 Translet의 실행 전에는 simplestAdvice Bean의 welcome 메쏘드를 실행하고,
       해당 Translet의 실행 후에는 simplestAdvice Bean의 goodbye 메쏘드를 실행합니다.
     </description>
-    <joinpoint scope="translet">
-      <pointcut>
-        target: {
-          +: "/ga-quick-start/*@simplestAction^helloWorld"
-        }
-      </pointcut>
+    <joinpoint type="translet">
+      pointcut: {
+        +: /ga-quick-start/*@simplestAction^helloWorld
+      }
     </joinpoint>
     <advice bean="simplestAdvice">
       <before>
