@@ -13,7 +13,7 @@ breadcrumb: true
 Aspectran의 탄생 배경 및 주요 기능을 소개합니다.
 
 ## [Quick Start Guide](/getting-started/quickstart/)
-간단한 웹 어플리케이션을 만드는 과정을 예로 들면서 Aspectran의 기본적인 사용방법과 특징을 파악할 수 있습니다.
+간단한 웹 어플리케이션을 만드는 과정을 통하여 Aspectran의 기본적인 사용법과 특징을 파악할 수 있습니다.
 
 ## [Download](/getting-started/download/)
 Aspectran 라이브러리를 적접 다운로드 받는 경로를 안내하고, Maven 사용자를 위한 Aspectran Atifact 정보를 제공합니다.
