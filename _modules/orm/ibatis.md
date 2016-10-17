@@ -26,19 +26,17 @@ download:
     </constructor>
 </bean>
 
-<bean id="*" class="com.aspectran.example.ibatis.dao.*Dao" mask="com.aspectran.**.*" scope="singleton">
+<bean id="*" class="com.aspectran.example.ibatis.dao.*Dao" mask="com.aspectran.**.*">
     <property>
         <item name="revelentAspectId" value="sqlmapTxAspect"/>
     </property>
 </bean>
 
 <aspect id="sqlmapTxAspect">
-    <joinpoint scope="translet">
-        <pointcut>
-            target: {
-                +: "/example/**/*@**.dao.*Dao"
-            }
-        </pointcut>
+    <joinpoint target="translet">
+        pointcut: {
+            +: "/example/**/*@**.dao.*Dao"
+        }
     </joinpoint>
     <advice bean="sqlMapClientTxAdvice">
         <before>

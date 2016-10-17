@@ -26,7 +26,7 @@ download:
     </constructor>
 </bean>
 
-<bean id="*" class="com.aspectran.example.mybatis.dao.*Dao" mask="com.aspectran.**.*" scope="singleton">
+<bean id="*" class="com.aspectran.example.mybatis.dao.*Dao" mask="com.aspectran.**.*">
     <property>
         <item name="revelentAspectId" value="mybatisTxAspect"/>
     </property>
@@ -34,11 +34,9 @@ download:
 
 <aspect id="mybatisTxAspect">
     <joinpoint scope="translet">
-        <pointcut>
-            target: {
-              +: "/example/**/*@**.dao.*Dao"
-            }
-        </pointcut>
+        pointcut: {
+            +: "/example/**/*@**.dao.*Dao"
+        }
     </joinpoint>
     <advice bean="sqlSessionTxAdvice">
         <before>
