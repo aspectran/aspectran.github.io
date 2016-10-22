@@ -21,7 +21,7 @@ Aspectran을 이용해서 Java 웹 어플리케이션을 개발하기 위해서�
 
 {% include link-box href="https://github.com/aspectran-guides/quick-start.git" %}
 
-Maven 프로젝트가 아닌 경우 [다운로드](/download/) 페이지에서 jar 라이브러리의 복사본을 받아서 구성하시기 바랍니다.
+Maven 프로젝트가 아닌 경우 [다운로드](/getting-started/download/) 페이지에서 jar 라이브러리의 복사본을 받아서 구성하시기 바랍니다.
 
 
 ## 2. Aspectran 서비스 구동환경 설정
@@ -284,13 +284,13 @@ Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하�
     <setting name="transletNamePattern" value="/ga-quick-start/*"/>
   </settings>
 
-  <bean id="simplestAction" class="hello.SimplestAction" scope="singleton">
+  <bean id="simplestAction" class="hello.SimplestAction">
     <description>
       Action Method를 가지고 있는 singleton 스코프에 해당하는 Bean을 정의합니다.
     </description>
   </bean>
 
-  <bean id="simplestAdvice" class="hello.SimplestAdvice" scope="singleton">
+  <bean id="simplestAdvice" class="hello.SimplestAdvice">
     <description>
       Action Method 실행 전 후에 주입할 Advice Action Method를 가지고 있는
       singleton 스코프에 해당하는 Bean을 정의합니다.
@@ -405,7 +405,7 @@ public class SimplestAdvice {
 * http://localhost:8080/ga-quick-start/helloWorld
 
 다음과 같은 결과 화면이 출력됩니다.  
-![실행 결과 화면]({{ site.baseurl}}/images/quickstart/quickstart-result1.png)
+![실행 결과 화면]({{ site.baseurl }}/images/quickstart/quickstart-result1.png)
 
 ***전체 실행 과정을 요약하면 다음 순서와 같습니다.***
 
