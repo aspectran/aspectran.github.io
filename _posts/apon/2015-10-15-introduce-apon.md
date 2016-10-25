@@ -33,8 +33,9 @@ APON은 다음과 같은 특징을 가지고 있습니다.
 
 ## APON의 데이터 표기 규칙
 
-* 매개변수의 이름과 값에 해당하는 Name/Value 쌍을 `Parameter`라고 합니다. Name 뒤에 콜론(`:`) 문자를 붙여서 Name/Value를 구분합니다.
-* `Parameter`가 여러 개 모아 놓은 것을 `Parameters`라고 합니다.
+* 매개변수의 이름과 값에 해당하는 Name/Value 쌍을 `Parameter`라고 합니다.
+  Name 뒤에 콜론(`:`) 문자를 붙여서 Name과 Value를 구분합니다.
+* `Parameter`를 여러 개 모아 놓은 것을 `Parameters`라고 합니다.
 * `Parameter`는 Name을 부여받고, Value를 가질 수 있습니다.
   Value의 Type에는 `string`, `text`, `int`, `long`, `float`, `double`, `boolean`, `variable`, `parameters`가 있습니다.
   Value는 `null` 값도 가질 수 있습니다.
@@ -49,13 +50,13 @@ APON은 다음과 같은 특징을 가지고 있습니다.
   큰따옴표로 감싸지 않으면 문자열의 앞뒤에 있는 공백문자는 모두 제거됩니다.
   큰따옴표로 감쌀 경우 큰 따옴표 또는 개행문자를 표현하기 위해 Escape 문자(`\`)를 사용할 수 있습니다.
 * `Parameter`의 Value Type이 `text`이면 `( )`(Round Bracket)으로 감싸야 하고, 각 라인의 선두에 파이프 문자(`|`)를 붙여야 합니다.
-  라인 수 만큼 파이프 문자(`|`) 사용하게 되며, 특수 문자를 표현하기 위한 Escape 문자를 전혀 사용하지 않습니다.
+  라인 수 만큼 파이프 문자(`|`)를 사용하게 되며, 특수 문자를 표현하기 위한 Escape 문자를 전혀 사용하지 않습니다.
 * Curly Bracket, Square Bracket, Round Bracket은 모두 Bracket이 시작된 후에 반드시 개행을 해야 하고, Brakcket이 끝난 뒤에도 반드시 개행을 해야 합니다.
 
 
 ## APON의 Value Type
 
-APON은 매개변수가 가질 수 있는 값의 Type을 다음과 같이 정의합니다.
+APON의 매개변수(Parameter)는 다음과 같은 Value Type을 가질 수 있습니다.
 
 Value Type  | Java Object Type                        | 사용할 수 있는 값
 ------------------------------------------------------|-----------------------------------------
