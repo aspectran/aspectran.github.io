@@ -13,9 +13,9 @@ download:
 
 {% highlight xml %}
 <bean id="sqlMapClientFactory" class="com.aspectran.support.orm.ibatis.SqlMapClientFactoryBean">
-    <property>
+    <properties>
         <item name="configLocation" value="/WEB-INF/sqlmap/sql-map-config.xml"/>
-    </property>
+    </properties>
 </bean>
 
 <bean id="sqlMapClientTxAdvice" class="com.aspectran.support.orm.ibatis.SqlMapClientTransactionAdvice" scope="prototype">
@@ -27,15 +27,15 @@ download:
 </bean>
 
 <bean id="*" class="com.aspectran.example.ibatis.dao.*Dao" mask="com.aspectran.**.*">
-    <property>
-        <item name="revelentAspectId" value="sqlmapTxAspect"/>
-    </property>
+    <properties>
+        <item name="relevantAspectId" value="sqlmapTxAspect"/>
+    </properties>
 </bean>
 
 <aspect id="sqlmapTxAspect">
     <joinpoint target="translet">
         pointcut: {
-            +: "/example/**/*@**.dao.*Dao"
+            +: /example/**/*@**.dao.*Dao
         }
     </joinpoint>
     <advice bean="sqlMapClientTxAdvice">

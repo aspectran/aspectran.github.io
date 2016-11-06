@@ -13,9 +13,9 @@ download:
 
 {% highlight xml %}
 <bean id="sqlSessionFactory" class="com.aspectran.support.orm.mybatis.SqlSessionFactoryBean">
-    <property>
+    <properties>
         <item name="configLocation" value="/WEB-INF/mybatis/mybatis-configuration.xml"/>
-    </property>
+    </properties>
 </bean>
 
 <bean id="sqlSessionTxAdvice" class="com.aspectran.support.orm.ibatis.SqlSessionTransactionAdvice" scope="prototype">
@@ -27,15 +27,15 @@ download:
 </bean>
 
 <bean id="*" class="com.aspectran.example.mybatis.dao.*Dao" mask="com.aspectran.**.*">
-    <property>
-        <item name="revelentAspectId" value="mybatisTxAspect"/>
-    </property>
+    <properties>
+        <item name="relevantAspectId" value="mybatisTxAspect"/>
+    </properties>
 </bean>
 
 <aspect id="mybatisTxAspect">
     <joinpoint scope="translet">
         pointcut: {
-            +: "/example/**/*@**.dao.*Dao"
+            +: /example/**/*@**.dao.*Dao
         }
     </joinpoint>
     <advice bean="sqlSessionTxAdvice">
