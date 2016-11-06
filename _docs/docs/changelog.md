@@ -14,6 +14,10 @@ comments: true
   {% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
 </div>
 
+2016.11.7. // Version 3.1.0
+: Notable Changes
+: * Improved AOP offering
+
 2016.9.26. // Version 3.0.0
 : New Features
 : * Aspectran을 다른 응용 프로그램의 내부에서 실행할 수 있는 기능을 지원하는 임베디드 패키지 추가

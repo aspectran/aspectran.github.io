@@ -23,7 +23,7 @@ Aspectran 사용자를 위한 유저 가이드 문서를 제공합니다.
 
 ## [API Reference](/docs/api/)
 Aspectran API 문서를 제공합니다.
-{% include label-link-box label="Aspectran API 3.0.0" href="http://api.aspectran.com/3.0.0/" %}
+{% include label-link-box label="Aspectran API 3.1.0" href="http://api.aspectran.com/3.1.0/" %}
 
 ## [FAQ](/docs/faq/)
 Aspectran과 관련해 자주 묻는 질문을 모았습니다.  
