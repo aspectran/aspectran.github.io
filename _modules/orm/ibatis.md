@@ -33,7 +33,13 @@ download:
 </bean>
 
 <aspect id="sqlmapTxAspect">
-    <joinpoint target="translet">
+    <description>
+        본 Aspect는 sqlMapClient의 Transaction을 시작하고 종료하는 메소드를 자동으로 호출합니다.
+        DAO 메소드가 호출되기 전에 자동으로 startTransaction() 메소드를 호출하고,
+        Translet 실행 중에 예외가 발생하지 않았다면 commitTransaction() 메소드를 호출합니다.
+        마지막으로 자원을 해제하기 위해 endTransaction() 메소드를 호출합니다.
+    </description>
+    <joinpoint type="translet">
         pointcut: {
             +: /example/**/*@**.dao.*Dao
         }
