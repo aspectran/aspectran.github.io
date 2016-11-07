@@ -3,7 +3,7 @@ layout: module
 format: article
 title:  MyBatis support for Aspectran
 subheadline: Aspectran Modules - ORM
-teaser: MyBatis와 연동하기 위한 모듈입니다. Aspectran의 AOP 기능을 통하여 MyBatis 트랜잭션(transaction)을 완벽히 처리할 수 있습니다.
+teaser: MyBatis와 연동하기 위한 모듈입니다. Aspectran의 AOP 기능을 활용하면 MyBatis 트랜잭션(transaction)을 완벽히 처리할 수 있습니다.
 category: ORM
 download:
   source: https://github.com/aspectran/aspectran-modules/tree/master/aspectran-orm/src/main/java/com/aspectran/support/orm/mybatis
@@ -33,7 +33,13 @@ download:
 </bean>
 
 <aspect id="mybatisTxAspect">
-    <joinpoint scope="translet">
+    <description>
+        본 Aspect는 SqlSession을 열고 닫는 메소드를 자동으로 호출합니다.
+        DAO 메소드가 호출되기 전에 자동으로 open() 메소드를 호출하여 SqlSession을 열고,
+        Translet 실행 중에 예외가 발생하지 않았다면 commit() 메소드를 호출합니다.
+        마직막으로 자원을 해제하기 위해 close() 메소드를 호출합니다.
+    </description>
+    <joinpoint type="translet">
         pointcut: {
             +: /example/**/*@**.dao.*Dao
         }
