@@ -37,7 +37,7 @@ download:
         본 Aspect는 SqlSession을 열고 닫는 메소드를 자동으로 호출합니다.
         DAO 메소드가 호출되기 전에 자동으로 open() 메소드를 호출하여 SqlSession을 열고,
         Translet 실행 중에 예외가 발생하지 않았다면 commit() 메소드를 호출합니다.
-        마직막으로 자원을 해제하기 위해 close() 메소드를 호출합니다.
+        마지막으로 자원을 해제하기 위해 close() 메소드를 호출합니다.
     </description>
     <joinpoint type="translet">
         pointcut: {
