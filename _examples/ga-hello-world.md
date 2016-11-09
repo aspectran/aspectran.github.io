@@ -9,7 +9,7 @@ breadcrumb: true
 image:
   thumb: examples/ga-hello-world.png
 download:
-- label: ga-hello-world
+- label: Repository
   url: https://github.com/aspectran-guides/ga-hello-world
 - label: "Download ZIP"
   url: https://github.com/aspectran-guides/ga-hello-world/archive/master.zip
