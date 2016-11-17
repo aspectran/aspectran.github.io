@@ -3,7 +3,7 @@ layout: page
 format: article
 title: "About Aspectran"
 subheadline: "What is Aspectran?"
-teaser: "Aspectran is a lightweight Java framework for building Enterprise-ready Web applications. Also, It will be able to launch as a Console-based and Embedded application."
+teaser: "Next Generation Java Application Framework"
 header:
   image_fullwidth: "header_aspectran.png"
   slogan_hidden: true
@@ -11,52 +11,48 @@ article_heading: false
 comments: true
 permalink: "/info/"
 ---
-Aspectran은 엔터프라이즈급 자바 어플리케이션을 구축하기 위한 경량 프레임워크입니다.
-웹 환경, 콘솔 기반 또는 내장 어플리케이션 등의 다른 실행 환경에서 동일한 환경 설정 구성으로 동일한 서비스를 제공할 수 있는 것이 특징입니다.
-Aspectran은 엔터프라이즈 환경에서 요구하는 대부분의 기능을 지원하며, 더 나아가 자바 어플리케이션 프레임워크의 새로운 표준을 제시하기 위한 차세대 프레임워크입니다.
+Aspectran is a lightweight Java framework for building enterprise-ready Web applications and it can also be run as a console-based and embedded applications.
+It has a special feature that can provide the same service by using a same configuration settings on the Web, console-based or other applications.
+Aspectran will support most of the functionality required in an enterprise environment, and will grow into a next-generation Java application framework.
 
-Aspectran은 다음과 같은 핵심 기능을 지원합니다.
+The main features of Aspectran are as follows:
 
-* POJO(*Plain Old Java Object*) 방식의 프로그래밍을 지원합니다.  
-  특정 클래스를 상속받아서 기능을 확장하는 방식이 아니고, 실제 필요한 핵심 로직과 기능 구현에만 집중할 수 있습니다.
-  결과 값은 가장 간단한 자바 오브젝트에 담아서 반환하면 됩니다.
-* 제어 반전(*Inversion of Control, IoC*)을 지원합니다.  
-  프레임워크가 전체적인 흐름을 제어하면서 개발자가 작성한 모듈의 기능을 호출하는 방식입니다.
-  객체에 대한 생성 및 생명주기를 관리할 수 있는 기능을 제공하며, 개발자는 비즈니스 로직에 집중하여 개발할 수 있게 됩니다.
-* 의존성 주입(*Dependency Injection, DI*)을 지원합니다.  
-  프레임워크가 실행시에 서로 의존하는 모듈을 연결합니다.
-  모듈 간의 낮은 결합도를 유지할 수 있고, 코드 재사용성을 높일 수 있습니다.
-* 관점 지향 프로그래밍(*Aspect-Oriented Programming, AOP*)을 지원합니다.  
-  핵심 기능과 부가적인 기능을 분리해서 코드를 작성할 수 있습니다.
-  핵심 기능이 구현된 이후에 트랜잭션이나 로깅, 보안, 예외처리와 관련된 기능을 핵심 기능과 결합할 수 있습니다.
-* RESTful 웹서비스 구축 환경을 지원합니다.
+* Supports POJO (*Plain Old Java Object*) programming model.  
+  You can concentrate on implementing the actual functionality you need, rather than extending the functionality by inheriting specific classes.
+  The resulting value can be returned to the most simple Java object.
+* Supports Inversion of Control (*IoC*).  
+  The framework controls the overall flow and invokes the functionality of the module created by the developer.
+  Provides the ability to manage the creation and lifecycle of objects, allowing developers to focus on business logic.
+* Supports Dependency Injection (*DI*).  
+  The framework links modules that depend on each other at runtime.
+  It can maintain low coupling between modules and increase code reusability.
+* Supports Aspect-Oriented Programming (*AOP*).  
+  You can write code by separating core functions and additional functions.
+  Once the core functionality implementation is complete, features such as transactions, logging, security, and exception handling can be combined with core functionality.
+* Supports building RESTful Web Services.
 
-Aspectran 3는 핵심 기능이 포함된 `core` 패키지를 기반으로 각각 다른 실행 환경을 지원하는 다음과 같은 패키지를 포함하고 있습니다.
+Aspectran 3 includes the following packages that support different execution environments, based on the `core` package containing core functionality.
 
-* `console` 패키지:  Console 기반 응용 프로그램 구축을 지원하는 기능이 포함된 패키지
-* `embedded` 패키지 :  Aspectran을 다른 응용 프로그램의 내부에서 실행할 수 있는 기능이 포함된 패키지
-* `web` 패키지:  웹 어플리케이션 구축을 지원하는 기능이 포함된 패키지
-
-동일한 설정 구성으로 실행 환경이 다른 3개의 어플리케이션을 구축할 수 있습니다.
-즉, 동일한 기능을 제공하는 다른 실행 환경에서 구동되는 어플리케이션을 손 쉽게 제작할 수 있습니다.
-다양한 방식으로 서비스를 제공해야 하는 엔터프라이즈 환경에서 꼭 필요한 기능입니다.
+* `com.aspectran.console` package: Contains classes to support building Console-based applications.
+* `com.aspectran.embedded` package: Contains classes to support embedding Aspectran in other applications.
+* `com.aspectran.web` package: Contains classes to support building Web applications.
 
 ## 주요 패키지 구조
 
 ```
 com.aspectran
 ├── core          핵심 기능 패키지
-│   ├── activity    요청, 처리, 응답을 처리하는 핵심 기능 패키지
+│   ├── activity    요청과 응답을 처리하는 핵심 기능 패키지
 │   ├── adapter     핵심 기능과 구현 기능간의 인터페이스를 위한 패키지
 │   ├── context     공통 모듈 및 구동 환경을 구성하기 위한 패키지
 │   ├── service     서비스를 제공하기 위한 핵심 기능 패키지
 │   └── util        공통 유틸리티 패키지
 ├── console       Console 기반 어플리케이션 실행 환경을 위한 패키지
-│   ├── activity    Console 기반 어플리케이션이 받은 요청의 처리와 응답을 수행하기 위한 패키지
+│   ├── activity    Console 기반 어플리케이션이 받은 요청과 응답을 처리하기 위한 패키지
 │   ├── adapter     Console 기반 어플리케이션 실행 환경과 핵심 기능 간의 인터페이스를 위한 패키지
 │   └── service     Console 기반 어플리케이션 실행 환경에 적합한 서비스를 제공하기 위한 패키지
 ├── embedded      임베디드 어플리케이션 실행 환경을 위한 패키지
-│   ├── activity    임베디드 어플리케이션이 받은 요청의 처리와 응답을 수행하기 위한 패키지
+│   ├── activity    임베디드 어플리케이션이 받은 요청과 응답을 처리하기 위한 패키지
 │   ├── adapter     임베디드 어플리케이션 실행 환경과 핵심 기능 간의 인터페이스를 위한 패키지
 │   └── service     임베디드 어플리케이션 실행 환경에 적합한 서비스를 제공하기 위한 패키지
 ├── scheduler     핵심 기능을 이용해서 내장 스케쥴링 서비스를 구현한 패키지
@@ -65,16 +61,9 @@ com.aspectran
 │   ├── service     내장 스케쥴링 서비스를 구동하기 위한 패키지
 │   └── support     내장 스케쥴링 서비스 설정을 지원하는 패키지
 └── web           웹 어플리케이션 실행 환경을 위한 패키지
-    ├── activity    웹 어플리케이션이 받은 요청의 처리와 응답을 수행하기 위한 패키지
+    ├── activity    웹 어플리케이션이 받은 요청과 응답을 처리하기 위한 패키지
     ├── adapter     웹 어플리케이션 실행 환경과 핵심 기능 간의 인터페이스를 위한 패키지
     ├── service     웹 어플리케이션 실행 환경에 적합한 서비스를 제공하기 위한 패키지
     ├── startup     웹 어플리케이션 실행 환경에서 서비스를 구동하기 위한 패키지
     └── support     웹 어플리케이션에 필요한 확장 기능을 지원하기 위한 패키지
 ```
-
-8년 전 Aspectran이라는 프레임워크를 만들어야겠다는 생각을 했을 때 그 때의 설레임은 아직도 가슴 한 켠에 남아 있습니다.  
-작고 빠른 프레임워크를 만들기 위해 잘 알려진 범용 라이브러리에 의존하기 보다는 최적화된 기능을 직접 구현하는데 중점을 두었습니다.  
-
-2015년 가을 어느 날 드디어 정식 버전을 출시하였습니다.  
-여러분과 함께 만들어 가는 Aspectran이 되었으면 좋겠습니다.  
-감사합니다.  

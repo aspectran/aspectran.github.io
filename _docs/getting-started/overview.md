@@ -27,7 +27,7 @@ Provides Aspectran API documentation.
 
 ## [FAQ](/docs/faq/)
 We provide frequently asked questions and answers in advance.  
-If you can not find the answer, or have other other questions, please write to the [Contact](/contact/) page or [Aspectran Issues](https://github.com/aspectran/aspectran/issues).
+If you can not find the answer, or have other questions, please write to the [Contact](/contact/) page or [Aspectran Issues](https://github.com/aspectran/aspectran/issues).
 {% include label-link-box label="Aspectran Issues" href="https://github.com/aspectran/aspectran/issues" %}
 
 ## [Changelog](/docs/changelog/)
