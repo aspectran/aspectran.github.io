@@ -2,7 +2,7 @@
   <div class="panel radius">
     <h4 class="fi-social-github"> Aspectran Modules</h4>
     <p>
-      다양한 외부 라이브러리 연동에 필요한 자바 소스 패키지와 설정 메타데이터를 모듈 형태로 제공합니다.
+      Provides java source packages and configuration metadata that can integrate the various external libraries.
     </p>
     {% include link-box href="https://github.com/aspectran/aspectran-modules" %}
     <p>

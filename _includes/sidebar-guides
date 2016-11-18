@@ -2,8 +2,8 @@
   <div class="panel radius">
     <h4 class="fi-social-github"> Aspectran Guides</h4>
     <p>
-      Aspectran을 이용해서 만든 예제 응용 프로그램을 제공합니다.
-      간단한 응용 프로그램의 소스코드를 통하여 Aspectran의 기본 기능을 습득할 수 있습니다.
+      Provides a sample application created using Aspectran.
+      You can learn basic usage of Aspectran through the source code of simple application.
     </p>
     {% include link-box href="https://github.com/aspectran-guides" %}
     <p>

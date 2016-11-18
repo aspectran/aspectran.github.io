@@ -1,7 +1,7 @@
 <aside class="lazy-sticky">
   <div class="panel radius white">
     <h4 class="fi-social-github"> Aspectran project on GitHub</h3>
-    <p>You can look at the development status of Aspectran on GitHub and participate in it.</p>
+    <p>You can watch or participate in Aspectran development on GitHub.</p>
     {% include link-box href="https://github.com/aspectran/aspectran" %}
 
     <h4 class="fi-social-github"> Aspectran Modules</h4>
@@ -9,7 +9,10 @@
     {% include link-box href="https://github.com/aspectran/aspectran-modules" %}
 
     <h4 class="fi-social-github"> Aspectran Guides</h4>
-    <p>Explains the example application we use to introduce Aspectran in detail.</p>
+    <p>
+      Provides sample applications developed using Aspectran.
+      You can learn basic usage of Aspectran through the source code of simple application.
+    </p>
     {% include link-box href="https://github.com/aspectran-guides" %}
 
     <p>Aspectran is open source. It's hosted, developed, and maintained on GitHub.</p>
