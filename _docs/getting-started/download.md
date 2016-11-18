@@ -3,7 +3,7 @@ layout: page
 format: "plate solid article"
 title: "Download"
 subheadline: "Aspectran Releases"
-teaser: "Aspectran is a free and open source Java Framework. It’s hosted, developed, and maintained on GitHub."
+teaser: "Aspectran is a free and open source Java application framework. It’s hosted, developed, and maintained on GitHub."
 ---
 
 ## Latest release: 3.1.0
@@ -11,9 +11,9 @@ teaser: "Aspectran is a free and open source Java Framework. It’s hosted, deve
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/aspectran/aspectran/badge.svg?branch=master&service=github)](https://coveralls.io/github/aspectran/aspectran?branch=master)
 
-Aspectran is a free and open source Java Framework. It's hosted, developed, and maintained on GitHub.
+Aspectran is a free and open source Java application framework. It's hosted, developed, and maintained on GitHub.
 
-{% include label-link-box label="Aspectran projects on GitHub" href="https://github.com/aspectran/aspectran" %}
+{% include label-link-box label="Aspectran project on GitHub" href="https://github.com/aspectran/aspectran" %}
 
 ## Maven
 
