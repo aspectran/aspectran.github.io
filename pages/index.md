@@ -20,7 +20,6 @@ widget2:
   url: '/getting-started/'
   image: header_gettingstarted_thumb.jpg
   text: |
-    Overview<br/>
     Quick Start Guide<br/>
     Download
 widget3:

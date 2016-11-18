@@ -2,8 +2,6 @@
   url: "/getting-started/"
   side: left
   dropdown:
-  - title: "Overview"
-    url: "/getting-started/overview/"
   - title: "Quick Start Guide"
     url: "/getting-started/quickstart/"
   - title: "Download"

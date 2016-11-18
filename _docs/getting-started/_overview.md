@@ -2,12 +2,11 @@
 layout: page
 format: "plate article"
 sidebar: toc
-title: "Getting Started"
+title: "Overview"
 subheadline: "Getting Started with Aspectran"
 teaser: "Provides comprehensive information about Aspectran."
-header:
-  image_fullwidth: "header_gettingstarted.jpg"
-  caption: "My cute second daughter"
+article_heading: true
+breadcrumb: true
 ---
 
 ## [About Aspectran](/info/)
