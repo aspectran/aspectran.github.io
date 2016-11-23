@@ -8,7 +8,6 @@
 	      {% if page.image.title %}
 	      <figure>
 	        <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
-
 	        {% if page.image.caption_url and page.image.caption %}
 	        <figcaption class="text-right">
 	          <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
@@ -21,10 +20,8 @@
 	      </figure>
 	      {% endif %}
 
-	      <span>
-	        {% if page.subheadline %}<p class="subheadline" itemprop="alternativeHeadline">{{ page.subheadline }}</p>{% endif %}
-	        <h1 itemprop="headline">{{ page.title }}</h1>
-	      </span>
+        {% if page.subheadline %}<p class="subheadline" itemprop="alternativeHeadline">{{ page.subheadline }}</p>{% endif %}
+        <h1 itemprop="headline">{{ page.title }}</h1>
 
 				{% if page.teaser %}
 		    <p class="teaser" itemprop="description">
@@ -60,7 +57,6 @@
 	      {% if page.image.title %}
 	      <figure>
 	        <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
-
 	        {% if page.image.caption_url and page.image.caption %}
 	        <figcaption class="text-right">
 	          <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
@@ -73,10 +69,8 @@
 	      </figure>
 	      {% endif %}
 
-	      <span itemprop="name">
-	        {% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
-	        <h1>{{ page.title }}</h1>
-	      </span>
+        {% if page.subheadline %}<p class="subheadline" itemprop="alternativeHeadline">{{ page.subheadline }}</p>{% endif %}
+        <h1 itemprop="headline">{{ page.title }}</h1>
 
 				{% if page.teaser %}
 		    <p class="teaser" itemprop="description">
@@ -133,7 +127,7 @@
 <div id="masthead" class="masthead-with-text" style="{% if page.header.background-color %}background:linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,0)), {{ page.header.background-color }};{% endif %}{% if page.header.image_fullwidth %}{% elsif page.header.pattern %}background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('{{ site.urlimg }}/{{ page.header.pattern }}'){% endif %}">
 	<div class="row">
 		<div class="small-12 columns">
-			<div class="masthead-title">{{ page.header.title }}</div>
+			<div class="masthead-title" itemprop="headline">{{ page.header.title }}</div>
 		</div><!-- /.small-12.columns -->
 	</div><!-- /.row -->
 </div><!-- /#masthead -->
@@ -170,7 +164,6 @@
 	      {% if page.image.title %}
 	      <figure>
 	        <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
-
 	        {% if page.image.caption_url and page.image.caption %}
 	        <figcaption class="text-right">
 	          <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
@@ -183,10 +176,8 @@
 	      </figure>
 	      {% endif %}
 
-	      <span itemprop="name">
-	        {% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
-	        <h1>{{ page.title }}</h1>
-	      </span>
+        {% if page.subheadline %}<p class="subheadline" itemprop="alternativeHeadline">{{ page.subheadline }}</p>{% endif %}
+        <h1 itemprop="headline">{{ page.title }}</h1>
 
 				{% if page.teaser %}
 		    <p class="teaser" itemprop="description">
