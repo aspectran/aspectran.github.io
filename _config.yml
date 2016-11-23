@@ -249,7 +249,7 @@ google_analytics_tracking_id: UA-66807210-2
 # used in _includes/google-translate
 #-------------------------------------------------------------------
 
-google_translate_website: true
+google_translate_website: false
 
 
 
