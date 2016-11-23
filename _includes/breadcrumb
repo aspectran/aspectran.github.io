@@ -5,7 +5,7 @@
 {% endcomment %}
 
 <nav role="navigation" aria-label="You are here:">
-  <ul class="breadcrumbs">
+  <ul class="breadcrumbs" itemprop="breadcrumb">
     <li><a href="{{ site.baseurl }}/">{{ site.data.language.breadcrumb_start }}</a></li>
     {% assign crumbs = page.url | split: '/' %}
     {% for crumb in crumbs offset: 1 %}
