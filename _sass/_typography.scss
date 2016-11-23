@@ -103,6 +103,11 @@ p.subheadline {
 p.teaser {
   font-size: rem-calc(18);
 }
+article {
+  header {
+    padding-bottom: 1em;
+  }
+}
 
 // Images
 //--------

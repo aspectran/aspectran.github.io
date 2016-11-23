@@ -1,6 +1,10 @@
 ---
 layout: default
 ---
+<selection itemscope itemtype="http://schema.org/Article">
+
+{% include masthead %}
+
 {% if page.format contains "plate" %}
 <div class="row">
 	<div class="columns">
@@ -17,7 +21,7 @@ layout: default
 	{% endif %}
 
 	<div class="t30 columns {% if page.sidebar == "toc" %}large-9 large-pull-3{% elsif page.sidebar == "left" %}large-8 large-push-4{% elsif page.sidebar == "right" %}large-8{% else %}large-10 large-offset-1{% endif %}">
-		<article itemscope itemtype="http://schema.org/Article">
+		<article>
 
       {% if page.article_heading != NULL and page.article_heading != true %}
 
@@ -41,13 +45,12 @@ layout: default
 				<p class="subheadline" itemprop="alternativeHeadline">{{ page.subheadline }}</p>
 				{% endif %}
 				<h1 itemprop="headline">{{ page.title }}</h1>
+				{% if page.teaser %}
+				<p class="teaser" itemprop="description">
+					{{ page.teaser }}
+				</p>
+				{% endif %}
 			</header>
-
-			{% if page.teaser %}
-			<p class="teaser" itemprop="description">
-				{{ page.teaser }}
-			</p>
-			{% endif %}
 
       {% endif %}
 
@@ -89,3 +92,5 @@ layout: default
 	</div>
 </div>
 {% endif %}
+
+</section>

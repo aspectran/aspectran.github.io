@@ -1,6 +1,10 @@
 ---
 layout: default
 ---
+<selection itemscope itemtype="http://schema.org/Article">
+
+{% include masthead %}
+
 {% if page.image.title %}
 <div class="row t30">
 	<div class="small-12 columns">
@@ -16,7 +20,7 @@ layout: default
 
 <div class="row t30">
 	<div class="medium-12 columns">
-		<article itemscope itemtype="http://schema.org/Article">
+		<article>
 
 			{% if page.article_heading != true %}
 
@@ -51,3 +55,5 @@ layout: default
 
 	</div><!-- /.medium-12.columns -->
 </div><!-- /.row -->
+
+</section>

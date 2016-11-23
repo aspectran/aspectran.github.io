@@ -1,6 +1,6 @@
 ---
 layout: page
-layout: plate
+format: plate
 title: "Search"
 header:
   image_fullwidth: "header_search.jpg"

@@ -12,10 +12,6 @@ layout: compress
 	{% include navigation %}
 	{% endunless %}
 
-	{% if page.permalink != "/index.html" %}
-	{% include masthead %}
-	{% endif %}
-
 	{{ content }}
 
 	{% unless page.skip_boilerplate %}
