@@ -5,7 +5,7 @@ sidebar: toc
 title: "Overview"
 subheadline: "Getting Started with Aspectran"
 teaser: "Aspectran에 대한 포괄적인 정보를 제공합니다."
-article_heading: true
+outside_heading: true
 breadcrumb: true
 ---
 

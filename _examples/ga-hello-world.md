@@ -4,7 +4,7 @@ format: article
 title: Aspectran - Hello World Example
 subheadline: Running the "Hello World" application
 teaser: Aspectran으로 만드는 가장 간단한 Hello World 어플리케이션에 대해 소개합니다.
-article_heading: true
+outside_heading: true
 breadcrumb: true
 image:
   thumb: examples/ga-hello-world.png

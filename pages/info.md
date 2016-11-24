@@ -7,7 +7,7 @@ teaser: "Next Generation Java Application Framework"
 header:
   image_fullwidth: "header_aspectran.png"
   slogan_hidden: true
-article_heading: false
+inside_heading: true
 comments: true
 permalink: "/info/"
 ---

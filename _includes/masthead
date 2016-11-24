@@ -47,7 +47,7 @@
 {% elsif page.header == NULL and page.header.image_fullwidth == NULL and page.header.slide_images == NULL and page.header.pattern == NULL and page.header.background-color == NULL and page.header.title == NULL %}
 
 
-{% if page.article_heading == true %}
+{% if page.outside_heading == true %}
 
 {% include forkme-ribbon %}
 <div id="masthead" class="masthead-no-image-header">
@@ -154,7 +154,7 @@
 {% elsif page.header.image_fullwidth or page.header.slide_images %}
 
 
-{% if page.article_heading == true %}
+{% if page.outside_heading == true %}
 
 {% include forkme-ribbon %}
 <div id="masthead" class="masthead-with-image-header">

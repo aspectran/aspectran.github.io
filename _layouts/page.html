@@ -23,7 +23,7 @@ layout: default
 	<div class="t30 columns {% if page.sidebar == "toc" %}large-9 large-pull-3{% elsif page.sidebar == "left" %}large-8 large-push-4{% elsif page.sidebar == "right" %}large-8{% else %}large-10 large-offset-1{% endif %}">
 		<article>
 
-      {% if page.article_heading != NULL and page.article_heading != true %}
+      {% if page.inside_heading == true %}
 
 			<header>
 				{% if page.image.title %}

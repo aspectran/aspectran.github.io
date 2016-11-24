@@ -5,7 +5,7 @@ sidebar: toc
 title: "Overview"
 subheadline: "Getting Started with Aspectran"
 teaser: "Provides comprehensive information about Aspectran."
-article_heading: true
+outside_heading: true
 breadcrumb: true
 ---
 

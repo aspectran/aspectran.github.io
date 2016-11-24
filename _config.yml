@@ -139,7 +139,7 @@ defaults:
     values:
       show_meta: false   # Show metadata for all posts
       # sidebar:        # Possible values › left, right › by default there will be no sidebar
-      article_heading: true
+      outside_heading: true
       breadcrumb: true
       comments: false
       author: "juho_jeong"     # Default author for posts
@@ -148,7 +148,7 @@ defaults:
       path: ""
       type: "modules"
     values:
-      article_heading: true
+      outside_heading: true
       breadcrumb: true
       comments: true
       author: "juho_jeong"     # Default author for posts
@@ -157,7 +157,7 @@ defaults:
       path: ""
       type: "examples"
     values:
-      article_heading: true
+      outside_heading: true
       breadcrumb: true
       comments: true
       author: "juho_jeong"     # Default author for posts
