@@ -1,28 +1,28 @@
 ---
 layout: page
-format: "plate solid"
-title: "Changelog"
-meta_title: "Aspectran Changelog"
-subheadline: "Aspectran Changelog"
-teaser: "History and changelog of Aspectran"
+format: plate solid
+title: Changelog
+meta_title: Aspectran Changelog
+subheadline: Aspectran Changelog
+teaser: History and changelog of Aspectran
 comments: true
 ---
 
 <div class="callout info radius b30">
-  <p>Aspectran의 주요 변경 이력에 대한 정보를 제공합니다.<br/>
-  소스 코드에 대한 상세한 변경이력은 GitHub에서 볼 수 있습니다.</p>
+  <p>Provides information on Aspectran's major change history.<br/>
+  Detailed history of source code changes can be viewed on GitHub.</p>
   {% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
 </div>
 
 2016.11.7. // Version 3.1.0
 : Notable Changes
-: * Improved AOP offering
+: * Improved AOP features
 
 2016.9.26. // Version 3.0.0
 : New Features
-: * Aspectran을 다른 응용 프로그램의 내부에서 실행할 수 있는 기능을 지원하는 임베디드 패키지 추가
+: * Added support for the ability to run Aspectran inside other applications.
 : Notable Changes
-: * 내부적으로 대폭적인 안정성 향상 및 세부 기능의 완성도 향상
+: * Significantly improved reliability internally
 
 2016.8.23. // Version 2.4.1
 : * Optimized the Aspectran service control function.
@@ -38,7 +38,7 @@ comments: true
     - X-HTTP-Method-Override (Google/GData)
     - X-METHOD-OVERRIDE (IBM)
 
-: Changed the element names in XML for configuration files.
+: Changed element names in XML for configuration files.
 : * property ==&gt; properties
   * parameter ==&gt; parameters
   * attribute ==&gt; attributes
@@ -51,7 +51,7 @@ comments: true
 : * Improved REST support.
   * Renamed some classes.
   * Many bugfixes and optimizations.
-  * Clean up source code and update comments in java code.
+  * Source code cleanup and comments updated.
 
 2016.7.3. // Version 2.2.1
 : * Bug Fixes and Minor Improvements
@@ -76,20 +76,20 @@ comments: true
 : * Added support for Annotation-based metadata configuration.
   * Added support for Template engines. (FreeMarker, Pebble)
   * Added support for Internationalization.
-  * Added support for Run service as a console application.
+  * Added support for the ability to run Aspectran as a standalone application in the console.
 
 2015.12.29. // Version 1.5.0
 : * Added support for Session Joinpoint-scope.  
     Advice Action can be executed at the session start and end.
   * Recognizes the APON Object when converting ProcessResult object to JSON or XML string.
-  * Updated travis settings
+  * Updated travis settings.
   * Deleted unnecessary files.
   * Removed “Project Specific Settings” files.
-  * Clean up source code and update comments in java code.
+  * Source code cleanup and comments updated.
   * Many bugfixes and optimizations.
 
 2015.11.1. // Version 1.4.0
-: * Change package structure for integrating external library.
+: * Changed package structure for integrating external library.
   * Improved the AspectranClassLoader stability.
 
 2015.10.14. // Version 1.3.1
