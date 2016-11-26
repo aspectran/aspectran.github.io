@@ -237,8 +237,11 @@ dl.tabs {
   &.success a {
     background-color: #E2F2FC;
   }
-  &.warning a {
-    background-color: #FCE9E6;
+  &.warning {
+    color: #F02B2B;
+    a {
+      background-color: #FCE9E6;
+    }
   }
   &.terminal {
     background-color: $grey-12;
