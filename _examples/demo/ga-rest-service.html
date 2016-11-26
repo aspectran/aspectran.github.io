@@ -1,5 +1,5 @@
-<div class="panel alert-box warning radius hide">
-  <p>본 예제 화면은 당분간 정상 작동하지 않을 수 있습니다. 양해 바랍니다.</p>
+<div class="panel alert-box warning radius">
+  <p>본 예제는 당분간 정상 작동하지 않을 수 있습니다. 양해 바랍니다.</p>
 </div>
 
 <div class="row">
@@ -103,6 +103,7 @@ function getCustomerList() {
     url: backend + "/ga-rest-service/customers",
     dataType: "json",
     success: function(data, textStatus, xhr) {
+      $(".panel.alert-box").hide();
       describe("GET", this.url, xhr);
       var list = $("select[name=customerList]");
       list.empty();
@@ -114,7 +115,7 @@ function getCustomerList() {
       clearForm();
     },
     error: function(xhr, status, error) {
-      $(".panel.alert-box").removeClass("hide");
+      $(".panel.alert-box").show();
       //alert("code: " + xhr.status + "\nmessage: " + xhr.responseText + "\nerror: " + error);
     }
   });
