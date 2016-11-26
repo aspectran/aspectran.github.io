@@ -1,4 +1,6 @@
-{% include alert warning='본 예제 화면은 당분간 정상 작동하지 않을 수 있습니다. 양해 바랍니다.' %}
+<div class="panel alert-box warning radius hide">
+  <p>본 예제 화면은 당분간 정상 작동하지 않을 수 있습니다. 양해 바랍니다.</p>
+</div>
 
 <div class="row">
   <div class="t10 large-4 columns" style="position:relative;">
@@ -18,7 +20,7 @@
   </div>
   <div class="t10 large-8 columns" style="position:relative;">
     <h2>Customer Details</h2>
-    <span id="cust-no" class="float-right success badge" style="font-size:2em;position:absolute;top:0;right:0;"></span>
+    <span id="cust-no" class="float-right success badge" style="font-size:2em;position:absolute;top:0;right:0;">0</span>
     <div id="details" class="panel radius" style="min-height:291px;">
       <form>
         <label>
@@ -112,7 +114,8 @@ function getCustomerList() {
       clearForm();
     },
     error: function(xhr, status, error) {
-      alert("code: " + xhr.status + "\nmessage: " + xhr.responseText + "\nerror: " + error);
+      $(".panel.alert-box").removeClass("hide");
+      //alert("code: " + xhr.status + "\nmessage: " + xhr.responseText + "\nerror: " + error);
     }
   });
 }
