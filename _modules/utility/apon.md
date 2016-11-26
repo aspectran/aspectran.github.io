@@ -1,6 +1,6 @@
 ---
 layout: module
-format: article
+format: plate article
 title:  APON
 subheadline: Aspectran Modules - Utility
 teaser: |

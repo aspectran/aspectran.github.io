@@ -1,5 +1,6 @@
 ---
 layout: example
+format: plate article
 title: RESTful 웹서비스 활용 예제
 subheadline: Building a RESTful Web Service
 teaser: GET, PUT, POST, DELETE 등과 같은 HTTP 지원 메소드를 사용해서 RESTful 웹서비스를 이용하는 예제 페이지입니다.

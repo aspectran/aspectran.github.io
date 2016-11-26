@@ -6,8 +6,15 @@ outside_heading: true
 
 {% include masthead %}
 
-<div class="row t30">
-  <div class="medium-12 columns">
+{% if page.format contains "plate" %}
+<div class="row">
+	<div class="columns">
+		<div class="row content">
+			<div class="xlarge-10 xlarge-offset-1 columns">
+{% endif %}
+
+<div class="row">
+  <div class="t30 columns">
     <article>
 
       <dl class="tabs" data-tabs id="module-tabs">
@@ -69,6 +76,13 @@ outside_heading: true
     </article>
   </div>
 </div>
+
+{% if page.format contains "plate" %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endif %}
 
 </section>
 {% include comments-count %}
