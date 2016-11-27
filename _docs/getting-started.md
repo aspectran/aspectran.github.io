@@ -1,6 +1,6 @@
 ---
 layout: page
-format: "plate article"
+format: article
 sidebar: toc
 title: "Getting Started"
 subheadline: "Getting Started with Aspectran"
@@ -25,11 +25,6 @@ Provides user guide documentation for Aspectran users.
 ## [API Reference](/docs/api/)
 Provides Aspectran API documentation.
 {% include label-link-box label="Aspectran API 3.1.0" href="http://api.aspectran.com/3.1.0/" %}
-
-## [FAQ](/docs/faq/)
-We provide frequently asked questions and answers in advance.  
-If you can not find the answer, or have other questions, please write to the [Contact](/contact/) page or [Aspectran Issues](https://github.com/aspectran/aspectran/issues).
-{% include label-link-box label="Aspectran Issues" href="https://github.com/aspectran/aspectran/issues" %}
 
 ## [Changelog](/docs/changelog/)
 Provides information on Aspectran's major change history.  

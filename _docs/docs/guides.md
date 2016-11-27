@@ -1,6 +1,6 @@
 ---
 layout: page
-format: plate
+format: plate article
 sidebar: right
 title: "User Guides"
 subheadline: "How to use Aspectran"

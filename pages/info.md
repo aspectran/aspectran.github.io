@@ -7,9 +7,10 @@ teaser: "Next Generation Java Application Framework"
 header:
   image_fullwidth: "header_aspectran.png"
   slogan_hidden: true
+outside_heading: false
 inside_heading: true
 comments: true
-permalink: "/info/"
+permalink: /info/
 ---
 Aspectran is a lightweight Java framework for building enterprise-ready Web applications and it can also be run as console-based and embedded applications.
 It has a special feature that can provide the same service by using a same configuration settings on the Web, console-based or other applications.

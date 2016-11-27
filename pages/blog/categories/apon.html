@@ -1,0 +1,17 @@
+---
+layout: page
+format: plate
+title: "APON"
+subheadline: "Blog Category"
+header:
+  image_fullwidth: "header_blog.jpg"
+breadcrumb: true
+permalink: "/blog/apon/"
+noindex: true
+---
+
+<ul class="brief-list">
+  {% for post in site.categories.apon reversed %}
+  <li><span class="icon-chevron-right"></span> <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+</ul>

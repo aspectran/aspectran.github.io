@@ -1,5 +1,6 @@
 ---
 layout: page
+format: article
 sidebar: right
 title: "Documentation"
 subheadline: "How to use Aspectran"

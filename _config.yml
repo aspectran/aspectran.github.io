@@ -71,8 +71,8 @@ exclude:
 paginate: 5
 
 # Pagination path › Important for blog page in /blog/ to work
-paginate_path: "/blog/page:num"
-permalink: /blog/:categories/:title/
+paginate_path: "/pages/blog/page:num"
+permalink: "/blog/:categories/:title/"
 
 excerpt_separator: "<!--more-->"
 
@@ -121,6 +121,7 @@ defaults:
     values:
       show_meta: false 	# Hide metadata for all pages
       # sidebar:    		# Possible values › left, right › by default there will be no sidebar
+      outside_heading: true
       comments: false
       author: "juho_jeong"     # Default author for pages
   -

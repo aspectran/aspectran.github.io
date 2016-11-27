@@ -15,8 +15,6 @@
     url: "/docs/guides/"
   - title: "API Reference"
     url: "/docs/api/"
-  - title: "FAQ"
-    url: "/docs/faq/"
   - title: "Changelog"
     url: "/docs/changelog/"
 
@@ -28,13 +26,18 @@
   url: "/examples/"
   side: left
 
+- title: Support
+  url: "/support/"
+  side: left
+  dropdown:
+  - title: "FAQ"
+    url: "/support/faq/"
+  - title: "Contact"
+    url: "/support/contact/"
+
 - title: Blog
   url: "/blog/"
-  side: right
+  side: left
   dropdown:
   - title: "Blog Archive"
     url: "/blog/archive/"
-
-- title: "Contact"
-  url: "/contact/"
-  side: right

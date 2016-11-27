@@ -1,6 +1,6 @@
 ---
 layout: page
-format: "plate article"
+format: plate article
 subheadline: Aspectran Parameter Object Notation
 title:  APON을 소개합니다.
 teaser: |
@@ -12,7 +12,7 @@ comments: true
 categories:
   - apon
 tags:
-  - apon
+  - APON
 sidebar: toc
 published: true
 ---
