@@ -68,3 +68,10 @@ com.aspectran
     ├── startup     웹 어플리케이션 실행 환경에서 서비스를 구동하기 위한 패키지
     └── support     웹 어플리케이션에 필요한 확장 기능을 지원하기 위한 패키지
 ```
+
+## History of Aspectran
+
+The development of Aspectran was started in March 2008, but it was first published on September 1th 2015.  
+The name Aspectan was created in July 2012 and it is a combination of Aspect and Translet.  
+Aspectran is a lightweight framework developed to replace the increasingly conceptually complex Spring Framework.  
+The Spring Framework is still widely used as an alternative to EJB, but soon the next runner will be Aspectran.
