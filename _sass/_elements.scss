@@ -288,16 +288,9 @@ img.lazy {
 // google_translate_website
 //--------------------------
 #google_translate_element {
-  float: left;
-  opacity: .5;
-  border: 2px $ci-1 solid;
-  border-radius: 4px;
-  @include breakpoint(small only) {
-    margin-top: -74px;
-    margin-left: 10px;
-  }
-  @include breakpoint(medium) {
-    margin-top: -50px;
-    margin-left: 15px;
-  }
+  margin-top: 1em;
+  padding: .5em 1em;
+  background-color: $bg-color;
+  border: 1px solid $grey-1;
+  border-radius: $global-radius;
 }

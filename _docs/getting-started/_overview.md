@@ -7,6 +7,7 @@ subheadline: "Getting Started with Aspectran"
 teaser: "Provides comprehensive information about Aspectran."
 outside_heading: true
 breadcrumb: true
+noindex: true
 ---
 
 ## [About Aspectran](/info/)

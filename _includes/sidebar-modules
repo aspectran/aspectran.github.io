@@ -1,5 +1,5 @@
 <aside class="lazy-sticky">
-  <div class="panel radius">
+  <div class="panel radius white">
     <h4 class="fi-social-github"> Aspectran Modules</h4>
     <p>
       Provides java source packages and configuration metadata that can integrate the various external libraries.
@@ -8,5 +8,7 @@
     <p>
       Aspectran is open source. It's hosted, developed, and maintained on GitHub.
     </p>
+
+    <div id="google_translate_element"></div>
   </div>
 </aside>

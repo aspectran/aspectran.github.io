@@ -16,5 +16,7 @@
     {% include link-box href="https://github.com/aspectran-guides" %}
 
     <p>Aspectran is open source. It's hosted, developed, and maintained on GitHub.</p>
+
+    <div id="google_translate_element"></div>
   </div>
 </aside>
