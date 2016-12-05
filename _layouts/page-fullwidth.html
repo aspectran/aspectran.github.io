@@ -1,59 +1,59 @@
 ---
 layout: default
 ---
-<selection itemscope itemtype="http://schema.org/Article">
+<section itemscope itemtype="http://schema.org/Article">
 
 {% include masthead %}
 
 {% if page.image.title %}
 <div class="row t30">
-	<div class="small-12 columns">
-		<img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}">
-		{% if page.image.caption_url and page.image.caption %}
-		<p class="text-right caption">
-			<a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
-		</p>
-		{% endif %}
-	</div><!-- /.small-12.columns -->
+  <div class="small-12 columns">
+    <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}">
+    {% if page.image.caption_url and page.image.caption %}
+    <p class="text-right caption">
+      <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
+    </p>
+    {% endif %}
+  </div><!-- /.small-12.columns -->
 </div><!-- /.row -->
 {% endif %}
 
 <div class="row t30">
-	<div class="medium-12 columns">
-		<article>
+  <div class="medium-12 columns">
+    <article>
 
-			{% if page.outside_heading != true %}
+      {% if page.outside_heading != true %}
 
-			<header>
-				{% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
-				<h1 itemprop="headline">{{ page.title }}</h1>
-			</header>
+      <header>
+        {% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
+        <h1 itemprop="headline">{{ page.title }}</h1>
+      </header>
 
-			{% if page.teaser %}
-			<p class="teaser" itemprop="description">
-				{{ page.teaser }}
-			</p>
-			{% endif %}
+      {% if page.teaser %}
+      <p class="teaser" itemprop="description">
+        {{ page.teaser }}
+      </p>
+      {% endif %}
 
-			{% endif %}
+      {% endif %}
 
-			<span itemprop="articleBody">
-			{{ content }}
-			</span>
+      <span itemprop="articleBody">
+      {{ content }}
+      </span>
 
-			{% if page.show_meta == true %}
-			{% include meta_information %}
-			{% endif %}
+      {% if page.show_meta == true %}
+      {% include meta_information %}
+      {% endif %}
 
-		</article>
+    </article>
 
-		<div class="t50">
-			{% if page.comments == true %}
-			{% include comments %}
-			{% endif %}
-		</div>
+    <div class="t50">
+      {% if page.comments == true %}
+      {% include comments %}
+      {% endif %}
+    </div>
 
-	</div><!-- /.medium-12.columns -->
+  </div><!-- /.medium-12.columns -->
 </div><!-- /.row -->
 
 </section>
