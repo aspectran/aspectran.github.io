@@ -2,7 +2,7 @@
 layout: example
 format: plate article
 title: Aspectran - Hello World Example
-subheadline: Running the "Hello World" application
+subheadline: Aspectran으로 만드는 가장 간단한 Hello World 어플리케이션
 teaser: Aspectran으로 만드는 가장 간단한 Hello World 어플리케이션에 대해 소개합니다.
 outside_heading: true
 breadcrumb: true
@@ -15,9 +15,7 @@ download:
   url: https://github.com/aspectran-guides/ga-hello-world/archive/master.zip
 ---
 
-## Aspectran으로 만드는 가장 간단한 Hello World 어플리케이션
-
-### 설정 구성 파일 작성
+## 설정 구성 파일 작성
 
 "Hello, World!" 문자열을 출력하는 가장 간단한 설정 구성은 다음과 같이 작성될 수 있습니다.   
 자바 소스 코드를 작성하지 않고 "Hello, World!" 문자열만 출력하는 Translet을 한 개만 정의했습니다.
@@ -40,7 +38,7 @@ download:
 </aspectran>
 {% endhighlight xml %}
 
-### 실행 방법
+## 실행 방법
 
 먼저 다음 링크를 통하여 ZIP 파일을 내려받은 후 적당한 경로에 압축을 풀어 주세요.
 {% include label-link-box label="Download ZIP" href="https://github.com/aspectran-guides/ga-hello-world/archive/master.zip" %}
@@ -58,7 +56,7 @@ download:
 > - java 명령어를 실행할 수 있도록 환경변수가 설정되어 있는지 확인하세요.  
 > - Aspectran은 Java 8 이상을 필요로 합니다.
 
-### 실행 결과
+## 실행 결과
 
 위 설정 구성으로 콘솔 환경에서 실행하면 다음과 같은 화면을 볼 수 있습니다.
 ![실행 화면]({{ site.baseurl}}/images/examples/ga-hello-world.png)

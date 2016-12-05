@@ -14,26 +14,30 @@ p.gototop-anchor-wrap {
 #toc {
   @include breakpoint(medium down) {
     padding: 0 0 1em 0;
+    border-top: 3px solid $ci-3;
     border-bottom: 3px solid $ci-3;
+    border-radius: 16px;
     .toc-title {
-      color: darken($ci-3, 10%);
-      border-bottom: 3px solid $ci-3;
-      padding-bottom: .5em;
-      margin-bottom: 1em;
+      color: darken($ci-3, 20%);
+      border-bottom: 1px solid $grey-2;
+      padding: .4em .5em;
+      margin: 0 .3em 1em .3em;
     }
   }
   @include breakpoint(large) {
-    padding: .8em 0 .8em .9em;
+    padding: .8em .4em .8em 0;
     border-left: 3px solid $ci-3;
+    border-right: 3px solid $ci-3;
+    border-radius: 20px;
     .toc-title {
-      color: darken($ci-3, 10%);
+      color: darken($ci-3, 20%);
       border-bottom: 1px solid $grey-2;
-      padding-bottom: .5em;
+      padding: 0 .4em .5em .9em;
       margin-bottom: 1em;
     }
   }
   ul {
-    margin: 0;
+    margin: 0 0 0 .9em;
     list-style-type: none;
     li.toc-h1 {
       font-weight: bold;

@@ -16,7 +16,7 @@ download:
 demo: ga-rest-service.html
 ---
 
-***root-configuration.xml***
+## root-configuration.xml
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
@@ -106,9 +106,9 @@ demo: ga-rest-service.html
       }
     </joinpoint>
     <advice bean="corsProcessor">
-        <before>
-            <action method="processActualRequest"/>
-        </before>
+      <before>
+        <action method="processActualRequest"/>
+      </before>
     </advice>
     <exception>
       <thrown type="com.aspectran.web.support.cors.CorsException">
@@ -139,7 +139,7 @@ demo: ga-rest-service.html
 </aspectran>
 {% endhighlight %}
 
-***customers-translets.xml***
+## customers-translets.xml
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
@@ -229,7 +229,7 @@ demo: ga-rest-service.html
 </aspectran>
 {% endhighlight %}
 
-***Customer.java***
+## Customer.java
 
 {% highlight java %}
 package sample;
@@ -421,7 +421,7 @@ public class CustomerDao {
 }
 {% endhighlight %}
 
-***CustomerAction.java***
+## CustomerAction.java
 
 {% highlight java %}
 package sample;
