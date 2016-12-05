@@ -71,12 +71,9 @@ demo: ga-rest-service.html
 	<bean id="corsProcessor" class="com.aspectran.web.support.cors.DefaultCorsProcessor">
 		<properties>
 			<item name="allowedOrigins" type="set">
-				<value>http://localhost:8080</value>
-				<value>http://localhost:8090</value>
-				<value>http://localhost:4000</value>
-				<value>http://192.168.0.34:4000</value>
 				<value>http://www.aspectran.com</value>
-				<value>http://backend.aspectran.com</value>
+        <value>http://backend.aspectran.com</value>
+        <value>http://backend2.aspectran.com</value>
 			</item>
 			<item name="allowedMethods" type="set">
 				<value>GET</value>

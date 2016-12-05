@@ -4,7 +4,7 @@
 
 <div class="row">
   <div class="t10 large-4 columns" style="position:relative;">
-    <h2>Customer List</h2>
+    <h2 style="margin:0;">Customer List</h2>
     <span id="total" class="float-right warning badge" style="font-size:2em;position:absolute;top:0;right:0;">0</span>
     <div id="customer-list-board" style="clear:both;border-radius:3px;margin-bottom:.5em;">
       <select name="customerList" size="12" style="height:auto;background-image:none;margin:0;">
@@ -19,7 +19,7 @@
     </div>
   </div>
   <div class="t10 large-8 columns" style="position:relative;">
-    <h2>Customer Details</h2>
+    <h2 style="margin:0;">Customer Details</h2>
     <span id="cust-no" class="float-right success badge" style="font-size:2em;position:absolute;top:0;right:0;">0</span>
     <div id="details" class="panel radius" style="min-height:291px;">
       <form>
@@ -116,7 +116,6 @@ function getCustomerList() {
     },
     error: function(xhr, status, error) {
       $(".panel.alert-box").show();
-      //alert("code: " + xhr.status + "\nmessage: " + xhr.responseText + "\nerror: " + error);
     }
   });
 }
