@@ -4,6 +4,7 @@ format: plate solid
 title: FAQ
 subheadline: "Frequently Asked Questions about Aspectran"
 teaser: "We provide frequently asked questions and answers in advance."
+breadcrumb: true
 comments: true
 permalink: /support/faq/
 ---

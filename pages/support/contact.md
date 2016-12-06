@@ -2,7 +2,6 @@
 layout: page
 format: plate solid
 title: Contact
-meta_title:
 subheadline:
 teaser:
 breadcrumb: true
