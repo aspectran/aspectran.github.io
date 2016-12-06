@@ -151,6 +151,7 @@ defaults:
     values:
       outside_heading: true
       breadcrumb: true
+      sidebar: toc
       comments: true
       author: "juho_jeong"     # Default author for posts
   -
