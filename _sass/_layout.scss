@@ -133,7 +133,7 @@
         }
         &.is-dropdown-submenu-parent > a::after {
           border-color: lighten($ci-1, 5%) transparent transparent;
-          right: 10px;
+          right: 9px;
         }
       }
       ul.submenu {
