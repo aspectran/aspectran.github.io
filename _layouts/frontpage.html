@@ -5,7 +5,7 @@ layout: default
 {% include forkme-ribbon %}
 
 <div id="masthead">
-  <div class="row">
+  <div class="row typical">
     <div class="medium-12 columns b10">
       <a href="https://travis-ci.org/aspectran/aspectran" target="_blank" title="Build Status"><img src="https://travis-ci.org/aspectran/aspectran.svg" alt=""/></a>
       <a href="https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran" target="_blank" title="Maven central"><img src="https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg" alt=""/></a>
@@ -29,7 +29,7 @@ layout: default
 {% unless site.examples == empty %}
 <div class="row t30">
   <div class="columns">
-    <div class="panel white">
+    <div class="panel white examples">
       <div class="row">
         {% assign examples = site.examples %}
         {% for example in examples limit:2 %}

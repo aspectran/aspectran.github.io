@@ -7,6 +7,7 @@
 - Masthead › medium-only
 - Masthead › large-only
 - Masthead › xlarge-up
+- Masthead for Frontpage
 - Breadcrumb
 - Meta
 - Jump to top
@@ -304,31 +305,6 @@ body.plate {
     }
   }
 }
-.frontpage #masthead {
-  padding: 30px 0 10px 0;
-  background: $ci-1;
-  color: $grey-2;
-  text-shadow: none;
-  -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
-  -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
-  box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
-  a {
-    color: $grey-0;
-    border: 0;
-  }
-  img {
-    border-radius: $global-radius;
-  }
-  #forkme-ribbon {
-    display: block;
-  }
-  .thumb {
-    margin-top: .5rem;
-    @include breakpoint(large) {
-      margin-bottom: .5rem;
-    }
-  }
-}
 
 // Masthead › small-only
 //-----------------------
@@ -461,6 +437,35 @@ body.plate {
         font-size: 3.3em;
         font-weight: 700;
       }
+    }
+  }
+}
+
+// Masthead for Frontpage
+//------------------------
+
+.frontpage #masthead {
+  padding: 30px 0 10px 0;
+  background-color: $ci-1;
+  color: $grey-2;
+  text-shadow: none;
+  -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+  -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+  box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+  #forkme-ribbon {
+    display: block;
+  }
+  a {
+    color: $grey-0;
+    border: 0;
+  }
+  img {
+    border-radius: $global-radius;
+  }
+  .thumb {
+    margin-top: .5rem;
+    @include breakpoint(large) {
+      margin-bottom: .5rem;
     }
   }
 }
