@@ -25,7 +25,7 @@ p.gototop-anchor-wrap {
     }
   }
   @include breakpoint(large) {
-    padding: .8em .4em .8em 0;
+    padding: .8em 0;
     border-left: 2px solid $ci-1;
     border-right: 2px solid $ci-1;
     border-radius: 20px;

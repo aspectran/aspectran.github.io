@@ -7,10 +7,18 @@ h1 {
 h2 {
   margin-top: 0;
   margin-bottom: .2em;
+  &.underline {
+    padding-bottom: 3px;
+    border-bottom: 1px solid $grey-1;
+  }
 }
 h3 {
   margin-top: 0;
   margin-bottom: .2em;
+  &.underline {
+    padding-bottom: 3px;
+    border-bottom: 1px solid $grey-1;
+  }
 }
 h4 {
   margin-top: 0;
@@ -35,6 +43,8 @@ body.article article {
     &:nth-child(2) {
       margin-top: 0.2em;
     }
+    padding-bottom: 3px;
+    border-bottom: 1px solid $grey-1;
   }
   h3 {
     margin: 1.152em 0 .6em 0;
@@ -75,20 +85,17 @@ p {
   -moz-hyphens: auto;
   -ms-hyphens: auto;
   hyphens: auto;
-}
-p a,
-article a {
-  border-bottom: 1px dotted;
-}
-p a:hover,
-article a:hover {
-    border-bottom: 1px solid;
-}
-p a.button,
-.button,
-.button:hover {
-  border: 0;
-  color: #fff;
+  a {
+    border-bottom: 1px dotted;
+  }
+  a:hover {
+      border-bottom: 1px solid;
+  }
+  a.button,
+  .button,
+  .button:hover {
+    color: #fff;
+  }
 }
 p.subheadline {
   @include breakpoint(medium down) {
