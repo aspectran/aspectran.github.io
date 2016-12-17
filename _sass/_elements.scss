@@ -14,9 +14,9 @@ p.gototop-anchor-wrap {
 #toc {
   @include breakpoint(medium down) {
     padding: 0 0 1em 0;
-    border-top: 3px solid $ci-1;
-    border-bottom: 3px solid $ci-1;
-    border-radius: 16px;
+    border-top: 2px solid $ci-1;
+    border-bottom: 2px solid $ci-1;
+    border-radius: 12px;
     .toc-title {
       color: $ci-0;
       border-bottom: 1px solid $grey-2;
@@ -28,7 +28,7 @@ p.gototop-anchor-wrap {
     padding: .8em 0;
     border-left: 2px solid $ci-1;
     border-right: 2px solid $ci-1;
-    border-radius: 20px;
+    border-radius: 12px;
     .toc-title {
       color: $ci-0;
       border-bottom: 1px solid $grey-2;
@@ -290,7 +290,7 @@ img.lazy {
   margin-top: 1em;
   padding: .5em 1em;
   background-color: $bg-color;
-  border: 1px solid $grey-1;
+  border: 1px solid $grey-3;
   border-radius: $global-radius;
   min-height: 75px;
 }

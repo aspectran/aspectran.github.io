@@ -1,5 +1,5 @@
 <nav id="navigation" class="no-js">
-  <div class="title-bar" data-responsive-toggle="dropdownmenu" data-hide-for="medium">
+  <div class="title-bar" data-responsive-toggle="gnb-menu" data-hide-for="large">
     <div class="title-bar-left">
       <a href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_icon }}" alt="Aspectran"/></a>
     </div>
@@ -11,13 +11,13 @@
     </div>
   </div>
 
-  <div class="top-bar" id="dropdownmenu">
+  <div class="top-bar" id="gnb-menu">
     <div class="row">
-      <div class="top-bar-logo" data-hide-for="medium">
+      <div class="top-bar-logo">
         <a href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_icon }}" alt="Aspectran"/></a>
       </div>
       <div class="top-bar-left">
-        <ul class="dropdown menu" data-dropdown-menu>
+        <ul class="dropdown menu" data-dropdown-menu data-close-on-click-inside="false">
           {% for link in site.data.navigation %}
 
             {% if link.url contains 'http' %}
@@ -40,7 +40,7 @@
 
                 <li{% if page.url contains link.url %} class="active"{% endif %}>
                   <a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a>
-                  <ul class="menu vertical">
+                  <ul class="menu" data-submenu data-close-on-click-inside="false">
                     {% for dropdown_link in link.dropdown %}
 
                       {% if dropdown_link.url contains 'http' %}
@@ -62,7 +62,7 @@
       </div>
 
       <div class="top-bar-right">
-        <ul class="dropdown menu" data-dropdown-menu>
+        <ul class="dropdown menu" data-dropdown-menu data-close-on-click-inside="false">
         {% for link in site.data.navigation %}
 
           {% if link.url contains 'http' %}
@@ -84,7 +84,7 @@
 
               <li{% if page.url contains link.url %} class="active"{% endif %}>
                 <a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a>
-                <ul class="menu vertical">
+                <ul class="menu vertical" data-submenu data-close-on-click-inside="false">
                   {% for dropdown_link in link.dropdown %}
 
                     {% if dropdown_link.url contains 'http' %}
@@ -103,7 +103,7 @@
         {% endfor %}
         </ul>
 
-        <div class="quick-search-box show-for-medium">
+        <div class="quick-search-box show-for-large">
           <form name="google_quick_search">
             <div class="input-group">
               <input class="input-group-field" type="text" name="keyword" placeholder="Search">
@@ -116,7 +116,7 @@
 
       </div>
     </div>
-    <div class="row quick-search-box show-for-small-only">
+    <div class="row quick-search-box hide-for-large">
       <div class="small-12 columns">
         <form name="google_quick_search">
         <div class="input-group">

@@ -39,12 +39,12 @@ outside_heading: true
               </div>
               {% if page.demo %}
               <div class="t20 show-for-large">
-                <h4>Running the Application</h4>
+                <h5 class="underline">Running the Application</h5>
                 <a href="#top-of-page" onclick="$('#demoTab').click();"><img src="{{ site.urlimg }}{{ page.image.thumb }}" width="100%" alt="{{ page.title | escape_once }}"></a>
               </div>
               {% endif %}
               <div class="t20">
-                <h4>Get the Code</h4>
+                <h4 class="underline">Get the Code</h4>
                 <p>Below is where you can find the source code for all this example application.</p>
                 {% for link in page.download %}
                 {% include label-link-box label=link.label href=link.url %}

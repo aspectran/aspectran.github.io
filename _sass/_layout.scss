@@ -23,6 +23,7 @@
 //-----------
 
 #navigation {
+  z-index: 101;
   text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
   text-transform: uppercase;
   &.fixed {
@@ -43,7 +44,7 @@
       position: absolute;
       left: 20%;
       right: 20%;
-      padding: rem-calc(2.5 0);
+      padding: 0;
       text-align: center;
       text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
       a {
@@ -55,25 +56,11 @@
     .title-bar-right {
       cursor: pointer;
       float: right;
-      padding: rem-calc(2.5 9);
+      padding: rem-calc(0 15);
     }
   }
   .top-bar {
-    z-index: 101;
     width: 100%;
-    @include breakpoint(small only) {
-      .top-bar-logo {
-        display: none;
-      }
-    }
-    @include breakpoint(medium) {
-      .top-bar-logo {
-        float: left;
-        img {
-          margin: rem-calc(4.5 12 0 15);
-        }
-      }
-    }
     .quick-search-box {
       padding: .8rem .4rem;
       .input-group {
@@ -84,7 +71,24 @@
         }
       }
     }
-    @include breakpoint(medium) {
+    @include breakpoint(medium down) {
+      .top-bar-logo {
+        display: none;
+      }
+      .top-bar-left {
+        width: 100%;
+      }
+      .top-bar-right {
+        width: 100%;
+      }
+    }
+    @include breakpoint(large) {
+      .top-bar-logo {
+        float: left;
+        img {
+          margin: rem-calc(4.5 12 0 15);
+        }
+      }
       .top-bar-right {
         .menu {
           float: left;
@@ -94,17 +98,14 @@
         float: right;
         display: table-cell;
         vertical-align: middle;
-        padding: rem-calc(3.44 3.4 0 3.4);
-        @include breakpoint(medium only) {
-          max-width: 160px;
-        }
+        padding: rem-calc(3.44 3.4 2.2 3.4);
         @include breakpoint(large) {
           max-width: 220px;
         }
       }
     }
     ul.dropdown {
-      @include breakpoint(small only) {
+      @include breakpoint(medium down) {
         background-color: darken($ci-0, 10%);
         > li {
           display: block;
@@ -115,12 +116,12 @@
           color: #fff;
           background: none;
           padding: .93rem 1.5rem .93rem 1rem;
-          @include breakpoint(small only) {
+          @include breakpoint(medium down) {
             margin-right: .9rem;
           }
         }
         &.active {
-          @include breakpoint(medium) {
+          @include breakpoint(large) {
             background-color: lighten($ci-0, 5%);
           }
           a {
@@ -132,22 +133,23 @@
         }
         &.is-dropdown-submenu-parent > a::after {
           border-color: lighten($ci-1, 5%) transparent transparent;
+          right: 10px;
         }
       }
       ul.submenu {
         border: 0;
         border-radius: 0 0 $global-radius $global-radius;
-        @include breakpoint(small only) {
+        @include breakpoint(medium down) {
           left: auto;
-          right: 2.5rem;
+          right: 3.1rem;
         }
         li {
-          @include breakpoint(small only) {
+          @include breakpoint(medium down) {
             &.submenu-closer {
               display: block;
             }
           }
-          @include breakpoint(medium) {
+          @include breakpoint(large) {
             &.submenu-closer {
               display: none;
             }
@@ -338,6 +340,10 @@ body.plate {
     }
     header {
       margin-top: 1em;
+      h1 {
+        font-size: 2em;
+        font-weight: 700;
+      }
     }
   }
   .masthead-no-image-header {
@@ -371,7 +377,7 @@ body.plate {
       }
     }
     header {
-      margin-top: 120px;
+      margin-top: 100px;
       h1 {
         font-weight: 700;
       }
@@ -390,11 +396,11 @@ body.plate {
     padding: 30px 0;
   }
   .masthead-with-text {
-    height: 330px;
+    height: 360px;
     padding: 60px 0;
   }
   .masthead-with-image-header {
-    height: 330px;
+    height: 360px;
     #slogan {
       margin-top: 110px;
       margin-left: 33px;
@@ -435,7 +441,7 @@ body.plate {
       }
     }
     header {
-      margin-top: 250px;
+      margin-top: 240px;
       h1 {
         font-size: 3.3em;
         font-weight: 700;
