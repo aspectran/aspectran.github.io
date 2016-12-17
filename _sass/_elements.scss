@@ -14,11 +14,11 @@ p.gototop-anchor-wrap {
 #toc {
   @include breakpoint(medium down) {
     padding: 0 0 1em 0;
-    border-top: 3px solid $ci-3;
-    border-bottom: 3px solid $ci-3;
+    border-top: 3px solid $ci-1;
+    border-bottom: 3px solid $ci-1;
     border-radius: 16px;
     .toc-title {
-      color: darken($ci-3, 20%);
+      color: $ci-0;
       border-bottom: 1px solid $grey-2;
       padding: .4em .5em;
       margin: 0 .3em 1em .3em;
@@ -26,11 +26,11 @@ p.gototop-anchor-wrap {
   }
   @include breakpoint(large) {
     padding: .8em .4em .8em 0;
-    border-left: 3px solid $ci-3;
-    border-right: 3px solid $ci-3;
+    border-left: 2px solid $ci-1;
+    border-right: 2px solid $ci-1;
     border-radius: 20px;
     .toc-title {
-      color: darken($ci-3, 20%);
+      color: $ci-0;
       border-bottom: 1px solid $grey-2;
       padding: 0 .4em .5em .9em;
       margin-bottom: 1em;

@@ -447,7 +447,7 @@ body.plate {
 .frontpage #masthead {
   padding: 30px 0 10px 0;
   background-color: $ci-1;
-  color: $grey-2;
+  color: $grey-1;
   text-shadow: none;
   -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
@@ -478,7 +478,7 @@ body.plate {
   .breadcrumbs {
     font-size: 74%;
     background: none;
-    padding: .2em;
+    padding: .2em .2em .3em;
     margin: 0;
     a {
       color: $grey-8;
