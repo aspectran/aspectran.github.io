@@ -57,6 +57,12 @@ body.article article {
   }
 }
 
+article {
+  header {
+    padding-bottom: 1em;
+  }
+}
+
 // Links
 //-------
 
@@ -88,31 +94,18 @@ p {
   a {
     border-bottom: 1px dotted;
   }
-  a:hover {
-      border-bottom: 1px solid;
+  &.subheadline {
+    @include breakpoint(medium down) {
+      font-size: rem-calc(12);
+    }
+    @include breakpoint(large) {
+      font-size: rem-calc(14);
+    }
+    margin: 0;
+    text-transform: uppercase;
   }
-  a.button,
-  .button,
-  .button:hover {
-    color: #fff;
-  }
-}
-p.subheadline {
-  @include breakpoint(medium down) {
-    font-size: rem-calc(12);
-  }
-  @include breakpoint(large) {
-    font-size: rem-calc(14);
-  }
-  margin: 0;
-  text-transform: uppercase;
-}
-p.teaser {
-  font-size: rem-calc(18);
-}
-article {
-  header {
-    padding-bottom: 1em;
+  &.teaser {
+    font-size: rem-calc(18);
   }
 }
 

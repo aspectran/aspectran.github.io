@@ -7,9 +7,7 @@ sitemap:
 
 @import 'colors';
 
-@import 'settings/settings';
-
-@import 'foundation';
+@import 'foundation/foundation';
 @include foundation-everything;
 
 @import 'layout';

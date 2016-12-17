@@ -215,7 +215,7 @@ XML 형식의 설정 메타데이터 파일이 수정되면 APON 파일로 변�
 `<servlet-class>`에 *com.aspectran.web.startup.servlet.WebActivityServlet* 을 지정합니다.
 `<servlet-name>`에는 Aspectran을 위한 서블릿이라는 의미의 고유한 이름을 부여해 주기 바랍니다.
 
-> 서블릿 초기화 파라메터로 `aspectran:cofnig`를 정의하면 서블릿만의 단독 Aspectran 서비스 환경을 구성합니다.
+> 서블릿 초기화 파라메터로 `aspectran:config`를 정의하면 서블릿만의 단독 Aspectran 서비스 환경을 구성합니다.
 > 즉, 전역 Aspectran 서비스를 사용하지 않습니다.
 
 ### 2.4 서블릿 URL 패턴 지정

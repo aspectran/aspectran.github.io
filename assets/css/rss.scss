@@ -5,7 +5,6 @@ sitemap:
 @charset 'utf-8';
 
 @import 'colors';
-@import 'settings/settings';
 
 * {
 	display: block;
@@ -13,15 +12,15 @@ sitemap:
 
 :root {
 	margin: 3em;
-	background: $body-background;
-	color: $body-font-color;
-	font-family: $body-font-family;
+	background: $bg-color;
+	color: $text-color;
+	font-family: 'Open Sans', Arial, sans-serif;
 }
 
 channel {
 	> title {
 		text-align: center;
-		color: lighten($primary-color, 25%);
+		color: lighten($ci-1, 25%);
 		font-weight: bolder;
 		&::before {
 			content: 'RSS Feed for ';
@@ -31,7 +30,7 @@ channel {
 			content: "This RSS feed is meant to be used by RSS reader applications and websites.";
 			display: block;
 			padding: 1em;
-			background-color: $alert-color;
+			background-color: $ci-5;
 			color: #fff;
 			font-family: initial;
 			font-size: initial;
@@ -47,18 +46,18 @@ channel {
 
 item {
 	padding: 1em 0;
-	border-bottom: 1px solid invert($body-background);
+	border-bottom: 1px solid invert($bg-color);
 	&:last-child {
 		border-bottom: none;
 	}
 
 	> title {
-		color: $secondary-color;
+		color: $ci-6;
 		margin-bottom: 0.5em;
 	}
 
 	> link {
-		color: $primary-color;
+		color: $ci-1;
 	}
 
 	> pubDate {
