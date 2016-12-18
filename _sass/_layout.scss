@@ -138,7 +138,7 @@
       }
       ul.submenu {
         border: 0;
-        border-radius: 0 0 $global-radius $global-radius;
+        border-radius: 0 0 10px 10px;
         @include breakpoint(medium down) {
           left: auto;
           right: 3.1rem;
@@ -160,6 +160,9 @@
           &:hover {
             background-color: darken($ci-0, 5%);
           }
+        }
+        li:last-child {
+          border-radius: 0 0 10px 10px;
         }
       }
     }

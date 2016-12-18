@@ -13,7 +13,7 @@
   	</a>
   </div>
   <div class="small-7 medium-7 large-12 columns">
-  	<h3 class="font-size-h3"><a href="{{ widget_url }}">{{ include.widget.title }}</a></h3>
+  	<h4><a href="{{ widget_url }}">{{ include.widget.title }}</a></h4>
   	<p>{{ include.widget.text }}</p>
   </div>
 </div>
