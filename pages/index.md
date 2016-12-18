@@ -35,7 +35,7 @@ widget4:
   url: /modules/
   image: header_modules_thumb.jpg
   text: |
-    Provides java source packages and configuration metadata that can integrate the various external libraries.
+    Provides java source packages and configuration metadata.
 widget5:
   title: Examples
   url: /examples/
