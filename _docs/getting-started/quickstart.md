@@ -19,7 +19,7 @@ Aspectran을 이용해서 Java 웹 어플리케이션을 개발하기 위해서�
 빠른 시작을 위해 다음 GitHub 저장소를 Clone 또는 소스 파일을 다운로드해서 새로운 Maven 프로젝트를 생성해 주세요.  
 본 문서에서 사용된 모든 소스 파일이 포함되어 있습니다.
 
-{% include link-box href="https://github.com/aspectran-guides/quick-start.git" %}
+{% include link-box href="https://github.com/aspectran-guides/ga-quick-start" %}
 
 Maven 프로젝트가 아닌 경우 [다운로드](/getting-started/download/) 페이지에서 jar 라이브러리의 복사본을 받아서 구성하시기 바랍니다.
 
