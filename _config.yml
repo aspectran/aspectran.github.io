@@ -9,7 +9,7 @@ title: "Aspectran"
 slogan: "Next Generation Java Application Framework"
 
 # The description is used on homepage and in the footer to quickly describe your website. Use a maximum of 150 characters for SEO-purposes.
-description: "Aspectran is a lightweight Java framework for building enterprise-ready Web applications and it can also be run as console-based and embedded applications."
+description: "Aspectran is a lightweight Java framework for building enterprise-ready Web applications and It can be embedded in Java applications or run in console mode."
 
 # Main author of the website
 # See > authors.yml
