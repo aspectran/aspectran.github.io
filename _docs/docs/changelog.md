@@ -14,6 +14,8 @@ comments: true
   {% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
 </div>
 
+2017.1.31. // Version 3.2.0
+
 2016.11.7. // Version 3.1.0
 : Notable Changes
 : * Improved AOP features
