@@ -14,16 +14,31 @@ comments: true
   {% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
 </div>
 
+2017.1.31. // Version 3.3.0
+: New Features
+: - Added the ability to specify exposable `translet` for Web, Console and Scheduler services.
+
 2017.1.31. // Version 3.2.0
+: New Features
+: - Added ability to create derived AspectranService instances sharing the same context.
+  - Added a factory bean to return base path.
+: Changes
+: - Improved dynamic method invocation
+  - Improved ActivityContext initialization
+  - Changed the method of creating a bean with factory patterns.
+  - Renamed `applicationBasePath` to `basePath`.
+  - Renamed class AspectranServiceControllerListener to AspectranServiceLifeCycleListener.
+  - Renamed attribute `offerBean` to `factoryBean`, and the `offerMethod` attribute has been removed.
+  - The servlet context initialization parameter `defaultServletName` has been moved to AspectranWebConfig.
 
 2016.11.7. // Version 3.1.0
-: Notable Changes
+: Changes
 : * Improved AOP features
 
 2016.9.26. // Version 3.0.0
 : New Features
 : * Added support for the ability to run Aspectran inside other applications.
-: Notable Changes
+: Changes
 : * Significantly improved reliability internally
 
 2016.8.23. // Version 2.4.1
@@ -39,12 +54,12 @@ comments: true
     - X-HTTP-Method (Microsoft)
     - X-HTTP-Method-Override (Google/GData)
     - X-METHOD-OVERRIDE (IBM)
-
-: Changed element names in XML for configuration files.
-: * property ==&gt; properties
-  * parameter ==&gt; parameters
-  * attribute ==&gt; attributes
-  * argument ==&gt; arguments
+: Changes
+: * Changed element names in XML for configuration files.
+    - property ==&gt; properties
+    - parameter ==&gt; parameters
+    - attribute ==&gt; attributes
+    - argument ==&gt; arguments
 
 2016.8.11. // Version 2.3.1
 : * Bug fix: The gzip content encoding error has been fixed.
