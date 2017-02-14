@@ -243,6 +243,26 @@ body.plate {
   header {
     padding-top: 1.5em;
     min-height: 150px;
+    @include breakpoint(small) {
+      .teaser {
+        font-size: 1.2em;
+      }
+    }
+    @include breakpoint(medium) {
+      .teaser {
+        font-size: 1.3em;
+      }
+    }
+    @include breakpoint(large) {
+      .teaser {
+        font-size: 1.5em;
+      }
+    }
+    @include breakpoint(xlarge) {
+      .teaser {
+        font-size: 1.6em;
+      }
+    }
   }
   img {
     border-radius: 0;
@@ -380,7 +400,7 @@ body.plate {
       }
     }
     header {
-      margin-top: 100px;
+      margin-top: 80px;
       h1 {
         font-weight: 700;
       }
@@ -412,7 +432,7 @@ body.plate {
       }
     }
     header {
-      margin-top: 150px;
+      margin-top: 125px;
       h1 {
         font-size: 3em;
         font-weight: 700;
@@ -444,7 +464,7 @@ body.plate {
       }
     }
     header {
-      margin-top: 240px;
+      margin-top: 210px;
       h1 {
         font-size: 3.3em;
         font-weight: 700;
