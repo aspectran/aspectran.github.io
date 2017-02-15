@@ -243,26 +243,6 @@ body.plate {
   header {
     padding-top: 1.5em;
     min-height: 150px;
-    @include breakpoint(small) {
-      .teaser {
-        font-size: 1.2em;
-      }
-    }
-    @include breakpoint(medium) {
-      .teaser {
-        font-size: 1.3em;
-      }
-    }
-    @include breakpoint(large) {
-      .teaser {
-        font-size: 1.5em;
-      }
-    }
-    @include breakpoint(xlarge) {
-      .teaser {
-        font-size: 1.6em;
-      }
-    }
   }
   img {
     border-radius: 0;
@@ -330,6 +310,30 @@ body.plate {
     margin: 10px 0 10px 20px;
     img {
       height: 128px;
+    }
+  }
+}
+.masthead-with-image-header {
+  header {
+    @include breakpoint(small) {
+      .teaser {
+        font-size: 1.2em;
+      }
+    }
+    @include breakpoint(medium) {
+      .teaser {
+        font-size: 1.3em;
+      }
+    }
+    @include breakpoint(large) {
+      .teaser {
+        font-size: 1.5em;
+      }
+    }
+    @include breakpoint(xlarge) {
+      .teaser {
+        font-size: 1.6em;
+      }
     }
   }
 }
