@@ -7,6 +7,7 @@ subheadline: What can we help you with?
 teaser: You can contribute to the development of Aspectran by sending feedback and bug reports or by translating Aspectran documents.
 header:
   image_fullwidth: "header_support.jpg"
+  caption: Multipurpose Home Server
 breadcrumb: true
 permalink: /support/
 ---
