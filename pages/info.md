@@ -3,7 +3,7 @@ layout: page
 format: article
 title: "About Aspectran"
 subheadline: "What is Aspectran?"
-teaser: "Next Generation Java Application Framework"
+teaser: "The Next Generation Java Application Framework"
 header:
   image_fullwidth: "header_aspectran.png"
   slogan_hidden: true
