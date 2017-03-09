@@ -3,7 +3,7 @@ layout: page
 format: article
 title: "About Aspectran"
 subheadline: "What is Aspectran?"
-teaser: "Next Generation Java Application Framework"
+teaser: "The Next Generation Java Application Framework"
 header:
   image_fullwidth: "header_aspectran.png"
   slogan_hidden: true
@@ -73,5 +73,5 @@ com.aspectran
 
 The development of Aspectran was started in March 2008, but it was first published on September 1th 2015.  
 The name Aspectan was created in July 2012 and it is a combination of Aspect and Translet.  
-Aspectran is a lightweight framework developed to replace the increasingly conceptually complex Spring Framework.  
-The Spring Framework is still widely used as an alternative to EJB, but soon the next runner will be Aspectran.
+Aspectran is a lightweight framework developed to replace the conceptually complex Spring Framework.  
+The Spring Framework is still widely used as an alternative to EJB, but soon Aspectran will become the next runner.

@@ -3,7 +3,7 @@
     <h5 class="fi-social-github underline"> Aspectran project on GitHub</h5>
     <p>You can see the development progress of Aspectran on GitHub or participate in it.
       We continue to provide sample applications developed using Aspectran.</p>
-    {% include link-box href="https://github.com/aspectran/aspectran" %}
+    {% include link-box href="https://github.com/aspectran" %}
 
     <h5 class="fi-social-github underline"> Aspectran Modules</h5>
     <p>Provides java source packages and configuration metadata that can integrate the various external libraries.</p>
