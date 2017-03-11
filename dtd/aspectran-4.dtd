@@ -114,7 +114,7 @@
 
 <!ELEMENT scheduler (trigger)>
 <!ATTLIST scheduler
-  bean    CDATA #REQUIRED
+  bean    CDATA #IMPLIED
 >
 
 <!ELEMENT trigger (#PCDATA)>
