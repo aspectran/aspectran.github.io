@@ -262,6 +262,7 @@
 <!ELEMENT ref EMPTY>
 <!ATTLIST ref
   bean      CDATA #IMPLIED
+  template  CDATA #IMPLIED
   parameter CDATA #IMPLIED
   attribute CDATA #IMPLIED
   property  CDATA #IMPLIED
