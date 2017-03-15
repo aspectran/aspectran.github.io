@@ -105,7 +105,6 @@
   url      CDATA #IMPLIED
   encoding CDATA #IMPLIED
   noCache  (true | false) #IMPLIED
-  ref      CDATA #IMPLIED
 >
 
 <!ELEMENT schedule (description?, scheduler, job*)>
@@ -200,7 +199,7 @@
   type              CDATA #IMPLIED
   contentType       CDATA #IMPLIED
   characterEncoding CDATA #IMPLIED
-  default           (true | false) #IMPLIED
+  defaultResponse   (true | false) #IMPLIED
   pretty            (true | false) #IMPLIED
 >
 
@@ -210,15 +209,17 @@
   dispatcher        CDATA #IMPLIED
   contentType       CDATA #IMPLIED
   characterEncoding CDATA #IMPLIED
-  default           (true | false) #IMPLIED
+  defaultResponse   (true | false) #IMPLIED
 >
 
 <!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters*)>
 <!ATTLIST redirect
   contentType           CDATA #IMPLIED
   target                CDATA #REQUIRED
-  excludeNullParameters CDATA #IMPLIED
-  default               (true | false) #IMPLIED
+  characterEncoding     CDATA #IMPLIED
+  excludeNullParameter  (true | false) #IMPLIED
+  excludeEmptyParameter (true | false) #IMPLIED
+  defaultResponse       (true | false) #IMPLIED
 >
 
 <!ELEMENT url (#PCDATA)>
@@ -243,7 +244,7 @@
 <!ELEMENT properties (#PCDATA | item)*>
 <!ELEMENT arguments  (#PCDATA | item)*>
 
-<!ELEMENT item (#PCDATA | value | ref | null)*>
+<!ELEMENT item (#PCDATA | value | call | null)*>
 <!ATTLIST item
   name         CDATA #IMPLIED
   value        CDATA #IMPLIED
@@ -254,13 +255,13 @@
   mandatory    (true | false) #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA | ref | null)*>
+<!ELEMENT value (#PCDATA | call | null)*>
 <!ATTLIST value
   name    CDATA #IMPLIED
 >
 
-<!ELEMENT ref EMPTY>
-<!ATTLIST ref
+<!ELEMENT call EMPTY>
+<!ATTLIST call
   bean      CDATA #IMPLIED
   template  CDATA #IMPLIED
   parameter CDATA #IMPLIED
