@@ -194,7 +194,7 @@
   characterEncoding CDATA #IMPLIED
 >
 
-<!ELEMENT transform ((action? | include? | echo? | headers?)*, template?)>
+<!ELEMENT transform ((action? | include? | echo? | headers?)*, (template? | call?))>
 <!ATTLIST transform
   type              CDATA #IMPLIED
   contentType       CDATA #IMPLIED
