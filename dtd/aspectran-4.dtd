@@ -22,6 +22,9 @@
 )>
 
 <!ELEMENT description (#PCDATA)>
+<!ATTLIST description
+  style   (apon | compact | compressed) #IMPLIED
+>
 
 <!ELEMENT settings (#PCDATA | setting)*>
 <!ELEMENT setting (#PCDATA)>
