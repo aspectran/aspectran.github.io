@@ -1,8 +1,8 @@
 ---
 layout: example
 format: plate article
-title: Aspectran - Hello World Example
-subheadline: Aspectran으로 만드는 가장 간단한 Hello World 어플리케이션
+title: Aspectran Hello World Example
+subheadline: Aspectran으로 만든 가장 간단한 Hello World 어플리케이션
 teaser: Aspectran을 이용하여 가장 간단한 방법으로 "Hello World!" 문자열을 출력하는 어플리케이션을 만들어 봅니다.
 outside_heading: true
 breadcrumb: true
@@ -13,18 +13,19 @@ download:
   url: https://github.com/aspectran-guides/ga-hello-world
 - label: "Download ZIP"
   url: https://github.com/aspectran-guides/ga-hello-world/archive/master.zip
+asciinema: 4cxhhrtlwbalbpv0se359c49a
 ---
 
 ## 시작하기
 
-"Hello World!" 문자열을 출력하는 방법은 크게 두 가지가 있습니다.
+간단하게 "Hello, World!" 문자열을 출력하는 방법은 두 가지가 있습니다.
 
-* 문자열을 출력하는 Java 코드를 작성하는 방법
-* Java 코드를 작성하지 않고 문자열을 출력하는 방법
+* Java 코드를 작성해서 "Hello, World!" 문자열을 출력하는 방법
+* Java 코드를 작성하지 않고 "Hello, World!" 문자열을 출력하는 방법
 
-여기서는 Java 코드를 작성하지 않고 "Hello World" 문자열을 출력하는 방법에 대해 알아보겠습니다.
+여기서는 Java 코드를 작성하지 않고 "Hello, World!" 문자열을 출력하는 방법에 대해 설명합니다.
 
-## 설정 구성 작성
+## 설정 구성
 
 "Hello, World!" 문자열을 출력하는 가장 간단한 설정 구성은 다음과 같이 작성될 수 있습니다.   
 
@@ -32,14 +33,38 @@ download:
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 3.0//EN"
-    "http://aspectran.github.io/dtd/aspectran-3.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
 
 <aspectran>
 
+    <description style="apon">
+        |
+        |   --- The simplest Hello World application created with Aspectran ---
+        |
+        |Built-in commands for this console application:
+        |   description on - Display a description of the command.
+        |   description off - Do not display the description of the command.
+        |   restart - Restart this console application.
+        |   quit - Exit from this console application.
+        |
+        |Commands that can run the examples:
+        |   hello - It prints the words "Hello, World!" to the console.
+        |
+    </description>
+
     <translet name="hello">
+        <description style="apon">
+            |
+            |   It prints the words "Hello World" to the console.
+            |
+        </description>
         <transform type="transform/text" contentType="text/plain">
-            <template>Hello, World!</template>
+            <template style="apon">
+                |
+                |   Hello, World!
+                |
+            </template>
         </transform>
     </translet>
 
@@ -47,11 +72,11 @@ download:
 {% endhighlight xml %}
 
 > "hello"라는 이름을 가진 `translet`이 하나 정의되어 있는 것을 볼 수 있습니다.  
-> 그 `translet` 안에는 텍스트 형식으로 변환하는 기능을 가진 것으로 보이는 `transform`이 정의되어 있고,  
+> 그 `translet` 안에는 텍스트 형식으로 변환하는 역할을 할 것으로 보이는 `transform`이 정의되어 있고,  
 > `transform` 안에는 "Hello, World!" 문자열을 가진 `template`이 정의되어 있습니다.
 
 우리는 "hello"라는 이름을 가진 `translet`을 실행해야 함을 직감할 수 있습니다.
-명령어 "hello"을 실행하면 `translet`은 지정한 형식으로 가공된 데이터를 반환하는 역할을 합니다.
+명령어 "hello"를 실행하면 `translet`은 지정한 형식으로 가공된 데이터를 반환하는 역할을 합니다.
 
 ## 실행 방법
 
@@ -71,15 +96,10 @@ download:
 
 1. `ga-hello-world-master/app` 경로로 이동하세요.
 2. `run.sh` 파일을 실행하세요. (Windows 환경에서는 `run.bat` 파일을 실행하세요.)
-3. 정상적으로 실행이 되면 `Aspectran>` 프롬프트가 나옵니다.
+3. 정상적으로 실행이 되면 `ga-hello-world>` 프롬프트가 나옵니다.
 4. 프롬프트에서 명령어 `hello`를 입력하면 "Hello, World!" 문자열이 출력됩니다.
 5. 명령어 `quit`를 입력하면 프로그램을 종료할 수 있습니다.
 
 > 실행이 안 될 경우 다음 두 가지 사항에 대해 점검해 보세요.  
 > - java 명령어를 실행할 수 있도록 환경변수가 설정되어 있는지 확인하세요.  
 > - Aspectran은 Java 8 이상을 필요로 합니다.
-
-## 실행 결과
-
-위 설정 구성으로 콘솔 환경에서 실행하면 다음과 같은 화면을 볼 수 있습니다.
-![실행 화면]({{ site.baseurl}}/images/examples/ga-hello-world.png)
