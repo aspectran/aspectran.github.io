@@ -42,7 +42,7 @@ widget5:
   image: header_examples_thumb.jpg
   text: |
     Explains the example application we use to introduce Aspectran in detail.
-asciinema: 109024
+asciinema: 109020
 permalink: /index.html
 ---
 {% comment %}
