@@ -724,6 +724,8 @@ body.video {
 //---------------------------
 
 body.frontpage .asciinema {
-  padding: 40px 0 10px;
-  background-color: $grey-3;
+  @include breakpoint(large) {
+    padding: 40px 0 10px;
+    background-color: $grey-3;
+  }
 }
