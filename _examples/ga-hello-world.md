@@ -13,7 +13,7 @@ download:
   url: https://github.com/aspectran-guides/ga-hello-world
 - label: "Download ZIP"
   url: https://github.com/aspectran-guides/ga-hello-world/archive/master.zip
-asciinema: 4cxhhrtlwbalbpv0se359c49a
+asciinema: 109024
 ---
 
 ## 시작하기

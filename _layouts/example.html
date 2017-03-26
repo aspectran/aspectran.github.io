@@ -58,7 +58,9 @@ outside_heading: true
 
           <div class="columns large-9 large-pull-3">
             {% if page.asciinema %}
-            <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
+            <div class="asciinema">
+              <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
+            </div>
             {% endif %}
             <article>
               {{ content }}

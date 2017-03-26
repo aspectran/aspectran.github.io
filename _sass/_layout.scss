@@ -15,6 +15,7 @@
 - Subfooter
 - CSS-Classes to add margin at top or bottom
 - Adjustments: Video Layout
+- Asciinema
 - Frontpage
 
 */
@@ -707,4 +708,22 @@ body.video {
   cite a:visited {
     color: #fff;
   }
+}
+
+// Asciinema
+//---------------------------
+
+.asciinema {
+  text-align: center;
+  .asciicast {
+    margin: 0 !important;
+  }
+}
+
+// Frontpage
+//---------------------------
+
+body.frontpage .asciinema {
+  padding: 40px 0 10px;
+  background-color: $grey-3;
 }

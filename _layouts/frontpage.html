@@ -28,6 +28,16 @@ layout: default
   </div>
 </div>
 
+{% if page.asciinema %}
+<div class="asciinema">
+  <div class="row">
+    <div class="small-12 columns">
+      <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 {% unless site.examples == empty %}
 <div class="row t30">
   <div class="columns">
