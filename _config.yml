@@ -6,10 +6,10 @@
 title: "Aspectran"
 
 # The slogan describes your website and is used on homepage in <title> and other important places
-slogan: "Next Generation Java Application Framework"
+slogan: "The Next Generation Java Application Framework"
 
 # The description is used on homepage and in the footer to quickly describe your website. Use a maximum of 150 characters for SEO-purposes.
-description: "Aspectran is a lightweight Java framework for building enterprise-ready Web applications and It can be embedded in Java applications or run in console mode."
+description: "Aspectran is a lightweight Java application framework for building Web, console-based, and embedded applications."
 
 # Main author of the website
 # See > authors.yml
@@ -206,10 +206,10 @@ msapplication_tilecolor:                "#fabb00"
 #-------------------------------------------------------------------
 
 og_image:                           "http://www.aspectran.com/assets/img/aspectran-logo.png"
-og_locale:                          "ko_KR"
+og_locale:                          "en_US"
 og_type:                            "website"
 og_title:                           "Aspectran"
-og_description:                     "Aspectran is a lightweight and extensible framework for building enterprise-ready Java Web applications."
+og_description:                     "Aspectran is a lightweight Java application framework for building Web, console-based, and embedded applications."
 # og_url:                           ""
 # og_site_name:                     ""
 
