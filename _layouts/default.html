@@ -4,21 +4,21 @@ layout: compress
 <!doctype html>
 <html class="no-js" lang="{% if site.language == nil %}en{% else %}{{ site.language }}{% endif %}">
 <head>
-	{% include head %}
+  {% include head %}
 </head>
 <body id="top-of-page" class="{{ page.format }}" itemscope itemtype="http://schema.org/WebPage">
 
-	{% unless page.skip_boilerplate %}
-	{% include navigation %}
-	{% endunless %}
+  {% unless page.skip_boilerplate %}
+  {% include navigation %}
+  {% endunless %}
 
-	{{ content }}
+  {{ content }}
 
-	{% unless page.skip_boilerplate %}
-	{% include footer %}
-	{% endunless %}
+  {% unless page.skip_boilerplate %}
+  {% include footer %}
+  {% endunless %}
 
-	{% include footer-scripts %}
+  {% include footer-scripts %}
 
 </body>
 </html>
