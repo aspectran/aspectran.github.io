@@ -38,35 +38,38 @@ Aspectran 3 includes the following packages that support different execution env
 * `com.aspectran.embedded` package: Contains classes to support embedding Aspectran in other applications.
 * `com.aspectran.web` package: Contains classes to support building Web applications.
 
-## 주요 패키지 구조
+## Package Structure
+
+Aspectran consists of the following major packages:
 
 ```
 com.aspectran
-├── core          핵심 기능 패키지
-│   ├── activity    요청과 응답을 처리하는 핵심 기능 패키지
-│   ├── adapter     핵심 기능과 구현 기능간의 인터페이스를 위한 패키지
-│   ├── context     공통 모듈 및 구동 환경을 구성하기 위한 패키지
-│   ├── service     서비스를 제공하기 위한 핵심 기능 패키지
-│   └── util        공통 유틸리티 패키지
-├── console       Console 기반 어플리케이션 실행 환경을 위한 패키지
-│   ├── activity    Console 기반 어플리케이션이 받은 요청과 응답을 처리하기 위한 패키지
-│   ├── adapter     Console 기반 어플리케이션 실행 환경과 핵심 기능 간의 인터페이스를 위한 패키지
-│   └── service     Console 기반 어플리케이션 실행 환경에 적합한 서비스를 제공하기 위한 패키지
-├── embedded      임베디드 어플리케이션 실행 환경을 위한 패키지
-│   ├── activity    임베디드 어플리케이션이 받은 요청과 응답을 처리하기 위한 패키지
-│   ├── adapter     임베디드 어플리케이션 실행 환경과 핵심 기능 간의 인터페이스를 위한 패키지
-│   └── service     임베디드 어플리케이션 실행 환경에 적합한 서비스를 제공하기 위한 패키지
-├── scheduler     핵심 기능을 이용해서 내장 스케쥴링 서비스를 구현한 패키지
-│   ├── activity    Job을 실행하기 위한 패키지
-│   ├── adapter     내장 스케쥴링 서비스와 핵심 기능 간의 인터페이스를 위한 패키지
-│   ├── service     내장 스케쥴링 서비스를 구동하기 위한 패키지
-│   └── support     내장 스케쥴링 서비스 설정을 지원하는 패키지
-└── web           웹 어플리케이션 실행 환경을 위한 패키지
-    ├── activity    웹 어플리케이션이 받은 요청과 응답을 처리하기 위한 패키지
-    ├── adapter     웹 어플리케이션 실행 환경과 핵심 기능 간의 인터페이스를 위한 패키지
-    ├── service     웹 어플리케이션 실행 환경에 적합한 서비스를 제공하기 위한 패키지
-    ├── startup     웹 어플리케이션 실행 환경에서 서비스를 구동하기 위한 패키지
-    └── support     웹 어플리케이션에 필요한 확장 기능을 지원하기 위한 패키지
+├── core          Provides core interfaces and classes for the Aspectran infrastructure
+│   ├── activity    A package for providing a core activity for processing request and response
+│   ├── adapter     A package for providing basic adapters for integration with a core activity
+│   ├── context     A Package for providing core components and configuring an execution environment
+│   ├── service     A package for providing a core service using Aspectran infrastrucre
+│   └── util        A package that contain miscellaneous utilities
+├── console       A package for building console-based applications based on the Aspectran infrastructure
+│   ├── activity    Contains a variant of the activity interface for console-based application
+│   ├── adapter     Contains a variant of the adapter interface for console-based application
+│   ├── inout       A package to provide console input / output handling
+│   └── service     Contains a variant of the service interface for console-based application
+├── embedded      A package that provides the ability to embed Aspectran in other applications
+│   ├── activity    Contains a variant of the activity interface for embedded Aspectran
+│   ├── adapter     Contains a variant of the adapter interface for embedded Aspectran
+│   └── service     Contains a variant of the service interface for embedded Aspectran
+├── scheduler     Built-in scheduler package that integrates with Aspectran infrastructure
+│   ├── activity    Contains a variant of the activity interface for built-in scheduler
+│   ├── adapter     Contains a variant of the adapter interface for built-in scheduler
+│   ├── service     Contains a variant of the service interface for built-in scheduler
+│   └── support     A package to support external modules for built-in scheduler
+└── web           A package for building web applications based on the Aspectran infrastructure
+    ├── activity    Contains a variant of the activity interface for web application
+    ├── adapter     Contains a variant of the adapter interface for web application
+    ├── service     Contains a variant of the service interface for web application
+    ├── startup     Provides servlets and listeners for integration with web application
+    └── support     A package to support external modules for web application integration
 ```
 
 ## History of Aspectran
