@@ -12,31 +12,32 @@ inside_heading: true
 comments: true
 permalink: /info/
 ---
-Aspectran is a lightweight Java framework for building enterprise-ready Web applications and It can be embedded in Java applications or run in console mode.
-Aspectran has a special feature that can provide the same services using the same configuration settings on the Web, console-based, or other applications.
+Aspectran is a lightweight Java application framework for building Web, console-based, and embedded applications.
 Aspectran will support most of the functionality required in an enterprise environment, and will grow into a next-generation Java application framework.
 
 The main features of Aspectran are as follows:
 
-* Supports POJO (*Plain Old Java Object*) programming model.  
+* Support various execution environments with the same configuration settings  
+  You can use the same configuration settings for different execution environments, such as Web, console-based, and other applications.
+* Support POJO (*Plain Old Java Object*) programming model  
   You can concentrate on implementing the actual functionality you need, rather than extending the functionality by inheriting specific classes.
   The resulting value can be returned to the most simple Java object.
-* Supports Inversion of Control (*IoC*).  
+* Support Inversion of Control (*IoC*)  
   The framework controls the overall flow and invokes the functionality of the module created by the developer.
   Provides the ability to manage the creation and lifecycle of objects, allowing developers to focus on business logic.
-* Supports Dependency Injection (*DI*).  
+* Support Dependency Injection (*DI*)  
   The framework links modules that depend on each other at runtime.
   It can maintain low coupling between modules and increase code reusability.
-* Supports Aspect-Oriented Programming (*AOP*).  
+* Support Aspect-Oriented Programming (*AOP*)  
   You can write code by separating core functions and additional functions.
   Once the core functionality implementation is complete, features such as transactions, logging, security, and exception handling can be combined with core functionality.
-* Supports building RESTful Web Services.
+* Support building RESTful Web Services
 
-Aspectran 3 includes the following packages that support different execution environments, based on the `core` package containing core functionality.
+The following packages based on the `core` package exist to support various execution environments.
 
-* `com.aspectran.console` package: Contains classes to support building Console-based applications.
-* `com.aspectran.embedded` package: Contains classes to support embedding Aspectran in other applications.
-* `com.aspectran.web` package: Contains classes to support building Web applications.
+* The `com.aspectran.console` package: Support ability to build console-based applications
+* The `com.aspectran.embedded` package: Support ability to embed Aspectran in other applications
+* The `com.aspectran.web` package: Support ability to build web applications
 
 ## Package Structure
 
