@@ -14,6 +14,9 @@ comments: true
   {% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
 </div>
 
+2017.4.23. // Version 4.0.0
+: *There have been a lot of changes in version 4.0.0. We will notify you of the changes as soon as they are finalized.*
+
 2017.1.31. // Version 3.3.0
 : New Features
 : - Added the ability to specify exposable `translet` for Web, Console and Scheduler services.
