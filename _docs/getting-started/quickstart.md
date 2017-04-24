@@ -3,7 +3,7 @@ layout: page
 format: "plate article"
 title: "Quick Start Guide"
 subheadline: "Getting Started with Aspectran"
-teaser: "Aspectran을 이용해서 간단한 Java 웹 어플리케이션을 만드는 방법에 대해 설명합니다."
+teaser: "Aspectran으로 간단한 Java 웹 어플리케이션을 만드는 과정을 설명합니다."
 outside_heading: true
 breadcrumb: true
 sidebar: toc
@@ -16,8 +16,8 @@ Aspectran을 이용해서 Java 웹 어플리케이션을 개발하기 위해서�
 * Java 8 이상
 * Servlet 3.1.0 이상
 
-빠른 시작을 위해 다음 GitHub 저장소를 Clone 또는 소스 파일을 다운로드해서 새로운 Maven 프로젝트를 생성해 주세요.  
-본 문서에서 사용된 모든 소스 파일이 포함되어 있습니다.
+빠른 시작을 위해 GitHub 저장소를 Clone 또는 소스 파일을 다운로드해서 새로운 Maven 프로젝트를 생성해 주세요.  
+본 문서에서 사용된 모든 소스 파일은 아래의 GitHub 저장소에서 구할 수 있습니다.
 
 {% include link-box href="https://github.com/aspectran-guides/ga-quick-start" %}
 
@@ -33,15 +33,15 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
 
 > AspectranServiceListener는 Aspectran Service 인스턴스를 생성하는 역할을 합니다.  
 > WebActivityServlet은 클라이언트로부터 받은 요청을 Aspectran Service에 위임하는 역할을 합니다.  
-> 만약 WebActivityServlet이 처리하지 못하는 요청은 DefaultServlet으로 처리권을 넘겨줍니다.  
-> DefaultServlet의 이름은 명시적으로 지정하지 않았지만, 내부적으로 웹어플리케이션 서버 종류에 따라서 자동으로 판단합니다.
+> 만약 WebActivityServlet이 처리할 수 없는 요청은 DefaultServlet이 대신 처리하도록 합니다.  
+> DefaultServlet의 이름은 명시적으로 지정하지 않았지만, 내부적으로 웹어플리케이션 서버 종류에 따라서 자동으로 지정됩니다.
 > 잘 알려진 웹어플리케이션 서버가 아닐 경우 DefaultServlet의 이름을 수동으로 명시할 수도 있습니다.
 
 `/ga-quick-start/`로 시작되는 요청 URI에 대해서는 `aspectran-activity`라는 이름을 가진 서블릿이 처리하도록 설정을 합니다.
 
 `/scheduler/`로 시작되는 요청 URI도 `aspectran-activity` 서블릿이 처리하도록 설정되어 있습니다.
 이는 스케쥴러에 의해 실행되는 Job을 웹브라우저에서도 실행할 수 있도록 하기 위한 것이며,
-실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿 맵핑을 반드시 제거해야 합니다.
+실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿 맵핑을 반드시 제거하도록 합니다.
 
 [***web.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/web.xml)
 {% highlight xml %}
@@ -50,58 +50,58 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-  <display-name>aspectran-examples</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-  </welcome-file-list>
-  <context-param>
-    <param-name>aspectran:config</param-name>
-    <param-value>
-        context: {
-            root: /WEB-INF/aspectran/config/simplest-configuration.xml
-            encoding: utf-8
-            resources: [
-                /WEB-INF/aspectran/config
-                /WEB-INF/aspectran/classes
-                /WEB-INF/aspectran/lib
-            ]
-            hybridLoad: false
-            autoReload: {
-                reloadMethod: hard
-                observationInterval: 5
-                startup: true
+    <display-name>aspectran-examples</display-name>
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    <context-param>
+        <param-name>aspectran:config</param-name>
+        <param-value>
+            context: {
+                root: /WEB-INF/aspectran/config/root-configuration.xml
+                encoding: utf-8
+                resources: [
+                    /WEB-INF/aspectran/config
+                    /WEB-INF/aspectran/classes
+                    /WEB-INF/aspectran/lib
+                ]
+                hybridLoad: false
+                autoReload: {
+                    reloadMode: hard
+                    observationInterval: 5
+                    startup: true
+                }
+                profiles: {
+                }
             }
-            profiles: {
+            scheduler: {
+                startDelaySeconds: 10
+                waitOnShutdown: true
+                startup: false
             }
-        }
-        scheduler: {
-            startDelaySeconds: 10
-            waitOnShutdown: true
-            startup: false
-        }
-        web: {
-            uriDecoding: utf-8
-        }
-    </param-value>
-  </context-param>
-  <listener>
-    <listener-class>com.aspectran.web.startup.listener.AspectranServiceListener</listener-class>
-  </listener>
-  <servlet>
-    <servlet-name>aspectran-activity</servlet-name>
-    <servlet-class>com.aspectran.web.startup.servlet.WebActivityServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>aspectran-activity</servlet-name>
-    <url-pattern>/ga-quick-start/*</url-pattern>
-  </servlet-mapping>
-  <!-- 실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿매핑을 제거하도록 합니다. -->
-  <servlet-mapping>
-    <servlet-name>aspectran-activity</servlet-name>
-    <url-pattern>/scheduler/*</url-pattern>
-  </servlet-mapping>
+            web: {
+                uriDecoding: utf-8
+            }
+        </param-value>
+    </context-param>
+    <listener>
+        <listener-class>com.aspectran.web.startup.listener.AspectranServiceListener</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>aspectran-activity</servlet-name>
+        <servlet-class>com.aspectran.web.startup.servlet.WebActivityServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>aspectran-activity</servlet-name>
+        <url-pattern>/ga-quick-start/*</url-pattern>
+    </servlet-mapping>
+    <!-- 실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿매핑을 제거하도록 합니다. -->
+    <servlet-mapping>
+        <servlet-name>aspectran-activity</servlet-name>
+        <url-pattern>/scheduler/*</url-pattern>
+    </servlet-mapping>
 </web-app>
 {% endhighlight %}
 
@@ -111,8 +111,8 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
 **APON**(*Aspectran Parameter Object Notation*) 형식의 설정 값을 가질 수 있습니다.
 
 > ***APON***(Aspectran Parameter Object Notation)은 ***JSON*** 과 표기법이 유사하며,
-> 정해진 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
-> 주로 초기 설정 값을 작성하기에 매우 편리하고, 자동으로 Java Object로 맵핑을 하기 때문에 설정 값을 정확하게 전달받을 수 있습니다.  
+> 미리 정의된 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
+> 어플리케이션의 초기 설정 값을 APON 형식으로 작성하면 자동으로 Java Object로 맵핑되기 때문에 정확한 설정 값을 편리하게 전달받을 수 있습니다.  
 > 참고로 Aspectran은 설정 메터데이터를 XML 형식뿐만 아니라 APON 형식으로도 작성할 수 있습니다.
 
 다음은 초기화 파라메터를 구성하는 세부 항목에 대한 설명입니다.
