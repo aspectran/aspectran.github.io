@@ -18,7 +18,7 @@
 
 <!ELEMENT aspectran (
   description?,
-  (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | import*)*
+  (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | append*)*
 )>
 
 <!ELEMENT description (#PCDATA)>
