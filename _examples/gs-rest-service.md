@@ -1,27 +1,27 @@
 ---
 layout: example
 format: plate article
-title: RESTful 웹서비스 활용 예제
-subheadline: Building a RESTful Web Service
-teaser: GET, PUT, POST, DELETE 등과 같은 HTTP 지원 메소드를 사용해서 RESTful 웹서비스를 이용하는 예제 페이지입니다.
+title: Building a RESTful Web Service
+subheadline: Getting Started
+teaser: A sample page that uses RESTful web services using HTTP support methods such as GET, PUT, POST, and DELETE.
 outside_heading: true
 breadcrumb: true
 image:
-  thumb: examples/ga-rest-service.png
+  thumb: examples/gs-rest-service.png
 download:
 - label: Front-end
-  url: https://github.com/aspectran-guides/ga-rest-service/blob/master/src/main/webapp/ga-rest-service.html
+  url: https://github.com/aspectran/gs-rest-service/blob/master/src/main/webapp/gs-rest-service.html
 - label: Back-end
-  url: https://github.com/aspectran-guides/ga-rest-service
-demo: ga-rest-service.html
+  url: https://github.com/aspectran/gs-rest-service
+demo: gs-rest-service.html
 ---
 
 ## root-configuration.xml
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 3.0//EN"
-    "http://aspectran.github.io/dtd/aspectran-3.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+    "http://aspectran.github.io/dtd/aspectran-4.dtd">
 
 <aspectran>
 
@@ -31,7 +31,7 @@ demo: ga-rest-service.html
 
   <!-- 기본 설정 -->
   <settings>
-    <setting name="transletNamePattern" value="/ga-rest-service/*"/>
+    <setting name="transletNamePattern" value="/gs-rest-service/*"/>
   </settings>
 
   <bean scan="sample.*Dao">
@@ -134,7 +134,7 @@ demo: ga-rest-service.html
     </exception>
   </translet>
 
-  <import file="/WEB-INF/aspectran/config/customers-translets.xml"/>
+  <append file="/WEB-INF/aspectran/config/customers-translets.xml"/>
 
 </aspectran>
 {% endhighlight %}
@@ -143,8 +143,8 @@ demo: ga-rest-service.html
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 3.0//EN"
-        "http://aspectran.github.io/dtd/aspectran-3.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-4.dtd">
 
 <aspectran>
 

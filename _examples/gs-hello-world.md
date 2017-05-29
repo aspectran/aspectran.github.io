@@ -2,17 +2,17 @@
 layout: example
 format: plate article
 title: Aspectran Hello World Example
-subheadline: Aspectran으로 만든 가장 간단한 Hello World 어플리케이션
-teaser: Aspectran을 이용하여 가장 간단한 방법으로 "Hello World!" 문자열을 출력하는 어플리케이션을 만들어 봅니다.
+subheadline: Getting Started
+teaser: Let's create a Hello World application with Aspectran.
 outside_heading: true
 breadcrumb: true
 image:
-  thumb: examples/ga-hello-world.png
+  thumb: examples/gs-hello-world.png
 download:
 - label: Repository
-  url: https://github.com/aspectran-guides/ga-hello-world
+  url: https://github.com/aspectran/gs-hello-world
 - label: "Download ZIP"
-  url: https://github.com/aspectran-guides/ga-hello-world/archive/master.zip
+  url: https://github.com/aspectran/gs-hello-world/archive/master.zip
 asciinema: 109020
 ---
 
@@ -29,7 +29,7 @@ asciinema: 109020
 
 "Hello, World!" 문자열을 출력하는 가장 간단한 설정 구성은 다음과 같이 작성될 수 있습니다.   
 
-[***ga-hello-world-master/app/config/hello-world-config.xml***](https://github.com/aspectran-guides/ga-hello-world/blob/master/app/config/hello-world-config.xml)
+[***gs-hello-world-master/app/config/hello-world-config.xml***](https://github.com/aspectran/gs-hello-world/blob/master/app/config/hello-world-config.xml)
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
@@ -89,14 +89,14 @@ asciinema: 109020
 여기서는 가장 간단한 방법이라고 생각되는 콘솔 환경에서 실행해 보겠습니다.
 
 먼저 다음 링크를 통하여 ZIP 파일을 내려받은 후 적당한 경로에 압축을 풀어 주세요.
-{% include label-link-box label="Download ZIP" href="https://github.com/aspectran-guides/ga-hello-world/archive/master.zip" %}
+{% include label-link-box label="Download ZIP" href="https://github.com/aspectran/gs-hello-world/archive/master.zip" %}
 
 본 Hello World 어플리케이션은 Windows, Unix/Linux 및 Mac OS의 콘솔 환경에서 실행이 가능합니다.  
 콘솔을 열고 다음 절차를 수행하세요.
 
-1. `ga-hello-world-master/app` 경로로 이동하세요.
+1. `gs-hello-world-master/app` 경로로 이동하세요.
 2. `run.sh` 파일을 실행하세요. (Windows 환경에서는 `run.bat` 파일을 실행하세요.)
-3. 정상적으로 실행이 되면 `ga-hello-world>` 프롬프트가 나옵니다.
+3. 정상적으로 실행이 되면 `gs-hello-world>` 프롬프트가 나옵니다.
 4. 프롬프트에서 명령어 `hello`를 입력하면 "Hello, World!" 문자열이 출력됩니다.
 5. 명령어 `quit`를 입력하면 프로그램을 종료할 수 있습니다.
 

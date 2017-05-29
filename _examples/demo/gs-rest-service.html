@@ -1,5 +1,5 @@
 <div class="panel alert-box warning radius">
-  <p>본 예제는 당분간 정상 작동하지 않을 수 있습니다. 양해 바랍니다.</p>
+  <p>This example may not function normally for the time being. please understand.</p>
 </div>
 
 <div class="row">
@@ -100,7 +100,7 @@ $(function() {
 function getCustomerList() {
   $.ajax({
     type: "GET",
-    url: backend + "/ga-rest-service/customers",
+    url: backend + "/gs-rest-service/customers",
     dataType: "json",
     success: function(data, textStatus, xhr) {
       $(".panel.alert-box").hide();
@@ -124,7 +124,7 @@ function getCustomer(id) {
   $("input.is-invalid-input").removeClass("is-invalid-input");
   $.ajax({
     type: "GET",
-    url: backend + "/ga-rest-service/customers/" + id,
+    url: backend + "/gs-rest-service/customers/" + id,
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
@@ -154,10 +154,10 @@ function saveCustomer() {
   var id = $("input[name=id]").val();
   if(id == "") {
     type = "POST";
-    url = backend + "/ga-rest-service/customers";
+    url = backend + "/gs-rest-service/customers";
   } else {
     type = "PUT";
-    url = backend + "/ga-rest-service/customers/" + id;
+    url = backend + "/gs-rest-service/customers/" + id;
   }
   $.ajax({
     type: type,
@@ -197,7 +197,7 @@ function deleteCustomer() {
   }
   $.ajax({
     type: "DELETE",
-    url: backend + "/ga-rest-service/customers/" + id,
+    url: backend + "/gs-rest-service/customers/" + id,
     dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
@@ -217,7 +217,7 @@ function updateApproval(approved) {
   }
   $.ajax({
     type: "PUT",
-    url: backend + "/ga-rest-service/customers/" + id + "/approve/" + (approved ? "true" : "false"),
+    url: backend + "/gs-rest-service/customers/" + id + "/approve/" + (approved ? "true" : "false"),
 		dataType: "json",
     success: function(data, textStatus, xhr) {
       describe(this.type, this.url, xhr);
