@@ -14,6 +14,9 @@ comments: true
   {% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
 </div>
 
+2017.5.31. // Version 4.1.0
+: *There have been a lot of changes in version 4.1.0. We will notify you of the changes as soon as they are finalized.*
+
 2017.4.23. // Version 4.0.0
 : *There have been a lot of changes in version 4.0.0. We will notify you of the changes as soon as they are finalized.*
 

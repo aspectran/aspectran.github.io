@@ -24,7 +24,7 @@ Provides user guide documentation for Aspectran users.
 
 ## [API Reference](/docs/api/)
 Provides Aspectran API documentation.
-{% include label-link-box label="Aspectran API 4.0.0" href="http://api.aspectran.com/4.0.0/" %}
+{% include label-link-box label="Aspectran API 4.1.0" href="http://api.aspectran.com/4.1.0/" %}
 
 ## [FAQ](/docs/faq/)
 We provide frequently asked questions and answers in advance.  
