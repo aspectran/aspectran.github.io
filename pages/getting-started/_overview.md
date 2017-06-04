@@ -1,13 +1,13 @@
 ---
 layout: page
-format: article
+format: "plate article"
 sidebar: toc
-title: "Getting Started"
+title: "Overview"
 subheadline: "Getting Started with Aspectran"
 teaser: "Provides comprehensive information about Aspectran."
-header:
-  image_fullwidth: "header_gettingstarted.jpg"
-  caption: "My cute second daughter"
+outside_heading: true
+breadcrumb: true
+noindex: true
 ---
 
 ## [About Aspectran](/info/)
@@ -24,7 +24,12 @@ Provides user guide documentation for Aspectran users.
 
 ## [API Reference](/docs/api/)
 Provides Aspectran API documentation.
-{% include label-link-box label="Aspectran API 4.1.0" href="http://api.aspectran.com/4.1.0/" %}
+{% include label-link-box label=site.data.aspectran.api_site.title href=site.data.aspectran.api_site.url %}
+
+## [FAQ](/docs/faq/)
+We provide frequently asked questions and answers in advance.  
+If you can not find the answer, or have other questions, please write to the [Contact](/contact/) page or [Aspectran Issues](https://github.com/aspectran/aspectran/issues).
+{% include label-link-box label="Aspectran Issues" href="https://github.com/aspectran/aspectran/issues" %}
 
 ## [Changelog](/docs/changelog/)
 Provides information on Aspectran's major change history.  
@@ -36,8 +41,8 @@ Provides java source packages and configuration metadata that can integrate the 
 {% include link-box href="https://github.com/aspectran/aspectran-modules" %}
 
 ## [Examples](/examples/)
-Provides a sample application developed using Aspectran.
-{% include link-box href="https://github.com/aspectran-guides" %}
+There are several demo projects that introduce Aspectran and help getting started with it.
+{% include link-box href="https://github.com/aspectran" %}
 
 ## License
 Aspectran is freely usable, licensed under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).

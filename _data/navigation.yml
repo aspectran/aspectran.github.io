@@ -11,19 +11,22 @@
   url: "/docs/"
   side: left
   dropdown:
-  - title: "User Guides"
-    url: "/docs/guides/"
-  - title: "API Reference"
+  - title: "Manual"
+    url: "/docs/manual/"
+  - title: "API Documentation"
     url: "/docs/api/"
   - title: "Changelog"
     url: "/docs/changelog/"
 
-- title: Modules
-  url: "/modules/"
+- title: Guides
+  url: "/guides/"
   side: left
+  dropdown:
+  - title: "Modules"
+    url: "/modules/"
 
-- title: Examples
-  url: "/examples/"
+- title: Projects
+  url: "/projects/"
   side: left
 
 - title: Support

@@ -4,14 +4,15 @@ format: "plate solid article"
 title: "Download"
 subheadline: "Aspectran Releases"
 teaser: "Aspectran is a free and open source Java application framework."
+permalink: /getting-started/download/
 ---
 
-## Latest release: 4.1.0
+## Latest release: {{ site.data.aspectran.stable_version }}
 
 [![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/aspectran/aspectran/badge.svg?branch=master&service=github)](https://coveralls.io/github/aspectran/aspectran?branch=master)
 
-Aspectran is a free and open source Java application framework. It's hosted, developed, and maintained on GitHub.
+Aspectran {{ site.data.aspectran.stable_version }} is the latest release and recommended version for all users.
 
 {% include label-link-box label="Aspectran project on GitHub" href="https://github.com/aspectran/aspectran" %}
 
@@ -28,7 +29,7 @@ See [all versions available on the Maven Central Repository][2].
 
 | Group Id      | Artifact Id    | Version    | Download                                                   |
 |---------------|----------------|------------|------------------------------------------------------------|
-| com.aspectran | [aspectran][3] | [4.1.0][4] | [pom][5], [jar][6], [javadoc (jar)][7], [sources (jar)][8] |
+| com.aspectran | [aspectran][3] | [{{ site.data.aspectran.stable_version }}][4] | [pom][5], [jar][6], [javadoc (jar)][7], [sources (jar)][8] |
 
 Add the following dependency to your pom.xml:
 
@@ -36,7 +37,7 @@ Add the following dependency to your pom.xml:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran</artifactId>
-  <version>4.1.0</version>
+  <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 {% endhighlight %}
 
@@ -62,8 +63,8 @@ Note that Aspectran 3 requires Java 8, so an explicit declaration of 1.8 compati
 [1]: http://repo1.maven.org/maven2/com/aspectran/aspectran/
 [2]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.aspectran%22
 [3]: http://search.maven.org/#search|ga|1|a%3A%22aspectran%22
-[4]: http://search.maven.org/#artifactdetails|com.aspectran|aspectran|4.1.0|jar
-[5]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/4.1.0/aspectran-4.1.0.pom
-[6]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/4.1.0/aspectran-4.1.0.jar
-[7]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/4.1.0/aspectran-4.1.0-javadoc.jar
-[8]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/4.1.0/aspectran-4.1.0-sources.jar
+[4]: http://search.maven.org/#artifactdetails|com.aspectran|aspectran|{{ site.data.aspectran.stable_version }}|jar
+[5]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/{{ site.data.aspectran.stable_version }}/aspectran-{{ site.data.aspectran.stable_version }}.pom
+[6]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/{{ site.data.aspectran.stable_version }}/aspectran-{{ site.data.aspectran.stable_version }}.jar
+[7]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/{{ site.data.aspectran.stable_version }}/aspectran-{{ site.data.aspectran.stable_version }}-javadoc.jar
+[8]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran/{{ site.data.aspectran.stable_version }}/aspectran-{{ site.data.aspectran.stable_version }}-sources.jar

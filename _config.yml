@@ -105,13 +105,13 @@ compress_html:
 collections:
   docs:
     output: true
-    permalink: "/:path/"
+    permalink: "/docs/:path/"
+  guides:
+    output: true
+    permalink: "/guides/:path/"
   modules:
     output: true
     permalink: "/modules/:path/"
-  examples:
-    output: true
-    permalink: "/examples/:path/"
 
 defaults:
   -
@@ -147,7 +147,7 @@ defaults:
   -
     scope:
       path: ""
-      type: "modules"
+      type: "guides"
     values:
       outside_heading: true
       breadcrumb: true
@@ -157,7 +157,7 @@ defaults:
   -
     scope:
       path: ""
-      type: "examples"
+      type: "modules"
     values:
       outside_heading: true
       breadcrumb: true

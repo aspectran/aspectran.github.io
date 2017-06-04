@@ -10,12 +10,12 @@
   class: ""
   title: ""
 
-- name: "Modules"
-  url: "/modules/"
+- name: "Guides"
+  url: "/guides/"
   class: ""
   title: ""
 
-- name: "Examples"
-  url: "/examples/"
+- name: "Projects"
+  url: "/projects/"
   class: ""
   title: ""

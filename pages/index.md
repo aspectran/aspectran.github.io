@@ -27,21 +27,21 @@ widget3:
   url: /docs/
   image: header_documentation_thumb.jpg
   text: |
-    User Guides<br/>
-    Java API Reference<br/>
-    FAQs &amp; Changelog
+    Manual<br/>
+    API Documentation<br/>
+    Changelog
 widget4:
-  title: Modules
-  url: /modules/
-  image: header_modules_thumb.jpg
-  text: |
-    Provides java source packages and configuration metadata.
-widget5:
-  title: Examples
-  url: /examples/
+  title: Guides
+  url: /guides/
   image: header_examples_thumb.jpg
   text: |
-    Explains the example application we use to introduce Aspectran in detail.
+    There are several demo projects that introduce Aspectran and help getting started with it.
+widget5:
+  title: Projects
+  url: /projects/
+  image: header_modules_thumb.jpg
+  text: |
+    Products developed based on Aspectran
 asciinema: 116148
 permalink: /index.html
 ---

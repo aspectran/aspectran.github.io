@@ -2,9 +2,10 @@
 layout: page
 format: plate article
 sidebar: right
-title: "User Guides"
+title: "Aspectran Manual"
 subheadline: "How to use Aspectran"
-teaser: "Aspectran 사용자를 위한 설명서입니다."
+teaser: "Welcome to the Aspectran 4.1 Manual!"
+permalink: /docs/manual/
 ---
 
 ## [Installation][1]
@@ -16,6 +17,6 @@ Aspectran을 웹컨테이너의 서블릿으로 등록하는 방법에 대해 �
 ## [Aspectran Configuration(draft)][3]
 Aspectran 설정 메타데이터 구성요소에 대해서 설명합니다.
 
-[1]: {{ side.baseurl }}/docs/guides/installation/
-[2]: {{ side.baseurl }}/docs/guides/servlet-configuration/
-[3]: {{ side.baseurl }}/docs/guides/aspectran-configuration/
+[1]: {{ side.baseurl }}/docs/manual/installation/
+[2]: {{ side.baseurl }}/docs/manual/servlet-configuration/
+[3]: {{ side.baseurl }}/docs/manual/aspectran-configuration/

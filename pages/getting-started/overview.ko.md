@@ -41,7 +41,7 @@ Aspectran의 소스 코드에 대한 상세한 변경이력은 GitHub에서 볼 
 
 ## [Examples](/examples/)
 Aspectran을 이용해서 만든 예제 응용 프로그램을 제공하고 있습니다.
-{% include link-box href="https://github.com/aspectran-guides" %}
+{% include link-box href="https://github.com/aspectran" %}
 
 ## License
 Aspectran is freely usable, licensed under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
