@@ -33,7 +33,7 @@ widget3:
 widget4:
   title: Guides
   url: /guides/
-  image: header_examples_thumb.jpg
+  image: header_guides_thumb.jpg
   text: |
     There are several demo projects that introduce Aspectran and help getting started with it.
 widget5:
