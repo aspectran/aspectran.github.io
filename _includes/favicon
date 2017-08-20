@@ -4,7 +4,10 @@
 *   
 {% endcomment %}
 
-<link rel="mask-icon" href="{{ site.url }}/assets/img/aspectran-logo.svg" color="#4B555A" />
+{% if site.mask-icon %}
+	<link rel="mask-icon" href="{{ site.url }}/assets/img/{{ site.mask-icon }}" color="{{ site.mask-icon-color }}" />
+{% endif %}
+
 
 {% if site.favicon-32x32 %}
 	{% comment %} Regular Old-Skool Favicon: {% endcomment %}

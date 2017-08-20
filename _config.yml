@@ -185,6 +185,8 @@ defaults:
 # More information » https://mathiasbynens.be/notes/touch-icons
 #-------------------------------------------------------------------
 
+mask-icon:                              "aspectran-logo.svg"
+mask-icon-color:                        "#4B555A"
 favicon-32x32:                          "favicon-32x32.png"
 touch-icon-192x192:                     "touch-icon-192x192.png"
 apple-touch-icon-180x180-precomposed:   "apple-touch-icon-180x180-precomposed.png"
