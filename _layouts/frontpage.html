@@ -28,21 +28,30 @@ layout: default
   </div>
 </div>
 
-{% if page.asciinema %}
-<div class="asciinema show-for-medium">
-  <div class="row">
-    <div class="small-12 columns">
-      <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
-    </div>
-  </div>
-</div>
-{% endif %}
-
 {% unless site.guides == empty %}
 <div class="row t30">
   <div class="columns">
+      {% if page.asciinema %}
+      <div class="asciinema hide-for-large">
+        <div class="row">
+          <div class="small-12 columns">
+            <a href="https://asciinema.org/a/{{ page.asciinema }}"><img src="https://asciinema.org/a/{{ page.asciinema }}.png" width="836"/></a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
     <div class="panel white">
       <div class="row">
+        {% if page.asciinema %}
+        <div class="asciinema show-for-large">
+          <div class="row">
+            <div class="small-12 columns">
+              <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+          
         {% assign guides = site.guides %}
         {% for guide in guides limit:2 %}
         <div class="medium-6 columns">

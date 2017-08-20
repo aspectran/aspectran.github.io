@@ -715,6 +715,7 @@ body.video {
 
 .asciinema {
   text-align: center;
+  padding: 0 10px 20px;
   .asciicast {
     margin: 0 !important;
   }
@@ -724,8 +725,9 @@ body.video {
 //---------------------------
 
 body.frontpage .asciinema {
+  padding: 0 0 10px;
+  margin: 0 auto;
   @include breakpoint(large) {
-    padding: 40px 0 10px;
-    background-color: $grey-3;
+    padding: 50px 10px;
   }
 }
