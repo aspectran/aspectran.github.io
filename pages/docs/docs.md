@@ -4,7 +4,7 @@ format: article
 sidebar: right
 title: "Documentation"
 subheadline: "How to use Aspectran"
-teaser: "Aspectran Documentation"
+teaser: "Lean Aspectran"
 header:
   image_fullwidth: "header_documentation.jpg"
   caption: "My two daughters draw a picture on the car-free roads."
