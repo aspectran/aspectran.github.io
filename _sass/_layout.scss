@@ -31,6 +31,53 @@
     position: fixed;
     width: 100%;
     opacity: .9;
+    .top-bar {
+      background: $ci-0;
+      @include breakpoint(large) {
+        .top-bar-logo {
+          a.logo {
+            margin: rem-calc(2.5 12 0 15);
+            width: 37px;
+            height: 37px;
+            background: url('/assets/img/aspectran-icon.png') no-repeat;
+          }
+        }
+        .quick-search-box {
+          border: 0;
+          padding: rem-calc(2.6 3.4 2.6 3.4);
+        }
+      }
+      ul.dropdown {
+        @include breakpoint(medium down) {
+          background-color: darken($ci-0, 10%);
+        }
+        > li {
+          border: 0;
+          a {
+            font-weight: normal;
+            padding: .93rem 1.5rem .93rem 1rem;
+          }
+          &.active {
+            @include breakpoint(large) {
+              border: 0;
+              background-color: lighten($ci-0, 5%);
+            }
+          }
+          &:hover {
+            border: 0;
+          }
+        }
+      }
+    }
+    .top-bar:hover {
+      @include breakpoint(large) {
+        .top-bar-logo {
+          a.logo {
+            margin: rem-calc(2.5 12 0 15);
+          }
+        }
+      }
+    }
   }
   .title-bar {
     display: none;
@@ -61,6 +108,8 @@
     }
   }
   .top-bar {
+    position: absolute;
+    z-index: 102;
     width: 100%;
     .quick-search-box {
       padding: .8rem .4rem;
@@ -73,6 +122,7 @@
       }
     }
     @include breakpoint(medium down) {
+      background-color: darken($ci-0, 10%);
       .top-bar-logo {
         display: none;
       }
@@ -84,11 +134,28 @@
       }
     }
     @include breakpoint(large) {
+      background: none;
       .top-bar-logo {
         float: left;
-        img {
-          margin: rem-calc(4.5 12 0 15);
+        position: relative;
+        border-top: 2px solid transparent;
+        a.logo {
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: block;
+          margin: rem-calc(8 20 0 15);
+          width: 72px;
+          height: 72px;
+          background: url('/assets/img/apple-touch-icon-72x72-precomposed.png') no-repeat;
         }
+        img {
+          display: none;
+          margin: rem-calc(9.5 12 0 15);
+        }
+      }
+      .top-bar-left {
+        margin-left: 108px;
       }
       .top-bar-right {
         .menu {
@@ -99,22 +166,22 @@
         float: right;
         display: table-cell;
         vertical-align: middle;
-        padding: rem-calc(2.6 3.4 2.6 3.4);
+        padding: rem-calc(7.6 3.4 2.6 3.4);
+        border-top: 2px solid transparent;
         @include breakpoint(large) {
           max-width: 220px;
         }
       }
     }
     ul.dropdown {
-      @include breakpoint(medium down) {
-        background-color: darken($ci-0, 10%);
-        > li {
-          display: block;
-        }
-      }
+      background: none;
       li {
+        @include breakpoint(medium down) {
+          display: block;
+          background-color: darken($ci-0, 20%);
+        }
         > a {
-          color: #fff;
+          color: #eee;
           background: none;
           padding: .93rem 1.5rem .93rem 1rem;
           @include breakpoint(medium down) {
@@ -122,19 +189,31 @@
           }
         }
         &.active {
-          @include breakpoint(large) {
-            background-color: lighten($ci-0, 5%);
-          }
           a {
             background: none;
           }
         }
         &:hover {
-          background-color: darken($ci-0, 5%);
+          background-color: darken($ci-0, 8%);
         }
         &.is-dropdown-submenu-parent > a::after {
           border-color: lighten($ci-1, 5%) transparent transparent;
           right: 9px;
+        }
+      }
+      @include breakpoint(large) {
+        > li {
+          border-top: 2px solid transparent;
+          a {
+            font-weight: bold;
+            padding: 1.3rem 1.5rem 1.3rem 1rem;
+          }
+          &.active {
+            border-top: 2px solid red;
+          }
+          &:hover {
+            border-top: 2px solid darken(red, 20%);
+          }
         }
       }
       ul.submenu {
@@ -145,6 +224,10 @@
           right: 3.1rem;
         }
         li {
+          background-color: darken($ci-0, 10%);
+          > a {
+            padding: .93rem 1.5rem .93rem 1rem;
+          }
           @include breakpoint(medium down) {
             &.submenu-closer {
               display: block;
@@ -155,7 +238,7 @@
               display: none;
             }
             &.active {
-              background-color: $ci-0;
+              background-color: darken($ci-0, 15%);
             }
           }
           &:hover {
@@ -164,6 +247,29 @@
         }
         li:last-child {
           border-radius: 0 0 10px 10px;
+        }
+      }
+    }
+  }
+  @include breakpoint(large) {
+    .top-bar:hover {
+      background: darken($ci-0, 3%);
+      .top-bar-logo {
+        a.logo {
+          margin: rem-calc(9.5 12 0 15);
+          width: 37px;
+          height: 37px;
+          background: url('/assets/img/aspectran-icon.png') no-repeat;
+        }
+      }
+      ul.dropdown {
+        > li {
+          a {
+            font-weight: normal;
+          }
+          &.active {
+            background-color: darken($ci-0, 8%);
+          }
         }
       }
     }
@@ -237,13 +343,16 @@ body.plate {
 
 #masthead {
   position: relative;
+  padding-top: 46px;
   min-width: 320px;
   color: $ci-6;
-  background-color: $ci-1;
+  background-color: lighten($ci-0, 5%);
   text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
   header {
-    padding-top: 1.5em;
-    min-height: 150px;
+    @include breakpoint(medium) {
+      padding-top: 90px;
+      min-height: 240px;
+    }
   }
   img {
     border-radius: 0;
@@ -258,18 +367,17 @@ body.plate {
     background-color: $ci-1;
     @include breakpoint(small only) {
       nav {
-        background-color: darken($ci-1, 6%);
         border-radius: 10px 10px 0 0;
+        background-color: $ci-1;
       }
     }
     @include breakpoint(medium only) {
       nav {
-        background-color: darken($ci-1, 6%);
         border-radius: 10px 10px 0 0;
+        background-color: $ci-1;
       }
     }
     @include breakpoint(large) {
-      background-color: darken($ci-1, 6%);
       border-radius: 10px 10px 0 0;
     }
     .breadcrumbs {
@@ -353,12 +461,12 @@ body.plate {
     padding: 15px 0;
   }
   .masthead-with-text {
-    height: 240px;
+    height: 290px;
     padding: 30px 0;
     font-size: rem-calc(36);
   }
   .masthead-with-image-header {
-    height: 240px;
+    height: 355px;
     #slogan {
       margin-top: 110px;
       margin-left: 0;
@@ -367,7 +475,8 @@ body.plate {
       }
     }
     header {
-      margin-top: 1em;
+      margin-top: 10px;
+      padding-top: 0;
       h1 {
         font-size: 2em;
         font-weight: 700;
@@ -392,11 +501,11 @@ body.plate {
     padding: 20px 0;
   }
   .masthead-with-text {
-    height: 300px;
+    height: 350px;
     padding: 60px 0;
   }
   .masthead-with-image-header {
-    height: 300px;
+    height: 360px;
     #slogan {
       margin-top: 70px;
       margin-left: 33px;
@@ -405,7 +514,7 @@ body.plate {
       }
     }
     header {
-      margin-top: 80px;
+      margin-top: 30px;
       h1 {
         font-weight: 700;
       }
@@ -424,11 +533,11 @@ body.plate {
     padding: 30px 0;
   }
   .masthead-with-text {
-    height: 360px;
+    height: 410px;
     padding: 60px 0;
   }
   .masthead-with-image-header {
-    height: 360px;
+    height: 420px;
     #slogan {
       margin-top: 110px;
       margin-left: 33px;
@@ -437,7 +546,7 @@ body.plate {
       }
     }
     header {
-      margin-top: 125px;
+      margin-top: 80px;
       h1 {
         font-size: 3em;
         font-weight: 700;
@@ -457,11 +566,11 @@ body.plate {
     padding: 45px 0;
   }
   .masthead-with-text {
-    height: 460px;
+    height: 510px;
     padding: 95px 0;
   }
   .masthead-with-image-header {
-    height: 460px;
+    height: 510px;
     #slogan {
       margin-top: 200px;
       img {
@@ -469,7 +578,7 @@ body.plate {
       }
     }
     header {
-      margin-top: 210px;
+      margin-top: 160px;
       h1 {
         font-size: 3.3em;
         font-weight: 700;
@@ -482,15 +591,25 @@ body.plate {
 //------------------------
 
 .frontpage #masthead {
-  padding: 30px 0 10px 0;
-  background-color: $bg-color;
-  color: $text-color;
+  @include breakpoint(medium down) {
+    padding: 40px 0 10px 0;
+    background-color: $bg-color;
+    color: $text-color;
+  }
+  @include breakpoint(large) {
+    padding: 110px 0 50px 0;
+    background-color: lighten($ci-0, 5%);
+    color: #ccc;
+  }
   text-shadow: none;
   #forkme-ribbon {
     display: block;
   }
   a {
     border: 0;
+    @include breakpoint(large) {
+      color: #eee;
+    }
   }
   img {
     border-radius: $global-radius;

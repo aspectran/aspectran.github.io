@@ -57,10 +57,10 @@
     $(".lazy-sticky").each(function() {
       var $win = $(window);
       var $this = $(this);
-      var topNavHeight = $("#navigation").height();
+      var topNavHeight = 60; /*$("#navigation").height();*/
       var upToTopHeight = $("#up-to-top").height() + 30 + 60;
       var footerHeight = $("#footer-content").height() + upToTopHeight;
-      var baseOffsetTop = $this.offset().top - ($("#navigation").hasClass("fixed") ? topNavHeight : topNavHeight * 2);
+      var baseOffsetTop = $this.offset().top - topNavHeight; /*($("#navigation").hasClass("fixed") ? topNavHeight : topNavHeight * 2)*/;
       var offsetTop = 0;
       var thisHeight = $this.height();
       var winHeight = $win.height();
