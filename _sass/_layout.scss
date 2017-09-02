@@ -33,19 +33,22 @@
     opacity: .9;
     .top-bar {
       background: $ci-0;
-      @include breakpoint(large) {
-        .top-bar-logo {
-          a.logo {
-            margin: rem-calc(2.5 12 0 15);
-            width: 37px;
-            height: 37px;
-            background: url('/assets/img/aspectran-icon.png') no-repeat;
+      .top-bar-logo {
+        a.logo {
+          margin: rem-calc(2.5 12 0 15);
+          width: 37px;
+          height: 37px;
+          display: block;
+          background: url('/assets/img/aspectran-site-logo.png') no-repeat;
+          background-size: cover;
+          img {
+            display: none;
           }
         }
-        .quick-search-box {
-          border: 0;
-          padding: rem-calc(2.6 3.4 2.6 3.4);
-        }
+      }
+      .quick-search-box {
+        border: 0;
+        padding: rem-calc(2.6 3.4 2.6 3.4);
       }
       ul.dropdown {
         @include breakpoint(medium down) {
@@ -69,8 +72,8 @@
         }
       }
     }
-    .top-bar:hover {
-      @include breakpoint(large) {
+    @include breakpoint(large) {
+      .top-bar:hover {
         .top-bar-logo {
           a.logo {
             margin: rem-calc(2.5 12 0 15);
@@ -86,7 +89,17 @@
     padding: 0;
     .title-bar-left {
       float: left;
-      padding: rem-calc(0 12);
+      a.logo {
+        margin: rem-calc(5 12 0 12);
+        width: 37px;
+        height: 37px;
+        display: block;
+        background: url('/assets/img/aspectran-site-logo.png') no-repeat;
+        background-size: cover;
+        img {
+          display: none;
+        }
+      }
     }
     .title-bar-center {
       position: absolute;
@@ -210,10 +223,10 @@
             padding: 1.3rem 1.5rem 1.3rem 1rem;
           }
           &.active {
-            border-top: 2px solid red;
+            border-top: 2px solid $ci-6;
           }
           &:hover {
-            border-top: 2px solid darken(red, 20%);
+            border-top: 2px solid darken($ci-6, 20%);
           }
         }
       }
