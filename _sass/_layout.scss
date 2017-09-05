@@ -30,7 +30,6 @@
   &.fixed {
     position: fixed;
     width: 100%;
-    opacity: .9;
     .top-bar {
       background: $ci-0;
       .top-bar-logo {
@@ -48,7 +47,12 @@
       }
       .quick-search-box {
         border: 0;
-        padding: rem-calc(2.6 3.4 2.6 3.4);
+        @include breakpoint(medium down) {
+          padding: .8rem .4rem;
+        }
+        @include breakpoint(large) {
+          padding: rem-calc(2.6 3.4 2.6 3.4);
+        }
       }
       ul.dropdown {
         @include breakpoint(medium down) {
@@ -63,7 +67,7 @@
           &.active {
             @include breakpoint(large) {
               border: 0;
-              background-color: lighten($ci-0, 5%);
+              background-color: darken($ci-0, 5%);
             }
           }
           &:hover {
@@ -124,6 +128,7 @@
     position: absolute;
     z-index: 102;
     width: 100%;
+    opacity: .96;
     .quick-search-box {
       padding: .8rem .4rem;
       .input-group {
@@ -135,7 +140,6 @@
       }
     }
     @include breakpoint(medium down) {
-      background-color: darken($ci-0, 10%);
       .top-bar-logo {
         display: none;
       }
@@ -180,7 +184,7 @@
         float: right;
         display: table-cell;
         vertical-align: middle;
-        padding: rem-calc(7.6 3.4 2.6 3.4);
+        padding: rem-calc(7.6 15 7.6 3.4);
         border-top: 2px solid transparent;
         @include breakpoint(large) {
           max-width: 220px;
@@ -238,7 +242,7 @@
           right: 3.1rem;
         }
         li {
-          background-color: darken($ci-0, 10%);
+          background-color: darken($ci-0, 9%);
           > a {
             padding: .93rem 1.5rem .93rem 1rem;
           }
@@ -252,7 +256,7 @@
               display: none;
             }
             &.active {
-              background-color: darken($ci-0, 15%);
+              background-color: darken($ci-0, 10%);
             }
           }
           &:hover {
@@ -267,7 +271,7 @@
   }
   @include breakpoint(large) {
     .top-bar:hover {
-      background: darken($ci-0, 3%);
+      background: $ci-0;
       .top-bar-logo {
         a.logo {
           margin: rem-calc(9.5 12 0 15);
