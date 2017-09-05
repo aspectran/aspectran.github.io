@@ -180,40 +180,17 @@ defaults:
 
 
 #-------------------------------------------------------------------
-# Favicons
-# Favicon-Crap: Favicons, Chrome, Android & Apple Touch Buttons
-# More information » https://mathiasbynens.be/notes/touch-icons
-#-------------------------------------------------------------------
-
-mask-icon:                              "aspectran-logo.svg"
-mask-icon-color:                        "#4B555A"
-favicon-32x32:                          "favicon-32x32.png"
-touch-icon-192x192:                     "touch-icon-192x192.png"
-apple-touch-icon-180x180-precomposed:   "apple-touch-icon-180x180-precomposed.png"
-apple-touch-icon-152x152-precomposed:   "apple-touch-icon-152x152-precomposed.png"
-apple-touch-icon-144x144-precomposed:   "apple-touch-icon-144x144-precomposed.png"
-apple-touch-icon-120x120-precomposed:   "apple-touch-icon-120x120-precomposed.png"
-apple-touch-icon-114x114-precomposed:   "apple-touch-icon-114x114-precomposed.png"
-apple-touch-icon-76x76-precomposed:     "apple-touch-icon-76x76-precomposed.png"
-apple-touch-icon-72x72-precomposed:     "apple-touch-icon-72x72-precomposed.png"
-apple-touch-icon-precomposed:           "apple-touch-icon-precomposed.png"
-msapplication_tileimage:                "msapplication_tileimage.png"               # Size 144x144
-msapplication_tilecolor:                "#fabb00"
-
-
-
-#-------------------------------------------------------------------
 # Facebook
 # Facebook-Optimization › http://j.mp/fb_optimize
 #-------------------------------------------------------------------
 
-og_image:                           "http://www.aspectran.com/assets/img/aspectran-logo.png"
-og_locale:                          "en_US"
-og_type:                            "website"
-og_title:                           "Aspectran"
-og_description:                     "Aspectran is a lightweight Java application framework for building Web, console-based, and embedded applications."
-# og_url:                           ""
-# og_site_name:                     ""
+og_image:                   "http://www.aspectran.com/assets/img/aspectran-logo.png"
+og_locale:                  "en_US"
+og_type:                    "website"
+og_title:                   "Aspectran"
+og_description:             "Aspectran is a lightweight Java application framework for building Web, console-based, and embedded applications."
+# og_url:                   ""
+# og_site_name:             ""
 
 
 
