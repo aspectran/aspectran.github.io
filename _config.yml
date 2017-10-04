@@ -32,8 +32,8 @@ improve_content: 'https://github.com/aspectran/aspectran.github.io/edit/master'
 #
 urlimg: '/images/'
 
-# Logo Icon size is 36x36 pixels
-logo_icon: "aspectran-icon.png"
+# Logo Image
+logo_img: "aspectran-logo.png"
 
 # Logo size is 425x170 pixels
 slogan_img: "aspectran-slogan.png"
