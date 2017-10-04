@@ -305,16 +305,6 @@
 //--------------
 
 body.plate {
-  @include breakpoint(small only) {
-    .row.breadcrumbs-bar {
-      background-color: transparent !important;
-    }
-  }
-  @include breakpoint(medium only) {
-    .row.breadcrumbs-bar {
-      background-color: transparent !important;
-    }
-  }
   @include breakpoint(large) {
     background-color: $grey-1;
   }
@@ -393,20 +383,22 @@ body.plate {
   }
   .breadcrumbs-bar {
     padding: 0;
-    background-color: $ci-1;
     @include breakpoint(small only) {
+      background-color: transparent;
       nav {
-        border-radius: 10px 10px 0 0;
         background-color: $ci-1;
+        border-radius: 10px 10px 0 0;
       }
     }
     @include breakpoint(medium only) {
+      background-color: transparent;
       nav {
-        border-radius: 10px 10px 0 0;
         background-color: $ci-1;
+        border-radius: 10px 10px 0 0;
       }
     }
     @include breakpoint(large) {
+      background-color: $ci-1;
       border-radius: 10px 10px 0 0;
     }
     .breadcrumbs {
