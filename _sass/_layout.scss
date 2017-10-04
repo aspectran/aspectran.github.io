@@ -17,6 +17,7 @@
 - Adjustments: Video Layout
 - Asciinema
 - Frontpage
+- Hexagon shapes with pure CSS3
 
 */
 
@@ -243,6 +244,7 @@
         }
         li {
           background-color: darken($ci-0, 9%);
+          min-width: 250px;
           > a {
             padding: .93rem 1.5rem .93rem 1rem;
           }
@@ -366,11 +368,15 @@ body.plate {
 
 #masthead {
   position: relative;
+  z-index: -1;
   padding-top: 46px;
   min-width: 320px;
   color: $ci-6;
   background-color: lighten($ci-0, 5%);
   text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
+  .row {
+    position: relative;
+  }
   header {
     @include breakpoint(medium) {
       padding-top: 90px;
@@ -881,5 +887,62 @@ body.frontpage .asciinema {
   margin: 0 auto;
   @include breakpoint(large) {
     padding: 50px 10px;
+  }
+}
+
+// Hexagon shapes with pure CSS3
+//---------------------------
+
+.hexagon {
+  width: 100px;
+  height: 55px;
+  background: lighten($ci-0, 10%);
+  position: absolute;
+  z-index: -1;
+  &:before {
+    content: "";
+    position: absolute;
+    top: -25px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 25px solid lighten($ci-0, 10%);
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -25px;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-top: 25px solid lighten($ci-0, 10%);
+  }
+  &.hex1 {
+    top: 20px;
+    left: 0px;
+  }
+  &.hex2 {
+    top: 20px;
+    left: 110px;
+  }
+  &.hex3 {
+    top: 20px;
+    left: 220px;
+  }
+  &.hex4 {
+    top: 110px;
+    left: 55px;
+  }
+  &.hex5 {
+    top: 110px;
+    left: 165px;
+  }
+  &.hex6 {
+    top: 110px;
+    left: 275px;
   }
 }
