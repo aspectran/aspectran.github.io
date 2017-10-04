@@ -1,7 +1,7 @@
 <nav id="navigation" class="no-js">
   <div class="title-bar" data-responsive-toggle="gnb-menu" data-hide-for="large">
     <div class="title-bar-left">
-      <a class="logo" href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_icon }}" alt="Aspectran"/></a>
+      <a class="logo" href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
     </div>
     <div class="title-bar-center">
       <a href="#top-of-page">Aspectran</a>
@@ -14,7 +14,7 @@
   <div class="top-bar" id="gnb-menu">
     <div class="row">
       <div class="top-bar-logo">
-        <a class="logo" href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_icon }}" alt="Aspectran"/></a>
+        <a class="logo" href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
       </div>
       <div class="top-bar-left">
         <ul class="dropdown menu" data-dropdown-menu data-close-on-click-inside="false">
