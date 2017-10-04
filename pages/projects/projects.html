@@ -33,7 +33,7 @@ permalink: /projects/
       
           function init(evt)
           {
-            if ( window.svgDocument == null )
+            if (window.svgDocument == null)
             {
               svgDocument = evt.target.ownerDocument;
             }
@@ -54,8 +54,8 @@ permalink: /projects/
             my_transform.setAttributeNS(null, "type", "rotate");
             my_transform.setAttributeNS(null, "dur", speed + "s");
             my_transform.setAttributeNS(null, "repeatCount", "indefinite");
-            my_transform.setAttributeNS(null, "from", "0 " + cx + " " + cy);
-            my_transform.setAttributeNS(null, "to", 360 * direction + " "+cx + " " + cy);
+            my_transform.setAttributeNS(null, "from", 360 * direction + " " + cx + " " + cy);
+            my_transform.setAttributeNS(null, "to", "0 " + cx + " " + cy);
         
             element_to_rotate.appendChild(my_transform);
             my_transform.beginElement();
