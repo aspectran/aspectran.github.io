@@ -30,7 +30,7 @@
 		    {% endif %}
 
     	</header>
-			<div style="position:absolute;bottom:210px;right:400px;">
+			<div class="hexagons">
 				<div class="hexagon hex1"></div>
 				<div class="hexagon hex2"></div>
 				<div class="hexagon hex3"></div>
@@ -87,7 +87,7 @@
 		    {% endif %}
 
 	    </header>
-			<div style="position:absolute;bottom:210px;right:400px;">
+			<div class="hexagons">
 				<div class="hexagon hex1"></div>
 				<div class="hexagon hex2"></div>
 				<div class="hexagon hex3"></div>

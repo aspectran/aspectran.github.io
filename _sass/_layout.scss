@@ -92,6 +92,9 @@
     line-height: 46px;
     background-color: $ci-0;
     padding: 0;
+    position: absolute;
+    z-index: 102;
+    width: 100%;
     .title-bar-left {
       float: left;
       a.logo {
@@ -139,6 +142,9 @@
           background-color: lighten($ci-0, 50%);
         }
       }
+    }
+    @include breakpoint(small only) {
+      margin-top: 46px;
     }
     @include breakpoint(medium down) {
       .top-bar-logo {
@@ -358,7 +364,7 @@ body.plate {
 
 #masthead {
   position: relative;
-  z-index: -1;
+  z-index: 1;
   padding-top: 46px;
   min-width: 320px;
   color: $ci-6;
@@ -366,20 +372,24 @@ body.plate {
   text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
   .row {
     position: relative;
+    z-index: 1;
   }
   header {
+    position: relative;
+    z-index: 100;
+    @include breakpoint(small only) {
+      margin-top: 46px;
+    }
     @include breakpoint(medium) {
       padding-top: 90px;
       min-height: 240px;
     }
-  }
-  img {
-    border-radius: 0;
-  }
-  header {
     h1 {
       color: $ci-6;
     }
+  }
+  img {
+    border-radius: 0;
   }
   .breadcrumbs-bar {
     padding: 0;
@@ -613,7 +623,7 @@ body.plate {
 
 .frontpage #masthead {
   @include breakpoint(medium down) {
-    padding: 40px 0 10px 0;
+    padding: 76px 0 10px 0;
     background-color: $bg-color;
     color: $text-color;
   }
@@ -874,11 +884,13 @@ body.video {
 // Frontpage
 //---------------------------
 
-body.frontpage .asciinema {
-  padding: 0 0 10px;
-  margin: 0 auto;
-  @include breakpoint(large) {
-    padding: 50px 10px;
+body.frontpage {
+  .asciinema {
+    padding: 0 0 10px;
+    margin: 0 auto;
+    @include breakpoint(large) {
+      padding: 50px 10px;
+    }
   }
 }
 
@@ -937,4 +949,10 @@ body.frontpage .asciinema {
     top: 110px;
     left: 275px;
   }
+}
+#masthead .hexagons {
+  position: absolute;
+  bottom: 210px;
+  right: 400px;
+  z-index: -1;
 }
