@@ -5,6 +5,7 @@ sidebar: right
 title: "API Documentation"
 subheadline: 
 teaser: "This is the public API documentation for the Aspectran."
+breadcrumb: true
 permalink: /docs/api/
 ---
 

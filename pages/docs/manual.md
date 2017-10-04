@@ -5,6 +5,7 @@ sidebar: right
 title: "Aspectran Manual"
 subheadline: "How to use Aspectran"
 teaser: "Welcome to the Aspectran 4.1 Manual!"
+breadcrumb: true
 permalink: /docs/manual/
 ---
 

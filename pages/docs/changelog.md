@@ -6,6 +6,7 @@ meta_title: Aspectran Changelog
 subheadline: Aspectran Changelog
 teaser: History and changelog of Aspectran
 comments: true
+breadcrumb: true
 permalink: /docs/changelog/
 ---
 

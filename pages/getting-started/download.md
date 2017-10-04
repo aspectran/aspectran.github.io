@@ -4,6 +4,7 @@ format: "plate solid article"
 title: "Download"
 subheadline: "Aspectran Releases"
 teaser: "Aspectran is a free and open source Java application framework."
+breadcrumb: true
 permalink: /getting-started/download/
 ---
 

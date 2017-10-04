@@ -8,6 +8,7 @@ teaser: "Lean Aspectran"
 header:
   image_fullwidth: "header_documentation.jpg"
   caption: "My two daughters draw a picture on the car-free roads."
+breadcrumb: true
 permalink: /docs/
 ---
 

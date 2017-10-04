@@ -8,6 +8,7 @@ teaser: "Provides comprehensive information about Aspectran."
 header:
   image_fullwidth: "header_gettingstarted.jpg"
   caption: "My cute second daughter"
+breadcrumb: true
 permalink: /getting-started/
 ---
 
