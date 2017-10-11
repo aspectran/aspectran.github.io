@@ -24,8 +24,7 @@ Provides information on downloading the Aspectran library directly and informati
 ## [Aspectran Manual](/docs/manual/)
 Provides user guide documentation for Aspectran users.
 
-## [API Documentation](/docs/api/)
-Provides Aspectran API documentation.
+## [Aspectran API Reference](/docs/api/)
 {% include label-link-box label=site.data.aspectran.api_site.title href=site.data.aspectran.api_site.url %}
 
 ## [Changelog](/docs/changelog/)
@@ -36,15 +35,12 @@ You can view detailed changes history of Aspectran's source code in GitHub.
 ## [Guides](/guides/)
 There are several demo projects that introduce Aspectran and help getting started with it.
 It also provides java source packages and configuration metadata. 
-{% include link-box href="https://github.com/aspectran?utf8=%E2%9C%93&q=gs&type=&language=" %}
 
 ## [Modules](/modules/)
 Provides java source packages and configuration metadata that can integrate the various external libraries.
-{% include link-box href="https://github.com/aspectran/aspectran-modules" %}
 
 ## [Projects](/projects/)
 Provides java source packages and configuration metadata that can integrate the various external libraries.
-{% include link-box href="https://github.com/aspectran/aspectran-modules" %}
 
 ## License
 Aspectran is freely usable, licensed under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).

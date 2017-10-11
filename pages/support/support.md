@@ -14,9 +14,9 @@ permalink: /support/
 
 ## [FAQ](/support/faq/)
 We provide frequently asked questions and answers in advance.  
-If you can not find the answer, or have other questions, please write to the [Contact](/contact/) page or [Aspectran Issues](https://github.com/aspectran/aspectran/issues).
+If you can not find the answer, or have other questions, please write to the [Contact](/support/contact/) page or [Aspectran Issues](https://github.com/aspectran/aspectran/issues).
 {% include label-link-box label="Aspectran Issues" href="https://github.com/aspectran/aspectran/issues" %}
 
 ## [Contact](/support/contact/)
-버그 또는 개선요청에 대한 질문은 [GitHub에 이슈로 등록](https://github.com/aspectran/aspectran/issues)해 주세요.
-비공개 질문은 [Email](mailto:aspectran@gmail.com)로 문의해 주시기 바랍니다.
+For questions about bugs or enhancement requests, please register as an issue in [GitHub](https://github.com/aspectran/aspectran/issues).
+For non-public questions, please contact us by [email](aspectran@gmail.com).

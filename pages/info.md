@@ -1,24 +1,22 @@
 ---
 layout: page
-format: article
+format: "plate solid article"
 title: "About Aspectran"
 subheadline: "What is Aspectran?"
-teaser: "The Next Generation Java Application Framework"
-header:
-  image_fullwidth: "header_aspectran.png"
-  slogan_hidden: true
-outside_heading: false
-inside_heading: true
+teaser: "A light-weight Java application framework"
+breadcrumb: true
 comments: true
 permalink: /info/
 ---
-Aspectran is a lightweight Java application framework for building Web, console-based, and embedded applications.
-Aspectran will support most of the functionality required in an enterprise environment, and will grow into a next-generation Java application framework.
+![aspectran](/images/header_aspectran.png)
+
+Aspectran is a Java framework for building Web and command-line applications.  
+Aspectran will grow into a next-generation Java application framework that supports most of the functionality required in an enterprise environment.
 
 The main features of Aspectran are as follows:
 
 * **Support various execution environments with the same configuration settings**  
-  You can use the same configuration settings for different execution environments, such as Web, console-based, and other applications.
+  You can share the same configuration settings among different execution environments, such as the Web and CLI-based applications.
 * **Support POJO (*Plain Old Java Object*) programming model**  
   You can concentrate on implementing the actual functionality you need, rather than extending the functionality by inheriting specific classes.
   The resulting value can be returned to the most simple Java object.
@@ -33,45 +31,12 @@ The main features of Aspectran are as follows:
   Once the core functionality implementation is complete, features such as transactions, logging, security, and exception handling can be combined with core functionality.
 * **Support building RESTful Web Services**
 
-The following packages based on the `core` package exist to support various execution environments.
+The following packages based on the `com.aspectran.core` package exist to support various execution environments.
 
-* The `com.aspectran.console` package: Support ability to build console-based applications
-* The `com.aspectran.embedded` package: Support ability to embed Aspectran in other applications
-* The `com.aspectran.web` package: Support ability to build web applications
-
-## Package Structure
-
-Aspectran consists of the following major packages:
-
-```
-com.aspectran
-├── core          Provides core interfaces and classes for the Aspectran infrastructure
-│   ├── activity    A package for providing a core activity for processing request and response
-│   ├── adapter     A package for providing basic adapters for integration with a core activity
-│   ├── context     A Package for providing core components and configuring an execution environment
-│   ├── service     A package for providing a core service using Aspectran infrastrucre
-│   └── util        A package that contain miscellaneous utilities
-├── console       A package for building console-based applications based on the Aspectran infrastructure
-│   ├── activity    Contains a variant of the activity interface for console-based application
-│   ├── adapter     Contains a variant of the adapter interface for console-based application
-│   ├── inout       A package to provide console input / output handling
-│   └── service     Contains a variant of the service interface for console-based application
-├── embedded      A package that provides the ability to embed Aspectran in other applications
-│   ├── activity    Contains a variant of the activity interface for embedded Aspectran
-│   ├── adapter     Contains a variant of the adapter interface for embedded Aspectran
-│   └── service     Contains a variant of the service interface for embedded Aspectran
-├── scheduler     Built-in scheduler package that integrates with Aspectran infrastructure
-│   ├── activity    Contains a variant of the activity interface for built-in scheduler
-│   ├── adapter     Contains a variant of the adapter interface for built-in scheduler
-│   ├── service     Contains a variant of the service interface for built-in scheduler
-│   └── support     A package to support external modules for built-in scheduler
-└── web           A package for building web applications based on the Aspectran infrastructure
-    ├── activity    Contains a variant of the activity interface for web application
-    ├── adapter     Contains a variant of the adapter interface for web application
-    ├── service     Contains a variant of the service interface for web application
-    ├── startup     Provides servlets and listeners for integration with web application
-    └── support     A package to support external modules for web application integration
-```
+* `com.aspectran.console`: Provides an interface for executing commands in an application built with Aspectran
+* `com.aspectran.embed`: Provides the ability to embed Aspectran in other Java applications
+* `com.aspectran.web`: Provides overall functionality for building web applications within a web application container
+* `com.aspectran.with.jetty`: Supports for building standalone Web application that is built-in Jetty server
 
 ## History of Aspectran
 

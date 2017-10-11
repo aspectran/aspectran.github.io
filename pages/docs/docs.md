@@ -15,8 +15,8 @@ permalink: /docs/
 ## [Aspectran Manual][1]
 Provides user guide documentation for Aspectran users.
 
-## [API Documentation][2]
-Provides Aspectran API documentation.
+## [API Reference][2]
+Provides the Aspectran API reference.
 
 ## [Changelog][3]
 Provides information on Aspectran's major change history.  

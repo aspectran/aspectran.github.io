@@ -1,13 +1,12 @@
 <aside class="lazy-sticky">
   <div class="panel radius white">
     <h5 class="fi-social-github underline"> Aspectran project on GitHub</h5>
-    <p>You can see the development progress of Aspectran on GitHub or participate in it.
-      We continue to provide sample applications developed using Aspectran.</p>
+    <p>You can view or participate in Aspectran's development progress on GitHub.</p>
     {% include link-box href="https://github.com/aspectran" %}
 
-    <h5 class="fi-social-github underline"> Aspectran Modules</h5>
-    <p>Provides java source packages and configuration metadata that can integrate the various external libraries.</p>
-    {% include link-box href="https://github.com/aspectran/aspectran-modules" %}
+    <h5 class="fi-social-github underline"> Getting Started Projects</h5>
+    <p>There are several demo projects that introduce Aspectran and help getting started with it.</p>
+    {% include link-box href="https://github.com/aspectran?utf8=%E2%9C%93&q=gs-" %}
 
     <p>Aspectran is open source. It's hosted, developed, and maintained on GitHub.</p>
 

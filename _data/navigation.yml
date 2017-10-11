@@ -4,8 +4,8 @@
   dropdown:
   - title: "Quick Start Guide"
     url: "/getting-started/quickstart/"
-  - title: "Download"
-    url: "/getting-started/download/"
+  - title: "Downloads"
+    url: "/getting-started/downloads/"
 
 - title: Documentation
   url: "/docs/"
@@ -13,7 +13,7 @@
   dropdown:
   - title: "Manual"
     url: "/docs/manual/"
-  - title: "API Documentation"
+  - title: "API Reference"
     url: "/docs/api/"
   - title: "Changelog"
     url: "/docs/changelog/"

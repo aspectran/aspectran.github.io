@@ -21,14 +21,14 @@ widget2:
   image: header_gettingstarted_thumb.jpg
   text: |
     Quick Start Guide<br/>
-    Download
+    Downloads
 widget3:
   title: Documentation
   url: /docs/
   image: header_documentation_thumb.jpg
   text: |
     Manual<br/>
-    API Documentation<br/>
+    API Reference<br/>
     Changelog
 widget4:
   title: Guides
@@ -42,7 +42,6 @@ widget5:
   image: header_modules_thumb.jpg
   text: |
     Products developed based on Aspectran
-asciinema: 116148
 permalink: /index.html
 ---
 {% comment %}

@@ -1,11 +1,11 @@
 ---
 layout: page
 format: "plate solid article"
-title: "Download"
+title: "Downloads"
 subheadline: "Aspectran Releases"
 teaser: "Aspectran is a free and open source Java application framework."
 breadcrumb: true
-permalink: /getting-started/download/
+permalink: /getting-started/downloads/
 ---
 
 ## Latest release: {{ site.data.aspectran.stable_version }}
