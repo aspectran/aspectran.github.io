@@ -18,8 +18,8 @@ The main features of Aspectran are as follows:
 * **Support various execution environments with the same configuration settings**  
   You can share the same configuration settings among different execution environments, such as the Web and CLI-based applications.
 * **Support POJO (*Plain Old Java Object*) programming model**  
-  You can concentrate on implementing the actual functionality you need, rather than extending the functionality by inheriting specific classes.
-  The resulting value can be returned to the most simple Java object.
+  Rather than inheriting certain classes and extending functionality, you can focus on implementing real-world functionality.
+  The result value can be returned as the simplest Java object.
 * **Support Inversion of Control (*IoC*)**  
   The framework controls the overall flow and invokes the functionality of the module created by the developer.
   Provides the ability to manage the creation and lifecycle of objects, allowing developers to focus on business logic.
@@ -29,7 +29,8 @@ The main features of Aspectran are as follows:
 * **Support Aspect-Oriented Programming (*AOP*)**  
   You can write code by separating core functions and additional functions.
   Once the core functionality implementation is complete, features such as transactions, logging, security, and exception handling can be combined with core functionality.
-* **Support building RESTful Web Services**
+* **Support building RESTful Web Services**  
+  Aspectran is designed to be suitable for building RESTful Web Services.
 
 The following packages based on the `com.aspectran.core` package exist to support various execution environments.
 
