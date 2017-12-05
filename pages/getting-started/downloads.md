@@ -19,30 +19,60 @@ Aspectran {{ site.data.aspectran.stable_version }} is the latest release and rec
 
 ## Maven
 
-[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all)
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all)
 [![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
 
-If you're using Maven, you will find all Aspectran Maven artifacts directly in the central Maven repository here: [http://repo1.maven.org/maven2/com/aspectran/aspectran/][1]
+If you're using Maven, you will find all Aspectran Maven artifacts directly in the central Maven repository here:  
+[http://repo1.maven.org/maven2/com/aspectran/aspectran-all/][1]
 
 See [all versions available on the Maven Central Repository][2].
 
 ***Artifact information (Maven Central)***
 
-| Group Id      | Artifact Id    | Version    | Download                                                   |
-|---------------|----------------|------------|------------------------------------------------------------|
-| com.aspectran | [aspectran][3] | [{{ site.data.aspectran.stable_version }}][4] | [pom][5], [jar][6], [javadoc (jar)][7], [sources (jar)][8] |
+| Group Id      | Artifact Id        | Version    | Download                                                   |
+|---------------|--------------------|------------|------------------------------------------------------------|
+| com.aspectran | [aspectran-all][3] | [{{ site.data.aspectran.stable_version }}][4] | [pom][5], [jar][6], [javadoc (jar)][7], [sources (jar)][8] |
 
-Add the following dependency to your pom.xml:
+Use the following definition to use Aspectran in your maven project:
 
 {% highlight xml %}
 <dependency>
   <groupId>com.aspectran</groupId>
-  <artifactId>aspectran</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
+  <artifactId>aspectran-all</artifactId>
+  <version>5.0.0.RC1</version>
 </dependency>
 {% endhighlight %}
 
-Note that Aspectran 3 requires Java 8, so an explicit declaration of 1.8 compatibility to the compiler may also be required:
+Aspectran can also be used with more low-level jars:
+
+{% highlight xml %}
+<!-- You can use this to build a command line application. -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-shell</artifactId>
+  <version>5.0.0.RC1</version>
+</dependency>
+<!-- You can use this as a library for building other applications. -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-embed</artifactId>
+  <version>5.0.0.RC1</version>
+</dependency>
+<!-- You can use it to build a web application. -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-web</artifactId>
+  <version>5.0.0.RC1</version>
+</dependency>
+<!-- You can use it to build a web application with built-in Jetty 9. -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-with-jetty</artifactId>
+  <version>5.0.0.RC1</version>
+</dependency>
+{% endhighlight %}
+
+Note that Aspectran 5 requires Java 8, so an explicit declaration of 1.8 compatibility to the compiler may also be required:
 
 {% highlight xml %}
 <build>
