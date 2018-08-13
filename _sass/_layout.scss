@@ -238,7 +238,7 @@
             border-top: 2px solid $ci-6;
           }
           &:hover {
-            border-top: 2px solid darken($ci-6, 20%);
+            border-top: 2px solid $ci-3;
           }
         }
       }
@@ -317,7 +317,7 @@ body.plate {
   }
   &.solid {
     @include breakpoint(large) {
-      background-color: $ci-1;
+      background-color: $grey-1;
       #up-to-top {
         padding-top: 20px;
         a {
@@ -369,7 +369,7 @@ body.plate {
   padding-top: 46px;
   min-width: 320px;
   color: $ci-6;
-  background-color: lighten($ci-0, 5%);
+  background-color: darken($ci-0, 2%);
   text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
   .row {
     position: relative;

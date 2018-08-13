@@ -155,7 +155,7 @@
 
 {% if page.header.image_fullwidth %}
 <script>
-  $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 900, bgcolor: '#707D83'});
+  $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 900, bgcolor: '#275378'});
 </script>
 {% endif %}
 {% if page.header.slide_images and page.header.slide_images[0] %}

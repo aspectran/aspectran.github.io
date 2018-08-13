@@ -183,8 +183,8 @@ pre {
   overflow-x: auto;
   margin-bottom: rem-calc(20);
   padding: .6rem;
-  background-color: #f5f5f5;
-  border: 1px solid scale-color(#f5f5f5, $lightness: -10%);
+  background-color: darken($ci-6, 5%);
+  border: 1px solid scale-color($ci-6, $lightness: -10%);
   border-radius: $global-radius;
 }
 pre {
@@ -200,7 +200,7 @@ pre {
       padding: 0;
       border: 0;
       border-radius: 0;
-      background-color: #f5f5f5;
+      background-color: darken($ci-6, 5%);
     }
   }
   .gutter {
