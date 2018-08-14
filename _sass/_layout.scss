@@ -142,6 +142,9 @@
           max-width: none;
           background-color: lighten($ci-0, 50%);
         }
+        button {
+          background-color: lighten($ci-0, 20%);
+        }
       }
     }
     @include breakpoint(small only) {

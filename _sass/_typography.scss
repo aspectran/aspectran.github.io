@@ -75,8 +75,6 @@ article {
 //-------
 
 a {
-  &:link {
-  }
   &:visited {
     border-bottom: $grey-2;
   }
@@ -183,7 +181,7 @@ pre {
   overflow-x: auto;
   margin-bottom: rem-calc(20);
   padding: .6rem;
-  background-color: darken($ci-6, 5%);
+  background-color: darken($ci-6, 2%);
   border: 1px solid scale-color($ci-6, $lightness: -10%);
   border-radius: $global-radius;
 }
@@ -200,7 +198,7 @@ pre {
       padding: 0;
       border: 0;
       border-radius: 0;
-      background-color: darken($ci-6, 5%);
+      background-color: transparent;
     }
   }
   .gutter {
@@ -265,8 +263,6 @@ dl {
   dt {
     font-weight: bold;
     padding-top: rem-calc(20);
-  }
-  dd {
   }
 }
 article dl {
