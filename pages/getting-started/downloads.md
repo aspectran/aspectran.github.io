@@ -20,7 +20,6 @@ Aspectran {{ site.data.aspectran.stable_version }} is the latest release and rec
 ## Maven
 
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all)
-[![Dependency Status](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56eec08e35630e0029dafca6)
 
 If you're using Maven, you will find all Aspectran Maven artifacts directly in the central Maven repository here:  
 [http://repo1.maven.org/maven2/com/aspectran/aspectran-all/][1]
