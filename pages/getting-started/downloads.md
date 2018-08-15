@@ -22,15 +22,9 @@ Aspectran {{ site.data.aspectran.stable_version }} is the latest release and rec
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all)
 
 If you're using Maven, you will find all Aspectran Maven artifacts directly in the central Maven repository here:  
-[http://repo1.maven.org/maven2/com/aspectran/aspectran-all/][1]
+[http://repo1.maven.org/maven2/com/aspectran/][1]
 
 See [all versions available on the Maven Central Repository][2].
-
-***Artifact information (Maven Central)***
-
-| Group Id      | Artifact Id        | Version    | Download                                                   |
-|---------------|--------------------|------------|------------------------------------------------------------|
-| com.aspectran | [aspectran-all][3] | [{{ site.data.aspectran.stable_version }}][4] | [pom][5], [jar][6], [javadoc (jar)][7], [sources (jar)][8] |
 
 Use the following definition to use Aspectran in your maven project:
 
@@ -38,7 +32,7 @@ Use the following definition to use Aspectran in your maven project:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-all</artifactId>
-  <version>5.0.0.RC1</version>
+  <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 {% endhighlight %}
 
@@ -90,11 +84,5 @@ Note that Aspectran 5 requires Java 8, so an explicit declaration of 1.8 compati
 {% endhighlight %}
 
 
-[1]: http://repo1.maven.org/maven2/com/aspectran/aspectran-all/
-[2]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.aspectran%22
-[3]: http://search.maven.org/#search|ga|1|a%3A%22aspectran-all%22
-[4]: http://search.maven.org/#artifactdetails|com.aspectran|aspectran-all|{{ site.data.aspectran.stable_version }}|jar
-[5]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran-all/{{ site.data.aspectran.stable_version }}/aspectran-{{ site.data.aspectran.stable_version }}.pom
-[6]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran-all/{{ site.data.aspectran.stable_version }}/aspectran-{{ site.data.aspectran.stable_version }}.jar
-[7]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran-all/{{ site.data.aspectran.stable_version }}/aspectran-{{ site.data.aspectran.stable_version }}-javadoc.jar
-[8]: http://search.maven.org/remotecontent?filepath=com/aspectran/aspectran-all/{{ site.data.aspectran.stable_version }}/aspectran-{{ site.data.aspectran.stable_version }}-sources.jar
+[1]: http://repo1.maven.org/maven2/com/aspectran/
+[2]: https://search.maven.org/search?q=com.aspectran
