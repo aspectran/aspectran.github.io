@@ -1,4 +1,4 @@
-<div class="panel alert-box warning radius">
+<div class="panel alert-box warning radius" style="display: none">
   <p>This example may not function normally for the time being. please understand.</p>
 </div>
 
@@ -115,7 +115,7 @@ function getCustomerList() {
       clearForm();
     },
     error: function(xhr, status, error) {
-      $(".panel.alert-box").show();
+      $(".panel.alert-box:eq(0)").show();
     }
   });
 }
