@@ -32,8 +32,10 @@
     position: fixed;
     width: 100%;
     .top-bar {
-      background: $ci-0;
+      background-color: $bg-color;
       box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2),0 3px 3px -2px rgba(0,0,0,0.14),0 1px 8px 0 rgba(0,0,0,0.12);
+      text-shadow: none;
+      opacity: .85;
       .top-bar-logo {
         a.logo {
           margin: rem-calc(2.5 12 0 15);
@@ -58,13 +60,14 @@
       }
       ul.dropdown {
         @include breakpoint(medium down) {
-          background-color: darken($ci-0, 10%);
+          background-color: darken($ci-0, 8%);
         }
         > li {
           border: 0;
           a {
             font-weight: normal;
             padding: .93rem 1.5rem .93rem 1rem;
+            color: $grey-10;
           }
           &.active {
             @include breakpoint(large) {
@@ -147,10 +150,8 @@
         }
       }
     }
-    @include breakpoint(small only) {
-      margin-top: 46px;
-    }
     @include breakpoint(medium down) {
+      margin-top: 46px;
       .top-bar-logo {
         display: none;
       }
@@ -207,7 +208,7 @@
       li {
         @include breakpoint(medium down) {
           display: block;
-          background-color: darken($ci-0, 20%);
+          background-color: darken($ci-0, 15%);
         }
         > a {
           color: #eee;
@@ -268,7 +269,7 @@
               display: none;
             }
             &.active {
-              background-color: darken($ci-0, 10%);
+              background-color: darken($ci-0, 8%);
             }
           }
           &:hover {
@@ -282,8 +283,34 @@
     }
   }
   @include breakpoint(large) {
+    &.fixed {
+      .top-bar:hover {
+        opacity: .9;
+        ul.dropdown {
+          > li {
+            a {
+              color: #eee;
+            }
+          }
+        }
+      }
+      .top-bar {
+        .top-bar-logo {
+          a.logo {
+            background: url('/assets/img/aspectran-logo-grey-x100.png') no-repeat;
+            background-size: cover;
+          }
+        }
+        ul.dropdown {
+          > li.active {
+            background-color: transparent;
+          }
+        }
+      }
+    }
     .top-bar:hover {
       background: $ci-0;
+      opacity: .85;
       .top-bar-logo {
         a.logo {
           margin: rem-calc(9.5 12 0 15);
@@ -301,6 +328,9 @@
         > li {
           a {
             font-weight: normal;
+          }
+          &.active {
+            background-color: darken($ci-0, 8%);
           }
         }
       }
