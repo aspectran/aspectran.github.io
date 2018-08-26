@@ -74,8 +74,10 @@
     z-index: 102;
     width: 100%;
     opacity: .94;
-    &:hover {
-      opacity: .86;
+    @include breakpoint(large) {
+      &:hover {
+        opacity: .86;
+      }
     }
     .quick-search-box {
       padding: .8rem .4rem;
