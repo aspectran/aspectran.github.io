@@ -16,53 +16,67 @@ download:
 asciinema: 198434
 ---
 
-## 시작하기
+## Getting Started
 
-간단하게 "Hello, World!" 문자열을 출력하는 방법은 두 가지가 있습니다.
+There are two ways to print the string "Hello, World!".
 
-* Java 코드를 작성해서 "Hello, World!" 문자열을 출력하는 방법
-* Java 코드를 작성하지 않고 "Hello, World!" 문자열을 출력하는 방법
+1. Output the string "Hello, World!" by written Java code
+2. Output the string "Hello, World!" without writing Java code
 
-여기서는 Java 코드를 작성하지 않고 "Hello, World!" 문자열을 출력하는 방법에 대해 설명합니다.
+This section describes how to output the "Hello, World!" without writing Java code.
 
-## 설정 구성
+## Configuration Settings
 
-"Hello, World!" 문자열을 출력하는 가장 간단한 설정 구성은 다음과 같이 작성될 수 있습니다.   
+The simplest configuration for outputting the string "Hello World" can be written as:
 
-[***gs-hello-world-master/app/config/hello-world-config.xml***](https://github.com/aspectran/gs-hello-world/blob/master/app/config/hello-world-config.xml)
+[***gs-hello-world-master/app/config/root-config.xml***](https://github.com/aspectran/gs-hello-world/blob/master/app/config/root-config.xml)
 
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-4.dtd">
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 5.0//EN"
+                           "http://aspectran.github.io/dtd/aspectran-5.dtd">
 
 <aspectran>
 
     <description style="apon">
         |
-        |   --- The simplest Hello World application created with Aspectran ---
+        |   {{"{{bold"}}}}--- The simplest Hello World application created with Aspectran ---{{"{{bold:off"}}}}
         |
-        |Built-in commands for this console application:
-        |   description on - Display a description of the command.
-        |   description off - Do not display the description of the command.
-        |   restart - Restart this console application.
-        |   quit - Exit from this console application.
-        |
-        |Commands that can run the examples:
-        |   hello - It prints the words "Hello, World!" to the console.
+        |{{"{{underline"}}}}Commands that can run examples:{{"{{underline:off"}}}}
+        |   {{"{{green"}}}}hello{{"{{fg:off"}}}} - It prints the phrase "Hello World!" to your console.
+        |   {{"{{green"}}}}hello2{{"{{fg:off"}}}} - It prints the phrase "Hello World!" to your console with ANSI escape codes.
         |
     </description>
 
     <translet name="hello">
         <description style="apon">
             |
-            |   It prints the words "Hello World" to the console.
-            |
+            |   The phrase "Hello, World!" will be printed on your console.
+            |-----------------------------------------------------------------
         </description>
         <transform type="transform/text" contentType="text/plain">
             <template style="apon">
                 |
                 |   Hello, World!
+                |
+            </template>
+        </transform>
+    </translet>
+
+    <translet name="hello2">
+        <description style="apon">
+            |
+            |   The phrase "Hello, World!" will be printed on your console with ANSI escape codes.
+            |----------------------------------------------------------------------------------------
+        </description>
+        <transform type="transform/text" contentType="text/plain">
+            <template style="apon">
+                |
+                |   {{"{{bg:green"}}}}                         {{"{{off"}}}}
+                |   {{"{{bg:green"}}}}   {{"{{magenta,bg:white"}}}}                   {{"{{bg:blue"}}}}   {{"{{off"}}}}
+                |   {{"{{bg:green"}}}}   {{"{{RED,bg:white"}}}}   Hello, World!   {{"{{bg:blue"}}}}   {{"{{off"}}}}
+                |   {{"{{bg:green"}}}}   {{"{{magenta,bg:white"}}}}                   {{"{{bg:blue"}}}}   {{"{{off"}}}}
+                |   {{"{{magenta,bg:blue"}}}}                         {{"{{off"}}}}
                 |
             </template>
         </transform>
@@ -78,7 +92,7 @@ asciinema: 198434
 우리는 "hello"라는 이름을 가진 `translet`을 실행해야 함을 직감할 수 있습니다.
 명령어 "hello"를 실행하면 `translet`은 지정한 형식으로 가공된 데이터를 반환하는 역할을 합니다.
 
-## 실행 방법
+## How To Run
 
 위와 같이 작성된 설정 구성을 다음과 같은 실행 환경에서 실행할 수 있습니다.
 
