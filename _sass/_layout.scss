@@ -40,11 +40,13 @@
       float: left;
       a.logo {
         margin: rem-calc(5 12 0 12);
-        width: 37px;
-        height: 37px;
+        width: 64px;
+        height: 64px;
+        position: absolute;
         display: block;
         background: url('/assets/img/aspectran-site-logo.png') no-repeat;
         background-size: cover;
+        opacity: .9;
         img {
           display: none;
         }
@@ -68,6 +70,13 @@
       float: right;
       padding: rem-calc(0 15);
     }
+    &:hover {
+      a.logo {
+        width: 37px;
+        height: 37px;
+        opacity: 1;
+      }
+    }
   }
   .top-bar {
     position: absolute;
@@ -76,7 +85,7 @@
     opacity: .94;
     @include breakpoint(large) {
       &:hover {
-        opacity: .86;
+        background-color: $ci-0;
       }
     }
     .quick-search-box {
@@ -115,11 +124,12 @@
           top: 0;
           left: 0;
           margin: rem-calc(8 20 0 15);
-          width: 72px;
-          height: 72px;
+          width: 74px;
+          height: 74px;
           display: block;
           background: url('/assets/img/aspectran-site-logo.png') no-repeat;
           background-size: cover;
+          opacity: .9;
         }
         img {
           display: none;
@@ -150,7 +160,7 @@
       li {
         @include breakpoint(medium down) {
           display: block;
-          background-color: darken($ci-0, 15%);
+          background-color: darken($ci-0, 14%);
         }
         > a {
           color: #eee;
@@ -226,6 +236,13 @@
   &.fixed {
     position: fixed;
     width: 100%;
+    .title-bar {
+      .title-bar-left {
+        a.logo {
+          opacity: .6;
+        }
+      }
+    }
     .top-bar {
       background-color: $ci-0;
       box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2),0 3px 3px -2px rgba(0,0,0,0.14),0 1px 8px 0 rgba(0,0,0,0.12);
@@ -282,6 +299,10 @@
     @include breakpoint(large) {
       .top-bar {
         background-color: $bg-color;
+        opacity: .80;
+        &:hover {
+          opacity: .93;
+        }
         .top-bar-logo {
           a.logo {
             background: url('/assets/img/aspectran-logo-grey-x100.png') no-repeat;
@@ -307,6 +328,7 @@
         }
         ul.submenu {
           box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2),0 3px 3px -2px rgba(0,0,0,0.14),0 1px 8px 0 rgba(0,0,0,0.12);
+          margin-top: 1px;
           li {
             background-color: $bg-color !important;
             > a {
