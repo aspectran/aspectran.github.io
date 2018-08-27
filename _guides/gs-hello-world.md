@@ -13,7 +13,7 @@ download:
   url: https://github.com/aspectran/gs-hello-world
 - label: "Download ZIP"
   url: https://github.com/aspectran/gs-hello-world/archive/master.zip
-asciinema: 109020
+asciinema: 198434
 ---
 
 ## 시작하기
