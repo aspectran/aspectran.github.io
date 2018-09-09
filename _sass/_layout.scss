@@ -40,13 +40,15 @@
       float: left;
       a.logo {
         margin: rem-calc(5 12 0 12);
-        width: 64px;
-        height: 64px;
+        width: 37px;
+        height: 37px;
         position: absolute;
         display: block;
         background: url('/assets/img/aspectran-site-logo.png') no-repeat;
         background-size: cover;
         opacity: .9;
+        -webkit-transition: width 1.6s, height 1.6s, background-color 1.6s, -webkit-transform 1.6s;
+        transition: width 1.6s, height 1.6s, background-color 1.6s, transform 1.6s;
         img {
           display: none;
         }
@@ -72,9 +74,9 @@
     }
     &:hover {
       a.logo {
-        width: 37px;
-        height: 37px;
         opacity: 1;
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
       }
     }
   }
@@ -130,10 +132,19 @@
           background: url('/assets/img/aspectran-site-logo.png') no-repeat;
           background-size: cover;
           opacity: .9;
+          -webkit-transition: width 1.6s, height 1.6s, background-color 1.6s, -webkit-transform 1.6s;
+          transition: width 1.6s, height 1.6s, background-color 1.6s, transform 1.6s;
         }
         img {
           display: none;
           margin: rem-calc(9.5 12 0 15);
+        }
+      }
+      &:hover {
+        a.logo {
+          opacity: 1;
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
         }
       }
       .top-bar-left {
@@ -793,8 +804,14 @@ body.plate {
       height: 100px;
       background: url('/assets/img/aspectran-site-logo.png') no-repeat;
       background-size: cover;
+      -webkit-transition: width 1.6s, height 1.6s, background-color 1.6s, -webkit-transform 1.6s;
+      transition: width 1.6s, height 1.6s, background-color 1.6s, transform 1.6s;
       img {
         display: none;
+      }
+      &:hover {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
       }
     }
   }
