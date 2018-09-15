@@ -3,30 +3,45 @@
 <script>
   $(document).foundation();
   $(document).ready(function() {
-    var navFixed = false;
     var navHeight = $("#masthead").height() - $("#navigation").height();
     var $win = $(window);
+    var lastScrollTop = 0;
+    var scrolled;
+    var navFixed;
     $win.scroll(function() {
-      var scrollTop = $win.scrollTop();
-      if(navFixed) {
-        if(scrollTop < navHeight) {
-          navFixed = false;
-          $("#navigation").removeClass("fixed");
-          $("#navigation").hide();
-          $("#navigation").slideDown(220);
-        }
-      } else {
-        if(scrollTop > navHeight) {
-          navFixed = true;
-          $("#navigation").addClass("fixed");
-          $("#navigation").hide();
-          $("#navigation").fadeIn(450);
-        }
-      }
+      scrolled = true;
     });
-    if($win.scrollTop() > navHeight) {
-      $win.scroll();
-    }
+    setInterval(function() {
+      if (scrolled) {
+        var scrollTop = $win.scrollTop();
+        if (Math.abs(lastScrollTop - scrollTop) <= 10) {
+          return;
+        }
+        if (scrollTop <= navHeight) {
+          if (navFixed) {
+            $("#navigation").removeClass("fixed");
+            $(".nav.breadcrumbs-bar").removeClass("fixed");
+            navFixed = false;
+          }
+        } else if (scrollTop > lastScrollTop) {
+          if (navFixed) {
+            $("#navigation").removeClass("fixed");
+            $(".nav.breadcrumbs-bar").removeClass("fixed");
+            navFixed = false;
+          }
+        } else {
+            if (!navFixed) {
+              $("#navigation").addClass("fixed");
+              $("#navigation").hide().fadeIn(500);
+              $(".nav.breadcrumbs-bar").addClass("fixed");
+              $(".nav.breadcrumbs-bar").hide().fadeIn(500);
+              navFixed = true;
+            }
+        }
+        lastScrollTop = scrollTop;
+        scrolled = false;
+      }
+    }, 200);
     /* google search */
     $("form[name=google_quick_search]").submit(function(event) {
       window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ site.url | cgi_escape }}');
@@ -155,7 +170,7 @@
 
 {% if page.header.image_fullwidth %}
 <script>
-  $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 900, bgcolor: '#2a608f'});
+  $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 900, bgcolor: '#2A2E31'});
 </script>
 {% endif %}
 {% if page.header.slide_images and page.header.slide_images[0] %}
