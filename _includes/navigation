@@ -1,17 +1,17 @@
 <nav id="navigation" class="no-js">
-  <div class="title-bar" data-responsive-toggle="gnb-menu" data-hide-for="large">
+  <div class="title-bar" data-responsive-toggle="gnb-menu" data-hide-for="large" style="display:none">
     <div class="title-bar-left">
       <a class="logo" href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
     </div>
     <div class="title-bar-center">
       <a href="#top-of-page">Aspectran</a>
     </div>
-    <div class="title-bar-right">
-      <button class="menu-icon" type="button" data-toggle></button>
+    <div class="title-bar-right" data-toggle>
+      <button class="menu-icon" type="button"></button>
     </div>
   </div>
 
-  <div class="top-bar" id="gnb-menu">
+  <div class="top-bar" id="gnb-menu" style="display:none">
     <div class="row">
       <div class="top-bar-logo">
         <a class="logo" href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
@@ -128,5 +128,12 @@
         </form>
       </div>
     </div>
+    {% if page.breadcrumb == true %}
+      <div class="nav breadcrumbs-bar" style="display:none">
+        <div class="row">
+          {% include breadcrumb %}
+        </div>
+      </div>
+    {% endif %}
   </div>
 </nav>

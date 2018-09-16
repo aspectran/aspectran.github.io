@@ -20,21 +20,17 @@
         if (scrollTop <= navHeight) {
           if (navFixed) {
             $("#navigation").removeClass("fixed");
-            $(".nav.breadcrumbs-bar").removeClass("fixed");
             navFixed = false;
           }
         } else if (scrollTop > lastScrollTop) {
           if (navFixed) {
             $("#navigation").removeClass("fixed");
-            $(".nav.breadcrumbs-bar").removeClass("fixed");
             navFixed = false;
           }
         } else {
             if (!navFixed) {
               $("#navigation").addClass("fixed");
               $("#navigation").hide().fadeIn(500);
-              $(".nav.breadcrumbs-bar").addClass("fixed");
-              $(".nav.breadcrumbs-bar").hide().fadeIn(500);
               navFixed = true;
             }
         }

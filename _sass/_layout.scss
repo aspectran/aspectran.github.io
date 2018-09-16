@@ -46,11 +46,16 @@
         display: block;
         background: url('/assets/img/aspectran-site-logo.png') no-repeat;
         background-size: cover;
-        opacity: .9;
-        -webkit-transition: width 1.6s, height 1.6s, background-color 1.6s, -webkit-transform 1.6s;
-        transition: width 1.6s, height 1.6s, background-color 1.6s, transform 1.6s;
+        -webkit-transition: width .5s, height .5s, background-color 1s, -webkit-transform 1s;
+        transition: width .5s, height .5s, background-color 1s, transform 1s;
         img {
           display: none;
+        }
+      }
+      &:hover {
+        a.logo {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
         }
       }
     }
@@ -71,13 +76,6 @@
       cursor: pointer;
       float: right;
       padding: rem-calc(0 15);
-    }
-    &:hover {
-      a.logo {
-        opacity: 1;
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-      }
     }
   }
   .top-bar {
@@ -131,20 +129,18 @@
           display: block;
           background: url('/assets/img/aspectran-site-logo.png') no-repeat;
           background-size: cover;
-          opacity: .9;
-          -webkit-transition: width .1s, height .1s, background-color 1s, -webkit-transform 1.3s;
-          transition: width .1s, height .1s, background-color 1s, transform 1.3s;
+          -webkit-transition: width .5s, height .5s, background-color 1s, -webkit-transform 1s;
+          transition: width .5s, height .5s, background-color 1s, transform 1s;
         }
         img {
           display: none;
           margin: rem-calc(9.5 12 0 15);
         }
-      }
-      &:hover {
-        a.logo {
-          opacity: 1;
-          -webkit-transform: rotate(360deg);
-          transform: rotate(360deg);
+        &:hover {
+          a.logo {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+          }
         }
       }
       .top-bar-left {
@@ -171,7 +167,7 @@
       li {
         @include breakpoint(medium down) {
           display: block;
-          background-color: darken($ci-0, 14%);
+          background-color: $ci-1;
         }
         > a {
           color: #eee;
@@ -187,7 +183,12 @@
           }
         }
         &:hover {
-          background-color: darken($ci-0, 6%);
+          @include breakpoint(medium down) {
+            background-color: darken($ci-1, 10%);
+          }
+          @include breakpoint(large) {
+            background-color: darken($ci-0, 3%);
+          }
         }
         &.is-dropdown-submenu-parent > a::after {
           border-color: lighten($ci-1, 10%) transparent transparent;
@@ -216,7 +217,12 @@
           right: 3.1rem;
         }
         li {
-          background-color: darken($ci-0, 6%);
+          @include breakpoint(medium down) {
+            background-color: darken($ci-1, 10%);
+          }
+          @include breakpoint(large) {
+            background-color: darken($ci-0, 3%);
+          }
           min-width: 250px;
           > a {
             padding: .93rem 1.5rem .93rem 1rem;
@@ -231,11 +237,16 @@
               display: none;
             }
             &.active {
-              background-color: darken($ci-0, 8%);
+              background-color: darken($ci-0, 5%);
             }
           }
           &:hover {
-            background-color: $ci-0;
+            @include breakpoint(medium down) {
+              background-color: darken($ci-1, 15%);
+            }
+            @include breakpoint(large) {
+              background-color: $ci-0;
+            }
           }
         }
         li:last-child {
@@ -247,13 +258,6 @@
   &.fixed {
     position: fixed;
     width: 100%;
-    .title-bar {
-      .title-bar-left {
-        a.logo {
-          opacity: .6;
-        }
-      }
-    }
     .top-bar {
       background-color: $ci-0;
       box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2),0 3px 3px -2px rgba(0,0,0,0.14),0 1px 8px 0 rgba(0,0,0,0.12);
@@ -351,6 +355,25 @@
             }
           }
         }
+      }
+    }
+    .breadcrumbs-bar {
+      background-color: $ci-1;
+      @include breakpoint(large) {
+        display: block !important;
+      }
+      .breadcrumbs {
+        margin: 0 .8rem;
+      }
+      a {
+        color: $grey-1;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+      .current {
+        color: $grey-1;
+        font-weight: bold;
       }
     }
   }
@@ -728,18 +751,7 @@ body.plate {
     }
   }
 }
-@include breakpoint(large) {
-  .nav.breadcrumbs-bar.fixed {
-    display: block !important;
-    position: fixed;
-    top: 46px;
-    width: 100%;
-    opacity: .9;
-    z-index: 100;
-    border-bottom: 1px solid #eee;
-    padding-top: 2px;
-  }
-}
+
 
 // Meta
 //------

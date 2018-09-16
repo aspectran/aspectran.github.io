@@ -341,11 +341,3 @@
 
 
 {% endif %}
-
-{% if page.breadcrumb == true %}
-<div class="nav breadcrumbs-bar" style="display:none">
-  <div class="row">
-		{% include breadcrumb %}
-	</div>
-</div>
-{% endif %}
