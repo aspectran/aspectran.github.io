@@ -1,6 +1,6 @@
 {% capture widget_url %}{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ site.baseurl }}{{ include.widget.url }}{% endif %}{% endcapture %}
 <div class="row">
-  <div class="small-5 medium-5 large-12 columns">
+  <div class="large-12 columns">
     <a href="{{ widget_url }}">
   		{% if include.widget.image %}
   			{%comment%}TODO lazy loading{%endcomment%}
@@ -12,7 +12,7 @@
   		{% if include.widget.video %}{{ include.widget.video }}{% endif %}
   	</a>
   </div>
-  <div class="small-7 medium-7 large-12 columns">
+  <div class="large-12 columns">
   	<h4><a href="{{ widget_url }}">{{ include.widget.title }}</a></h4>
   	<p>{{ include.widget.text }}</p>
   </div>

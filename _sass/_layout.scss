@@ -39,9 +39,16 @@
     .title-bar-left {
       float: left;
       a.logo {
-        margin: rem-calc(5 12 0 12);
-        width: 37px;
-        height: 37px;
+        @include breakpoint(small only) {
+          margin: rem-calc(5 12 0 12);
+          width: 37px;
+          height: 37px;
+        }
+        @include breakpoint(medium) {
+          margin: rem-calc(10 20 0 15);
+          width: 76px;
+          height: 76px;
+        }
         position: absolute;
         display: block;
         background: url('/assets/img/aspectran-site-logo.png') no-repeat;
@@ -706,17 +713,29 @@ body.plate {
 //------------------------
 
 .frontpage #masthead {
+  background-color: $ci-0;
+  color: #ccc;
+  text-shadow: none;
   @include breakpoint(medium down) {
-    padding: 76px 0 10px 0;
-    background-color: $bg-color;
-    color: $text-color;
+    padding: 60px 0 10px 0;
+    .columns {
+      padding: 0 5%;
+    }
+    .badges {
+      text-align: center;
+    }
+    .thumb {
+      margin-bottom: 10px;
+    }
+  }
+  @include breakpoint(medium only) {
+    .columns {
+      padding: 0 10%;
+    }
   }
   @include breakpoint(large) {
     padding: 110px 0 50px 0;
-    background-color: $ci-0;
-    color: #ccc;
   }
-  text-shadow: none;
   #forkme-ribbon {
     display: block;
   }

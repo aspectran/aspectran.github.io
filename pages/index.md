@@ -42,6 +42,12 @@ widget5:
   image: header_modules_thumb.jpg
   text: |
     Products developed based on Aspectran
+projects:
+  - subheadline: Working examples of using Aspectran
+    title: Aspectran Demo Site
+    url: http://demo.aspectran.com
+    thumb_img: examples/pr-demo-site.png
+    description: This site is a collection of reference applications created to show how to develop Aspectran applications following the recommended best practices.
 permalink: /index.html
 ---
 {% comment %}

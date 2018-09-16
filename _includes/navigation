@@ -4,7 +4,7 @@
       <a class="logo" href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
     </div>
     <div class="title-bar-center">
-      <a href="#top-of-page">Aspectran</a>
+      <a href="#top-of-page">{{ site.title }}</a>
     </div>
     <div class="title-bar-right" data-toggle>
       <a class="menu-icon" title="Menu"></a>
