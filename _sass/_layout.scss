@@ -39,18 +39,11 @@
     .title-bar-left {
       float: left;
       a.logo {
-        @include breakpoint(small only) {
-          margin: rem-calc(5 12 0 12);
-          width: 37px;
-          height: 37px;
-        }
-        @include breakpoint(medium) {
-          margin: rem-calc(10 20 0 15);
-          width: 76px;
-          height: 76px;
-        }
         position: absolute;
         display: block;
+        width: 37px;
+        height: 37px;
+        margin: rem-calc(5 12 0 12);
         background: url('/assets/img/aspectran-site-logo.png') no-repeat;
         background-size: cover;
         -webkit-transition: width .5s, height .5s, background-color 1s, -webkit-transform 1s;
@@ -89,15 +82,6 @@
     position: absolute;
     z-index: 102;
     width: 100%;
-    opacity: .94;
-    @include breakpoint(large) {
-      &:hover {
-        background-color: darken($ci-0, 2.5%);
-        .circle {
-          background-color: $ci-0;
-        }
-      }
-    }
     .quick-search-box {
       padding: .8rem .4rem;
       .input-group {
@@ -112,6 +96,7 @@
       }
     }
     @include breakpoint(medium down) {
+      opacity: .975;
       margin-top: 46px;
       .top-bar-logo {
         display: none;
@@ -124,7 +109,14 @@
       }
     }
     @include breakpoint(large) {
+      opacity: .94;
       background: none;
+      &:hover {
+        background-color: darken($ci-0, 2.5%);
+        .circle {
+          background-color: $ci-0;
+        }
+      }
       .top-bar-logo {
         float: left;
         position: relative;
@@ -337,7 +329,7 @@
     @include breakpoint(large) {
       .top-bar {
         background-color: $bg-color;
-        opacity: .90;
+        opacity: .9;
         &:hover {
           opacity: .93;
         }
