@@ -48,6 +48,11 @@ projects:
     url: http://demo.aspectran.com
     thumb_img: examples/pr-demo-site.png
     description: This site is a collection of reference applications created to show how to develop Aspectran applications following the recommended best practices.
+  - subheadline: Reach Further With Text-To-Speech
+    title: Skylark Terminal
+    url: http://skylark.aspectran.com
+    thumb_img: examples/pr-skylark-terminal.png
+    description: Skylark is a text to speech program that converts any written text into spoken words.
 permalink: /index.html
 ---
 {% comment %}

@@ -37,35 +37,41 @@ layout: default
 </div>
 
 {% unless page.projects == empty %}
-  {% for project in page.projects limit:2 %}
-  <div class="row t30">
-    <div class="columns">
-        <div class="panel white">
-          <div class="row">
-          {% if project.thumb_img %}
-            <div class="small-12 medium-3 columns">
-              <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="alignleft" width="100%" alt="{{ project.title | escape_once }}"></a>
+<div class="row t30">
+  <div class="columns">
+    <div class="panel white">
+      <div class="row">
+          {% for project in page.projects limit:2 %}
+            <div class="medium-6 columns">
+              <div class="row">
+                <div class="small-12 columns">
+                  <p class="subheadline">{% if project.subheadline %}{{ project.subheadline }}{% endif %}</p>
+                  <h3><a href="{{ site.baseurl }}{{ project.url }}">{{ project.title }}</a></h3>
+                </div>
+              {% if project.thumb_img %}
+                <div class="small-5 medium-4 columns">
+                  <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="alignleft" width="100%" alt="{{ project.title | escape_once }}"></a>
+                </div>
+                <div class="small-7 medium-8 columns">
+                  <p>
+                    {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
+                  </p>
+                </div>
+              {% else %}
+                <div class="small-12 columns">
+                  <p>
+                    {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
+                  </p>
+                </div>
+              {% endif %}
+              </div>
             </div>
-            <div class="small-12 medium-9 columns">
-              <p class="subheadline">{% if project.subheadline %}{{ project.subheadline }}{% endif %}</p>
-              <h3 class="underline"><a href="{{ site.baseurl }}{{ project.url }}">{{ project.title }}</a></h3>
-              <p>
-                {% if project.description %}{{ project.description | strip_html | escape }}{% endif %}
-              </p>
-            </div>
-          {% else %}
-            <div class="small-12 columns">
-              <p>
-                {% if project.description %}{{ project.description | strip_html | escape }}{% endif %}
-              </p>
-            </div>
-          {% endif %}
+          {% endfor %}
           </div>
         </div>
       </div>
     </div>
   </div>
-  {% endfor %}
 {% endunless %}
 
 {% unless site.guides == empty %}
