@@ -107,6 +107,10 @@
       .top-bar-right {
         width: 100%;
       }
+      .quick-search-box {
+        background-color: $ci-1;
+        box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2),0 3px 3px -2px rgba(0,0,0,0.14),0 1px 8px 0 rgba(0,0,0,0.12);
+      }
     }
     @include breakpoint(large) {
       opacity: .94;
@@ -167,18 +171,12 @@
         vertical-align: middle;
         padding: rem-calc(7.6 15 7.6 3.4);
         border-top: 2px solid transparent;
-        @include breakpoint(large) {
-          max-width: 220px;
-        }
+        max-width: 220px;
       }
     }
     ul.dropdown {
       background: none;
       li {
-        @include breakpoint(medium down) {
-          display: block;
-          background-color: $ci-1;
-        }
         > a {
           color: #eee;
           background: none;
@@ -192,22 +190,19 @@
             background: none;
           }
         }
-        &:hover {
-          @include breakpoint(medium down) {
+      }
+      > li {
+        @include breakpoint(medium down) {
+          display: block;
+          background-color: $ci-1;
+          &:hover {
             background-color: darken($ci-1, 10%);
           }
-          @include breakpoint(large) {
-            background-color: darken($ci-0, 4.5%);
-          }
         }
-        &.is-dropdown-submenu-parent > a::after {
-          border-color: lighten($ci-1, 10%) transparent transparent;
-          right: 9px;
-        }
-      }
-      @include breakpoint(large) {
-        > li {
+        @include breakpoint(large) {
           border-top: 2px solid transparent;
+          -webkit-transition: width .5s, height .5s, background-color 1s, -webkit-transform 1s;
+          transition: width .5s, height .5s, background-color 1s, transform 1s;
           a {
             padding: 1.3rem 1.5rem 1.3rem 1rem;
           }
@@ -215,8 +210,16 @@
             border-top: 2px solid lighten($ci-1, 10%);
           }
           &:hover {
+            background-color: darken($ci-0, 4.5%);
             border-top: 2px solid $ci-3;
           }
+        }
+        &.is-dropdown-submenu-parent > a::after {
+          border-color: lighten($ci-1, 10%) transparent transparent;
+          right: 9px;
+        }
+        &.is-dropdown-submenu-parent.is-active > a::after {
+          border-color: $ci-3 transparent transparent;
         }
       }
       ul.submenu {
@@ -227,40 +230,39 @@
           right: 3.1rem;
         }
         li {
-          @include breakpoint(medium down) {
-            background-color: darken($ci-1, 10%);
-          }
-          @include breakpoint(large) {
-            background-color: darken($ci-0, 4.5%);
-          }
           min-width: 250px;
+          box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2),0 3px 3px -2px rgba(0,0,0,0.14),0 1px 8px 0 rgba(0,0,0,0.12);
           > a {
             padding: .93rem 1.5rem .93rem 1rem;
+            &:hover {
+              font-weight: bold;
+            }
           }
           @include breakpoint(medium down) {
+            background-color: darken($ci-1, 10%);
+            &:hover {
+              background-color: darken($ci-1, 15%);
+            }
             &.submenu-closer {
               display: block;
-            }
-          }
+            }          }
           @include breakpoint(large) {
-            &.submenu-closer {
-              display: none;
-            }
+            -webkit-transition: width .5s, height .5s, background-color 1s, -webkit-transform 1s;
+            transition: width .5s, height .5s, background-color 1s, transform 1s;
+            background-color: darken($ci-0, 4.5%);
             &.active {
               background-color: darken($ci-0, 5%);
             }
-          }
-          &:hover {
-            @include breakpoint(medium down) {
-              background-color: darken($ci-1, 15%);
-            }
-            @include breakpoint(large) {
+            &:hover {
               background-color: darken($ci-0, 2.3%);
             }
+            &.submenu-closer {
+              display: none;
+            }
           }
-        }
-        li:last-child {
-          border-radius: 0 0 10px 10px;
+          &:last-child {
+            border-radius: 0 0 10px 10px;
+          }
         }
       }
     }
@@ -340,9 +342,6 @@
             &.is-active,
             &:hover {
               background-color: transparent;
-              > a {
-                font-weight: bold;
-              }
             }
             > a {
               color: $grey-10;
@@ -358,9 +357,6 @@
             > a {
               color: $grey-10;
               text-shadow: none;
-              &:hover {
-                font-weight: bold;
-              }
             }
           }
         }
