@@ -4,5 +4,7 @@
     <ul>
     </ul>
   </div>
+  {% if site.google_translate_website == true %}
   <div id="google_translate_element"></div>
+  {% endif %}
 </aside>

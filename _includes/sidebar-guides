@@ -10,6 +10,8 @@
       Aspectran is open source. It's hosted, developed, and maintained on GitHub.
     </p>
 
+    {% if site.google_translate_website == true %}
     <div id="google_translate_element"></div>
+    {% endif %}
   </div>
 </aside>
