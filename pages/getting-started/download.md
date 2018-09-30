@@ -1,7 +1,7 @@
 ---
 layout: page
 format: "plate solid article"
-title: "Downloads"
+title: "Download"
 subheadline: "Aspectran Releases"
 teaser: "Aspectran is a free and open source Java application framework."
 breadcrumb: true
