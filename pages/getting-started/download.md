@@ -5,7 +5,7 @@ title: "Downloads"
 subheadline: "Aspectran Releases"
 teaser: "Aspectran is a free and open source Java application framework."
 breadcrumb: true
-permalink: /getting-started/downloads/
+permalink: /getting-started/download/
 ---
 
 ## Latest release: {{ site.data.aspectran.stable_version }}
