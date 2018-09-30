@@ -4,8 +4,8 @@
   dropdown:
   - title: "Quick Start Guide"
     url: "/getting-started/quickstart/"
-  - title: "Downloads"
-    url: "/getting-started/downloads/"
+  - title: "Download"
+    url: "/getting-started/download/"
 
 - title: Documentation
   url: "/docs/"
