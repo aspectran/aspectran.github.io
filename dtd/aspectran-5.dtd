@@ -18,7 +18,7 @@
 
 <!ELEMENT aspectran (
   description?,
-  (settings? | environment* | typeAliases* | aspect* | bean* | template* | schedule* | translet* | append*)*
+  (settings? | typeAliases* | environment* | aspect* | bean* | template* | schedule* | translet* | append*)*
 )>
 
 <!ELEMENT description (#PCDATA)>
@@ -33,11 +33,6 @@
   value   CDATA #IMPLIED
 >
 
-<!ELEMENT environment (#PCDATA | properties)*>
-<!ATTLIST environment
-  profile CDATA #IMPLIED
->
-
 <!ELEMENT typeAliases (typeAlias*)>
 
 <!ELEMENT typeAlias EMPTY>
@@ -46,13 +41,9 @@
   type    CDATA #REQUIRED
 >
 
-<!ELEMENT append EMPTY>
-<!ATTLIST append
-  file     CDATA #IMPLIED
-  resource CDATA #IMPLIED
-  url      CDATA #IMPLIED
-  format   (xml | apon) #IMPLIED
-  profile  CDATA #IMPLIED
+<!ELEMENT environment (#PCDATA | description | properties)*>
+<!ATTLIST environment
+  profile CDATA #IMPLIED
 >
 
 <!ELEMENT aspect (description?, joinpoint?, settings?, advice?, exception?)>
@@ -106,19 +97,6 @@
 >
 
 <!ELEMENT constructor (arguments?)>
-
-<!ELEMENT template (#PCDATA)>
-<!ATTLIST template
-  id       CDATA #IMPLIED
-  engine   CDATA #IMPLIED
-  style    (apon | compact | compressed) #IMPLIED
-  name     CDATA #IMPLIED
-  file     CDATA #IMPLIED
-  resource CDATA #IMPLIED
-  url      CDATA #IMPLIED
-  encoding CDATA #IMPLIED
-  noCache  (true | false) #IMPLIED
->
 
 <!ELEMENT schedule (description?, scheduler, job*)>
 <!ATTLIST schedule
@@ -229,12 +207,12 @@
 
 <!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters*)>
 <!ATTLIST redirect
-  contentType           CDATA #IMPLIED
-  path                  CDATA #REQUIRED
-  encoding              CDATA #IMPLIED
-  excludeNullParameter  (true | false) #IMPLIED
-  excludeEmptyParameter (true | false) #IMPLIED
-  default               (true | false) #IMPLIED
+  contentType            CDATA #IMPLIED
+  path                   CDATA #REQUIRED
+  encoding               CDATA #IMPLIED
+  excludeNullParameters  (true | false) #IMPLIED
+  excludeEmptyParameters (true | false) #IMPLIED
+  default                (true | false) #IMPLIED
 >
 
 <!ELEMENT forward ((action? | include? | echo? | headers?)*, attributes?)>
@@ -278,3 +256,25 @@
 >
 
 <!ELEMENT null EMPTY>
+
+<!ELEMENT template (#PCDATA)>
+<!ATTLIST template
+  id       CDATA #IMPLIED
+  engine   CDATA #IMPLIED
+  style    (apon | compact | compressed) #IMPLIED
+  name     CDATA #IMPLIED
+  file     CDATA #IMPLIED
+  resource CDATA #IMPLIED
+  url      CDATA #IMPLIED
+  encoding CDATA #IMPLIED
+  noCache  (true | false) #IMPLIED
+>
+
+<!ELEMENT append EMPTY>
+<!ATTLIST append
+  file     CDATA #IMPLIED
+  resource CDATA #IMPLIED
+  url      CDATA #IMPLIED
+  format   (xml | apon) #IMPLIED
+  profile  CDATA #IMPLIED
+>
