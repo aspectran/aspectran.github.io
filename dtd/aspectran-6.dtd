@@ -224,9 +224,24 @@
 >
 
 <!ELEMENT parameters (item*)>
+<!ATTLIST parameters
+  profile CDATA #IMPLIED
+>
+
 <!ELEMENT attributes (item*)>
+<!ATTLIST attributes
+  profile CDATA #IMPLIED
+>
+
 <!ELEMENT properties (item*)>
-<!ELEMENT arguments  (item*)>
+<!ATTLIST properties
+  profile CDATA #IMPLIED
+>
+
+<!ELEMENT arguments (item*)>
+<!ATTLIST arguments
+  profile CDATA #IMPLIED
+>
 
 <!ELEMENT item (#PCDATA | value | call | null)*>
 <!ATTLIST item
