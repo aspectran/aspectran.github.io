@@ -169,7 +169,7 @@
   hidden   (true | false) #IMPLIED
 >
 
-<!ELEMENT echo (item*)>
+<!ELEMENT echo (item* | attributes*)>
 <!ATTLIST echo
   id      CDATA #IMPLIED
   hidden  (true | false) #IMPLIED
