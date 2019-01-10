@@ -70,7 +70,7 @@
 
 <!ELEMENT exception (description?, thrown+)>
 
-<!ELEMENT thrown ((headers | echo | action)? | transform? | dispatch? | redirect? | forward?)*>
+<!ELEMENT thrown ((headers | echo | action)? | transform? | dispatch? | redirect?)*>
 <!ATTLIST thrown
   type    CDATA #IMPLIED
 >
