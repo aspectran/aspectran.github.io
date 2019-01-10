@@ -3,7 +3,7 @@
 <!--
   XML DTD for the Aspectran Configuration File, Version 6.0
 
-  Copyright 2008-2018 The Aspectran Project
+  Copyright 2008-2019 The Aspectran Project
 
   This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
@@ -123,9 +123,9 @@
 <!ELEMENT translet (
   (description?, request?, content*, contents?, response*, exception?) |
   (description?, request?, content*, contents?, (transform | dispatch | redirect | forward)?, exception?) |
-  (description?, request?, (action? | include? | echo? | headers?)*, response*, exception?) |
-  (description?, request?, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?) |
-  (description?, parameters*, attributes*, (action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?)
+  (description?, request?, (choose? | action? | include? | echo? | headers?)*, response*, exception?) |
+  (description?, request?, (choose? | action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?) |
+  (description?, parameters*, attributes*, (choose? | action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?, exception?)
 )>
 <!ATTLIST translet
   name    CDATA #REQUIRED
@@ -146,12 +146,21 @@
   omittable (true | false) #IMPLIED
 >
 
-<!ELEMENT content (action? | include? | echo? | headers?)*>
+<!ELEMENT content (choose? | action? | include? | echo? | headers?)*>
 <!ATTLIST content
   name      CDATA #IMPLIED
   omittable (true | false) #IMPLIED
   hidden    (true | false) #IMPLIED
 >
+
+<!ELEMENT choose (when*, otherwise?)>
+
+<!ELEMENT when ((action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?)>
+<!ATTLIST when
+  test    CDATA #IMPLIED
+>
+
+<!ELEMENT otherwise ((action? | include? | echo? | headers?)*, (transform | dispatch | redirect | forward)?)>
 
 <!ELEMENT action (arguments*, properties*)>
 <!ATTLIST action
@@ -187,7 +196,7 @@
   encoding CDATA #IMPLIED
 >
 
-<!ELEMENT transform ((action? | include? | echo? | headers?)*, (template? | call?))>
+<!ELEMENT transform ((choose? | action? | include? | echo? | headers?)*, (template? | call?))>
 <!ATTLIST transform
   type        CDATA #IMPLIED
   contentType CDATA #IMPLIED
@@ -196,7 +205,7 @@
   pretty      (true | false) #IMPLIED
 >
 
-<!ELEMENT dispatch (action? | include? | echo? | headers?)*>
+<!ELEMENT dispatch (choose? | action? | include? | echo? | headers?)*>
 <!ATTLIST dispatch
   name        CDATA #REQUIRED
   dispatcher  CDATA #IMPLIED
@@ -205,7 +214,7 @@
   default     (true | false) #IMPLIED
 >
 
-<!ELEMENT redirect ((action? | include? | echo? | headers?)*, parameters*)>
+<!ELEMENT redirect ((choose? | action? | include? | echo? | headers?)*, parameters*)>
 <!ATTLIST redirect
   contentType            CDATA #IMPLIED
   path                   CDATA #REQUIRED
@@ -215,7 +224,7 @@
   default                (true | false) #IMPLIED
 >
 
-<!ELEMENT forward ((action? | include? | echo? | headers?)*, attributes*)>
+<!ELEMENT forward ((choose? | action? | include? | echo? | headers?)*, attributes*)>
 <!ATTLIST forward
   contentType CDATA #IMPLIED
   translet    CDATA #REQUIRED
