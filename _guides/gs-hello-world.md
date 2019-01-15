@@ -31,7 +31,7 @@ The simplest configuration for printing "Hello World!" can be written as:
 
 [***gs-hello-world/app/config/app-config.xml***](https://github.com/aspectran/gs-hello-world/blob/master/app/config/app-config.xml)
 
-{% highlight xml %}
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
         "http://aspectran.github.io/dtd/aspectran-6.dtd">
@@ -81,11 +81,11 @@ The simplest configuration for printing "Hello World!" can be written as:
     </translet>
 
 </aspectran>
-{% endhighlight xml %}
+```
 
-> You can see that the `translet` element with the name" hello "is defined.
-> The `translet` element contains a` transform` element that appears to be responsible for converting to text format.
-> The `template` element in` transform` has the string "Hello, World!".
+> - You can see that the `translet` element with the name" hello "is defined.
+> - The `translet` element contains a` transform` element that appears to be responsible for converting to text format.
+> - The `template` element in` transform` has the string "Hello, World!".
 
 ## How To Run
 
