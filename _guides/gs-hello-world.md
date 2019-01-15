@@ -39,7 +39,7 @@ The simplest configuration for printing "Hello World!" can be written as:
 
     <description style="apon">
         |
-        |   {{bold}}--- The simplest Hello World application created with Aspectran ---{{bold:off}}
+        |   {{bold}}--- Aspectran Hello World Example ---{{bold:off}}
         |
         |{{underline}}Commands that can run examples:{{underline:off}}
         |   {{green}}hello{{fg:reset}} - "Hello, World!" will be printed on your console.
