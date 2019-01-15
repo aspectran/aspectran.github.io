@@ -10,10 +10,10 @@ permalink: /info/
 ---
 ![aspectran](/images/header_aspectran.png)
 
-Aspectran is a Java framework for building Web and command-line applications.  
-Aspectran will grow into a next-generation Java application framework that supports most of the functionality required in an enterprise environment.
+Aspectran is a concise, easy-to-use Java application framework.
+Some of the widely used Java application frameworks are becoming more and more complex with more features as they mature. A typical example would be the Spring Framework. Aspectran is a single-structure, next-generation framework that incorporates some of the key features of the Spring Framework with new perspectives.
 
-The main features of Aspectran are as follows:
+Aspectran consists of the following core functions:
 
 * **Support multiple execution environments with identical configuration settings**  
   You can share the same configuration settings in different execution environments, such as Web and CLI-based applications.
@@ -32,12 +32,17 @@ The main features of Aspectran are as follows:
 * **Support building RESTful Web Services**  
   Aspectran is designed to be suitable for building RESTful Web Services.
 
+Aspectran provides the environment to build web application server and shell application easily based on the above core functions. In addition, it enables rapid execution and deployment. Java code written in POJO with Aspectran's powerful and concise configuration settings facilitates testing and maximizes code reuse when developing applications in other execution environments.
+
 The following packages based on the `com.aspectran.core` package exist to support various execution environments.
 
-* `com.aspectran.console`: Provides an interface for executing commands in an application built with Aspectran
-* `com.aspectran.embed`: Provides the ability to embed Aspectran in other Java applications
+* `com.aspectran.daemon`: Provides a daemon that runs Aspectran as a service in the background on Unix-based or Windows operating systems
+* `com.aspectran.embed`: Provides an interface that can be used by embedding Aspectran in Java applications
+* `com.aspectran.shell`: Provides an interactive shell that lets you use or control Aspectran directly from the command line
+* `com.aspectran.shell-jline`: Provides an interactive shell using the feature-rich JLine
 * `com.aspectran.web`: Provides overall functionality for building web applications within a web application container
-* `com.aspectran.with.jetty`: Supports for building standalone Web application that is built-in Jetty server
+* `com.aspectran.with.jetty`: Add-on package for integrating Embedded Jetty
+* `com.aspectran.with.mybatis`: Add-on package for integrating MyBatis
 
 ## History of Aspectran
 
