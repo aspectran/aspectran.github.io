@@ -18,16 +18,16 @@ asciinema: 219202
 
 ## Getting Started
 
-There are two ways to print the string "Hello, World!".
+There are two ways to print "Hello, World!".
 
 1. Prints out the string "Hello, World!" by written Java code
 2. Prints out the string "Hello, World!" without writing Java code
 
-This section describes how to output the "Hello, World!" without writing Java code.
+This section describes how to print "Hello, World" without writing Java code.
 
 ## Configuration Settings
 
-The simplest configuration for outputting the string "Hello World" can be written as:
+The simplest configuration for printing "Hello World!" can be written as:
 
 [***gs-hello-world/app/config/app-config.xml***](https://github.com/aspectran/gs-hello-world/blob/master/app/config/app-config.xml)
 
