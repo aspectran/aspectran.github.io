@@ -70,11 +70,11 @@ The simplest configuration for printing "Hello World!" can be written as:
         <transform type="transform/text">
             <template style="apon">
                 |
-                |   {{bg:green}}                         {{reset}}
-                |   {{bg:green}}   {{magenta,bg:white}}                   {{bg:blue}}   {{reset}}
-                |   {{bg:green}}   {{RED,bg:white}}   Hello, World!   {{bg:blue}}   {{reset}}
-                |   {{bg:green}}   {{magenta,bg:white}}                   {{bg:blue}}   {{reset}}
-                |   {{magenta,bg:blue}}                         {{reset}}
+                |   {{"{{bg:green"}}}}                         {{"{{off"}}}}
+                |   {{"{{bg:green"}}}}   {{"{{magenta,bg:white"}}}}                   {{"{{bg:blue"}}}}   {{"{{off"}}}}
+                |   {{"{{bg:green"}}}}   {{"{{RED,bg:white"}}}}   Hello, World!   {{"{{bg:blue"}}}}   {{"{{off"}}}}
+                |   {{"{{bg:green"}}}}   {{"{{magenta,bg:white"}}}}                   {{"{{bg:blue"}}}}   {{"{{off"}}}}
+                |   {{"{{magenta,bg:blue"}}}}                         {{"{{off"}}}}
                 |
             </template>
         </transform>
@@ -83,13 +83,13 @@ The simplest configuration for printing "Hello World!" can be written as:
 </aspectran>
 ```
 
-> - You can see that the `translet` element with the name" hello "is defined.
-> - The `translet` element contains a` transform` element that appears to be responsible for converting to text format.
-> - The `template` element in` transform` has the string "Hello, World!".
+> - You can see that the `translet` element with the name "hello" is defined.
+> - The `translet` element contains a `transform` element that appears to be responsible for converting to text format.
+> - The `template` element in `transform` has the string "Hello, World!".
 
 ## How To Run
 
-We need to run `translet` with the name" hello "or" hello2 ".
+We need to run `translet` with the name "hello" or "hello2".
 
 *Aspectran* supports the following operating environments.
 * Run as a Java application in the console environment
@@ -98,7 +98,7 @@ We need to run `translet` with the name" hello "or" hello2 ".
 
 Here we will run it through *Aspectran Shell* in the console environment.
 
-First, download the ZIP file through the following link and extract it to the appropriate path.  
+First, download the ZIP file through the following link and extract it to the appropriate path.
 {% include label-link-box label="Download ZIP" href="https://github.com/aspectran/gs-hello-world/archive/master.zip" %}
 
 This Hello World application can be run in a console environment on Windows, Unix/Linux and Mac OS.  
