@@ -41,8 +41,10 @@ The following packages based on the `com.aspectran.core` package exist to suppor
 * `com.aspectran.shell`: Provides an interactive shell that lets you use or control Aspectran directly from the command line
 * `com.aspectran.shell-jline`: Provides an interactive shell using the feature-rich JLine
 * `com.aspectran.web`: Provides overall functionality for building web applications within a web application container
-* `com.aspectran.with.jetty`: Add-on package for integrating Embedded Jetty
-* `com.aspectran.with.mybatis`: Add-on package for integrating MyBatis
+* `com.aspectran.freemarker`: Add-on package for integrating Freemarker
+* `com.aspectran.jetty`: Add-on package for integrating Embedded Jetty
+* `com.aspectran.mybatis`: Add-on package for integrating MyBatis
+* `com.aspectran.pebble`: Add-on package for integrating Pebble
 
 ## History of Aspectran
 

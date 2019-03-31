@@ -28,46 +28,75 @@ See [all versions available on the Maven Central Repository][2].
 
 Use the following definition to use Aspectran in your maven project:
 
-{% highlight xml %}
+```xml
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-all</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
+  <version>6.0.0</version>
 </dependency>
-{% endhighlight %}
+```
 
 Aspectran can also be used with more low-level jars:
-
-{% highlight xml %}
-<!-- You can use this to build a command line application. -->
+```xml
+<!-- This can be used to build a daemon application that runs in the background. -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-daemon</artifactId>
+  <version>6.0.0</version>
+</dependency>
+```
+```xml
+<!-- This can be used to build command-line based applications. -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
+  <version>6.0.0</version>
 </dependency>
-<!-- You can use this as a library for building other applications. -->
+```
+```xml
+<!-- This can be used to build command-line based applications that use the feature-rich JLine. -->
 <dependency>
   <groupId>com.aspectran</groupId>
-  <artifactId>aspectran-embed</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
+  <artifactId>aspectran-shell-jline</artifactId>
+  <version>6.0.0</version>
 </dependency>
-<!-- You can use it to build a web application. -->
+```
+```xml
+<!-- This can be used to build web applications. -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-web</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
+  <version>6.0.0</version>
 </dependency>
-<!-- You can use it to build a web application with built-in Jetty 9. -->
+```
+```xml
+<!-- This can be used to embed Aspectran in your application. -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-embed</artifactId>
+  <version>6.0.0</version>
+</dependency>
+```
+```xml
+<!-- This can be used to build a web application server with built-in Jetty. -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-jetty</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
+  <version>6.0.0</version>
 </dependency>
-{% endhighlight %}
+```
+```xml
+<!-- This can be used to build applications that use MyBatis. -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-with-mybatis</artifactId>
+  <version>6.0.0</version>
+</dependency>
+```
 
 Note that Aspectran 5 requires Java 8, so an explicit declaration of 1.8 compatibility to the compiler may also be required:
 
-{% highlight xml %}
+```xml
 <build>
   <plugins>
     <plugin>
@@ -81,7 +110,7 @@ Note that Aspectran 5 requires Java 8, so an explicit declaration of 1.8 compati
     </plugin>
   </plugins>
 </build>
-{% endhighlight %}
+```
 
 
 [1]: http://repo1.maven.org/maven2/com/aspectran/
