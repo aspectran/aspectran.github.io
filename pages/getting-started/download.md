@@ -94,7 +94,7 @@ Aspectran can also be used with more low-level jars:
 </dependency>
 ```
 
-Note that Aspectran 5 requires Java 8, so an explicit declaration of 1.8 compatibility to the compiler may also be required:
+Note that Aspectran 6 requires Java 8, so an explicit declaration of 1.8 compatibility to the compiler may also be required:
 
 ```xml
 <build>
