@@ -35,13 +35,13 @@ Aspectran은 위의 핵심 기능을 기반으로 웹 어플리케이션 서버 
 com.aspectran.core 패키지를 기반으로하는 다음 패키지는 다양한 실행 환경을 지원하기 위해 존재합니다.
 
 * `com.aspectran.daemon`  
-  Aspectran을 Unix 기반 또는    Windows 운영 체제의 백그라운드에서 서비스로 실행하는 데몬을 제공합니다.
+  Aspectran을 Unix 기반 또는 Windows 운영체제에서 백그라운드로 실행할 수 있는 어플리케이션 구축을 위한 패키지
 * `com.aspectran.embed`  
-  Java 애플리케이션에 Aspectran을 임베드하여 사용할 수있는 인터페이스를 제공합니다.
+  Java 어플리케이션에 Aspectran을 임베드하여 사용할 수있는 인터페이스를 제공합니다.
 * `com.aspectran.shell`  
-  명령 행에서 직접 Aspectran을 사용하거나 제어 할 수있는 대화식 쉘을 제공합니다.
+  명령 행에서 직접 Aspectran을 사용하거나 제어할 수있는 대화식 쉘을 제공합니다.
 * `com.aspectran.shell-jline`  
-  기능이 풍부한 JLine을 사용하여 대화 형 셸을 제공합니다.
+  기능이 풍부한 JLine을 사용하여 대화식 쉘을 제공합니다.
 * `com.aspectran.web`  
   서블릿 컨테이너 기반의 웹 어플리케이션을 작성하기 위한 전반적인 기능 제공
 * `com.aspectran.jetty`  
@@ -206,6 +206,12 @@ Aspectran은 독립적으로 구동될 수 있는 다음과 같은 두 종류의
 
 Aspectran Shell
 ---------------
+
+모든 어플리케이션이 화려한 사용자 인터페이스를 필요로 하지 않습니다. 멋진 어플리케이션의 뒤에는 부수적인 역할을 담당하거나, 테스트를 하기 위한 목적의 간단한 대화형 어플리케이션이 필요할 수도 있습니다.
+Aspectran 기반으로 작성된 모든 소스 코드들은 Aspectran Shell 어플리케이션을 통하여 실행할 수도 있습니다. 예를 들어 서블릿 컨테이너 내의 서블릿이 처리하는 요청 URI를 쉘 명령을 통하여 요청할 수 있습니다.
+
+Aspectran Shell을 실행하기 위한 명령어
+
 
 
 
