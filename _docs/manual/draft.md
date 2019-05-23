@@ -157,19 +157,17 @@ Java persistence framework로 `MyBatis 3`를 사용하고 있습니다.
 ```
 
 
-구동 환경
-=========
-
 Aspectran 기반의 독립 실행형 어플리케이션
------------------------------------------
+=========================================
 
-Aspectran을 기반으로 웹 어플리케이션 서버 또는 명령 라인 기반의 콘솔 어플리케이션을 쉽게 개발할 수 있습니다.
+Aspectran을 기반으로 웹 어플리케이션 서버 또는 명령행 기반의 콘솔 어플리케이션을 쉽게 구축할 수 있습니다.
 
-Aspectran은 독립적으로 구동될 수 있는 다음과 같은 두 종류의 어플리케이션을 제공합니다.
+Aspectran은 다른 프레임워크 처럼 널리 사용되는 웹 컨테이너의 일부에 종속되어 구동될 수도 있으며, 자체적으로 두 종류의 어플리케이션 구동 방식을 제공합니다.
+
 * Aspectran Shell: 콘솔 환경에서 사용자가 입력한 명령을 해석하고 처리한 결과를 출력하는 어플리케이션
 * Aspectran Daemon: 백그라운드에서 작동하는 어플리케이션
 
-일반적으로 Aspectran으로 만드는 어플리케이션은 다음과 같은 구조를 가지고 있습니다.
+위 두 종류의 어플리케이션은 일반적으로 다음과 같은 디렉토리 구조를 가지고 있습니다.
 
      └── app
          ├── bin
@@ -203,18 +201,165 @@ Aspectran은 독립적으로 구동될 수 있는 다음과 같은 두 종류의
          │           └── web.xml
          └── work
 
+이제부터 예제에 언급되는 어플리케이션은 Aspectran Demo 어플리케이션을 기준으로 합니다.
+
 
 Aspectran Shell
 ---------------
 
-모든 어플리케이션이 화려한 사용자 인터페이스를 필요로 하지 않습니다. 멋진 어플리케이션의 뒤에는 부수적인 역할을 담당하거나, 테스트를 하기 위한 목적의 간단한 대화형 어플리케이션이 필요할 수도 있습니다.
-Aspectran 기반으로 작성된 모든 소스 코드들은 Aspectran Shell 어플리케이션을 통하여 실행할 수도 있습니다. 예를 들어 서블릿 컨테이너 내의 서블릿이 처리하는 요청 URI를 쉘 명령을 통하여 요청할 수 있습니다.
+모든 어플리케이션이 화려한 사용자 인터페이스를 필요로 하는 것은 아닙니다. 멋진 어플리케이션의 뒤에는 부수적인 역할을 담당하거나, 테스트를 하기 위한 목적의 간단한 대화형 어플리케이션이 필요할 수도 있습니다.
 
-Aspectran Shell을 실행하기 위한 명령어
+Aspectran을 기반으로 작성된 모든 소스 코드들은 Aspectran Shell 어플리케이션을 통하여 실행할 수 있습니다. 예를 들어 서블릿 컨테이너 내의 서블릿으로 전달되는 요청 URI를 쉘 명령을 통하여 요청할 수도 있습니다. Aspectran Shell 형식으로 개발된 어플리케이션을 Aspectran Daemon으로 전환하여 구동할 수 있는 명령 스크립트가 제공됩니다.
 
+다음은 Aspectran Shell 어플리케이션을 구동하기 위한 명령입니다.
+```shell
+cd app/bin
+./shell.sh
+```
 
+Windows 운영체제에서는 다음과 같이 실행할 수 있습니다.
+```shell
+cd app\bin
+shell.bat
+```
 
+Aspectran Shell 어플리케이션이 구동되면 다음과 같은 초기 화면과 함께 `aspectran-demo>` 프롬프트를 볼 수 있습니다.
+```
 
+     ___                         __                      ____  __         ____
+    /   |  ___  ____  ___  ___  / /____   ___  ____     / ___|/ /_  ___  / / /
+   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |   (___  / __ |/ _ |/ / /
+  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /   ___/ / / / /  __/ / /
+ /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
+=========== /_/ ==========================================================
+
+Welcome To Aspectran Shell 6.0.2
+
+If you want a list of all supported built-in commands, type 'help'.
+To get help on a specific command, type 'command_name -h'.
+If you want a list of all available translets, type 'translet -l'.
+To run a translet, type 'translet <translet_name>' or 'translet_name'.
+
+Commands that can run examples:
+   hello      Prints "Hello, World!" in your console
+   hello2     Prints "Hello, World!" in your console using ANSI color codes
+   echo1      It accepts parameters and print as is
+   --- for more examples, type 'translet -l' ---
+
+The Jetty Server is currently running.
+Use the command 'jetty' to control the Jetty Server.
+When your Jetty Server is running, point your web browser to:
+   http://localhost:8088/
+
+aspectran-demo> 
+```
+
+초기 화면에 표시되는 환영 인사말과 프롬프트는 Aspectran 초기화 설정 파일 `app/config/aspectran-config.apon`에 기술되어 있으며, 현재 구동되고 있는 어플리케이션과 밀접한 내용은 최초 로딩되는 어플리케이션 설정 XML 파일 `/app/config/app-config.xml`의 `<description>` 요소에 추가적으로 기술하고 있습니다.
+
+***aspectran-config.apon 파일에서 shell 설정 부분***
+```
+shell: {
+    prompt: "{{green}}aspectran-demo>{{reset}} "
+    commands: [
+        com.aspectran.shell.command.builtins.JettyCommand
+        com.aspectran.shell.command.builtins.TransletCommand
+        com.aspectran.shell.command.builtins.AspectCommand
+        com.aspectran.shell.command.builtins.JobCommand
+        com.aspectran.shell.command.builtins.PBEncryptCommand
+        com.aspectran.shell.command.builtins.PBDecryptCommand
+        com.aspectran.shell.command.builtins.SysInfoCommand
+        com.aspectran.shell.command.builtins.EchoCommand
+        com.aspectran.shell.command.builtins.HistoryCommand
+        com.aspectran.shell.command.builtins.ClearCommand
+        com.aspectran.shell.command.builtins.VerboseCommand
+        com.aspectran.shell.command.builtins.HelpCommand
+        com.aspectran.shell.command.builtins.RestartCommand
+        com.aspectran.shell.command.builtins.QuitCommand
+    ]
+    greetings: (
+        |
+        |{{YELLOW}}     ___                         __                      ____  __         ____
+        |{{YELLOW}}    /   |  ___  ____  ___  ___  / /____   ___  ____     / ___|/ /_  ___  / / /
+        |{{GREEN }}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |   (___  / __ |/ _ |/ / /
+        |{{GREEN }}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /   ___/ / / / /  __/ / /
+        |{{CYAN  }} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   /____/_/ /_/|___/_/_/
+        |{{CYAN  }}=========== /_/ ==========================================================
+        |{{reset }}
+        |{{RED   }}Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}{{reset}}
+        |
+        |If you want a list of all supported built-in commands, type '{{GREEN}}help{{reset}}'.
+        |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
+        |If you want a list of all available translets, type '{{GREEN}}translet -l{{reset}}'.
+        |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
+    )
+    workingDir: /work
+    historyFile: /logs/history.log
+    verbose: true
+    exposals: {
+        -: /**
+    }
+}
+```
+
+***app-config.xml 파일의 description 요소***
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
+        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+<aspectran>
+
+    <description style="apon">
+        |
+        |{{bold}}Commands that can run examples:{{bold:off}}
+        |   {{CYAN}}hello{{fg:reset}}      Prints "Hello, World!" in your console
+        |   {{CYAN}}hello2{{fg:reset}}     Prints "Hello, World!" in your console using ANSI color codes
+        |   {{CYAN}}echo1{{fg:reset}}      It accepts parameters and print as is
+        |   --- for more examples, type '{{GREEN}}translet -l{{reset}}' ---
+        |
+        |{{bold}}The Jetty Server is currently running.{{bold:off}}
+        |Use the command '{{GREEN}}jetty{{reset}}' to control the Jetty Server.
+        |When your Jetty Server is running, point your web browser to:
+        |   {{81}}http://localhost:8088/{{fg:reset}}
+        |
+    </description>
+</aspectran>
+```
+
+프롬프트에서 `help`명령을 입력 후 엔터키를 치면 이용가능한 명령을 기술하는 도움말이 출력됩니다.
+```
+aspectran-demo> help
+Available commands:
+   jetty      Use the command 'jetty' to control the Jetty server
+   translet   Translet run, or you can find them
+   aspect     Show registered aspects, or disable or enable them
+   job        Show scheduled jobs, or disable or enable them
+   encrypt    Encrypts the input string using the encryption password
+   decrypt    Decrypts the input string using the encryption password
+   sysinfo    Displays current JVM runtime information
+   echo       Displays a message on the screen
+   history    Display or delete all previously run commands
+   clear      Clear the terminal screen
+   verbose    Turns on or off the translet description display feature
+   help       Display helpful information about builtin commands
+   restart    Restarts the Aspectran Service
+   quit       Releases all resources and exits this application
+
+Commands that can run examples:
+   hello      Prints "Hello, World!" in your console
+   hello2     Prints "Hello, World!" in your console using ANSI color codes
+   echo1      It accepts parameters and print as is
+   --- for more examples, type 'translet -l' ---
+
+The Jetty Server is currently running.
+Use the command 'jetty' to control the Jetty Server.
+When your Jetty Server is running, point your web browser to:
+   http://localhost:8088/
+
+aspectran-demo>
+```
+
+기본적으로 Shell 명령은 `com.aspectran.daemon.command.Command` 인터페이스를 구현한 클래스로 등록
+추가적으로
 
 
 
