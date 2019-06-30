@@ -32,7 +32,7 @@ Use the following definition to use Aspectran in your maven project:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-all</artifactId>
-  <version>6.0.0</version>
+  <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
 
@@ -42,7 +42,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-daemon</artifactId>
-  <version>6.0.0</version>
+  <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
 ```xml
@@ -50,7 +50,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell</artifactId>
-  <version>6.0.0</version>
+  <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
 ```xml
@@ -58,7 +58,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell-jline</artifactId>
-  <version>6.0.0</version>
+  <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
 ```xml
@@ -66,7 +66,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-web</artifactId>
-  <version>6.0.0</version>
+  <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
 ```xml
@@ -74,7 +74,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-embed</artifactId>
-  <version>6.0.0</version>
+  <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
 ```xml
@@ -82,7 +82,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-jetty</artifactId>
-  <version>6.0.0</version>
+  <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
 ```xml
@@ -90,7 +90,7 @@ Aspectran can also be used with more low-level jars:
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-mybatis</artifactId>
-  <version>6.0.0</version>
+  <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
 
