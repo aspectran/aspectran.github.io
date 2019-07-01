@@ -110,7 +110,8 @@
           }, immediate ? 250 : 500);
         } else {
           var topBarHeight = $("#navigation.fixed .top-bar").height()||0;
-          if(immediate || (scrollTop > baseOffsetTop + topBarHeight + offsetTop + thisHeight - 20) || (scrollTop < baseOffsetTop + topBarHeight + offsetTop)) {
+          if(immediate || (scrollTop > baseOffsetTop + topBarHeight + offsetTop + thisHeight - 20) || 
+              (scrollTop < baseOffsetTop + topBarHeight + offsetTop)) {
             var tocOffsetLeftBase = $this.offset().left;
             if(tocOffsetLeftBase > 100) {
               if(scrollTimer) {
@@ -178,7 +179,7 @@
   {% for image in page.header.slide_images %}
   {% if forloop.index > 1 %}, "{{ site.urlimg }}{{ image }}"{% endif %}
   {% endfor %}
-  ], {duration: 3300, fade: 900, bgcolor: '#707D83'}});
+  ], {duration: 3300, fade: 900, bgcolor: '#445259'}});
 </script>
 {% endif %}
 

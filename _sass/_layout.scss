@@ -702,10 +702,10 @@ body.plate {
 //------------------------
 
 .frontpage #masthead {
-  background-color: $head-color;
-  color: #eee;
   text-shadow: none;
   @include breakpoint(medium down) {
+    color: #eee;
+    background-color: $ci-0;
     padding: 60px 0 10px 0;
     .columns {
       padding: 0 5%;
@@ -723,6 +723,8 @@ body.plate {
     }
   }
   @include breakpoint(large) {
+    color: #fff;
+    background-color: $head-color;
     padding: 110px 0 50px 0;
   }
   #forkme-ribbon {
