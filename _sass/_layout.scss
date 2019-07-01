@@ -203,6 +203,9 @@
           border-top: 2px solid transparent;
           a {
             padding: 1.3rem 1.5rem 1.3rem 1rem;
+            &:hover {
+              font-weight: bold;
+            }
           }
           &.active {
             border-top: 2px solid lighten($ci-1, 10%);
@@ -229,7 +232,6 @@
         }
         li {
           min-width: 250px;
-          box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2),0 3px 3px -2px rgba(0,0,0,0.14),0 1px 8px 0 rgba(0,0,0,0.12);
           > a {
             padding: .93rem 1.5rem .93rem 1rem;
             &:hover {
@@ -245,8 +247,6 @@
               display: block;
             }          }
           @include breakpoint(large) {
-            -webkit-transition: width .5s, height .5s, background-color 1s, -webkit-transform 1s;
-            transition: width .5s, height .5s, background-color 1s, transform 1s;
             background-color: darken($ci-1, 4.5%);
             &.active {
               background-color: darken($ci-1, 5%);
