@@ -16,7 +16,7 @@ download:
     <property>
         <item name="withCredentials" valueType="boolean">true</item>
         <item name="origins" type="set">
-            <value>http://www.aspectran.com</value>
+            <value>https://www.aspectran.com</value>
             <value>http://localhost:4000</value>
         </item>
     </property>

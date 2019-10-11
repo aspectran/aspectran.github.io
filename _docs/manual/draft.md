@@ -305,7 +305,7 @@ shell: {
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
-        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+        "https://aspectran.github.io/dtd/aspectran-6.dtd">
 <aspectran>
 
     <description style="apon">

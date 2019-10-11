@@ -16,7 +16,7 @@
     <p>
       {{ include.widget.title }}<br/>
       <a href="https://travis-ci.org/aspectran/aspectran" target="_blank" title="Build Status"><img src="https://travis-ci.org/aspectran/aspectran.svg" alt=""/></a>
-      <a href="https://github.com/aspectran/aspectran" target="_blank" title="Apache License 2.0"><img src="http://img.shields.io/badge/license-Apache%202-red.svg" alt=""/></a>
+      <a href="https://github.com/aspectran/aspectran" target="_blank" title="Apache License 2.0"><img src="https://img.shields.io/badge/license-Apache%202-red.svg" alt=""/></a>
     </p>
     <p class="show-for-small-only"><a class="button radius small" href="{{ widget_url }}">{% if include.widget.button_text %}{{ include.widget.button_text }}{% else %}{{ site.data.language.details }}{% endif %}</a></p>
   </div>

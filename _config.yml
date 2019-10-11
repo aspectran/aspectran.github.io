@@ -17,7 +17,7 @@ author: juho_jeong
 
 # This URL is the main address for absolute links. Don't include a slash at the end.
 #
-url: 'http://www.aspectran.com'
+url: 'https://www.aspectran.com'
 baseurl: '' # does not include hostname
 
 # This is for the editing function in _/includes/improve_content
@@ -184,7 +184,7 @@ defaults:
 # Facebook-Optimization › http://j.mp/fb_optimize
 #-------------------------------------------------------------------
 
-og_image:                   "http://www.aspectran.com/assets/img/aspectran-logo.png"
+og_image:                   "https://www.aspectran.com/assets/img/aspectran-logo.png"
 og_locale:                  "en_US"
 og_type:                    "website"
 og_title:                   "Aspectran"

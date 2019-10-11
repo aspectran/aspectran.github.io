@@ -34,7 +34,7 @@ The simplest configuration for printing "Hello World!" can be written as:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
-        "http://aspectran.github.io/dtd/aspectran-6.dtd">
+        "https://aspectran.github.io/dtd/aspectran-6.dtd">
 <aspectran>
 
     <description style="apon">

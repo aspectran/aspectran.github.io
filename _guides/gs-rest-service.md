@@ -21,7 +21,7 @@ demo: gs-rest-service.html
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
-    "http://aspectran.github.io/dtd/aspectran-4.dtd">
+    "https://aspectran.github.io/dtd/aspectran-4.dtd">
 
 <aspectran>
 
@@ -71,9 +71,9 @@ demo: gs-rest-service.html
   <bean id="corsProcessor" class="com.aspectran.web.support.cors.DefaultCorsProcessor">
     <properties>
       <item name="allowedOrigins" type="set">
-        <value>http://www.aspectran.com</value>
-        <value>http://backend.aspectran.com</value>
-        <value>http://backend2.aspectran.com</value>
+        <value>https://www.aspectran.com</value>
+        <value>https://backend.aspectran.com</value>
+        <value>https://backend2.aspectran.com</value>
       </item>
       <item name="allowedMethods" type="set">
         <value>GET</value>
@@ -144,7 +144,7 @@ demo: gs-rest-service.html
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
-        "http://aspectran.github.io/dtd/aspectran-4.dtd">
+        "https://aspectran.github.io/dtd/aspectran-4.dtd">
 
 <aspectran>
 

@@ -45,7 +45,7 @@ Aspectran을 사용하려면 aspectran-x.x.x.jar 파일과 아래와 같은 필�
 * commons-io
 * logging 라이브러리(commons-logging, log4j, slf4j)
 
-현재 Aspectran 홈페이지의 [다운로드](http://www.aspectran.com/download/) 페이지에서 수동으로 jar 라이브러리의 복사본을 받을 수 있습니다.
+현재 Aspectran 홈페이지의 [다운로드](https://www.aspectran.com/download/) 페이지에서 수동으로 jar 라이브러리의 복사본을 받을 수 있습니다.
 
 Maven을 사용한다면 [pom.xml](https://github.com/topframe/aspectran/blob/master/pom.xml) 파일을 참고해서 의존 라이브러리를 추가해 주세요.
 
@@ -272,7 +272,7 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-1.0.dtd">
+                           "https://aspectran.github.io/dtd/aspectran-1.0.dtd">
 
 <aspectran>
 

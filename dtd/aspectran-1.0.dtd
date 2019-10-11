@@ -7,7 +7,7 @@
 	XML documents that conform to this DTD should declare the following doctype:
 
 	<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
-	                           "http://aspectran.github.io/dtd/aspectran-1.0.dtd">
+	                           "https://aspectran.github.io/dtd/aspectran-1.0.dtd">
 -->
 
 <!ELEMENT aspectran (

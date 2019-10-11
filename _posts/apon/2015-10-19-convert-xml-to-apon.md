@@ -22,7 +22,7 @@ published: true
 {% highlight xml  %}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-1.0.dtd">
+                           "https://aspectran.github.io/dtd/aspectran-1.0.dtd">
 
 <aspectran>
 

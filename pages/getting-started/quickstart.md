@@ -272,7 +272,7 @@ Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하�
 {% highlight xml %}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 2.0//EN"
-                           "http://aspectran.github.io/dtd/aspectran-2.dtd">
+                           "https://aspectran.github.io/dtd/aspectran-2.dtd">
 
 <aspectran>
 
