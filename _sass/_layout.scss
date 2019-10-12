@@ -474,10 +474,9 @@ body.plate {
     padding: 0;
     opacity: .7;
     @include breakpoint(small only) {
-      background-color: transparent;
-      nav {
-        background-color: $ci-2;
-        border-radius: 10px 10px 0 0;
+      background-color: $ci-2;
+      > .columns {
+        padding: 0;
       }
     }
     @include breakpoint(medium only) {
