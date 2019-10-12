@@ -449,6 +449,10 @@ body.plate {
   -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+  a {
+    border: 0;
+    color: yellow;
+  }
   .row {
     position: relative;
     z-index: 1;
@@ -704,7 +708,7 @@ body.plate {
   text-shadow: none;
   @include breakpoint(medium down) {
     color: #eee;
-    background-color: $ci-0;
+    background-color: $head-color;
     padding: 60px 0 10px 0;
     .columns {
       padding: 0 5%;
@@ -728,12 +732,6 @@ body.plate {
   }
   #forkme-ribbon {
     display: block;
-  }
-  a {
-    border: 0;
-    @include breakpoint(large) {
-      color: #fff;
-    }
   }
   img {
     border-radius: $global-radius;
