@@ -38,59 +38,67 @@ Use the following definition to use Aspectran in your maven project:
 
 Aspectran can also be used with more low-level jars:
 ```xml
-<!-- This can be used to build a daemon application that runs in the background. -->
+<!-- To build a daemon application that runs in the background -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-daemon</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
+  <version>6.5.1</version>
 </dependency>
 ```
 ```xml
-<!-- This can be used to build command-line based applications. -->
-<dependency>
-  <groupId>com.aspectran</groupId>
-  <artifactId>aspectran-shell</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
-</dependency>
-```
-```xml
-<!-- This can be used to build command-line based applications that use the feature-rich JLine. -->
-<dependency>
-  <groupId>com.aspectran</groupId>
-  <artifactId>aspectran-shell-jline</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
-</dependency>
-```
-```xml
-<!-- This can be used to build web applications. -->
-<dependency>
-  <groupId>com.aspectran</groupId>
-  <artifactId>aspectran-web</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
-</dependency>
-```
-```xml
-<!-- This can be used to embed Aspectran in your application. -->
+<!-- To embed Aspectran in your application -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-embed</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
+  <version>6.5.1</version>
 </dependency>
 ```
 ```xml
-<!-- This can be used to build a web application server with built-in Jetty. -->
+<!-- To build command-line based applications -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-shell</artifactId>
+  <version>6.5.1</version>
+</dependency>
+```
+```xml
+<!-- To build command-line based applications that use the feature-rich JLine -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-shell-jline</artifactId>
+  <version>6.5.1</version>
+</dependency>
+```
+```xml
+<!-- To build a servlet-based web application -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-web</artifactId>
+  <version>6.5.1</version>
+</dependency>
+```
+```xml
+<!-- To build a web application server with embedded Jetty -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-jetty</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
+  <version>6.5.1</version>
 </dependency>
 ```
 ```xml
-<!-- This can be used to build applications that use MyBatis. -->
+<!-- To build MyBatis applications on top of the Aspectran -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-mybatis</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
+  <version>6.5.1</version>
+</dependency>
+```
+```xml
+<!-- To build a web application server with embedded Undertow -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-with-undertow</artifactId>
+  <version>6.5.1</version>
 </dependency>
 ```
 
