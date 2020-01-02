@@ -8,8 +8,8 @@ breadcrumb: true
 comments: false
 permalink: /info/
 ---
-![aspectran](/images/header_aspectran.png)
 
+<img src="/images/info/aspectran_archtecture_diagram.png" width="50%" align="right" title="Aspectran Archtecture Diagram">
 Aspectran is a concise, easy-to-use Java application framework.
 Some of the widely used Java application frameworks are becoming more and more complex with more features as they mature. A typical example would be the Spring Framework. Aspectran is a single-structure, next-generation framework that incorporates some of the key features of the Spring Framework with new perspectives.
 
