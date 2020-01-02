@@ -5,7 +5,7 @@ title: "About Aspectran"
 subheadline: "What is Aspectran?"
 teaser: "A light-weight Java application framework"
 breadcrumb: true
-comments: true
+comments: false
 permalink: /info/
 ---
 ![aspectran](/images/header_aspectran.png)
