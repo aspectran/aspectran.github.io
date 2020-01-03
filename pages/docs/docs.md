@@ -18,11 +18,6 @@ Provides user guide documentation for Aspectran users.
 ## [API Reference][2]
 Provides the Aspectran API reference.
 
-## [Changelog][3]
-Provides information on Aspectran's major change history.  
-You can view detailed changes history of Aspectran's source code in GitHub.
-{% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
-
 [1]: /docs/manual/
 [2]: /docs/api/
 [3]: /docs/changelog/

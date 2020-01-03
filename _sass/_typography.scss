@@ -246,9 +246,9 @@ div.highlighter-rouge {
   }
 }
 @include breakpoint(large) {
-  div.large-pull-3 figure.highlight {
+  div.large-pull-3 pre.highlight {
     &:hover {
-      width: 120%;
+      width: 126%;
     }
   }
 }

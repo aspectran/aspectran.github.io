@@ -111,11 +111,11 @@ With foundation responsive videos are easy. [More ›](http://foundation.zurb.co
 
 ### Code to use for flexible videos
 
-{% highlight html %}
+```html
 <div class="flex-video">
   <iframe with video />
 </div>
-{% endhighlight %}
+```
 
 
 <img class="t60" src="{{ site.baseurl }}/images/header_homepage_13.jpg">
@@ -187,22 +187,22 @@ image:
 With the Kramdown parser for Markdown you can render a table of contents for your documents. Just insert the following HTML in your post before the actual content. More information on [»Automatic ›Table of Contents‹ Generation«][1].
 
 ### Bare Bones Version
-{% highlight html %}
+```html
 ### Table of Contents
 *  Auto generated table of contents
 {:toc}
-{% endhighlight %}
+```
 
 ### Foundation panel version
 
-{% highlight html %}
+```html
 <div class="panel radius" markdown="1">
 **Table of Contents**
 {: #toc }
 *  TOC
 {:toc}
 </div>
-{% endhighlight %}
+```
 <small markdown="1">[Up to table of contents](#toc)</small>
 {: .text-right }
 
@@ -210,9 +210,9 @@ With the Kramdown parser for Markdown you can render a table of contents for you
 
 To turn on breadcrumbs, just use...
 
-{% highlight html %}
+```html
 breadcrumb: true
-{% endhighlight %}
+```
 
 
 ## Includes

@@ -11,7 +11,7 @@ download:
 
 ## Configuration
 
-{% highlight xml %}
+```xml
 <bean id="sqlSessionFactory" class="com.aspectran.support.orm.mybatis.SqlSessionFactoryBean">
     <properties>
         <item name="configLocation" value="/WEB-INF/mybatis/mybatis-configuration.xml"/>
@@ -56,13 +56,13 @@ download:
         </finally>
       </advice>
 </aspect>
-{% endhighlight %}
+```
 
 ## Java Source
 
 ***MyBatisSampleDao.java***
 
-{% highlight java %}
+```java
 package com.aspectran.example.mybatis;
 
 import java.sql.SQLException;
@@ -95,4 +95,4 @@ public class MyBatisSampleDao extends MyBatisDaoSupport {
     }
 
 }
-{% endhighlight %}
+```

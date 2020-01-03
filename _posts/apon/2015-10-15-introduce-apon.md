@@ -72,14 +72,14 @@ parameters  | com.aspectran.core.util.apon.Parameters | 여러 `Parameter`를 �
 ------------------------------------------------------|-----------------------------------------              
 
 ### `text` Value Type 사용 예제
-{% highlight text  %}
+```text
 desc: (  
     | 여러 라인으로 구성된 문자열은
     | 괄호로 감싸고 수직문자를 각 라인 앞에 붙입니다.
     | 세 번째 줄입니다.
     | 수직문자가 시작되면 특수문자 사용이 자유로워집니다.
 )
-{% endhighlight %}
+```
 
 
 ## APON 활용 예제
@@ -89,7 +89,7 @@ desc: (
 > `web.xml`에서 초기화 파라메터 `aspectran:config`의 값으로 다음과 같은 긴 문자열을 지정하고 있는데,
 > 바로 APON 형식의 문자열입니다.
 
-{% highlight text %}
+```text
 context: {
     root: /WEB-INF/aspectran/config/getting-started.xml
     encoding: utf-8
@@ -110,7 +110,7 @@ scheduler: {
     waitOnShutdown: true
     startup: false
 }
-{% endhighlight %}
+```
 
 
 ### Parameters 객체 생성
@@ -125,7 +125,7 @@ Parameters 객체는 여러 파라메터를 포함하며, 각 파라메터의 �
 
 루트 Parameters로써 `context`, `scheduler` Parameter를 가지고 있습니다.
 
-{% highlight java %}
+```java
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
@@ -158,13 +158,13 @@ public class AspectranConfig extends AbstractParameters implements Parameters {
   }
 
 }
-{% endhighlight %}
+```
 
 ***AspectranContextConfig.java***
 
 `context` Parameters의 멤버 Parameter로는 `root`, `encoding`, `resources`, `hybridLoad`, `autoReload`가 있습니다.
 
-{% highlight java %}
+```java
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
@@ -207,13 +207,13 @@ public class AspectranContextConfig extends AbstractParameters implements Parame
   }
 
 }
-{% endhighlight %}
+```
 
 ***AspectranContextAutoReloadConfig.java***
 
 `autoReload` Parameters의 멤버 Parameter로는 `reloadMethod`, `observationInterval`, `startup`이 있습니다.
 
-{% highlight java %}
+```java
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
@@ -250,13 +250,13 @@ public class AspectranContextAutoReloadConfig extends AbstractParameters impleme
   }
 
 }
-{% endhighlight %}
+```
 
 ***AspectranSchedulerConfig.java***
 
 `scheduler` Parameters의 멤버 Parameter로는 `startDelaySeconds`, `waitOnShutdown`, `startup`이 있습니다.
 
-{% highlight java %}
+```java
 package com.aspectran.core.context.loader.config;
 
 import com.aspectran.core.util.apon.AbstractParameters;
@@ -293,7 +293,7 @@ public class AspectranSchedulerConfig extends AbstractParameters implements Para
   }
 
 }
-{% endhighlight %}
+```
 
 
 ### AponWriter 사용 예제
@@ -302,7 +302,7 @@ public class AspectranSchedulerConfig extends AbstractParameters implements Para
 사용하면 Parameters Object를 APON 형식의 텍스트 문서로 쉽게 변환할 수 있습니다.
 APON 형식의 텍스트 문서를 Parameters Object로 변환하고, 다시 Parameters Object를 APON 형식의 문자열로 변환해서 콘솔에 출력하는 예제입니다.
 
-{% highlight java %}
+```java
 package com.aspectran.core.util.apon;
 
 import java.io.File;
@@ -341,7 +341,7 @@ public class AponWriterTest {
   }
 
 }
-{% endhighlight %}
+```
 
 
 ### AponReader 사용 예제
@@ -349,7 +349,7 @@ public class AponWriterTest {
 [`AponReader`](https://github.com/aspectran/aspectran/blob/master/src/main/java/com/aspectran/core/util/apon/AponReader.java) 클래스를
 사용하면 APON 형식의 텍스트 문서를 Parameters Object로 쉽게 변환할 수 있습니다.
 
-{% highlight java %}
+```java
 package com.aspectran.core.util.apon;
 
 import java.io.File;
@@ -380,7 +380,7 @@ public class AponReaderTest {
   }
 
 }
-{% endhighlight %}
+```
 
 
 ## APON 라이브러리
@@ -389,4 +389,4 @@ public class AponReaderTest {
 
 APON 패키지: **com.aspectran.core.util.apon**
 
-{% include label-link-box label="Source" href="https://github.com/aspectran/aspectran/tree/master/src/main/java/com/aspectran/core/util/apon" %}
+{% include label-link-box label="Source" href="https://github.com/aspectran/aspectran/tree/master/core/src/main/java/com/aspectran/core/util/apon" %}

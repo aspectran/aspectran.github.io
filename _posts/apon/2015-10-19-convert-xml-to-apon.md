@@ -19,7 +19,7 @@ published: true
 
 ### getting-started.xml
 
-{% highlight xml  %}
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
                            "https://aspectran.github.io/dtd/aspectran-1.0.dtd">
@@ -254,11 +254,11 @@ published: true
     <import file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
 
 </aspectran>
-{% endhighlight %}
+```
 
 ### getting-started.xml.apon
 
-{% highlight text  %}
+```text
 # C:\Projects\topframe\ADE\workspace\aspectran-examples\src\main\webapp\WEB-INF\aspectran\config\getting-started.xml.apon
 aspectran: {
     description: (
@@ -617,4 +617,4 @@ aspectran: {
         file: "/WEB-INF/aspectran/config/example-scheduler.xml"
     }
 }
-{% endhighlight %}
+```

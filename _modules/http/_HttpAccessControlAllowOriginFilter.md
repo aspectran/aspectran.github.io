@@ -11,7 +11,7 @@ download:
 
 ## Configuration
 
-{% highlight xml %}
+```xml
 <bean id="httpAccessControlAllowOriginFilter" class="com.aspectran.support.http.HttpAccessControlAllowOriginFilter">
     <property>
         <item name="withCredentials" valueType="boolean">true</item>
@@ -37,4 +37,4 @@ download:
         </after>
     </advice>
 </aspect>
-{% endhighlight %}
+```

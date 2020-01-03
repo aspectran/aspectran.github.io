@@ -110,6 +110,6 @@ Open the console and perform the following steps.
 4. At the prompt, type the command `hello` or` hello2` and the string "Hello, World!" will be displayed.
 5. You can quit the program by typing the command `quit`.
 
-> If it does not work, check the following two points.
-> - Make sure the environment variable is set so that the java command can be executed.
+> If it does not work, check the following two points.  
+> - Make sure the environment variable is set so that the java command can be executed.  
 > - Aspectran requires Java 8 or higher.

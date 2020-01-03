@@ -11,7 +11,7 @@ download:
 
 ## Configuration
 
-{% highlight xml %}
+```xml
 <bean id="sqlMapClientFactory" class="com.aspectran.support.orm.ibatis.SqlMapClientFactoryBean">
     <properties>
         <item name="configLocation" value="/WEB-INF/sqlmap/sql-map-config.xml"/>
@@ -56,13 +56,13 @@ download:
         </finally>
     </advice>
 </aspect>
-{% endhighlight %}
+```
 
 ## Java Source
 
 ***IBatisSampleDao.java***
 
-{% highlight java %}
+```java
 package com.aspectran.example.ibatis.dao;
 
 import java.sql.SQLException;
@@ -94,4 +94,4 @@ public class IBatisSampleDao extends IBatisDaoSupport {
     }
 
 }
-{% endhighlight %}
+```

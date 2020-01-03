@@ -18,7 +18,7 @@ demo: gs-rest-service.html
 
 ## root-configuration.xml
 
-{% highlight xml %}
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
     "https://aspectran.github.io/dtd/aspectran-4.dtd">
@@ -137,11 +137,11 @@ demo: gs-rest-service.html
   <append file="/WEB-INF/aspectran/config/customers-translets.xml"/>
 
 </aspectran>
-{% endhighlight %}
+```
 
 ## customers-translets.xml
 
-{% highlight xml %}
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
         "https://aspectran.github.io/dtd/aspectran-4.dtd">
@@ -227,11 +227,11 @@ demo: gs-rest-service.html
     </translet>
 
 </aspectran>
-{% endhighlight %}
+```
 
 ## Customer.java
 
-{% highlight java %}
+```java
 package sample;
 
 import com.aspectran.core.util.apon.AbstractParameters;
@@ -289,11 +289,11 @@ public class Customer extends AbstractParameters {
   }
 
 }
-{% endhighlight %}
+```
 
 ***CustomerDao.java***
 
-{% highlight java %}
+```java
 package sample;
 
 import java.util.ArrayList;
@@ -419,11 +419,11 @@ public class CustomerDao {
   }
 
 }
-{% endhighlight %}
+```
 
 ## CustomerAction.java
 
-{% highlight java %}
+```java
 package sample;
 
 import java.util.List;
@@ -527,4 +527,4 @@ public class CustomerAction {
   }
 
 }
-{% endhighlight %}
+```

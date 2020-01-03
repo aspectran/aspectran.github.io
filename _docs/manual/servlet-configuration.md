@@ -20,7 +20,7 @@ teaser: "Aspectran을 웹컨테이너의 서블릿으로 등록하는 방법에 
 잘 알려진 웹어플리케이션 서버가 아닐 경우 `DefaultServlet`의 이름을 수동으로 명시할 수도 있습니다.
 
 ***web.xml***
-{% highlight xml %}
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -74,7 +74,7 @@ teaser: "Aspectran을 웹컨테이너의 서블릿으로 등록하는 방법에 
     <url-pattern>/scheduler/*</url-pattern>
   </servlet-mapping>
 </web-app>
-{% endhighlight %}
+```
 
 ### 1.1 초기화 파라메터 정의
 
@@ -179,9 +179,9 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 그 핸들러의 이름은 DefaultServletHttpRequestHandler입니다. DefaultServletHttpRequestHandler는 DefaultServlet의 이름이 무엇인지 자동으로 판단합니다.
 만약 DefaultServlet의 이름이 다르게 지정되어야 할 경우 아래와 같은 초기화 파라메터를 추가합니다.
 
-{% highlight xml %}
+```xml
 <context-param>
     <param-name>aspectran:defaultServletName</param-name>
     <param-value>default</param-value>
 </context-param>
-{% endhighlight %}
+```

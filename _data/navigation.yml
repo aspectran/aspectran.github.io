@@ -15,8 +15,6 @@
     url: "/docs/manual/"
   - title: "API Reference"
     url: "/docs/api/"
-  - title: "Changelog"
-    url: "/docs/changelog/"
 
 - title: Guides
   url: "/guides/"

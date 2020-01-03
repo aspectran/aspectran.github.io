@@ -13,7 +13,7 @@ download:
 
 ## Java Source
 
-{% highlight java %}
+```java
 package com.aspectran.core.util.json;
 
 import java.util.ArrayList;
@@ -57,11 +57,11 @@ public class JsonWriterTest {
     }
 
 }
-{% endhighlight %}
+```
 
 ## 출력 결과
 
-{% highlight text %}
+```text
 {
   "message": "Start Testing Now!",
   "one": 1,
@@ -141,4 +141,4 @@ public class JsonWriterTest {
     }
   ]
 }
-{% endhighlight %}
+```

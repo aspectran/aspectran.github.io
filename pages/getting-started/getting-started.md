@@ -27,11 +27,6 @@ Provides user guide documentation for Aspectran users.
 ## [Aspectran API Reference](/docs/api/)
 {% include label-link-box label=site.data.aspectran.api_site.title href=site.data.aspectran.api_site.url %}
 
-## [Changelog](/docs/changelog/)
-Provides information on Aspectran's major change history.  
-You can view detailed changes history of Aspectran's source code in GitHub.
-{% include label-link-box label="Aspectran Releases" href="https://github.com/aspectran/aspectran/releases" %}
-
 ## [Guides](/guides/)
 There are several demo projects that introduce Aspectran and help getting started with it.
 It also provides java source packages and configuration metadata. 

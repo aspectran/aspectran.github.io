@@ -43,7 +43,7 @@ teaser: "Aspectran 설정 메타데이터 구성요소에 대해서 설명합니
 이 예제를 통하여 구성요소를 정의하는 방법에 대해서 알아 보겠습니다.
 
 ***getting-started.xml***
-{% highlight xml %}
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
                            "https://aspectran.github.io/dtd/aspectran-1.0.dtd">
@@ -279,7 +279,7 @@ teaser: "Aspectran 설정 메타데이터 구성요소에 대해서 설명합니
   <import file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
 
 </aspectran>
-{% endhighlight %}
+```
 
 ## 2. 기본 설정 항목
 
@@ -329,7 +329,7 @@ teaser: "Aspectran 설정 메타데이터 구성요소에 대해서 설명합니
 
 기본 설정 항목을 모두 사용한 `settings` 엘리먼트의 예제입니다.
 
-{% highlight xml %}
+```xml
 <settings>
     <setting name="transletNamePattern" value="/example/*"/>
     <setting name="transletInterfaceClass" value="com.aspectran.example.common.MyTranslet"/>
@@ -339,7 +339,7 @@ teaser: "Aspectran 설정 메타데이터 구성요소에 대해서 설명합니
     <setting name="beanProxifier" value="javassist"/>
     <setting name="pointcutPatternVerifiable" value="true"/>
 </settings>
-{% endhighlight %}
+```
 
 ## 3. Bean 정의
 
@@ -349,7 +349,7 @@ Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정
 ### 3.1 단일 Bean 정의
 중요한 역할을 하는 Bean 또는 별도의 속성을 가지는 Bean은 단독으로 정의합니다.
 
-{% highlight xml %}
+```xml
 <!-- Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다. -->
 <bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton">
   <property>
@@ -357,10 +357,10 @@ Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정
     <item name="templatePathSuffix">.jsp</item>
   </property>
 </bean>
-{% endhighlight %}
-{% highlight xml %}
+```
+```xml
 <bean id="*" class="com.aspectran.example.sample.SampleBean" scope="singleton"/>
-{% endhighlight %}
+```
 
 > `id` 속성값으로 `*` 문자를 지정하면 클래스명이 Bean ID로 지정됩니다.
 
@@ -371,9 +371,9 @@ Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정
 > `class` 속성 값에 사용할 수 있는 와일드카드 문자들은  `*, ?, +` 이고, Escape 문자로 `\` 문자를 사용할 수 있습니다.
 > 여러 패키지를 포함할 경우 `.**.` 문자를 중간에 사용하면 되는데, 예를들어 `com.**.service.*.*Action`과 같이 사용할 수 있습니다.
 
-{% highlight xml %}
+```xml
 <beans id="*" class="com.aspectran.example.**.*" class="com.aspectran.example.**.*Action" scope="singleton"/>
-{% endhighlight %}
+```
 
 > 위 예제에 대한 설명입니다.  
 > `com.aspectran.eaxmple` 패키지 하위의 모든 경로에서 클래스 이름이 "Action"으로 끝나는 클래스를
@@ -384,7 +384,7 @@ Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정
 
 `filter` 엘리멘트를 이용해서 일괄 검색에서 제외할 클래스를 지정할 수 있습니다.
 
-{% highlight xml %}
+```xml
 <bean id="advice.*" mask="com.aspectran.example.**.*" class="com.aspectran.example.**.*Advice" scope="singleton">
 	<filter>
 		exclude: [
@@ -393,7 +393,7 @@ Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정
 		]
 	</filter>
 </bean>
-{% endhighlight %}
+```
 
 > 위 예제에 대한 설명입니다.  
 > `com.aspectran.eaxmple` 패키지 하위의 모든 경로에서 클래스 이름이 "Advice"으로 끝나는 클래스를
@@ -406,15 +406,15 @@ Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정
 사용자 정의 필터 클래스를 지정할 수 있습니다.  
 [`com.aspectran.core.context.bean.scan.BeanClassScanFilter`](https://github.com/topframe/aspectran/blob/master/src/main/java/com/aspectran/core/context/bean/scan/BeanClassScanFilter.java) 인터페이스를 구현해야 합니다.
 
-{% highlight xml %}
+```xml
 <bean id="advice.*" mask="com.aspectran.example.**.*" class="com.aspectran.example.**.*Advice" scope="singleton">
 	<filter class="com.aspectran.example.common.UserClassScanFilter"/>
 </bean>
-{% endhighlight %}
+```
 
 사용자 정의 필터 클래스 작성 예제:
 
-{% highlight java %}
+```java
 package com.aspectran.example.common;
 
 import com.aspectran.core.context.bean.scan.BeanClassScanFilter;
@@ -426,7 +426,7 @@ public class UserClassScanFilter implements BeanClassScanFilter {
 	}
 
 }
-{% endhighlight %}
+```
 
 
 ### 3.3 Bean ID 부여 규칙
@@ -449,7 +449,7 @@ class가 `com.aspectran.example.**.*Action`이고,
 
 다음 예제를 기준으로 Bean을 정의하기 위해 사용되는 엘리멘트에 대해 설명합니다.
 
-{% highlight xml %}
+```xml
 <bean id="sampleBean">
     <features>
         <class>com.aspectran.sample.SampleAction</class>
@@ -483,7 +483,7 @@ class가 `com.aspectran.example.**.*Action`이고,
         </item>
     </property>
 </bean>
-{% endhighlight %}
+```
 
 **bean**
 : Bean을 정의하기 위한 최상위 엘리멘트입니다.
@@ -520,7 +520,7 @@ Aspect를 이용하면 Translet과 Request, Contents, Response 영역에서 필�
 > Contents: 액션을 실행하고 결과 값을 생산하는 영역  
 > Response: 생산된 결과 값을 출력하는 영역
 
-{% highlight xml %}
+```xml
 <aspect id="defaultRequestRule">
     <description>
         요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다.
@@ -545,7 +545,7 @@ Aspect를 이용하면 Translet과 Request, Contents, Response 영역에서 필�
         <setting name="viewDispatcher" value="jspViewDispatcher"/>
     </settings>
 </aspect>
-{% endhighlight %}
+```
 
 **각 영역에서 환경변수의 값을 참조하는 방법**
 

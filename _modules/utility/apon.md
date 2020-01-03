@@ -35,7 +35,7 @@ Parameters 인터페이스를 구현하였습니다.
 
 ***Customer.java***
 
-{% highlight java %}
+```java
 package hello;
 
 import com.aspectran.core.util.apon.AbstractParameters;
@@ -95,41 +95,41 @@ public class Customer extends AbstractParameters implements Parameters {
   }
 
 }
-{% endhighlight %}
+```
 
 
 ### Customer 객체 생성
 
-{% highlight java %}
+```java
 Customer customer = new Customer();
 customer.putValue(Customer.id, "guest");
 customer.putValue(Customer.name, "Guest");
 customer.putValue(Customer.age, 20);
 customer.putValue(Customer.episode, "His individual skills are outstanding.\nI don't know as how he is handsome.");
 customer.putValue(Customer.approved, false);
-{% endhighlight %}
+```
 
 
 ### Customer 객체의 필드 참조
 
-{% highlight java %}
+```java
 String id = customer.getString(Customer.id);
 String name = customer.getString(Customer.name);
 Integer age = customer.getInt(Customer.age);
 String episode = customer.getString(Customer.episode);
 Boolean approved = customer.getBoolean(Customer.approved);
-{% endhighlight %}
+```
 
 
 ### APON 형식의 텍스트 문자열로 변환
 
-{% highlight java %}
+```java
 String text = AponReader.read(customer);
 System.out.println(text);
-{% endhighlight %}
+```
 
 결과:
-{% highlight text %}
+```text
 id: "guest"
 name: "Guest"
 age: 20
@@ -138,20 +138,20 @@ episode: (
   |I don't know as how he is handsome.
 )
 approved: false
-{% endhighlight %}
+```
 
 
 ### APON 형식의 텍스트 문자열을 Parameters Object로 변환
 
-{% highlight java %}
+```java
 Customer customer2 = new Customer();
 AponWriter.write(text, customer2);
-{% endhighlight %}
+```
 
 
 ### 상호 변환 테스트
 
-{% highlight java %}
+```java
 package com.aspectran.core.util.apon;
 
 public class AponWriterTest {
@@ -183,10 +183,10 @@ public class AponWriterTest {
   }
 
 }
-{% endhighlight %}
+```
 
 결과:
-{% highlight text %}
+```text
 ---------------------------------------------------
 id: "guest"
 name: "Guest"
@@ -206,4 +206,4 @@ epsode: (
 )
 approved: false
 ---------------------------------------------------
-{% endhighlight %}
+```
