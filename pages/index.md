@@ -20,8 +20,10 @@ widget2:
   url: '/getting-started/'
   image: header_gettingstarted_thumb.jpg
   text: |
-    Quick Start Guide<br/>
-    Downloads
+    Installation<br/>
+    Run as a standalone application<br/>
+    Run as a servlet in a web container<br/>
+    Built-in Aspectran instance
 widget3:
   title: Documentation
   url: /docs/

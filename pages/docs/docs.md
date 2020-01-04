@@ -12,12 +12,5 @@ breadcrumb: true
 permalink: /docs/
 ---
 
-## [Aspectran Manual][1]
+## [Core Components of Aspectran](/docs/core-components/)
 Provides user guide documentation for Aspectran users.
-
-## [API Reference][2]
-Provides the Aspectran API reference.
-
-[1]: /docs/manual/
-[2]: /docs/api/
-[3]: /docs/changelog/

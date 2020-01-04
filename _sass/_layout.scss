@@ -231,9 +231,10 @@
           right: 3.1rem;
         }
         li {
-          min-width: 250px;
+          min-width: 330px;
           > a {
-            padding: .93rem 1.5rem .93rem 1rem;
+            padding: .8rem 1.5rem .8rem 1rem;
+            line-height: 130%; 
             &:hover {
               font-weight: bold;
             }

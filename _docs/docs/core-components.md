@@ -1,252 +1,25 @@
 ---
 layout: page
 format: "plate article"
-title: "Aspectran Tutorial"
-subheadline: ""
-teaser: "본 문서는 Aspectran의 주요 기능에 대한 설명서입니다."
-breadcrumb: true
-draft: true
+sidebar: toc_left
+title: "Core Components of Aspectran"
+subheadline: "User Guides"
+teaser: "Aspectran 설정 메타데이터 구성요소에 대해서 설명합니다."
 ---
 
-## 1. 개요
+{% include alert warning='Draft 문서 입니다. 작성된 사항은 변경될 수 있음을 알려둡니다.' %}
 
-Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축에 필요한 가장 핵심적인 기능을 제공하는 프레임워크입니다.  
-구축환경에 따라 달라질 수 있는 부가적인 기능은 직접적으로 제공을 하지 않고,
-핵심 기능을 확장 또는 외부 라이브러와 연동을 통해서 부가 기능을 쉽게 추가할 수 있도록 설계되었습니다.
-
-*Aspectran* 의 주요 기능은 다음과 같습니다.
-
-* POJO(*Plain Old Java Object*) 방식의 경량 프레임워크입니다.  
-  기능 구현을 위해 특정 인터페이스를 구현하거나 상속을 받을 필요가 없습니다.
-  결과 값은 가장 간단한 자바 오브젝트에 담아서 반환하면 됩니다.
-* 제어 반전(*Inversion of Control, IoC*)을 지원합니다.  
-  프레임워크가 전체적인 흐름을 제어하면서 개발자가 작성한 모듈의 기능을 호출하는 방식입니다.
-  객체에 대한 생성 및 생명주기를 관리할 수 있는 기능을 제공하며, 개발자는 비즈니스 로직에 집중하여 개발할 수 있게 됩니다.
-* 의존성 주입(*Dependency Injection, DI*)을 지원합니다.  
-  프레임워크가 실행시에 서로 의존하는 모듈을 연결합니다.
-  모듈 간의 낮은 결합도를 유지할 수 있고, 코드 재사용성을 높일 수 있습니다.
-* 관점 지향 프로그래밍(*Aspect-Oriented Programming, AOP*)을 지원합니다.  
-  핵심 기능과 부가적인 기능을 분리해서 코드를 작성할 수 있습니다.
-  핵심 기능이 구현된 이후에 트랜잭션이나 로깅, 보안, 예외처리와 관련된 기능을 핵심 기능과 결합할 수 있습니다.
-* RESTful 웹서비스 구축 환경을 지원합니다.
-
-본 문서는 Aspectran의 주요 기능에 대한 설명서입니다.
-
-- - -
-
-## 2. 시작
-
-### 2.1 설치
-Aspectran은 라이브러리 의존성 문제를 최소화 하기 위해 최소한의 외부 라이브러리를 사용합니다.
-Aspectran을 사용하려면 aspectran-x.x.x.jar 파일과 아래와 같은 필수 의존 라이브러리를 필요로 합니다.
-
-* javassist or cglib
-* commons-fileupload
-* commons-io
-* logging 라이브러리(commons-logging, log4j, slf4j)
-
-현재 Aspectran 홈페이지의 [다운로드](https://www.aspectran.com/download/) 페이지에서 수동으로 jar 라이브러리의 복사본을 받을 수 있습니다.
-
-Maven을 사용한다면 [pom.xml](https://github.com/topframe/aspectran/blob/master/pom.xml) 파일을 참고해서 의존 라이브러리를 추가해 주세요.
-
-### 2.2 작동 환경
-Aspectran을 사용해서 Java 웹 어플리케이션을 개발하기 위해서는 다음 요건을 충족해야 합니다.
-
-* Java 6 이상
-* Servlet 2.5 이상
-
-### 2.3 웹 컨테이너에 서블릿으로 등록하기
-
-Aspectran Configuration에 필요한 초기화 파라메터 `aspectran:config`를 정의하고,
-`AspectranServiceListener`를 등록해서 `ActivityContext`를 생성하도록 합니다.
-
-요청 URI가 `/example/`이면 `WebActivityServlet`라는 서블릿이 처리하도록 했습니다.
-스케쥴러를 사용할 경우 개발환경에서 Job을 직접 실행해 볼 수 있도록 `/scheduler/`로 시작하는 URL도 맵핑했습니다.
-
-만약 `WebActivityServlet`라는 서블릿이 처리하지 못하는 요청은 `DefaultServlet`으로 처리권을 넘겨줍니다.
-`DefaultServlet`의 이름은 명시적으로 지정하지 않았지만, 내부적으로 웹어플리케이션 서버 종류에 따라서 자동으로 판단합니다.
-잘 알려진 웹어플리케이션 서버가 아닐 경우 `DefaultServlet`의 이름을 수동으로 명시할 수도 있습니다.
-
-***web.xml***
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         version="3.1">
-  <display-name>aspectran-examples</display-name>
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-  </welcome-file-list>
-  <context-param>
-    <param-name>aspectran:config</param-name>
-    <param-value>
-      context: {
-        root: "/WEB-INF/aspectran/config/getting-started.xml"
-        encoding: "utf-8"
-        resources: [
-          "/WEB-INF/aspectran/config"
-          "/WEB-INF/aspectran/classes"
-          "/WEB-INF/aspectran/lib"
-        ]
-        hybridLoad: false
-        autoReload: {
-          reloadMethod: hard
-          observationInterval: 5
-          startup: true
-        }
-      }
-      scheduler: {
-        startDelaySeconds: 10
-        waitOnShutdown: true
-        startup: false
-      }
-    </param-value>
-  </context-param>
-  <listener>
-    <listener-class>com.aspectran.web.startup.listener.AspectranServiceListener</listener-class>
-  </listener>
-  <servlet>
-    <servlet-name>aspectran-example</servlet-name>
-    <servlet-class>com.aspectran.web.startup.servlet.WebActivityServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>aspectran-example</servlet-name>
-    <url-pattern>/example/*</url-pattern>
-  </servlet-mapping>
-  <!-- 실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿매핑을 제거하도록 합니다. -->
-  <servlet-mapping>
-    <servlet-name>aspectran-example</servlet-name>
-    <url-pattern>/scheduler/*</url-pattern>
-  </servlet-mapping>
-</web-app>
-```
-
-#### 2.3.1 초기화 파라메터 정의
-
-먼저 컨텍스트 초기화 파라메터 `aspectran:config`를 정의합니다.
-`aspectran:config` 파라메터는 **APON**(*Aspectran Parameters Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
-
-> ***APON***(Aspectran Parameters Object Notation)은 ***JSON*** 과 표기법이 비슷합니다.
-> 미리 정해진 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
-
-**context**
-: Aspectran 환경설정을 위한 정의
-
-**context.root**
-: 환경 설정을 위해 가장 먼저 참조할 xml 파일의 경로
-
-**context.encoding**
-: XML 파일을 APON 문서형식으로 변환시에 문자열 인코딩 방식을 지정
-
-**context.resources**
-: Aspectran에서 별도로 관리할 수 있는 리소스의 경로를 배열로 지정  
-(Aspectran은 계층형의 ClassLoader를 별도로 내장하고 있습니다.)  
-다음과 리소스 경로를 지정할 수 있습니다.  
-*/WEB-INF/aspectran/config*  
-*/WEB-INF/aspectran/classes*  
-*/WEB-INF/aspectran/lib*  
-*file:/c:/Users//Projects/java/classes*
-
-**context.hybridLoad**
-: 환경 설정을 빠르게 로딩하기 위해 다수의 XML 파일을 APON 문서형식으로 변환할지 여부를 지정합니다.
-XML 형식의 환경 설정 파일이 수정되면 APON 파일로 변환되고, 다음 기동 시에 XML 파일을 로딩하는 것이 아니라 APON 파일을 찾아서 로딩합니다.
-다수의 XML 파일을 파싱하는 걸리는 시간을 단축할 수 있습니다.
-
-**context.autoReload**
-: 리소스 자동 갱신 기능에 대한 정의
-(Aspectran에서 별도로 관리하는 리소스에 대해서는 WAS를 재시작을 하지 않더라도 자동 갱신이 가능합니다.)
-
-**context.autoReload.reloadMethod**
-: 리소스의 갱신 방법을 지정
-(hard: Java Class 갱신 가능 , soft: 환경 설정 내역만 갱신 가능)
-
-**context.autoReload.observationInterval**
-: 리소스가 수정 여부를 관찰하는 시간 간격을 초 단위로 지정
-
-**context.autoReload.startup**
-: 리소스 자동 갱신 기능을 사용할지 여부를 지정
-
-**scheduler**
-: 스케쥴러 동작환경을 위한 정의
-
-**scheduler.startDelaySeconds**
-: 모든 환경이 초기화된 후 스케쥴러가 기동 지연 시간을 초 단위로 지정
-
-**scheduler.waitOnShutdown**
-: 실행중인 모든 Job이 종료되기를 기다렸다가 스케쥴러를 종료할지 여부를 지정
-
-**scheduler.startup**
-: 스케쥴러를 기동할지 여부를 지정
-
-각 초기화 파라메터 별로 기본 값은 다음과 같습니다.
-
-| 파라메터 | 기본 값 |
-|--------- |--------|
-| **context** |  |
-| **context.root** | /WEB-INF/aspectran/root.xml |
-| **context.encoding** |  |
-| **context.resources** |  |
-| **context.hybridLoad** | false |
-| **context.autoReload** | false |
-| **context.autoReload.reloadMethod** | soft |
-| **context.autoReload.observationInterval** | 10 |
-| **context.autoReload.startup** | false |
-| **scheduler** |  |
-| **scheduler.startDelaySeconds** | 5 |
-| **scheduler.waitOnShutdown** | false |
-| **scheduler.startup** | false |
-
-#### 2.3.2 AspectranServiceListener 등록
-`<listner-class>`에  `com.aspectran.web.startup.listener.AspectranServiceListener`를 지정합니다.
-AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:config`의 설정 내용으로 Aspectran 서비스 환경을 구성하고, Application Scope를 가지고 있습니다.
-
-> AspectranServiceListener에 의해 기동된 Aspectran 서비스는 여러 WebActivityServlet에서 사용될 수 있습니다.
-> 즉, 전역적인 하나의 Aspectran 서비스 환경을 구성할 수 있습니다.
-
-#### 2.3.3 WebActivityServlet 등록
-`<servlet-class>`에 `com.aspectran.web.startup.servlet.WebActivityServlet`을 지정합니다.
-`<servlet-name>`에는 Aspectran 서비스를 위한 서블릿이라는 의미의 고유한 서블릿 이름을 부여해 주기 바랍니다.
-
-> 서블릿 초기화 파라메터로 `aspectran:cofnig`를 정의하면 서블릿만의 단독 Aspectran 서비스 환경을 구성합니다.
-> 즉, 전역 Aspectran 서비스를 사용하지 않습니다.
-
-#### 2.3.4 서블릿 URL 패턴 등록
-`<url-pattern>`에 해당하는 요청은 `WebActivityServlet`이 처리할 수 있도록 합니다.
-만약 `<url-pattern>`을 `/example/*`로 지정하면 `/example/`로 시작하는 이름을 가진 Translet이 실행됩니다.
-
-> Aspectran의 Translet이란?
-> 요청을 받고 결과 값을 적절히 가공해서 응답하는 처리자를 Aspectran 내부에서는 Translet이라고 명명하였습니다.
-> Translet은 고유 이름을 가지고 있으며, 요청 URI와 직접적으로 매핑이 됩니다.
-> 스케쥴러의 Job도 Translet을 통해서 실행이 됩니다.
-
-#### 2.3.5 DefaultServlet 이름 지정하기
-요청 URI에 해당하는 Translet이 존재하지 않을 경우 서블릿 컨테이너의 DefaultServlet에게 넘겨주는 역할을 하는 핸들러가 항상 동작하고 있습니다.
-그 핸들러의 이름은 DefaultServletHttpRequestHandler입니다. DefaultServletHttpRequestHandler는 DefaultServlet의 이름이 무엇인지 자동으로 판단합니다.
-만약 DefaultServlet의 이름이 다르게 지정되어야 할 경우 아래와 같은 초기화 파라메터를 추가합니다.
-
-```xml
-<context-param>
-    <param-name>aspectran:defaultServletName</param-name>
-    <param-value>default</param-value>
-</context-param>
-```
-
-- - -
-
-## 3. Aspectran Configuration
+## 1. 주요 구성요소
 
 ***Aspectran***이 구동되기 위해서는 구조화된 설정 메타데이터를 필요로 합니다.  
 설정 메타데이터는 전통적인 XML 형식 또는 APON 형식의 파일로 작성해야 하며, 계층적으로 모듈화되어 여러 개의 파일로 나눌 수도 있습니다.
 
 ***Aspectran***은 설정 메타데이터를 자바 소스코드와 완전히 분리하는 것을 기본 원칙으로 합니다.  
 어플리케이션 개발자가 작성하는 자바 소스코드는 POJO 형태를 최대한 유지할 수 있습니다.  
-또한, 설정 메타데이터 구성에 필요한 요소는 오래 시간에 걸쳐서 최적화가 되었기 때문에
+또한, 설정 메타데이터 구성에 필요한 요소는 오랜 시간에 걸쳐서 최적화가 되었기 때문에
 최소한의 구성요소를 가지고도 다양한 설정이 가능합니다.
 
-설정 메타데이터를 구성하는 대표적인 구성요소는 다음과 같습니다.
+설정 메타데이터를 구성하는 대표적인 요소는 다음과 같습니다.
 
 ***settings***
 : 기본 설정항목을 정의합니다.  
@@ -267,8 +40,10 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 : 다른 설정 파일을 불러오는 방법을 정의합니다.
 
 다음 예제는 XML 기반의 설정 메타데이터의 기본 구조를 보여주기 위해 작성되었습니다.
+이 예제를 통하여 구성요소를 정의하는 방법에 대해서 알아 보겠습니다.
 
 ***getting-started.xml***
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
@@ -507,7 +282,12 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 </aspectran>
 ```
 
-### 3.1 기본 설정
+## 2. 기본 설정 항목
+
+설정 메타데이터 파일은 기본 설정 구성요소인 `settings` 엘리먼트를 가질 수 있습니다.
+만약 설정 메타데이터 파일이 다른 설정 메타데이터 파일을 포함하고 있다면, 기본 설정 항목은 하위 설정 메타데이터 파일로 상속이 됩니다.
+하위 설정 메타데이터 파일은 상속 받은 기본 설정 항목을 재설정해서 사용할 수 있습니다.
+
 `settings` 엘리먼트는 다음과 같은 Aspectran의 기본 설정 항목을 가질 수 있습니다.
 
 **transletNamePattern**
@@ -533,7 +313,6 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 
 **pointcutPatternVerifiable**
 : pointcut 패턴의 유효성을 체크할지 여부를 지정합니다.
-
 
 기본 설정 항목 별로 사용가능한 값과 기본 값은 다음과 같습니다.
 
@@ -563,12 +342,12 @@ AspectranServiceListener는 컨텍스트 초기화 파라메터 `aspectran:confi
 </settings>
 ```
 
-### 3.2 Bean 정의
+## 3. Bean 정의
 
 특정 기능을 가진 객체를 모두 Bean으로 정의할 수 있습니다.
 Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정, 생명주기 관리등의 기능을 제공합니다.
 
-#### 3.2.1 단일 Bean 정의
+### 3.1 단일 Bean 정의
 중요한 역할을 하는 Bean 또는 별도의 속성을 가지는 Bean은 단독으로 정의합니다.
 
 ```xml
@@ -586,7 +365,7 @@ Aspectran은 정의된 Bean을 객체로 생성하고 객체간의 관계 설정
 
 > `id` 속성값으로 `*` 문자를 지정하면 클래스명이 Bean ID로 지정됩니다.
 
-#### 3.2.2 일괄 Bean 정의
+### 3.2 일괄 Bean 정의
 
 와일드카드를 사용하면 클래스패스에 존재하는 Bean을 일괄 검색해서 한꺼번에 정의할 수 있습니다.
 
@@ -651,7 +430,7 @@ public class UserClassScanFilter implements BeanClassScanFilter {
 ```
 
 
-#### 3.2.3 Bean ID 부여 규칙
+### 3.3 Bean ID 부여 규칙
 
 1. 일차적으로 검색된 클래스명을 Bean의 ID로 사용합니다.
 2. Mask 패턴을 지정하면 Bean ID에서 불필요한 문자열을 제거할 수 있습니다.  
@@ -667,11 +446,9 @@ class가 `com.aspectran.example.**.*Action`이고,
 최종적으로 Bean의 ID는  
 `advice.hellloworld.HelloWorldAction` 됩니다.
 
-#### 3.2.4 상세한 Bean 정의 방법
+### 3.4 상세한 Bean 정의 방법
 
-#### 3.2.4 상세한 Bean 정의 방법
-
-다음 예제를 기준으로 Bean을 정의하기 위해 사용된 엘리멘트에 대해 설명합니다.
+다음 예제를 기준으로 Bean을 정의하기 위해 사용되는 엘리멘트에 대해 설명합니다.
 
 ```xml
 <bean id="sampleBean">
@@ -717,50 +494,72 @@ class가 `com.aspectran.example.**.*Action`이고,
 : Bean의 기본 스펙을 정의하는 엘리멘트입니다.
 
 **bean.features.class**
-: Bean의 클래스명을
+: Bean의 클래스명을 지정합니다.
 
 
-### 3.3 Aspect 정의
-Aspectran이 지원하는 AOP(Aspect Oriented Programming)는 다른 프레임웤에 비해 사용법이 쉽습니다.
+## 4. Aspect 정의
+
+***Aspectran***이 지원하는 AOP(Aspect Oriented Programming)는 다른 프레임웤에 비해 사용법이 쉽습니다.
 Aspectran의 AOP는 Translet, Bean 영역 내에서의 메쏘드 호출 조인포인트(Joingpoint)를 지원합니다.
 
-Aspect는 다음 용도로 사용될 수 있습니다.
-* 핵심 비지니스 로직과 공통적인 부가 비지니스 로직을 분리해서 코드를 작성할 수 있습니다.
-  > ex) 로깅, 인증, 권한, 성능 테스트
-* 트랜잭션 처리
-  > 주로 데이터베이스 트랜잭션 기능을 지원하기 사용합니다.
+Aspect는 주로 다음과 같은 용도로 사용될 수 있습니다.
 
-#### Aspect를 이용해서 환경변수 선언하기
-Aspectran은 외부의 접속 요청을 Translet이 받아서 처리합니다. Translet의 내부에는 Request, Contents, Response 라는 세 가지 영역이 있습니다. Translet과 Request, Contents, Response 영역에서 참조할 수 있는 공통 환경변수를 선언할 수 있습니다.
-> Translet 내부의 세 가지 영역
-> * Request: 요청 정보를 분석하는 영역
-> * Contents: 액션을 실행하고 결과 값을 생산하는 영역
-> * Response: 생산된 결과 값을 출력하는 영역
+핵심 비지니스 로직과 공통적인 부가 비지니스 로직을 분리해서 코드를 작성할 수 있습니다.
+: ex) 로깅, 인증, 권한, 성능 테스트
+
+트랜잭션 처리
+: 주로 데이터베이스 트랜잭션 기능을 지원하기 사용합니다.
+
+### 4.1 Aspect를 이용해서 환경변수 선언하기
+
+Aspectran은 외부의 접속 요청을 Translet이 받아서 처리합니다.
+Translet의 내부에는 Request, Contents, Response 라는 세 가지 영역이 있습니다.
+Aspect를 이용하면 Translet과 Request, Contents, Response 영역에서 필요로 하는 공통 환경변수에 값을 주입할 수 있습니다.
+
+> **Translet 내부의 세 가지 영역**  
+> Request: 요청 정보를 분석하는 영역  
+> Contents: 액션을 실행하고 결과 값을 생산하는 영역  
+> Response: 생산된 결과 값을 출력하는 영역
 
 ```xml
-<!-- 요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다. -->
 <aspect id="defaultRequestRule">
-	<joinpoint scope="request"/>
-	<settings>
-		<setting name="characterEncoding" value="utf-8"/>
-		<setting name="multipart.maxRequestSize" value="10M"/>
-		<setting name="multipart.tempDirectoryPath" value="/d:/"/>
-	</settings>
+    <description>
+        요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다.
+        multipart/form-data request를 처리하기 위해 multipartRequestWrapperResolver를 지정합니다.
+    </description>
+    <joinpoint scope="request"/>
+    <settings>
+        <setting name="characterEncoding" value="utf-8"/>
+        <setting name="multipartRequestWrapperResolver" value="multipartRequestWrapperResolver"/>
+    </settings>
 </aspect>
 
-<!-- 요청에 대해 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다. -->
 <aspect id="defaultResponseRule">
-	<joinpoint scope="response"/>
-	<settings>
-		<setting name="characterEncoding" value="utf-8"/>
-		<setting name="defaultContentType" value="text/html"/>
-		<setting name="viewDispatcher" value="jspViewDispatcher"/>
-	</settings>
+    <description>
+        요청에 대해 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다.
+        기본 viewDispatcher를 지정합니다.
+    </description>
+    <joinpoint scope="response"/>
+    <settings>
+        <setting name="characterEncoding" value="utf-8"/>
+        <setting name="defaultContentType" value="text/html"/>
+        <setting name="viewDispatcher" value="jspViewDispatcher"/>
+    </settings>
 </aspect>
 ```
 
+**각 영역에서 환경변수의 값을 참조하는 방법**
 
-<a class="radius button small" href="{{ site.baseurl }}/docs/">Check out the documentation for all the tricks ›</a>
+## 5. Translet 정의
 
+## 6. 다른 설정 메타데이터 파일 포함하기
 
- [1]: {{ site.baseurl }}/docs/
+## 7. 변수 정의 및 값의 할당
+
+### 7.1 변수 정의하고 값을 할당하는 방법
+
+### 7.2 동적으로 변수의 값을 할당하는 방법
+
+### 7.3 Aspectran Expression Language
+
+(계속 작성 중입니다.)

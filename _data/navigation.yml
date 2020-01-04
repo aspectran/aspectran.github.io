@@ -2,19 +2,21 @@
   url: "/getting-started/"
   side: left
   dropdown:
-  - title: "Quick Start Guide"
-    url: "/getting-started/quickstart/"
-  - title: "Download"
-    url: "/getting-started/download/"
+  - title: "Installation"
+    url: "/getting-started/installation/"
+  - title: "Run as a Standalone Application"
+    url: "/getting-started/run-as-standalone/"
+  - title: "Run as a Servlet"
+    url: "/getting-started/run-as-servlet/"
+  - title: "Built-in Aspectran instance"
+    url: "/getting-started/embedded-aspectran/"
 
 - title: Documentation
   url: "/docs/"
   side: left
   dropdown:
-  - title: "Manual"
-    url: "/docs/manual/"
-  - title: "API Reference"
-    url: "/docs/api/"
+  - title: "Core Components of Aspectran"
+    url: "/docs/core-components/"
 
 - title: Guides
   url: "/guides/"
@@ -26,15 +28,6 @@
 - title: Projects
   url: "/projects/"
   side: left
-
-- title: Support
-  url: "/support/"
-  side: left
-  dropdown:
-  - title: "FAQ"
-    url: "/support/faq/"
-  - title: "Contact"
-    url: "/support/contact/"
 
 - title: Blog
   url: "/blog/"
