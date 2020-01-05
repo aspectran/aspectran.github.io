@@ -3,8 +3,8 @@ layout: page
 format: article
 sidebar: right
 title: "Getting Started"
-subheadline: "Get Started with Aspectran"
-teaser: "Provides comprehensive information about Aspectran."
+subheadline: "Welcome to Aspectran!"
+teaser: "Aspectran을 설치하고 실행하는 방법에 대해 알아 봅시다."
 header:
   image_fullwidth: "header_gettingstarted.jpg"
   caption: "My cute second daughter"

@@ -9,16 +9,18 @@ breadcrumb: true
 permalink: /getting-started/run-as-standalone/
 ---
 
+## 1. 시스템 요구사항
+
+Java 8 이상의 버전이 설치된 다음과 같은 운영체제 상에서 실행될 수 있습니다.
+
+* Windows
+* Unix/Linux
+* Mac OS
+
 ## 실행 환경
 
 * Shell
 * Daemon
-
-## 운영체제
-
-* Linux
-* Windows
-* MacOs
 
 ## 디렉토리 구조
 

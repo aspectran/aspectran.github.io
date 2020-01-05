@@ -4,29 +4,33 @@ format: "plate solid article"
 sidebar: toc_left
 title: "Run as a servlet"
 subheadline: ""
-teaser: "Aspectran을 웹 컨테이너의 서블릿으로 등록하면 엔터프라즈용 웹 애플리케이션 구축을 보다 쉽게 할 수 있습니다."
+teaser: "Aspectran은 서블릿 컨테이너에 서블릿으로 등록되어 구동될 수 있기 때문에 전통적인 방식의 웹 애플리케이션 구축에도 사용될 수 있습니다."
 breadcrumb: true
 permalink: /getting-started/run-as-servlet/
 ---
 
-## 1. 지원되는 웹 컨테이너
+## 1. 서블릿 컨테이너
 
-Aspectran은 알려진 여러 웹 컨테이너의 서블릿 컨테이너에 하나의 서블릿으로 등록되어 구동될 수 있으며,
+Aspectran은 알려진 여러 서블릿 컨테이너에 하나의 서블릿으로 등록되어 구동될 수 있으며,
 Java 8 이상 버전을 사용하고 있다면 다음과 같은 서블릿 스펙을 안정적으로 지원합니다.
 
-| 서블릿 스펙 | JSP 스펙 | 웹소켓 스펙 |
-| :---------: | :------: | :---------: |
-|     4.0     |    2.3   |     1.1     |
-|     3.1     |    2.3   |     1.1     |
-|     3.0     |    2.2   |     1.1     |
+| 서블릿 스펙 | JSP 스펙 |
+| :---------: | :------: |
+|     4.0     |    2.3   |
+|     3.1     |    2.3   |
+|     3.0     |    2.2   |
 
-## 2. 웹 컨테이너에 서블릿으로 등록하기
+## 2. 서블릿 구성
 
+web.xml 파일에 Aspectran 구동을 위한 서블릿 구성 방법에 대해 설명합니다.
 
-### 2.1 환경 구성을 위한 초기화 파라메터 정의
+### 2.1 초기화 파라메터 정의
 
 먼저 Aspectran의 구동 환경을 구성하기 위한 초기화 파라메터 `aspectran:config`를 정의합니다.
 초기화 파라메터 `aspectran:config`에 할당된 값은 APON(Aspectran Parameters Object Notation) 형식으로 작성되었습니다.
+
+> 참고로 ***APON***(Aspectran Parameters Object Notation)은 ***JSON*** 과 표기법이 유사하며,
+> 매개 변수로 전달되는 설정 값의 작성 및 읽기가 용이하도록 Aspectran을 위해 특별히 개발된 새로운 표기법입니다.
 
 ```xml
 <context-param>
@@ -66,8 +70,6 @@ Java 8 이상 버전을 사용하고 있다면 다음과 같은 서블릿 스펙
   </param-value>
 </context-param>
 ```
-> 참고로 ***APON***(Aspectran Parameters Object Notation)은 ***JSON*** 과 표기법이 유사하며,
-> 매개 변수로 전달되는 설정 값의 작성 및 읽기가 용이하도록 Aspectran을 위해 특별히 개발된 새로운 표기법입니다.
 
 #### 2.1.1 **context** 파라메터
 
@@ -89,7 +91,7 @@ Aspectran을 구동하는데 꼭 필요한 설정 값을 가지고 있습니다.
 
 | 파라메터 | 설명 | 기본 값 |
 | -------- | ---- | ------- |
-| **scheduler.startDelaySeconds** | Aspectran의 구동이 완료된 후 스케쥴러 서비스의 기동하기 위한 지연 시간을 초 단위로 지정 | 5
+| **scheduler.startDelaySeconds** | 스케쥴러 서비스가 기동되기 전 지연 시간을 초 단위로 지정 | 5
 | **scheduler.waitOnShutdown** | 스케쥴러 서비스가 종료될때 실행중인 모든 Job이 종료되기를 기다릴지 여부를 지정 | false
 | **scheduler.startup** | 스케쥴러 서비스를 구동할지 여부를 지정 | false
 
@@ -105,6 +107,28 @@ Aspectran을 구동하는데 꼭 필요한 설정 값을 가지고 있습니다.
 ```
 
 ### 2.3 WebActivityFilter
+
+`WebActivityServlet` 서블릿으로 전달되는 요청을 필터링하기 위한 `WebActivityFilter` 필터를 정의합니다.
+
+```xml
+    <filter>
+        <filter-name>web-activity-filter</filter-name>
+        <filter-class>com.aspectran.web.startup.filter.WebActivityFilter</filter-class>
+        <init-param>
+            <param-name>bypasses</param-name>
+            <param-value>
+                /assets/**
+            </param-value>
+        </init-param>
+    </filter>
+```
+
+`WebActivityFilter` 필터는 기본적으로 `HttpServletRequest`를 `ActivityRequestWrapper`로 랩핑을 해 줌으로써,
+Aspectran에 의해 파싱된 요청 데이터 및 모든 활동 결과 데이터에 대한 접근이 가능하게 됩니다.
+
+또한 `WebActivityServlet` 서블릿이 처리할 필요가 없는 우회할 요청 URI를 `bypasses` 파라메터에 지정함으로써,
+`WebActivityServlet` 서블릿의 부담을 덜어 줄 수가 있습니다. 주로 스태틱 리소스의 경로를 지정하고, 해당 URL는
+`DefaultServlet`이 처리하게 됩니다.
 
 ### 2.4 WebActivityServlet
 
