@@ -512,6 +512,9 @@ body.plate {
         font-weight: bold;
       }
     }
+    &.row.expanded {
+      border-radius: 0;
+    }
   }
   .masthead-caption {
     position: absolute;
