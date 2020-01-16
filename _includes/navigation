@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="top-bar-left">
-        <ul class="dropdown menu" data-dropdown-menu data-close-on-click-inside="false">
+        <ul class="dropdown menu left" data-dropdown-menu data-close-on-click-inside="false">
           {% for link in site.data.navigation %}
 
             {% if link.url contains 'http' %}
@@ -64,7 +64,7 @@
       </div>
 
       <div class="top-bar-right">
-        <ul class="dropdown menu" data-dropdown-menu data-close-on-click-inside="false">
+        <ul class="dropdown menu right" data-dropdown-menu data-close-on-click-inside="false">
         {% for link in site.data.navigation %}
 
           {% if link.url contains 'http' %}

@@ -33,8 +33,6 @@
     line-height: 46px;
     background-color: $ci-0;
     padding: 0;
-    position: absolute;
-    z-index: 102;
     width: 100%;
     .title-bar-left {
       float: left;
@@ -79,8 +77,6 @@
     }
   }
   .top-bar {
-    position: absolute;
-    z-index: 102;
     width: 100%;
     .quick-search-box {
       padding: .8rem .4rem;
@@ -97,7 +93,6 @@
     }
     @include breakpoint(medium down) {
       opacity: .975;
-      margin-top: 46px;
       .top-bar-logo {
         display: none;
       }
@@ -113,6 +108,8 @@
       }
     }
     @include breakpoint(large) {
+      position: absolute;
+      z-index: 102;
       opacity: .9;
       background-color: $ci-0;
       &:hover {
@@ -176,6 +173,14 @@
     }
     ul.dropdown {
       background: none;
+      @include breakpoint(medium only) {
+        &.left {
+          margin: 1.42rem 1.42rem .3rem 1.42rem;
+        }
+        &.right {
+          margin: .3rem 1.42rem 1.42rem 1.42rem;
+        }
+      }
       li {
         > a {
           color: #fff;
@@ -194,6 +199,7 @@
       > li {
         @include breakpoint(medium down) {
           display: block;
+          border-bottom: 1px solid darken($ci-1, 3%);
           background-color: $ci-1;
           &:hover {
             background-color: darken($ci-1, 10%);
@@ -440,8 +446,7 @@ body.plate {
 
 #masthead {
   position: relative;
-  z-index: 1;
-  padding-top: 46px;
+  z-index: -1;
   min-width: 320px;
   color: $ci-6;
   background-color: $head-color;
@@ -449,6 +454,9 @@ body.plate {
   -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+  @include breakpoint(large) {
+    padding-top: 46px;
+  }
   a {
     border: 0;
     color: yellow;
