@@ -174,11 +174,12 @@
     ul.dropdown {
       background: none;
       @include breakpoint(medium only) {
+        margin: 1.42rem;
         &.left {
-          margin: 1.42rem 1.42rem .3rem 1.42rem;
+          margin-bottom: .3rem;
         }
         &.right {
-          margin: .3rem 1.42rem 1.42rem 1.42rem;
+          margin-top: .3rem;
         }
       }
       li {
@@ -199,6 +200,7 @@
       > li {
         @include breakpoint(medium down) {
           display: block;
+          padding-left: .2em;
           border-bottom: 1px solid darken($ci-1, 3%);
           background-color: $ci-1;
           &:hover {

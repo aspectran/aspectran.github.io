@@ -12,59 +12,13 @@
   </div>
 
   <div class="top-bar" id="gnb-menu" style="display:none">
-    <div class="row">
-      <div class="top-bar-logo">
-        <div class="circle">
-          <a class="logo" href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
-        </div>
+    <div class="top-bar-logo">
+      <div class="circle">
+        <a class="logo" href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
       </div>
-      <div class="top-bar-left">
-        <ul class="dropdown menu left" data-dropdown-menu data-close-on-click-inside="false">
-          {% for link in site.data.navigation %}
-
-            {% if link.url contains 'http' %}
-              {% assign domain = '' %}
-            {% elsif link.url == '#' %}
-              {% assign domain = '' %}
-            {% else %}
-              {% assign domain = site.url %}
-            {% endif %}
-
-            {% comment %}   If there are links for left side begin   {% endcomment %}
-            {% if link.side == 'left' %}
-
-              {% comment %}   If left side WITHOUT dropdown menu do   {% endcomment %}
-              {% if link.dropdown == nil %}
-                <li{% if page.url contains link.url %} class="active"{% endif %}><a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a></li>
-
-              {% comment %}   If left side WITH dropdown menu do   {% endcomment %}
-              {% else %}
-
-                <li{% if page.url contains link.url %} class="active"{% endif %}>
-                  <a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a>
-                  <ul class="menu" data-submenu data-close-on-click-inside="false">
-                    {% for dropdown_link in link.dropdown %}
-
-                      {% if dropdown_link.url contains 'http' %}
-                        {% assign domain = '' %}
-                      {% else %}
-                        {% assign domain = site.url %}
-                      {% endif %}
-
-                      <li><a href="{{ site.baseurl }}{{ dropdown_link.url }}"{% if dropdown_link.url contains 'http' %} target="_blank"{% endif %}>{{ dropdown_link.title | escape }}</a></li>
-                    {% endfor %}
-                  </ul>
-
-                </li>
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-
-        </ul>
-      </div>
-
-      <div class="top-bar-right">
-        <ul class="dropdown menu right" data-dropdown-menu data-close-on-click-inside="false">
+    </div>
+    <div class="top-bar-left">
+      <ul class="dropdown menu left" data-dropdown-menu data-close-on-click-inside="false">
         {% for link in site.data.navigation %}
 
           {% if link.url contains 'http' %}
@@ -75,23 +29,24 @@
             {% assign domain = site.url %}
           {% endif %}
 
-          {% comment %}   If there are links for right side begin   {% endcomment %}
-          {% if link.side == 'right' %}
-            {% comment %}   If right side WITHOUT dropdown menu do   {% endcomment %}
+          {% comment %}   If there are links for left side begin   {% endcomment %}
+          {% if link.side == 'left' %}
+
+            {% comment %}   If left side WITHOUT dropdown menu do   {% endcomment %}
             {% if link.dropdown == nil %}
               <li{% if page.url contains link.url %} class="active"{% endif %}><a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a></li>
 
-            {% comment %}   If right side WITH dropdown menu do   {% endcomment %}
+            {% comment %}   If left side WITH dropdown menu do   {% endcomment %}
             {% else %}
 
               <li{% if page.url contains link.url %} class="active"{% endif %}>
                 <a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a>
-                <ul class="menu vertical" data-submenu data-close-on-click-inside="false">
+                <ul class="menu" data-submenu data-close-on-click-inside="false">
                   {% for dropdown_link in link.dropdown %}
 
                     {% if dropdown_link.url contains 'http' %}
                       {% assign domain = '' %}
-                      {% else %}
+                    {% else %}
                       {% assign domain = site.url %}
                     {% endif %}
 
@@ -103,39 +58,80 @@
             {% endif %}
           {% endif %}
         {% endfor %}
-        </ul>
 
-        <div class="quick-search-box show-for-large">
-          <form name="google_quick_search">
-            <div class="input-group">
-              <input class="input-group-field" type="text" name="keyword" placeholder="Search">
-              <div class="input-group-button">
-                <button type="submit" class="button"><i class="fi-magnifying-glass"></i></button>
-              </div>
-            </div>
-          </form>
-        </div>
-
-      </div>
+      </ul>
     </div>
-    <div class="row quick-search-box hide-for-large">
-      <div class="small-12 columns">
+
+    <div class="top-bar-right">
+      <ul class="dropdown menu right" data-dropdown-menu data-close-on-click-inside="false">
+      {% for link in site.data.navigation %}
+
+        {% if link.url contains 'http' %}
+          {% assign domain = '' %}
+        {% elsif link.url == '#' %}
+          {% assign domain = '' %}
+        {% else %}
+          {% assign domain = site.url %}
+        {% endif %}
+
+        {% comment %}   If there are links for right side begin   {% endcomment %}
+        {% if link.side == 'right' %}
+          {% comment %}   If right side WITHOUT dropdown menu do   {% endcomment %}
+          {% if link.dropdown == nil %}
+            <li{% if page.url contains link.url %} class="active"{% endif %}><a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a></li>
+
+          {% comment %}   If right side WITH dropdown menu do   {% endcomment %}
+          {% else %}
+
+            <li{% if page.url contains link.url %} class="active"{% endif %}>
+              <a href="{{ site.baseurl }}{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>{{ link.title | escape }}</a>
+              <ul class="menu vertical" data-submenu data-close-on-click-inside="false">
+                {% for dropdown_link in link.dropdown %}
+
+                  {% if dropdown_link.url contains 'http' %}
+                    {% assign domain = '' %}
+                    {% else %}
+                    {% assign domain = site.url %}
+                  {% endif %}
+
+                  <li><a href="{{ site.baseurl }}{{ dropdown_link.url }}"{% if dropdown_link.url contains 'http' %} target="_blank"{% endif %}>{{ dropdown_link.title | escape }}</a></li>
+                {% endfor %}
+              </ul>
+
+            </li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      </ul>
+
+      <div class="quick-search-box show-for-large">
         <form name="google_quick_search">
-        <div class="input-group">
-          <input class="input-group-field" type="text" name="keyword" placeholder="Search">
-          <div class="input-group-button">
-            <button type="submit" class="button">Search</button>
+          <div class="input-group">
+            <input class="input-group-field" type="text" name="keyword" placeholder="Search">
+            <div class="input-group-button">
+              <button type="submit" class="button"><i class="fi-magnifying-glass"></i></button>
+            </div>
           </div>
-        </div>
         </form>
       </div>
+
     </div>
-    {% if page.breadcrumb == true %}
-      <div class="breadcrumbs-bar" style="display:none">
-        <div class="row">
-          {% include breadcrumb %}
-        </div>
-      </div>
-    {% endif %}
   </div>
+  <div class="quick-search-box hide-for-large">
+    <form name="google_quick_search">
+    <div class="input-group">
+      <input class="input-group-field" type="text" name="keyword" placeholder="Search">
+      <div class="input-group-button">
+        <button type="submit" class="button">Search</button>
+      </div>
+    </div>
+    </form>
+  </div>
+  {% if page.breadcrumb == true %}
+    <div class="breadcrumbs-bar" style="display:none">
+      <div class="row">
+        {% include breadcrumb %}
+      </div>
+    </div>
+  {% endif %}
 </nav>
