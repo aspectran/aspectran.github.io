@@ -102,6 +102,13 @@
         width: 100%;
         .quick-search-box {
           padding: .7rem 1.6rem;
+        }
+      }
+    }
+    @include breakpoint(small only) {
+      .top-bar-right {
+        .quick-search-box {
+          padding: .7rem 1rem;
           background-color: $ci-1;
         }
       }
@@ -177,6 +184,7 @@
         }
         &.right {
           margin-top: .35rem;
+          margin-bottom: .35rem;
         }
       }
       li {
