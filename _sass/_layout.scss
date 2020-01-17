@@ -79,7 +79,6 @@
   .top-bar {
     width: 100%;
     .quick-search-box {
-      padding: .8rem .4rem;
       .input-group {
         margin: 0;
         input {
@@ -101,9 +100,16 @@
       }
       .top-bar-right {
         width: 100%;
+        .quick-search-box {
+          padding: 0 1.6rem 1.6rem;
+        }
       }
-      .quick-search-box {
-        background-color: $ci-1;
+    }
+    @include breakpoint(small only) {
+      .top-bar-right {
+        .quick-search-box {
+          padding: .7rem 1rem;
+        }
       }
     }
     @include breakpoint(large) {
@@ -160,24 +166,24 @@
         .menu {
           float: left;
         }
-      }
-      .quick-search-box {
-        float: right;
-        display: table-cell;
-        vertical-align: middle;
-        padding: rem-calc(7.6 15 7.6 3.4);
-        border-top: 2px solid transparent;
-        max-width: 220px;
+        .quick-search-box {
+          float: right;
+          padding: rem-calc(7.6 15 7.6 3.4);
+          border-top: 2px solid transparent;
+          max-width: 220px;
+        }
       }
     }
     ul.dropdown {
       background: none;
       @include breakpoint(medium only) {
+        margin: 1.6rem;
         &.left {
-          margin: 1.42rem 1.42rem .3rem 1.42rem;
+          margin-bottom: .35rem;
         }
         &.right {
-          margin: .3rem 1.42rem 1.42rem 1.42rem;
+          margin-top: .35rem;
+          margin-bottom: .35rem;
         }
       }
       li {
