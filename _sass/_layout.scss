@@ -104,7 +104,6 @@
       }
       .quick-search-box {
         background-color: $ci-1;
-        box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2),0 3px 3px -2px rgba(0,0,0,0.14),0 1px 8px 0 rgba(0,0,0,0.12);
       }
     }
     @include breakpoint(large) {
@@ -205,6 +204,14 @@
             background-color: darken($ci-1, 10%);
           }
         }
+        @include breakpoint(medium only) {
+          &:first-child {
+            border-radius: 7px 7px 0 0;
+          }
+          &:last-child {
+            border-radius: 0 0 7px 7px;
+          }
+        }
         @include breakpoint(large) {
           border-top: 2px solid transparent;
           a {
@@ -222,7 +229,7 @@
           }
         }
         &.is-dropdown-submenu-parent > a::after {
-          border-color: lighten($ci-0, 10%) transparent transparent;
+          border-color: lighten($ci-1, 20%) transparent transparent;
           right: 9px;
         }
         &.is-dropdown-submenu-parent.is-active > a::after {
@@ -231,7 +238,7 @@
       }
       ul.submenu {
         border: 0;
-        border-radius: 0 0 10px 10px;
+        border-radius: 0 0 7px 7px;
         @include breakpoint(medium down) {
           left: auto;
           right: 3.1rem;
@@ -315,7 +322,6 @@
           background-color: darken($ci-0, 8%);
         }
         > li {
-          border: 0;
           a {
             font-weight: normal;
             padding: .93rem 1.5rem .93rem 1rem;
@@ -716,7 +722,6 @@ body.plate {
 //------------------------
 
 .frontpage #masthead {
-  text-shadow: none;
   @include breakpoint(medium down) {
     color: #eee;
     background-color: $head-color;
