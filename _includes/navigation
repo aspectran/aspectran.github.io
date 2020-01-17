@@ -105,7 +105,7 @@
         {% endfor %}
         </ul>
 
-        <div class="quick-search-box show-for-large">
+        <div class="quick-search-box">
           <form name="google_quick_search">
             <div class="input-group">
               <input class="input-group-field" type="text" name="keyword" placeholder="Search">
@@ -117,16 +117,6 @@
         </div>
 
       </div>
-    </div>
-    <div class="row quick-search-box hide-for-large">
-      <form name="google_quick_search">
-      <div class="input-group">
-        <input class="input-group-field" type="text" name="keyword" placeholder="Search">
-        <div class="input-group-button">
-          <button type="submit" class="button">Search</button>
-        </div>
-      </div>
-      </form>
     </div>
     {% if page.breadcrumb == true %}
       <div class="breadcrumbs-bar" style="display:none">
