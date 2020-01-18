@@ -411,7 +411,7 @@ body.plate {
   }
   &.solid {
     @include breakpoint(large) {
-      background-color: lighten($ci-1, 7%);
+      background-color: $ci-2;
       #up-to-top {
         a {
           color: $ci-6;
@@ -490,7 +490,6 @@ body.plate {
   }
   .breadcrumbs-bar {
     padding: 0;
-    opacity: .7;
     @include breakpoint(small only) {
       background-color: $ci-2;
       > .columns {
