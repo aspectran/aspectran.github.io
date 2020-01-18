@@ -33,8 +33,6 @@
     line-height: 46px;
     background-color: $ci-0;
     padding: 0;
-    position: absolute;
-    z-index: 102;
     width: 100%;
     .title-bar-left {
       float: left;
@@ -79,11 +77,8 @@
     }
   }
   .top-bar {
-    position: absolute;
-    z-index: 102;
     width: 100%;
     .quick-search-box {
-      padding: .8rem .4rem;
       .input-group {
         margin: 0;
         input {
@@ -97,7 +92,6 @@
     }
     @include breakpoint(medium down) {
       opacity: .975;
-      margin-top: 46px;
       .top-bar-logo {
         display: none;
       }
@@ -106,13 +100,21 @@
       }
       .top-bar-right {
         width: 100%;
+        .quick-search-box {
+          padding: 0 1.6rem 1.6rem;
+        }
       }
-      .quick-search-box {
-        background-color: $ci-1;
-        box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2),0 3px 3px -2px rgba(0,0,0,0.14),0 1px 8px 0 rgba(0,0,0,0.12);
+    }
+    @include breakpoint(small only) {
+      .top-bar-right {
+        .quick-search-box {
+          padding: .7rem 1rem;
+        }
       }
     }
     @include breakpoint(large) {
+      position: absolute;
+      z-index: 102;
       opacity: .9;
       background-color: $ci-0;
       &:hover {
@@ -164,18 +166,26 @@
         .menu {
           float: left;
         }
-      }
-      .quick-search-box {
-        float: right;
-        display: table-cell;
-        vertical-align: middle;
-        padding: rem-calc(7.6 15 7.6 3.4);
-        border-top: 2px solid transparent;
-        max-width: 220px;
+        .quick-search-box {
+          float: right;
+          padding: rem-calc(7.6 15 7.6 3.4);
+          border-top: 2px solid transparent;
+          max-width: 220px;
+        }
       }
     }
     ul.dropdown {
       background: none;
+      @include breakpoint(medium only) {
+        margin: 1.6rem;
+        &.left {
+          margin-bottom: .35rem;
+        }
+        &.right {
+          margin-top: .35rem;
+          margin-bottom: .35rem;
+        }
+      }
       li {
         > a {
           color: #fff;
@@ -194,9 +204,18 @@
       > li {
         @include breakpoint(medium down) {
           display: block;
+          border-bottom: 1px solid darken($ci-1, 3%);
           background-color: $ci-1;
           &:hover {
             background-color: darken($ci-1, 10%);
+          }
+        }
+        @include breakpoint(medium only) {
+          &:first-child {
+            border-radius: 7px 7px 0 0;
+          }
+          &:last-child {
+            border-radius: 0 0 7px 7px;
           }
         }
         @include breakpoint(large) {
@@ -216,7 +235,7 @@
           }
         }
         &.is-dropdown-submenu-parent > a::after {
-          border-color: lighten($ci-0, 10%) transparent transparent;
+          border-color: lighten($ci-1, 20%) transparent transparent;
           right: 9px;
         }
         &.is-dropdown-submenu-parent.is-active > a::after {
@@ -225,7 +244,7 @@
       }
       ul.submenu {
         border: 0;
-        border-radius: 0 0 10px 10px;
+        border-radius: 0 0 7px 7px;
         @include breakpoint(medium down) {
           left: auto;
           right: 3.1rem;
@@ -310,7 +329,6 @@
           background-color: darken($ci-0, 8%);
         }
         > li {
-          border: 0;
           a {
             font-weight: normal;
             padding: .93rem 1.5rem .93rem 1rem;
@@ -441,8 +459,7 @@ body.plate {
 
 #masthead {
   position: relative;
-  z-index: 1;
-  padding-top: 46px;
+  z-index: -1;
   min-width: 320px;
   color: $ci-6;
   background-color: $head-color;
@@ -450,6 +467,9 @@ body.plate {
   -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+  @include breakpoint(large) {
+    padding-top: 46px;
+  }
   a {
     border: 0;
     color: yellow;
@@ -512,6 +532,9 @@ body.plate {
         color: $ci-6;
         font-weight: bold;
       }
+    }
+    &.row.expanded {
+      border-radius: 0;
     }
   }
   .masthead-caption {
@@ -706,7 +729,6 @@ body.plate {
 //------------------------
 
 .frontpage #masthead {
-  text-shadow: none;
   @include breakpoint(medium down) {
     color: #eee;
     background-color: $head-color;

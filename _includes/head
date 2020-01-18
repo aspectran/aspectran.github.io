@@ -4,7 +4,7 @@
   <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/assets/css/styles_aspectran.css" />
   <link href="https://fonts.googleapis.com/css?family=Raleway:500,500i,700" rel="stylesheet">
 
-  <script src="{{ site.baseurl }}/assets/js/modernizr.js"></script>
+  <script src="{{ site.baseurl }}/assets/js/modernizr-custom.js"></script>
   <script src="{{ site.baseurl }}/assets/js/jquery.js"></script>
   <script src="{{ site.baseurl }}/assets/js/fastclick.js"></script>
 
