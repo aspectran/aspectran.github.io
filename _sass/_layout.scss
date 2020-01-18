@@ -413,17 +413,10 @@ body.plate {
     @include breakpoint(large) {
       background-color: lighten($ci-1, 7%);
       #up-to-top {
-        padding-top: 20px;
         a {
           color: $ci-6;
         }
       }
-    }
-    .row.content {
-      padding-top: 20px;
-    }
-    #footer {
-      padding-top: 20px;
     }
   }
   .row.content {
@@ -831,7 +824,7 @@ body.plate {
 //-------------
 
 #up-to-top {
-  padding: 40px 0 10px 0;
+  padding: 10px 0;
   a {
     font-size: 32px;
     padding: 5px;
