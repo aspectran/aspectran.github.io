@@ -410,7 +410,7 @@ body.plate {
   }
   &.solid {
     @include breakpoint(large) {
-      background-color: $grey-3;
+      background-color: lighten($ci-1, 7%);
       #up-to-top {
         padding-top: 20px;
         a {
