@@ -20,6 +20,7 @@ teaser: "Aspectran을 웹컨테이너의 서블릿으로 등록하는 방법에 
 잘 알려진 웹어플리케이션 서버가 아닐 경우 `DefaultServlet`의 이름을 수동으로 명시할 수도 있습니다.
 
 ***web.xml***
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
@@ -79,9 +80,9 @@ teaser: "Aspectran을 웹컨테이너의 서블릿으로 등록하는 방법에 
 ### 1.1 초기화 파라메터 정의
 
 먼저 컨텍스트 초기화 파라메터 `aspectran:config`를 정의합니다.
-`aspectran:config` 파라메터는 **APON**(*Aspectran Parameter Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
+`aspectran:config` 파라메터는 **APON**(*Aspectran Parameters Object Notation*) 문서형식의 설정 값을 가질 수 있습니다.
 
-> ***APON***(Aspectran Parameter Object Notation)은 ***JSON*** 과 표기법이 비슷합니다.
+> ***APON***(Aspectran Parameters Object Notation)은 ***JSON*** 과 표기법이 비슷합니다.
 > 미리 정해진 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
 
 **context**

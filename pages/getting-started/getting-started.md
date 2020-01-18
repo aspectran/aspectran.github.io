@@ -1,10 +1,10 @@
 ---
 layout: page
 format: article
-sidebar: toc
+sidebar: right
 title: "Getting Started"
-subheadline: "Getting Started with Aspectran"
-teaser: "Provides comprehensive information about Aspectran."
+subheadline: "Welcome to Aspectran!"
+teaser: "Aspectran을 설치하고 실행하는 방법에 대해 알아 봅시다."
 header:
   image_fullwidth: "header_gettingstarted.jpg"
   caption: "My cute second daughter"
@@ -12,30 +12,18 @@ breadcrumb: true
 permalink: /getting-started/
 ---
 
-## [About Aspectran](/info/)
-Introducing Aspectran's birth background and key features.
-
-## [Quick Start Guide](/getting-started/quickstart/)
+## [Installation](/getting-started/installation/)
 Describes the process of developing a simple web application using Aspectran.
 
-## [Download](/getting-started/download/)
-Provides information on downloading the Aspectran library directly and information about Aspectran Atifact for Maven users.
+## [Run as a Sandalone Application](/getting-started/run-as-standalone/)
+Aspectran은 다양한 용도의 독립 실행형 애플리케이션 구축을 기본적으로 지원합니다.
 
-## [Aspectran Manual](/docs/manual/)
-Provides user guide documentation for Aspectran users.
+## [Run as a Servlet](/getting-started/run-as-sevlet/)
+Aspectran을 웹 컨테이너의 서블릿으로 등록하면 엔터프라즈용 웹 애플리케이션 구축을 보다 쉽게 할 수 있습니다.
 
-## [Aspectran API Reference](/docs/api/)
-{% include label-link-box label=site.data.aspectran.api_site.title href=site.data.aspectran.api_site.url %}
+## [Built-in Aspectran instance](/getting-started/embedded-aspectran/)
+당신의 애플리케이션에 Aspectran을 쉽게 내장할 수 있습니다.
 
-## [Guides](/guides/)
-There are several demo projects that introduce Aspectran and help getting started with it.
-It also provides java source packages and configuration metadata. 
-
-## [Modules](/modules/)
-Provides java source packages and configuration metadata that can integrate the various external libraries.
-
-## [Projects](/projects/)
-Provides java source packages and configuration metadata that can integrate the various external libraries.
-
-## License
-Aspectran is freely usable, licensed under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
+## Aspectran Examples
+Simple example applications to demonstrate Aspectran functionality can be found on the [Guides](/guides/) page.
+Furthermore, we are developing useful applications based on Aspectran, which can be found on the [Projects](/projects/) page.

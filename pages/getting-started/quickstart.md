@@ -110,9 +110,9 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
 ### 2.1 초기화 파라메터 설정
 
 Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `aspectran:config`는
-**APON**(*Aspectran Parameter Object Notation*) 형식의 설정 값을 가질 수 있습니다.
+**APON**(*Aspectran Parameters Object Notation*) 형식의 설정 값을 가질 수 있습니다.
 
-> ***APON***(Aspectran Parameter Object Notation)은 ***JSON*** 과 표기법이 유사하며,
+> ***APON***(Aspectran Parameters Object Notation)은 ***JSON*** 과 표기법이 유사하며,
 > 미리 정의된 형식의 파라메터를 주고 받기 위해서 새롭게 개발된 표기법입니다.
 > 어플리케이션의 초기 설정 값을 APON 형식으로 작성하면 자동으로 Java Object로 맵핑되기 때문에 정확한 설정 값을 편리하게 전달받을 수 있습니다.  
 > 참고로 Aspectran은 설정 메터데이터를 XML 형식뿐만 아니라 APON 형식으로도 작성할 수 있습니다.

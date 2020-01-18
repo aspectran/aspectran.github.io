@@ -1,7 +1,7 @@
 ---
 layout: page
 format: plate article
-subheadline: Aspectran Parameter Object Notation
+subheadline: Aspectran Parameters Object Notation
 title:  XML을 APON으로 변환 Sample
 teaser: |
   Aspectran은 내부적으로 XML을 APON으로 변환 또는 APON을 XML로 변환해서 사용하는 기능을 가지고 있습니다.

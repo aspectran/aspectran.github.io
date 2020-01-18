@@ -19,3 +19,8 @@
   url: "/projects/"
   class: ""
   title: ""
+
+- name: "Blog"
+  url: "/blog/"
+  class: ""
+  title: ""

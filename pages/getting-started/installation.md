@@ -1,21 +1,22 @@
 ---
 layout: page
 format: "plate solid article"
-title: "Download"
-subheadline: "Aspectran Releases"
-teaser: "Aspectran is a free and open source Java application framework."
+sidebar: toc_left
+title: "Installation"
+subheadline: ""
+teaser: "Aspectran은 Java 8 이상을 필요로 하며, 최신 버전의 Java와도 호환성을 쉽게 유지할 수 있도록 개발되었습니다."
 breadcrumb: true
-permalink: /getting-started/download/
+permalink: /getting-started/installation/
 ---
 
-## Latest release: {{ site.data.aspectran.stable_version }}
+## Requirements
 
-[![Build Status](https://travis-ci.org/aspectran/aspectran.svg)](https://travis-ci.org/aspectran/aspectran)
-[![Coverage Status](https://coveralls.io/repos/aspectran/aspectran/badge.svg?branch=master&service=github)](https://coveralls.io/github/aspectran/aspectran?branch=master)
+Aspectran-based applications require Aspectran JAR files for their execution environment.
+These JAR files are published to the Maven Repository, therefore you can use any Java build
+tool to build an Aspectran project. 
 
-Aspectran {{ site.data.aspectran.stable_version }} is the latest release and recommended version for all users.
-
-{% include label-link-box label="Aspectran project on GitHub" href="https://github.com/aspectran/aspectran" %}
+* Java SE 1.8 or higher
+* Maven 3.4 or higher
 
 ## Maven
 
@@ -121,6 +122,20 @@ Note that Aspectran 6 requires Java 8, so an explicit declaration of 1.8 compati
 </build>
 ```
 
-
 [1]: http://repo1.maven.org/maven2/com/aspectran/
 [2]: https://search.maven.org/search?q=com.aspectran
+
+## Latest release
+
+[![Build Status](https://travis-ci.org/aspectran/aspectran.svg?branch=master)](https://travis-ci.org/aspectran/aspectran)
+[![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
+[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.6.0-RC2)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
+[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.aspectran/aspectran.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/aspectran/aspectran/)
+
+Aspectran {{ site.data.aspectran.stable_version }} is the latest release and recommended version for all users.
+
+{% include label-link-box label="Aspectran releases on GitHub" href="https://github.com/aspectran/aspectran/releases" %}
+
+## API Reference
+
+{% include link-box href=site.data.aspectran.api_site.url %}
