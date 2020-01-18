@@ -1,6 +1,6 @@
 ---
 layout: page
-format: "plate article"
+format: "plate solid article"
 sidebar: toc_left
 title: "Core Components of Aspectran"
 subheadline: "User Guides"
