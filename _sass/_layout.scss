@@ -420,7 +420,7 @@ body.plate {
     }
   }
   .row.content {
-    padding-bottom: 50px;
+    padding-bottom: 20px;
     background-color: $bg-color;
     min-height: 400px;
     @include breakpoint(large) {
@@ -430,6 +430,9 @@ body.plate {
       box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
     }
   }
+}
+.row.content.expanded {
+  border-radius: 0;
 }
 
 // Fork- Ribbon
