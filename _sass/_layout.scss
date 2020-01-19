@@ -406,16 +406,12 @@
 //--------------
 
 body.plate {
-  @include breakpoint(large) {
-    background-color: $grey-1;
-  }
+  background-color: $grey-1;
   &.solid {
-    @include breakpoint(large) {
-      background-color: $ci-2;
-      #up-to-top {
-        a {
-          color: $ci-6;
-        }
+    background-color: $ci-2;
+    #up-to-top {
+      a {
+        color: $ci-6;
       }
     }
   }
