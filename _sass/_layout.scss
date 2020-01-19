@@ -474,12 +474,15 @@ body.plate {
   header {
     position: relative;
     z-index: 100;
+    padding-top: 90px;
     @include breakpoint(small only) {
-      margin-top: 46px;
+      min-height: 190px;
     }
-    @include breakpoint(medium) {
-      padding-top: 90px;
-      min-height: 240px;
+    @include breakpoint(medium only) {
+      min-height: 235px;
+    }
+    @include breakpoint(large) {
+      min-height: 250px;
     }
     h1 {
       color: $ci-6;
