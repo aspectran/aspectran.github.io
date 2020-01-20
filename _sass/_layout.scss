@@ -1052,7 +1052,7 @@ body.frontpage {
   z-index: -1;
   right: 390px;
   @include breakpoint(medium down) {
-    top: -40px;
+    top: 18px;
   }
   @include breakpoint(large) {
     top: 30px;
