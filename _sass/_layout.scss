@@ -451,7 +451,6 @@ body.plate {
 
 #masthead {
   position: relative;
-  z-index: -1;
   min-width: 320px;
   color: $ci-6;
   background-color: $head-color;
@@ -707,7 +706,7 @@ body.plate {
   @include breakpoint(medium down) {
     color: #eee;
     background-color: $head-color;
-    padding: 60px 0 10px 0;
+    padding: 20px 0 10px 0;
     .columns {
       padding: 0 5%;
     }
@@ -1051,12 +1050,11 @@ body.frontpage {
 #masthead .hexagons {
   position: absolute;
   z-index: -1;
+  right: 390px;
   @include breakpoint(medium down) {
     top: -40px;
-    right: 340px;
   }
   @include breakpoint(large) {
     top: 30px;
-    right: 400px;
   }
 }
