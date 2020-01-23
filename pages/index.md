@@ -16,22 +16,17 @@ widget1:
     RESTful 웹서비스 구축 환경 지원
   image: header_aspectran_thumb.png
 widget2:
-  title: Getting Started
-  url: '/getting-started/'
+  title: Aspectran
+  url: '/aspectran/'
   image: header_gettingstarted_thumb.jpg
   text: |
-    Installation<br/>
-    Run as a standalone application<br/>
-    Run as a servlet in a web container<br/>
-    Built-in Aspectran instance
+    A light-weight Java application framework
 widget3:
-  title: Documentation
-  url: /docs/
+  title: Aspectow
+  url: /aspectow/
   image: header_documentation_thumb.jpg
   text: |
-    Manual<br/>
-    API Reference<br/>
-    Changelog
+    Aspectow is an all-in-one web application server based on Aspectran.
 widget4:
   title: Guides
   url: /guides/
@@ -39,7 +34,7 @@ widget4:
   text: |
     There are several demo projects that introduce Aspectran and help getting started with it.
 widget5:
-  title: Projects
+  title: Demo Apps
   url: /projects/
   image: header_modules_thumb.jpg
   text: |
