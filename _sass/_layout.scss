@@ -25,7 +25,7 @@
 //-----------
 
 #navigation {
-  z-index: 101;
+  z-index: 100;
   text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
   text-transform: uppercase;
   .title-bar {
@@ -78,8 +78,8 @@
   }
   .top-bar {
     width: 100%;
-    position: relative;
-    z-index: 1;
+    z-index: 101;
+    opacity: .975;
     .quick-search-box {
       .input-group {
         margin: 0;
@@ -93,7 +93,7 @@
       }
     }
     @include breakpoint(medium down) {
-      opacity: .975;
+      position: relative;
       .top-bar-logo {
         display: none;
       }
@@ -116,8 +116,6 @@
     }
     @include breakpoint(large) {
       position: absolute;
-      z-index: 102;
-      opacity: .9;
       background-color: $ci-0;
       &:hover {
         background-color: darken($ci-0, 2.5%);
