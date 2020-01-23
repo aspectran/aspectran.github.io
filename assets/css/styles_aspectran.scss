@@ -3,6 +3,13 @@
 sitemap:
   exclude: true
 ---
+
+// --------------------------------------------------
+// ASPECTRAN.SCSS
+// --------------------------------------------------
+// This is our main SCSS file that imports everything
+// that gets compiled into aspectran.css
+
 @charset 'utf-8';
 
 @import 'colors';

@@ -12,7 +12,7 @@
   </div>
 
   <div class="top-bar" id="gnb-menu" style="display:none">
-    <div class="row">
+    <div class="grid-container">
       <div class="top-bar-logo">
         <div class="circle">
           <a class="logo" href="{{ site.baseurl }}/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
@@ -62,7 +62,6 @@
 
         </ul>
       </div>
-
       <div class="top-bar-right">
         <ul class="dropdown menu right" data-dropdown-menu data-close-on-click-inside="false">
         {% for link in site.data.navigation %}
@@ -104,7 +103,6 @@
           {% endif %}
         {% endfor %}
         </ul>
-
         <div class="quick-search-box">
           <form name="google_quick_search">
             <div class="input-group">
@@ -115,12 +113,11 @@
             </div>
           </form>
         </div>
-
       </div>
     </div>
     {% if page.breadcrumb == true %}
       <div class="breadcrumbs-bar" style="display:none">
-        <div class="row">
+        <div class="grid-container">
           {% include breadcrumb %}
         </div>
       </div>

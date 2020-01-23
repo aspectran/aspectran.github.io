@@ -1,6 +1,6 @@
 <div class="input-group">
   <input class="input-group-field" type="text" value="{{ include.href }}" readonly>
   <div class="input-group-button">
-    <a href="{{ include.href }}" target="_blank" class="button">Go</a>
+    <input type="button" class="button" value="Go" onclick="window.open('{{ include.href }}')">
   </div>
 </div>

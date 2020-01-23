@@ -6,15 +6,14 @@ outside_heading: true
 
 {% include masthead %}
 
-{% if page.format contains "plate" %}
-<div class="row">
-  <div class="columns">
-    <div class="row content">
-      <div class="xlarge-10 xlarge-offset-1 columns">
-{% endif %}
+<div class="grid-container">
+  {% if page.format contains "plate" %}
+    <div class="grid-x grid-padding-x">
+      <div class="content cell xlarge-10 xlarge-offset-1">
+  {% endif %}
 
-<div class="row t30">
-  <div class="medium-12 columns">
+<div class="grid-x grid-padding-x t30">
+  <div class="medium-12 cell">
 
     <dl class="tabs" data-tabs id="module-tabs">
       {% if content %}
@@ -28,9 +27,20 @@ outside_heading: true
 
     <div class="tabs-content" data-tabs-content="module-tabs">
       <div class="tabs-panel is-active" id="overview" itemprop="articleSection">
-        <div class="row">
+        <div class="grid-x grid-padding-x">
 
-          <div class="large-3 large-push-9 columns b20">
+          <div class="cell large-9">
+            {% if page.asciinema %}
+            <div class="asciinema">
+              <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
+            </div>
+            {% endif %}
+            <article>
+              {{ content }}
+            </article>
+          </div>
+
+          <div class="large-3 cell b20">
             <aside class="lazy-sticky">
               <div id="toc">
                 <div class="toc-title">Table of Contents</div>
@@ -58,17 +68,6 @@ outside_heading: true
             </aside>
           </div>
 
-          <div class="columns large-9 large-pull-3">
-            {% if page.asciinema %}
-            <div class="asciinema">
-              <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
-            </div>
-            {% endif %}
-            <article>
-              {{ content }}
-            </article>
-          </div>
-
         </div><!-- /.row -->
       </div>
 
@@ -79,8 +78,8 @@ outside_heading: true
       {% endif %}
 
       <div class="tabs-panel" id="reviews">
-        <div class="row t10">
-          <div class="medium-12 large-10 large-push-1 columns">
+        <div class="grid-x t10">
+          <div class="medium-12 large-10 large-push-1 cell">
             <div id="disqus_thread"></div>
           </div>
         </div>
@@ -117,11 +116,10 @@ outside_heading: true
 </div>
 
 {% if page.format contains "plate" %}
-      </div>
-    </div>
   </div>
 </div>
 {% endif %}
+</div>
 
 </section>
 {% include comments-count %}

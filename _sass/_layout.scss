@@ -34,6 +34,7 @@
     background-color: $ci-0;
     padding: 0;
     width: 100%;
+    overflow: auto;
     .title-bar-left {
       float: left;
       a.logo {
@@ -78,8 +79,14 @@
   }
   .top-bar {
     width: 100%;
+    padding: 0;
     z-index: 101;
     opacity: .975;
+    display: block;
+    .grid-container {
+      position: relative;
+      padding: 0;
+    }
     .quick-search-box {
       .input-group {
         margin: 0;
@@ -94,6 +101,7 @@
     }
     @include breakpoint(medium down) {
       position: relative;
+      background-color: darken($ci-1, 3%);
       .top-bar-logo {
         display: none;
       }
@@ -125,7 +133,6 @@
       }
       .top-bar-logo {
         float: left;
-        position: relative;
         border-top: 2px solid transparent;
         .circle {
           position: absolute;
@@ -160,30 +167,40 @@
         }
       }
       .top-bar-left {
+        float: left;
         margin-left: 108px;
       }
       .top-bar-right {
+        float: right;
         .menu {
           float: left;
         }
         .quick-search-box {
           float: right;
-          padding: rem-calc(7.6 15 7.6 3.4);
           border-top: 2px solid transparent;
           max-width: 220px;
+          @include breakpoint(medium down) {
+            padding: rem-calc(7.6 15 7.6 3.4);
+          }
+          @include breakpoint(large) {
+            padding: rem-calc(6.6 15 7.6 3.4);
+          }
         }
       }
     }
     ul.dropdown {
       background: none;
+      @include breakpoint(medium down) {
+        display: block;
+      }
       @include breakpoint(medium only) {
-        margin: 1.6rem;
+        padding: 1.6rem;
         &.left {
-          margin-bottom: .35rem;
+          padding-bottom: .35rem;
         }
         &.right {
-          margin-top: .35rem;
-          margin-bottom: .35rem;
+          padding-top: .35rem;
+          padding-bottom: .35rem;
         }
       }
       li {
@@ -221,10 +238,7 @@
         @include breakpoint(large) {
           border-top: 2px solid transparent;
           a {
-            padding: 1.3rem 1.5rem 1.3rem 1rem;
-            &:hover {
-              font-weight: bold;
-            }
+            padding: 1.15rem 1.5rem 1.3rem 1rem;
           }
           &.active {
             border-top: 2px solid lighten($ci-1, 10%);
@@ -244,7 +258,7 @@
       }
       ul.submenu {
         border: 0;
-        border-radius: 0 0 7px 7px;
+        border-radius: 0 0 10px 10px;
         @include breakpoint(medium down) {
           left: auto;
           right: 3.1rem;
@@ -254,9 +268,6 @@
           > a {
             padding: .8rem 1.5rem .8rem 1rem;
             line-height: 130%; 
-            &:hover {
-              font-weight: bold;
-            }
           }
           @include breakpoint(medium down) {
             background-color: darken($ci-1, 10%);
@@ -279,7 +290,7 @@
             }
           }
           &:last-child {
-            border-radius: 0 0 10px 10px;
+            border-radius: 0 0 7px 7px;
           }
         }
       }
@@ -315,7 +326,7 @@
           padding: .8rem .4rem;
         }
         @include breakpoint(large) {
-          padding: rem-calc(2.6 14.5 2.6 3.4);
+          padding: rem-calc(4 14.5 2.9 3.4);
           input {
             background-color: $grey-2;
           }
@@ -325,9 +336,6 @@
         }
       }
       ul.dropdown {
-        @include breakpoint(medium down) {
-          background-color: darken($ci-0, 8%);
-        }
         > li {
           a {
             font-weight: normal;
@@ -380,8 +388,13 @@
       }
     }
     .breadcrumbs-bar {
+      position: fixed;
+      top: 48px;
+      width: 100%;
       background-color: $ci-1;
-      opacity: 1;
+      -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+      -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+      box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
       @include breakpoint(large) {
         display: block !important;
       }
@@ -415,7 +428,7 @@ body.plate {
       }
     }
   }
-  .row.content {
+  .cell.content {
     padding-bottom: 20px;
     background-color: $bg-color;
     min-height: 400px;
@@ -426,7 +439,7 @@ body.plate {
       box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
     }
   }
-  .row.content.expanded {
+  .cell.content.expanded {
     border-radius: 0;
   }
 }
@@ -462,7 +475,7 @@ body.plate {
     border: 0;
     color: yellow;
   }
-  .row {
+  .grid-container {
     position: relative;
     z-index: 1;
   }
@@ -491,10 +504,9 @@ body.plate {
     border-radius: 0;
   }
   .breadcrumbs-bar {
-    padding: 0;
     @include breakpoint(small only) {
       background-color: $ci-2;
-      > .columns {
+      > .cell {
         padding: 0;
       }
     }
@@ -527,7 +539,7 @@ body.plate {
         font-weight: bold;
       }
     }
-    &.row.expanded {
+    &.grid-container.fluid {
       border-radius: 0;
     }
   }
@@ -707,7 +719,7 @@ body.plate {
     color: #eee;
     background-color: $head-color;
     padding: 20px 0 10px 0;
-    .columns {
+    .cell {
       padding: 0 5%;
     }
     .badges {
@@ -718,7 +730,7 @@ body.plate {
     }
   }
   @include breakpoint(medium only) {
-    .columns {
+    .cell {
       padding: 0 10%;
     }
   }

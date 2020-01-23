@@ -5,97 +5,94 @@ layout: default
 
 {% include masthead %}
 
+<div class="grid-container">
 {% if page.format contains "plate" %}
-<div class="row">
-  <div class="columns">
-    <div class="row content">
-      <div class="xlarge-10 xlarge-offset-1 columns">
+  <div class="grid-x grid-padding-x">
+    <div class="content cell xlarge-10 xlarge-offset-1">
 {% endif %}
 
-<div class="row">
-
-  {% if page.sidebar == "toc" %}
-  <div class="t30 large-3 large-push-9 columns">
-    {% include sidebar-toc %}
-  </div>
-  {% endif %}
-  {% if page.sidebar == "toc_left" %}
-  <div class="t30 large-3 columns">
-    {% include sidebar-toc side="left" %}
-  </div>
-  {% endif %}
-
-  <div class="t30 columns {% if page.sidebar == 'toc' %}large-9 large-pull-3{% elsif page.sidebar == 'toc_left' %}large-9{% elsif page.sidebar == 'left' %}large-8 large-push-4{% elsif page.sidebar == 'right' %}large-8{% else %}large-10 large-offset-1{% endif %}">
-    <article>
-
-      {% if page.inside_heading == true %}
-
-      <header>
-        {% if page.image.title %}
-        <figure>
-          <img itemprop="image" src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}">
-          {% if page.image.caption_url and page.image.caption %}
-          <figcaption class="text-right">
-            <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
-          </figcaption>
-          {% elsif page.image.caption %}
-          <figcaption class="text-right">
-            {{ page.image.caption }}
-          </figcaption>
-          {% endif %}
-        </figure>
-        {% endif %}
-
-        {% if page.subheadline %}
-        <p class="subheadline" itemprop="alternativeHeadline">{{ page.subheadline }}</p>
-        {% endif %}
-        <h1 itemprop="headline">{{ page.title }}</h1>
-        {% if page.teaser %}
-        <p class="teaser" itemprop="description">
-          {{ page.teaser }}
-        </p>
-        {% endif %}
-      </header>
-
-      {% endif %}
-
-      <span itemprop="articleBody">
-      {{ content }}
-      </span>
-
-      {% if page.show_meta == true %}
-      {% include meta_information %}
-      {% endif %}
-
-    </article>
-
-    {% if page.comments == true %}
-    <div class="t50">
-      {% include comments %}
+  <div class="grid-x grid-padding-x">
+    {% if page.sidebar == "toc" %}
+    <div class="t30 large-3 large-push-9 cell">
+      {% include sidebar-toc %}
+    </div>
+    {% endif %}
+    {% if page.sidebar == "toc_left" %}
+    <div class="t30 large-3 cell">
+      {% include sidebar-toc side="left" %}
     </div>
     {% endif %}
 
-  </div><!-- /.medium-8.columns -->
+    <div class="t30 cell {% if page.sidebar == 'toc' %}large-9 large-pull-3{% elsif page.sidebar == 'toc_left' %}large-9{% elsif page.sidebar == 'left' %}large-8 large-push-4{% elsif page.sidebar == 'right' %}large-8{% else %}large-10 large-offset-1{% endif %}">
+      <article>
 
-  {% if page.sidebar == "left" %}
-  <div class="t30 large-4 columns large-pull-8">
-    {% include sidebar %}
-  </div><!-- /.medium-4.columns -->
-  {% endif %}
+        {% if page.inside_heading == true %}
 
-  {% if page.sidebar == "right" %}
-  <div class="t30 large-4 columns">
-    {% include sidebar %}
-  </div><!-- /.medium-4.columns -->
-  {% endif %}
+        <header>
+          {% if page.image.title %}
+          <figure>
+            <img itemprop="image" src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}">
+            {% if page.image.caption_url and page.image.caption %}
+            <figcaption class="text-right">
+              <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
+            </figcaption>
+            {% elsif page.image.caption %}
+            <figcaption class="text-right">
+              {{ page.image.caption }}
+            </figcaption>
+            {% endif %}
+          </figure>
+          {% endif %}
 
-</div><!-- /.row -->
+          {% if page.subheadline %}
+          <p class="subheadline" itemprop="alternativeHeadline">{{ page.subheadline }}</p>
+          {% endif %}
+          <h1 itemprop="headline">{{ page.title }}</h1>
+          {% if page.teaser %}
+          <p class="teaser" itemprop="description">
+            {{ page.teaser }}
+          </p>
+          {% endif %}
+        </header>
+
+        {% endif %}
+
+        <span itemprop="articleBody">
+        {{ content }}
+        </span>
+
+        {% if page.show_meta == true %}
+        {% include meta_information %}
+        {% endif %}
+
+      </article>
+
+      {% if page.comments == true %}
+      <div class="t50">
+        {% include comments %}
+      </div>
+      {% endif %}
+
+    </div><!-- /.medium-8.cell -->
+
+    {% if page.sidebar == "left" %}
+    <div class="t30 large-4 cell large-pull-8">
+      {% include sidebar %}
+    </div><!-- /.medium-4.cell -->
+    {% endif %}
+
+    {% if page.sidebar == "right" %}
+    <div class="t30 large-4 cell">
+      {% include sidebar %}
+    </div><!-- /.medium-4.cell -->
+    {% endif %}
+
+  </div><!-- /.row -->
 
 {% if page.format contains "plate" %}
-      </div>
     </div>
   </div>
-</div>
 {% endif %}
+</div>
 
 </section>

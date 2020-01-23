@@ -2,43 +2,47 @@
 
 
 <div id="masthead">
-  <div class="row">
-    <div class="small-12 columns">
-      <header>
-        {% if page.image.title %}
-        <figure>
-          <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
-          {% if page.image.caption_url and page.image.caption %}
-          <figcaption class="text-right">
-            <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
-          </figcaption>
-          {% elsif page.image.caption %}
-          <figcaption class="text-right">
-            {{ page.image.caption }}
-          </figcaption>
+  <div class="grid-container">
+    <div class="grid-x">
+      <div class="small-12 cell">
+        <header>
+          {% if page.image.title %}
+          <figure>
+            <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
+            {% if page.image.caption_url and page.image.caption %}
+            <figcaption class="text-right">
+              <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
+            </figcaption>
+            {% elsif page.image.caption %}
+            <figcaption class="text-right">
+              {{ page.image.caption }}
+            </figcaption>
+            {% endif %}
+          </figure>
           {% endif %}
-        </figure>
+          <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+          <h1 itemprop="headline">{{ page.title }}</h1>
+          {% if page.teaser %}
+          <p class="teaser" itemprop="description">
+            {{ page.teaser }}
+          </p>
+          {% endif %}
+        </header>
+        {% if page.header.image_fullwidth == NULL %}
+        <div class="hexagons">
+          <div class="hexagon hex1"></div>
+          <div class="hexagon hex2"></div>
+          <div class="hexagon hex3"></div>
+          <div class="hexagon hex4"></div>
+          <div class="hexagon hex5"></div>
+          <div class="hexagon hex6"></div>
+        </div>
         {% endif %}
-        <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
-        <h1 itemprop="headline">{{ page.title }}</h1>
-        {% if page.teaser %}
-        <p class="teaser" itemprop="description">
-          {{ page.teaser }}
-        </p>
-        {% endif %}
-      </header>
-      <div class="hexagons">
-        <div class="hexagon hex1"></div>
-        <div class="hexagon hex2"></div>
-        <div class="hexagon hex3"></div>
-        <div class="hexagon hex4"></div>
-        <div class="hexagon hex5"></div>
-        <div class="hexagon hex6"></div>
-      </div>
-    </div><!-- /.columns -->
-  </div><!-- /.row -->
-  <div class="row breadcrumbs-bar">
-    <div class="columns">
+      </div><!-- /.cell -->
+    </div><!-- /.row -->
+  </div>
+  <div class="grid-container grid-x breadcrumbs-bar">
+    <div class="cell">
       {% if page.breadcrumb == true %}
       {% include breadcrumb %}
       {% else %}
@@ -56,8 +60,8 @@
 
 {% include forkme-ribbon %}
 <div id="masthead" class="masthead-no-image-header">
-  <div class="row">
-    <div class="small-12 columns">
+  <div class="grid-x">
+    <div class="small-12 cell">
       <header>
         {% if page.image.title %}
         <figure>
@@ -89,10 +93,10 @@
         <div class="hexagon hex5"></div>
         <div class="hexagon hex6"></div>
       </div>
-    </div><!-- /.small-12.columns -->
+    </div><!-- /.small-12.cell -->
   </div><!-- /.row -->
-  <div class="row breadcrumbs-bar">
-    <div class="columns">
+  <div class="grid-x breadcrumbs-bar">
+    <div class="cell">
       {% if page.breadcrumb == true %}
       {% include breadcrumb %}
       {% else %}
@@ -106,8 +110,8 @@
 
 {% include forkme-ribbon %}
 <div id="masthead" class="masthead-no-image-header">
-  <div class="row">
-      <div class="small-12 columns">
+  <div class="grid-x">
+      <div class="small-12 cell">
       {% unless page.header.slogan_hidden %}
       <div id="slogan">
         <a href="{{ site.baseurl }}/" title="{{ site.slogan }}">
@@ -115,13 +119,13 @@
         </a>
       </div>
       {% endunless %}
-      </div><!-- /.small-12.columns -->
+      </div><!-- /.small-12.cell -->
   </div><!-- /.row -->
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
-  <div class="row">
+  <div class="grid-x">
     {% include breadcrumb %}
   </div>
 </div>
@@ -135,16 +139,16 @@
 
 {% include forkme-ribbon %}
 <div id="masthead" class="masthead-with-text" style="{% if page.header.background-color %}background:linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,0)), {{ page.header.background-color }};{% endif %}{% if page.header.image_fullwidth %}{% elsif page.header.pattern %}background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('{{ site.urlimg }}/{{ page.header.pattern }}'){% endif %}">
-  <div class="row">
-    <div class="small-12 columns">
+  <div class="grid-x">
+    <div class="small-12 cell">
       <div class="masthead-title" itemprop="headline">{{ page.header.title }}</div>
-    </div><!-- /.small-12.columns -->
+    </div><!-- /.small-12.cell -->
   </div><!-- /.row -->
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
-  <div class="row">
+  <div class="grid-x">
     {% include breadcrumb %}
   </div>
 </div>
@@ -168,51 +172,55 @@
 
 {% include forkme-ribbon %}
 <div id="masthead" class="masthead-with-image-header">
-  <div class="row">
-    <div class="small-12 columns">
-      <header>
-        {% if page.image.title %}
-        <figure>
-          <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
-          {% if page.image.caption_url and page.image.caption %}
-          <figcaption class="text-right">
-            <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
-          </figcaption>
-          {% elsif page.image.caption %}
-          <figcaption class="text-right">
-            {{ page.image.caption }}
-          </figcaption>
+  <div class="grid-container">
+    <div class="grid-x">
+      <div class="small-12 cell">
+        <header>
+          {% if page.image.title %}
+          <figure>
+            <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
+            {% if page.image.caption_url and page.image.caption %}
+            <figcaption class="text-right">
+              <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
+            </figcaption>
+            {% elsif page.image.caption %}
+            <figcaption class="text-right">
+              {{ page.image.caption }}
+            </figcaption>
+            {% endif %}
+          </figure>
           {% endif %}
-        </figure>
-        {% endif %}
-        <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
-        <h1 itemprop="headline">{{ page.title }}</h1>
-        {% if page.teaser %}
-        <p class="teaser" itemprop="description">
-          {{ page.teaser }}
-        </p>
-        {% endif %}
-      </header>
-    </div><!-- /.columns -->
-  </div><!-- /.row -->
+          <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+          <h1 itemprop="headline">{{ page.title }}</h1>
+          {% if page.teaser %}
+          <p class="teaser" itemprop="description">
+            {{ page.teaser }}
+          </p>
+          {% endif %}
+        </header>
+      </div><!-- /.cell -->
+    </div><!-- /.row -->
 
-  {% if page.header.caption_url && page.header.caption %}
-  <div class="masthead-caption">
-    <a href="{{ page.header.caption_url }}">{{ page.header.caption }}</a>
-  </div>
-  {% elsif page.header.caption %}
-  <div class="masthead-caption">
-    {{ page.header.caption }}
-  </div>
-  {% endif %}
+    {% if page.header.caption_url && page.header.caption %}
+    <div class="masthead-caption">
+      <a href="{{ page.header.caption_url }}">{{ page.header.caption }}</a>
+    </div>
+    {% elsif page.header.caption %}
+    <div class="masthead-caption">
+      {{ page.header.caption }}
+    </div>
+    {% endif %}
 
+  </div>
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
-  <div class="row">
-    <div class="columns">
-      {% include breadcrumb %}
+  <div class="grid-container">
+    <div class="grid-x">
+      <div class="cell">
+        {% include breadcrumb %}
+      </div>
     </div>
   </div>
 </div>
@@ -222,33 +230,35 @@
 
 {% include forkme-ribbon %}
 <div id="masthead" class="masthead-with-image-header">
-  <div class="row">
-    <div class="small-12 columns">
-      {% unless page.header.slogan_hidden %}
-      <div id="slogan">
-        <a href="{{ site.baseurl }}/" title="{{ site.slogan }}">
-           <img src="{{ site.baseurl }}/assets/img/{{ site.slogan_img }}" alt="">
-        </a>
-      </div>
-      {% endunless %}
-    </div><!-- /.small-12.columns -->
-  </div><!-- /.row -->
+  <div class="grid-container">
+    <div class="grid-x">
+      <div class="small-12 cell">
+        {% unless page.header.slogan_hidden %}
+        <div id="slogan">
+          <a href="{{ site.baseurl }}/" title="{{ site.slogan }}">
+            <img src="{{ site.baseurl }}/assets/img/{{ site.slogan_img }}" alt="">
+          </a>
+        </div>
+        {% endunless %}
+      </div><!-- /.small-12.cell -->
+    </div><!-- /.row -->
 
-  {% if page.header.caption_url && page.header.caption %}
-  <div class="masthead-caption">
-    <a href="{{ page.header.caption_url }}">{{ page.header.caption }}</a>
-  </div>
-  {% elsif page.header.caption %}
-  <div class="masthead-caption">
-    {{ page.header.caption }}
-  </div>
-  {% endif %}
+    {% if page.header.caption_url && page.header.caption %}
+    <div class="masthead-caption">
+      <a href="{{ page.header.caption_url }}">{{ page.header.caption }}</a>
+    </div>
+    {% elsif page.header.caption %}
+    <div class="masthead-caption">
+      {{ page.header.caption }}
+    </div>
+    {% endif %}
 
+  </div>
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
-  <div class="row">
+  <div class="grid-x">
     {% include breadcrumb %}
   </div>
 </div>
@@ -262,16 +272,16 @@
 
 {% include forkme-ribbon %}
 <div id="masthead" class="masthead-with-pattern" style="background: url('{{ site.urlimg }}/{{ page.header.pattern }}')">
-  <div class="row">
-    <figure class="small-12 columns">
+  <div class="grid-x">
+    <figure class="small-12 cell">
       <img src="{{ site.urlimg }}/{{ page.header.image }}" alt="{{ site.title }}">
-    </figure><!-- /.small-12.columns -->
+    </figure><!-- /.small-12.cell -->
   </div><!-- /.row -->
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
-  <div class="row">
+  <div class="grid-x">
     {% include breadcrumb %}
   </div>
 </div>
@@ -293,16 +303,16 @@
 
 {% include forkme-ribbon %}
 <div id="masthead" class="masthead-with-background-color" style="background: {{ page.header.background-color }};">
-  <div class="row">
-    <figure class="small-12 columns">
+  <div class="grid-x">
+    <figure class="small-12 cell">
       <img src="{{ site.urlimg }}/{{ page.header.image }}" alt="{{ site.title }}">
-    </figure><!-- /.small-12.columns -->
+    </figure><!-- /.small-12.cell -->
   </div><!-- /.row -->
 </div><!-- /#masthead -->
 
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
-  <div class="row">
+  <div class="grid-x">
     {% include breadcrumb %}
   </div>
 </div>
@@ -324,7 +334,7 @@
 
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
-  <div class="row">
+  <div class="grid-x">
     {% include breadcrumb %}
   </div>
 </div>

@@ -138,3 +138,63 @@
   @return if(type-of($map) != 'list', ($value,), $map);
 
 }
+
+/// Return a join of the two given strings `$str1` and `$str2`.
+/// If the two strings are not empty, they are separated by `$delimiter`.
+///
+/// @param {String} $str1 [null] - First string to join.
+/// @param {String} $str1 [null] - Second string to join.
+/// @param {String} $delimiter [null] - Delimieter between `$str1` and `$str2`.
+///
+/// @returns {String} Join of `$str1`, `$delimiter` and `$str2`.
+@function zf-str-join(
+  $str1: null,
+  $str2: null,
+  $delimiter: null
+) {
+  $ret: '';
+
+  @if $str1 and str-length($str1) > 0 {
+    $ret: $ret + $str1;
+
+    @if $delimiter and str-length($delimiter) > 0 and $str2 and str-length($str2) > 0 {
+      $ret: $ret + $delimiter;
+    }
+  }
+  @if $str2 and str-length($str2) > 0 {
+    $ret: $ret + $str2;
+  }
+
+  @return $ret;
+}
+
+/// Safely return a value from a map.
+///
+/// @param {Map} $map - Map to retrieve a value from.
+/// @param {String} $key - Name of the map key.
+///
+/// @returns {List} Found value.
+@function map-safe-get($map, $key) {
+  @if (type-of($map) == 'map' or (type-of($map) == 'list' and length($map) == 0)) {
+    @if (map-has-key($map, $key)) {
+      @return map-get($map, $key);
+    }
+    @else {
+      @error 'Key: `#{$key}` is not available in `#{$map}`';
+    }
+  }
+  @else {
+    @error '`#{$map}` is not a valid map';
+  }
+}
+
+/// Convert the given `$val` to a Boolean. Empty values are considered as false.
+////
+/// @access private
+///
+/// @param {*} $val - Value to convert.
+///
+/// @returns {Boolean} Converted Boolean value.
+@function -zf-bool($val) {
+  @return $val != false and has-value($val);
+}
