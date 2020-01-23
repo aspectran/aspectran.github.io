@@ -38,13 +38,13 @@ The following packages based on the `com.aspectran.core` package exist to suppor
 
 * `com.aspectran.daemon`: Provides a daemon that runs Aspectran as a service in the background on Unix-based or Windows operating systems
 * `com.aspectran.embed`: Provides an interface that can be used by embedding Aspectran in Java applications
+* `com.aspectran.rss-lettuce`: Add-on package for providing session clustering via persistence to Redis using Lettuce as the client
 * `com.aspectran.shell`: Provides an interactive shell that lets you use or control Aspectran directly from the command line
 * `com.aspectran.shell-jline`: Provides an interactive shell using the feature-rich JLine
 * `com.aspectran.web`: Provides overall functionality for building web applications within a web application container
-* `com.aspectran.freemarker`: Add-on package for integrating Freemarker
 * `com.aspectran.jetty`: Add-on package for integrating Embedded Jetty
 * `com.aspectran.mybatis`: Add-on package for integrating MyBatis
-* `com.aspectran.pebble`: Add-on package for integrating Pebble
+* `com.aspectran.undertow`: Add-on package for integrating Embedded Undertow
 
 ## History of Aspectran
 
