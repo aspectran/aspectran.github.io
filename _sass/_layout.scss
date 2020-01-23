@@ -78,6 +78,8 @@
   }
   .top-bar {
     width: 100%;
+    position: relative;
+    z-index: 1;
     .quick-search-box {
       .input-group {
         margin: 0;
