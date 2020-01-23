@@ -1,17 +1,17 @@
-- name: GitHub
-  url: https://github.com/topframe
-  class: icon-github
-  title: "Code and more ..."
+# - name: GitHub
+#   url: https://github.com/topframe
+#   class: icon-github
+#   title: "Code and more ..."
 
-- name: Twitter
-  url: https://twitter.com/aspectran
-  class: icon-twitter
-  title: "Always the latest news from aspectran there on Twitter"
+# - name: Twitter
+#   url: https://twitter.com/aspectran
+#   class: icon-twitter
+#   title: "Always the latest news from aspectran there on Twitter"
 
-- name: Facebook
-  url: https://www.facebook.com/aspectran
-  class: icon-facebook
-  title: "Let's be friends!"
+# - name: Facebook
+#   url: https://www.facebook.com/aspectran
+#   class: icon-facebook
+#   title: "Let's be friends!"
 
 #- name: Instagram
 #  url: https://instagram.com/aspectran

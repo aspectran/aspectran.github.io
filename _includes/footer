@@ -10,15 +10,15 @@
         <div class="row">
         {% if site.logo_footer %}
           <div class="medium-2 large-1 columns hide-for-small-only t5">
-            <h5><a class="logo" href="{{ site.baseurl }}/info/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_footer }}" width="100" height="100" title="{{ site.title }}"/></a></h5>
+            <h5><a class="logo" href="{{ site.baseurl }}/aspectran/about/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_footer }}" width="100" height="100" title="{{ site.title }}"/></a></h5>
           </div>
           <div class="medium-4 large-4 columns">
         {% else %}
           <div class="medium-6 large-5 columns">
         {% endif %}
-            <a href="{{ site.baseurl }}/info/"><h5>{{ site.data.language.info_website }}</h5></a>
+            <a href="{{ site.baseurl }}/aspectran/about/"><h5>{{ site.data.language.info_website }}</h5></a>
             <p>
-              <a href="{{ site.baseurl }}/info/">{{ site.description }}</a>
+              <a href="{{ site.baseurl }}/aspectran/about/">{{ site.description }}</a>
             </p>
           </div><!-- /.large-6.columns -->
 
@@ -64,7 +64,7 @@
       <div id="subfooter">
         <nav class="row b30">
           <section id="subfooter-left" class="medium-6 columns credits">
-            <p>© 2008–2020 Juho Jeong. All rights reserved.</p>
+            <p>Copyright © 2008-2020 The Aspectran Project</p>
           </section>
 
           <section id="subfooter-right" class="medium-6 columns social-icons">

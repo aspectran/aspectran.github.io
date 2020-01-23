@@ -1,26 +1,6 @@
-- menu_name: "Navigation"
+- menu_name: "Get Involved"
 
-- name: "Getting-Started"
-  url: "/getting-started/"
-  class: ""
-  title: ""
-
-- name: "Documentation"
-  url: "/docs/"
-  class: ""
-  title: ""
-
-- name: "Guides"
-  url: "/guides/"
-  class: ""
-  title: ""
-
-- name: "Projects"
-  url: "/projects/"
-  class: ""
-  title: ""
-
-- name: "Blog"
-  url: "/blog/"
-  class: ""
+- name: "GitHub"
+  url: "https://github.com/aspectran"
+  class: "icon-github"
   title: ""
