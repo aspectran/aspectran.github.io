@@ -1,22 +1,30 @@
-- title: Getting Started
-  url: "/getting-started/"
+- title: Aspectran
+  url: "/aspectran/"
   side: left
   dropdown:
+  - title: "About Aspectran"
+    url: "/aspectran/about/"
   - title: "Installation"
-    url: "/getting-started/installation/"
+    url: "/aspectran/installation/"
   - title: "Run as a Standalone Application"
-    url: "/getting-started/run-as-standalone/"
+    url: "/aspectran/run-as-standalone/"
   - title: "Run as a Servlet"
-    url: "/getting-started/run-as-servlet/"
+    url: "/aspectran/run-as-servlet/"
   - title: "Built-in Aspectran instance"
-    url: "/getting-started/embedded-aspectran/"
+    url: "/aspectran/embedded-aspectran/"
+  - title: "Core Components of Aspectran"
+    url: "/aspectran/core-components/"
 
-- title: Documentation
-  url: "/docs/"
+- title: Aspectow
+  url: "/aspectow/"
   side: left
   dropdown:
-  - title: "Core Components of Aspectran"
-    url: "/docs/core-components/"
+  - title: "About Aspectow"
+    url: "/aspectow/about/"
+  - title: "Aspectow Light"
+    url: "/aspectow/aspectow-light/"
+  - title: "Aspectow Enterprise"
+    url: "/aspectow/aspectow-enterprise/"
 
 - title: Guides
   url: "/guides/"
@@ -25,9 +33,14 @@
   - title: "Modules"
     url: "/modules/"
 
-- title: Projects
+- title: Demo Apps
   url: "/projects/"
   side: left
+  dropdown:
+  - title: "Aspectran Demo"
+    url: "https://demo.aspectran.com"
+  - title: "JPetStore Demo"
+    url: "https://jpetstore.aspectran.com"
 
 - title: Blog
   url: "/blog/"
