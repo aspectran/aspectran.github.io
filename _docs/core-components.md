@@ -1,7 +1,7 @@
 ---
 layout: page
 format: "plate solid article"
-sidebar: toc_left
+sidebar: toc-left
 title: "Core Components of Aspectran"
 subheadline: "User Guides"
 teaser: "Learn about the core components of Aspectran."

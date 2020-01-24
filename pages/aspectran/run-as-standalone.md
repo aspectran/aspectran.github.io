@@ -1,7 +1,7 @@
 ---
 layout: page
 format: "plate solid article"
-sidebar: toc_left
+sidebar: toc-left
 title: "Run as a standalone application"
 subheadline: ""
 teaser: "Aspectran은 다양한 용도의 독립 실행형 애플리케이션 구축을 기본적으로 지원합니다."

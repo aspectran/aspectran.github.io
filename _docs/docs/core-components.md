@@ -1,7 +1,7 @@
 ---
 layout: page
 format: "plate solid article"
-sidebar: toc_left
+sidebar: toc-left
 title: "Core Components of Aspectran"
 subheadline: "User Guides"
 teaser: "Aspectran 설정 메타데이터 구성요소에 대해서 설명합니다."

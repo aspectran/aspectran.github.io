@@ -1,7 +1,7 @@
 ---
 layout: page
 format: "plate solid article"
-sidebar: toc_left
+sidebar: toc-left
 title: "Installation"
 subheadline: ""
 teaser: "Aspectran은 Java 8 이상을 필요로 하며, 최신 버전의 Java와도 호환성을 쉽게 유지할 수 있도록 개발되었습니다."

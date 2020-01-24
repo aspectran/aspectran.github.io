@@ -1,8 +1,8 @@
 {% comment %}TODO consider https://developers.google.com/custom-search/docs/element{% endcomment %}
 {% capture google_search_site %}{{ site.url }}{{ site.baseurl }}/{% endcapture %}
 <form name="google-search" onsubmit="window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ google_search_site | cgi_escape }}'); return false;">
-  <div class="row">
-    <div class="large-12 columns">
+  <div class="grid-x">
+    <div class="large-12 cell">
       <div class="input-group">
         <input class="input-group-field" type="text" name="keyword" placeholder="{{ site.data.language.enter_search_term }}">
         <div class="input-group-button">

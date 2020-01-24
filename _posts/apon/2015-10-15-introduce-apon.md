@@ -13,7 +13,7 @@ categories:
   - apon
 tags:
   - APON
-sidebar: toc
+sidebar: toc-left
 published: true
 ---
 
