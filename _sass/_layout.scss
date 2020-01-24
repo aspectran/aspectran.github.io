@@ -501,30 +501,11 @@ body.plate {
     border-radius: 0;
   }
   .breadcrumbs-bar {
-    @include breakpoint(small only) {
-      background-color: $ci-2;
-      > .cell {
-        padding: 0;
-      }
-    }
-    @include breakpoint(medium only) {
-      background-color: transparent;
-      nav {
-        background-color: $ci-2;
-        border-radius: 10px 10px 0 0;
-      }
-    }
+    background-color: $ci-2;
     @include breakpoint(large) {
-      background-color: $ci-2;
       border-radius: 10px 10px 0 0;
     }
     .breadcrumbs {
-      @include breakpoint(small only) {
-        margin: 0 8px;
-      }
-      @include breakpoint(medium only) {
-        margin: 0 10px;
-      }
       color: $ci-6;
       border: 0;
       a {
@@ -755,7 +736,6 @@ body.plate {
 
 .breadcrumbs-bar {
   background: scale-color($grey-1, $lightness: 50%);
-  font-size: 74%;
   .breadcrumbs {
     font-size: 74%;
     background: none;

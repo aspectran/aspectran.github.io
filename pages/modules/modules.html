@@ -1,9 +1,13 @@
 ---
 layout: page
+format: "plate solid"
 title: Modules
 subheadline: Aspectran Integration with Other Libraries
 teaser: Provides java source packages and configuration metadata that can integrate the various external libraries.
 outside_heading: true
+header:
+  image_fullwidth: header_guides.jpg
+  caption: Ultimate Raspberry Pi Backend Server
 sidebar: right
 breadcrumb: true
 permalink: /modules/
@@ -17,7 +21,7 @@ categories:
 ---
 
 {% for category in page.categories %}
-<div class="coloumns b30">
+<div class="cell b30">
   <h2><a href="{{ category.path }}">{{ category.name }}</a></h2>
   <p>{{ category.description }}</p>
   <ul class="accordion" data-accordion data-allow-all-closed="true">

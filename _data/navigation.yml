@@ -29,9 +29,6 @@
 - title: Guides
   url: "/guides/"
   side: left
-  dropdown:
-  - title: "Modules"
-    url: "/modules/"
 
 - title: Demo Apps
   url: "/projects/"
