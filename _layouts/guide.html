@@ -29,18 +29,7 @@ outside_heading: true
       <div class="tabs-panel is-active" id="overview" itemprop="articleSection">
         <div class="grid-x grid-padding-x">
 
-          <div class="cell large-9">
-            {% if page.asciinema %}
-            <div class="asciinema">
-              <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
-            </div>
-            {% endif %}
-            <article>
-              {{ content }}
-            </article>
-          </div>
-
-          <div class="large-3 cell b20">
+          <div class="cell large-3 large-order-2 b20">
             <aside class="lazy-sticky">
               <div id="toc">
                 <div class="toc-title">Table of Contents</div>
@@ -66,6 +55,17 @@ outside_heading: true
               <div id="google_translate_element"></div>
               {% endif %}
             </aside>
+          </div>
+
+          <div class="cell large-9 large-order-1">
+            {% if page.asciinema %}
+            <div class="asciinema">
+              <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
+            </div>
+            {% endif %}
+            <article>
+              {{ content }}
+            </article>
           </div>
 
         </div><!-- /.row -->
