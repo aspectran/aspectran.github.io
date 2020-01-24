@@ -2,8 +2,8 @@
   <p>This example may not function normally for the time being. please understand.</p>
 </div>
 
-<div class="row">
-  <div class="t10 large-4 columns" style="position:relative;">
+<div class="grid-x grid-padding-x">
+  <div class="t10 large-4 cell" style="position:relative;">
     <h2 style="margin:0;">Customer List</h2>
     <span id="total" class="float-right warning badge" style="font-size:2em;position:absolute;top:0;right:0;">0</span>
     <div id="customer-list-board" style="clear:both;border-radius:3px;margin-bottom:.5em;">
@@ -18,7 +18,7 @@
       <button id="delete" type="button" class="button alert">Delete</button>
     </div>
   </div>
-  <div class="t10 large-8 columns" style="position:relative;">
+  <div class="t10 large-8 cell" style="position:relative;">
     <h2 style="margin:0;">Customer Details</h2>
     <span id="cust-no" class="float-right success badge" style="font-size:2em;position:absolute;top:0;right:0;">0</span>
     <div id="details" class="panel radius">
@@ -46,16 +46,16 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="large-12 columns">
+<div class="grid-x grid-padding-x">
+  <div class="cell">
     <div id="describe" class="input-group">
       <span class="input-group-label" style="white-space:nowrap;"></span>
       <input class="input-group-field" type="text" value="" readonly>
     </div>
   </div>
 </div>
-<div class="row" style="margin-top:10px;">
-  <div class="large-12 columns" style="position:relative;">
+<div class="grid-x grid-padding-x" style="margin-top:10px;">
+  <div class="cell" style="position:relative;">
     <span id="response-status-code" class="float-left badge" style="font-size:2em;position:absolute;top:0;left:0;margin-left:0;margin-top:-.38em;">200</span>
     <pre id="response-text" style="padding-left:4em;max-height:300px;">
 
@@ -64,7 +64,7 @@
 </div>
 
 <script>
-var backend = "https://demo.aspectran.com/examples";
+var backend = "https://demo-gae.aspectran.com/examples";
 $(function() {
   $("select[name=customerList]").change(function() {
     $("#details form, #cust-no").fadeOut(300);
