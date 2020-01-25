@@ -1,9 +1,12 @@
 ---
 layout: page
-format: "plate solid article"
+format: "plate article"
 title: "About Aspectran"
 subheadline: "What is Aspectran?"
 teaser: "A light-weight Java application framework"
+header:
+  image_fullwidth: "header_gettingstarted.jpg"
+  caption: "My cute second daughter"
 breadcrumb: true
 comments: false
 permalink: /aspectran/about/
