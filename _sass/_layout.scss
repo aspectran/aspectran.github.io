@@ -72,6 +72,10 @@
       cursor: pointer;
       float: right;
       padding: rem-calc(0 15);
+      .menu-icon {
+        width: 26px;
+        height: 20px;
+      }
     }
   }
   .top-bar {
@@ -693,29 +697,27 @@ body.plate {
 //------------------------
 
 .frontpage #masthead {
+  color: #fff;
+  background-color: $head-color;
   @include breakpoint(medium down) {
-    color: #eee;
-    background-color: $head-color;
-    padding: 20px 0 10px 0;
-    .cell {
-      padding: 0 5%;
-    }
+    padding: 15px 0 10px 0;
     .badges {
       text-align: center;
     }
     .thumb {
       margin-bottom: 10px;
     }
+    .cell {
+      padding: 0 5%;
+    }
   }
   @include breakpoint(medium only) {
     .cell {
-      padding: 0 10%;
+      padding: 0 8%;
     }
   }
   @include breakpoint(large) {
-    color: #fff;
-    background-color: $head-color;
-    padding: 110px 0 50px 0;
+    padding: 110px 0 20px 0;
   }
   #forkme-ribbon {
     display: block;
@@ -959,10 +961,9 @@ body.video {
 
 .asciinema {
   text-align: center;
-  padding: 0 10px 20px;
-  .asciicast {
-    margin: 0 !important;
-  }
+  background-color: $grey-1;
+  padding: 15px 10px 5px;
+  border-radius: $global-radius;
 }
 
 // Frontpage
