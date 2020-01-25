@@ -12,7 +12,7 @@ comments: false
 permalink: /aspectow/about/
 ---
 
-<img src="/images/info/aspectran_archtecture_diagram.png" width="50%" align="right" title="Aspectran Archtecture Diagram">
+<img src="/images/info/aspectran_archtecture_diagram.png" title="Aspectran Archtecture Diagram">
 
 Aspectow is an all-in-one web application server based on Aspectran.
 There is a Light version for building a lightweight REST API server and an Enterprise version for building enterprise web applications.
