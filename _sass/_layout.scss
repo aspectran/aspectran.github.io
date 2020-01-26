@@ -422,7 +422,6 @@
 body.plate {
   background-color: $grey-1;
   .cell.contour {
-    padding-bottom: 20px;
     background-color: $bg-color;
     min-height: 400px;
     @include breakpoint(large) {
