@@ -73,7 +73,7 @@
       float: right;
       padding: rem-calc(0 15);
       .menu-icon {
-        width: 26px;
+        width: 22px;
         height: 20px;
       }
     }
@@ -741,8 +741,8 @@ body.plate {
 //------------
 
 .breadcrumbs-bar {
-  background: scale-color($grey-1, $lightness: 50%);
   font-size: 90%;
+  background: scale-color($grey-1, $lightness: 50%);
   .breadcrumbs {
     font-size: 90%;
     background: none;
@@ -760,6 +760,21 @@ body.plate {
     }
     li::after {
       margin: 0.6rem;
+    }
+  }
+  @include breakpoint(medium down) {
+    background-color: $ci-2;
+    .breadcrumbs {
+      color: $ci-6;
+      border: 0;
+      a {
+        color: $ci-6;
+        font-weight: normal;
+      }
+      .current {
+        color: $ci-6;
+        font-weight: bold;
+      }
     }
   }
 }
