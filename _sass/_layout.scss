@@ -421,14 +421,6 @@
 
 body.plate {
   background-color: $grey-1;
-  &.solid {
-    background-color: $ci-2;
-    #up-to-top {
-      a {
-        color: $ci-6;
-      }
-    }
-  }
   .cell.content {
     padding-bottom: 20px;
     background-color: $bg-color;
@@ -439,9 +431,25 @@ body.plate {
       -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
       box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
     }
+    &.fruid {
+      border-radius: 0;
+    }
   }
-  .cell.content.expanded {
-    border-radius: 0;
+  &.solid {
+    background-color: $ci-2;
+    #up-to-top {
+      a {
+        color: $ci-6;
+      }
+    }
+    @include breakpoint(large) {
+      .cell.content {
+        box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+        -webkit-box-shadow: -3px 0 5px -3px rgba(1, 1, 1, 0.63), 3px 0 5px -3px rgba(1, 1, 1, 0.63);
+        -moz-box-shadow: -3px 0 5px -3px rgba(1, 1, 1, 0.63), 3px 0 5px -3px rgba(1, 1, 1, 0.63);
+        box-shadow: -3px 0 5px -3px rgba(1, 1, 1, 0.63), 3px 0 5px -3px rgba(1, 1, 1, 0.63);
+      }
+    }
   }
 }
 
@@ -475,10 +483,6 @@ body.plate {
   a {
     border: 0;
     color: yellow;
-  }
-  .grid-container {
-    position: relative;
-    z-index: 1;
   }
   header {
     position: relative;
@@ -530,6 +534,9 @@ body.plate {
     right: 20px;
     bottom: 20px;
     color: #fff;
+    @include breakpoint(medium down) {
+      display: none;
+    }
   }
 }
 .masthead-with-text {
@@ -556,9 +563,6 @@ body.plate {
   header {
     margin-top: 80px;
     min-height: 130px;
-  }
-  .masthead-caption {
-    display: none;
   }
   .masthead-with-pattern {
     padding: 15px 0;
@@ -738,10 +742,11 @@ body.plate {
 
 .breadcrumbs-bar {
   background: scale-color($grey-1, $lightness: 50%);
+  font-size: 90%;
   .breadcrumbs {
-    font-size: 74%;
+    font-size: 90%;
     background: none;
-    padding: .2em .2em .3em;
+    padding: .25em .2em .25em;
     margin: 0;
     a {
       color: $grey-8;
@@ -1039,7 +1044,7 @@ body.frontpage {
 }
 #masthead .hexagons {
   position: absolute;
-  z-index: -1;
+  z-index: 1;
   right: 390px;
   @include breakpoint(medium down) {
     top: 18px;
