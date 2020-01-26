@@ -421,7 +421,7 @@
 
 body.plate {
   background-color: $grey-1;
-  .contour {
+  .grid-container.contour {
     padding-bottom: 20px;
     background-color: $bg-color;
     min-height: 400px;
@@ -443,7 +443,7 @@ body.plate {
       }
     }
     @include breakpoint(large) {
-      .contour {
+      .grid-container.contour {
         -webkit-box-shadow: -3px 0 5px -3px rgba(1, 1, 1, 0.63), 3px 0 5px -3px rgba(1, 1, 1, 0.63);
         -moz-box-shadow: -3px 0 5px -3px rgba(1, 1, 1, 0.63), 3px 0 5px -3px rgba(1, 1, 1, 0.63);
         box-shadow: -3px 0 5px -3px rgba(1, 1, 1, 0.63), 3px 0 5px -3px rgba(1, 1, 1, 0.63);
