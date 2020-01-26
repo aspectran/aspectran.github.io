@@ -424,7 +424,7 @@ body.plate {
   .cell.contour {
     background-color: $bg-color;
     min-height: 400px;
-    padding-bottom: $grid-container-padding;
+    padding-bottom: 15px;
     @include breakpoint(large) {
       border-radius: 0 0 10px 10px;
       -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
