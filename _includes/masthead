@@ -39,7 +39,7 @@
         </div>
         {% endif %}
       </div><!-- /.cell -->
-    </div><!-- /.row -->
+    </div><!-- /.grid-x -->
   </div>
   <div class="grid-container grid-x breadcrumbs-bar">
     <div class="cell">
@@ -95,7 +95,7 @@
           <div class="hexagon hex6"></div>
         </div>
       </div><!-- /.small-12.cell -->
-    </div><!-- /.row -->
+    </div><!-- /.grid-x -->
   </div>
   <div class="grid-container grid-x breadcrumbs-bar">
     <div class="cell">
@@ -123,7 +123,7 @@
         </div>
         {% endunless %}
         </div><!-- /.small-12.cell -->
-    </div><!-- /.row -->
+    </div><!-- /.grid-x -->
   </div>
 </div><!-- /#masthead -->
 
@@ -148,7 +148,7 @@
       <div class="small-12 cell">
         <div class="masthead-title" itemprop="headline">{{ page.header.title }}</div>
       </div><!-- /.small-12.cell -->
-    </div><!-- /.row -->
+    </div><!-- /.grid-x -->
   </div>
 </div><!-- /#masthead -->
 
@@ -205,7 +205,7 @@
           {% endif %}
         </header>
       </div><!-- /.cell -->
-    </div><!-- /.row -->
+    </div><!-- /.grid-x -->
   </div>
 
   {% if page.header.caption_url && page.header.caption %}
@@ -247,7 +247,7 @@
         </div>
         {% endunless %}
       </div><!-- /.small-12.cell -->
-    </div><!-- /.row -->
+    </div><!-- /.grid-x -->
   </div>
 
   {% if page.header.caption_url && page.header.caption %}
@@ -283,7 +283,7 @@
       <figure class="small-12 cell">
         <img src="{{ site.urlimg }}/{{ page.header.image }}" alt="{{ site.title }}">
       </figure><!-- /.small-12.cell -->
-    </div><!-- /.row -->
+    </div><!-- /.grid-x -->
   </div>
 </div><!-- /#masthead -->
 
@@ -316,7 +316,7 @@
       <figure class="small-12 cell">
         <img src="{{ site.urlimg }}/{{ page.header.image }}" alt="{{ site.title }}">
       </figure><!-- /.small-12.cell -->
-    </div><!-- /.row -->
+    </div><!-- /.grid-x -->
   </div>
 </div><!-- /#masthead -->
 

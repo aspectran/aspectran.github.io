@@ -19,7 +19,7 @@
         <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
       </p>
     </div><!-- /.columns -->
-  </div><!-- /.row -->
+  </div><!-- /.grid-x -->
 {% endfor %}
 
 <div id="pagination">

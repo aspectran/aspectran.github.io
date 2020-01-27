@@ -28,5 +28,5 @@ Inhalt
 
 
 </div><!-- /.medium-8.columns -->
-</div><!-- /.row -->
+</div><!-- /.grid-x -->
 

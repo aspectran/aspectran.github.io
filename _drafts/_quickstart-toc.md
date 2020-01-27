@@ -196,4 +196,4 @@ INFO  Goodbye! ~com.aspectran.example.simplest.SimplestAdvice^goodbye:26
 > 구체적인 환경설정 및 핵심 구성요소에 대한 상세한 설명은 [***Aspectran Tutorial***]({{ site.baseurl}}/getting-started/tutorial) 문서에 기재되어 있습니다.
 
  </div><!-- /.medium-8.columns -->
- </div><!-- /.row -->
+ </div><!-- /.grid-x -->

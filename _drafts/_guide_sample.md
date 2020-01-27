@@ -316,7 +316,7 @@ I only added one other javascript-module: [`backstretch`][3] by Scott Robbin. Th
 {% include improve_content %}
 
 </div><!-- /.medium-8.columns -->
-</div><!-- /.row -->
+</div><!-- /.grid-x -->
 
  [1]: http://kramdown.gettalong.org/converter/html.html#toc
  [2]: {{ site.baseurl }}/blog/

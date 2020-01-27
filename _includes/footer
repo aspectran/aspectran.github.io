@@ -3,7 +3,7 @@
         <div class="small-12 cell" style="text-align: right;">
           <a class="iconfont" href="#top-of-page">&#xf108;</a>
         </div><!-- /.small-12.cell -->
-      </div><!-- /.row -->
+      </div><!-- /.grid-x -->
     </div>
 
     <footer id="footer-content">
@@ -19,9 +19,7 @@
             <div class="medium-6 large-5 cell">
           {% endif %}
               <a href="{{ site.baseurl }}/aspectran/about/"><h5>{{ site.data.language.info_website }}</h5></a>
-              <p>
-                <a href="{{ site.baseurl }}/aspectran/about/">{{ site.description }}</a>
-              </p>
+              <p><a href="{{ site.baseurl }}/aspectran/about/">{{ site.description }}</a></p>
             </div><!-- /.large-6.cell -->
 
             <div class="small-6 medium-3 large-3 large-offset-1 cell">
@@ -33,9 +31,7 @@
               <ul class="no-bullet">
               {% for network_item in site.data.network %}
                 {% if network_item.url contains 'http' %}{% assign domain = '' %}{% else %}{% assign domain = site.baseurl %}{% endif %}
-                  <li {% if network_item.class %}class="{{ network_item.class }}" {% endif %}>
-                    <a href="{{ domain }}{{ network_item.url }}" {% if network_item.url contains 'http' %}target="_blank" {% endif %} title="{{ network_item.title }}">{{ network_item.name }}</a>
-                  </li>
+                <li {% if network_item.class %}class="{{ network_item.class }}" {% endif %}> <a href="{{ domain }}{{ network_item.url }}" {% if network_item.url contains 'http' %}target="_blank" {% endif %} title="{{ network_item.title }}">{{ network_item.name }}</a></li>
               {% endfor %}
               </ul>
             </div><!-- /.large-3.cell -->
@@ -50,9 +46,7 @@
                 <ul class="no-bullet">
                 {% for service_item in site.data.services %}
                   {% if service_item.url contains 'http' %}{% assign domain = '' %}{% else %}{% assign domain = site.baseurl %}{% endif %}
-                    <li {% if service_item.class %}class="{{ service_item.class }}" {% endif %}>
-                      <a href="{{ domain }}{{ service_item.url }}" {% if service_item.url contains 'http' %}target="_blank" {% endif %} title="{{ service_item.title }}">{{ service_item.name }}</a>
-                    </li>
+                  <li {% if service_item.class %}class="{{ service_item.class }}"{% endif %}><a href="{{ domain }}{{ service_item.url }}" {% if service_item.url contains 'http' %}target="_blank" {% endif %} title="{{ service_item.title }}">{{ service_item.name }}</a></li>
                 {% endfor %}
                 </ul>
             </div><!-- /.large-4.cell -->
