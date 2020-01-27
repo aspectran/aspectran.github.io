@@ -448,6 +448,9 @@ body.plate {
     }
   }
   .fluid {
+    &.cell.contour {
+      border-radius: 0;
+    }
     .cell.contour {
       border-radius: 0;
     }
