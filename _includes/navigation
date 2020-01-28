@@ -44,7 +44,7 @@
 
                 <li class="has-submenu{% if page.url contains item.url %} active{% endif %}">
                   <a href="{{ site.baseurl }}{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
-                  <ul class="menu vertical" data-submenu data-close-on-click-inside="false">
+                  <ul class="submenu menu vertical" data-submenu data-close-on-click-inside="false">
                     {% for submenu_item in item.dropdown %}
 
                       {% if submenu_item.url contains 'http' %}
