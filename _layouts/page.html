@@ -3,7 +3,7 @@ layout: default
 ---
 <section itemscope itemtype="https://schema.org/Article">
 
-{% include masthead %}
+{% include _masthead.html %}
 
 <div class="grid-container">
 {% if page.format contains "plate" %}
@@ -14,12 +14,12 @@ layout: default
   <div class="grid-x grid-padding-x">
     {% if page.sidebar == "toc" %}
     <div class="t30 large-3 large-push-9 cell">
-      {% include sidebar-toc %}
+      {% include _sidebar-toc.html %}
     </div>
     {% endif %}
     {% if page.sidebar == "toc-left" %}
     <div class="t30 large-3 cell">
-      {% include sidebar-toc side="left" %}
+      {% include _sidebar-toc.html side="left" %}
     </div>
     {% endif %}
 
@@ -62,14 +62,14 @@ layout: default
         </span>
 
         {% if page.show_meta == true %}
-        {% include meta_information %}
+        {% include _meta_information.html %}
         {% endif %}
 
       </article>
 
       {% if page.comments == true %}
       <div class="t50">
-        {% include comments %}
+        {% include _comments.html %}
       </div>
       {% endif %}
 
@@ -77,13 +77,13 @@ layout: default
 
     {% if page.sidebar == "left" %}
     <div class="t30 large-4 cell large-pull-8">
-      {% include sidebar %}
+      {% include _sidebar.html %}
     </div><!-- /.medium-4.cell -->
     {% endif %}
 
     {% if page.sidebar == "right" %}
     <div class="t30 large-4 cell">
-      {% include sidebar %}
+      {% include _sidebar.html %}
     </div><!-- /.medium-4.cell -->
     {% endif %}
 

@@ -3,7 +3,7 @@ layout: default
 ---
 <section itemscope itemtype="https://schema.org/Article">
 
-{% include masthead %}
+{% include _masthead.html %}
 
 {% if page.image.title %}
 <div class="row t30">
@@ -42,14 +42,14 @@ layout: default
       </span>
 
       {% if page.show_meta == true %}
-      {% include meta_information %}
+      {% include _meta_information.html %}
       {% endif %}
 
     </article>
 
     <div class="t50">
       {% if page.comments == true %}
-      {% include comments %}
+      {% include _comments.html %}
       {% endif %}
     </div>
 
