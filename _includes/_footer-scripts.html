@@ -2,7 +2,7 @@
 <script src="{{ site.baseurl }}/assets/js/jquery.backstretch.min.js"></script>
 <script>
   $(document).foundation();
-  $(document).ready(function() {
+  $(function() {
     var $win = $(window);
     var $nav = $("#navigation");
     var navHeight = $("#masthead").height() - $nav.height();
@@ -49,7 +49,7 @@
 
 {% if page.sidebar == "toc" or page.sidebar == "toc-left" %}
 <script>
-  $(document).ready(function() {
+  $(function() {
     $("#masthead h1, article h1, article h2, article h3, article h4, article h5, article h6").each(function(index, item) {
       var tagn = item.localName;
       var anchor = "top-of-page";
@@ -65,7 +65,7 @@
 
 {% if page.sidebar %}
 <script>
-  $(document).ready(function() {
+  $(function() {
     $(".lazy-sticky").each(function() {
       const $win = $(window);
       const $this = $(this);
@@ -148,16 +148,16 @@
       });
       $win.resize(function() {
           if ($this.offset().left < 15 || $this.width() >= 500) {
-              clearInterval(scrollTimer);
-              $this.css("top", 0);
+            clearInterval(scrollTimer);
+            $this.css("top", 0);
           } else {
-              $win.scroll();
+            $win.scroll();
           }
       });
       setTimeout(function() {
           if ($win.scrollTop() > baseOffsetTop) {
-              offsetTop = $win.scrollTop();
-              $win.scroll();
+            offsetTop = $win.scrollTop();
+            $win.scroll();
           }
       }, 150);
     });

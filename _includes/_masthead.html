@@ -4,7 +4,7 @@
 <div id="masthead">
   <div class="grid-container">
     <div class="grid-x">
-      <div class="small-12 cell">
+      <div class="cell">
         <header>
           {% if page.image.title %}
           <figure>
@@ -58,11 +58,11 @@
 
 {% if page.outside_heading == true %}
 
-{% include _forkme-ribbon.html-ribbon %}
+{% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-no-image-header">
   <div class="grid-container">
     <div class="grid-x">
-      <div class="small-12 cell">
+      <div class="cell">
         <header>
           {% if page.image.title %}
           <figure>
@@ -94,7 +94,7 @@
           <div class="hexagon hex5"></div>
           <div class="hexagon hex6"></div>
         </div>
-      </div><!-- /.small-12.cell -->
+      </div>
     </div><!-- /.grid-x -->
   </div>
   <div class="grid-container grid-x breadcrumbs-bar">
@@ -110,11 +110,11 @@
 
 {% else %}
 
-{% include _forkme-ribbon.html-ribbon %}
+{% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-no-image-header">
   <div class="grid-container">
     <div class="grid-x">
-        <div class="small-12 cell">
+        <div class="cell">
         {% unless page.header.slogan_hidden %}
         <div id="slogan">
           <a href="{{ site.baseurl }}/" title="{{ site.slogan }}">
@@ -122,7 +122,7 @@
           </a>
         </div>
         {% endunless %}
-        </div><!-- /.small-12.cell -->
+        </div>
     </div><!-- /.grid-x -->
   </div>
 </div><!-- /#masthead -->
@@ -141,13 +141,13 @@
 {% elsif page.header.title %}
 
 
-{% include _forkme-ribbon.html-ribbon %}
+{% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-with-text" style="{% if page.header.background-color %}background:linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,0)), {{ page.header.background-color }};{% endif %}{% if page.header.image_fullwidth %}{% elsif page.header.pattern %}background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('{{ site.urlimg }}/{{ page.header.pattern }}'){% endif %}">
   <div class="grid-container">
     <div class="grid-x">
-      <div class="small-12 cell">
+      <div class="cell">
         <div class="masthead-title" itemprop="headline">{{ page.header.title }}</div>
-      </div><!-- /.small-12.cell -->
+      </div>
     </div><!-- /.grid-x -->
   </div>
 </div><!-- /#masthead -->
@@ -176,11 +176,11 @@
 
 {% if page.outside_heading == true %}
 
-{% include _forkme-ribbon.html-ribbon %}
+{% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-with-image-header">
   <div class="grid-container">
     <div class="grid-x">
-      <div class="small-12 cell">
+      <div class="cell">
         <header>
           {% if page.image.title %}
           <figure>
@@ -234,11 +234,11 @@
 
 {% else %}
 
-{% include _forkme-ribbon.html-ribbon %}
+{% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-with-image-header">
   <div class="grid-container">
     <div class="grid-x">
-      <div class="small-12 cell">
+      <div class="cell">
         {% unless page.header.slogan_hidden %}
         <div id="slogan">
           <a href="{{ site.baseurl }}/" title="{{ site.slogan }}">
@@ -246,7 +246,7 @@
           </a>
         </div>
         {% endunless %}
-      </div><!-- /.small-12.cell -->
+      </div>
     </div><!-- /.grid-x -->
   </div>
 
@@ -276,13 +276,13 @@
 {% elsif page.header.pattern %}
 
 
-{% include _forkme-ribbon.html-ribbon %}
+{% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-with-pattern" style="background: url('{{ site.urlimg }}/{{ page.header.pattern }}')">
   <div class="grid-container">
     <div class="grid-x">
-      <figure class="small-12 cell">
+      <figure class="cell">
         <img src="{{ site.urlimg }}/{{ page.header.image }}" alt="{{ site.title }}">
-      </figure><!-- /.small-12.cell -->
+      </figure>
     </div><!-- /.grid-x -->
   </div>
 </div><!-- /#masthead -->
@@ -309,13 +309,13 @@
 {% elsif page.header.background-color %}
 
 
-{% include _forkme-ribbon.html-ribbon %}
+{% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-with-background-color" style="background: {{ page.header.background-color }};">
   <div class="grid-container">
     <div class="grid-x">
-      <figure class="small-12 cell">
+      <figure class="cell">
         <img src="{{ site.urlimg }}/{{ page.header.image }}" alt="{{ site.title }}">
-      </figure><!-- /.small-12.cell -->
+      </figure>
     </div><!-- /.grid-x -->
   </div>
 </div><!-- /#masthead -->
