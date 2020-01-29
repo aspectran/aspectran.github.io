@@ -4,7 +4,7 @@ layout: compress
 <!doctype html>
 <html class="no-js" lang="{% if site.language == nil %}en{% else %}{{ site.language }}{% endif %}">
 <head>
-  {% include head %}
+  {% include head.html %}
 </head>
 <body id="top-of-page" class="{{ page.format }}" itemscope itemtype="https://schema.org/WebPage">
 
@@ -15,10 +15,10 @@ layout: compress
   {{ content }}
 
   {% unless page.skip_boilerplate %}
-  {% include footer %}
+  {% include footer.html %}
   {% endunless %}
 
-  {% include footer-scripts %}
+  {% include footer-scripts.html %}
 
 </body>
 </html>

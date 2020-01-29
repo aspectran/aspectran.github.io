@@ -44,7 +44,7 @@
   <div class="grid-container grid-x breadcrumbs-bar">
     <div class="cell">
       {% if page.breadcrumb == true %}
-      {% include breadcrumb %}
+      {% include _breadcrumb.html %}
       {% else %}
       &nbsp;
       {% endif %}
@@ -58,7 +58,7 @@
 
 {% if page.outside_heading == true %}
 
-{% include forkme-ribbon %}
+{% include _forkme-ribbon.html-ribbon %}
 <div id="masthead" class="masthead-no-image-header">
   <div class="grid-container">
     <div class="grid-x">
@@ -100,7 +100,7 @@
   <div class="grid-container grid-x breadcrumbs-bar">
     <div class="cell">
       {% if page.breadcrumb == true %}
-      {% include breadcrumb %}
+      {% include _breadcrumb.html %}
       {% else %}
       &nbsp;
       {% endif %}
@@ -110,7 +110,7 @@
 
 {% else %}
 
-{% include forkme-ribbon %}
+{% include _forkme-ribbon.html-ribbon %}
 <div id="masthead" class="masthead-no-image-header">
   <div class="grid-container">
     <div class="grid-x">
@@ -130,7 +130,7 @@
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
   <div class="grid-x">
-    {% include breadcrumb %}
+    {% include _breadcrumb.html %}
   </div>
 </div>
 {% endif %}
@@ -141,7 +141,7 @@
 {% elsif page.header.title %}
 
 
-{% include forkme-ribbon %}
+{% include _forkme-ribbon.html-ribbon %}
 <div id="masthead" class="masthead-with-text" style="{% if page.header.background-color %}background:linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,0)), {{ page.header.background-color }};{% endif %}{% if page.header.image_fullwidth %}{% elsif page.header.pattern %}background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('{{ site.urlimg }}/{{ page.header.pattern }}'){% endif %}">
   <div class="grid-container">
     <div class="grid-x">
@@ -155,7 +155,7 @@
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
   <div class="grid-x">
-    {% include breadcrumb %}
+    {% include _breadcrumb.html %}
   </div>
 </div>
 {% endif %}
@@ -176,7 +176,7 @@
 
 {% if page.outside_heading == true %}
 
-{% include forkme-ribbon %}
+{% include _forkme-ribbon.html-ribbon %}
 <div id="masthead" class="masthead-with-image-header">
   <div class="grid-container">
     <div class="grid-x">
@@ -225,7 +225,7 @@
   <div class="grid-container">
     <div class="grid-x">
       <div class="cell">
-        {% include breadcrumb %}
+        {% include _breadcrumb.html %}
       </div>
     </div>
   </div>
@@ -234,7 +234,7 @@
 
 {% else %}
 
-{% include forkme-ribbon %}
+{% include _forkme-ribbon.html-ribbon %}
 <div id="masthead" class="masthead-with-image-header">
   <div class="grid-container">
     <div class="grid-x">
@@ -265,7 +265,7 @@
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
   <div class="grid-x">
-    {% include breadcrumb %}
+    {% include _breadcrumb.html %}
   </div>
 </div>
 {% endif %}
@@ -276,7 +276,7 @@
 {% elsif page.header.pattern %}
 
 
-{% include forkme-ribbon %}
+{% include _forkme-ribbon.html-ribbon %}
 <div id="masthead" class="masthead-with-pattern" style="background: url('{{ site.urlimg }}/{{ page.header.pattern }}')">
   <div class="grid-container">
     <div class="grid-x">
@@ -290,7 +290,7 @@
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
   <div class="grid-x">
-    {% include breadcrumb %}
+    {% include _breadcrumb.html %}
   </div>
 </div>
 {% endif %}
@@ -309,7 +309,7 @@
 {% elsif page.header.background-color %}
 
 
-{% include forkme-ribbon %}
+{% include _forkme-ribbon.html-ribbon %}
 <div id="masthead" class="masthead-with-background-color" style="background: {{ page.header.background-color }};">
   <div class="grid-container">
     <div class="grid-x">
@@ -323,7 +323,7 @@
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
   <div class="grid-x">
-    {% include breadcrumb %}
+    {% include _breadcrumb.html %}
   </div>
 </div>
 {% endif %}
@@ -345,7 +345,7 @@
 {% if page.breadcrumb == true %}
 <div class="breadcrumbs-bar">
   <div class="grid-x">
-    {% include breadcrumb %}
+    {% include _breadcrumb.html %}
   </div>
 </div>
 {% endif %}
