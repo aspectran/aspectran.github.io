@@ -380,6 +380,9 @@
               color: $grey-10;
               text-shadow: none;
             }
+            &:hover {
+              background-color: darken($bg-color, 5%);
+            }
           }
         }
       }
