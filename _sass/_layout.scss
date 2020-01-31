@@ -381,7 +381,7 @@
               text-shadow: none;
             }
             &:hover {
-              background-color: darken($bg-color, 5%);
+              background-color: darken($bg-color, 5%) !important;
             }
           }
         }
