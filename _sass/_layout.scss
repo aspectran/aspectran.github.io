@@ -324,7 +324,7 @@
       .quick-search-box {
         border: 0;
         @include breakpoint(medium down) {
-          padding: .8rem .4rem;
+          padding: .8rem;
         }
         @include breakpoint(large) {
           padding: rem-calc(4 14.5 2.9 3.4);
@@ -344,12 +344,8 @@
           }
           &.active {
             @include breakpoint(large) {
-              border: 0;
               background-color: darken($ci-0, 5%);
             }
-          }
-          &:hover {
-            border: 0;
           }
         }
       }
