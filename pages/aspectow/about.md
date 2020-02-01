@@ -12,7 +12,7 @@ comments: false
 permalink: /aspectow/about/
 ---
 
-Aspectow는 Aspectran을 기반으로 제작된 올인원 웹애플리케이션 서버로써, 다음과 같이 두 개의 제품으로 구분됩니다.
+Aspectow는 Aspectran을 기반으로 제작된 올인원 웹애플리케이션 서버로써, 다음과 같은 두 개의 제품으로 구분됩니다.
 
 * **Aspectran Light**  
   서블릿 스펙을 지원하지 않는 경량 버전으로써, 고성능 REST API 서비스를 구축하기에 적합합니다.  
