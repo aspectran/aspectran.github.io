@@ -3,18 +3,18 @@
 <script>
   $(document).foundation();
   $(function() {
-    var $win = $(window);
-    var $nav = $("#navigation");
-    var navHeight = $("#masthead").height() - $nav.height();
-    var lastScrollTop = 0;
-    var scrolled;
-    var navFixed;
+    let $win = $(window);
+    let $nav = $("#navigation");
+    let navHeight = $("#masthead").height() - $nav.height();
+    let lastScrollTop = 0;
+    let scrolled;
+    let navFixed;
     $win.scroll(function() {
       scrolled = true;
     });
     setInterval(function() {
       if (scrolled) {
-        var scrollTop = $win.scrollTop();
+        let scrollTop = $win.scrollTop();
         if (Math.abs(lastScrollTop - scrollTop) <= 10) {
           return;
         }
@@ -30,9 +30,13 @@
           }
         } else {
           if (!navFixed) {
-            $nav.addClass("fixed");
-            $nav.hide().fadeIn(500);
-            navFixed = true;
+            if ($nav.hasClass("immediate")) {
+              $nav.removeClass("immediate")
+            } else {
+              $nav.addClass("fixed");
+              $nav.hide().fadeIn(500);
+              navFixed = true;
+            }
           }
         }
         lastScrollTop = scrollTop;
@@ -81,13 +85,7 @@
         immediate = true;
         let anchor = $(this).attr("anchor");
         if (anchor !== "top-of-page") {
-          setTimeout(function() {
-            let offset = $("#" + anchor).offset();
-            if (offset) {
-              immediate = true;
-              $win.scrollTop(offset.top - $("#navigation.fixed .top-bar").height()||0);
-            }
-          }, 300);
+          $("#navigation").addClass("immediate");
         }
       });
       $win.scroll(function() {
@@ -184,9 +182,10 @@
 <script>
   /* Creating custom :external selector */
   $.expr[':'].external = function(obj) {
-    return !obj.href.match(/^javascript\:/)
-            && !obj.href.match(/^mailto\:/)
-            && (obj.hostname != location.hostname);
+    return obj.href
+        && !obj.href.match(/^javascript:/)
+        && !obj.href.match(/^mailto:/)
+        && (obj.hostname != location.hostname);
   };
   $(function(){
     /* Add 'external' CSS class to all external links */
@@ -203,7 +202,7 @@
 #
 {% endcomment %}
 {% if site.tawkto_embed_uri and page.tawkto == true %}
-<script type="text/javascript">
+<script>
   var $_Tawk_API={},$_Tawk_LoadStart=new Date();
   (function(){
   var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];

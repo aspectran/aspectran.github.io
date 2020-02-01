@@ -4,10 +4,8 @@
   dropdown:
   - title: "About Aspectran"
     url: "/aspectran/about/"
-  - title: "Installation"
-    url: "/aspectran/installation/"
-  - title: "Run as a Standalone Application"
-    url: "/aspectran/run-as-standalone/"
+  - title: "Getting Started"
+    url: "/aspectran/getting-started/"
   - title: "Run as a Servlet"
     url: "/aspectran/run-as-servlet/"
   - title: "Built-in Aspectran instance"

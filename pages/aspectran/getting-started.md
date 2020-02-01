@@ -2,16 +2,16 @@
 layout: page
 format: "plate solid article"
 sidebar: toc-left
-title: "Installation"
+title: "Getting Started with Aspectran"
 subheadline: ""
-teaser: "Aspectran은 Java 8 이상을 필요로 하며, 최신 버전의 Java와도 호환성을 쉽게 유지할 수 있도록 개발되었습니다."
+teaser: "Aspectran requires Java 8 or later, and was developed to be easily compatible with the latest version of Java."
 breadcrumb: true
-permalink: /aspectran/installation/
+permalink: /aspectran/getting-started/
 ---
 
 ## Requirements
 
-Aspectran-based applications require Aspectran JAR files for their execution environment.
+Aspectran-based applications require Aspectran JAR files for their execution environment.  
 These JAR files are published to the Maven Repository, therefore you can use any Java build
 tool to build an Aspectran project. 
 
@@ -22,8 +22,8 @@ tool to build an Aspectran project.
 
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all/badge.svg#v{{ site.data.aspectran.stable_version }})](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all)
 
-If you're using Maven, you will find all Aspectran Maven artifacts directly in the central Maven repository here:  
-[http://repo1.maven.org/maven2/com/aspectran/][1]
+You will find all Aspectran Maven artifacts directly in the central Maven repository here:  
+[https://repo1.maven.org/maven2/com/aspectran/][1]
 
 See [all versions available on the Maven Central Repository][2].
 
@@ -122,7 +122,7 @@ Note that Aspectran 6 requires Java 8, so an explicit declaration of 1.8 compati
 </build>
 ```
 
-[1]: http://repo1.maven.org/maven2/com/aspectran/
+[1]: https://repo1.maven.org/maven2/com/aspectran/
 [2]: https://search.maven.org/search?q=com.aspectran
 
 ## Latest release
