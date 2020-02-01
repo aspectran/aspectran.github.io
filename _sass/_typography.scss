@@ -246,10 +246,10 @@ div.highlighter-rouge {
   }
 }
 @include breakpoint(large) {
-  div.large-pull-3 pre.highlight {
-    &:hover {
-      width: 126%;
-    }
+  .large-9.large-order-1 pre.highlight:hover {
+    width: 126%;
+    position: relative;
+    z-index: 1;
   }
 }
 
