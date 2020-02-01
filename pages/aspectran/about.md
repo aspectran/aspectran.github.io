@@ -57,3 +57,7 @@ The following packages based on the `com.aspectran.core` package exist to suppor
 
 The development of Aspectran was started in March 2008, but it was first published on September 1th 2015.  
 The name Aspectan was created in July 2012 and it is a combination of Aspect and Translet.
+
+## License
+
+Aspectran is Open Source software released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).

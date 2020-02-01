@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: page-fullwidth
 title: Guides
 subheadline: Getting Started Guides
 teaser: There are several demo projects that introduce Aspectran and help getting started with it.
@@ -7,38 +7,39 @@ header:
   image_fullwidth: header_guides.jpg
   caption: Ultimate Raspberry Pi Backend Server
 outside_heading: true
-sidebar: right
 breadcrumb: true
 permalink: /guides/
 noindex: true
 ---
 
-{% assign guides = site.guides %}
-{% for guide in guides limit:2 %}
-<div class="panel white b20">
-  <div class="grid-x grid-padding-x">
-    <div class="cell">
-      <p class="subheadline">{% if guide.subheadline %}{{ guide.subheadline }}{% endif %}</p>
-      <h3 class="underline"><a href="{{ site.baseurl }}{{ guide.url }}">{{ guide.title }}</a></h3>
+<div class="grid-x grid-margin-x">
+  {% assign guides = site.guides %}
+  {% for guide in guides limit:2 %}
+  <div class="cell large-6 panel white b20">
+    <div class="grid-x grid-padding-x">
+      <div class="cell">
+        <p class="subheadline">{% if guide.subheadline %}{{ guide.subheadline }}{% endif %}</p>
+        <h3 class="underline"><a href="{{ site.baseurl }}{{ guide.url }}">{{ guide.title }}</a></h3>
+      </div>
+    {% if guide.image.thumb %}
+      <div class="small-5 medium-4 cell">
+        <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><img src="{{ site.urlimg }}{{ guide.image.thumb }}" class="alignleft" width="100%" alt="{{ guide.title | escape_once }}"></a>
+      </div>
+      <div class="small-7 medium-8 cell">
+        <p>
+          {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
+          <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
+        </p>
+      </div>
+    {% else %}
+      <div class="cell">
+        <p>
+          {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
+          <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
+        </p>
+      </div>
+    {% endif %}
     </div>
-  {% if guide.image.thumb %}
-    <div class="small-5 medium-4 cell">
-      <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><img src="{{ site.urlimg }}{{ guide.image.thumb }}" class="alignleft" width="100%" alt="{{ guide.title | escape_once }}"></a>
-    </div>
-    <div class="small-7 medium-8 cell">
-      <p>
-        {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
-        <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
-      </p>
-    </div>
-  {% else %}
-    <div class="cell">
-      <p>
-        {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
-        <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
-      </p>
-    </div>
-  {% endif %}
   </div>
+  {% endfor %}
 </div>
-{% endfor %}

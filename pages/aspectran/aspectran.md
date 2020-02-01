@@ -26,7 +26,3 @@ You can easily embed Aspectran in your application.
 
 ## [Core Components of Aspectran](/aspectran/core-components/)
 Describes the core components of Aspectran.
-
-## Aspectran Examples
-Simple example applications to demonstrate Aspectran functionality can be found on the [Guides](/guides/) page.
-Furthermore, we are developing useful applications based on Aspectran, which can be found on the [Projects](/projects/) page.

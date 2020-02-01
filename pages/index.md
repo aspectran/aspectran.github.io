@@ -38,7 +38,7 @@ widget4:
   url: /projects/
   image: header_modules_thumb.jpg
   text: |
-    Products developed based on Aspectran
+    We are developing useful applications based on Aspectran.
 projects:
   - subheadline: Working examples of using Aspectran
     title: Aspectran Demo Site
