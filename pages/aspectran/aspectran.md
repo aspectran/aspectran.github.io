@@ -18,9 +18,6 @@ Introducing Aspectran.
 ## [Installation](/aspectran/installation/)
 Describes the process of developing a simple web application using Aspectran.
 
-## [Run as a Sandalone Application](/aspectran/run-as-standalone/)
-Aspectran provides native support for building standalone applications for a variety of purposes.
-
 ## [Run as a Servlet](/aspectran/run-as-servlet/)
 Registering Aspectran as a servlet in a web container makes it easier to build web applications for your enterprise.
 
