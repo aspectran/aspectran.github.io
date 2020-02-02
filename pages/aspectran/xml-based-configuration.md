@@ -2,10 +2,10 @@
 layout: page
 format: "plate solid article"
 sidebar: toc-left
-title: "Core Components of Aspectran"
-subheadline: "User Guides"
+title: "XML Based Configuration"
+subheadline: "Aspectran Configuration"
 teaser: "Aspectran의 핵심 구성요소에 대해서 설명합니다."
-permalink: /aspectran/core-components/
+permalink: /aspectran/xml-based-configuration/
 ---
 
 {% include alert warning='Draft 문서 입니다. 작성된 사항은 변경될 수 있음을 알려둡니다.' %}
