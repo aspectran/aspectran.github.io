@@ -10,12 +10,12 @@
     url: "/aspectran/java-based-configuration/"
   - title: "Run as a Servlet"
     url: "/aspectran/run-as-servlet/"
-  - title: "Embedded Aspectran"
-    url: "/aspectran/embedded-aspectran/"
   - title: "Aspectran Shell"
     url: "/aspectran/aspectran-shell/"
   - title: "Aspectran Daemon"
     url: "/aspectran/aspectran-daemon/"
+  - title: "Embedded Aspectran"
+    url: "/aspectran/embedded-aspectran/"
 
 - title: Aspectow
   url: "/aspectow/"

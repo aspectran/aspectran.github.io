@@ -4,7 +4,7 @@ format: "plate solid article"
 sidebar: toc-left
 title: "Run as a servlet"
 subheadline: ""
-teaser: "Aspectran은 서블릿 컨테이너에 서블릿으로 등록되어 구동될 수 있기 때문에 전통적인 방식의 웹 애플리케이션 구축에도 사용될 수 있습니다."
+teaser: "Aspectran을 서블릿 컨테이너에 서블릿으로 등록함으로써, 전통적인 웹애플리케이션을 구축하는 데 사용될 수도 있습니다."
 breadcrumb: true
 permalink: /aspectran/run-as-servlet/
 ---
