@@ -1,0 +1,47 @@
+- title: Aspectran
+  url: "/aspectran/"
+  side: left
+  dropdown:
+  - title: "Getting Started"
+    url: "/aspectran/getting-started/"
+  - title: "XML Based Configuration"
+    url: "/aspectran/xml-based-configuration/"
+  - title: "Java Based Configuration"
+    url: "/aspectran/java-based-configuration/"
+  - title: "Run as a Servlet"
+    url: "/aspectran/run-as-servlet/"
+  - title: "Aspectran Shell"
+    url: "/aspectran/aspectran-shell/"
+  - title: "Aspectran Daemon"
+    url: "/aspectran/aspectran-daemon/"
+  - title: "Embedded Aspectran"
+    url: "/aspectran/embedded-aspectran/"
+
+- title: Aspectow
+  url: "/aspectow/"
+  side: left
+  dropdown:
+  - title: "Aspectow Light"
+    url: "/aspectow/aspectow-light/"
+  - title: "Aspectow Enterprise"
+    url: "/aspectow/aspectow-enterprise/"
+
+- title: Guides
+  url: "/guides/"
+  side: left
+
+- title: Demo Apps
+  url: "/projects/"
+  side: left
+  dropdown:
+  - title: "Aspectran Demo"
+    url: "https://demo.aspectran.com"
+  - title: "JPetStore Demo"
+    url: "https://jpetstore.aspectran.com"
+
+- title: Blog
+  url: "/blog/"
+  side: left
+  dropdown:
+  - title: "Blog Archive"
+    url: "/blog/archive/"

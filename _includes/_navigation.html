@@ -20,7 +20,13 @@
       </div>
       <div class="top-bar-left">
         <ul class="dropdown menu left" data-dropdown-menu>
-          {% for item in site.data.navigation %}
+          {% if page.lang == 'en' %}
+            {% assign navigation_data = site.data.navigation_en %}
+          {% else %}
+            {% assign navigation_data = site.data.navigation %}
+          {% endif %}
+
+          {% for item in navigation_data %}
 
             {% if item.url contains 'http' %}
               {% assign domain = '' %}
@@ -68,7 +74,7 @@
       </div>
       <div class="top-bar-right">
         <ul class="dropdown menu right" data-dropdown-menu data-close-on-click-inside="false">
-        {% for item in site.data.navigation %}
+        {% for item in navigation_data %}
 
           {% if item.url contains 'http' %}
             {% assign domain = '' %}
