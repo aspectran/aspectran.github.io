@@ -3,7 +3,7 @@ layout: compress
 lang: en
 ---
 <!doctype html>
-<html class="no-js" lang="{% if site.language == nil %}en{% else %}{{ site.language }}{% endif %}">
+<html class="no-js" lang="{% if page.lang == nil %}en{% else %}{{ page.lang }}{% endif %}">
 <head>
   {% include _head.html %}
 </head>

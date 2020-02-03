@@ -48,7 +48,7 @@ logo_footer: "aspectran-logo-grey-x100.png"
 #-------------------------------------------------------------------
 
 # The language setting is used in /includes/header.html for html-settings
-language: "en"
+language: "ko"
 
 
 # Handling Reading

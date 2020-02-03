@@ -15,7 +15,7 @@ permalink: /en/aspectran/
 
 ![Aspectran Archtecture Diagram](/images/info/aspectran_archtecture_diagram.png "Aspectran Archtecture Diagram")
 
-Aspectran is an intuitive and easy to use Java application framework.
+Aspectran is an intuitive and easy-to-use framework for developing Java applications.
 
 Aspectan's core features and built-in web application server make it easy to build 
 high-performance REST API services and enterprise web applications. It also provides 
