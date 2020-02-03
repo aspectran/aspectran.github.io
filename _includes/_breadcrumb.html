@@ -11,7 +11,7 @@
     {% for crumb in crumbs offset: 1 %}
       {% if forloop.last %}
         <li><span class="show-for-sr">Current: </span> <span class="current">{{ page.title }}</span></li>
-      {% else %}
+      {% elsif forloop.first != true || (forloop.first == true && crumb != site.language) %}
         <li><a href="{{ site.baseurl }}{% assign crumb_limit = forloop.index | plus: 1 %}{% for crumb in crumbs limit: crumb_limit %}{{ crumb | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' }}</a></li>
       {% endif %}
     {% endfor %}
