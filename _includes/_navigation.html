@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="top-bar-left">
-        <ul class="dropdown menu left" data-dropdown-menu>
+        <ul class="dropdown menu left" data-dropdown-menu data-close-on-click-inside="false">
           {% if page.lang == 'en' %}
             {% assign navigation_data = site.data.navigation_en %}
           {% else %}
@@ -50,7 +50,7 @@
 
                 <li class="has-submenu{% if page.url contains item.url %} active{% endif %}">
                   <a href="{{ site.baseurl }}{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
-                  <ul class="submenu menu vertical" data-submenu>
+                  <ul class="submenu menu vertical" data-submenu data-close-on-click-inside="true">
                     {% for submenu_item in item.dropdown %}
 
                       {% if submenu_item.url contains 'http' %}

@@ -16,7 +16,7 @@ permalink: /aspectran/
 ![Aspectran Archtecture Diagram](/images/info/aspectran_archtecture_diagram.png "Aspectran Archtecture Diagram")
 
 Aspectran은 Java 애플리케이션을 개발하기 위한 프레임워크로써,
-간단한 쉘 애플리케이션과 대규모 엔터프라즈 웹 애플리케이션을 구축하는 데 사용될 수 있습니다.
+간단한 쉘 애플리케이션과 대규모 엔터프라이즈 웹 애플리케이션을 구축하는 데 사용될 수 있습니다.
 
 Aspectran의 주요 기능은 다음과 같습니다.
 
