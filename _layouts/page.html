@@ -8,7 +8,7 @@ layout: default
 <div class="grid-container">
 {% if page.format contains "plate" %}
   <div class="grid-x grid-padding-x">
-    <div class="cell xlarge-10 xlarge-offset-1 contour">
+    <div class="cell contour">
 {% endif %}
 
   <div class="grid-x grid-padding-x">
@@ -16,14 +16,13 @@ layout: default
     <div class="t30 large-3 large-push-9 cell">
       {% include _sidebar-toc.html %}
     </div>
-    {% endif %}
-    {% if page.sidebar == "toc-left" %}
+    {% elsif page.sidebar == "toc-left" %}
     <div class="t30 large-3 cell">
       {% include _sidebar-toc.html side="left" %}
     </div>
     {% endif %}
 
-    <div class="t30 cell {% if page.sidebar == 'toc' %}large-9 large-pull-3{% elsif page.sidebar == 'toc-left' %}large-9{% elsif page.sidebar == 'left' %}large-8 large-push-4{% elsif page.sidebar == 'right' %}large-8{% endif %}">
+    <div class="t30 cell {% if page.sidebar == 'toc' %}large-9 large-pull-3{% elsif page.sidebar == 'toc-left' %}large-9{% elsif page.sidebar == 'left' %}large-8 large-push-4{% elsif page.sidebar == 'right' %}large-8{% elsif page.format contains 'margin' %}large-10 large-offset-1{% endif %}">
       <article>
 
         {% if page.inside_heading == true %}
