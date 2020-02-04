@@ -1,0 +1,24 @@
+---
+layout: page
+format: plate
+sidebar: right
+title: Utility
+subheadline: Aspectran Modules
+teaser: Aspectran의 공통 유틸리티 패키지에 포함되어 있는 모듈 중에서 몇 가지를 소개합니다.
+breadcrumb: true
+permalink: /modules/utility/
+noindex: true
+---
+
+{% assign modules = site.modules | where: "category", "Utility" %}
+{% for module in modules %}
+<div class="row">
+  <div class="columns">
+    <h3 class="underline"><a href="{{ site.baseurl }}{{ module.url }}">{{ module.title }}</a></h3>
+    <p>
+      {% if module.image.thumb %}<a href="{{ site.baseurl }}{{ module.url }}" title="{{ module.title | escape_once }}"><img src="{{ site.urlimg }}{{ module.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title | escape_once }}"></a>{% endif %}
+      {% if module.meta_description %}{{ module.meta_description | strip_html | escape }}{% elsif module.teaser %}{{ module.teaser | strip_html | escape }}{% endif %}
+    </p>
+  </div><!-- /.columns -->
+</div><!-- /.grid-x -->
+{% endfor %}

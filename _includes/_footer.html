@@ -56,18 +56,30 @@
 
       <div id="subfooter">
         <div class="grid-container">
-          <nav class="grid-x b30">
-            <section id="subfooter-left" class="medium-6 cell credits">
-              <p>Copyright © 2008-2020 The Aspectran Project</p>
+          <nav class="grid-x">
+            <section id="subfooter-left" class="medium-6 cell">
+              <p class="credits">Copyright © 2008-2020 The Aspectran Project</p>
             </section>
 
-            <section id="subfooter-right" class="medium-6 cell social-icons">
-              <ul>
-              {% for social_item in site.data.socialmedia %}
+            <section id="subfooter-right" class="medium-6 cell">
+              {% if site.data.socialmedia != nill %}
+              <ul class="social-icons">
+                {% for social_item in site.data.socialmedia %}
                 <li><a href="{{ social_item.url }}" target="_blank" class="{{ social_item.class }}" title="{{ social_item.title }}"></a></li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+              <ul class="supported-langs">
+              {% for lang in site.langorder %}
+                {% if lang != site.default_lang %}
+                  <li><a href="{{ site.url }}{{ site.baseurl }}/{{ lang }}/{{ page.path }}" title="{{ site.languages[lang] }}">{{ site.languages[lang] }}</a></li>
+                {% else %}
+                  <li><a href="{{ site.url }}{{ site.baseurl }}/{{ page.path }}" title="{{ site.languages[lang] }}">{{ site.languages[lang] }}</a></li>
+                {% endif %}
               {% endfor %}
               </ul>
             </section>
+
           </nav>
         </div>
       </div><!-- /#subfooter -->

@@ -883,7 +883,7 @@ body.plate {
   background: $subfooter-bg;
   color: $subfooter-color;
   padding-top: 30px;
-  padding-bottom: 10px;
+  padding-bottom: 30px;
   .credits {
     font-size: 90%;
     font-weight: bold;
@@ -897,14 +897,12 @@ body.plate {
       }
     }
   }
-  .social-icons {
+  ul.social-icons {
     font-size: 90%;
-    ul {
-      margin: 0;
-      list-style: none;
-      @include breakpoint(small only) {
-        float: right;
-      }
+    margin: 0;
+    list-style: none;
+    @include breakpoint(small only) {
+      float: right;
     }
     li {
       float: left;
@@ -914,6 +912,28 @@ body.plate {
         display: block;
         width: 36px;
         border-radius: 50%;
+        color: $subfooter-bg;
+        background: $subfooter-color;
+        text-align: center;
+        &:hover {
+          background: $subfooter-bg;
+          color: #fff;
+        }
+      }
+    }
+  }
+  ul.supported-langs {
+    font-size: 90%;
+    margin: 0 0 0 3rem;
+    list-style: none;
+    float: right;
+    li {
+      float: left;
+      margin-right: rem-calc(15);
+      a {
+        font-size: rem-calc(23);
+        display: block;
+        border-radius: 5px;
         color: $subfooter-bg;
         background: $subfooter-color;
         text-align: center;
