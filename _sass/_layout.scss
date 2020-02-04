@@ -501,15 +501,19 @@ body.plate {
     .teaser {
       @include breakpoint(small only) {
         font-size: 1.2em;
+        line-height: 130%; 
       }
       @include breakpoint(medium only) {
         font-size: 1.35em;
+        line-height: 135%; 
       }
-      @include breakpoint(large) {
+      @include breakpoint(large only) {
         font-size: 1.5em;
+        line-height: 145%; 
       }
       @include breakpoint(xlarge) {
         font-size: 1.65em;
+        line-height: 150%; 
       }
     }
   }
