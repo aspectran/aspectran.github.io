@@ -9,7 +9,7 @@ header:
   image_fullwidth: "header_gettingstarted.jpg"
   caption: "My cute second daughter"
 breadcrumb: true
-permalink: /aspectran/introduction
+permalink: /en/aspectran/introduction
 ---
 
 ## [About Aspectran](/aspectran/about/)

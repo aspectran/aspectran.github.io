@@ -48,7 +48,10 @@ logo_footer: "aspectran-logo-grey-x100.png"
 #-------------------------------------------------------------------
 
 # The language setting is used in /_includes/_head.html for html-settings
-languages: ['ko', 'en']
+langorder: ['ko', 'en']
+languages:
+  'ko': '한국어'
+  'en': 'English'
 default_lang: 'ko'
 
 # Handling Reading
@@ -117,7 +120,17 @@ defaults:
   -
     scope:
       path: "" 				# an empty string here means all files in the project
-      type: "pages"
+      type: "ko"
+    values:
+      show_meta: false 	# Hide metadata for all pages
+      # sidebar:    		# Possible values › left, right › by default there will be no sidebar
+      outside_heading: true
+      comments: false
+      author: "juho_jeong"     # Default author for pages
+  -
+    scope:
+      path: "" 				# an empty string here means all files in the project
+      type: "en"
     values:
       show_meta: false 	# Hide metadata for all pages
       # sidebar:    		# Possible values › left, right › by default there will be no sidebar

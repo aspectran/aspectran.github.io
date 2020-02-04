@@ -7,7 +7,7 @@ teaser: "Aspectran으로 간단한 Java 웹 어플리케이션을 만드는 과�
 outside_heading: true
 breadcrumb: true
 sidebar: toc
-permalink: /getting-started/quickstart/
+permalink: /en/getting-started/quickstart/
 ---
 
 ## 1. 웹 어플리케이션 프로젝트 생성

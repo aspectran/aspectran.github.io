@@ -6,7 +6,7 @@ subheadline: "What is Aspectran?"
 teaser: "A light-weight Java application framework"
 breadcrumb: true
 comments: false
-permalink: /info/
+permalink: /en/info/
 ---
 
 <img src="/images/info/aspectran_archtecture_diagram.png" width="50%" align="right" title="Aspectran Archtecture Diagram">

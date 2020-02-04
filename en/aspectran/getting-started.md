@@ -6,7 +6,7 @@ title: "Getting Started with Aspectran"
 subheadline: ""
 teaser: "Aspectran requires Java 8 or later, and was developed to be easily compatible with the latest version of Java."
 breadcrumb: true
-permalink: /aspectran/getting-started/
+permalink: /en/aspectran/getting-started/
 ---
 
 ## Requirements

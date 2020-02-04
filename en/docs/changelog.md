@@ -7,7 +7,7 @@ subheadline: Aspectran Changelog
 teaser: History and changelog of Aspectran
 comments: true
 breadcrumb: true
-permalink: /docs/changelog/
+permalink: /en/docs/changelog/
 ---
 
 <div class="callout info radius b30">

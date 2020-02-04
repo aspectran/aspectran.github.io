@@ -6,7 +6,7 @@ title: "Installing Aspectow"
 subheadline: ""
 teaser: "Aspectow can be installed by cloning a GitHub repository."
 breadcrumb: true
-permalink: /aspectow/installation/
+permalink: /en/aspectow/installation/
 ---
 
 ## 1. 시스템 요구사항

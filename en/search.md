@@ -6,7 +6,7 @@ header:
   image_fullwidth: "header_search.jpg"
   caption: "Photo by Juho Jeong"
 breadcrumb: true
-permalink: /search/
+permalink: /en/search/
 noindex: true
 ---
 

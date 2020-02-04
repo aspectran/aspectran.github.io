@@ -6,7 +6,7 @@ title: "Aspectow Enterprise"
 subheadline: "Ideal for building enterprise web application servers"
 teaser: "Aspectow Enterprise is an optimized solution for building enterprise web applications."
 breadcrumb: true
-permalink: /aspectow/aspectow-enterprise/
+permalink: /en/aspectow/aspectow-enterprise/
 ---
 
 ## 1. 시스템 요구사항

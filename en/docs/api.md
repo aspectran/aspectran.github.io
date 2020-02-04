@@ -6,7 +6,7 @@ title: "API Reference"
 subheadline: 
 teaser: "This is a public API reference for Aspectran."
 breadcrumb: true
-permalink: /docs/api/
+permalink: /en/docs/api/
 ---
 
 ## Aspectran API Reference {{ site.data.aspectran.stable_version }}
