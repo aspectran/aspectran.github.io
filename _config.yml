@@ -48,10 +48,10 @@ logo_footer: "aspectran-logo-grey-x100.png"
 #-------------------------------------------------------------------
 
 # The language setting is used in /_includes/_head.html for html-settings
-langorder: ['ko', 'en']
 languages:
   'ko': '한국어'
   'en': 'English'
+lang_order: ['ko', 'en']
 default_lang: 'ko'
 
 # Handling Reading
@@ -62,6 +62,7 @@ include: [".htaccess"]
 
 # Exclude these files from your production _site
 exclude:
+  - .sass-cache
   - Gemfile
   - Gemfile.lock
   - LICENSE
