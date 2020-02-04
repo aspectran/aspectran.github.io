@@ -4,7 +4,7 @@ format: article
 sidebar: right
 title: "Aspectran"
 subheadline: "What is Aspectran?"
-teaser: "Aspectran은 고성능 Java 애플리케이션을 구축하기 위한 경량 프레임워크입니다."
+teaser: "Aspectran은 고성능 Java 애플리케이션을 구축하기 위한 경량 프레임워크로써, 직관적이고 유연한 개발 환경을 제공합니다."
 header:
   image_fullwidth: "header_gettingstarted.jpg"
   caption: "My cute second daughter"
@@ -22,7 +22,7 @@ Aspectran의 주요 기능은 다음과 같습니다.
 
 * **POJO (*Plain Old Java Object*) 프로그래밍 모델**  
   프레임워크의 복잡도와 상세 기술의 복잡함을 개발자에게 전가하지 않아야 합니다.
-  개발자는 단순한 Java 클래스로 기능을 구현하고, 처리 결과 값은 Java 기본 객체에 담아서 반환하면 됩니다.
+  개발자는 단순한 Java 클래스로 기능을 구현하고, 처리 결과 값은 기본 Java 객체로 반환될 수 있습니다.
 * **Inversion of Control (*IoC*)**  
   프레임워크는 전체 흐름을 제어하면서 개발자가 구현한 단위 기능을 직접 호출하면서 전체적인 기능을 완성합니다.
   개발자가 비즈니스 로직에만 집중할 수 있도록 객체의 생성 및 생명주기를 프레임워크가 관리합니다.
@@ -32,7 +32,7 @@ Aspectran의 주요 기능은 다음과 같습니다.
 * **Aspect-Oriented Programming (*AOP*)**  
   프레임워크는 개발자가 구현한 핵심 로직 내에 트랜잭션, 로깅, 보안 및 예외 처리와 같은 부가적인 기능을 결합합니다.
   개발자는 핵심 기능과 부가 기능을 분리하여 코드를 작성할 수 있습니다.
-* **편리한 RESTful 웹 서비스 구축**
+* **편리한 RESTful 웹 서비스 구축**  
   Aspectran은 REST API 구현에 적합하도록 처음부터 설계되었으므로 별도의 프레임워크나 추가 라이브러리를 필요로 하지 않습니다.
   직관적 인 API 구현을 통해 일관된 형식으로 메시지를 빠르게 보내고 받을 수 있습니다.
 

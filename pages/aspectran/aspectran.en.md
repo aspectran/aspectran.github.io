@@ -4,7 +4,7 @@ format: article
 sidebar: right
 title: "Aspectran"
 subheadline: "What is Aspectran?"
-teaser: "Aspectran is a lightweight framework for building high performance Java applications."
+teaser: "Aspectran is a lightweight framework for building high-performance Java applications. It provides an intuitive and flexible development environment."
 header:
   image_fullwidth: "header_gettingstarted.jpg"
   caption: "My cute second daughter"
@@ -21,15 +21,16 @@ Aspectran consists of the following key features:
 
 * **Support POJO (*Plain Old Java Object*) programming model**  
   The complexity of the framework and the complexity of the detailed technology should not be passed on to developers.
-  Developers can implement the functionality in a simple Java class and return the resulting value in a Java base object.
+  Developers can implement functionality in simple Java classes, and processing results can be returned as native Java objects.
 * **Support Inversion of Control (*IoC*)**  
-  The framework completes the overall functionality by directly invoking the unit functionality implemented by the developer while controlling the overall flow.
+  The framework completes the full functionality by directly invoking the fragmentary functionality implemented by the developer while controlling the overall flow.
   The framework manages the creation and lifecycle of objects so that developers can focus on business logic.
 * **Support Dependency Injection (*DI*)**  
   The framework links modules that depend on each other at runtime.
   It can maintain low coupling between modules and increase code reusability.
 * **Support Aspect-Oriented Programming (*AOP*)**  
   The framework combines additional functionality such as transactions, logging, security, and exception handling within the core logic implemented by the developer.
+  The framework combines additional features such as transactions, logging, security, and exception handling within the core logic implemented by the developer.
   Developers will be able to code the core and add-ons separately.
 * **Support building RESTful Web Services**  
   Aspectran is designed from the ground up to be suitable for implementing REST APIs, eliminating the need for a separate framework or additional libraries.
