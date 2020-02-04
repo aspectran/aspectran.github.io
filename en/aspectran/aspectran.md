@@ -1,5 +1,6 @@
 ---
-layout: page_en
+layout: page
+lang: en
 format: article
 sidebar: right
 title: "Aspectran"

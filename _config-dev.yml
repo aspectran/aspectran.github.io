@@ -7,13 +7,10 @@
 
 # Server
 gems: [jekyll-paginate]
-host: 0.0.0.0
+host: "localhost"
 port: 4000
 
-
-#url: ''
-#baseurl: ''
-#urlimg: '/images/'
+url: 'http://localhost:4000'
 
 sass:
   # http://sass-lang.com/documentation/file.SASS_REFERENCE.html#output_style

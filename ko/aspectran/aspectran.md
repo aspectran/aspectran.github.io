@@ -1,5 +1,6 @@
 ---
 layout: page
+lang: ko
 format: article
 sidebar: right
 title: "Aspectran"

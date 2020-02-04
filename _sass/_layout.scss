@@ -931,15 +931,15 @@ body.plate {
       float: left;
       margin-right: rem-calc(15);
       a {
-        font-size: rem-calc(23);
         display: block;
-        border-radius: 5px;
-        color: $subfooter-bg;
-        background: $subfooter-color;
+        padding: 0 1rem;
+        border-radius: $global-radius;
+        color: lighten($subfooter-color, 10%);
+        background: $footer-bg;
         text-align: center;
         &:hover {
-          background: $subfooter-bg;
-          color: #fff;
+          background: darken($footer-bg, 10%);
+          color: $footer-color;
         }
       }
     }
