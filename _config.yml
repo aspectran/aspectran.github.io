@@ -74,7 +74,7 @@ exclude:
 paginate: 5
 
 # Pagination path › Important for blog page in /blog/ to work
-paginate_path: "/pages/blog/page:num"
+paginate_path: "/blog/page:num"
 permalink: "/blog/:categories/:title/"
 
 excerpt_separator: "<!--more-->"
