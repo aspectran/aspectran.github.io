@@ -7,52 +7,8 @@
     </div>
 
     <footer id="footer-content">
-      <div id="footer">
-        <div class="grid-container">
-          <div class="grid-x grid-padding-x">
-          {% if site.logo_footer %}
-            <div class="medium-2 large-1 cell hide-for-small-only t5">
-              <h5><a class="logo" href="{{ site.baseurl }}/aspectran/" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_footer }}" width="100" height="100" title="{{ site.title }}"/></a></h5>
-            </div>
-            <div class="medium-4 large-4 cell">
-          {% else %}
-            <div class="medium-6 large-5 cell">
-          {% endif %}
-              <a href="{{ site.baseurl }}/aspectran/"><h5>{{ site.data.language.info_website }}</h5></a>
-              <p><a href="{{ site.baseurl }}/aspectran/">{{ site.description }}</a></p>
-            </div><!-- /.large-6.cell -->
 
-            <div class="small-6 medium-3 large-3 large-offset-1 cell">
-              {% for network_item in site.data.network %}
-                {% if forloop.first == true and network_item.menu_name %}
-                  <h5>{{ network_item.menu_name }}</h5>
-                {% endif %}
-              {% endfor %}
-              <ul class="no-bullet">
-              {% for network_item in site.data.network %}
-                {% if network_item.url contains 'http' %}{% assign domain = '' %}{% else %}{% assign domain = site.baseurl %}{% endif %}
-                <li {% if network_item.class %}class="{{ network_item.class }}" {% endif %}> <a href="{{ domain }}{{ network_item.url }}" {% if network_item.url contains 'http' %}target="_blank" {% endif %} title="{{ network_item.title }}">{{ network_item.name }}</a></li>
-              {% endfor %}
-              </ul>
-            </div><!-- /.large-3.cell -->
-
-            <div class="small-6 medium-3 large-3 cell">
-              {% for service_item in site.data.services %}
-                {% if forloop.first == true %}
-                  <h5>{{ service_item.menu_name }}</h5>
-                {% endif %}
-              {% endfor %}
-
-                <ul class="no-bullet">
-                {% for service_item in site.data.services %}
-                  {% if service_item.url contains 'http' %}{% assign domain = '' %}{% else %}{% assign domain = site.baseurl %}{% endif %}
-                  <li {% if service_item.class %}class="{{ service_item.class }}"{% endif %}><a href="{{ domain }}{{ service_item.url }}" {% if service_item.url contains 'http' %}target="_blank" {% endif %} title="{{ service_item.title }}">{{ service_item.name }}</a></li>
-                {% endfor %}
-                </ul>
-            </div><!-- /.large-4.cell -->
-          </div><!-- /.grid-x -->
-        </div>
-      </div><!-- /#footer -->
+      {% include _footer-content.html %}
 
       <div id="subfooter">
         <div class="grid-container">
