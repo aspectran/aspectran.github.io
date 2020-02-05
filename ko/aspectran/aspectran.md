@@ -11,7 +11,7 @@ header:
   caption: "My cute second daughter"
 breadcrumb: true
 comments: false
-permalink: /ko/aspectran/
+permalink: /aspectran/
 ---
 
 ![Aspectran Archtecture Diagram](/images/info/aspectran_archtecture_diagram.png "Aspectran Archtecture Diagram")
