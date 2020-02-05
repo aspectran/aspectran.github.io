@@ -27,7 +27,7 @@
               {% endif %}
 
               {% if page.lang != nil %}
-              <ul class="supported-langs">
+              <ul class="lang-options">
               {% for lang in site.lang_order %}
                 {% assign url_prefix = '/' | append: page.lang | append: '/' %}
                 {% assign new_url = page.url | replace: url_prefix, '/' %}
@@ -37,8 +37,8 @@
                   <li><a href="{{ site.url }}{{ site.baseurl }}{{ new_url }}" title="{{ site.languages[lang] }}">{{ site.languages[lang] }}</a></li>
                 {% endif %}
               {% endfor %}
-              {% endif %}
               </ul>
+              {% endif %}
             </section>
 
           </nav>

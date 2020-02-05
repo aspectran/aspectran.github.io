@@ -3,28 +3,28 @@
   side: left
   dropdown:
   - title: "Getting Started"
-    url: "/aspectran/getting-started/"
+    url: "/en/aspectran/getting-started/"
   - title: "XML Based Configuration"
-    url: "/aspectran/xml-based-configuration/"
+    url: "/en/aspectran/xml-based-configuration/"
   - title: "Java Based Configuration"
-    url: "/aspectran/java-based-configuration/"
+    url: "/en/aspectran/java-based-configuration/"
   - title: "Run as a Servlet"
-    url: "/aspectran/run-as-servlet/"
+    url: "/en/aspectran/run-as-servlet/"
   - title: "Aspectran Shell"
-    url: "/aspectran/aspectran-shell/"
+    url: "/en/aspectran/aspectran-shell/"
   - title: "Aspectran Daemon"
-    url: "/aspectran/aspectran-daemon/"
+    url: "/en/aspectran/aspectran-daemon/"
   - title: "Embedded Aspectran"
-    url: "/aspectran/embedded-aspectran/"
+    url: "/en/aspectran/embedded-aspectran/"
 
 - title: Aspectow
-  url: "/aspectow/"
+  url: "/en/aspectow/"
   side: left
   dropdown:
   - title: "Aspectow Light"
-    url: "/aspectow/aspectow-light/"
+    url: "/en/aspectow/aspectow-light/"
   - title: "Aspectow Enterprise"
-    url: "/aspectow/aspectow-enterprise/"
+    url: "/en/aspectow/aspectow-enterprise/"
 
 - title: Guides
   url: "/guides/"

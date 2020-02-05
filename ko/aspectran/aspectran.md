@@ -1,6 +1,6 @@
 ---
-layout: page
 lang: ko
+layout: page
 format: article
 sidebar: right
 title: "Aspectran"
@@ -11,7 +11,7 @@ header:
   caption: "My cute second daughter"
 breadcrumb: true
 comments: false
-permalink: /aspectran/
+permalink: /ko/aspectran/
 ---
 
 ![Aspectran Archtecture Diagram](/images/info/aspectran_archtecture_diagram.png "Aspectran Archtecture Diagram")
