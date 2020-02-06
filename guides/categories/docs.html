@@ -1,0 +1,24 @@
+---
+layout: page
+format: plate
+sidebar: right
+title: ORM
+subheadline: Aspectran Guides
+teaser: 사용자 가이드
+breadcrumb: true
+permalink: /guides/docs/
+noindex: true
+---
+
+{% assign guides = site.guides | where: "category", "docs" %}
+{% for guide in guides %}
+<div class="grid-x grid-margin-x">
+  <div class="cell">
+    <h3 class="underline"><a href="{{ site.baseurl }}{{ guide.url }}">{{ guide.title }}</a></h3>
+    <p>
+      {% if guide.image.thumb %}<a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><img src="{{ site.urlimg }}{{ guide.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title | escape_once }}"></a>{% endif %}
+      {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
+    </p>
+  </div>
+</div>
+{% endfor %}
