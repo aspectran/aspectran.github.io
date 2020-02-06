@@ -10,10 +10,20 @@ outside_heading: true
 breadcrumb: true
 permalink: /guides/
 noindex: true
+categories:
+  - name: docs
+    title: Documents
+    description: 사용자 가이드
+  - name: examples
+    title: Examples
+    description: 예제 프로그램
 ---
 
-<div class="grid-x grid-margin-x">
-  {% assign guides = site.guides %}
+{% for category in page.categories %}
+<div class="grid-x grid-margin-x b30">
+  <h2>{{ category.title }}</h2>
+  <p>{{ category.description }}</p>
+  {% assign guides = site.guides | where: "category", category.name %}
   {% for guide in guides limit:2 %}
   <div class="cell large-6 panel white b20">
     <div class="grid-x grid-padding-x">
@@ -43,3 +53,4 @@ noindex: true
   </div>
   {% endfor %}
 </div>
+{% endfor %}

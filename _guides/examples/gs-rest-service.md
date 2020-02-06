@@ -1,5 +1,5 @@
 ---
-layout: guide
+layout: example
 format: plate article
 title: Building a RESTful Web Service
 subheadline: Getting Started

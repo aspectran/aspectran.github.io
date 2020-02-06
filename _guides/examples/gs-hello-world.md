@@ -1,5 +1,5 @@
 ---
-layout: guide
+layout: example
 format: plate article
 title: Aspectran Hello World Example
 subheadline: Getting Started

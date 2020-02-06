@@ -35,10 +35,3 @@
 - title: Projects
   url: "/projects/"
   side: left
-
-- title: Blog
-  url: "/blog/"
-  side: left
-  dropdown:
-  - title: "Blog Archive"
-    url: "/blog/archive/"
