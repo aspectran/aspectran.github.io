@@ -14,6 +14,7 @@ download:
 - label: "Download ZIP"
   url: https://github.com/aspectran/gs-hello-world/archive/master.zip
 asciinema: 219202
+category: examples
 ---
 
 ## Getting Started

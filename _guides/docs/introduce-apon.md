@@ -9,10 +9,10 @@ teaser: |
   구조화된 형식의 데이터 교환을 위한 새로운 표기법입니다.
 breadcrumb: true
 comments: true
+sidebar: toc-left
 tags:
   - APON
-sidebar: toc-left
-published: true
+category: docs
 ---
 
 ## APON의 특징

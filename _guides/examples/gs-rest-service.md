@@ -14,6 +14,7 @@ download:
 - label: Back-end
   url: https://github.com/aspectran/gs-rest-service
 demo: gs-rest-service.html
+category: examples
 ---
 
 ## root-configuration.xml

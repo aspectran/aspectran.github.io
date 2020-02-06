@@ -10,7 +10,7 @@ breadcrumb: true
 comments: true
 tags:
   - APON
-published: true
+category: docs
 ---
 
 예제로 사용되는 getting-started.xml 파일을 APON 파일로 변환합니다.
