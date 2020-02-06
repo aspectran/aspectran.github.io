@@ -1,6 +1,6 @@
 ---
 layout: page
-format: plate solid
+format: plate solid margin
 title: FAQ
 subheadline: "Frequently Asked Questions about Aspectran"
 teaser: "We provide frequently asked questions and answers in advance."

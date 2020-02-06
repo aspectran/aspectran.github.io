@@ -1,6 +1,6 @@
 ---
 layout: page
-format: plate solid
+format: plate solid margin
 title: Contact
 subheadline:
 teaser: Do you have any questions?

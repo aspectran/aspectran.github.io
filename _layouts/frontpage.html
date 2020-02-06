@@ -14,61 +14,21 @@ layout: default
       </div>
     </div>
     <div class="grid-x grid-padding-x">
-      <div class="large-3 cell b10">
+      <div class="medium-6 large-3 cell b10">
         {% include _frontpage-widget.html widget=page.widget1 %}
       </div>
-      <div class="large-3 cell b10">
+      <div class="medium-6 large-3 cell b10">
         {% include _frontpage-widget.html widget=page.widget2 %}
       </div>
-      <div class="large-3 cell b10">
+      <div class="medium-6 large-3 cell b10">
         {% include _frontpage-widget.html widget=page.widget3 %}
       </div>
-      <div class="large-3 cell b10">
+      <div class="medium-6 large-3 cell b10">
         {% include _frontpage-widget.html widget=page.widget4 %}
       </div>
     </div>
   </div>
 </div>
-
-{% unless page.projects == empty %}
-<div class="grid-container">
-  <div class="grid-x t30">
-    <div class="cell">
-      <div class="panel white">
-        <div class="grid-x grid-padding-x">
-            {% for project in page.projects limit:2 %}
-              <div class="medium-6 cell">
-                <div class="grid-x grid-padding-x">
-                  <div class="cell">
-                    <p class="subheadline">{% if project.subheadline %}{{ project.subheadline }}{% endif %}</p>
-                    <h3><a href="{{ site.baseurl }}{{ project.url }}">{{ project.title }}</a></h3>
-                  </div>
-                {% if project.thumb_img %}
-                  <div class="small-5 medium-4 cell">
-                    <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="alignleft" width="100%" alt="{{ project.title | escape_once }}"></a>
-                  </div>
-                  <div class="small-7 medium-8 cell">
-                    <p>
-                      {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
-                    </p>
-                  </div>
-                {% else %}
-                  <div class="cell">
-                    <p>
-                      {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
-                    </p>
-                  </div>
-                {% endif %}
-                </div>
-              </div>
-            {% endfor %}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-{% endunless %}
 
 {% unless site.guides == empty %}
 <div class="grid-container">
@@ -83,50 +43,48 @@ layout: default
         </div>
       </div>
       {% endif %}
-      <div class="panel white">
-        <div class="grid-x grid-padding-x">
-          {% if page.asciinema %}
-          <div class="asciinema show-for-large">
-            <div class="grid-x">
-              <div class="cell">
-                <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
-              </div>
+      <div class="grid-x grid-padding-x panel white">
+        {% if page.asciinema %}
+        <div class="asciinema show-for-large">
+          <div class="grid-x">
+            <div class="cell">
+              <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
             </div>
           </div>
-          {% endif %}
+        </div>
+        {% endif %}
 
-          {% for guide in site.guides limit:2 %}
-          <div class="medium-6 cell">
-            <div class="grid-x grid-padding-x">
-              <div class="cell">
-                <p class="subheadline">{% if guide.subheadline %}{{ guide.subheadline }}{% endif %}</p>
-                <h3><a href="{{ site.baseurl }}{{ guide.url }}">{{ guide.title }}</a></h3>
-              </div>
-            {% if guide.image.thumb %}
-              <div class="small-5 medium-4 cell">
-                <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><img src="{{ site.urlimg }}{{ guide.image.thumb }}" class="alignleft" width="100%" alt="{{ guide.title | escape_once }}"></a>
-              </div>
-              <div class="small-7 medium-8 cell">
-                <p>
-                  {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
-                  <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
-                </p>
-              </div>
-            {% else %}
-              <div class="cell">
-                <p>
-                  {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
-                  <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
-                </p>
-              </div>
-            {% endif %}
+        {% for guide in site.guides limit:4 %}
+        <div class="large-6 cell">
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <p class="subheadline">{% if guide.subheadline %}{{ guide.subheadline }}{% endif %}</p>
+              <h3><a href="{{ site.baseurl }}{{ guide.url }}">{{ guide.title }}</a></h3>
             </div>
+          {% if guide.image.thumb %}
+            <div class="small-5 medium-4 cell">
+              <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><img src="{{ site.urlimg }}{{ guide.image.thumb }}" class="alignleft" width="100%" alt="{{ guide.title | escape_once }}"></a>
+            </div>
+            <div class="small-7 medium-8 cell">
+              <p>
+                {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
+                <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
+              </p>
+            </div>
+          {% else %}
+            <div class="cell">
+              <p>
+                {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
+                <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
+              </p>
+            </div>
+          {% endif %}
           </div>
-          {% endfor %}
-          <div class="cell t20 hide">
-            <p><strong>{{ site.data.language.more_examples }}</strong></p>
-            {% include list-examples entries='3' offset='2' %}
-          </div>
+        </div>
+        {% endfor %}
+        <div class="cell t20 hide">
+          <p><strong>{{ site.data.language.more_examples }}</strong></p>
+          {% include list-examples entries='3' offset='2' %}
         </div>
       </div>
     </div>
@@ -135,44 +93,40 @@ layout: default
 {% endunless %}
 
 <div class="grid-container">
-  <div class="grid-x grid-padding-x">
-    <div class="medium-12 large-8 cell t30">
-    {% unless site.posts == empty %}
-      {% for post in site.posts limit:2 %}
-      <div class="grid-x b20">
-        <div class="cell">
-          <p class="subheadline">{% if post.subheadline %}{{ post.subheadline }}{% endif %}</p>
-          <h3><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3>
+  <div class="grid-x">
+    <div class="large-8 cell t30">
+      {% unless page.projects == empty %}
+      <div class="grid-x grid-padding-x">
+        {% for project in page.projects limit:6 %}
+        <div class="cell large-6 b20">
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <p class="subheadline">{% if project.subheadline %}{{ project.subheadline }}{% endif %}</p>
+              <h3><a href="{{ site.baseurl }}{{ project.url }}">{{ project.title }}</a></h3>
+            </div>
+          {% if project.thumb_img %}
+            <div class="small-4 medium-4 cell">
+              <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="alignleft" width="100%" alt="{{ project.title | escape_once }}"></a>
+            </div>
+            <div class="small-8 medium-8 cell">
+              <p>
+                {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
+              </p>
+            </div>
+          {% else %}
+            <div class="cell">
+              <p>
+                {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
+              </p>
+            </div>
+          {% endif %}
+          </div>
         </div>
-        {% if post.image.thumb %}
-        <div class="small-4 cell">
-          <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><img src="{{ site.urlimg }}{{ post.image.thumb }}" class="alignleft" width="100%" alt="{{ post.title | escape_once }}"></a>
-        </div>
-        <div class="small-8 cell">
-          <p>
-            {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% endif %}
-            <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
-          </p>
-        </div>
-        {% else %}
-        <div class="cell">
-          <p>
-            {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% endif %}
-            <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
-          </p>
-        </div>
-        {% endif %}
+        {% endfor %}
       </div>
-      {% endfor %}
-      <div class="grid-x">
-        <div class="cell">
-          <p><strong>{{ site.data.language.more_articles }}</strong></p>
-          {% include list-posts entries='3' offset='2' %}
-        </div>
-      </div>
-    {% endunless %}
+      {% endunless %}
     </div>
-    <div class="medium-12 large-4 cell t30">
+    <div class="large-4 cell t30">
       {% include _sidebar.html %}
     </div>
   </div>

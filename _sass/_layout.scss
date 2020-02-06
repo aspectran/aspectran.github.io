@@ -715,6 +715,11 @@ body.plate {
 .frontpage #masthead {
   color: #fff;
   background-color: $head-color;
+  @include breakpoint(small only) {
+    .cell {
+      padding: 0 5%;
+    }
+  }
   @include breakpoint(medium down) {
     padding: 15px 0 10px 0;
     .badges {
@@ -722,14 +727,6 @@ body.plate {
     }
     .thumb {
       margin-bottom: 10px;
-    }
-    .cell {
-      padding: 0 5%;
-    }
-  }
-  @include breakpoint(medium only) {
-    .cell {
-      padding: 0 8%;
     }
   }
   @include breakpoint(large) {

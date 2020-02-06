@@ -6,8 +6,8 @@ title: "Aspectow 소개"
 subheadline: "What is Aspectow?"
 teaser: "Aspectow는 올인원 웹어플리케이션 서버로써, Aspectran을 기반으로 만들졌습니다."
 header:
-  image_fullwidth: "header_documentation.jpg"
-  caption: "My two daughters draw a picture on the car-free roads."
+  image_fullwidth: header_guides.jpg
+  caption: Ultimate Raspberry Pi Backend Server
 breadcrumb: true
 comments: false
 permalink: /aspectow/

@@ -24,13 +24,13 @@ widget1:
 widget2:
   title: Aspectow
   url: /aspectow/
-  image: header_documentation_thumb.jpg
+  image: header_guides_thumb.jpg
   text: |
     Aspectow is an all-in-one web application server based on Aspectran.
 widget3:
   title: Guides
   url: /guides/
-  image: header_guides_thumb.jpg
+  image: header_documentation_thumb.jpg
   text: |
     There are several demo projects that introduce Aspectran and help getting started with it.
 widget4:
@@ -45,6 +45,11 @@ projects:
     url: https://demo.aspectran.com
     thumb_img: examples/pr-demo-site.png
     description: This site is a collection of reference applications created to show how to develop Aspectran applications following the recommended best practices.
+  - subheadline: Working examples of using Aspectran
+    title: Aspectran JPetStore Demo
+    url: https://jpetstore.aspectran.com
+    thumb_img: examples/pr-demo-site.png
+    description: JPetStore is a full web application built on top of MyBatis 3, Aspectran 6.
   - subheadline: Reach Further With Text-To-Speech
     title: Skylark Terminal
     url: https://skylark.aspectran.com
