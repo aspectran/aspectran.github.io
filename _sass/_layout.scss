@@ -240,7 +240,7 @@
         @include breakpoint(large) {
           border-top: 2px solid transparent;
           a {
-            padding: 1.15rem 1.5rem 1.3rem 1rem;
+            padding: 1.15rem 2rem 1.3rem 1.3rem;
           }
           &.active {
             border-top: 2px solid lighten($ci-1, 10%);
