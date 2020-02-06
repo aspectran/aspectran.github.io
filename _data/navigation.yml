@@ -1,7 +1,9 @@
 - title: Aspectran
-  url: "/aspectran/"
+  url: ""
   side: left
   dropdown:
+  - title: "Introduction"
+    url: "/aspectran/"
   - title: "Getting Started"
     url: "/aspectran/getting-started/"
   - title: "XML Based Configuration"
@@ -18,9 +20,11 @@
     url: "/aspectran/embedded-aspectran/"
 
 - title: Aspectow
-  url: "/aspectow/"
+  url: ""
   side: left
   dropdown:
+  - title: "Introduction"
+    url: "/aspectow/"
   - title: "Aspectow Light"
     url: "/aspectow/aspectow-light/"
   - title: "Aspectow Enterprise"
