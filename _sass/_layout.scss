@@ -252,7 +252,7 @@
         }
         &.is-dropdown-submenu-parent > a::after {
           border-color: lighten($ci-1, 20%) transparent transparent;
-          right: 9px;
+          right: .8rem;
         }
         &.is-dropdown-submenu-parent.is-active > a::after {
           border-color: $ci-3 transparent transparent;
