@@ -55,7 +55,7 @@ layout: default
         {% endif %}
 
         {% for guide in site.guides limit:4 %}
-        <div class="large-6 cell">
+        <div class="large-6 cell b10">
           <div class="grid-x grid-padding-x">
             <div class="cell">
               <p class="subheadline">{% if guide.subheadline %}{{ guide.subheadline }}{% endif %}</p>
@@ -98,7 +98,7 @@ layout: default
       {% unless page.projects == empty %}
       <div class="grid-x grid-padding-x">
         {% for project in page.projects limit:6 %}
-        <div class="cell large-6 b20">
+        <div class="cell large-6 b10">
           <div class="grid-x grid-padding-x">
             <div class="cell">
               <p class="subheadline">{% if project.subheadline %}{{ project.subheadline }}{% endif %}</p>
