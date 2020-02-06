@@ -32,14 +32,9 @@
   url: "/guides/"
   side: left
 
-- title: Demo Apps
+- title: Projects
   url: "/projects/"
   side: left
-  dropdown:
-  - title: "Aspectran Demo"
-    url: "https://demo.aspectran.com"
-  - title: "JPetStore Demo"
-    url: "https://jpetstore.aspectran.com"
 
 - title: Blog
   url: "/blog/"
