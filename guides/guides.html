@@ -26,7 +26,7 @@ categories:
     <p>{{ category.description }}</p>
   </div>
   {% assign guides = site.guides | where: "category", category.name %}
-  {% for guide in guides limit:2 %}
+  {% for guide in guides %}
   <div class="cell large-6 panel white b20">
     <div class="grid-x grid-padding-x">
       <div class="cell">
