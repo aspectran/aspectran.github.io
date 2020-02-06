@@ -22,7 +22,7 @@ categories:
 {% for category in page.categories %}
 <div class="grid-x grid-margin-x b20">
   <div class="cell">
-    <h2>{{ category.title }}</h2>
+    <h2><a href="{{ site.baseurl }}{{ category.name }}/">{{ category.title }}</a></h2>
     <p>{{ category.description }}</p>
   </div>
   {% assign guides = site.guides | where: "category", category.name %}
