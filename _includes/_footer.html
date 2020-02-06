@@ -30,11 +30,11 @@
               <ul class="lang-options">
               {% for lang in site.lang_order %}
                 {% assign url_prefix = '/' | append: page.lang | append: '/' %}
-                {% assign new_url = page.url | replace: url_prefix, '/' %}
+                {% assign page_url = page.url | replace: url_prefix, '/' %}
                 {% if lang != site.default_lang %}
-                  <li><a href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ new_url }}" title="{{ site.languages[lang] }}">{{ site.languages[lang] }}</a></li>
+                  <li><a href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}" title="{{ site.languages[lang] }}">{{ site.languages[lang] }}</a></li>
                 {% else %}
-                  <li><a href="{{ site.url }}{{ site.baseurl }}{{ new_url }}" title="{{ site.languages[lang] }}">{{ site.languages[lang] }}</a></li>
+                  <li><a href="{{ site.url }}{{ site.baseurl }}{{ page_url }}" title="{{ site.languages[lang] }}">{{ site.languages[lang] }}</a></li>
                 {% endif %}
               {% endfor %}
               </ul>
