@@ -11,6 +11,7 @@ comments: true
 tags:
   - APON
 category: docs
+date: 2015-10-19
 ---
 
 예제로 사용되는 getting-started.xml 파일을 APON 파일로 변환합니다.

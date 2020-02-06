@@ -2,7 +2,7 @@
 layout: page
 title: Guides
 subheadline: Getting Started Guides
-teaser: There are several demo projects that introduce Aspectran and help getting started with it.
+teaser: Here are some examples and related documentation to help you learn and get started with Aspectran.
 header:
   image_fullwidth: header_guides.jpg
   caption: Ultimate Raspberry Pi Backend Server
@@ -13,19 +13,20 @@ noindex: true
 categories:
   - name: docs
     title: Documents
-    description: 사용자 가이드
+    description: Here are some related documents to help you learn and get started with Aspectran.
   - name: examples
     title: Examples
-    description: 예제 프로그램
+    description: Here are some examples to help you learn and get started with Aspectran.
 ---
 
 {% for category in page.categories %}
 <div class="grid-x grid-margin-x b20">
   <div class="cell">
-    <h2><a href="{{ site.baseurl }}{{ category.name }}/">{{ category.title }}</a></h2>
+    <h2>{{ category.title }}</h2>
+    <a href="{{ site.baseurl }}{{ category.name }}/" class="fi-list-bullet float-right"></a>
     <p>{{ category.description }}</p>
   </div>
-  {% assign guides = site.guides | where: "category", category.name %}
+  {% assign guides = site.guides | where: "category", category.name | sort: 'date' %}
   {% for guide in guides %}
   <div class="cell large-6 panel white b20">
     <div class="grid-x grid-padding-x">

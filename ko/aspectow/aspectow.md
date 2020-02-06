@@ -2,7 +2,7 @@
 layout: page
 format: article
 sidebar: right
-title: "Aspectow"
+title: "Aspectow 소개"
 subheadline: "What is Aspectow?"
 teaser: "Aspectow는 올인원 웹어플리케이션 서버로써, Aspectran을 기반으로 만들졌습니다."
 header:

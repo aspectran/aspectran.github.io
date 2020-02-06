@@ -3,7 +3,7 @@ lang: ko
 layout: page
 format: article
 sidebar: right
-title: "Aspectran"
+title: "Aspectran 소개"
 subheadline: "What is Aspectran?"
 teaser: "Aspectran은 고성능 Java 애플리케이션을 구축하기 위한 경량 프레임워크로써, 직관적이고 유연한 개발 환경을 제공합니다."
 header:
