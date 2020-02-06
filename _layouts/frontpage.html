@@ -62,10 +62,10 @@ layout: default
               <h3><a href="{{ site.baseurl }}{{ guide.url }}">{{ guide.title }}</a></h3>
             </div>
           {% if guide.image.thumb %}
-            <div class="small-5 medium-4 cell">
+            <div class="small-5 medium-3 large-4 cell">
               <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><img src="{{ site.urlimg }}{{ guide.image.thumb }}" class="alignleft" width="100%" alt="{{ guide.title | escape_once }}"></a>
             </div>
-            <div class="small-7 medium-8 cell">
+            <div class="small-7 medium-9 large-8 cell">
               <p>
                 {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
                 <a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
@@ -105,10 +105,10 @@ layout: default
               <h3><a href="{{ site.baseurl }}{{ project.url }}">{{ project.title }}</a></h3>
             </div>
           {% if project.thumb_img %}
-            <div class="small-4 medium-4 cell">
+            <div class="small-4 medium-3 large-4 cell">
               <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="alignleft" width="100%" alt="{{ project.title | escape_once }}"></a>
             </div>
-            <div class="small-8 medium-8 cell">
+            <div class="small-8 medium-9 large-8 cell">
               <p>
                 {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
               </p>
