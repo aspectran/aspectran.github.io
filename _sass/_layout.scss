@@ -89,7 +89,7 @@
       padding: 0;
     }
     .lang-options {
-      float: left;
+      float: right;
       padding: rem-calc(6.6 15 7.6 3.4);
       .input-group {
         margin: 0;
@@ -124,6 +124,7 @@
       }
       .top-bar-right {
         width: 100%;
+        .lang-options,
         .quick-search-box {
           padding: 0 1.6rem 1.6rem;
         }
@@ -131,8 +132,9 @@
     }
     @include breakpoint(small only) {
       .top-bar-right {
+        .lang-options,
         .quick-search-box {
-          padding: .7rem 1rem;
+          padding: .8rem 1rem;
         }
       }
     }
@@ -340,8 +342,11 @@
       .lang-options,
       .quick-search-box {
         border: 0;
-        @include breakpoint(medium down) {
+        @include breakpoint(small only) {
           padding: .8rem;
+        }
+        @include breakpoint(medium only) {
+          padding: .8rem 1.6rem;
         }
         @include breakpoint(large) {
           padding: rem-calc(4 14.5 2.9 3.4);

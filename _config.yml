@@ -69,6 +69,7 @@ exclude:
   - README.md
   - INSTALL.md
   - CNAME
+  - vendor
 
 
 # Paginates all X entries
