@@ -4,6 +4,7 @@
 # inserted automagically in the webpage. To make
 # this work, you have to use › layout: frontpage
 #
+lang: en
 layout: frontpage
 format: frontpage
 widget0:
@@ -45,12 +46,17 @@ projects:
     url: https://demo.aspectran.com
     thumb_img: examples/pr-demo-site.png
     description: This site is a collection of reference applications created to show how to develop Aspectran applications following the recommended best practices.
+  - subheadline: Working examples of using Aspectran
+    title: Aspectran JPetStore Demo
+    url: https://jpetstore.aspectran.com
+    thumb_img: examples/pr-demo-site.png
+    description: JPetStore is a full web application built on top of MyBatis 3, Aspectran 6.
   - subheadline: Reach Further With Text-To-Speech
     title: Skylark Terminal
     url: https://skylark.aspectran.com
     thumb_img: examples/pr-skylark-terminal.png
     description: Skylark is a text to speech program that converts any written text into spoken words.
-permalink: /en/index.html
+permalink: /en/
 ---
 {% comment %}
 <div id="videoModal" class="reveal-modal large" data-reveal="">

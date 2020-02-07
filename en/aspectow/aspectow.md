@@ -1,4 +1,5 @@
 ---
+lang: en
 layout: page
 format: article
 sidebar: right

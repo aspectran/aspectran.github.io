@@ -88,6 +88,19 @@
       position: relative;
       padding: 0;
     }
+    .lang-options {
+      float: left;
+      padding: rem-calc(6.6 15 7.6 3.4);
+      .input-group {
+        margin: 0;
+        .button {
+          margin: 0;
+          &.active {
+            color: $ci-3;
+          }
+        }
+      }
+    }
     .quick-search-box {
       .input-group {
         margin: 0;
@@ -176,15 +189,16 @@
         .menu {
           float: left;
         }
+        .lang-options,
         .quick-search-box {
           float: right;
-          border-top: 2px solid transparent;
           max-width: 220px;
+          border-top: 2px solid transparent;
           @include breakpoint(medium down) {
             padding: rem-calc(7.6 15 7.6 3.4);
           }
           @include breakpoint(large) {
-            padding: rem-calc(6.6 15 7.6 3.4);
+            padding: rem-calc(6.5 15 7.6 3.4);
           }
         }
       }
@@ -323,6 +337,7 @@
           }
         }
       }
+      .lang-options,
       .quick-search-box {
         border: 0;
         @include breakpoint(medium down) {
@@ -342,7 +357,7 @@
         > li {
           a {
             font-weight: normal;
-            padding: .93rem 1.5rem .93rem 1rem;
+            padding: .93rem 2rem .93rem 1.3rem;
           }
           &.active {
             @include breakpoint(large) {
@@ -941,6 +956,11 @@ body.plate {
         &:hover {
           background: darken($footer-bg, 10%);
           color: $footer-color;
+        }
+      }
+      &.active {
+        a {
+          color: $ci-3;
         }
       }
     }

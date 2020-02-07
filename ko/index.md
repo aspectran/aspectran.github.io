@@ -4,6 +4,7 @@
 # inserted automagically in the webpage. To make
 # this work, you have to use › layout: frontpage
 #
+lang: ko
 layout: frontpage
 format: frontpage
 widget0:
@@ -55,7 +56,7 @@ projects:
     url: https://skylark.aspectran.com
     thumb_img: examples/pr-skylark-terminal.png
     description: Skylark is a text to speech program that converts any written text into spoken words.
-permalink: /index.html
+permalink: /
 ---
 {% comment %}
 <div id="videoModal" class="reveal-modal large" data-reveal="">

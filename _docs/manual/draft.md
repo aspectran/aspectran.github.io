@@ -257,7 +257,7 @@ aspectran-demo>
 초기 화면에 표시되는 환영 인사말과 프롬프트는 Aspectran 초기화 설정 파일 `app/config/aspectran-config.apon`에 기술되어 있으며, 현재 구동되고 있는 어플리케이션과 밀접한 내용은 최초 로딩되는 어플리케이션 설정 XML 파일 `/app/config/app-config.xml`의 `<description>` 요소에 추가적으로 기술하고 있습니다.
 
 ***aspectran-config.apon 파일에서 shell 설정 부분***
-```
+```{% raw %}
 shell: {
     prompt: "{{green}}aspectran-demo>{{reset}} "
     commands: [
@@ -298,11 +298,11 @@ shell: {
     exposals: {
         -: /**
     }
-}
+}{% endraw %}
 ```
 
 ***app-config.xml 파일의 description 요소***
-```xml
+```xml{% raw %}
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
         "https://aspectran.github.io/dtd/aspectran-6.dtd">
@@ -322,7 +322,7 @@ shell: {
         |   {{81}}http://localhost:8088/{{fg:reset}}
         |
     </description>
-</aspectran>
+</aspectran>{% endraw %}
 ```
 
 프롬프트에서 `help`명령을 입력 후 엔터키를 치면 이용가능한 명령을 기술하는 도움말이 출력됩니다.

@@ -1,4 +1,5 @@
 - title: Aspectran
+  url: "/aspectran/"
   side: left
   dropdown:
   - title: "Introduction"
@@ -19,6 +20,7 @@
     url: "/aspectran/embedded-aspectran/"
 
 - title: Aspectow
+  url: "/aspectow/"
   side: left
   dropdown:
   - title: "Introduction"

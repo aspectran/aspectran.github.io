@@ -32,7 +32,7 @@ The simplest configuration for printing "Hello World!" can be written as:
 
 [***gs-hello-world/app/config/app-config.xml***](https://github.com/aspectran/gs-hello-world/blob/master/app/config/app-config.xml)
 
-```xml
+```xml{% raw %}
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
         "https://aspectran.github.io/dtd/aspectran-6.dtd">
@@ -71,17 +71,17 @@ The simplest configuration for printing "Hello World!" can be written as:
         <transform type="transform/text">
             <template style="apon">
                 |
-                |   {{"{{bg:green"}}}}                         {{"{{off"}}}}
-                |   {{"{{bg:green"}}}}   {{"{{magenta,bg:white"}}}}                   {{"{{bg:blue"}}}}   {{"{{off"}}}}
-                |   {{"{{bg:green"}}}}   {{"{{RED,bg:white"}}}}   Hello, World!   {{"{{bg:blue"}}}}   {{"{{off"}}}}
-                |   {{"{{bg:green"}}}}   {{"{{magenta,bg:white"}}}}                   {{"{{bg:blue"}}}}   {{"{{off"}}}}
-                |   {{"{{magenta,bg:blue"}}}}                         {{"{{off"}}}}
+                |   {{bg:green}}                         {{off}}
+                |   {{bg:green}}   {{magenta,bg:white}}                   {{bg:blue}}   {{off}}
+                |   {{bg:green}}   {{RED,bg:white}}   Hello, World!   {{bg:blue}}   {{off}}
+                |   {{bg:green}}   {{magenta,bg:white}}                   {{bg:blue}}   {{off}}
+                |   {{magenta,bg:blue}}                         {{off}}
                 |
             </template>
         </transform>
     </translet>
 
-</aspectran>
+</aspectran>{% endraw %}
 ```
 
 > - You can see that the `translet` element with the name "hello" is defined.
