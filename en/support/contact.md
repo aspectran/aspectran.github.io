@@ -1,10 +1,13 @@
 ---
 lang: en
 layout: page
-format: plate solid margin
-title: Contact
+format: plate margin
+title: Contact Us
 subheadline:
 teaser: Do you have any questions?
+header:
+  image_fullwidth: "header_blog.jpg"
+  caption: "Music while coding"
 breadcrumb: true
 comments: true
 permalink: /en/support/contact/

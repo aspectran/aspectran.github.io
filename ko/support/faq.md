@@ -1,10 +1,13 @@
 ---
 lang: ko
 layout: page
-format: plate solid margin
-title: FAQ
-subheadline: "Aspectran에 대한 잦은 질문과 답변"
-teaser: "자주 묻는 질문과 답변을 미리 제공합니다."
+format: plate margin
+title: 자주 묻는 질문과 답변
+subheadline:
+teaser: "Frequently Asked Questions"
+header:
+  image_fullwidth: "header_blog.jpg"
+  caption: "Music while coding"
 breadcrumb: true
 comments: true
 permalink: /support/faq/

@@ -1,10 +1,13 @@
 ---
 lang: ko
 layout: page
-format: plate solid margin
+format: plate margin
 title: 고객 문의
 subheadline:
 teaser: Do you have any questions?
+header:
+  image_fullwidth: "header_blog.jpg"
+  caption: "Music while coding"
 breadcrumb: true
 comments: true
 permalink: /support/contact/

@@ -1,7 +1,7 @@
 - title: "고객 지원"
 
-- name: "자주 묻는 질문"
-  title: "자주 묻는 질문"
+- name: "자주 묻는 질문과 답변"
+  title: "자주 묻는 질문과 답변"
   url: "/support/faq/"
 
 - name: "고객 문의"  
