@@ -29,13 +29,13 @@ widget2:
   text: |
     Aspectow는 올인원 웹어플리케이션 서버로써, Aspectran을 기반으로 만들졌습니다. 
 widget3:
-  title: Guides
+  title: 사용 가이드
   url: /guides/
   image: header_documentation_thumb.jpg
   text: |
     Aspectran을 배우고 시작하는 데 도움이 되는 몇 가지 관련 문서와 사용 예제를 제공합니다.
 widget4:
-  title: Projects
+  title: 프로젝트
   url: /projects/
   image: header_modules_thumb.jpg
   text: |
