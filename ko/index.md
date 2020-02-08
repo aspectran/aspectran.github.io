@@ -33,7 +33,7 @@ widget3:
   url: /guides/
   image: header_documentation_thumb.jpg
   text: |
-    Aspectran을 배우고 시작하는 데 도움이 되는 몇 가지 예와 관련 문서를 제공합니다.
+    Aspectran을 배우고 시작하는 데 도움이 되는 몇 가지 관련 문서와 사용 예제를 제공합니다.
 widget4:
   title: Projects
   url: /projects/

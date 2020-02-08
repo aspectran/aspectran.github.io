@@ -117,7 +117,7 @@
         <div class="cell">
         {% unless page.header.slogan_hidden %}
         <div id="slogan">
-          <a href="{{ site.baseurl }}/" title="{{ site.slogan }}">
+          <a href="{{ site.baseurl }}/{% if page.lang != nil and page.lang != site.default_lang %}{{ page.lang }}/{% endif %}" title="{{ site.slogan }}">
             <img src="{{ site.baseurl }}/assets/img/{{ site.slogan_img }}" alt="">
           </a>
         </div>
@@ -241,7 +241,7 @@
       <div class="cell">
         {% unless page.header.slogan_hidden %}
         <div id="slogan">
-          <a href="{{ site.baseurl }}/" title="{{ site.slogan }}">
+          <a href="{{ site.baseurl }}/{% if page.lang != nil and page.lang != site.default_lang %}{{ page.lang }}/{% endif %}" title="{{ site.slogan }}">
             <img src="{{ site.baseurl }}/assets/img/{{ site.slogan_img }}" alt="">
           </a>
         </div>
