@@ -265,7 +265,7 @@
             background-color: $ci-0;
             border-top: 2px solid $ci-3;
           }
-          &.has-submenu {
+          &.is-dropdown-submenu-parent {
             a {
               padding-right: 2rem;
             }
@@ -374,7 +374,7 @@
               background-color: darken($ci-0, 5%);
             }
           }
-          &.has-submenu {
+          &.is-dropdown-submenu-parent {
             a {
               padding-right: 2rem;
             }
