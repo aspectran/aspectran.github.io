@@ -1,4 +1,5 @@
 ---
+lang: ko
 layout: page
 format: article
 sidebar: right

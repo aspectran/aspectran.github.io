@@ -1,4 +1,5 @@
 ---
+lang: en
 layout: page
 format: "plate solid article"
 sidebar: toc-left

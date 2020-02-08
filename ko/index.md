@@ -21,41 +21,41 @@ widget1:
   url: '/aspectran/'
   image: header_gettingstarted_thumb.jpg
   text: |
-    A light-weight Java application framework
+    Aspectran은 고성능 Java 애플리케이션을 구축하기 위한 경량 프레임워크로써, 직관적이고 유연한 개발 환경을 제공합니다. 
 widget2:
   title: Aspectow
   url: /aspectow/
   image: header_guides_thumb.jpg
   text: |
-    Aspectow is an all-in-one web application server based on Aspectran.
+    Aspectow는 올인원 웹어플리케이션 서버로써, Aspectran을 기반으로 만들졌습니다. 
 widget3:
   title: Guides
   url: /guides/
   image: header_documentation_thumb.jpg
   text: |
-    There are several demo projects that introduce Aspectran and help getting started with it.
+    Aspectran을 배우고 시작하는 데 도움이 되는 몇 가지 예와 관련 문서를 제공합니다.
 widget4:
-  title: Demo Apps
+  title: Projects
   url: /projects/
   image: header_modules_thumb.jpg
   text: |
-    We are developing useful applications based on Aspectran.
+    Aspectran을 기반으로 유용한 애플리케이션을 개발하고 있습니다.
 projects:
-  - subheadline: Working examples of using Aspectran
+  - subheadline: Aspectran 사용의 실제 사례
     title: Aspectran Demo Site
     url: https://demo.aspectran.com
     thumb_img: examples/pr-demo-site.png
-    description: This site is a collection of reference applications created to show how to develop Aspectran applications following the recommended best practices.
-  - subheadline: Working examples of using Aspectran
+    description: 이 사이트는 권장 모범 사례에 따라 Aspectran 응용 프로그램을 개발하는 방법을 보여주기 위해 만든 참조 응용 프로그램 모음입니다.
+  - subheadline: Aspectran 사용의 실제 사례
     title: Aspectran JPetStore Demo
     url: https://jpetstore.aspectran.com
     thumb_img: examples/pr-demo-site.png
-    description: JPetStore is a full web application built on top of MyBatis 3, Aspectran 6.
-  - subheadline: Reach Further With Text-To-Speech
+    description: JPetStore는 MyBatis 3, Aspectran 6 위에 구축된 완전한 웹 애플리케이션입니다.
+  - subheadline: TTS (텍스트 음성 변환)
     title: Skylark Terminal
     url: https://skylark.aspectran.com
     thumb_img: examples/pr-skylark-terminal.png
-    description: Skylark is a text to speech program that converts any written text into spoken words.
+    description: Skylark은 모든 텍스트를 음성으로 변환하는 텍스트 음성 변환 프로그램입니다.
 permalink: /
 ---
 {% comment %}

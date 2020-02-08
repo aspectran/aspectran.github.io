@@ -23,13 +23,14 @@ permalink: /en/aspectow/
 =========== /_/ =======================================================
 ```
 
-Aspectow는 Aspectran을 기반으로 제작된 올인원 웹애플리케이션 서버로써, 다음과 같은 두 개의 제품으로 구분됩니다.
+Aspectow is an all-in-one web application server based on Aspectran. It is divided into two products.
 
 * **[Aspectran Light](/aspectow/aspectow-light)**  
-  서블릿 스펙을 지원하지 않는 경량 버전으로써, 고성능 REST API 서비스를 구축하기에 적합합니다.  
-  JBoss의 [Undertow](http://undertow.io) 웹서버를 내장하고 있습니다.
+  It is a lightweight version that does not support the servlet specification and is suitable for building high performance REST API services.
+  JBoss's [Undertow](http://undertow.io) web server is built-in.
 
 * **[Aspectran Enterprise](/aspectow/aspectow-enterprise)**  
-  서블릿 스펙을 완벽하게 지원하며, 기업용 웹애플리케이션 구축에 적합합니다.  
-  JBoss의 [Undertow](http://undertow.io) 또는 Eclipse의 [Jetty](https://www.eclipse.org/jetty/)를 웹서버로 사용할 수 있으며,
-  JSP 엔진으로는 Apache Tomcat이 사용하는 것과 동일한 [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp)가 사용되고 있습니다.
+  It fully supports the servlet specification and is suitable for building enterprise web applications.
+  JBoss's [Undertow](http://undertow.io) or Eclipse [Jetty](https://www.eclipse.org/jetty/) can be used as a web server.
+  [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp) is used to support JSP and it is the same JSP engine that Apache Tomcat uses.
+  

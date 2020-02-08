@@ -21,7 +21,7 @@ widget1:
   url: '/aspectran/'
   image: header_gettingstarted_thumb.jpg
   text: |
-    A light-weight Java application framework
+    Aspectran is a lightweight framework for building high-performance Java applications.
 widget2:
   title: Aspectow
   url: /aspectow/
@@ -35,7 +35,7 @@ widget3:
   text: |
     There are several demo projects that introduce Aspectran and help getting started with it.
 widget4:
-  title: Demo Apps
+  title: Projects
   url: /projects/
   image: header_modules_thumb.jpg
   text: |

@@ -82,7 +82,11 @@ layout: default
 
     {% if page.sidebar == "right" %}
     <div class="t30 large-4 cell">
-      {% include _sidebar.html %}
+      {% if page.lang == "en" %}
+        {% include _sidebar_en.html %}
+      {% else %}
+        {% include _sidebar.html %}
+      {% endif %}
     </div><!-- /.medium-4.cell -->
     {% endif %}
 

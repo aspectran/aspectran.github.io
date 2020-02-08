@@ -2,7 +2,7 @@
   url: "/aspectran/"
   side: left
   dropdown:
-  - title: "Introduction"
+  - title: "Aspectran 소개"
     url: "/aspectran/"
   - title: "Getting Started"
     url: "/aspectran/getting-started/"
@@ -23,7 +23,7 @@
   url: "/aspectow/"
   side: left
   dropdown:
-  - title: "Introduction"
+  - title: "Aspectow 소개"
     url: "/aspectow/"
   - title: "Aspectow Light"
     url: "/aspectow/aspectow-light/"

@@ -1,4 +1,5 @@
 ---
+lang: en
 layout: page
 format: article
 sidebar: right
@@ -9,7 +10,7 @@ header:
   image_fullwidth: "header_support.jpg"
   caption: Multipurpose Home Server
 breadcrumb: true
-permalink: /support/
+permalink: /en/support/
 ---
 
 ## [FAQ](/support/faq/)

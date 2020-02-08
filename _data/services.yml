@@ -1,9 +1,9 @@
-- title: "Support"
+- title: "고객 지원"
 
-- name: "FAQ"
-  title: "FAQ"
+- name: "자주 묻는 질문"
+  title: "자주 묻는 질문"
   url: "/support/faq/"
 
-- name: "Contact"  
-  title: "Contact"
+- name: "고객 문의"  
+  title: "고객 문의"
   url: "/support/contact/"

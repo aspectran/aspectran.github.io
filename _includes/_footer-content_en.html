@@ -10,15 +10,15 @@
             <div class="medium-6 large-5 cell">
           {% endif %}
               <a href="{{ site.baseurl }}/aspectran/"><h5>About Aspectran</h5></a>
-              <p><a href="{{ site.baseurl }}/aspectran/">Aspectran은 간단한 쉘 애플리케이션과 대규모 엔터프라이즈 웹 애플리케이션을 구축하는 데 사용될 수 있는 Java 프레임워크입니다.</a></p>
+              <p><a href="{{ site.baseurl }}/aspectran/">Aspectran is a framework for developing Java applications that can be used to build simple shell applications and large enterprise web applications.</a></p>
             </div>
 
             <div class="small-6 medium-3 large-3 large-offset-1 cell">
-              {% for network_item in site.data.network limit: 1 %}
+              {% for network_item in site.data.network_en limit: 1 %}
                 <h5>{{ network_item.title }}</h5>
               {% endfor %}
               <ul class="no-bullet">
-              {% for network_item in site.data.network offset: 1 %}
+              {% for network_item in site.data.network_en offset: 1 %}
                 {% if network_item.url contains 'http' %}{% assign domain = '' %}{% else %}{% assign domain = site.baseurl %}{% endif %}
                 <li {% if network_item.class %}class="{{ network_item.class }}" {% endif %}> <a href="{{ domain }}{{ network_item.url }}" {% if network_item.url contains 'http' %}target="_blank" {% endif %} title="{{ network_item.title }}">{{ network_item.name }}</a></li>
               {% endfor %}
@@ -26,12 +26,12 @@
             </div>
 
             <div class="small-6 medium-3 large-3 cell">
-              {% for service_item in site.data.services limit: 1 %}
+              {% for service_item in site.data.services_en limit: 1 %}
                 <h5>{{ service_item.title }}</h5>
               {% endfor %}
 
               <ul class="no-bullet">
-              {% for service_item in site.data.services offset: 1 %}
+              {% for service_item in site.data.services_en offset: 1 %}
                 {% if service_item.url contains 'http' %}{% assign domain = '' %}{% else %}{% assign domain = site.baseurl %}{% endif %}
                 <li {% if service_item.class %}class="{{ service_item.class }}"{% endif %}><a href="{{ domain }}{{ service_item.url }}" {% if service_item.url contains 'http' %}target="_blank" {% endif %} title="{{ service_item.title }}">{{ service_item.name }}</a></li>
               {% endfor %}

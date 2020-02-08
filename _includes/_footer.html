@@ -8,7 +8,11 @@
 
     <footer id="footer-content">
 
-      {% include _footer-content.html %}
+      {% if page.lang == "en" %}
+        {% include _footer-content_en.html %}
+      {% else %}
+        {% include _footer-content.html %}
+      {% endif %}
 
       <div id="subfooter">
         <div class="grid-container">
