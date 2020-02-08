@@ -30,10 +30,10 @@
   - title: "Aspectow Enterprise"
     url: "/aspectow/aspectow-enterprise/"
 
-- title: Guides
+- title: 사용자 가이드
   url: "/guides/"
   side: left
 
-- title: Projects
+- title: 프로젝트
   url: "/projects/"
   side: left

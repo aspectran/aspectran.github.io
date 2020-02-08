@@ -256,7 +256,7 @@
         @include breakpoint(large) {
           border-top: 2px solid transparent;
           a {
-            padding: 1.15rem 2rem 1.3rem 1.3rem;
+            padding: 1.15rem 1.3rem 1.3rem 1.3rem;
           }
           &.active {
             border-top: 2px solid lighten($ci-1, 10%);
@@ -264,6 +264,11 @@
           &:hover {
             background-color: $ci-0;
             border-top: 2px solid $ci-3;
+          }
+          &.has-submenu {
+            a {
+              padding-right: 2rem;
+            }
           }
         }
         &.is-dropdown-submenu-parent > a::after {
@@ -362,11 +367,16 @@
         > li {
           a {
             font-weight: normal;
-            padding: .93rem 2rem .93rem 1.3rem;
+            padding: .93rem 1.3rem .93rem 1.3rem;
           }
           &.active {
             @include breakpoint(large) {
               background-color: darken($ci-0, 5%);
+            }
+          }
+          &.has-submenu {
+            a {
+              padding-right: 2rem;
             }
           }
         }
