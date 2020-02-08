@@ -4,7 +4,7 @@ layout: page
 format: article
 sidebar: right
 title: "About Aspectran"
-subheadline: "Introduction to the Aspectran"
+subheadline: "What is Aspectran?"
 teaser: "Aspectran is a lightweight framework for building high-performance Java applications. It provides an intuitive and flexible development environment."
 header:
   image_fullwidth: "header_gettingstarted.jpg"
