@@ -2,6 +2,7 @@
 layout: null
 title: "Naver Syndication Document"
 permalink: /naver_syndication.xml
+noindex: true
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://webmastertool.naver.com">
