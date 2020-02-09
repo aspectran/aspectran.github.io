@@ -1,12 +1,12 @@
 ---
 layout: page
-format: plate
+format: plate margin
 title: "Search"
 header:
   image_fullwidth: "header_search.jpg"
   caption: "Photo by Juho Jeong"
 breadcrumb: true
-permalink: /en/search/
+permalink: /search/
 noindex: true
 ---
 

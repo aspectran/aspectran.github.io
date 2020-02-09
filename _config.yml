@@ -108,15 +108,9 @@ compress_html:
 #-------------------------------------------------------------------
 
 collections:
-  docs:
-    output: true
-    permalink: "/docs/:path/"
   guides:
     output: true
     permalink: "/guides/:path/"
-  modules:
-    output: true
-    permalink: "/modules/:path/"
 
 defaults:
   -
@@ -138,31 +132,9 @@ defaults:
       # sidebar:        # Possible values › left, right › by default there will be no sidebar
       comments: false
       author: "juho_jeong"     # Default author for posts
-  -
-    scope:
-      path: ""
-      type: "docs"
-    values:
-      show_meta: false   # Show metadata for all posts
-      # sidebar:        # Possible values › left, right › by default there will be no sidebar
-      outside_heading: true
-      breadcrumb: true
-      comments: false
-      author: "juho_jeong"     # Default author for posts
-  -
     scope:
       path: ""
       type: "guides"
-    values:
-      outside_heading: true
-      breadcrumb: true
-      sidebar: toc
-      comments: true
-      author: "juho_jeong"     # Default author for posts
-  -
-    scope:
-      path: ""
-      type: "modules"
     values:
       outside_heading: true
       breadcrumb: true
