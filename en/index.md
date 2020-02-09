@@ -38,7 +38,7 @@ projects:
     thumb_img: examples/pr-demo-site.png
     description: This site is a collection of reference applications created to show how to develop Aspectran applications following the recommended best practices.
   - subheadline: Working examples of using Aspectran
-    title: Aspectran JPetStore Demo
+    title: JPetStore Demo
     url: https://jpetstore.aspectran.com
     thumb_img: examples/pr-demo-site.png
     description: JPetStore is a full web application built on top of MyBatis 3, Aspectran 6.

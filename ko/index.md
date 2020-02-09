@@ -47,7 +47,7 @@ projects:
     thumb_img: examples/pr-demo-site.png
     description: 이 사이트는 권장 모범 사례에 따라 Aspectran 응용 프로그램을 개발하는 방법을 보여주기 위해 만든 참조 응용 프로그램 모음입니다.
   - subheadline: Aspectran 사용의 실제 사례
-    title: Aspectran JPetStore Demo
+    title: JPetStore Demo
     url: https://jpetstore.aspectran.com
     thumb_img: examples/pr-demo-site.png
     description: JPetStore는 MyBatis 3, Aspectran 6 위에 구축된 완전한 웹 애플리케이션입니다.
