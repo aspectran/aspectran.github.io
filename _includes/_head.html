@@ -29,6 +29,19 @@
   <!-- Search Engine Optimization -->
   {% if page.noindex == true %}<meta name="robots" content="noindex" />{% endif %}
 
+  {% if page.lang != nil %}
+    {% for lang in site.lang_order reversed %}
+      {% assign url_prefix = '/' | append: page.lang | append: '/' %}
+      {% assign page_url = page.url | replace: url_prefix, '/' %}
+      {% if lang != site.default_lang %}
+        <link rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}" />
+      {% else %}
+        <link rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}{{ page_url }}" />
+        <link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ site.baseurl }}{{ page_url }}" />
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
   <link type="text/plain" rel="author" href="{{ site.url }}{{ site.baseurl }}/humans.txt" />
 
   {% unless page.style == NULL %}
