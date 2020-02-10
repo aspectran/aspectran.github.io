@@ -308,3 +308,12 @@ tfoot {
 td {
   vertical-align: top;
 }
+
+// ETC
+//--------
+
+.ellipses {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
