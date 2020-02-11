@@ -9,9 +9,11 @@ breadcrumb: true
 permalink: /aspectran/web-activity-servlet-configuration/
 ---
 
+{% include alert warning='계속 작성 중인 문서로서, 아직은 빈약한 내용으로 구성되어 있습니다.' %}
+
 ## 1. 서블릿 컨테이너
 
-Aspectran은 알려진 여러 서블릿 컨테이너에 하나의 서블릿으로 등록되어 구동될 수 있으며,
+Aspectran은 서블릿 컨테이너에 하나의 서블릿으로 등록되어 구동될 수 있으며,
 Java 8 이상 버전을 사용하고 있다면 다음과 같은 서블릿 스펙을 안정적으로 지원합니다.
 
 | 서블릿 스펙 | JSP 스펙 |
@@ -20,14 +22,25 @@ Java 8 이상 버전을 사용하고 있다면 다음과 같은 서블릿 스펙
 |     3.1     |    2.3   |
 |     3.0     |    2.2   |
 
-## 2. 서블릿 구성
+## 2. 웹 활동 서블릿
 
-web.xml 파일에 Aspectran 구동을 위한 서블릿 구성 방법에 대해 설명합니다.
+Aspectran에서는 클라이언트의 요청을 처리하는 것을 단순히 `Activity`라고 부릅니다.
+특히 웹 환경에서 클라이언트의 요청을 처리하고 응답하는 것을 `WebActivity`라고 합니다.
+
+서블릿 컨테이너는 클라이언트의 요청을 처리하기 위한 여러 서블릿을 보유할 수 있습니다.
+Aspectran은 하나의 서블릿을 통하여 여러 클라이언트의 요청을 받아서 처리할 수 있으며,
+Aspectran이 제공하는 그 서블릿을 `WebActivityServlet`이라고 부릅니다.
+
+`WebActivityServlet`을 web.xml 파일에 서블릿으로 등록하면 모든 클라이언트의 요청을
+Aspectran이 처리할 수 있게 됩니다.
+
+지금부터 web.xml 파일 안에 `WebActivityServlet`을 등록하는 방법에 대해 알아 봅니다.
 
 ### 2.1 초기화 파라메터 정의
 
-먼저 Aspectran의 구동 환경을 구성하기 위한 Aspectran 초기화 파라메터 `aspectran:config`를 정의합니다.
-초기화 파라메터 `aspectran:config`에 할당되는 값은 APON(Aspectran Parameters Object Notation) 형식으로 작성될 수 있습니다.
+먼저 Aspectran의 구동 환경을 구성하기 위한 초기화 파라메터 `aspectran:config`를 정의합니다.
+초기화 파라메터 `aspectran:config`에 할당되는 값은 APON(Aspectran Parameters Object Notation) 형식으로 
+작성될 수 있습니다.
 
 > 참고로 ***APON***(Aspectran Parameters Object Notation)은 ***JSON*** 과 표기법이 유사하며,
 > 매개 변수로 전달되는 설정 값의 작성 및 읽기가 용이하도록 Aspectran을 위해 특별히 개발된 새로운 표기법입니다.
