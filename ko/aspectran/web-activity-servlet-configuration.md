@@ -2,11 +2,11 @@
 layout: page
 format: "plate solid article"
 sidebar: toc-left
-title: "Run as a servlet"
+title: "웹 활동 서블릿 구성"
 subheadline: ""
-teaser: "Aspectran을 서블릿 컨테이너에 서블릿으로 등록함으로써, 전통적인 웹애플리케이션을 구축하는 데 사용될 수도 있습니다."
+teaser: "Aspectran을 서블릿 컨테이너에 서블릿으로 등록함으로써, 전통적인 웹애플리케이션을 구축하는 데 사용할 수 있습니다."
 breadcrumb: true
-permalink: /en/aspectran/run-as-servlet/
+permalink: /aspectran/web-activity-servlet-configuration/
 ---
 
 ## 1. 서블릿 컨테이너
@@ -26,8 +26,8 @@ web.xml 파일에 Aspectran 구동을 위한 서블릿 구성 방법에 대해 �
 
 ### 2.1 초기화 파라메터 정의
 
-먼저 Aspectran의 구동 환경을 구성하기 위한 초기화 파라메터 `aspectran:config`를 정의합니다.
-초기화 파라메터 `aspectran:config`에 할당된 값은 APON(Aspectran Parameters Object Notation) 형식으로 작성되었습니다.
+먼저 Aspectran의 구동 환경을 구성하기 위한 Aspectran 초기화 파라메터 `aspectran:config`를 정의합니다.
+초기화 파라메터 `aspectran:config`에 할당되는 값은 APON(Aspectran Parameters Object Notation) 형식으로 작성될 수 있습니다.
 
 > 참고로 ***APON***(Aspectran Parameters Object Notation)은 ***JSON*** 과 표기법이 유사하며,
 > 매개 변수로 전달되는 설정 값의 작성 및 읽기가 용이하도록 Aspectran을 위해 특별히 개발된 새로운 표기법입니다.
@@ -132,7 +132,7 @@ Aspectran에 의해 파싱된 요청 데이터 및 모든 활동 결과 데이�
 
 ### 2.4 WebActivityServlet
 
-클라이언트의 모든 요청을 처리하기 위한 서블릿 `WebActivityServlet`을 `web-activity-servlet` 이름으로 정의하고,
+클라이언트의 요청을 처리하기 위한 서블릿 `WebActivityServlet`을 `web-activity-servlet`이라는 이름으로 정의하고,
 `/` 경로와 맵핑합니다.
 
 ```xml
@@ -147,10 +147,10 @@ Aspectran에 의해 파싱된 요청 데이터 및 모든 활동 결과 데이�
 </servlet-mapping>
 ```
 
-`WebActivityServlet` 서블릿이 처리하지 못한 요청은 `DefaultServlet`이 처리할 수 있도록 설정되어 있으며,
-`DefaultServlet` 서블릿의 이름은 `default`로 지정했습니다. `DefaultServlet` 서블릿의 이름을 명시적으로 지정하지 않을 경우
-잘 알려진 웹어플리케이션 서버의 종류에 따라 자동으로 판단합니다.
-위의 초기화 파라메터에 다음과 같이 `DefaultServlet` 서블릿의 이름을 지정된 것을 볼 수 있습니다.
+만약 `WebActivityServlet`이 처리하지 못하는 요청은 서블릿 컨테이너가 보유하고 있는 `DefaultServlet`으로 처리권을 
+넘겨주도록 설정되어 있습니다. `DefaultServlet`을 호출하기 위한 고유 이름은 웹어플리케이션 서버의 종류에 따라 다를
+수 있으며, 내부적으로 잘 알려진 웹어플리케이션에 대해서는 `DefaultServlet`의 이름은 자동으로 결정됩니다.  
+`DefaultServlet`의 이름을 다르게 지정해야 할 경우 다음과 같이 Aspectran 초기화 파라메터에 별도로 명시할 수 있습니다.
 
 ```text
     web: {
@@ -173,10 +173,10 @@ Aspectran에 의해 파싱된 요청 데이터 및 모든 활동 결과 데이�
 
 데모 사이트는 구글 앱엔진에 통하여 임시로 서비스 되고 있으며, 다음 URL을 통하여 접속이 가능합니다.
 
-{% include label-link-box label="Aspectran Demo Site" href="https://demo.aspectran.com" %}
+{% include label-link-box label="Aspectran Demo Site" href="https://demo-gae.aspectran.com" %}
 
 참고로 구글 앱엔진은 웹 애플리케이션 서버로 Jetty를 사용하고 있으며, Jetty를 위한
-[***web.xml***](https://github.com/aspectran/demo-site/blob/master/src/main/webapp/WEB-INF/web.xml) 파일은 다음과 같이 작성되었습니다.
+[***web.xml***](https://github.com/aspectran/demo-site/blob/master/src/main/webapp/WEB-INF/web.xml) 파일의 전체 내용은 다음과 같습니다.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
