@@ -11,8 +11,8 @@
        url('../fonts/iconfont.svg#svgFontName') format('svg'); /* Legacy iOS */
 }
 
-.iconfont       { font-family: iconfont; }
-.iconfont-48    { font-size: 48px; }
+.iconfont       { font-family: iconfont; font-weight: normal; }
+.iconfont-48    { font-size: 48px; font-weight: normal; }
 
 [data-icon]:before { content: attr(data-icon); }
 

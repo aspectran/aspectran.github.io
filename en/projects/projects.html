@@ -51,12 +51,12 @@ projects:
         </div>
         <div class="cell small-7 medium-8">
           <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
-          {% if project.repo %}<p class="ellipses"><a class="icon-github" href="{{ project.repo }}">{{ project.repo }}</a></p>{% endif %}
+          {% if project.repo %}<p class="ellipses"><a class="icon-github" href="{{ project.repo }}"> {{ project.repo }}</a></p>{% endif %}
         </div>
       {% else %}
         <div class="cell">
           <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
-          {% if project.repo %}<p class="ellipses"><a class="icon-github" href="{{ project.repo }}">{{ project.repo }}</a></p>{% endif %}
+          {% if project.repo %}<p class="ellipses"><a class="icon-github" href="{{ project.repo }}"> {{ project.repo }}</a></p>{% endif %}
         </div>
       {% endif %}
       </div>

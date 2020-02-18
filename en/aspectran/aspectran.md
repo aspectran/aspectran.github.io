@@ -1,7 +1,6 @@
 ---
 lang: en
 layout: page
-format: article
 sidebar: right
 title: "About Aspectran"
 subheadline: "What is Aspectran?"

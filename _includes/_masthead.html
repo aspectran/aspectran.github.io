@@ -1,359 +1,99 @@
-{% if page.format contains "plate" %}
+{% if page.format contains "plate" or page.format contains "compact" or page.format contains "article" %}
 
 
-<div id="masthead"{% if page.format contains 'compact' %} class="masthead-compact"{% endif %}>
-  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-    <div class="grid-x">
-      <div class="cell">
-        <header>
-          {% if page.image.title %}
-          <figure>
-            <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
-            {% if page.image.caption_url and page.image.caption %}
-            <figcaption class="text-right">
-              <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
-            </figcaption>
-            {% elsif page.image.caption %}
-            <figcaption class="text-right">
-              {{ page.image.caption }}
-            </figcaption>
-            {% endif %}
-          </figure>
-          {% endif %}
-          <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
-          <h1 itemprop="headline">{{ page.title }}</h1>
-          {% if page.teaser %}
-          <p class="teaser" itemprop="description">
-            {{ page.teaser }}
-          </p>
-          {% endif %}
-        </header>
-        {% unless page.header.image_fullwidth != NULL or page.format contains 'compact' %}
-        <div class="hexagons">
-          <div class="hexagon hex1"></div>
-          <div class="hexagon hex2"></div>
-          <div class="hexagon hex3"></div>
-          <div class="hexagon hex4"></div>
-          <div class="hexagon hex5"></div>
-          <div class="hexagon hex6"></div>
-        </div>
-        {% endunless %}
-        {% if page.tabs %}
-        <dl class="tabs" data-tabs>
-          {% for tab in page.tabs %}
-          <dd class="tabs-title{% if tab.active == true %} is-active{% endif %}" id="tab-{{ tab.id }}"><a href="#{{ tab.id }}"><span class="iconfont"></span> {{ tab.title }}</a></dd>
-          {% endfor %}
-        </dl>
-        {% endif %}
-      </div><!-- /.cell -->
-    </div><!-- /.grid-x -->
-  </div>
-  <div class="grid-container grid-x breadcrumbs-bar{% if page.format contains 'fluid' %} fluid{% endif %}">
-    <div class="cell">
-      {% if page.breadcrumb == true %}
-      {% include _breadcrumb.html %}
-      {% else %}
-      &nbsp;
-      {% endif %}
-    </div>
-  </div>
-</div><!-- /#masthead -->
-
-
-{% elsif page.header == NULL and page.header.image_fullwidth == NULL and page.header.slide_images == NULL and page.header.pattern == NULL and page.header.background-color == NULL and page.header.title == NULL %}
-
-
-{% if page.outside_heading == true %}
-
-{% include _forkme-ribbon.html %}
-<div id="masthead" class="masthead-no-image-header">
-  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-    <div class="grid-x">
-      <div class="cell">
-        <header>
-          {% if page.image.title %}
-          <figure>
-            <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
-            {% if page.image.caption_url and page.image.caption %}
-            <figcaption class="text-right">
-              <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
-            </figcaption>
-            {% elsif page.image.caption %}
-            <figcaption class="text-right">
-              {{ page.image.caption }}
-            </figcaption>
-            {% endif %}
-          </figure>
-          {% endif %}
-          <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
-          <h1 itemprop="headline">{{ page.title }}</h1>
-          {% if page.teaser %}
-          <p class="teaser" itemprop="description">
-            {{ page.teaser }}
-          </p>
-          {% endif %}
-        </header>
-        <div class="hexagons">
-          <div class="hexagon hex1"></div>
-          <div class="hexagon hex2"></div>
-          <div class="hexagon hex3"></div>
-          <div class="hexagon hex4"></div>
-          <div class="hexagon hex5"></div>
-          <div class="hexagon hex6"></div>
-        </div>
-      </div>
-    </div><!-- /.grid-x -->
-  </div>
-  <div class="grid-container grid-x breadcrumbs-bar{% if page.format contains 'fluid' %} fluid{% endif %}">
-    <div class="cell">
-      {% if page.breadcrumb == true %}
-      {% include _breadcrumb.html %}
-      {% else %}
-      &nbsp;
-      {% endif %}
-    </div>
-  </div>
-</div><!-- /#masthead -->
-
-{% else %}
-
-{% include _forkme-ribbon.html %}
-<div id="masthead" class="masthead-no-image-header">
-  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-    <div class="grid-x">
+  <div id="masthead"{% if page.format contains 'compact' %} class="masthead-compact"{% endif %}>
+    <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
+      <div class="grid-x">
         <div class="cell">
-        {% unless page.header.slogan_hidden %}
-        <div id="slogan">
-          <a href="{{ site.baseurl }}/{% if page.lang != nil and page.lang != site.default_lang %}{{ page.lang }}/{% endif %}" title="{{ site.slogan }}">
-            <img src="{{ site.baseurl }}/assets/img/{{ site.slogan_img }}" alt="">
-          </a>
+          <header>
+            <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+            <h1 itemprop="headline">{{ page.title }}</h1>
+            {% if page.teaser %}
+            <p class="teaser" itemprop="description">
+              {{ page.teaser }}
+            </p>
+            {% endif %}
+          </header>
+          {% unless page.header.image_fullwidth != NULL or page.format contains 'compact' %}
+          <div class="hexagons">
+            <div class="hexagon hex1"></div>
+            <div class="hexagon hex2"></div>
+            <div class="hexagon hex3"></div>
+            <div class="hexagon hex5"></div>
+            <div class="hexagon hex6"></div>
+          </div>
+          {% endunless %}
+          {% if page.tabs %}
+          <dl class="tabs {{ page.tabs_position }}" data-tabs>
+            {% for tab in page.tabs %}
+            <dd class="tabs-title{% if tab.active == true %} is-active{% endif %}" id="tab-{{ tab.id }}"><a href="#{{ tab.id }}"><span class="bullet iconfont"></span> {{ tab.title }}</a></dd>
+            {% endfor %}
+          </dl>
+          {% endif %}
         </div>
-        {% endunless %}
-        </div>
-    </div><!-- /.grid-x -->
-  </div>
-</div><!-- /#masthead -->
-
-{% if page.breadcrumb == true %}
-<div class="breadcrumbs-bar">
-  <div class="grid-x">
-    {% include _breadcrumb.html %}
-  </div>
-</div>
-{% endif %}
-
-{% endif %}
-
-
-{% elsif page.header.title %}
-
-
-{% include _forkme-ribbon.html %}
-<div id="masthead" class="masthead-with-text" style="{% if page.header.background-color %}background:linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,0)), {{ page.header.background-color }};{% endif %}{% if page.header.image_fullwidth %}{% elsif page.header.pattern %}background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('{{ site.urlimg }}/{{ page.header.pattern }}'){% endif %}">
-  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-    <div class="grid-x">
-      <div class="cell">
-        <div class="masthead-title" itemprop="headline">{{ page.header.title }}</div>
       </div>
-    </div><!-- /.grid-x -->
+    </div>
+    <div class="grid-container grid-x breadcrumbs-bar{% if page.format contains 'fluid' %} fluid{% endif %}">
+      <div class="cell">
+        {% if page.breadcrumb == true %}
+        {% include _breadcrumb.html %}
+        {% else %}
+        &nbsp;
+        {% endif %}
+      </div>
+    </div>
   </div>
-</div><!-- /#masthead -->
-
-{% if page.breadcrumb == true %}
-<div class="breadcrumbs-bar">
-  <div class="grid-x">
-    {% include _breadcrumb.html %}
-  </div>
-</div>
-{% endif %}
-
-{% if page.header.caption_url && page.header.caption %}
-<div class="masthead-caption">
-  <a href="{{ page.header.caption_url }}">{{ page.header.caption }}</a>
-</div>
-{% elsif page.header.caption %}
-<div class="masthead-caption">
-  {{ page.header.caption }}
-</div>
-{% endif %}
 
 
 {% elsif page.header.image_fullwidth or page.header.slide_images %}
 
 
-{% if page.outside_heading == true %}
-
-{% include _forkme-ribbon.html %}
-<div id="masthead" class="masthead-with-image-header">
-  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-    <div class="grid-x">
-      <div class="cell">
-        <header>
-          {% if page.image.title %}
-          <figure>
-            <img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
-            {% if page.image.caption_url and page.image.caption %}
-            <figcaption class="text-right">
-              <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
-            </figcaption>
-            {% elsif page.image.caption %}
-            <figcaption class="text-right">
-              {{ page.image.caption }}
-            </figcaption>
+  <div id="masthead" class="masthead-with-image-header">
+    <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
+      <div class="grid-x">
+        <div class="cell">
+          <header>
+            <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+            <h1 itemprop="headline">{{ page.title }}</h1>
+            {% if page.teaser %}
+            <p class="teaser" itemprop="description">
+              {{ page.teaser }}
+            </p>
             {% endif %}
-          </figure>
-          {% endif %}
-          <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
-          <h1 itemprop="headline">{{ page.title }}</h1>
-          {% if page.teaser %}
-          <p class="teaser" itemprop="description">
-            {{ page.teaser }}
-          </p>
-          {% endif %}
-        </header>
-      </div><!-- /.cell -->
-    </div><!-- /.grid-x -->
-  </div>
-
-  {% if page.header.caption_url && page.header.caption %}
-  <div class="masthead-caption">
-    <a href="{{ page.header.caption_url }}">{{ page.header.caption }}</a>
-  </div>
-  {% elsif page.header.caption %}
-  <div class="masthead-caption">
-    {{ page.header.caption }}
-  </div>
-  {% endif %}
-
-</div><!-- /#masthead -->
-
-{% if page.breadcrumb == true %}
-<div class="breadcrumbs-bar">
-  <div class="grid-container">
-    <div class="grid-x">
-      <div class="cell">
-        {% include _breadcrumb.html %}
+          </header>
+        </div>
       </div>
     </div>
   </div>
-</div>
-{% endif %}
-
-{% else %}
-
-{% include _forkme-ribbon.html %}
-<div id="masthead" class="masthead-with-image-header">
-  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-    <div class="grid-x">
-      <div class="cell">
-        {% unless page.header.slogan_hidden %}
-        <div id="slogan">
-          <a href="{{ site.baseurl }}/{% if page.lang != nil and page.lang != site.default_lang %}{{ page.lang }}/{% endif %}" title="{{ site.slogan }}">
-            <img src="{{ site.baseurl }}/assets/img/{{ site.slogan_img }}" alt="">
-          </a>
+  {% if page.breadcrumb == true %}
+  <div class="breadcrumbs-bar">
+    <div class="grid-container">
+      <div class="grid-x">
+        <div class="cell">
+          {% include _breadcrumb.html %}
         </div>
-        {% endunless %}
       </div>
-    </div><!-- /.grid-x -->
-  </div>
-
-  {% if page.header.caption_url && page.header.caption %}
-  <div class="masthead-caption">
-    <a href="{{ page.header.caption_url }}">{{ page.header.caption }}</a>
-  </div>
-  {% elsif page.header.caption %}
-  <div class="masthead-caption">
-    {{ page.header.caption }}
+    </div>
   </div>
   {% endif %}
 
-</div><!-- /#masthead -->
 
-{% if page.breadcrumb == true %}
-<div class="breadcrumbs-bar">
-  <div class="grid-x">
-    {% include _breadcrumb.html %}
-  </div>
-</div>
-{% endif %}
-
-{% endif %}
-
-
-{% elsif page.header.pattern %}
-
-
-{% include _forkme-ribbon.html %}
-<div id="masthead" class="masthead-with-pattern" style="background: url('{{ site.urlimg }}/{{ page.header.pattern }}')">
-  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-    <div class="grid-x">
-      <figure class="cell">
-        <img src="{{ site.urlimg }}/{{ page.header.image }}" alt="{{ site.title }}">
-      </figure>
-    </div><!-- /.grid-x -->
-  </div>
-</div><!-- /#masthead -->
-
-{% if page.breadcrumb == true %}
-<div class="breadcrumbs-bar">
-  <div class="grid-x">
-    {% include _breadcrumb.html %}
-  </div>
-</div>
-{% endif %}
-
-{% if page.header.caption_url && page.header.caption %}
-<div class="masthead-caption">
-  <a href="{{ page.header.caption_url }}">{{ page.header.caption }}</a>
-</div>
-{% elsif page.header.caption %}
-<div class="masthead-caption">
-  {{ page.header.caption }}
-</div>
-{% endif %}
-
-
-{% elsif page.header.background-color %}
-
-
-{% include _forkme-ribbon.html %}
-<div id="masthead" class="masthead-with-background-color" style="background: {{ page.header.background-color }};">
-  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-    <div class="grid-x">
-      <figure class="cell">
-        <img src="{{ site.urlimg }}/{{ page.header.image }}" alt="{{ site.title }}">
-      </figure>
-    </div><!-- /.grid-x -->
-  </div>
-</div><!-- /#masthead -->
-
-{% if page.breadcrumb == true %}
-<div class="breadcrumbs-bar">
-  <div class="grid-x">
-    {% include _breadcrumb.html %}
-  </div>
-</div>
-{% endif %}
-
-{% if page.header.caption_url && page.header.caption %}
-<div class="masthead-caption">
-  <a href="{{ page.header.caption_url }}">{{ page.header.caption }}</a>
-</div>
-{% elsif page.header.caption %}
-<div class="masthead-caption">
-  {{ page.header.caption }}
-</div>
-{% endif %}
-
-
-{% elsif page.header == false %}
+{% else %}
 
 
 {% if page.breadcrumb == true %}
-<div class="breadcrumbs-bar">
-  <div class="grid-x">
-    {% include _breadcrumb.html %}
+<div id="masthead" class="no-header">
+  {% if page.breadcrumb == true %}
+  <div class="breadcrumbs-bar">
+    <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
+      <div class="grid-x">
+        <div class="cell">
+          {% include _breadcrumb.html %}
+        </div>
+      </div>
+    </div>
   </div>
+  {% endif %}
 </div>
 {% endif %}
 

@@ -526,19 +526,15 @@ body.plate {
     position: relative;
     z-index: 100;
     @include breakpoint(small only) {
-      margin-top: 80px;
-      min-height: 130px;
+      margin-top: 40px;
+      min-height: 180px;
     }
-    @include breakpoint(medium only) {
-      margin-top: 70px;
-      min-height: 150px;
-    }
-    @include breakpoint(large only) {
-      margin-top: 150px;
+    @include breakpoint(medium) {
+      margin-top: 50px;
       min-height: 170px;
     }
-    @include breakpoint(xlarge) {
-      margin-top: 150px;
+    @include breakpoint(large) {
+      margin-top: 120px;
       min-height: 170px;
     }
     h1 {
@@ -587,163 +583,42 @@ body.plate {
       border-radius: 0;
     }
   }
-  .masthead-caption {
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-    color: #fff;
-    @include breakpoint(medium down) {
+  &.masthead-compact {
+    @include breakpoint(large) {
+      padding-top: 84px;
+    }
+    header {
+      margin-top: 0 !important;
+      min-height: 0 !important;
+    }
+  }
+  &.masthead-with-image-header {
+    @include breakpoint(small only) {
+      height: 255px;
+    }
+    @include breakpoint(medium only) {
+      height: 285px;
+      padding-top: 50px;
+    }
+    @include breakpoint(large) {
+      height: 510px;
+      padding-top: 150px;
+    }
+  }
+  &.no-header {
+    @include breakpoint(medium only) {
       display: none;
+      height: 0;
     }
-  }
-}
-.masthead-compact {
-  @include breakpoint(large) {
-    padding-top: 84px;
-  }
-  header {
-    margin-top: 0 !important;
-    min-height: 0 !important;
-  }
-}
-.masthead-with-text {
-  text-align: center;
-  font-size: rem-calc(54);
-  font-family: $header-font-family;
-  color: #fff;
-  text-transform: uppercase;
-  text-shadow: 0 2px 3px rgba(0,0,0,.4);
-}
-.masthead-no-image-header {
-  #slogan {
-    margin: 10px 0 10px 20px;
-    img {
-      height: 128px;
-    }
-  }
-}
-
-// Masthead › small-only
-//-----------------------
-
-@include breakpoint(small only) {
-  .masthead-with-pattern {
-    padding: 15px 0;
-  }
-  .masthead-with-background-color {
-    padding: 15px 0;
-  }
-  .masthead-with-text {
-    height: 290px;
-    padding: 30px 0;
-    font-size: rem-calc(36);
-  }
-  .masthead-with-image-header {
-    height: 255px;
-    #slogan {
-      margin-top: 100px;
-      margin-left: 0;
-      img {
-        height: 115px;
+    @include breakpoint(large) {
+      padding-top: 57px;
+      background: none;
+      .breadcrumbs-bar {
+        border-radius: 0;
+        .breadcrumbs {
+          float: right;
+        }
       }
-    }
-    header {
-      margin-top: 80px;
-      min-height: 140px;
-    }
-  }
-  .masthead-no-image-header {
-    header {
-      padding-top: 1em;
-    }
-  }
-}
-
-// Masthead › medium-only
-//------------------------
-
-@include breakpoint(medium only) {
-  .masthead-with-pattern {
-    padding: 20px 0;
-  }
-  .masthead-with-background-color {
-    padding: 20px 0;
-  }
-  .masthead-with-text {
-    height: 350px;
-    padding: 60px 0;
-  }
-  .masthead-with-image-header {
-    height: 285px;
-    #slogan {
-      margin-top: 70px;
-      margin-left: 33px;
-      img {
-        height: 170px;
-      }
-    }
-    header {
-      margin-top: 90px;
-      min-height: 170px;
-    }
-  }
-}
-
-// Masthead › large-only
-//-----------------------
-
-@include breakpoint(large only) {
-  .masthead-with-pattern {
-    padding: 30px 0;
-  }
-  .masthead-with-background-color {
-    padding: 30px 0;
-  }
-  .masthead-with-text {
-    height: 410px;
-    padding: 60px 0;
-  }
-  .masthead-with-image-header {
-    height: 420px;
-    #slogan {
-      margin-top: 110px;
-      margin-left: 33px;
-      img {
-        height: 170px;
-      }
-    }
-    header {
-      margin-top: 210px;
-      min-height: 170px;
-    }
-  }
-}
-
-// Masthead › xlarge-up
-//----------------------
-
-@include breakpoint(xlarge) {
-  .masthead-with-pattern {
-    padding: 45px 0;
-  }
-  .masthead-with-background-color {
-    padding: 45px 0;
-  }
-  .masthead-with-text {
-    height: 510px;
-    padding: 95px 0;
-  }
-  .masthead-with-image-header {
-    height: 510px;
-    #slogan {
-      margin-top: 200px;
-      img {
-        height: 170px;
-      }
-    }
-    header {
-      margin-top: 260px;
-      min-height: 190px;
     }
   }
 }
@@ -994,6 +869,7 @@ body.plate {
 // CSS-Classes to add margin at top or bottom
 //--------------------------------------------
 
+.t0 { margin-top: 0 !important; }
 .t5 { margin-top: 5px !important; }
 .t10 { margin-top: 10px !important; }
 .t15 { margin-top: 15px !important; }
@@ -1006,6 +882,7 @@ body.plate {
 .t80 { margin-top: 80px !important; }
 .t90 { margin-top: 90px !important; }
 
+.b0 { margin-bottom: 0 !important; }
 .b5 { margin-bottom: 5px !important; }
 .b10 { margin-bottom: 10px !important; }
 .b15 { margin-bottom: 15px !important; }

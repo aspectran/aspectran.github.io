@@ -1,14 +1,13 @@
 ---
 lang: en
 layout: page
-format: article
 sidebar: right
 title: "About Aspectow"
 subheadline: "What is Aspectow?"
 teaser: "Aspectow is an all-in-one web application server built on Aspectran."
 header:
-  image_fullwidth: "header_documentation.jpg"
-  caption: "My two daughters draw a picture on the car-free roads."
+  image_fullwidth: header_guides.jpg
+  caption: Ultimate Raspberry Pi Backend Server
 breadcrumb: true
 comments: false
 permalink: /en/aspectow/

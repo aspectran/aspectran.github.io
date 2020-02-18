@@ -1,7 +1,6 @@
 ---
 lang: ko
 layout: page
-format: article
 sidebar: right
 title: "Aspectow 소개"
 subheadline: "What is Aspectow?"

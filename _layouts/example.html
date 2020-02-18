@@ -17,12 +17,12 @@ outside_heading: true
 
     <dl class="tabs" data-tabs id="module-tabs">
       {% if content %}
-      <dd class="tabs-title is-active"><a href="#overview"><span class="iconfont"></span> GETTING STARTED</a></dd>
+      <dd class="tabs-title is-active"><a href="#overview"><span class="bullet iconfont"></span> GETTING STARTED</a></dd>
       {% endif %}
       {% if page.demo %}
-      <dd class="tabs-title" id="demoTab"><a href="#demo"><span class="iconfont"></span> EXAMPLE DEMONSTRATING</a></dd>
+      <dd class="tabs-title" id="tab-demo"><a href="#demo"><span class="bullet iconfont"></span> EXAMPLE DEMOSTRATION</a></dd>
       {% endif %}
-      <dd class="tabs-title" id="reviewsTab"><a href="#reviews"><span class="iconfont"></span> REVIEWS <span class="icon-chat"></span><span class="disqus-comment-count" data-disqus-identifier="{{ page.url }}">0 Comments</span></a></dd>
+      <dd class="tabs-title" id="tab-reviews"><a href="#reviews"><span class="bullet iconfont"></span> REVIEWS <span class="icon-chat"></span><span class="disqus-comment-count" data-disqus-identifier="{{ page.url }}">0 Comments</span></a></dd>
     </dl>
 
     <div class="tabs-content" data-tabs-content="module-tabs">
@@ -39,7 +39,7 @@ outside_heading: true
               {% if page.demo %}
               <div class="t20 show-for-large">
                 <h5 class="underline">Running the Application</h5>
-                <a href="#top-of-page" onclick="$('#demoTab').click();"><img src="{{ site.urlimg }}{{ page.image.thumb }}" width="100%" alt="{{ page.title | escape_once }}"></a>
+                <a href="#top-of-page" onclick="$('#tab-demo').click();"><img src="{{ site.urlimg }}{{ page.image.thumb }}" width="100%" alt="{{ page.title | escape_once }}"></a>
               </div>
               {% endif %}
               <div class="t20">
@@ -88,7 +88,7 @@ outside_heading: true
           var disqus_shortname = '{{ site.disqus_shortname }}';
           var disqus_identifier = '{{ page.url }}';
 
-          $("#reviewsTab").on("click", function() {
+          $("#tab-reviews").on("click", function() {
             if(typeof(disqus_loaded) == "undefined" || !disqus_loaded) {
               disqus_loaded = true;
               /* * * DON'T EDIT BELOW THIS LINE * * */

@@ -1,0 +1,398 @@
+---
+layout: page
+format: "fluid plate compact"
+header: false
+sidebar: false
+title: "Log Relayer"
+permalink: /relayer/
+tabs:
+  - id: overview
+    title: GETTING STARTED
+    active: true
+  - id: demo
+    title: EXAMPLE
+    active: false
+  - id: review
+    title: REVIEW
+    active: false
+---
+<dl class="tabs b0" data-tabs>
+    <dd class="tabs-title is-active"><a href="#overview"><span class="bullet iconfont"></span> app-log</a></dd>
+    <dd class="tabs-title" id="demoTab"><a href="#demo"><span class="bullet iconfont"></span> access-log</a></dd>
+    <dd class="tabs-title" id="reviewsTab"><a href="#reviews"><span class="bullet iconfont"></span> crawler-1</a></dd>
+</dl>
+<div class="grid-x">
+  <div class="cell">
+      <div class="log-container">
+          <div class="log-header">
+              <a class="bite-tail" title="Scroll to End of Log">
+                  <span class="tail-status"></span>
+              </a>
+          </div>
+          <div class="missile-route">
+              <div class="stack"></div>
+          </div>
+          <pre id="app-log" class="log-tail"></pre>
+      </div>
+  </div>
+</div>
+<style>
+  .log-container {
+    background-color: #222;
+}
+.log-header {
+    background-color: #444;
+    color: #f1f1f1;
+    overflow: auto;
+    padding : 0 10px;
+}
+.log-header ul.tab {
+    float: left;
+    margin: 4px 0 0 0;
+}
+.log-header ul.tab li {
+    float: left;
+    padding: 9px 20px;
+    margin: 0;
+    font-size: 14px;
+    box-sizing: border-box;
+    color: #555;
+    background-color: #e0e0e0;
+    cursor: pointer;
+    transition: .3s;
+}
+.log-header ul.tab li:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.log-header ul.tab li:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+.log-header ul.tab li.active {
+    background-color: #ac0032;
+    color: #fff;
+}
+.log-header ul.tab li:hover {
+    color: #ac0032;
+    filter: brightness(107%);
+}
+.log-header ul.tab li.active:hover {
+    color: #fff;
+}
+.log-header ul.tab li {
+    padding: 0 20px;
+    line-height: 26px;
+}
+.log-header ul.tab li.wait {
+    cursor: wait;
+}
+.log-header ul.tab li:first-child {
+    border-bottom-left-radius: 0;
+}
+.log-header ul.tab li:last-child {
+    border-bottom-right-radius: 0;
+}
+.log-header .bite-tail {
+    float: right;
+    line-height: 26px;
+}
+.log-header .bite-tail .tail-status {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    border-radius: 50%;
+    position: relative;
+}
+.log-header .bite-tail .tail-status::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    display: block;
+    height: 10px;
+    width: 10px;
+    background: #f1f1f1;
+    border-radius: 50%;
+}
+.log-header .bite-tail .tail-status.active {
+    background-color: #39aa56;
+}
+.log-tail {
+    clear: both;
+    margin: 0;
+    padding: 10px;
+    overflow: auto;
+    height: 500px;
+    color: #f1f1f1;
+    background: transparent;
+    border: none;
+}
+.log-tail p {
+    font-size: 12px;
+    line-height: 19px;
+    white-space: nowrap;
+    color: #f1f1f1;
+    margin: 0;
+    padding: 0;
+}
+.log-tail p.event {
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid rgba(186, 254, 230, 0.53);
+    padding: 3px 0;
+    margin: 4px 0;
+    color: #fff;
+    background-color: #333;
+}
+.log-tail p.event.error {
+    background-color: palevioletred;
+    border: 1px solid palevioletred;
+    color: yellow;
+}
+
+@keyframes missileAnimation {
+    from {
+        left: 0;
+    }
+    to {
+        left: calc(100% - 210px);
+    }
+}
+.missile-route {
+    position: relative;
+    height: 120px;
+    margin-bottom: 4px;
+    background-color: #0d1939;
+    overflow: hidden;
+}
+.missile-route .stack {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 220px;
+    height: 120px;
+    background-color: red;
+    opacity: .15;
+}
+.missile {
+    position: absolute;
+    top: 40%;
+    right: 10px;
+    width: 200px;
+    height: 12px;
+    border-radius: 60%;
+    background: linear-gradient(to right, rgba(9, 17, 39, 0) 0%, rgba(255, 26, 39, 0.4) 100%);
+    animation-name: missileAnimation;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    z-index: 100;
+}
+.mis-1 {
+    animation-duration: .8s;
+}
+.mis-2 {
+    height: 16px;
+    background: linear-gradient(to right, rgba(204, 204, 204, 0) 0%, rgba(255, 88, 9, 0.52) 100%);
+    animation-duration: 1.05s;
+}
+.mis-3 {
+    height: 20px;
+    background: linear-gradient(to right, rgba(9, 17, 39, 0) 0%, rgba(255, 29, 112, 0.4) 100%);
+    animation-duration: 1.3s;
+}
+</style>
+<script>
+  function LogtailViewer(endpoint, tailers) {
+    this.endpoint = endpoint;
+    this.tailers = tailers;
+    this.socket = null;
+    this.heartbeatTimer = null;
+    this.scrollTimer = null;
+
+    this.openSocket = function() {
+        if (this.socket) {
+            this.socket.close();
+        }
+        let url = new URL(this.endpoint, location.href);
+        url.protocol = url.protocol.replace('https:', 'wss:');
+        url.protocol = url.protocol.replace('http:', 'ws:');
+        this.socket = new WebSocket(url.href);
+        let self = this;
+        this.socket.onopen = function (event) {
+            self.printEventMessage("Socket connection successful");
+            self.socket.send("JOIN:" + self.tailers);
+            self.heartbeatPing();
+            self.switchTailBite(false, true);
+        };
+        this.socket.onmessage = function (event) {
+            if (typeof event.data === "string") {
+                if (event.data === "--heartbeat-pong--") {
+                    self.heartbeatPing();
+                    return;
+                }
+                let msg = event.data;
+                let idx = msg.indexOf(":");
+                if (idx !== -1) {
+                    let command = msg.substring(0, idx);
+                    if (command === "availableTailers") {
+                        console.log(msg.substring(idx + 1));
+                        let payload = JSON.parse(msg.substring(idx + 1));
+                        console.log(payload);
+                    } else {
+                        self.printMessage(msg.substring(0, idx), msg.substring(idx + 1));
+                    }
+                }
+            }
+        };
+        this.socket.onclose = function (event) {
+            self.printEventMessage('Socket connection closed. Please refresh this page to try again!');
+            self.closeSocket();
+        };
+        this.socket.onerror = function (event) {
+            console.error("WebSocket error observed:", event);
+            self.printErrorMessage('Could not connect to WebSocket server');
+            self.switchTailBite(false, false);
+            setTimeout(function () {
+                self.openSocket();
+            }, 60000);
+        };
+    };
+
+    this.closeSocket = function() {
+        if (this.socket) {
+            this.socket.close();
+            this.socket = null;
+        }
+    };
+
+    this.heartbeatPing = function() {
+        if (this.heartbeatTimer) {
+            clearTimeout(this.heartbeatTimer);
+        }
+        let self = this;
+        this.heartbeatTimer = setTimeout(function () {
+            if (self.socket) {
+                self.socket.send("--heartbeat-ping--");
+                self.heartbeatTimer = null;
+                self.heartbeatPing();
+            }
+        }, 57000);
+    };
+
+    this.printMessage = function(tailer, text) {
+        this.visualize(tailer, text);
+        let line = $("<p/>").text(text);
+        let logtail = $("#" + tailer);
+        logtail.append(line);
+        this.scrollToBottom(logtail);
+    };
+
+    this.printEventMessage = function(text, tailer) {
+        let logtail = (tailer ? $("#" + tailer) : $(".log-tail"));
+        $("<p/>").addClass("event").html(text).appendTo(logtail);
+        this.scrollToBottom(logtail);
+    };
+
+    this.printErrorMessage = function(text, tailer) {
+        let logtail = (tailer ? $("#" + tailer) : $(".log-tail"));
+        $("<p/>").addClass("event error").html(text).appendTo(logtail);
+        this.scrollToBottom(logtail);
+    };
+
+    this.switchTailBite = function(logtail, status) {
+        if (!logtail) {
+            logtail = $(".log-tail");
+        }
+        if (status !== true && status !== false) {
+            status = !logtail.data("bite");
+        }
+        if (status) {
+            logtail.closest(".log-container").find(".tail-status").addClass("active");
+            logtail.data("bite", true);
+            this.scrollToBottom(logtail)
+        } else {
+            logtail.closest(".log-container").find(".tail-status").removeClass("active");
+            logtail.data("bite", false);
+        }
+    };
+
+    this.scrollToBottom = function(logtail) {
+        if (logtail.data("bite")) {
+            if (this.scrollTimer) {
+                clearTimeout(this.scrollTimer);
+            }
+            this.scrollTimer = setTimeout(function () {
+                logtail.scrollTop(logtail.prop("scrollHeight"));
+                if (logtail.find("p").length > 11000) {
+                    logtail.find("p:gt(10000)").remove();
+                }
+            }, 300);
+        }
+    };
+
+    this.visualize = function(tailer, text) {
+        let self = this;
+        setTimeout(function () {
+            self.launchMissile(text);
+        }, 1);
+    };
+
+    // A function for visualizing Aspectran app logs
+    const pattern1 = /^Session ([\w\.]+) complete, active requests=(\d+)/i;
+    const pattern2 = /^Session ([\w\.]+) deleted in session data store/i;
+    const pattern3 = /^Session ([\w\.]+) accessed, stopping timer, active requests=(\d+)/i;
+    const pattern4 = /^Creating new session id=([\w\.]+)/i;
+    this.launchMissile = function(line) {
+        let idx = line.indexOf("] ");
+        if (idx !== -1) {
+            line = line.substring(idx + 2);
+        }
+
+        let sessionId = "";
+        let requests = 0;
+        if (pattern1.test(line) || pattern2.test(line)) {
+            sessionId = RegExp.$1;
+            requests = RegExp.$2||0;
+            if (requests > 3) {
+                requests = 3;
+            }
+            requests++;
+            let mis = $(".missile-route").find(".missile[sessionId='" + (sessionId + requests) + "']");
+            if (mis.length > 0) {
+                let dur = 850;
+                if (mis.hasClass("mis-2")) {
+                    dur += 250;
+                } else if (mis.hasClass("mis-3")) {
+                    dur += 500;
+                }
+                setTimeout(function () {
+                    mis.remove();
+                }, dur);
+            }
+            return;
+        }
+        if (pattern3.test(line) || pattern4.test(line)) {
+            sessionId = RegExp.$1;
+            requests = RegExp.$2||1;
+            if (requests > 3) {
+                requests = 3;
+            }
+        }
+        if (requests > 0) {
+            let min = 3;
+            let max = 90 - (requests * 2);
+            let top = (Math.floor(Math.random() * (max - min + 1)) + min) + '%';
+            $("<div/>")
+                .attr("sessionId", sessionId + requests)
+                .css("top", top)
+                .addClass("missile mis-" + requests)
+                .appendTo($(".missile-route"));
+        }
+    };
+}
+</script>
