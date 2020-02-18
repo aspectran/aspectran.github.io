@@ -8,7 +8,7 @@ teaser: "Aspectran의 핵심 구성요소에 대해서 설명합니다."
 permalink: /aspectran/xml-based-configuration/
 ---
 
-{% include alert warning='Draft 문서 입니다. 작성된 사항은 변경될 수 있음을 알려둡니다.' %}
+{% include alert warning='계속 작성 중인 문서로서, 아직은 빈약한 내용으로 구성되어 있습니다.' %}
 
 ## 1. 주요 구성요소
 
