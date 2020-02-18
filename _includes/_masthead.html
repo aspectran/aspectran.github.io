@@ -1,8 +1,8 @@
 {% if page.format contains "plate" %}
 
 
-<div id="masthead">
-  <div class="grid-container">
+<div id="masthead"{% if page.format contains 'compact' %} class="masthead-compact"{% endif %}>
+  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
     <div class="grid-x">
       <div class="cell">
         <header>
@@ -28,7 +28,7 @@
           </p>
           {% endif %}
         </header>
-        {% if page.header.image_fullwidth == NULL %}
+        {% unless page.header.image_fullwidth != NULL or page.format contains 'compact' %}
         <div class="hexagons">
           <div class="hexagon hex1"></div>
           <div class="hexagon hex2"></div>
@@ -37,11 +37,18 @@
           <div class="hexagon hex5"></div>
           <div class="hexagon hex6"></div>
         </div>
+        {% endunless %}
+        {% if page.tabs %}
+        <dl class="tabs" data-tabs>
+          {% for tab in page.tabs %}
+          <dd class="tabs-title{% if tab.active == true %} is-active{% endif %}" id="tab-{{ tab.id }}"><a href="#{{ tab.id }}"><span class="iconfont"></span> {{ tab.title }}</a></dd>
+          {% endfor %}
+        </dl>
         {% endif %}
       </div><!-- /.cell -->
     </div><!-- /.grid-x -->
   </div>
-  <div class="grid-container grid-x breadcrumbs-bar">
+  <div class="grid-container grid-x breadcrumbs-bar{% if page.format contains 'fluid' %} fluid{% endif %}">
     <div class="cell">
       {% if page.breadcrumb == true %}
       {% include _breadcrumb.html %}
@@ -60,7 +67,7 @@
 
 {% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-no-image-header">
-  <div class="grid-container">
+  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
     <div class="grid-x">
       <div class="cell">
         <header>
@@ -97,7 +104,7 @@
       </div>
     </div><!-- /.grid-x -->
   </div>
-  <div class="grid-container grid-x breadcrumbs-bar">
+  <div class="grid-container grid-x breadcrumbs-bar{% if page.format contains 'fluid' %} fluid{% endif %}">
     <div class="cell">
       {% if page.breadcrumb == true %}
       {% include _breadcrumb.html %}
@@ -112,7 +119,7 @@
 
 {% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-no-image-header">
-  <div class="grid-container">
+  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
     <div class="grid-x">
         <div class="cell">
         {% unless page.header.slogan_hidden %}
@@ -143,7 +150,7 @@
 
 {% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-with-text" style="{% if page.header.background-color %}background:linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,0)), {{ page.header.background-color }};{% endif %}{% if page.header.image_fullwidth %}{% elsif page.header.pattern %}background:linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.4)), url('{{ site.urlimg }}/{{ page.header.pattern }}'){% endif %}">
-  <div class="grid-container">
+  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
     <div class="grid-x">
       <div class="cell">
         <div class="masthead-title" itemprop="headline">{{ page.header.title }}</div>
@@ -178,7 +185,7 @@
 
 {% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-with-image-header">
-  <div class="grid-container">
+  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
     <div class="grid-x">
       <div class="cell">
         <header>
@@ -236,7 +243,7 @@
 
 {% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-with-image-header">
-  <div class="grid-container">
+  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
     <div class="grid-x">
       <div class="cell">
         {% unless page.header.slogan_hidden %}
@@ -278,7 +285,7 @@
 
 {% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-with-pattern" style="background: url('{{ site.urlimg }}/{{ page.header.pattern }}')">
-  <div class="grid-container">
+  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
     <div class="grid-x">
       <figure class="cell">
         <img src="{{ site.urlimg }}/{{ page.header.image }}" alt="{{ site.title }}">
@@ -311,7 +318,7 @@
 
 {% include _forkme-ribbon.html %}
 <div id="masthead" class="masthead-with-background-color" style="background: {{ page.header.background-color }};">
-  <div class="grid-container">
+  <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
     <div class="grid-x">
       <figure class="cell">
         <img src="{{ site.urlimg }}/{{ page.header.image }}" alt="{{ site.title }}">

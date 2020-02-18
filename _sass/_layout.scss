@@ -520,11 +520,27 @@ body.plate {
   }
   a {
     border: 0;
-    color: yellow;
+    color: #fff;
   }
   header {
     position: relative;
     z-index: 100;
+    @include breakpoint(small only) {
+      margin-top: 80px;
+      min-height: 130px;
+    }
+    @include breakpoint(medium only) {
+      margin-top: 70px;
+      min-height: 150px;
+    }
+    @include breakpoint(large only) {
+      margin-top: 150px;
+      min-height: 170px;
+    }
+    @include breakpoint(xlarge) {
+      margin-top: 150px;
+      min-height: 170px;
+    }
     h1 {
       color: $ci-6;
     }
@@ -581,6 +597,15 @@ body.plate {
     }
   }
 }
+.masthead-compact {
+  @include breakpoint(large) {
+    padding-top: 84px;
+  }
+  header {
+    margin-top: 0 !important;
+    min-height: 0 !important;
+  }
+}
 .masthead-with-text {
   text-align: center;
   font-size: rem-calc(54);
@@ -602,10 +627,6 @@ body.plate {
 //-----------------------
 
 @include breakpoint(small only) {
-  header {
-    margin-top: 80px;
-    min-height: 130px;
-  }
   .masthead-with-pattern {
     padding: 15px 0;
   }
@@ -642,10 +663,6 @@ body.plate {
 //------------------------
 
 @include breakpoint(medium only) {
-  header {
-    margin-top: 70px;
-    min-height: 150px;
-  }
   .masthead-with-pattern {
     padding: 20px 0;
   }
@@ -676,10 +693,6 @@ body.plate {
 //-----------------------
 
 @include breakpoint(large only) {
-  header {
-    margin-top: 150px;
-    min-height: 170px;
-  }
   .masthead-with-pattern {
     padding: 30px 0;
   }
@@ -710,10 +723,6 @@ body.plate {
 //----------------------
 
 @include breakpoint(xlarge) {
-  header {
-    margin-top: 150px;
-    min-height: 170px;
-  }
   .masthead-with-pattern {
     padding: 45px 0;
   }

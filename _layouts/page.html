@@ -5,7 +5,7 @@ layout: default
 
 {% include _masthead.html %}
 
-<div class="grid-container">
+<div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
 {% if page.format contains "plate" %}
   <div class="grid-x grid-padding-x">
     <div class="cell contour">
