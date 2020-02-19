@@ -4,7 +4,6 @@ format: plate article
 title: Building a RESTful Web Service
 subheadline: Getting Started
 teaser: A sample page that uses RESTful web services using HTTP support methods such as GET, PUT, POST and DELETE.
-outside_heading: true
 breadcrumb: true
 image:
   thumb: examples/gs-rest-service.png

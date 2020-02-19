@@ -120,7 +120,6 @@ defaults:
     values:
       show_meta: false 	# Hide metadata for all pages
       # sidebar:    		# Possible values › left, right › by default there will be no sidebar
-      outside_heading: true
       comments: false
       author: "juho_jeong"     # Default author for pages
   -
@@ -136,7 +135,6 @@ defaults:
       path: ""
       type: "guides"
     values:
-      outside_heading: true
       breadcrumb: true
       sidebar: toc
       comments: true

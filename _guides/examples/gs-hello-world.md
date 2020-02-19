@@ -4,7 +4,6 @@ format: plate article
 title: Aspectran Hello World Example
 subheadline: Getting Started
 teaser: Let's create a Hello World application with Aspectran.
-outside_heading: true
 breadcrumb: true
 image:
   thumb: examples/gs-hello-world.png

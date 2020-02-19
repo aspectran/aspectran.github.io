@@ -4,7 +4,6 @@ format: "plate article"
 title: "Quick Start Guide"
 subheadline: "Getting Started with Aspectran"
 teaser: "Aspectran으로 간단한 Java 웹 어플리케이션을 만드는 과정을 설명합니다."
-outside_heading: true
 breadcrumb: true
 sidebar: toc
 permalink: /en/getting-started/quickstart/
