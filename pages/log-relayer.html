@@ -6,20 +6,27 @@ sidebar: false
 title: "Log Relayer"
 permalink: /relayer/
 tabs:
-  - id: overview
-    title: GETTING STARTED
+  - id: server1
+    title: Server 1
     active: true
-  - id: demo
-    title: EXAMPLE
+    bullet: icon-globe
+    indicator: icon-eye
+  - id: server2
+    title: Server 2
     active: false
-  - id: review
-    title: REVIEW
+    bullet: icon-globe
+    indicator: icon-eye
+  - id: server3
+    title: Server 3
     active: false
+    bullet: icon-globe
+    indicator: icon-eye
+tabs_align: right
 ---
 <dl class="tabs b0" data-tabs>
-    <dd class="tabs-title is-active"><a href="#overview"><span class="bullet iconfont"></span> app-log</a></dd>
-    <dd class="tabs-title" id="demoTab"><a href="#demo"><span class="bullet iconfont"></span> access-log</a></dd>
-    <dd class="tabs-title" id="reviewsTab"><a href="#reviews"><span class="bullet iconfont"></span> crawler-1</a></dd>
+    <dd class="tabs-title is-active"><a href="#overview"><span class="bullet icon-archive"></span> app-log <span class="indicator icon-eye blink"></span></a></dd>
+    <dd class="tabs-title" id="demoTab"><a href="#demo"><span class="bullet icon-archive"></span> access-log <span class="indicator icon-eye"></span></a></dd>
+    <dd class="tabs-title" id="reviewsTab"><a href="#reviews"><span class="bullet icon-archive"></span> crawler-1 <span class="indicator icon-eye"></span></a></dd>
 </dl>
 <div class="grid-x">
   <div class="cell">
@@ -37,7 +44,7 @@ tabs:
   </div>
 </div>
 <style>
-  .log-container {
+.log-container {
     background-color: #222;
 }
 .log-header {

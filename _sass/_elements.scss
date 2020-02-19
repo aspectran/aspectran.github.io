@@ -151,27 +151,15 @@ dl.tabs {
     margin: 0;
     text-align: left;
     > a {
+      font-size: .9em;
       font-weight: bold;
       margin-right: 1px;
-      padding: .9em 2em .9em 1em;
+      padding: .8em 1em .8em .8em;
       border: 0;
-      background-image: linear-gradient(-110deg, $grey-1 80%, $grey-2 100%);
-      border-radius: 10px 10px 0 0;
+      background-color: $grey-2;
+      border-radius: $global-radius $global-radius 0 0;
       &:hover {
-        border: 0;
-        background-image: linear-gradient(-110deg, $grey-2 90%, $grey-1 100%);
-      }
-      .bullet:before {
-        content: "\F107"
-      }
-      span.disqus-comment-count {
-        color: $ci-5;
-        padding-left: .5rem;
-        font-weight: normal;
-      }
-      span.icon-chat {
-        color: $ci-3;
-        font-weight: normal;
+        background-color: darken($grey-2, 5%);
       }
     }
     &.is-active {
@@ -179,10 +167,43 @@ dl.tabs {
       > a {
         color: $ci-6;
         background-color: $ci-2;
-        background-image: linear-gradient(-110deg, $ci-2 20%, $ci-1 100%);
-        .bullet:before {
-          content: "\F105"
-        }
+      }
+      .bullet {
+        color: darken($ci-2, 15%);
+        font-weight: normal;
+      }
+    }
+    .bullet {
+      color: darken($grey-2, 15%);
+      padding-right: .2em;
+    }
+    .indicator {
+      color: $ci-4;
+      font-size: 1em;
+      padding-left: .3em;
+    }
+    .count {
+      color: $ci-5;
+      padding-left: .5rem;
+    }
+    .blink {
+      animation: blink .8s steps(4, start) infinite;
+      -webkit-animation: blink .8s steps(4, start) infinite;
+    }
+    @keyframes blink {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @-webkit-keyframes blink {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
       }
     }
   }
@@ -199,6 +220,8 @@ dl.tabs {
   margin-bottom: 0;
   dd {
     > a {
+      font-size: 1em;
+      text-shadow: none;
       margin-right: 2px;
       border-radius: $global-radius $global-radius 0 0;
       background: darken($head-color, 6%);
@@ -216,6 +239,17 @@ dl.tabs {
           background: $ci-2;
         }
       }
+      .bullet {
+        @include breakpoint(small only) {
+          color: darken($ci-1, 15%);
+        }
+        @include breakpoint(medium) {
+          color: darken($ci-2, 15%);
+        }
+      }
+    }
+    .bullet {
+      color: darken($head-color, 15%);
     }
   }
 }

@@ -1,4 +1,3 @@
-<!-- {{ include.name }}: {{ include.links | size }} links with priority={{ include.priority }}, changefreq={{ include.changefreq }} -->
 {% for link in include.links %}
 	{% unless link.sitemap == false or link.noindex == true or link.published == false %}
     <url>

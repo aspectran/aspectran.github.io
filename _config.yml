@@ -159,7 +159,7 @@ defaults:
 # Facebook-Optimization › http://j.mp/fb_optimize
 #-------------------------------------------------------------------
 
-og_image:                   "https://www.aspectran.com/assets/img/aspectran-logo.png"
+og_image:                   "https://aspectran.com/assets/img/aspectran-logo.png"
 og_locale:                  "en_US"
 og_type:                    "website"
 og_title:                   "Aspectran"

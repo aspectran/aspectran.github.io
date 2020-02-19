@@ -16,12 +16,12 @@ layout: default
 
     <dl class="tabs" data-tabs id="module-tabs">
       {% if content %}
-      <dd class="tabs-title is-active"><a href="#overview"><span class="bullet iconfont"></span> GETTING STARTED</a></dd>
+      <dd class="tabs-title is-active"><a href="#overview"><span class="bullet icon-code"></span> GETTING STARTED</a></dd>
       {% endif %}
       {% if page.demo %}
-      <dd class="tabs-title" id="tab-demo"><a href="#demo"><span class="bullet iconfont"></span> EXAMPLE DEMOSTRATION</a></dd>
+      <dd class="tabs-title" id="tab-demo"><a href="#demo"><span class="bullet icon-browser"></span> EXAMPLE DEMOSTRATION</a></dd>
       {% endif %}
-      <dd class="tabs-title" id="tab-reviews"><a href="#reviews"><span class="bullet iconfont"></span> REVIEWS <span class="icon-chat"></span><span class="disqus-comment-count" data-disqus-identifier="{{ page.url }}">0 Comments</span></a></dd>
+      <dd class="tabs-title" id="tab-reviews"><a href="#reviews"><span class="bullet icon-chat"></span> REVIEWS <span class="indicator icon-chat"></span><span class="count" data-disqus-identifier="{{ page.url }}">0 Comments</span></a></dd>
     </dl>
 
     <div class="tabs-content" data-tabs-content="module-tabs">

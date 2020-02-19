@@ -24,9 +24,9 @@
           </div>
           {% endunless %}
           {% if page.tabs %}
-          <dl class="tabs {{ page.tabs_position }}" data-tabs>
+          <dl class="tabs {{ page.tabs_align }}" data-tabs>
             {% for tab in page.tabs %}
-            <dd class="tabs-title{% if tab.active == true %} is-active{% endif %}" id="tab-{{ tab.id }}"><a href="#{{ tab.id }}"><span class="bullet iconfont"></span> {{ tab.title }}</a></dd>
+            <dd class="tabs-title{% if tab.active == true %} is-active{% endif %}" id="tab-{{ tab.id }}"><a href="#{{ tab.id }}">{% if tab.bullet %} <span class="bullet {{ tab.bullet }}"></span>{% endif %} {{ tab.title }}{% if tab.indicator %} <span class="indicator {{ tab.indicator }}"></span>{% endif %}</a></dd>
             {% endfor %}
           </dl>
           {% endif %}
