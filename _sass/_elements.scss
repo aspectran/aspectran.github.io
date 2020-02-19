@@ -139,6 +139,8 @@ article {
 //------
 
 dl.tabs {
+  position: relative;
+  z-index: 100;
   border: 0;
   border-bottom: 1px solid $ci-2;
   -webkit-box-shadow: 0 8px 15px -10px rgba(50, 50, 50, 0.33);
@@ -178,9 +180,12 @@ dl.tabs {
       padding-right: .2em;
     }
     .indicator {
-      color: $ci-4;
       font-size: 1em;
       padding-left: .3em;
+      color: darken($grey-2, 10%);
+      &.on {
+        color: $ci-4;
+      }
     }
     .count {
       color: $ci-5;

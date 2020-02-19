@@ -4,9 +4,8 @@ format: plate article
 subheadline: Aspectran Parameters Object Notation
 title:  APON을 소개합니다.
 teaser: |
-  APON(Aspectran Parameters Object Notation)은 Aspectran 내부에서 매개변수를 손쉽게 Object로 변환하기 위한 용도로 개발되었습니다.
   APON은 JSON(JavaScript Object Notation)을 개량했기 때문에 JSON과 비슷한 표기 형식을 가지고 있고, 사람이 읽고 쓰기에 용이하며,
-  구조화된 형식의 데이터 교환을 위한 새로운 표기법입니다.
+  구조화된 형식의 데이터 교환을 위한 새로운 표기법입니다. 주로 Aspectran의 설정 값을 Object로 변환하기 용도로 사용되고 있습니다.
 breadcrumb: true
 comments: true
 sidebar: toc-left
@@ -80,37 +79,116 @@ desc: (
 )
 ```
 
+## APON 활용 사례
 
-## APON 활용 예제
+### Aspectran 초기화 설정
 
-다음은 Aspectran을 구동하기 위해 필요한 초기화 파라메터입니다.
+다음은 Aspectran 데모 애플리케이션([demo-app](https://github.com/aspectran/demo-app))을 위한 초기화 설정 파일(aspectran-config.apon)의 내용입니다.
 
-> `web.xml`에서 초기화 파라메터 `aspectran:config`의 값으로 다음과 같은 긴 문자열을 지정하고 있는데,
-> 바로 APON 형식의 문자열입니다.
+> APON 형식으로 작성된 초기화 설정 값은 [AspectranConfig](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/AspectranConfig.java)
+> 객체로 변환될 수 있습니다.
 
 ```text
 context: {
-    root: /WEB-INF/aspectran/config/getting-started.xml
-    encoding: utf-8
+    root: /config/app-config.xml
     resources: [
-        /WEB-INF/aspectran/config
-        /WEB-INF/aspectran/classes
-        /WEB-INF/aspectran/lib
+        /config
     ]
-    hybridLoad: false
-    autoReload: {
-        reloadMethod: hard
-        observationInterval: 5
-        startup: true
+    scan: [
+        app.demo
+    ]
+    profiles: {
+        default: [
+            h2
+        ]
     }
+    autoReload: {
+        reloadMode: hard
+        scanIntervalSeconds: 5
+        startup: false
+    }
+    singleton: true
 }
 scheduler: {
-    startDelaySeconds: 10
+    startDelaySeconds: 3
     waitOnShutdown: true
     startup: false
 }
+shell: {
+    greetings: (
+        |
+        |{{YELLOW}}     ___                         __
+        |{{YELLOW}}    /   |  ___  ____  ___  ___  / /____   ___  ____
+        |{{GREEN }}   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |
+        |{{GREEN }}  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /
+        |{{CYAN  }} /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   Shell
+        |{{CYAN  }}=========== /_/ =============================================
+        |{{reset }}
+        |{{RED   }}Welcome To Aspectran Shell #{class:com.aspectran.core.util.Aspectran^version}
+        |{{reset }}
+        |If you want a list of all supported built-in commands, type '{{GREEN}}help{{reset}}'.
+        |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
+        |If you want a list of all available translets, type '{{GREEN}}translet -l{{reset}}'.
+        |To run a translet, type '{{GREEN}}translet <translet_name>{{reset}}' or '{{GREEN}}translet_name{{reset}}'.
+    )
+    prompt: "{{green}}demo-app>{{reset}} "
+    commands: [
+        com.aspectran.shell.command.builtins.UndertowCommand
+        com.aspectran.shell.command.builtins.JettyCommand
+        com.aspectran.shell.command.builtins.TransletCommand
+        com.aspectran.shell.command.builtins.AspectCommand
+        com.aspectran.shell.command.builtins.JobCommand
+        com.aspectran.shell.command.builtins.PBEncryptCommand
+        com.aspectran.shell.command.builtins.PBDecryptCommand
+        com.aspectran.shell.command.builtins.SysInfoCommand
+        com.aspectran.shell.command.builtins.EchoCommand
+        com.aspectran.shell.command.builtins.HistoryCommand
+        com.aspectran.shell.command.builtins.ClearCommand
+        com.aspectran.shell.command.builtins.VerboseCommand
+        com.aspectran.shell.command.builtins.HelpCommand
+        com.aspectran.shell.command.builtins.RestartCommand
+        com.aspectran.shell.command.builtins.QuitCommand
+    ]
+    session: {
+        startup: true
+    }
+    workingDir: /work
+    verbose: true
+    exposals: {
+        -: /**
+    }
+}
+daemon: {
+    poller: {
+        pollingInterval: 5000
+        maxThreads: 5
+        requeuable: false
+        incoming: /commands/incoming
+    }
+    commands: [
+        com.aspectran.daemon.command.builtins.JettyCommand
+        com.aspectran.daemon.command.builtins.InvokeActionCommand
+        com.aspectran.daemon.command.builtins.TransletCommand
+        com.aspectran.daemon.command.builtins.ComponentCommand
+        com.aspectran.daemon.command.builtins.PollingIntervalCommand
+        com.aspectran.daemon.command.builtins.RestartCommand
+        com.aspectran.daemon.command.builtins.QuitCommand
+    ]
+    session: {
+        startup: true
+    }
+    exposals: {
+        -: /**
+    }
+}
+web: {
+    uriDecoding: utf-8
+    defaultServletName: default
+    exposals: {
+        +: /**
+    }
+}
 ```
-
 
 ### Parameters 객체 생성
 

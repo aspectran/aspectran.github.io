@@ -481,9 +481,15 @@ body.plate {
   .fluid {
     &.cell.contour {
       border-radius: 0;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
     }
     .cell.contour {
       border-radius: 0;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
     }
   }
 }
@@ -515,7 +521,7 @@ body.plate {
   -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
   box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
-  .grid-container {
+  > .grid-container {
     position: relative;
   }
   a {
@@ -584,6 +590,9 @@ body.plate {
     }
   }
   &.masthead-compact {
+    > .grid-container {
+      position: static;
+    }
     @include breakpoint(large) {
       padding-top: 84px;
     }
@@ -1016,5 +1025,10 @@ body.frontpage {
   }
   @include breakpoint(large) {
     top: 30px;
+  }
+}
+@include breakpoint(medium down) {
+  .masthead-compact .hexagons {
+    display: none;
   }
 }
