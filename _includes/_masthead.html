@@ -7,8 +7,12 @@
         <div class="cell">
           <header>
           {% if page.inside_heading != true %}
+            {% if page.subheadline %}
             <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+            {% endif %}
+            {% if page.title %}
             <h1 itemprop="headline">{{ page.title }}</h1>
+            {% endif %}
             {% if page.teaser %}
             <p class="teaser" itemprop="description">
               {{ page.teaser }}
@@ -30,7 +34,7 @@
         <div class="hexagon hex1"></div>
         <div class="hexagon hex2"></div>
         <div class="hexagon hex3"></div>
-        {% unless page.format contains 'compact' %}
+        {% unless page.format contains 'compact' and page.title == nil %}
         <div class="hexagon hex5"></div>
         <div class="hexagon hex6"></div>
         {% endunless %}
