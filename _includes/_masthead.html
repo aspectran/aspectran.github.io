@@ -6,6 +6,7 @@
       <div class="grid-x">
         <div class="cell">
           <header>
+          {% if page.inside_heading != true %}
             <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
             <h1 itemprop="headline">{{ page.title }}</h1>
             {% if page.teaser %}
@@ -13,6 +14,7 @@
               {{ page.teaser }}
             </p>
             {% endif %}
+          {% endif %}
           </header>
           {% if page.tabs %}
           <dl class="tabs {{ page.tabs_align }}" data-tabs>
@@ -55,6 +57,7 @@
       <div class="grid-x">
         <div class="cell">
           <header>
+          {% if page.inside_heading != true %}
             <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
             <h1 itemprop="headline">{{ page.title }}</h1>
             {% if page.teaser %}
@@ -62,6 +65,7 @@
               {{ page.teaser }}
             </p>
             {% endif %}
+          {% endif %}
           </header>
         </div>
       </div>

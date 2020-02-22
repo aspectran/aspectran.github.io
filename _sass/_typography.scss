@@ -67,7 +67,8 @@ body.article article {
 
 article {
   header {
-    padding-bottom: 1em;
+    border-bottom: 1px solid $grey-1;
+    margin-bottom: 1.5em;
   }
 }
 
