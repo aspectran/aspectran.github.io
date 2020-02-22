@@ -171,7 +171,7 @@ dl.tabs {
         background-color: $ci-2;
       }
       .bullet {
-        color: darken($ci-2, 15%);
+        color: $ci-3;
         font-weight: normal;
       }
     }
@@ -229,9 +229,9 @@ dl.tabs {
       text-shadow: none;
       margin-right: 2px;
       border-radius: $global-radius $global-radius 0 0;
-      background: darken($head-color, 6%);
+      background: darken($head-color, 4%);
       &:hover {
-        background: darken($head-color, 9%);
+        background: darken($head-color, 6%);
       }
     }
     &.is-active {
@@ -245,12 +245,7 @@ dl.tabs {
         }
       }
       .bullet {
-        @include breakpoint(small only) {
-          color: darken($ci-1, 15%);
-        }
-        @include breakpoint(medium) {
-          color: darken($ci-2, 15%);
-        }
+        color: $ci-3;
       }
     }
     .bullet {
