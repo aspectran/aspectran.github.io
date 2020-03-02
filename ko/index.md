@@ -49,19 +49,22 @@ projects:
     repo: https://github.com/aspectran/log-relayer
   - subheadline: Aspectran 사용의 실제 사례
     title: Aspectran Demo Site
-    url: https://demo.aspectran.com
-    thumb_img: examples/pr-demo-site.png
     description: 이 사이트는 권장 모범 사례에 따라 Aspectran 응용 프로그램을 개발하는 방법을 보여주기 위해 만든 참조 응용 프로그램 모음입니다.
+    thumb_img: examples/pr-demo-site.png
+    url: https://demo.aspectran.com
+    repo: https://github.com/aspectran/demo-app
+  - subheadline: Aspectran 사용의 실제 사례
+    title: Aspectran Demo Site on GAE
+    description: 구글 앱엔진에 배포된 Aspectran Demo Site
+    thumb_img: examples/pr-demo-site.png
+    url: https://demo-gae.aspectran.com
+    repo: https://github.com/aspectran/demo-site
   - subheadline: Aspectran 사용의 실제 사례
     title: JPetStore Demo
-    url: https://jpetstore.aspectran.com
-    thumb_img: examples/pr-demo-site.png
     description: JPetStore는 MyBatis 3, Aspectran 6 위에 구축된 완전한 웹 애플리케이션입니다.
-  - subheadline: TTS (텍스트 음성 변환)
-    title: Skylark Terminal
-    url: https://skylark.aspectran.com
-    thumb_img: examples/pr-skylark-terminal.png
-    description: Skylark은 모든 텍스트를 음성으로 변환하는 텍스트 음성 변환 프로그램입니다.
+    thumb_img: examples/pr-demo-site.png
+    url: https://jpetstore.aspectran.com
+    repo: https://github.com/aspectran/aspectran-jpetstore
 permalink: /
 ---
 {% comment %}

@@ -951,8 +951,17 @@ body.video {
 
 body.frontpage {
   .asciinema {
-    padding: 0 0 10px;
     margin: 0 auto;
+    @include breakpoint(small only) {
+      padding: 0;
+      border-radius: 0;
+      img {
+        border-radius: 0;
+      }
+    }
+    @include breakpoint(medium only) {
+      padding: 10px;
+    }
     @include breakpoint(large) {
       padding: 50px 10px;
     }

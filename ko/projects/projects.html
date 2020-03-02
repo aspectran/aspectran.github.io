@@ -55,13 +55,13 @@ projects:
           <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="alignleft" width="100%" alt="{{ project.title | escape_once }}"></a>
         </div>
         <div class="cell small-7 medium-8">
+          {% if project.repo %}<p class="source ellipses"><a class="icon-github" href="{{ project.repo }}"> {{ project.repo }}</a></p>{% endif %}
           <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
-          {% if project.repo %}<p class="ellipses"><a class="icon-github" href="{{ project.repo }}"> {{ project.repo }}</a></p>{% endif %}
         </div>
       {% else %}
         <div class="cell">
+          {% if project.repo %}<p class="source ellipses"><a class="icon-github" href="{{ project.repo }}">{{ project.repo }}</a></p>{% endif %}
           <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
-          {% if project.repo %}<p class="ellipses"><a class="icon-github" href="{{ project.repo }}">{{ project.repo }}</a></p>{% endif %}
         </div>
       {% endif %}
       </div>

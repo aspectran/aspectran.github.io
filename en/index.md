@@ -40,19 +40,22 @@ projects:
     repo: https://github.com/aspectran/log-relayer
   - subheadline: Working examples of using Aspectran
     title: Aspectran Demo Site
-    url: https://demo.aspectran.com
-    thumb_img: examples/pr-demo-site.png
     description: This site is a collection of reference applications created to show how to develop Aspectran applications following the recommended best practices.
+    thumb_img: examples/pr-demo-site.png
+    url: https://demo.aspectran.com
+    repo: https://github.com/aspectran/demo-app
+  - subheadline: Working examples of using Aspectran
+    title: Aspectran Demo Site on GAE
+    description: Aspectran Demo Site deployed on Google App Engine
+    thumb_img: examples/pr-demo-site.png
+    url: https://demo-gae.aspectran.com
+    repo: https://github.com/aspectran/demo-site
   - subheadline: Working examples of using Aspectran
     title: JPetStore Demo
-    url: https://jpetstore.aspectran.com
-    thumb_img: examples/pr-demo-site.png
     description: JPetStore is a full web application built on top of MyBatis 3, Aspectran 6.
-  - subheadline: Reach Further With Text-To-Speech
-    title: Skylark Terminal
-    url: https://skylark.aspectran.com
-    thumb_img: examples/pr-skylark-terminal.png
-    description: Skylark is a text to speech program that converts any written text into spoken words.
+    thumb_img: examples/pr-demo-site.png
+    url: https://jpetstore.aspectran.com
+    repo: https://github.com/aspectran/aspectran-jpetstore
 permalink: /en/
 ---
 {% comment %}
