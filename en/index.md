@@ -33,6 +33,12 @@ widget4:
     We are developing useful applications based on Aspectran.
 projects:
   - subheadline: Working examples of using Aspectran
+    title: Log Relayer
+    description: Log Relayer can send the latest logs recorded on the server to the web browser through the web socket endpoint and provides an integrated view to observe the logs of several servers in real time.
+    thumb_img: examples/pr-demo-site.png
+    url: https://log-relayer.aspectran.com
+    repo: https://github.com/aspectran/log-relayer
+  - subheadline: Working examples of using Aspectran
     title: Aspectran Demo Site
     url: https://demo.aspectran.com
     thumb_img: examples/pr-demo-site.png
