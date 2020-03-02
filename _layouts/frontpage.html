@@ -2,8 +2,6 @@
 layout: default
 ---
 
-{% include _forkme-ribbon.html %}
-
 <div id="masthead">
   <div class="grid-container">
     <div class="grid-x grid-padding-x badges">
@@ -26,6 +24,50 @@ layout: default
       <div class="medium-6 large-3 cell b10">
         {% include _frontpage-widget.html widget=page.widget4 %}
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-container">
+  <div class="grid-x">
+    <div class="large-8 cell t30">
+      {% unless page.projects == empty %}
+      <div class="grid-x grid-padding-x">
+        {% for project in page.projects limit:6 %}
+        <div class="cell large-6 b10">
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <p class="subheadline">{% if project.subheadline %}{{ project.subheadline }}{% endif %}</p>
+              <h3><a href="{{ site.baseurl }}{{ project.url }}">{{ project.title }}</a></h3>
+            </div>
+          {% if project.thumb_img %}
+            <div class="small-4 medium-3 large-4 cell">
+              <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="alignleft" width="100%" alt="{{ project.title | escape_once }}"></a>
+            </div>
+            <div class="small-8 medium-9 large-8 cell">
+              <p>
+                {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
+              </p>
+            </div>
+          {% else %}
+            <div class="cell">
+              <p>
+                {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
+              </p>
+            </div>
+          {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endunless %}
+    </div>
+    <div class="large-4 cell t30">
+      {% if page.lang == "en" %}
+        {% include _sidebar_en.html %}
+      {% else %}
+        {% include _sidebar.html %}
+      {% endif %}
     </div>
   </div>
 </div>
@@ -91,50 +133,6 @@ layout: default
   </div>
 </div>
 {% endunless %}
-
-<div class="grid-container">
-  <div class="grid-x">
-    <div class="large-8 cell t30">
-      {% unless page.projects == empty %}
-      <div class="grid-x grid-padding-x">
-        {% for project in page.projects limit:6 %}
-        <div class="cell large-6 b10">
-          <div class="grid-x grid-padding-x">
-            <div class="cell">
-              <p class="subheadline">{% if project.subheadline %}{{ project.subheadline }}{% endif %}</p>
-              <h3><a href="{{ site.baseurl }}{{ project.url }}">{{ project.title }}</a></h3>
-            </div>
-          {% if project.thumb_img %}
-            <div class="small-4 medium-3 large-4 cell">
-              <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="alignleft" width="100%" alt="{{ project.title | escape_once }}"></a>
-            </div>
-            <div class="small-8 medium-9 large-8 cell">
-              <p>
-                {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
-              </p>
-            </div>
-          {% else %}
-            <div class="cell">
-              <p>
-                {% if project.description %}{{ project.description | strip_html | escape }}{% elsif project.teaser %}{{ project.teaser | strip_html | escape }}{% endif %}
-              </p>
-            </div>
-          {% endif %}
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-      {% endunless %}
-    </div>
-    <div class="large-4 cell t30">
-      {% if page.lang == "en" %}
-        {% include _sidebar_en.html %}
-      {% else %}
-        {% include _sidebar.html %}
-      {% endif %}
-    </div>
-  </div>
-</div>
 
 <div class="grid-container">
   <div class="grid-x">
