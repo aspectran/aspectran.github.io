@@ -558,10 +558,12 @@ body.plate {
       @include breakpoint(large only) {
         font-size: 1.5em;
         line-height: 145%; 
+        max-width: 84%;
       }
       @include breakpoint(xlarge) {
         font-size: 1.65em;
         line-height: 150%; 
+        max-width: 84%;
       }
     }
   }
