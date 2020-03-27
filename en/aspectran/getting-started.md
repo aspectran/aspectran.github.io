@@ -5,32 +5,39 @@ format: "plate solid article"
 sidebar: toc-left
 title: "Getting Started with Aspectran"
 subheadline: ""
-teaser: "Aspectran requires Java 8 or later, and was developed to be easily compatible with the latest version of Java."
+teaser: "Aspectran requires Java 8 or higher, and is built and deployed using Maven."
 breadcrumb: true
 permalink: /en/aspectran/getting-started/
 ---
 
 ## Requirements
 
-Aspectran-based applications require Aspectran JAR files for their execution environment.  
-These JAR files are published to the Maven Repository, therefore you can use any Java build
-tool to build an Aspectran project. 
+Java version required for Aspectran-based application development is as follows.
 
-* Java SE 1.8 or higher
+* JDK 1.8 or higher
+
+Maven is recommended as a build tool and dependency manager.
+
 * Maven 3.4 or higher
+
+Aspectran-based applications require several Aspectran JAR files in the execution environment, 
+and these JAR files are published in the Maven repository.
 
 ## Maven
 
 [![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all/badge.svg#v{{ site.data.aspectran.stable_version }})](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran-all)
 
-You will find all Aspectran Maven artifacts directly in the central Maven repository here:  
-[https://repo1.maven.org/maven2/com/aspectran/][1]
+The latest released version can be downloaded directly from [here][1],
+and you can find all Aspectran Maven artifacts at the following URL:  
+[https://repo1.maven.org/maven2/com/aspectran/][2]
 
-See [all versions available on the Maven Central Repository][2].
+## Adding dependencies
 
-Use the following definition to use Aspectran in your maven project:
+Basically, to use Aspectran, the following definition including all dependencies can be added to pom.xml.
+However, it is recommended to add only the dependency definition suitable for the execution environment of the Aspectran-based application to be built.
 
 ```xml
+<!-- You can easily include all dependencies, but it is not recommended. -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-all</artifactId>
@@ -38,66 +45,68 @@ Use the following definition to use Aspectran in your maven project:
 </dependency>
 ```
 
-Aspectran can also be used with more low-level jars:
+The dependency definition according to the execution environment of Aspectran-based application is as follows.
+In general, only one definition that fits the execution environment needs to be added.
 
+To build a daemon application running in the background
 ```xml
-<!-- To build a daemon application that runs in the background -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-daemon</artifactId>
   <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
+
+To build a command line application
 ```xml
-<!-- To embed Aspectran in your application -->
-<dependency>
-  <groupId>com.aspectran</groupId>
-  <artifactId>aspectran-embed</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
-</dependency>
-```
-```xml
-<!-- To build command-line based applications -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell</artifactId>
   <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
+
+To build a command line application that uses a feature-rich JLine
 ```xml
-<!-- To build command-line based applications that use the feature-rich JLine -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-shell-jline</artifactId>
   <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
+
+To build a servlet-based web application
 ```xml
-<!-- To build a servlet-based web application -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-web</artifactId>
   <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
+
+To embed Aspectran in a Java application that is not based on Aspectran
 ```xml
-<!-- To build a web application server with embedded Jetty -->
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-embed</artifactId>
+  <version>{{ site.data.aspectran.stable_version }}</version>
+</dependency>
+```
+
+In addition to defining dependencies according to the execution environment as above, 
+the dependencies that can be additionally defined are as follows.
+
+To integrate embedded Jetty to build a standalone web application
+```xml
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-jetty</artifactId>
   <version>{{ site.data.aspectran.stable_version }}</version>
 </dependency>
 ```
+
+To integrate Undertow to build a standalone web application
 ```xml
-<!-- To build MyBatis applications on top of the Aspectran -->
-<dependency>
-  <groupId>com.aspectran</groupId>
-  <artifactId>aspectran-with-mybatis</artifactId>
-  <version>{{ site.data.aspectran.stable_version }}</version>
-</dependency>
-```
-```xml
-<!-- To build a web application server with embedded Undertow -->
 <dependency>
   <groupId>com.aspectran</groupId>
   <artifactId>aspectran-with-undertow</artifactId>
@@ -105,37 +114,54 @@ Aspectran can also be used with more low-level jars:
 </dependency>
 ```
 
-Note that Aspectran 6 requires Java 8, so an explicit declaration of 1.8 compatibility to the compiler may also be required:
-
+To integrate MyBatis with easy access to relational databases
 ```xml
-<build>
-  <plugins>
-    <plugin>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-compiler-plugin</artifactId>
-      <configuration>
-        <compilerVersion>1.8</compilerVersion>
-        <source>1.8</source>
-        <target>1.8</target>
-      </configuration>
-    </plugin>
-  </plugins>
-</build>
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-with-mybatis</artifactId>
+  <version>{{ site.data.aspectran.stable_version }}</version>
+</dependency>
 ```
 
-[1]: https://repo1.maven.org/maven2/com/aspectran/
-[2]: https://search.maven.org/search?q=com.aspectran
+To integrate the text template engine FreeMarker
+```xml
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-with-freemarker</artifactId>
+  <version>{{ site.data.aspectran.stable_version }}</version>
+</dependency>
+```
 
-## Latest release
+To integrate the text template engine Pebble
+```xml
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-with-freemarker</artifactId>
+  <version>{{ site.data.aspectran.stable_version }}</version>
+</dependency>
+```
+
+To use Redis Session Store with Lettuce or support session clustering
+```xml
+<dependency>
+  <groupId>com.aspectran</groupId>
+  <artifactId>aspectran-rss-lettuce</artifactId>
+  <version>{{ site.data.aspectran.stable_version }}</version>
+</dependency>
+```
+
+[1]: https://search.maven.org/search?q=com.aspectran
+[2]: https://repo1.maven.org/maven2/com/aspectran/
+
+## Latest source code
 
 [![Build Status](https://api.travis-ci.com/aspectran/aspectran.svg?branch=master)](https://travis-ci.com/github/aspectran/aspectran)
 [![Coverage Status](https://coveralls.io/repos/github/aspectran/aspectran/badge.svg?branch=master)](https://coveralls.io/github/aspectran/aspectran?branch=master)
-[![Maven central](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran/badge.svg#v6.6.0-RC2)](https://maven-badges.herokuapp.com/maven-central/com.aspectran/aspectran)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.aspectran/aspectran.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/aspectran/aspectran/)
 
-Aspectran {{ site.data.aspectran.stable_version }} is the latest release and recommended version for all users.
+Aspectran's latest source code is maintained on GitHub.
 
-{% include label-link-box label="Aspectran releases on GitHub" href="https://github.com/aspectran/aspectran/releases" %}
+{% include label-link-box label="Aspectran releases on GitHub" href="https://github.com/aspectran/aspectran" %}
 
 ## API Reference
 
