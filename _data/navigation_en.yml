@@ -21,10 +21,8 @@
   dropdown:
   - title: "About Aspectow"
     url: "/en/aspectow/"
-  - title: "Aspectow Light"
-    url: "/en/aspectow/aspectow-light/"
-  - title: "Aspectow Enterprise"
-    url: "/en/aspectow/aspectow-enterprise/"
+  - title: "Installing and Running Aspectow"
+    url: "/en/aspectow/installling-and-running/"
 
 - title: Guides
   url: "/en/guides/"
