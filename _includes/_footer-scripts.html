@@ -43,6 +43,12 @@
         scrolled = false;
       }
     }, 200);
+    $nav.find("ul.submenu > li > a").on('click touchend', function(e) {
+      let link = $(this).attr('href');
+      if (link) {
+        window.location = link;
+      }
+    });
     /* google search */
     $("form[name=google_quick_search]").submit(function(event) {
       window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ site.url | cgi_escape }}');
