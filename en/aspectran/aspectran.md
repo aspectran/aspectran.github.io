@@ -35,6 +35,8 @@ Aspectran consists of the following key features:
 * **Support building RESTful Web Services**  
   Aspectran is designed from the ground up to be suitable for implementing REST APIs, eliminating the need for a separate framework or additional libraries.
   Intuitive API implementation allows you to send and receive messages in a consistent format quickly.
+* **Fast development and startup time**  
+  Aspectran's intuitive programming model ensures fast development and start-up time.
 
 Applications developed based on Aspectran support the following execution environments on the JVM:
 

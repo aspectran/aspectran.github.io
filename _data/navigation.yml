@@ -21,10 +21,8 @@
   dropdown:
   - title: "Aspectow 소개"
     url: "/aspectow/"
-  - title: "Aspectow Light"
-    url: "/aspectow/aspectow-light/"
-  - title: "Aspectow Enterprise"
-    url: "/aspectow/aspectow-enterprise/"
+  - title: "Aspectow 설치 및 실행"
+    url: "/aspectow/installling-and-running/"
 
 - title: 사용 가이드
   url: "/guides/"
