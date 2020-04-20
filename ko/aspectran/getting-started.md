@@ -14,11 +14,11 @@ permalink: /aspectran/getting-started/
 
 Aspectran 기반 애플리케이션 개발에 필요한 Java 버전은 다음과 같습니다.
 
-* JDK 8 or higher
+* JDK 8 이상
 
 빌드 도구 및 의존성 관리자로 Maven을 권장합니다.
 
-* Maven 3.4 or higher
+* Maven 3.4 이상
 
 Aspectran 기반 애플리케이션은 실행 환경에 여러 Aspectran JAR 파일들을 필요로 하며,
 이 JAR 파일들은 Maven 저장소에 공개되고 있습니다.

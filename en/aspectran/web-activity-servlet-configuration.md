@@ -47,7 +47,7 @@ web.xml 파일에 Aspectran 구동을 위한 서블릿 구성 방법에 대해 �
         autoReload: {
             reloadMode: hard
             scanIntervalSeconds: 5
-            startup: false
+            enabled: false
         }
         profiles: {
         }
@@ -55,7 +55,7 @@ web.xml 파일에 Aspectran 구동을 위한 서블릿 구성 방법에 대해 �
     scheduler: {
         startDelaySeconds: 10
         waitOnShutdown: true
-        startup: false
+        enabled: false
     }
     web: {
         uriDecoding: utf-8
@@ -203,7 +203,7 @@ Aspectran에 의해 파싱된 요청 데이터 및 모든 활동 결과 데이�
                 autoReload: {
                     reloadMode: hard
                     scanIntervalSeconds: 5
-                    startup: false
+                    enabled: false
                 }
                 profiles: {
                 }
@@ -211,7 +211,7 @@ Aspectran에 의해 파싱된 요청 데이터 및 모든 활동 결과 데이�
             scheduler: {
                 startDelaySeconds: 10
                 waitOnShutdown: true
-                startup: false
+                enabled: false
             }
             web: {
                 uriDecoding: utf-8

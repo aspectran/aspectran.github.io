@@ -105,14 +105,14 @@ context: {
     autoReload: {
         reloadMode: hard
         scanIntervalSeconds: 5
-        startup: false
+        enabled: false
     }
     singleton: true
 }
 scheduler: {
     startDelaySeconds: 3
     waitOnShutdown: true
-    startup: false
+    enabled: false
 }
 shell: {
     greetings: (
@@ -150,7 +150,7 @@ shell: {
         com.aspectran.shell.command.builtins.QuitCommand
     ]
     session: {
-        startup: true
+        enabled: true
     }
     workingDir: /work
     verbose: true
@@ -175,7 +175,7 @@ daemon: {
         com.aspectran.daemon.command.builtins.QuitCommand
     ]
     session: {
-        startup: true
+        enabled: true
     }
     exposals: {
         -: /**

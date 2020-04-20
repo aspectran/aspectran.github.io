@@ -60,7 +60,7 @@ Aspectran이 처리할 수 있게 됩니다.
         autoReload: {
             reloadMode: hard
             scanIntervalSeconds: 5
-            startup: false
+            enabled: false
         }
         profiles: {
         }
@@ -68,7 +68,7 @@ Aspectran이 처리할 수 있게 됩니다.
     scheduler: {
         startDelaySeconds: 10
         waitOnShutdown: true
-        startup: false
+        enabled: false
     }
     web: {
         uriDecoding: utf-8
@@ -216,7 +216,7 @@ Aspectran에 의해 파싱된 요청 데이터 및 모든 활동 결과 데이�
                 autoReload: {
                     reloadMode: hard
                     scanIntervalSeconds: 5
-                    startup: false
+                    enabled: false
                 }
                 profiles: {
                 }
@@ -224,7 +224,7 @@ Aspectran에 의해 파싱된 요청 데이터 및 모든 활동 결과 데이�
             scheduler: {
                 startDelaySeconds: 10
                 waitOnShutdown: true
-                startup: false
+                enabled: false
             }
             web: {
                 uriDecoding: utf-8
