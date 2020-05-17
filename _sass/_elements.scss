@@ -166,11 +166,11 @@ dl.tabs {
     &.is-active {
       border: 0;
       > a {
-        color: $ci-6;
+        color: $ci-8;
         background-color: $ci-2;
       }
       .bullet {
-        color: $ci-3;
+        color: $ci-5;
         font-weight: normal;
       }
     }
@@ -183,11 +183,11 @@ dl.tabs {
       padding-left: .3em;
       color: darken($grey-2, 10%);
       &.on {
-        color: $ci-4;
+        color: $ci-6;
       }
     }
     .count {
-      color: $ci-5;
+      color: $ci-7;
       padding-left: .5rem;
     }
     .blink {
@@ -235,7 +235,7 @@ dl.tabs {
     }
     &.is-active {
       > a {
-        color: $ci-6;
+        color: $ci-8;
         @include breakpoint(small only) {
           background: $ci-1;
         }
@@ -244,7 +244,7 @@ dl.tabs {
         }
       }
       .bullet {
-        color: $ci-3;
+        color: $ci-5;
       }
     }
     .bullet {
@@ -339,7 +339,7 @@ dl.tabs {
     }
     &::before {
       content: "$ ";
-      color: $ci-6;
+      color: $ci-8;
     }
   }
   &.text {

@@ -7,9 +7,9 @@
 // Basics
 //-------
 
-$bg-color: 	 #fff;
-$text-color: #111;
-$link-color: #08c;
+$bg-color: 	 #FFFFFF;
+$text-color: #111111;
+$link-color: #0088CC;
 $head-color: #668395;
 
 // Corporate Identity Colorpalette
@@ -19,10 +19,12 @@ $head-color: #668395;
 $ci-0: #445259;   // darker turquoise
 $ci-1: #516169;	  // dark turquoise
 $ci-2: #677278;	  // turquoise
-$ci-3: #EFC94C;	  // yellow
-$ci-4: #E27A3F;	  // orange
-$ci-5: #F02B2B;	  // red
-$ci-6: #fff;   // white
+$ci-3: #3F7295;	  // blue
+$ci-4: #2D844D;	  // green
+$ci-5: #EFC94C;	  // yellow
+$ci-6: #F97D37;	  // orange
+$ci-7: #A53B2A;	  // red
+$ci-8: #FFFFFF;   // white
 
 // Grey Scale
 //-----------
@@ -50,7 +52,7 @@ $grey-16: #0B0B0B;
 
 $footer-bg: $ci-1;
 $footer-color: #fff;
-$footer-link-color: $ci-6;
+$footer-link-color: $ci-8;
 $footer-link-hover-color: yellow;
 
 $subfooter-bg: $ci-0;

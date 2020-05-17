@@ -186,8 +186,8 @@ pre {
   overflow-x: auto;
   margin-bottom: rem-calc(20);
   padding: .6rem;
-  background-color: darken($ci-6, 2%);
-  border: 1px solid scale-color($ci-6, $lightness: -10%);
+  background-color: darken($ci-8, 2%);
+  border: 1px solid scale-color($ci-8, $lightness: -10%);
   border-radius: $global-radius;
 }
 pre {
