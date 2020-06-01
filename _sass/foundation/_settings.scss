@@ -228,7 +228,7 @@ $abide-labels: true;
 $input-background-invalid: get-color(alert);
 $form-label-color-invalid: get-color(alert);
 $input-error-color: get-color(alert);
-$input-error-font-size: rem-calc(14);
+$input-error-font-size: rem-calc(13);
 $input-error-font-weight: $global-weight-bold;
 
 // 7. Accordion
@@ -238,7 +238,7 @@ $accordion-background: $white;
 $accordion-plusminus: true;
 $accordion-plus-content: '\002B';
 $accordion-minus-content: '\2013';
-$accordion-title-font-size: rem-calc(14);
+$accordion-title-font-size: rem-calc(13);
 $accordion-item-color: $primary-color;
 $accordion-item-background-hover: $light-gray;
 $accordion-item-padding: 1.25rem 1rem;
