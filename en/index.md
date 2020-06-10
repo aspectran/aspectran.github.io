@@ -45,11 +45,10 @@ projects:
     url: https://demo.aspectran.com
     repo: https://github.com/aspectran/demo-app
   - subheadline: Working examples of using Aspectran
-    title: Aspectran Demo Site on GAE
-    description: Aspectran Demo Site deployed on Google App Engine
-    thumb_img: examples/pr-demo-site.png
-    url: https://demo-gae.aspectran.com
-    repo: https://github.com/aspectran/demo-site
+    title: Text Chat Club
+    description: We offer a chat service that lets you chat with new people online. No separate sign-up process is required to use our chat service. Just enter your nickname and go. You cannot send or receive photos or videos, you can only chat with text.
+    thumb_img: examples/pr-text-chat-club-ko.png
+    url: https://textchat.club
   - subheadline: Working examples of using Aspectran
     title: JPetStore Demo
     description: JPetStore is a full web application built on top of MyBatis 3, Aspectran 6.
