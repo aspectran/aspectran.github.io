@@ -44,7 +44,7 @@ projects:
   - subheadline: Aspectran 사용의 실제 사례
     title: Log Relayer
     description: Log Relayer는 서버에 기록되는 최신 로그들을 웹 소켓 엔드 포인트를 통해 웹 브라우저로 보낼 수 있으며, 실시간으로 여러 서버의 로그들을 관찰할 수 있는 통합뷰를 제공합니다.
-    thumb_img: examples/pr-demo-site.png
+    thumb_img: examples/pr-log-relayer.png
     url: https://log-relayer.aspectran.com
     repo: https://github.com/aspectran/log-relayer
   - subheadline: Aspectran 사용의 실제 사례
@@ -62,7 +62,7 @@ projects:
   - subheadline: Aspectran 사용의 실제 사례
     title: JPetStore Demo
     description: JPetStore는 MyBatis 3, Aspectran 6 위에 구축된 완전한 웹 애플리케이션입니다.
-    thumb_img: examples/pr-demo-site.png
+    thumb_img: examples/pr-jpetstore.png
     url: https://jpetstore.aspectran.com
     repo: https://github.com/aspectran/aspectran-jpetstore
 permalink: /

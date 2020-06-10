@@ -35,7 +35,7 @@ projects:
   - subheadline: Working examples of using Aspectran
     title: Log Relayer
     description: Log Relayer can send the latest logs recorded on the server to the web browser through the web socket endpoint and provides an integrated view to observe the logs of several servers in real time.
-    thumb_img: examples/pr-demo-site.png
+    thumb_img: examples/pr-log-relayer.png
     url: https://log-relayer.aspectran.com
     repo: https://github.com/aspectran/log-relayer
   - subheadline: Working examples of using Aspectran
@@ -53,7 +53,7 @@ projects:
   - subheadline: Working examples of using Aspectran
     title: JPetStore Demo
     description: JPetStore is a full web application built on top of MyBatis 3, Aspectran 6.
-    thumb_img: examples/pr-demo-site.png
+    thumb_img: examples/pr-jpetstore.png
     url: https://jpetstore.aspectran.com
     repo: https://github.com/aspectran/aspectran-jpetstore
 permalink: /en/
