@@ -350,7 +350,7 @@
         }
         @include breakpoint(large) {
           padding: rem-calc(4 14.5 2.9 3.4);
-          input {
+          input, select {
             background-color: $grey-2;
           }
           button {
