@@ -52,13 +52,11 @@
                   <a>{{ item.title | escape }}</a>
                   <ul class="submenu menu vertical" data-submenu data-close-on-click-inside="true">
                     {% for submenu_item in item.dropdown %}
-
                       {% if submenu_item.url contains 'http' %}
                         {% assign domain = '' %}
                       {% else %}
                         {% assign domain = site.url %}
                       {% endif %}
-
                       <li>
                         <a href="{{ site.baseurl }}{{ submenu_item.url }}"{% if submenu_item.url contains 'http' %} target="_blank"{% endif %}>{{ submenu_item.title | escape }}</a>
                       </li>
@@ -97,13 +95,11 @@
                 <a href="{{ site.baseurl }}{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
                 <ul class="menu vertical" data-submenu data-close-on-click-inside="false">
                   {% for submenu_item in item.dropdown %}
-
                     {% if submenu_item.url contains 'http' %}
                       {% assign domain = '' %}
-                      {% else %}
+                    {% else %}
                       {% assign domain = site.url %}
                     {% endif %}
-
                     <li><a href="{{ site.baseurl }}{{ submenu_item.url }}"{% if submenu_item.url contains 'http' %} target="_blank"{% endif %}>{{ submenu_item.title | escape }}</a></li>
                   {% endfor %}
                 </ul>
@@ -115,17 +111,16 @@
         </ul>
         {% if page.lang != nil %}
         <div class="lang-options">
-          <div class="input-group">
+          <select name="lang" onchange="location.href=$(this).find('option:selected').attr('href');">
           {% for lang in site.lang_order %}
             {% assign url_prefix = '/' | append: page.lang | append: '/' %}
             {% assign page_url = page.url | replace: url_prefix, '/' %}
             {% if lang != site.default_lang %}
-              <button type="button" class="button {% if page.lang == lang %} active{% endif %}" title="{{ site.languages[lang] }}" onclick="location.href='{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}'">{{ site.languages[lang] }}</button>
-            {% else %}
-              <button type="button" class="button {% if page.lang == lang %} active{% endif %}" title="{{ site.languages[lang] }}" onclick="location.href='{{ site.url }}{{ site.baseurl }}{{ page_url }}'">{{ site.languages[lang] }}</button>
+              {% assign page_url = '/' | append: lang | append: page_url %}
             {% endif %}
+            <option href="{{ site.url }}{{ site.baseurl }}{{ page_url }}"{% if page.lang == lang %} selected{% endif %}>{{ site.languages[lang] }}</option>
           {% endfor %}
-          </div>
+          </select>
         </div>
         {% endif %}
         <div class="quick-search-box">

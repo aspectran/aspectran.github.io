@@ -194,6 +194,9 @@ $global-color-pick-contrast-tolerance: 0 !default;
     box-sizing: border-box;
     width: 100%;
     border-radius: $global-radius;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
 
   // Styles Google Maps and MapQuest embeds properly

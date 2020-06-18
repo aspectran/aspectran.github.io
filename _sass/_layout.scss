@@ -91,14 +91,9 @@
     .lang-options {
       float: right;
       padding: rem-calc(6.6 15 7.6 3.4);
-      .input-group {
+      select {
         margin: 0;
-        .button {
-          margin: 0;
-          &.active {
-            color: $ci-5;
-          }
-        }
+        background-color: lighten($head-color, 30%);
       }
     }
     .quick-search-box {

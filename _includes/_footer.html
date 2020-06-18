@@ -36,10 +36,9 @@
                   {% assign url_prefix = '/' | append: page.lang | append: '/' %}
                   {% assign page_url = page.url | replace: url_prefix, '/' %}
                   {% if lang != site.default_lang %}
-                    <li{% if page.lang == lang %} class='active'{% endif %}><a href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}" title="{{ site.languages[lang] }}">{{ site.languages[lang] }}</a></li>
-                  {% else %}
-                    <li{% if page.lang == lang %} class='active'{% endif %}><a href="{{ site.url }}{{ site.baseurl }}{{ page_url }}" title="{{ site.languages[lang] }}">{{ site.languages[lang] }}</a></li>
+                    {% assign page_url = '/' | append: lang | append: page_url %}
                   {% endif %}
+                  <li{% if page.lang == lang %} class='active'{% endif %}><a href="{{ site.url }}{{ site.baseurl }}{{ page_url }}" title="{{ site.languages[lang] }}">{{ site.languages[lang] }}</a></li>
                 {% endfor %}
               </ul>
               {% endif %}
