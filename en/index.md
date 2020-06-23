@@ -45,16 +45,16 @@ projects:
     url: https://demo.aspectran.com
     repo: https://github.com/aspectran/demo-app
   - subheadline: Working examples of using Aspectran
-    title: Text Chat Club
-    description: A chat site developed to demonstrate Aspectran's performance. No separate sign-up process for chatting. Just enter your nickname and go. You cannot send or receive photos or videos, you can only chat with text.
-    thumb_img: examples/pr-text-chat-club-ko.png
-    url: https://textchat.club
-  - subheadline: Working examples of using Aspectran
     title: JPetStore Demo
     description: JPetStore is a full web application built on top of MyBatis 3, Aspectran 6.
     thumb_img: examples/pr-jpetstore.png
     url: https://jpetstore.aspectran.com
     repo: https://github.com/aspectran/aspectran-jpetstore
+  - subheadline: Working examples of using Aspectran
+    title: Text Chat Club
+    description: A chat site developed to demonstrate Aspectran's performance. No separate sign-up process for chatting. Just enter your nickname and go. You cannot send or receive photos or videos, you can only chat with text.
+    thumb_img: examples/pr-text-chat-club-ko.png
+    url: https://textchat.club
 permalink: /en/
 ---
 {% comment %}

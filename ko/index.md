@@ -54,16 +54,16 @@ projects:
     url: https://demo.aspectran.com
     repo: https://github.com/aspectran/demo-app
   - subheadline: Aspectran 사용의 실제 사례
-    title: Text Chat Club
-    description: Aspectran의 성능을 입증하기 위해 개발된 채팅 사이트입니다. 채팅을 하기 위한 별도의 가입 절차가 없으며, 대화명만 입력하면 됩니다. 사진, 동영상은 주고 받을 수 없으며, 오직 문자로만 대화할 수 있습니다.
-    thumb_img: examples/pr-text-chat-club-ko.png
-    url: https://textchat.club
-  - subheadline: Aspectran 사용의 실제 사례
     title: JPetStore Demo
     description: JPetStore는 MyBatis 3, Aspectran 6 위에 구축된 완전한 웹 애플리케이션입니다.
     thumb_img: examples/pr-jpetstore.png
     url: https://jpetstore.aspectran.com
     repo: https://github.com/aspectran/aspectran-jpetstore
+  - subheadline: Aspectran 사용의 실제 사례
+    title: Text Chat Club
+    description: Aspectran의 성능을 입증하기 위해 개발된 채팅 사이트입니다. 채팅을 하기 위한 별도의 가입 절차가 없으며, 대화명만 입력하면 됩니다. 사진, 동영상은 주고 받을 수 없으며, 오직 문자로만 대화할 수 있습니다.
+    thumb_img: examples/pr-text-chat-club-ko.png
+    url: https://textchat.club
 permalink: /
 ---
 {% comment %}
