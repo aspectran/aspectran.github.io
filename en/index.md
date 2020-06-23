@@ -46,7 +46,7 @@ projects:
     repo: https://github.com/aspectran/demo-app
   - subheadline: Working examples of using Aspectran
     title: Text Chat Club
-    description: We offer a chat service that lets you chat with new people online. No separate sign-up process is required to use our chat service. Just enter your nickname and go. You cannot send or receive photos or videos, you can only chat with text.
+    description: A chat site developed using Aspectran and websockets. No separate sign-up process is required to use our chat service. Just enter your nickname and go. You cannot send or receive photos or videos, you can only chat with text.
     thumb_img: examples/pr-text-chat-club-ko.png
     url: https://textchat.club
   - subheadline: Working examples of using Aspectran
