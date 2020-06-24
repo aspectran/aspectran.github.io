@@ -50,11 +50,12 @@ projects:
     thumb_img: examples/pr-jpetstore.png
     url: https://jpetstore.aspectran.com
     repo: https://github.com/aspectran/aspectran-jpetstore
-  - subheadline: Working examples of using Aspectran
-    title: Text Chat Club
-    description: A chat site developed to demonstrate Aspectran's performance. No separate sign-up process for chatting. Just enter your nickname and go. You cannot send or receive photos or videos, you can only chat with text.
-    thumb_img: examples/pr-text-chat-club-ko.png
-    url: https://textchat.club
+  - subheadline: Reach Further With Text-To-Speech
+    title: Skylark Terminal
+    description: Skylark is a text to speech program that converts any written text into spoken words.
+    thumb_img: examples/pr-skylark.png
+    url: https://skylark.aspectran.com
+    repo: https://github.com/aspectran/skylark
 permalink: /en/
 ---
 {% comment %}

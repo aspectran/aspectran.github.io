@@ -59,11 +59,12 @@ projects:
     thumb_img: examples/pr-jpetstore.png
     url: https://jpetstore.aspectran.com
     repo: https://github.com/aspectran/aspectran-jpetstore
-  - subheadline: Aspectran 사용의 실제 사례
-    title: Text Chat Club
-    description: Aspectran의 성능을 입증하기 위해 개발된 채팅 사이트입니다. 채팅을 하기 위한 별도의 가입 절차가 없으며, 대화명만 입력하면 됩니다. 사진, 동영상은 주고 받을 수 없으며, 오직 문자로만 대화할 수 있습니다.
-    thumb_img: examples/pr-text-chat-club-ko.png
-    url: https://textchat.club
+  - subheadline: TTS (텍스트 음성 변환)
+    title: Skylark Terminal
+    description: Skylark은 모든 텍스트를 음성으로 변환하는 텍스트 음성 변환 프로그램입니다.
+    thumb_img: examples/pr-skylark.png
+    url: https://skylark.aspectran.com
+    repo: https://github.com/aspectran/skylark
 permalink: /
 ---
 {% comment %}
