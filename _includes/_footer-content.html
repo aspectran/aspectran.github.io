@@ -29,7 +29,6 @@
               {% for service_item in site.data.services limit: 1 %}
                 <h5>{{ service_item.title }}</h5>
               {% endfor %}
-
               <ul class="no-bullet">
               {% for service_item in site.data.services offset: 1 %}
                 {% if service_item.url contains 'http' %}{% assign domain = '' %}{% else %}{% assign domain = site.baseurl %}{% endif %}
