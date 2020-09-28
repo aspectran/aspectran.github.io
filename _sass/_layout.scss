@@ -242,10 +242,12 @@
         }
         @include breakpoint(medium only) {
           &:first-child {
-            border-radius: 7px 7px 0 0;
+            border-top-left-radius: 7px;
+            border-top-right-radius: 7px;
           }
           &:last-child {
-            border-radius: 0 0 7px 7px;
+            border-bottom-left-radius: 7px;
+            border-bottom-right-radius: 7px;
           }
         }
         @include breakpoint(large) {
