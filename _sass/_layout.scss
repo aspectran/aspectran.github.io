@@ -26,7 +26,6 @@
   text-shadow: rgba(0, 0, 0, .498039) 0 1px 2px;
   text-transform: uppercase;
   .title-bar {
-    display: none;
     line-height: 46px;
     background-color: $ci-0;
     padding: 0;
@@ -36,6 +35,7 @@
       float: left;
       a.logo {
         position: absolute;
+        top: 0;
         display: block;
         width: 37px;
         height: 37px;
@@ -88,7 +88,7 @@
       position: relative;
       padding: 0;
     }
-    .lang-options {
+    .settings {
       float: right;
       padding: rem-calc(6.6 15 7.6 3.4);
       select {
@@ -121,7 +121,7 @@
         width: 100%;
         .lang-options,
         .quick-search-box {
-          padding: 0 1.6rem 1.6rem;
+          padding: 0 .8rem .8rem;
         }
       }
     }
@@ -135,6 +135,7 @@
     }
     @include breakpoint(large) {
       position: absolute;
+      top: 0;
       background-color: $ci-0;
       &:hover {
         background-color: darken($ci-0, 2.5%);
@@ -206,7 +207,7 @@
         display: block;
       }
       @include breakpoint(medium only) {
-        padding: 1.6rem;
+        padding: .8rem;
         &.left {
           padding-bottom: .35rem;
         }
@@ -316,10 +317,33 @@
         }
       }
     }
+    .breadcrumbs-bar {
+      display: none;
+    }
+  }
+  .breadcrumbs-bar {
+    @include breakpoint(large) {
+      margin-top: 57px;
+    }
+    background-color: $ci-1;
+    -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+    -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+    box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
+    a {
+      color: $grey-1;
+      &:hover {
+        text-decoration: none;
+      }
+    }
+    .current {
+      color: $grey-1;
+      font-weight: bold;
+    }
   }
   &.fixed {
     position: fixed;
     width: 100%;
+    top: 0;
     .top-bar {
       box-shadow: 0 3px 4px 0 rgba(0,0,0,0.2),0 3px 3px -2px rgba(0,0,0,0.14),0 1px 8px 0 rgba(0,0,0,0.12);
       .top-bar-logo {
@@ -344,11 +368,8 @@
       .lang-options,
       .quick-search-box {
         border: 0;
-        @include breakpoint(small only) {
+        @include breakpoint(medium down) {
           padding: .8rem;
-        }
-        @include breakpoint(medium only) {
-          padding: .8rem 1.6rem;
         }
         @include breakpoint(large) {
           padding: rem-calc(4 14.5 2.9 3.4);
@@ -414,31 +435,14 @@
             }
           }
         }
-      }
-    }
-    .breadcrumbs-bar {
-      position: fixed;
-      top: 48px;
-      width: 100%;
-      background-color: $ci-1;
-      -webkit-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
-      -moz-box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
-      box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
-      @include breakpoint(large) {
-        display: block !important;
-      }
-      .breadcrumbs {
-        margin: 0 .8rem;
-      }
-      a {
-        color: $grey-1;
-        &:hover {
-          text-decoration: none;
+        .breadcrumbs-bar {
+          display: block;
         }
       }
-      .current {
-        color: $grey-1;
-        font-weight: bold;
+    }
+    @include breakpoint(large) {
+      .breadcrumbs-bar {
+        margin-top: 48px;
       }
     }
   }
@@ -614,19 +618,13 @@ body.plate {
     }
   }
   &.no-header {
-    @include breakpoint(medium only) {
+    @include breakpoint(medium down) {
       display: none;
       height: 0;
     }
     @include breakpoint(large) {
       padding-top: 57px;
       background: none;
-      .breadcrumbs-bar {
-        border-radius: 0;
-        .breadcrumbs {
-          float: right;
-        }
-      }
     }
   }
 }

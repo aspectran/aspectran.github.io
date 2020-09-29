@@ -110,7 +110,7 @@
         {% endfor %}
         </ul>
         {% if page.lang != nil %}
-        <div class="lang-options">
+        <div class="settings lang-options">
           <select name="lang" onchange="location.href=$(this).find('option:selected').attr('href');">
           {% for lang in site.lang_order %}
             {% assign url_prefix = '/' | append: page.lang | append: '/' %}
@@ -136,7 +136,7 @@
       </div>
     </div>
     {% if page.breadcrumb == true %}
-      <div class="breadcrumbs-bar" style="display:none">
+      <div class="breadcrumbs-bar">
         <div class="grid-container">
           {% include _breadcrumb.html %}
         </div>
