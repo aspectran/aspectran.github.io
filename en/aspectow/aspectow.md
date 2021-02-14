@@ -18,18 +18,20 @@ permalink: /en/aspectow/
     /   |  _________  ___  _____/ /_____ _      __
    / /| | / ___/ __ \/ _ \/ ___/ __/ __ \ | /| / /
   / ___ |(__  ) /_/ /  __/ /__/ /_/ /_/ / |/ |/ /
- /_/  |_/____/ .___/\___/\___/\__/\____/|__/|__/    Light & Enterprise
-=========== /_/ =======================================================
+ /_/  |_/____/ .___/\___/\___/\__/\____/|__/|__/    Enterprise & Light Edition
+=========== /_/ =================================================================
 ```
 
 Aspectow is an all-in-one web application server based on Aspectran. It is divided into two products.
 
-* **[Aspectow Light](/en/aspectow/aspectow-light)**  
-  It is a lightweight version that does not support the servlet specification and is suitable for building high performance REST API services.
-  JBoss's [Undertow](http://undertow.io) web server is built-in.
+* **[Aspectow Enterprise Edition](/en/aspectow/aspectow)**  
+  Aspectow Enterprise Edition is an all-in-one web application server based on Aspectran,
+  fully supports servlet specifications, and is suitable for building enterprise web applications.  
+  JBoss' [Undertow](http://undertow.io) web server and [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp), 
+  the JSP engine used by Apache Tomcat, are built in.
 
-* **[Aspectow Enterprise](/en/aspectow/aspectow-enterprise)**  
-  It fully supports the servlet specification and is suitable for building enterprise web applications.
-  JBoss's [Undertow](http://undertow.io) or Eclipse [Jetty](https://www.eclipse.org/jetty/) can be used as a web server.
-  [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp) is used to support JSP and it is the same JSP engine that Apache Tomcat uses.
-  
+* **[Aspectow Light Edition](/en/aspectow/aspectow-light)**  
+  Aspectow Light Edition is a lightweight version with servlet specifications removed
+  from Aspectow, an all-in-one web application server based on Aspectran, and is suitable
+  for building high-performance REST API services.  
+  JBoss's [Undertow](http://undertow.io) web server is built-in.
