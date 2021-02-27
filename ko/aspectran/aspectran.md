@@ -47,25 +47,31 @@ Aspectran을 기반으로 개발된 애플리케이션은 JVM 상에서 다음�
 Aspectran은 다음과 같은 주요 패키지로 구성되었습니다.
 
 * **com.aspectran.core**  
-  Aspectran의 핵심 기능에 대한 구현을 포함하고 있으며, 다른 하위 구현의 기반이 되는 패키지
+  Aspectran의 주요 기능이 포함된 핵심 패키지
 * **com.aspectran.daemon**  
-  Unix 기반 또는 Windows 운영체제의 백그라운드 프로세스로 Aspectran을 실행하기 위한 데몬 서비스를 제공
+  Unix 기반 또는 Windows 운영 체제에서 백그라운드 프로세스로 실행되는 애플리케이션을 빌드하는데 필요한 패키지
 * **com.aspectran.embed**  
-  다른 Java 애플리케이션에 Aspectran 인스턴스를 내장하기 위한 서비스를 제공하는 패키지
-* **com.aspectran.rss-lettuce**  
-  Lettuce를 클라이언트로 사용하여 Redis의 지속성을 통해 세션 클러스터링을 제공하기 위한 애드온 패키지
+  다른 Java 애플리케이션에 Aspectran을 내장하는데 필요한 패키지
 * **com.aspectran.shell**  
-  명령 행에서 일관된 대화식 쉘 인터페이스를 제공하기 위한 패키지
+  쉘 (일명 명령 줄) 응용 프로그램을 빌드하는데 필요한 패키지
 * **com.aspectran.shell-jline**  
-  기능이 풍부한 JLine을 사용하여 대화식 쉘 인터페이스를 제공하기 위한 패키지
+  대화형 쉘 인터페이스로 기능이 풍부한 JLine을 사용하기 위한 패키지
 * **com.aspectran.web**  
   웹 애플리케이션 구축에 필요한 전반적인 기능을 제공하기 위한 패키지
+* **com.aspectran.websocket**  
+  WebSocket 엔드포인트를 구성하는데 필요한 패키지 
 * **com.aspectran.jetty**  
-  Jetty를 통합하기 위한 애드온 패키지
+  Jetty를 사용하는 웹 애플리케이션 서버를 구축하기 위한 애드온 패키지 
+* **com.aspectran.undertow**  
+  Undertow를 사용하는 웹 애플리케이션 서버를 구축하기 위한 애드온 패키지 
+* **com.aspectran.rss-lettuce**  
+  Lettuce를 클라이언트로 사용하는 Redis 세션 저장소 구현을 포함하는 패키지
 * **com.aspectran.mybatis**  
   MyBatis를 통합하기 위한 애드온 패키지
-* **com.aspectran.undertow**  
-  Undertow를 통합하기 위한 애드온 패키지
+* **com.aspectran.freemarker**  
+  FreeMarker 템플릿 엔진을 사용하는데 필요한 애드온 패키지 
+* **com.aspectran.pebble**  
+  Pebble 템플릿 엔진을 사용하는데 필요한 애드온 패키지 
 
 ## Aspectran의 유래
 
