@@ -42,7 +42,7 @@ widget4:
     Aspectran을 기반으로 유용한 애플리케이션을 개발하고 있습니다.
 projects:
   - subheadline: Aspectran 사용의 실제 사례
-    title: Log Relayer
+    title: Log Relay
     description: Log Relay는 서버에 기록되는 최신 로그들을 웹 소켓 엔드 포인트를 통해 웹 브라우저로 보낼 수 있으며, 실시간으로 여러 서버의 로그들을 관찰할 수 있는 통합뷰를 제공합니다.
     thumb_img: examples/pr-log-relayer.png
     url: https://log-relay.aspectran.com
