@@ -33,46 +33,53 @@ Aspectran의 주요 기능은 다음과 같습니다.
   Aspectran은 처음부터 REST API 구현을 위해 설계되었으며, 마이크로서비스 아키텍처에 최적화된 프레임워크입니다. 
 * **빠른 개발 및 시작 시간**  
   Aspectran의 직관적인 프로그래밍 모델은 빠른 개발 시간을 보장하고, 다른 프레임워크보다 빠르게 실행됩니다. 
+* **Aspectran 기반 프로덕션 등급 애플리케이션 생성**  
+  여러 운영 체제에서 실행되는 안정적인 독립 실행형 Java 애플리케이션을 생성하고, 서블릿 컨테이너에서 실행하거나 다른 Java 애플리케이션에 포함될 수도 있습니다.
 
-Aspectran을 기반의 애플리케이션은 JVM 상에서 다음과 같은 실행 환경을 지원합니다.
+Aspectran 기반의 애플리케이션은 JVM 상에서 다음과 같은 실행 환경을 지원합니다.
 
 * 명령행 애플리케이션을 위한 일관된 쉘 인터페이스
 * 내장된 고성능 웹 애플리케이션 서버 (Undertow, Jetty)
 * 백그라운드 프로세스로 실행하기 위한 데몬
+* 명령줄 애플리케이션을 위한 일관된 쉘 인터페이스
+* Unix 기반 또는 Windows 운영 체제에서 백그라운드 프로세스로 실행
+* 고성능 웹 애플리케이션 서버 내장(Undertow, Jetty)
+* Apache Tomcat 또는 WildFly와 같은 전통적인 서블릿 컨테이너에서 서블릿으로 실행
 
-Aspectran은 다음과 같은 주요 패키지로 구성되었습니다.
+Aspectran은 다음과 같은 주요 패키지로 구성되어 있습니다.
 
 * **com.aspectran.core**  
-  Aspectran의 주요 기능이 포함된 핵심 패키지
+  Aspectran의 핵심 기능을 포함하는 패키지
 * **com.aspectran.daemon**  
-  Unix 기반 또는 Windows 운영 체제에서 백그라운드 프로세스로 실행되는 애플리케이션을 빌드하는데 필요한 패키지
+  Unix 기반 또는 Windows 운영 체제에서 Aspectran 기반 Java 애플리케이션을 백그라운드 프로세스로 실행하기 위한 패키지
 * **com.aspectran.embed**  
-  다른 Java 애플리케이션에 Aspectran을 내장하는데 필요한 패키지
+  Aspectran 기반이 아닌 다른 Java 애플리케이션에 Aspectran을 내장하기 위한 패키지
 * **com.aspectran.shell**  
-  쉘 (일명 명령 줄) 응용 프로그램을 빌드하는데 필요한 패키지
+  Aspectran을 기반으로 대화형 쉘(일명 커맨드 라인) 애플리케이션을 구축하기 위한 패키지
 * **com.aspectran.shell-jline**  
-  대화형 쉘 인터페이스로 기능이 풍부한 JLine을 사용하기 위한 패키지
+  JLine 3을 사용하여 기능이 풍부한 Aspectran 기반 대화형 쉘 애플리케이션을 구축하기 위한 패키지
 * **com.aspectran.web**  
-  웹 애플리케이션 구축에 필요한 전반적인 기능을 제공하기 위한 패키지
+  Jakarta EE를 사용하여 웹 애플리케이션을 구축하기 위한 패키지
 * **com.aspectran.websocket**  
-  WebSocket 엔드포인트를 구성하는데 필요한 패키지 
-* **com.aspectran.jetty**  
-  Jetty를 사용하는 웹 애플리케이션 서버를 구축하기 위한 애드온 패키지 
-* **com.aspectran.undertow**  
-  Undertow를 사용하는 웹 애플리케이션 서버를 구축하기 위한 애드온 패키지 
+  Aspectran 기반 웹 애플리케이션에서 웹소켓을 구성하는 데 필요한 패키지
 * **com.aspectran.rss-lettuce**  
   Lettuce를 클라이언트로 사용하는 Redis 세션 저장소 구현을 포함하는 패키지
+* **com.aspectran.jetty**  
+  내장된 서블릿 컨테이너로 Jetty를 사용하기 위한 애드온 패키지
+* **com.aspectran.undertow**  
+  내장된 서블릿 컨테이너로 Undertow를 사용하기 위한 애드온 패키지
 * **com.aspectran.mybatis**  
-  MyBatis를 통합하기 위한 애드온 패키지
+  관계형 데이터베이스를 쉽게 사용할 수 있게 해주는 MyBatis SQL Mapper 프레임워크를 사용하기 위한 애드온 패키지
 * **com.aspectran.freemarker**  
-  FreeMarker 템플릿 엔진을 사용하는데 필요한 애드온 패키지 
+  Freemarker를 템플릿 엔진으로 사용하기 위한 애드온 패키지
 * **com.aspectran.pebble**  
-  Pebble 템플릿 엔진을 사용하는데 필요한 애드온 패키지 
+  Pebble을 템플릿 엔진으로 사용하기 위한 애드온 패키지
 
 ## Aspectran의 유래
 
-Aspectran의 개발은 2008년 3월부터 시작되었지만, 2015년 9월 1일에 처음으로 발표되었습니다.  
-"Aspectan"이라는 이름은 2012년 7월에 만들어졌으며, "Aspect"와 "Translet"의 합성어입니다.
+저는 2008년 3월에 Aspectran 개발을 시작하여 2015년 9월 1일에 처음 출시했습니다.  
+개발 초기에는 Translets로 불렸으나, 2012년 7월경 AOP 기능이 추가되면서 Aspectran이라는 이름으로 변경되었습니다.  
+Aspectran은 'Aspect'와 'Translet'의 합성어입니다.
 
 ## 라이센스
 
