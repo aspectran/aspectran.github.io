@@ -3,17 +3,17 @@
 <!--
   XML DTD for the Aspectran Configuration File, Version 8.0
 
-  Copyright 2008-2024 The Aspectran Project
+  Copyright 2018-2025 The Aspectran Project
 
   This DTD module is identified by the PUBLIC and SYSTEM identifiers:
 
   PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
-  SYSTEM "http://aspectran.github.io/dtd/aspectran-8.dtd">
+  SYSTEM "https://aspectran.com/dtd/aspectran-8.dtd">
 
   XML documents that conform to this DTD should declare the following doctype:
 
   <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
-          "http://aspectran.github.io/dtd/aspectran-8.dtd">
+          "https://aspectran.com/dtd/aspectran-8.dtd">
 -->
 
 <!ELEMENT aspectran (
@@ -268,7 +268,7 @@
   secret    (true | false) #IMPLIED
 >
 
-<!ELEMENT value (#PCDATA | bean)*>
+<!ELEMENT value (#PCDATA)>
 
 <!ELEMENT entry (#PCDATA | bean)*>
 <!ATTLIST entry
@@ -279,15 +279,16 @@
 
 <!ELEMENT template (#PCDATA)>
 <!ATTLIST template
-  id       CDATA #IMPLIED
-  engine   CDATA #IMPLIED
-  style    (apon | compact | compressed) #IMPLIED
-  name     CDATA #IMPLIED
-  file     CDATA #IMPLIED
-  resource CDATA #IMPLIED
-  url      CDATA #IMPLIED
-  encoding CDATA #IMPLIED
-  noCache  (true | false) #IMPLIED
+  id          CDATA #IMPLIED
+  engine      CDATA #IMPLIED
+  name        CDATA #IMPLIED
+  file        CDATA #IMPLIED
+  resource    CDATA #IMPLIED
+  url         CDATA #IMPLIED
+  style       (apon | compact | compressed) #IMPLIED
+  contentType CDATA #IMPLIED
+  encoding    CDATA #IMPLIED
+  noCache     (true | false) #IMPLIED
 >
 
 <!ELEMENT append EMPTY>
