@@ -42,11 +42,11 @@ widget4:
     Aspectran을 기반으로 유용한 애플리케이션을 개발하고 있습니다.
 projects:
   - subheadline: Aspectran 사용의 실제 사례
-    title: Log Relay
-    description: Log Relay는 서버에 기록되는 최신 로그들을 웹 소켓 엔드 포인트를 통해 웹 브라우저로 보낼 수 있으며, 실시간으로 여러 서버의 로그들을 관찰할 수 있는 통합뷰를 제공합니다.
+    title: Aspectow AppMon
+    description: Aspectow AppMon provides an integrated view to observe logs and events of Aspectran-based application servers in real time.
     thumb_img: examples/pr-log-relayer.png
-    url: https://log-relay.aspectran.com
-    repo: https://github.com/aspectran/log-relay
+    url: https://public.aspectran.com/monitoring/
+    repo: https://github.com/aspectran/aspectow-appmon
   - subheadline: Aspectran 사용의 실제 사례
     title: Aspectran Demo Site
     description: 이 사이트는 권장 모범 사례에 따라 Aspectran 응용 프로그램을 개발하는 방법을 보여주기 위해 만든 참조 응용 프로그램 모음입니다.
@@ -59,12 +59,12 @@ projects:
     thumb_img: examples/pr-jpetstore.png
     url: https://jpetstore.aspectran.com
     repo: https://github.com/aspectran/aspectran-jpetstore
-  - subheadline: TTS (텍스트 음성 변환)
-    title: Skylark Terminal
-    description: Skylark은 모든 텍스트를 음성으로 변환하는 텍스트 음성 변환 프로그램입니다.
+  - subheadline: A full-stack sample web application built on top of Aspectran 8
+    title: PetClinic Demo
+    description: The goal of the PetClinic Demo App is to provide and demonstrate a sample web application that leverages Aspectran and JPA.
     thumb_img: examples/pr-skylark.png
-    url: https://skylark.aspectran.com
-    repo: https://github.com/aspectran/skylark
+    url: https://petclinic.aspectran.com
+    repo: https://github.com/aspectran/aspectran-petclinic
 permalink: /
 ---
 {% comment %}
