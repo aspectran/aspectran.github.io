@@ -14,7 +14,7 @@ category: docs
 date: 2025-08-21
 ---
 
-## AsEL 소개
+## AsEL 이란?
 
 AsEL(Aspectran Expression Language)은 Aspectran 프레임워크에 내장된 강력하고 경량화된 표현 언어입니다. AsEL의 가장 큰 특징은 Aspectran의 자체적인 **토큰 표현식(Token Expressions)**과 강력한 **OGNL(Object-Graph Navigation Language) 표현식**을 조합하여, 객체가 가진 값을 동적으로 평가할 수 있다는 점입니다.
 
