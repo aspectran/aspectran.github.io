@@ -4,8 +4,8 @@ format: plate article
 subheadline: Aspectran Parameters Object Notation
 title:  APON을 소개합니다.
 teaser: |
-  APON은 JSON(JavaScript Object Notation)을 개량했기 때문에 JSON과 비슷한 표기 형식을 가지고 있고, 사람이 읽고 쓰기에 용이하며,
-  구조화된 형식의 데이터 교환을 위한 새로운 표기법입니다. 주로 Aspectran의 설정 값을 Object로 변환하기 용도로 사용되고 있습니다.
+  APON은 구조화된 형식의 데이터를 교환하기 위해 새롭게 개발된 표기법이며,
+  JSON과 비슷한 표기 형식을 가지면서도, YAML처럼 사람이 읽고 쓰기에 더 용이한 특징을 가집니다.
 breadcrumb: true
 comments: true
 sidebar: toc-left
@@ -15,67 +15,49 @@ category: docs
 date: 2015-10-15
 ---
 
-## APON의 특징
+## APON 소개
 
-Aspectran은 XML 문서를 APON 문서로 변환해서 사용하는 기능을 내장하고 있습니다.
-APON을 이용하면 대량의 XML 문서를 파싱하는데 드는 비용을 줄일 수 있으며, 정확한 데이터를 주고 받을 수 있습니다.
+APON은 구조화된 형식의 데이터를 교환하기 위해 새롭게 개발된 표기법입니다. JSON과 비슷한 표기 형식을 가지면서도, YAML처럼 사람이 읽고 쓰기에 더 용이한 특징을 가집니다. APON은 특히 Aspectran 프레임워크의 설정 파일(`aspectran-config.apon`)을 쉽게 작성하고, 애플리케이션이 정확하게 읽어 들일 수 있도록 하는 데 최적화되어 있습니다.
 
-APON은 다음과 같은 특징을 가지고 있습니다.
+## 주요 특징
 
-* 매개변수가 가지고 있는 값(Value)의 Type을 명시할 수 있습니다. Value Type을 명시하지 않으면 `variable` Type이 기본 Type이 됩니다.
-* 여러 개의 Name/Value 쌍 또는 배열로 된 여러 값을 구분하기 위해 `,` (comma) 문자를 사용하지 않고 `\n` (개행 문자)를 사용합니다.
-* 문자열 표기를 위한 `string` Value Type 외에 `text` Value Type이 추가되었습니다. 긴 문자열을 표기할 때 `text` Value Type은 가독성을 확연히 향상시켜 줍니다.
-* 문자열을 큰따옴표(`"`) 또는 작은따옴표(`'`)로 감싸지 않아도 됩니다.
-* 데이터의 구조와 값의 Type을 정의할 수 있기 때문에 정확하고 명확한 데이터 전달이 가능합니다.
+*   **쉬운 가독성**: 콤마(`,`) 대신 줄바꿈으로 항목을 구분하고, 따옴표를 생략할 수 있어 코드가 간결하고 명확합니다.
+*   **타입 명시**: 파라미터(Parameter)의 값(Value)에 대한 타입을 명시할 수 있어, JSON이나 YAML보다 설정 값의 정확성과 안정성을 높일 수 있습니다.
+*   **계층적 구조**: `Parameters`는 내부에 다른 `Parameters`를 포함하는 계층적 구조를 가질 수 있어, 복잡한 설정도 체계적으로 표현할 수 있습니다.
+*   **긴 문자열 지원**: 여러 줄로 이루어진 긴 문자열을 표기하기 위한 `text` 타입을 지원하여 가독성을 크게 향상시킵니다.
+*   **주석 지원**: `#` 문자를 사용하여 주석을 작성할 수 있습니다.
 
+## 데이터 표기 규칙
 
-## APON의 데이터 표기 규칙
+*   **파라미터 (Parameter)**: 이름(Name)과 값(Value)이 `이름: 값`의 형태로 쌍을 이룬 항목을 말합니다.
+*   **파라미터스 (Parameters)**: 이러한 파라미터들의 집합을 의미하며, `{ }` (중괄호)로 감싸 표현합니다.
+*   **값의 타입 (Value Type)**: `string`, `text`, `int`, `long`, `boolean`, `parameters` 등 다양한 타입을 가질 수 있으며, `이름(타입): 값`의 형태로 명시할 수 있습니다. 타입을 생략하면 값에 따라 자동으로 타입이 결정됩니다.
+*   **배열 (Array)**: `[ ]` (대괄호) 안에 여러 값을 넣어 배열을 표현합니다. 각 요소는 줄바꿈으로 구분합니다.
+*   **여러 줄 문자열 (Text)**: `( )` (소괄호)로 감싸고, 각 줄의 시작에 `|` 문자를 붙여 표현합니다. 이 블록 안에서는 이스케이프 문자 없이 자유롭게 특수문자를 사용할 수 있습니다.
 
-* 매개변수의 이름과 값에 해당하는 Name/Value 쌍을 `Parameter`라고 합니다.
-  Name 뒤에 콜론(`:`) 문자를 붙여서 Name과 Value를 구분합니다.
-* `Parameter`를 여러 개 모아 놓은 것을 `Parameters`라고 합니다.
-* `Parameter`는 Name을 부여받고, Value를 가질 수 있습니다.
-  Value의 Type에는 `string`, `text`, `int`, `long`, `float`, `double`, `boolean`, `variable`, `parameters`가 있습니다.
-  Value는 `null` 값도 가질 수 있습니다.
-* Value의 Type을 명시하기 위해서는 Name과 콜론(`:`) 문자 사이에 Value Type을 `( )`(Round Bracket)으로 감싸서 넣으면 됩니다.  
-  ex) param1(long): 1234  
-  Value Type은 소문자로 표기해야 합니다.
-* `Parameter`의 Value Type이 `parameters`이면 `{ }`(Curly Bracket)으로 감싸서 표기합니다.
-  Curly Bracket 내에서 각 `Parameter`를 구분하기 위해 콤마(`,`) 문자가 아닌 개행문자(`\n`)를 사용합니다.
-* `Parameter`의 값이 Array 형식이면 `[ ]`(Square Bracket)으로 감싸서 표기합니다.
-  Square Bracket 내에서 각 Array 요소를 구분하기 위해 콤마(`,`) 문자가 아닌 개행문자(`\n`)를 사용합니다.
-* `Parameter`의 Value Type이 `string`이면 문자열을 큰따옴표(`"`)로 감싸거나, 큰따옴표를 생략할 수도 있습니다.
-  큰따옴표로 감싸지 않으면 문자열의 앞뒤에 있는 공백문자는 모두 제거됩니다.
-  큰따옴표로 감쌀 경우 큰 따옴표 또는 개행문자를 표현하기 위해 Escape 문자(`\`)를 사용할 수 있습니다.
-* `Parameter`의 Value Type이 `text`이면 `( )`(Round Bracket)으로 감싸야 하고, 각 라인의 선두에 파이프 문자(`|`)를 붙여야 합니다.
-  라인 수 만큼 파이프 문자(`|`)를 사용하게 되며, 특수 문자를 표현하기 위한 Escape 문자를 전혀 사용하지 않습니다.
-* Curly Bracket, Square Bracket, Round Bracket은 모두 Bracket이 시작된 후에 반드시 개행을 해야 하고, Brakcket이 끝난 뒤에도 반드시 개행을 해야 합니다.
+## 값의 타입 (Value Type)
 
+APON의 파라미터는 다음과 같은 값의 타입을 가질 수 있습니다.
 
-## APON의 Value Type
+| Value Type | Java Object Type | 예시 |
+| :--- | :--- | :--- |
+| `string` | `java.lang.String` | `Hello, World.` |
+| `text` | `java.lang.String` | 아래 `text` 타입 사용 예제 참조 |
+| `int` | `java.lang.Integer` | `123` |
+| `long` | `java.lang.Long` | `123L` |
+| `float` | `java.lang.Float` | `123.0f` |
+| `double` | `java.lang.Double` | `123.0d` |
+| `boolean` | `java.lang.Boolean` | `true` 또는 `false` |
+| `variable` | `java.lang.Object` | 실제 값에 따라 자동으로 타입을 정합니다. (기본값) |
+| `parameters` | `com.aspectran.utils.apon.Parameters` | 여러 `Parameter`를 포함하는 중첩 구조 |
 
-APON의 매개변수(Parameter)는 다음과 같은 Value Type을 가질 수 있습니다.
+### `text` 타입 사용 예제
 
-Value Type  | Java Object Type                        | 사용할 수 있는 값
-------------------------------------------------------|-----------------------------------------
-string      | java.lang.String                        | Hello, World.
-text        | java.lang.String                        | 아래 `text` Value Type 사용 예제 참조
-int         | java.lang.Integer                       | 123
-long        | java.lang.Long                          | 123L
-float       | java.lang.Float                         | 123.0f
-double      | java.lang.Double                        | 123.0d
-boolean     | java.lang.Boolean                       | true or false
-variable    | java.lang.Object                        | 실제 값에 따라 자동으로 Type을 정합니다.
-parameters  | com.aspectran.core.util.apon.Parameters | 여러 `Parameter`를 가집니다.
-------------------------------------------------------|-----------------------------------------              
-
-### `text` Value Type 사용 예제
-```text
-desc: (  
+```apon
+desc(text): (
     | 여러 라인으로 구성된 문자열은
     | 괄호로 감싸고 수직문자를 각 라인 앞에 붙입니다.
-    | 세 번째 줄입니다.
-    | 수직문자가 시작되면 특수문자 사용이 자유로워집니다.
+    | 이 안에서는 특수문자를 자유롭게 사용할 수 있습니다.
 )
 ```
 
@@ -462,7 +444,7 @@ public class AponReaderTest {
 
 ## APON 라이브러리
 
-현재 APON 라이브러는 Aspectran의 공통 유틸 패키지의 일부로 포함되어 있습니다.
+현재 APON 라이브러는 Aspectran의 공통 유틸 패키지에 포함되어 있습니다.
 
 APON 패키지: **com.aspectran.core.util.apon**
 
