@@ -169,14 +169,6 @@ og_description:             "Aspectran is a lightweight framework for building h
 
 
 
-#-------------------------------------------------------------------
-# Disqus
-# used in _includes/comments
-#-------------------------------------------------------------------
-
-disqus_shortname: aspectran
-
-
 
 #-------------------------------------------------------------------
 # Sass

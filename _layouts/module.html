@@ -17,7 +17,7 @@ layout: default
 
     <dl class="tabs" data-tabs id="module-tabs">
       <dd class="tabs-title is-active"><a href="#overview"><span class="iconfont"></span> GETTING STARTED</a></dd>
-      <dd class="tabs-title" id="reviewsTab"><a href="#reviews"><span class="iconfont"></span> REVIEWS <span class="icon-chat"></span><span class="disqus-comment-count" data-disqus-identifier="{{ page.url }}">0 Comments</span></a></dd>
+      <dd class="tabs-title" id="reviewsTab"><a href="#reviews"><span class="iconfont"></span> REVIEWS <span class="icon-chat"></span><span class="disqus-comment-count">0 Comments</span></a></dd>
     </dl>
 
     <div class="tabs-content" data-tabs-content="module-tabs">
@@ -54,37 +54,6 @@ layout: default
       </div>
 
       <div class="tabs-panel" id="reviews">
-        <div class="row t10">
-          <div class="medium-12 large-10 large-push-1 columns">
-            <div id="disqus_thread"></div>
-          </div>
-        </div>
-        <script type="text/javascript">
-          /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-          var disqus_shortname = '{{ site.disqus_shortname }}';
-          var disqus_identifier = '{{ page.url }}';
-
-          $("#reviewsTab").on("click", function() {
-            if(typeof(disqus_loaded) == "undefined" || !disqus_loaded) {
-              disqus_loaded = true;
-              /* * * DON'T EDIT BELOW THIS LINE * * */
-              (function() {
-                  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-                  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-              })();
-            } else {
-              /* * * DON'T EDIT BELOW THIS LINE * * */
-              (function () {
-              var s = document.createElement('script'); s.async = true;
-              s.type = 'text/javascript';
-              s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-              (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);
-              }());
-            }
-          });
-        </script>
-        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
       </div>
     </div>
 
