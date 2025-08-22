@@ -109,10 +109,12 @@ public class AppConfig {
 package com.example.myapp.controller;
 
 import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.example.myapp.service.MyService;
 
 @Component
+@Bean
 public class MyController {
 
     private final MyService myService;
@@ -202,11 +204,11 @@ public class AppInfo {
 
     private final String appVersion;
     private final String appName;
-    
+
     // public 필드에 AsEL 표현식을 사용하여 외부 설정 값을 주입
     @Value("%{app^description}")
     public String description;
-    
+
     private boolean startup;
 
     // 생성자를 통해 @Value로 외부 설정 값을 주입
@@ -217,17 +219,17 @@ public class AppInfo {
         this.appVersion = appVersion;
         this.appName = appName;
     }
-    
+
     // 수정자(Setter) 메소드에 의한 의존성 주입
     @Value("%{app^startup}")
-    public void setAvoidance(boolean avoidance) {
-        this.avoidance = avoidance;
+    public void setStartup(boolean startup) {
+        this.startup = startup;
     }
 
     public void displayInfo() {
         System.out.println("Version: " + appVersion);
         System.out.println("Name: " + appName);
-        System.out.println("description: " + description);
+        System.out.println("startup: " + startup);
     }
 }
 ```
@@ -237,7 +239,7 @@ public class AppInfo {
 ## 4. 빈 스코프(Bean Scopes) 이해하기
 
 빈 스코프는 빈 인스턴스의 생명주기를 제어합니다. `@Scope` 어노테이션으로 빈의 스코프를 설정할 수 있습니다.
-`@Scope` 어노테이션DMS `@Bean` 어노테이션과 함께 사용되어야 합니다.
+`@Scope` 어노테이션은 `@Bean` 어노테이션과 함께 사용되어야 합니다.
 
 -   `singleton` (기본값): 전체 애플리케이션 컨테이너에 대해 단 하나의 인스턴스만 생성됩니다.
 -   `prototype`: 빈이 요청될 때마다 새로운 인스턴스가 생성됩니다.
@@ -245,6 +247,7 @@ public class AppInfo {
 -   `session`: 각 `Session` 인스턴스에 대해 새로운 인스턴스가 생성됩니다.
 
 ```java
+import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Scope;
 import com.aspectran.core.context.rule.type.ScopeType;
@@ -349,6 +352,7 @@ public class MyProductFactory implements FactoryBean<MyProduct> {
 예를 들어, `ActivityContextAware`는 현재 `ActivityContext`에 대한 접근을 제공합니다.
 
 ```java
+import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.aware.ActivityContextAware;
 import com.aspectran.core.context.ActivityContext;
