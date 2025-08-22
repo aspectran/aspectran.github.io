@@ -68,20 +68,20 @@ AsEL 표현식은 위에서 설명한 토큰 표현식을 OGNL 표현식과 조�
 
 *   **Bean 속성 참조 (`^` 사용)**
     ```java
-    @Value("#{properties^property1}")
-    private String property1;
+    @Value("%{properties^property1}")
+    public String property1;
     ```
 
 *   **여러 토큰 표현식과 OGNL 연산자 조합**
     ```java
     @Value("#{properties^property1} + '/' + #{properties^property2}")
-    private String combinedPath;
+    public String combinedPath;
     ```
 
 *   **토큰 표현식의 값으로 조건부 로직 수행**
     ```java
     @Value("%{app.mode} == 'development'")
-    private boolean isDevelopmentMode;
+    public boolean isDevelopmentMode;
     ```
 
 ## 3. 템플릿 활용
