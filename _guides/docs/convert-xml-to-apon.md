@@ -20,8 +20,8 @@ date: 2015-10-19
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
-                           "https://aspectran.github.io/dtd/aspectran-1.0.dtd">
+<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 8.0//EN"
+                           "https://aspectran.github.io/dtd/aspectran-8.0.dtd">
 
 <aspectran>
 
