@@ -264,7 +264,7 @@ permalink: /aspectran/xml-based-configuration/
     </response>
   </translet>
 
-  <translet name="*" path="/WEB-INF/jsp/**/*.jsp">
+  <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
     <description>
       '/WEB-INF/jsp/' 디렉토리 하위 경로에서 모든 JSP 파일을 찾아서 Translet 등록을 자동으로 합니다.
       viewDispatcher는 defaultResponseRule Aspect에서 지정한 jspViewDispatcher를 사용합니다.
@@ -276,10 +276,10 @@ permalink: /aspectran/xml-based-configuration/
   </translet>
 
   <!-- RESTful 방식의 Translet을 불러들입니다. -->
-  <import file="/WEB-INF/aspectran/config/restful-translets.xml"/>
+  <append file="/WEB-INF/aspectran/config/restful-translets.xml"/>
 
   <!-- 스케쥴러 환경설정을 불러들입니다. -->
-  <import file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
+  <append file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
 
 </aspectran>
 ```
