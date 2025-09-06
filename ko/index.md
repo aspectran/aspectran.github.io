@@ -29,7 +29,7 @@ widget2:
   text: |
     Aspectow는 올인원 웹어플리케이션 서버로써, Aspectran을 기반으로 만들졌습니다. 
 widget3:
-  title: 사용 가이드
+  title: 실용 가이드
   url: /guides/
   image: header_documentation_thumb.jpg
   text: |
@@ -55,7 +55,7 @@ projects:
     repo: https://github.com/aspectran/demo-app
   - subheadline: Aspectran 사용의 실제 사례
     title: JPetStore Demo
-    description: JPetStore는 MyBatis 3, Aspectran 6 위에 구축된 완전한 웹 애플리케이션입니다.
+    description: JPetStore는 MyBatis 3, Aspectran 8 위에 구축된 완전한 웹 애플리케이션입니다.
     thumb_img: examples/pr-jpetstore.png
     url: https://jpetstore.aspectran.com
     repo: https://github.com/aspectran/aspectran-jpetstore
