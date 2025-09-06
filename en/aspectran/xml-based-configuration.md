@@ -5,10 +5,11 @@ sidebar: toc-left
 title: "XML Based Configuration"
 subheadline: "Aspectran Configuration"
 teaser: "Aspectran의 핵심 구성요소에 대해서 설명합니다."
+breadcrumb: true
 permalink: /en/aspectran/xml-based-configuration/
 ---
 
-{% include alert warning='Draft 문서 입니다. 작성된 사항은 변경될 수 있음을 알려둡니다.' %}
+{% include alert warning='계속 작성 중인 문서로서, 아직은 빈약한 내용으로 구성되어 있습니다.' %}
 
 ## 1. 주요 구성요소
 
@@ -37,7 +38,7 @@ permalink: /en/aspectran/xml-based-configuration/
 ***translet***
 : 요청 URI와 맵핑되어 비지니스 로직을 가지고 있는 Action Method를 호출하는 방법 및 응답 컨텐츠를 출력하는 방법을 정의합니다.
 
-***import***
+***append***
 : 다른 설정 파일을 불러오는 방법을 정의합니다.
 
 다음 예제는 XML 기반의 설정 메타데이터의 기본 구조를 보여주기 위해 작성되었습니다.
@@ -46,10 +47,9 @@ permalink: /en/aspectran/xml-based-configuration/
 ***getting-started.xml***
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 1.0//EN"
-                           "https://aspectran.github.io/dtd/aspectran-1.0.dtd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
   <description>
@@ -69,10 +69,9 @@ permalink: /en/aspectran/xml-based-configuration/
       Mask 패턴 "com.aspectran.example.**.*"에 의해 최종적으로 Bean ID는 "sample.SampleAction"이 됩니다.
     </description>
     <filter>
-      exclude: [
-        "com.aspectran.example.common.**.*"
-        "com.aspectran.example.sample.**.*"
-      ]
+        +: com.aspectran.example.common.**.
+        +: com.aspectran.example.sample.**.*
+        -: com.aspectran.example.sample.**.*Service
     </filter>
   </bean>
 
@@ -92,45 +91,33 @@ permalink: /en/aspectran/xml-based-configuration/
     <description>
       multipart/form-data request를 처리하기 위해서 반드시 지정해야 합니다.
     </description>
-    <property>
-      <item name="maxRequestSize" value="10M"/>
-      <item name="tempDirectoryPath" value="/d:/temp"/>
-      <item name="allowedFileExtensions" value=""/>
-      <item name="deniedFileExtensions" value=""/>
-    </property>
+    <property name="maxRequestSize" value="10M"/>
+    <property name="tempDirectoryPath" value="/d:/temp"/>
+    <property name="allowedFileExtensions" value=""/>
+    <property name="deniedFileExtensions" value=""/>
   </bean>
 
-  <bean id="jspViewDispatcher" class="com.aspectran.web.view.JspViewDispatcher" scope="singleton">
+  <bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
     <description>
-      Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다.
+      Register a JSP View Dispatcher.
     </description>
-    <property>
-      <item name="templateFilePrefix">/WEB-INF/jsp/</item>
-      <item name="templateFileSuffix">.jsp</item>
-    </property>
+    <properties>
+      <item name="prefix">/WEB-INF/jsp/</item>
+      <item name="suffix">.jsp</item>
+    </properties>
   </bean>
 
-  <aspect id="defaultRequestRule">
+  <aspect id="webTransletSettings">
     <description>
-      요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다.
-      multipart/form-data request를 처리하기 위해 multipartRequestWrapperResolver를 지정합니다.
+      This aspect is for injecting default settings into translets running in the web environment.
     </description>
-    <joinpoint scope="request"/>
+    <joinpoint>
+      pointcut: {
+        +: /**
+      }
+    </joinpoint>
     <settings>
       <setting name="characterEncoding" value="utf-8"/>
-      <setting name="multipartRequestWrapperResolver" value="multipartRequestWrapperResolver"/>
-    </settings>
-  </aspect>
-
-  <aspect id="defaultResponseRule">
-    <description>
-      요청에 대해 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다.
-      기본 viewDispatcher를 지정합니다.
-    </description>
-    <joinpoint scope="response"/>
-    <settings>
-      <setting name="characterEncoding" value="utf-8"/>
-      <setting name="defaultContentType" value="text/html"/>
       <setting name="viewDispatcher" value="jspViewDispatcher"/>
     </settings>
   </aspect>
@@ -139,36 +126,26 @@ permalink: /en/aspectran/xml-based-configuration/
     <description>
       Translet의 이름이 "/example"로 시작하는 Translet을 실행하는 중에 발생하는 에러 처리 규칙을 정의합니다.
     </description>
-    <joinpoint scope="translet">
-      <pointcut>
-        target: {
-          translet: "/example/*"
-        }
-      </pointcut>
+    <joinpoint>
+      pointcut: {
+        translet: "/example/*"
+      }
     </joinpoint>
     <exception>
       <description>
         에러요인과 응답 컨텐츠의 형식에 따라 처리방식을 다르게 정할 수 있습니다.
         exceptionType을 지정하지 않으면 모든 exception에 반응합니다.
       </description>
-      <responseByContentType exceptionType="java.lang.reflect.InvocationTargetException">
-        <transform type="transform/xml" contentType="text/xml">
+      <thrown type="java.lang.reflect.InvocationTargetException">
           <echo id="result">
-            <item type="map">
-              <value name="errorCode">E0001</value>
-              <value name="message">error occured.</value>
-            </item>
+              <item type="map">
+                  <entry name="errorCode">E0001</entry>
+                  <entry name="message">error occured.</entry>
+              </item>
           </echo>
-        </transform>
-        <transform type="transform/json" contentType="application/json">
-          <echo id="result">
-            <item type="map">
-              <value name="errorCode">E0001</value>
-              <value name="message">error occured.</value>
-            </item>
-          </echo>
-        </transform>
-      </responseByContentType>
+          <transform format="transform/xml" contentType="text/xml"/>
+          <transform format="transform/json" contentType="application/json"/>
+      </thrown>
     </exception>
   </aspect>
 
@@ -178,19 +155,17 @@ permalink: /en/aspectran/xml-based-configuration/
       helloworld.HelloWorldAction 빈에서 echo, helloWorld, counting 메쏘드 호출 전 후로
       환영인사와 작별인사를 건넵니다.
     </description>
-    <joinpoint scope="translet">
-      <pointcut>
-        target: {
-          +: "/example/**/*@helloworld.HelloWorldAction^echo|helloWorld|counting"
-        }
-      </pointcut>
+    <joinpoint>
+      pointcut: {
+        +: "/example/**/*@helloworld.HelloWorldAction^echo|helloWorld|counting"
+      }
     </joinpoint>
     <advice bean="advice.helloworld.HelloWorldAdvice">
       <before>
-        <action method="welcome"/>
+        <invoke method="welcome"/>
       </before>
       <after>
-        <action method="goodbye"/>
+        <invoke method="goodbye"/>
       </after>
     </advice>
   </aspect>
@@ -202,16 +177,14 @@ permalink: /en/aspectran/xml-based-configuration/
       checkCountRange 메쏘드는 카운팅할 숫자의 범위가 적합한지 검사합니다.
       만약 적합하지 않을 경우 안전한 값으로 변경합니다.
     </description>
-    <joinpoint scope="request">
-      <pointcut>
-        target: {
-          +: "/example/counting"
-        }
-      </pointcut>
+    <joinpoint>
+      pointcut: {
+        +: "/example/counting"
+      }
     </joinpoint>
     <advice bean="advice.helloworld.HelloWorldAdvice">
       <after>
-        <action method="checkCountRange"/>
+        <invoke method="checkCountRange"/>
       </after>
     </advice>
   </aspect>
@@ -221,7 +194,7 @@ permalink: /en/aspectran/xml-based-configuration/
       "Hello, World."라는 문구를 텍스트 형식의 컨텐츠로 응답합니다.
       특정 Action을 실행하지 않아도 간단한 텍스트 기반의 컨텐츠를 생산할 수 있습니다.
     </description>
-    <transform type="transform/text" contentType="text/plain">
+    <transform format="transform/text" contentType="text/plain">
       <template>
         Hello, World.
       </template>
@@ -233,9 +206,8 @@ permalink: /en/aspectran/xml-based-configuration/
       helloworld.HelloWorldAction 빈에서 helloWorld 메쏘드를 실행해서 "Hello, World."라는
       문구를 텍스트 형식의 컨텐츠로 응답합니다.
     </description>
-    <transform type="transform/text" contentType="text/plain">
-      <action bean="helloworld.HelloWorldAction" method="helloWorld"/>
-    </transform>
+    <action bean="helloworld.HelloWorldAction" method="helloWorld"/>
+    <transform format="transform/text" contentType="text/plain"/>
   </translet>
 
   <translet name="counting">
@@ -245,40 +217,34 @@ permalink: /en/aspectran/xml-based-configuration/
       checkCountRangeAdvice Aspect가 작동됩니다.
     </description>
     <request>
-      <attribute>
-        <item name="from"/>
-        <item name="to"/>
-      </attribute>
+      <attribute name="from"/>
+      <attribute name="to"/>
     </request>
     <content>
       <action id="count1" bean="helloworld.HelloWorldAction" method="counting">
-        <arguments>
-          <item valueType="int">@{from}</item>
-          <item valueType="int">@{to}</item>
-        </arguments>
+        <argument valueType="int">@{from}</argument>
+        <argument valueType="int">@{to}</argument>
       </action>
     </content>
     <response>
-      <transform type="transform/xml"/>
+      <transform format="transform/xml"/>
     </response>
   </translet>
 
-  <translet name="*" path="/WEB-INF/jsp/**/*.jsp">
+  <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
     <description>
       '/WEB-INF/jsp/' 디렉토리 하위 경로에서 모든 JSP 파일을 찾아서 Translet 등록을 자동으로 합니다.
-      viewDispatcher는 defaultResponseRule Aspect에서 지정한 jspViewDispatcher를 사용합니다.
+      viewDispatcher는 webTransletSettings Aspect에서 지정한 jspViewDispatcher를 사용합니다.
       검색된 jsp 파일의 경로는 template 요소의 file 속성 값으로 지정됩니다.
     </description>
-    <dispatch>
-      <template/>
-    </dispatch>
+    <dispatch name="/"/>
   </translet>
 
   <!-- RESTful 방식의 Translet을 불러들입니다. -->
-  <import file="/WEB-INF/aspectran/config/restful-translets.xml"/>
+  <append file="/WEB-INF/aspectran/config/restful-translets.xml"/>
 
   <!-- 스케쥴러 환경설정을 불러들입니다. -->
-  <import file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
+  <append file="/WEB-INF/aspectran/config/example-scheduler.xml"/>
 
 </aspectran>
 ```
@@ -291,55 +257,31 @@ permalink: /en/aspectran/xml-based-configuration/
 
 `settings` 엘리먼트는 다음과 같은 Aspectran의 기본 설정 항목을 가질 수 있습니다.
 
-**transletNamePattern**
-: Translet 이름의 패턴. Translet 이름 문자열은 `<servlet-mapping>` 의 `<url-pattern>`의 값으로 시작해야 접근이 가능합니다.
-
 **transletNamePrefix**
-: `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다.
+: Translet 이름에 자동으로 추가되는 접두사를 지정합니다.
 
 **transletNameSuffix**
-: `transletNamePattern` 대신 prefix와 suffix를 지정할 수 있습니다.
-
-**transletInterfaceClass**
-: 사용자 정의 Translet의 인터페이스 클래스를 지정합니다.
-
-**nullableContentId**
-: `<content>`의 id 속성을 생략할 수 있는지 여부를 지정합니다.
-
-**nullableActionId**
-: `<action>`의 id 속성을 생략할 수 있는지 여부를 지정합니다.
-
-**beanProxifier**
-: 자바 바이트코드 생성기(Byte Code Instumentation, BCI) 라이브러리를 지정합니다.
+: Translet 이름에 자동으로 추가되는 접미사를 지정합니다.
 
 **pointcutPatternVerifiable**
-: pointcut 패턴의 유효성을 체크할지 여부를 지정합니다.
+: AOP 포인트컷 패턴의 구문과 유효성을 검증할지 여부를 지정합니다.
 
-기본 설정 항목 별로 사용가능한 값과 기본 값은 다음과 같습니다.
+**defaultTemplateEngineBean**
+: 특정 엔진을 지정하지 않은 경우 변환 작업에 기본적으로 사용될 템플릿 엔진의 빈 ID를 지정합니다.
 
-| 기본 설정 항목 | 사용가능한 값 | 기본 값 |
-|---|---|---|
-| **transletNamePattern** | /example/*.do | 설정하지 않음 |
-| **transletNamePrefix** | /example/ | 설정하지 않음 |
-| **transletNameSuffix** | .do | 설정하지 않음 |
-| **transletInterfaceClass** | com.aspectran.example.common.MyTranslet | 설정하지 않으면 내장 Translet을 사용 |
-| **transletImplementClass** | com.aspectran.example.common.MyTransletImpl | 설정하지 않으면 내장 Translet을 사용 |
-| **nullableContentId** | true, false | true |
-| **nullableActionId** | true, false | true |
-| **beanProxifier** | javassist, cglib, jdk | javassist |
-| **pointcutPatternVerifiable** | true, false | true |
+**defaultSchedulerBean**
+: 특정 스케줄러가 참조되지 않을 때 모든 스케줄 규칙에 기본적으로 사용될 스케줄러의 빈 ID를 지정합니다.
+
 
 기본 설정 항목을 모두 사용한 `settings` 엘리먼트의 예제입니다.
 
 ```xml
 <settings>
-    <setting name="transletNamePattern" value="/example/*"/>
-    <setting name="transletInterfaceClass" value="com.aspectran.example.common.MyTranslet"/>
-    <setting name="transletImplementClass" value="com.aspectran.example.common.MyTransletImpl"/>
-    <setting name="nullableContentId" value="true"/>
-    <setting name="nullableActionId" value="true"/>
-    <setting name="beanProxifier" value="javassist"/>
+    <setting name="transletNamePrefix" value="/example"/>
+    <setting name="transletNameSuffix" value=".do"/>
     <setting name="pointcutPatternVerifiable" value="true"/>
+    <setting name="defaultTemplateEngineBean" value="scheduler1"/>
+    <setting name="defaultSchedulerBean" value="thymeleaf"/>
 </settings>
 ```
 

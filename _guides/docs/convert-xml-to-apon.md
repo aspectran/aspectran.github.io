@@ -19,10 +19,9 @@ date: 2015-10-19
 ### getting-started.xml
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//aspectran.com//DTD Aspectran 8.0//EN"
-                           "https://aspectran.github.io/dtd/aspectran-8.0.dtd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
     <description>
@@ -241,9 +240,7 @@ date: 2015-10-19
             viewDispatcher는 defaultResponseRule Aspect에서 지정한 jspViewDispatcher를 사용합니다.
             검색된 jsp 파일의 경로는 template 요소의 file 속성 값으로 지정됩니다.
         </description>
-        <dispatch>
-            <template/>
-        </dispatch>
+        <dispatch name="/"/>
     </translet>
 
     <!-- RESTful 방식의 Translet을 불러들입니다. -->
