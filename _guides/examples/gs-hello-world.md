@@ -32,9 +32,9 @@ The simplest configuration for printing "Hello World!" can be written as:
 [***gs-hello-world/app/config/app-config.xml***](https://github.com/aspectran/gs-hello-world/blob/master/app/config/app-config.xml)
 
 ```xml{% raw %}
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 6.0//EN"
-        "https://aspectran.github.io/dtd/aspectran-6.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
     <description style="apon">
@@ -52,7 +52,7 @@ The simplest configuration for printing "Hello World!" can be written as:
             |
             |   "Hello, World!" will be printed on your console.
         </description>
-        <transform type="transform/text">
+        <transform format="transform/text">
             <template style="apon">
                 |
                 |   Hello, World!
@@ -67,7 +67,7 @@ The simplest configuration for printing "Hello World!" can be written as:
             |   "Hello, World!" with ANSI escape codes will be printed
             |   on your console.
         </description>
-        <transform type="transform/text">
+        <transform format="transform/text">
             <template style="apon">
                 |
                 |   {{bg:green}}                         {{off}}
@@ -101,7 +101,7 @@ Here we will run it through *Aspectran Shell* in the console environment.
 First, download the ZIP file through the following link and extract it to the appropriate path.
 {% include label-link-box label="Download ZIP" href="https://github.com/aspectran/gs-hello-world/archive/master.zip" %}
 
-This Hello World application can be run in a console environment on Windows, Unix/Linux and Mac OS.  
+This Hello World application can be run in a console environment on Windows, Unix/Linux and macOS.  
 Open the console and perform the following steps.
 
 1. Go to the path `gs-hello-world-master/app/bin`.

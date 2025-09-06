@@ -19,10 +19,9 @@ category: examples
 ## root-configuration.xml
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
-    "https://aspectran.github.io/dtd/aspectran-4.dtd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
   <description>
@@ -31,7 +30,7 @@ category: examples
 
   <!-- 기본 설정 -->
   <settings>
-    <setting name="transletNamePattern" value="/gs-rest-service/*"/>
+    <setting name="transletNamePrefix" value="/gs-rest-service"/>
   </settings>
 
   <bean scan="sample.*Dao">
@@ -50,47 +49,41 @@ category: examples
     <description>
       JSP View Dispatcher를 등록합니다.
     </description>
-    <properties>
-      <item name="prefix">/WEB-INF/jsp/</item>
-      <item name="suffix">.jsp</item>
-    </properties>
+    <property name="prefix">/WEB-INF/jsp/</property>
+    <property name="suffix">.jsp</property>
   </bean>
 
   <aspect id="transletSettings">
     <description>
       요청 정보를 분석 및 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다.
     </description>
-    <joinpoint type="translet"/>
     <settings>
       <setting name="characterEncoding" value="utf-8"/>
-      <setting name="contentEncoding" value="gzip"/>
       <setting name="viewDispatcher" value="jspViewDispatcher"/>
     </settings>
   </aspect>
 
   <bean id="corsProcessor" class="com.aspectran.web.support.cors.DefaultCorsProcessor">
-    <properties>
-      <item name="allowedOrigins" type="set">
-        <value>https://www.aspectran.com</value>
-        <value>https://backend.aspectran.com</value>
-        <value>https://backend2.aspectran.com</value>
-      </item>
-      <item name="allowedMethods" type="set">
-        <value>GET</value>
-        <value>POST</value>
-        <value>PATCH</value>
-        <value>PUT</value>
-        <value>DELETE</value>
-        <value>HEAD</value>
-        <value>OPTIONS</value>
-      </item>
-      <item name="maxAgeSeconds" value="360" valueType="int"/>
-      <item name="exposedHeaders" value="Location"/>
-    </properties>
+    <property name="allowedOrigins" type="set">
+      <value>https://www.aspectran.com</value>
+      <value>https://backend.aspectran.com</value>
+      <value>https://backend2.aspectran.com</value>
+    </property>
+    <property name="allowedMethods" type="set">
+      <value>GET</value>
+      <value>POST</value>
+      <value>PATCH</value>
+      <value>PUT</value>
+      <value>DELETE</value>
+      <value>HEAD</value>
+      <value>OPTIONS</value>
+    </property>
+    <property name="maxAgeSeconds" value="360" valueType="int"/>
+    <property name="exposedHeaders" value="Location"/>
   </bean>
 
   <aspect id="corsProcessorAspect">
-    <joinpoint type="translet">
+    <joinpoint>
       methods: [
         GET
         POST
@@ -102,17 +95,17 @@ category: examples
         Origin
       ]
       pointcut: {
-        +: /**/*
+        +: /**
       }
     </joinpoint>
     <advice bean="corsProcessor">
       <before>
-        <action method="processActualRequest"/>
+        <invoke method="processActualRequest"/>
       </before>
     </advice>
     <exception>
       <thrown type="com.aspectran.web.support.cors.CorsException">
-        <transform type="transform/text">
+        <transform format="transform/text">
           <template engine="builtin">
             @{CORS.HTTP_STATUS_CODE}: @{CORS.HTTP_STATUS_TEXT}
           </template>
@@ -121,11 +114,11 @@ category: examples
     </exception>
   </aspect>
 
-  <translet name="/**/*" method="OPTIONS">
+  <translet name="/**" method="OPTIONS">
     <action bean="corsProcessor" method="processPreflightRequest"/>
     <exception>
       <thrown type="com.aspectran.web.support.cors.CorsException">
-        <transform type="transform/text">
+        <transform format="transform/text">
           <template engine="builtin">
             @{CORS.HTTP_STATUS_CODE}: @{CORS.HTTP_STATUS_TEXT}
           </template>
@@ -142,10 +135,9 @@ category: examples
 ## customers-translets.xml
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran Configuration 4.0//EN"
-        "https://aspectran.github.io/dtd/aspectran-4.dtd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
     <description>
@@ -157,7 +149,7 @@ category: examples
         요청 URI로부터 ${msg} 부분을 msg 파라메터로 받아서
         텍스트 문서 형식으로 응답을 처리합니다.
       </description>
-      <transform type="transform/text">
+      <transform format="transform/text">
         <template>
           Message: ${msg}
         </template>
@@ -173,7 +165,7 @@ category: examples
         전체 고객 목록을 조회합니다.
       </description>
       <action id="customers" bean="class:sample.CustomerAction" method="getCustomerList"/>
-      <transform type="transform/json" pretty="true"/>
+      <transform format="transform/json" pretty="true"/>
     </translet>
 
     <translet name="customers/${id:guest}" method="GET">
@@ -182,7 +174,7 @@ category: examples
         고객번호를 지정하지 않으면 고객번호가 "guest"인 고객의 상세정보를 조회합니다.
       </description>
       <action id="customer" bean="class:sample.CustomerAction" method="getCustomer"/>
-      <transform type="transform/json" pretty="true"/>
+      <transform format="transform/json" pretty="true"/>
     </translet>
 
     <translet name="customers" method="POST">
@@ -190,7 +182,7 @@ category: examples
         고객정보를 등록합니다.
       </description>
       <action bean="class:sample.CustomerAction" method="insertCustomer"/>
-      <transform type="transform/json" pretty="true"/>
+      <transform format="transform/json" pretty="true"/>
     </translet>
 
     <translet name="customers/${id}" method="PUT">
@@ -198,7 +190,7 @@ category: examples
         고객정보를 수정합니다.
       </description>
       <action bean="class:sample.CustomerAction" method="updateCustomer"/>
-      <transform type="transform/json" pretty="true"/>
+      <transform format="transform/json" pretty="true"/>
     </translet>
 
     <translet name="customers/${id}/approve/${approved}" method="PUT">
@@ -207,7 +199,7 @@ category: examples
         "${approved}"는 승인여부에 해당하는 값을 지정합니다. (true or false)
       </description>
       <action id="result" bean="class:sample.CustomerAction" method="approve"/>
-      <transform type="transform/json" pretty="true"/>
+      <transform format="transform/json" pretty="true"/>
     </translet>
 
     <translet name="customers/${id}/approve" method="GET">
@@ -215,7 +207,7 @@ category: examples
         id를 파라메터로 받아서 해당 id를 가진 고객에 대하여 승인여부를 조회합니다.
       </description>
       <action id="result" bean="class:sample.CustomerAction" method="isApproved"/>
-      <transform type="transform/json" pretty="true"/>
+      <transform format="transform/json" pretty="true"/>
     </translet>
 
     <translet name="customers/${id}" method="DELETE">
@@ -223,7 +215,7 @@ category: examples
         id를 파라메터로 받아서 해당 id를 가진 고객의 정보를 삭제합니다.
       </description>
       <action id="result" bean="class:sample.CustomerAction" method="deleteCustomer"/>
-      <transform type="transform/json" pretty="true"/>
+      <transform format="transform/json" pretty="true"/>
     </translet>
 
 </aspectran>
@@ -318,7 +310,7 @@ public class CustomerDao {
 
   public CustomerDao() {
     // 10명의 고객을 미리 생성합니다.
-    customerMap = new ConcurrentSkipListMap<Integer, Customer>();
+    customerMap = new ConcurrentSkipListMap<>();
 
     for(int i = 1; i <= 10; i++) {
       Customer customer = new Customer();
@@ -355,7 +347,7 @@ public class CustomerDao {
   public List<Customer> getCustomerList() {
     log.info("전체 고객 목록을 조회합니다.");
 
-    List<Customer> customerList = new ArrayList<Customer>(customerMap.values());
+    List<Customer> customerList = new ArrayList<>(customerMap.values());
 
     log.info(customerList.size() + "명의 고객이 조회되었습니다.");
 
