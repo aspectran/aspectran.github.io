@@ -20,10 +20,10 @@
       </div>
       <div class="top-bar-left">
         <ul class="dropdown menu left" data-dropdown-menu data-close-on-click-inside="false">
-          {% if page.lang == 'en' %}
-            {% assign navigation_data = site.data.navigation_en %}
+          {% if page.lang == 'ko' %}
+            {% assign navigation_data = site.data.navigation_ko %}
           {% else %}
-            {% assign navigation_data = site.data.navigation %}
+            {% assign navigation_data = site.data.navigation_en %}
           {% endif %}
 
           {% for item in navigation_data %}

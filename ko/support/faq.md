@@ -10,7 +10,7 @@ header:
   caption: "Music while coding"
 breadcrumb: true
 comments: true
-permalink: /support/faq/
+permalink: /ko/support/faq/
 ---
 
 <div class="callout info radius">

@@ -3,7 +3,7 @@
 [![Gem Version](https://img.shields.io/gem/v/github-pages.svg)](https://rubygems.org/gems/github-pages)
 ![aspectran](https://aspectran.com/images/header_aspectran.png)
 
-This is repo for [Aspectran](https://www.aspectran.com) website.
+This is repo for [Aspectran](https://aspectran.com/) website.
 
 If you find a bug, typo or that something is missing on website or in the docs feel free to [create an issue](https://github.com/aspectran/aspectran.github.io/issues/new) you can also fork and fix it yourself I will be happy to merge your Pull Request.
 

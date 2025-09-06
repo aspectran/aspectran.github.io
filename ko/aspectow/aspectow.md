@@ -10,7 +10,7 @@ header:
   caption: Ultimate Raspberry Pi Backend Server
 breadcrumb: true
 comments: false
-permalink: /aspectow/
+permalink: /ko/aspectow/
 ---
 
 ```

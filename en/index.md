@@ -56,7 +56,7 @@ projects:
     thumb_img: examples/pr-skylark.png
     url: https://petclinic.aspectran.com
     repo: https://github.com/aspectran/aspectran-petclinic
-permalink: /en/
+permalink: /
 ---
 {% comment %}
 <div id="videoModal" class="reveal-modal large" data-reveal="">

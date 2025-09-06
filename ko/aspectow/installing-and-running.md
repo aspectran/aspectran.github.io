@@ -7,7 +7,7 @@ title: "Aspectow 설치 및 실행"
 subheadline: "All-in-one web application server"
 teaser: "이 학습서는 Aspectran을 기반으로 제작된 올인원 웹애플리케이션 서버인 Aspectow를 다운로드, 설치 및 실행하는 방법을 안내합니다."
 breadcrumb: true
-permalink: /aspectow/installing-and-running/
+permalink: /ko/aspectow/installing-and-running/
 ---
 
 ## 1. 준비 사항

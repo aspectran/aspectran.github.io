@@ -7,7 +7,7 @@ subheadline: "Frequently Asked Questions about Aspectran"
 teaser: "We provide frequently asked questions and answers in advance."
 breadcrumb: true
 comments: true
-permalink: /en/support/faq/
+permalink: /support/faq/
 ---
 
 <div class="callout info radius">

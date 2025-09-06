@@ -18,7 +18,7 @@ widget0:
   image: header_aspectran_thumb.png
 widget1:
   title: Aspectran
-  url: '/aspectran/'
+  url: /aspectran/
   image: header_gettingstarted_thumb.jpg
   text: |
     Aspectran은 고성능 Java 애플리케이션을 구축하기 위한 경량 프레임워크로써, 직관적이고 유연한 개발 환경을 제공합니다. 
@@ -65,7 +65,7 @@ projects:
     thumb_img: examples/pr-skylark.png
     url: https://petclinic.aspectran.com
     repo: https://github.com/aspectran/aspectran-petclinic
-permalink: /
+permalink: /ko/
 ---
 {% comment %}
 <div id="videoModal" class="reveal-modal large" data-reveal="">

@@ -80,10 +80,10 @@ layout: default
 
     {% if page.sidebar == "right" %}
     <div class="t30 large-4 cell">
-      {% if page.lang == "en" %}
-        {% include _sidebar_en.html %}
+      {% if page.lang == 'ko' %}
+        {% include _sidebar_ko.html %}
       {% else %}
-        {% include _sidebar.html %}
+        {% include _sidebar_en.html %}
       {% endif %}
     </div>
     {% endif %}

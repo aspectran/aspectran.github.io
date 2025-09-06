@@ -7,7 +7,7 @@ title: "Aspectran 시작하기"
 subheadline: ""
 teaser: "Aspectran은 Java 8 이상을 필요로 하며, Maven을 통해 빌드 및 배포됩니다."
 breadcrumb: true
-permalink: /aspectran/getting-started/
+permalink: /ko/aspectran/getting-started/
 ---
 
 ## 요구 사항

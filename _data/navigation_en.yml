@@ -1,11 +1,11 @@
 - title: Aspectran
-  url: "/en/aspectran/"
+  url: "/aspectran/"
   side: left
   dropdown:
   - title: "About Aspectran"
-    url: "/en/aspectran/"
+    url: "/aspectran/"
   - title: "Getting Started"
-    url: "/en/aspectran/getting-started/"
+    url: "/aspectran/getting-started/"
   - title: "XML Based Configuration"
     url: "/aspectran/xml-based-configuration/"
   - title: "Java Based Configuration"
@@ -16,18 +16,18 @@
     url: "/aspectran/embedded-aspectran/"
 
 - title: Aspectow
-  url: "/en/aspectow/"
+  url: "/aspectow/"
   side: left
   dropdown:
   - title: "About Aspectow"
-    url: "/en/aspectow/"
+    url: "/aspectow/"
   - title: "Installing and Running Aspectow"
-    url: "/en/aspectow/installing-and-running/"
+    url: "/aspectow/installing-and-running/"
 
 - title: Guides
-  url: "/en/guides/"
+  url: "/guides/"
   side: left
 
 - title: Projects
-  url: "/en/projects/"
+  url: "/projects/"
   side: left

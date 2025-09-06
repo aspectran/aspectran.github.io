@@ -6,7 +6,7 @@ title: "웹 활동 서블릿 구성"
 subheadline: ""
 teaser: "Aspectran을 서블릿 컨테이너에 서블릿으로 등록함으로써, 전통적인 웹애플리케이션을 구축하는 데 사용할 수 있습니다."
 breadcrumb: true
-permalink: /aspectran/web-activity-servlet-configuration/
+permalink: /ko/aspectran/web-activity-servlet-configuration/
 ---
 
 {% include alert warning='계속 작성 중인 문서로서, 아직은 빈약한 내용으로 구성되어 있습니다.' %}

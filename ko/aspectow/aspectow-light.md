@@ -7,7 +7,7 @@ title: "Aspectow Light Edition"
 subheadline: "Lightweight web application server"
 teaser: "Aspectow Light Edition is a very lightweight web application server that is primarily useful for building REST API servers."
 breadcrumb: true
-permalink: /aspectow/aspectow-light/
+permalink: /ko/aspectow/aspectow-light/
 ---
 
 ## 1. 시스템 요구사항

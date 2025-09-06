@@ -7,7 +7,7 @@ title: "Getting Started with Aspectran"
 subheadline: ""
 teaser: "Aspectran requires Java 8 or higher, and is built and deployed using Maven."
 breadcrumb: true
-permalink: /en/aspectran/getting-started/
+permalink: /aspectran/getting-started/
 ---
 
 ## Requirements

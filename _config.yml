@@ -49,10 +49,10 @@ logo_footer: "aspectran-site-logo.png"
 
 # The language setting is used in /_includes/_head.html for html-settings
 languages:
-  'ko': '한국어'
   'en': 'English'
-lang_order: ['ko', 'en']
-default_lang: 'ko'
+  'ko': '한국어'
+lang_order: ['en', 'ko']
+default_lang: 'en'
 
 # Handling Reading
 safe: false

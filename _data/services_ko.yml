@@ -2,8 +2,8 @@
 
 - name: "자주 묻는 질문과 답변"
   title: "자주 묻는 질문과 답변"
-  url: "/support/faq/"
+  url: "/ko/support/faq/"
 
 - name: "고객 문의"  
   title: "고객 문의"
-  url: "/support/contact/"
+  url: "/ko/support/contact/"

@@ -2,8 +2,8 @@
 
 - name: "FAQ"
   title: "Frequently Asked Questions about Aspectran"
-  url: "/en/support/faq/"
+  url: "/support/faq/"
 
 - name: "Contact Us"  
   title: "Contact Us"
-  url: "/en/support/contact/"
+  url: "/support/contact/"
