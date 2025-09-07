@@ -10,4 +10,4 @@ permalink: /search/
 noindex: true
 ---
 
-{% include _google-search-form.html %}
+{% include _google-search-form.liquid %}

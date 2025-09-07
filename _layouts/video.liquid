@@ -4,7 +4,7 @@ format: video
 ---
 <section itemscope itemtype="https://schema.org/Article">
 
-{% include _masthead.html %}
+{% include _masthead.liquid %}
 
 <div class="grid-x grid-padding-x">
   <div class="grid-x">
@@ -33,7 +33,7 @@ format: video
 
             {{ content }}
             {% if page.show_meta == true %}
-            {% include _meta_information.html %}
+            {% include _meta_information.liquid %}
             {% endif %}
           </div>
         </div><!-- /.grid-x -->

@@ -2,7 +2,7 @@
 layout: default
 ---
 
-{% include _forkme-ribbon.html %}
+{% include _forkme-ribbon.liquid %}
 
 <div id="masthead">
   <div class="grid-container">
@@ -15,16 +15,16 @@ layout: default
     </div>
     <div class="grid-x grid-padding-x">
       <div class="medium-6 large-3 cell b10">
-        {% include _frontpage-widget.html widget=page.widget1 %}
+        {% include _frontpage-widget.liquid widget=page.widget1 %}
       </div>
       <div class="medium-6 large-3 cell b10">
-        {% include _frontpage-widget.html widget=page.widget2 %}
+        {% include _frontpage-widget.liquid widget=page.widget2 %}
       </div>
       <div class="medium-6 large-3 cell b10">
-        {% include _frontpage-widget.html widget=page.widget3 %}
+        {% include _frontpage-widget.liquid widget=page.widget3 %}
       </div>
       <div class="medium-6 large-3 cell b10">
-        {% include _frontpage-widget.html widget=page.widget4 %}
+        {% include _frontpage-widget.liquid widget=page.widget4 %}
       </div>
     </div>
   </div>
@@ -117,9 +117,9 @@ layout: default
     </div>
     <div class="large-4 cell t30">
       {% if page.lang == 'ko' %}
-        {% include _sidebar_ko.html %}
+        {% include _sidebar_ko.liquid %}
       {% else %}
-        {% include _sidebar_en.html %}
+        {% include _sidebar_en.liquid %}
       {% endif %}
     </div>
   </div>

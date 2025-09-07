@@ -3,7 +3,7 @@ layout: default
 ---
 <section itemscope itemtype="https://schema.org/Article">
 
-{% include _masthead.html %}
+{% include _masthead.liquid %}
 
 <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
 {% if page.format contains "plate" %}
@@ -14,11 +14,11 @@ layout: default
   <div class="grid-x grid-padding-x">
     {% if page.sidebar == "toc" %}
     <div class="t30 large-3 large-push-9 cell">
-      {% include _sidebar-toc.html %}
+      {% include _sidebar-toc.liquid %}
     </div>
     {% elsif page.sidebar == "toc-left" %}
     <div class="t30 large-3 cell">
-      {% include _sidebar-toc.html side="left" %}
+      {% include _sidebar-toc.liquid side="left" %}
     </div>
     {% endif %}
 
@@ -59,14 +59,14 @@ layout: default
         </span>
 
         {% if page.show_meta == true %}
-        {% include _meta_information.html %}
+        {% include _meta_information.liquid %}
         {% endif %}
 
       </article>
 
       {% if page.comments == true %}
       <div class="t50">
-        {% include _comments.html %}
+        {% include _comments.liquid %}
       </div>
       {% endif %}
 
@@ -74,16 +74,16 @@ layout: default
 
     {% if page.sidebar == "left" %}
     <div class="t30 large-4 cell large-pull-8">
-      {% include _sidebar.html %}
+      {% include _sidebar.liquid %}
     </div>
     {% endif %}
 
     {% if page.sidebar == "right" %}
     <div class="t30 large-4 cell">
       {% if page.lang == 'ko' %}
-        {% include _sidebar_ko.html %}
+        {% include _sidebar_ko.liquid %}
       {% else %}
-        {% include _sidebar_en.html %}
+        {% include _sidebar_en.liquid %}
       {% endif %}
     </div>
     {% endif %}
