@@ -2,18 +2,16 @@
   url: "/aspectran/"
   side: left
   dropdown:
-  - title: "About Aspectran"
-    url: "/aspectran/"
-  - title: "Getting Started"
+  - title: "Why Aspectran"
+    url: "/why-aspectran/"
+  - title: "Aspectran Overview"
+    url: "/aspectran/overview/"
+  - title: "Aspectran Getting Started"
     url: "/aspectran/getting-started/"
-  - title: "XML Based Configuration"
-    url: "/aspectran/xml-based-configuration/"
-  - title: "Java Based Configuration"
-    url: "/aspectran/java-based-configuration/"
-  - title: "Web Activity Servlet Configuration"
-    url: "/aspectran/web-activity-servlet-configuration/"
-  - title: "Embedded Aspectran"
-    url: "/aspectran/embedded-aspectran/"
+  - title: "Aspectran User Guide"
+    url: "/aspectran/user-guide/"
+  - title: "Aspectran Architecture"
+    url: "/aspectran/architecture/"
 
 - title: Aspectow
   url: "/aspectow/"
@@ -31,3 +29,7 @@
 - title: Projects
   url: "/projects/"
   side: left
+
+- title: Docs
+  url: "/docs/"
+  side: right
