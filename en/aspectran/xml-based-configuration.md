@@ -1,9 +1,10 @@
 ---
+lang: en
 layout: page
 format: "plate solid article"
 sidebar: toc-left
 title: "XML Based Configuration"
-subheadline: "Aspectran Configuration"
+headline: "Aspectran Configuration"
 teaser: "Aspectran의 핵심 구성요소에 대해서 설명합니다."
 breadcrumb: true
 permalink: /aspectran/xml-based-configuration/

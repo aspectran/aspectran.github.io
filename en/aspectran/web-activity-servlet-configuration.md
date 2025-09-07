@@ -1,12 +1,13 @@
 ---
+lang: en
 layout: page
 format: "plate solid article"
 sidebar: toc-left
 title: "Run as a servlet"
-subheadline: ""
+headline: ""
 teaser: "Aspectran을 서블릿 컨테이너에 서블릿으로 등록함으로써, 전통적인 웹애플리케이션을 구축하는 데 사용될 수도 있습니다."
 breadcrumb: true
-permalink: /en/web-activity-servlet-configuration/
+permalink: /web-activity-servlet-configuration/
 ---
 
 ## 1. 서블릿 컨테이너

@@ -3,7 +3,7 @@ lang: en
 layout: page
 format: plate margin
 title: FAQ
-subheadline: "Frequently Asked Questions about Aspectran"
+headline: "Frequently Asked Questions about Aspectran"
 teaser: "We provide frequently asked questions and answers in advance."
 breadcrumb: true
 comments: true

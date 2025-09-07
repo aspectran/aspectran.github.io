@@ -2,7 +2,7 @@
 layout: module
 format: article
 title:  HttpAccessControlAllowOriginFilter
-subheadline: Aspectran Modules - HTTP
+headline: Aspectran Modules - HTTP
 teaser: Enabling Cross Origin Requests for a RESTful Web Service
 category: HTTP
 download:

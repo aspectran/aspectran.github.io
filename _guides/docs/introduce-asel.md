@@ -1,7 +1,7 @@
 ---
 layout: page
 format: plate article
-subheadline: Aspectran Expression Language
+headline: Aspectran Expression Language
 title:  AsEL을 소개합니다.
 teaser: |
   AsEL은 Aspectran Expression Language의 약자로, Aspectran 프레임워크에서 객체가 가진 값을 동적으로 평가하기 위해 사용되는 표현 언어입니다.

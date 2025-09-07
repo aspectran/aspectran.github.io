@@ -3,7 +3,7 @@ lang: en
 layout: page
 sidebar: right
 title: "About Aspectow"
-subheadline: "What is Aspectow?"
+headline: "What is Aspectow?"
 teaser: "Aspectow is an all-in-one web application server built on Aspectran."
 header:
   image_fullwidth: header_guides.jpg

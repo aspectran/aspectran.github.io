@@ -2,7 +2,7 @@
 layout: module
 format: plate article
 title:  MyBatis support for Aspectran
-subheadline: Aspectran Modules - ORM
+headline: Aspectran Modules - ORM
 teaser: MyBatis와 연동하기 위한 모듈입니다. Aspectran의 AOP 기능을 활용하면 MyBatis 트랜잭션(transaction)을 완벽히 처리할 수 있습니다.
 category: ORM
 download:

@@ -50,8 +50,9 @@
       }
     });
     /* google search */
+    {% capture google_search_site %}https://aspectran.com/{% endcapture %}
     $("form[name=google_quick_search]").submit(function(event) {
-      window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ site.url | cgi_escape }}');
+      window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ google_search_site | cgi_escape }}');
       event.preventDefault();
     });
   });
@@ -61,9 +62,9 @@
 <script>
   $(function() {
     $("#masthead h1, article h1, article h2, article h3, article h4, article h5, article h6").each(function(index, item) {
-      var tagn = item.localName;
-      var anchor = "top-of-page";
-      if (tagn != "h1") {
+      let tagn = item.localName;
+      let anchor = "top-of-page";
+      if (tagn !== "h1") {
         anchor = "anchor-" + (index + 1);
         $(this).before("<a class='toc-anchor " + anchor + "' id='" + anchor + "' name='" + anchor + "'></a>");
       }

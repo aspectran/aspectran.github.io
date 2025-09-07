@@ -2,7 +2,7 @@
 layout: module
 format: plate article
 title:  JSON Writer
-subheadline: Aspectran Modules - Utility
+headline: Aspectran Modules - Utility
 teaser: |
   Java Object를 JSON(JavaScript Object Notation) 형식의 문자열로 변환하는 클래스입니다.
   별도의 JSON 라이브러리를 필요로 하지 않고, 변환 속도가 상당히 빠른 것이 특징입니다.

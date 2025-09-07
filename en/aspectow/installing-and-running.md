@@ -4,7 +4,7 @@ layout: page
 format: "plate solid article"
 sidebar: toc-left
 title: "Installing and Running Aspectow"
-subheadline: "All-in-one web application server"
+headline: "All-in-one web application server"
 teaser: "This tutorial will walk you through how to download, install and run Aspectow – an all-in-one web application server based on Aspectran."
 breadcrumb: true
 permalink: /aspectow/installing-and-running/

@@ -4,7 +4,7 @@ layout: page
 format: "plate solid article"
 sidebar: toc-left
 title: "Aspectow Enterprise Edition"
-subheadline: "Ideal for building enterprise web application servers"
+headline: "Ideal for building enterprise web application servers"
 teaser: "Aspectow Enterprise Edition is an optimized solution for building enterprise web applications."
 breadcrumb: true
 permalink: /aspectow/aspectow-enterprise/

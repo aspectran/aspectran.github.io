@@ -1,7 +1,7 @@
 ---
 layout: page
 format: plate article
-subheadline: Aspectran Beans
+headline: Aspectran Beans
 title:  Aspectran Beans 구조 분석
 teaser: |
    Aspectran은 강력한 DI 개념을 기반으로, 경량성과 속도라는 자신만의 독자적인 가치를 구현하고 있습니다.

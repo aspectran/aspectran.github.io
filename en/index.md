@@ -32,25 +32,25 @@ widget4:
   text: |
     We are developing useful applications based on Aspectran.
 projects:
-  - subheadline: Working examples of using Aspectran
+  - headline: Working examples of using Aspectran
     title: Aspectow AppMon
     description: Aspectow AppMon provides an integrated view to observe logs and events of Aspectran-based application servers in real time.
     thumb_img: examples/pr-log-relayer.png
     url: https://public.aspectran.com/monitoring/
     repo: https://github.com/aspectran/aspectow-appmon
-  - subheadline: Working examples of using Aspectran
+  - headline: Working examples of using Aspectran
     title: Aspectran Demo Site
     description: This site is a collection of reference applications created to show how to develop Aspectran applications following the recommended best practices.
     thumb_img: examples/pr-demo-site.png
     url: https://demo.aspectran.com
     repo: https://github.com/aspectran/demo-app
-  - subheadline: Working examples of using Aspectran
+  - headline: Working examples of using Aspectran
     title: JPetStore Demo
     description: JPetStore is a full web application built on top of MyBatis 3, Aspectran 6.
     thumb_img: examples/pr-jpetstore.png
     url: https://jpetstore.aspectran.com
     repo: https://github.com/aspectran/aspectran-jpetstore
-  - subheadline: A full-stack sample web application built on top of Aspectran 8
+  - headline: A full-stack sample web application built on top of Aspectran 8
     title: PetClinic Demo
     description: The goal of the PetClinic Demo App is to provide and demonstrate a sample web application that leverages Aspectran and JPA.
     thumb_img: examples/pr-skylark.png

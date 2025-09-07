@@ -1,5 +1,5 @@
 {% comment %}TODO consider https://developers.google.com/custom-search/docs/element{% endcomment %}
-{% capture google_search_site %}{{ site.url }}{{ site.baseurl }}/{% endcapture %}
+{% capture google_search_site %}https://aspectran.com/{% endcapture %}
 <form name="google-search" onsubmit="window.open('https://www.google.com/search?q=' + this.keyword.value + '+site:{{ google_search_site | cgi_escape }}'); return false;">
   <div class="grid-x">
     <div class="cell">

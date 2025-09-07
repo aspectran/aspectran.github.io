@@ -7,8 +7,8 @@
         <div class="cell">
           <header>
           {% if page.inside_heading != true %}
-            {% if page.subheadline %}
-            <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+            {% if page.headline %}
+            <p class="headline" itemprop="alternativeHeadline">{% if page.headline %}{{ page.headline }}{% else %}&nbsp;{% endif %}</p>
             {% endif %}
             {% if page.title %}
             <h1 itemprop="headline">{{ page.title }}</h1>
@@ -62,7 +62,7 @@
         <div class="cell">
           <header>
           {% if page.inside_heading != true %}
-            <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+            <p class="headline" itemprop="alternativeHeadline">{% if page.headline %}{{ page.headline }}{% else %}&nbsp;{% endif %}</p>
             <h1 itemprop="headline">{{ page.title }}</h1>
             {% if page.teaser %}
             <p class="teaser" itemprop="description">

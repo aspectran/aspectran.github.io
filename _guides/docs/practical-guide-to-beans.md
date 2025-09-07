@@ -1,7 +1,7 @@
 ---
 layout: page
 format: plate article
-subheadline: Aspectran Beans
+headline: Aspectran Beans
 title:  Aspectran Beans 실용 가이드
 teaser: |
   Aspectran Beans에 대한 실용 가이드는 빈의 정의, 생명주기, 스코프 및 효과적으로 관리하는 방법을 이해하는 것입니다.

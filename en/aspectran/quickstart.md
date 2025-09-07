@@ -1,8 +1,9 @@
 ---
+lang: en
 layout: page
 format: "plate article"
 title: "Quick Start Guide"
-subheadline: "Getting Started with Aspectran"
+headline: "Getting Started with Aspectran"
 teaser: "Aspectran으로 간단한 Java 웹 어플리케이션을 만드는 과정을 설명합니다."
 breadcrumb: true
 sidebar: toc
@@ -46,64 +47,38 @@ Aspectran 서비스 구동환경을 설정하기 위한 초기화 파라메터 `
 [***web.xml***](https://github.com/aspectran-guides/ga-quick-start/blob/master/src/main/webapp/WEB-INF/web.xml)
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
-<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         version="3.1">
-    <display-name>aspectran-examples</display-name>
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+    <display-name>gs-quick-start</display-name>
+    <description>
+        This is a web application created to guide you through the classic way
+        of building web applications with Aspectran driven by the servlet.
+    </description>
+    <context-param>
+        <param-name>aspectran:config</param-name>
+        <param-value>classpath:aspectran/aspectran-config.apon</param-value>
+    </context-param>
+    <listener>
+        <listener-class>com.aspectran.web.servlet.listener.WebServiceListener</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>web-activity-servlet</servlet-name>
+        <servlet-class>com.aspectran.web.servlet.WebActivityServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>web-activity-servlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-    <context-param>
-        <param-name>aspectran:config</param-name>
-        <param-value>
-            context: {
-                root: /WEB-INF/aspectran/config/root-configuration.xml
-                encoding: utf-8
-                resources: [
-                    /WEB-INF/aspectran/config
-                    /WEB-INF/aspectran/classes
-                    /WEB-INF/aspectran/lib
-                ]
-                hybridLoad: false
-                autoReload: {
-                    reloadMode: hard
-                    observationInterval: 5
-                    startup: true
-                }
-                profiles: {
-                }
-            }
-            scheduler: {
-                startDelaySeconds: 10
-                waitOnShutdown: true
-                startup: false
-            }
-            web: {
-                uriDecoding: utf-8
-            }
-        </param-value>
-    </context-param>
-    <listener>
-        <listener-class>com.aspectran.web.startup.listener.AspectranServiceListener</listener-class>
-    </listener>
-    <servlet>
-        <servlet-name>aspectran-activity</servlet-name>
-        <servlet-class>com.aspectran.web.startup.servlet.WebActivityServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>aspectran-activity</servlet-name>
-        <url-pattern>/ga-quick-start/*</url-pattern>
-    </servlet-mapping>
-    <!-- 실제 운영환경에서는 스케쥴러의 Job에 직접 접근할 수 없도록 서블릿매핑을 제거하도록 합니다. -->
-    <servlet-mapping>
-        <servlet-name>aspectran-activity</servlet-name>
-        <url-pattern>/scheduler/*</url-pattern>
-    </servlet-mapping>
 </web-app>
+
 ```
 
 ### 2.1 초기화 파라메터 설정
@@ -305,7 +280,7 @@ Aspectran의 AOP 기능을 이용하여 "Hello, World." 문자열을 출력하�
       해당 Translet의 실행 전에는 simplestAdvice Bean의 welcome 메쏘드를 실행하고,
       해당 Translet의 실행 후에는 simplestAdvice Bean의 goodbye 메쏘드를 실행합니다.
     </description>
-    <joinpoint type="translet">
+    <joinpoint>
       pointcut: {
         +: /ga-quick-start/*@simplestAction^helloWorld
       }

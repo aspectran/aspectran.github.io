@@ -2,7 +2,7 @@
 layout: module
 format: plate article
 title:  APON
-subheadline: Aspectran Modules - Utility
+headline: Aspectran Modules - Utility
 teaser: |
   APON(Aspectran Parameters Object Notation)은 Aspectran 내부에서 매개변수를 손쉽게 Object로 변환하기 위한 용도로 개발되었습니다.
   APON은 JSON(JavaScript Object Notation)을 개량했기 때문에 JSON과 비슷한 표기 형식을 가지고 있고, 사람이 읽고 쓰기에 용이하며,

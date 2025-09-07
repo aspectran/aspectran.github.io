@@ -1,7 +1,7 @@
 ---
 layout: page
 format: plate article
-subheadline: Aspectran Parameters Object Notation
+headline: Aspectran Parameters Object Notation
 title:  APON을 소개합니다.
 teaser: |
   APON은 구조화된 형식의 데이터를 교환하기 위해 새롭게 개발된 표기법이며,
