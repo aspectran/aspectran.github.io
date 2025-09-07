@@ -3,11 +3,12 @@ lang: en
 layout: page
 format: plate solid article
 sidebar: right
-title: "Design for Sustainable Simplicity: The Aspectran Architectural Philosophy"
-headline: "Why Aspectran"
-teaser: 'This document explains the core design principles and architectural philosophy that have allowed Aspectran to maintain its value of "sustainable simplicity" as it has evolved.'
+title: "Why Aspectran"
+teaser: '"Design for Sustainable Simplicity: The Aspectran Architectural Philosophy"'
+header:
+  image_fullwidth: "aspectran-world.jpg"
+  caption: "Aspectran World"
 breadcrumb: true
-comments: false
 permalink: /why-aspectran/
 ---
 

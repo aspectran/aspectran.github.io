@@ -3,11 +3,12 @@ lang: ko
 layout: page
 format: plate solid article
 sidebar: right
-title: "지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학"
-headline: "Why Aspectran"
-teaser: "이 문서는 Aspectran이 어떻게 '지속 가능한 단순성'이라는 가치를 유지하며 발전해왔는지, 그 핵심적인 설계 원칙과 아키텍처 철학을 설명합니다."
+title: "Why Aspectran"
+teaser: '"지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학"'
+header:
+  image_fullwidth: "aspectran-world.jpg"
+  caption: "Aspectran World"
 breadcrumb: true
-comments: false
 permalink: /ko/why-aspectran/
 ---
 
