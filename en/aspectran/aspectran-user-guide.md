@@ -4,12 +4,14 @@ layout: page
 format: plate solid article
 sidebar: toc-left
 title: Aspectran User Guide
-teaser: Aspectran은 JVM 기반의 경량 고성능 프레임워크로, 단순한 명령줄 애플리케이션부터 복잡한 엔터프라이즈 웹 서비스에 이르기까지 다양한 유형의 애플리케이션을 효율적으로 구축할 수 있도록 설계되었습니다. 이 가이드는 Aspectran을 처음 접하는 개발자들이 프레임워크의 핵심 개념을 깊이 이해하고, 실제 애플리케이션을 개발하며 발생할 수 있는 다양한 상황에 대처할 수 있도록 돕기 위해 작성되었습니다.
+teaser: This is a guide document for developers who are new to Aspectran.
 breadcrumb: true
 permalink: /aspectran/user-guide/
 ---
 
 ## 1. Aspectran 소개
+
+Aspectran은 JVM 기반의 경량 고성능 프레임워크로, 단순한 명령줄 애플리케이션부터 복잡한 엔터프라이즈 웹 서비스에 이르기까지 다양한 유형의 애플리케이션을 효율적으로 구축할 수 있도록 설계되었습니다. 이 가이드는 Aspectran을 처음 접하는 개발자들이 프레임워크의 핵심 개념을 깊이 이해하고, 실제 애플리케이션을 개발하며 발생할 수 있는 다양한 상황에 대처할 수 있도록 돕기 위해 작성되었습니다.
 
 ### 1.1. Aspectran이란?
 
