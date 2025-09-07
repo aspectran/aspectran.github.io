@@ -1,6 +1,6 @@
 ---
 layout: page
-format: plate article
+format: plate solid article
 headline: Aspectran Expression Language
 title:  AsEL을 소개합니다.
 teaser: |

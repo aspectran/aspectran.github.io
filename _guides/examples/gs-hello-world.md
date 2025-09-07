@@ -1,6 +1,6 @@
 ---
 layout: example
-format: plate article
+format: plate solid article
 title: Aspectran Hello World Example
 headline: Getting Started
 teaser: Let's create a Hello World application with Aspectran.
@@ -101,7 +101,7 @@ Here we will run it through *Aspectran Shell* in the console environment.
 First, download the ZIP file through the following link and extract it to the appropriate path.
 {% include label-link-box label="Download ZIP" href="https://github.com/aspectran/gs-hello-world/archive/master.zip" %}
 
-This Hello World application can be run in a console environment on Windows, Unix/Linux and macOS.  
+This Hello World application can be run in a console environment on Windows, Unix/Linux and macOS.
 Open the console and perform the following steps.
 
 1. Go to the path `gs-hello-world-master/app/bin`.
@@ -110,6 +110,6 @@ Open the console and perform the following steps.
 4. At the prompt, type the command `hello` or` hello2` and the string "Hello, World!" will be displayed.
 5. You can quit the program by typing the command `quit`.
 
-> If it does not work, check the following two points.  
-> - Make sure the environment variable is set so that the java command can be executed.  
+> If it does not work, check the following two points.
+> - Make sure the environment variable is set so that the java command can be executed.
 > - Aspectran requires Java 8 or higher.

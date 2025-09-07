@@ -18,26 +18,22 @@ widget0:
   image: header_aspectran_thumb.png
 widget1:
   title: Aspectran
-  url: /aspectran/
-  image: header_gettingstarted_thumb.jpg
+  url: /ko/aspectran/
   text: |
-    Aspectran은 고성능 Java 애플리케이션을 구축하기 위한 경량 프레임워크로써, 직관적이고 유연한 개발 환경을 제공합니다. 
+    Aspectran은 고성능 Java 애플리케이션을 구축하기 위한 경량 프레임워크로써, 직관적이고 유연한 개발 환경을 제공합니다.
 widget2:
   title: Aspectow
-  url: /aspectow/
-  image: header_guides_thumb.jpg
+  url: /ko/aspectow/
   text: |
-    Aspectow는 올인원 웹어플리케이션 서버로써, Aspectran을 기반으로 만들졌습니다. 
+    Aspectow는 올인원 웹어플리케이션 서버로써, Aspectran을 기반으로 만들졌습니다.
 widget3:
   title: 실용 가이드
-  url: /guides/
-  image: header_documentation_thumb.jpg
+  url: /ko/guides/
   text: |
     Aspectran을 배우고 시작하는 데 도움이 되는 몇 가지 관련 문서와 사용 예제를 제공합니다.
 widget4:
   title: 프로젝트
-  url: /projects/
-  image: header_modules_thumb.jpg
+  url: /ko/projects/
   text: |
     Aspectran을 기반으로 유용한 애플리케이션을 개발하고 있습니다.
 projects:

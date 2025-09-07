@@ -1,6 +1,6 @@
 ---
 layout: page
-format: plate article
+format: plate solid article
 headline: Aspectran Parameters Object Notation
 title:  XML을 APON으로 변환 Sample
 teaser: |
@@ -260,7 +260,7 @@ aspectran: {
     description: (
         |
         |        Aspectran Tutorial 작성을 위한 Aspectran Configuration입니다.
-        |    
+        |
     )
     setting: {
         transletNamePattern: "/example/*"
@@ -270,7 +270,7 @@ aspectran: {
             |
             |            요청 정보를 분석하는 단계에서 사용할 기본 환경 변수를 정의합니다.
             |            multipart/form-data request를 처리하기 위해 multipartRequestWrapperResolver를 지정합니다.
-            |        
+            |
         )
         id: "defaultRequestRule"
         for: "translet"
@@ -287,7 +287,7 @@ aspectran: {
             |
             |            요청에 대해 응답하는 단계에서 사용할 기본 환경 변수를 정의합니다.
             |            기본 viewDispatcher를 지정합니다.
-            |        
+            |
         )
         id: "defaultResponseRule"
         for: "translet"
@@ -304,7 +304,7 @@ aspectran: {
         description: (
             |
             |            Translet의 이름이 "/example"로 시작하는 Translet을 실행하는 중에 발생하는 에러 처리 규칙을 정의합니다.
-            |        
+            |
         )
         id: "defaultExceptionRule"
         for: "translet"
@@ -321,7 +321,7 @@ aspectran: {
                 |
                 |                에러요인과 응답 컨텐츠의 형식에 따라 처리방식을 다르게 정할 수 있습니다.
                 |                exceptionType을 지정하지 않으면 모든 exception에 반응합니다.
-                |            
+                |
             )
             responseByContentType: {
                 exceptionType: "java.lang.reflect.InvocationTargetException"
@@ -365,7 +365,7 @@ aspectran: {
             |
             |            요청 URI가 "/example/"로 시작하고,
             |            helloworld.HelloWorldAction 빈에서 echo, helloWorld, counting 메쏘드 호출 전 후로 환영인사와 작별인사를 건넵니다.
-            |        
+            |
         )
         id: "helloWorldAdvice"
         for: "translet"
@@ -398,7 +398,7 @@ aspectran: {
             |            요청 헤더 분석을 완료한 시점에 advice.helloworld.HelloWorldAdvice 빈의 checkCountRange 메쏘드가 실행됩니다.
             |            checkCountRange 메쏘드는 카운팅할 숫자의 범위가 적합한지 검사합니다.
             |            만약 적합하지 않을 경우 안전한 값으로 변경합니다.
-            |        
+            |
         )
         id: "checkCountRangeAdvice"
         for: "translet"
@@ -433,7 +433,7 @@ aspectran: {
             |            com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Action"으로 끝나는 클래스를 모두 찾아서 Bean으로 등록합니다.
             |            만약 com.aspectran.example.sample.SampleAction 클래스가 검색되었다면 Mask 패턴 "com.aspectran.example.**.*"에 의해
             |            최종적으로 Bean ID는 "sample.SampleAction"이 됩니다.
-            |        
+            |
         )
         id: "*"
         mask: "com.aspectran.example.**.*"
@@ -452,7 +452,7 @@ aspectran: {
             |            com.aspectran.eaxmple 패키지 하위의 모든 경로에서 클래스 이름이 "Advice"으로 끝나는 클래스를 모두 찾아서 ID가 "advice."으로 시작하는 Bean으로 등록합니다.
             |            만약 com.aspectran.example.sample.SampleAction 클래스가 검색되었다면 Mask 패턴 "com.aspectran.example.**.*"에 의해
             |            최종적으로 Bean ID는 "advice.sample.SampleAction"이 됩니다.
-            |        
+            |
         )
         id: "advice.*"
         mask: "com.aspectran.example.**.*"
@@ -471,7 +471,7 @@ aspectran: {
         description: (
             |
             |            multipart/form-data request를 처리하기 위해서 반드시 지정해야 합니다.
-            |        
+            |
         )
         id: "multipartRequestWrapperResolver"
         class: "com.aspectran.support.http.multipart.MultipartRequestWrapperResolver"
@@ -497,7 +497,7 @@ aspectran: {
         description: (
             |
             |            Aspectran의 Translet이 처리한 결과값을 화면에 표현하기 위해 JSP를 이용합니다.
-            |        
+            |
         )
         id: "jspViewDispatcher"
         class: "com.aspectran.web.view.JspViewDispatcher"
@@ -518,7 +518,7 @@ aspectran: {
             |
             |            "Hello, World."라는 문구를 텍스트 형식의 컨텐츠로 응답합니다.
             |            특정 Action을 실행하지 않아도 간단한 텍스트 기반의 컨텐츠를 생산할 수 있습니다.
-            |        
+            |
         )
         name: "echo"
         transform: {
@@ -528,7 +528,7 @@ aspectran: {
                 content: (
                     |
                     |                Hello, World.
-                    |            
+                    |
                 )
             }
         }
@@ -537,7 +537,7 @@ aspectran: {
         description: (
             |
             |            helloworld.HelloWorldAction 빈에서 helloWorld 메쏘드를 실행해서 "Hello, World."라는 문구를 텍스트 형식의 컨텐츠로 응답합니다.
-            |        
+            |
         )
         name: "helloWorld"
         transform: {
@@ -554,7 +554,7 @@ aspectran: {
             |
             |            시작 값과 마지막 값을 파라메터로 받아서 숫자를 출력하는 Translet입니다.
             |            request 영역의 attribute가 생성된 후에 숫자의 범위가 유효한지를 검사하는 checkCountRangeAdvice Aspect가 작동됩니다.
-            |        
+            |
         )
         name: "counting"
         request: {
@@ -597,7 +597,7 @@ aspectran: {
             |            '/WEB-INF/jsp/' 디렉토리 하위 경로에서 모든 JSP 파일을 찾아서 Translet 등록을 자동으로 합니다.
             |            viewDispatcher는 defaultResponseRule Aspect에서 지정한 jspViewDispatcher를 사용합니다.
             |            검색된 jsp 파일의 경로는 template 요소의 file 속성 값으로 지정됩니다.
-            |        
+            |
         )
         name: "*"
         path: "/WEB-INF/jsp/**/*.jsp"

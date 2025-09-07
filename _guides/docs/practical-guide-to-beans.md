@@ -1,6 +1,6 @@
 ---
 layout: page
-format: plate article
+format: plate solid article
 headline: Aspectran Beans
 title:  Aspectran Beans 실용 가이드
 teaser: |
