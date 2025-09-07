@@ -2,78 +2,93 @@
 lang: en
 layout: page
 format: plate
-sidebar: right
-title: "About Aspectran"
-headline: "What is Aspectran?"
-teaser: "Aspectran is a lightweight framework for building high-performance Java applications. It provides an intuitive and flexible development environment."
+headline: "Java Application Framework"
+title: "Aspectran"
+teaser: "Aspectran은 자바 기반의 애플리케이션 프레임워크로, 다양한 환경에서 독립적으로 실행될 수 있는 유연성과 확장성을 제공합니다."
 breadcrumb: true
-comments: false
 permalink: /aspectran/
 ---
 
-![Aspectran Archtecture Diagram](/images/info/aspectran_archtecture_diagram.png "Aspectran Archtecture Diagram")
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid #e9e9e9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease-in-out;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  .card-divider {
+    background: #f5f5f5;
+    font-weight: bold;
+  }
+  .card-divider a {
+    color: #000;
+    text-decoration: none;
+  }
+  .card-section {
+    flex-grow: 1;
+  }
+</style>
 
-Aspectran is a framework for developing Java applications that can be used to build simple shell applications and large enterprise web applications.
-
-The key features of Aspectran are:
-
-* **Support POJO (*Plain Old Java Object*) programming model**
-  Developers do not need to know the heavy and complex objects used internally by the framework. They can exchange objects with the framework using simple Java classes.
-* **Support Inversion of Control (*IoC*)**
-  What's more, the framework manages the creation and lifecycle of objects while controlling the overall flow, freeing developers to focus on their business logic.
-* **Support Dependency Injection (*DI*)**
-  The framework systematically connects modules that depend on each other at runtime to ensure low coupling between modules and to increase code reusability.
-* **Support Aspect-Oriented Programming (*AOP*)**
-  The framework combines additional features such as transactions, logging, security, and exception handling with code written by the developer at runtime.
-* **Support building RESTful Web Services**
-  Aspectran is a framework designed from the ground up for REST API implementations and optimized for microservices architectures.
-* **Fast development and startup time**
-  Aspectran's intuitive programming model guarantees fast development time and runs faster than other frameworks.
-* **Create Aspectran-powered, production-grade applications**
-  You can create reliable, standalone Java applications that run on multiple operating systems, and even run them in servlet containers or embed them into other Java applications.
-
-Aspectran-powered applications support the following execution environments on the JVM:
-
-* Consistent shell interface for command line applications
-* Runs as a background process on Unix-based or Windows operating systems
-* Built-in high performance web application server (Undertow, Jetty)
-* Can also be run as a servlet in a traditional servlet container like Apache Tomcat or WildFly
-
-Aspectran consists of the following major packages:
-
-* **com.aspectran.core**
-  Package containing the core features of Aspectran
-* **com.aspectran.daemon**
-  Package for running Aspectran-based Java applications as background processes on Unix-based or Windows operating systems
-* **com.aspectran.embed**
-  Package for embedding Aspectran in non-Aspectran-based Java applications
-* **com.aspectran.shell**
-  Package for building interactive shell (aka command line) applications based on Aspectran
-* **com.aspectran.shell-jline**
-  Package for building feature-rich Aspectran-based interactive shell applications with JLine 3
-* **com.aspectran.web**
-  Package for building web applications using Jakarta EE
-* **com.aspectran.websocket**
-  Package required to configure websockets in Aspectran-based web applications
-* **com.aspectran.rss-lettuce**
-  Package containing a Redis session store implementation using Lettuce as a client
-* **com.aspectran.jetty**
-  Add-on package for using Jetty as the embedded servlet container
-* **com.aspectran.undertow**
-  Add-on package for using Undertow as the embedded servlet container
-* **com.aspectran.mybatis**
-  Add-on package for using the MyBatis SQL mapper framework that makes using relational databases easy
-* **com.aspectran.freemarker**
-  Add-on package for using Freemarker as the templating engine
-* **com.aspectran.pebble**
-  Add-on package for using Pebble as the templating engine
-
-## History of Aspectran
-
-I started developing Aspectran in March 2008 and first released it on September 1, 2015.
-At the beginning of development, it was called Translets, but around July 2012, when AOP feature was added,
-the name was changed to Aspectran. Aspectran is a compound word of 'Aspect' and 'Translet'.
-
-## License
-
-Aspectran is Open Source software released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0).
+<div class="grid-x grid-margin-x small-up-1 medium-up-2 large-up-3" data-equalizer data-equalize-on="medium">
+  <div class="cell d-flex">
+    <div class="card" data-equalizer-watch>
+      <a href="/ko/why-aspectran/"><img src="https://placehold.co/600x400/7B1FA2/FFFFFF?text=Flexibility" alt="Why Aspectran"></a>
+      <div class="card-divider">
+        <a href="/ko/why-aspectran/">Why Aspectran</a>
+      </div>
+      <div class="card-section">
+        <p>Aspectran을 선택해야 하는 이유와 다른 프레임워크와의 차별점을 설명합니다. Aspectran은 유연성과 단순성을 핵심 가치로 삼아, 복잡한 엔터프라이즈 애플리케이션 개발을 간소화합니다.</p>
+      </div>
+    </div>
+  </div>
+  <div class="cell d-flex">
+    <div class="card" data-equalizer-watch>
+      <a href="/ko/aspectran/overview/"><img src="https://placehold.co/600x400/00ACC1/FFFFFF?text=Simplicity" alt="Aspectran 개요"></a>
+      <div class="card-divider">
+        <a href="/ko/aspectran/overview/">Aspectran 개요</a>
+      </div>
+      <div class="card-section">
+        <p>Aspectran 프레임워크의 핵심 개념과 특징을 소개합니다. 컴포넌트 기반 아키텍처와 AOP를 통해 코드의 모듈성과 재사용성을 높이는 방법을 알아보세요.</p>
+      </div>
+    </div>
+  </div>
+  <div class="cell d-flex">
+    <div class="card" data-equalizer-watch>
+      <a href="/ko/aspectran/getting-started/"><img src="https://placehold.co/600x400/C0CA33/FFFFFF?text=Productivity" alt="Aspectran 시작하기"></a>
+      <div class="card-divider">
+        <a href="/ko/aspectran/getting-started/">Aspectran 시작하기</a>
+      </div>
+      <div class="card-section">
+        <p>개발 환경을 설정하고 첫 Aspectran 애플리케이션을 만들어보는 과정을 안내합니다. 몇 가지 간단한 단계를 통해 Aspectran의 강력함을 직접 경험해볼 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+  <div class="cell d-flex">
+    <div class="card" data-equalizer-watch>
+      <a href="/ko/aspectran/user-guide/"><img src="https://placehold.co/600x400/D81B60/FFFFFF?text=Extensibility" alt="Aspectran 사용자 가이드"></a>
+      <div class="card-divider">
+        <a href="/ko/aspectran/user-guide/">Aspectran 사용자 가이드</a>
+      </div>
+      <div class="card-section">
+        <p>프레임워크의 모든 기능을 상세히 설명하고 사용 예제를 제공합니다. 트랜잭션 관리, 빈 설정, 스케줄링 등 다양한 고급 기능을 마스터하여 생산성을 극대화하세요.</p>
+      </div>
+    </div>
+  </div>
+  <div class="cell d-flex">
+    <div class="card" data-equalizer-watch>
+      <a href="/ko/aspectran/architecture/"><img src="https://placehold.co/600x400/3949AB/FFFFFF?text=Architecture" alt="Aspectran 아키텍처"></a>
+      <div class="card-divider">
+        <a href="/ko/aspectran/architecture/">Aspectran 아키텍처</a>
+      </div>
+      <div class="card-section">
+        <p>Aspectran의 내부 구조와 설계 철학에 대해 깊이 있게 다룹니다. 프레임워크가 어떻게 다양한 환경에 구애받지 않고 독립적으로 실행될 수 있는지 이해할 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</div>
