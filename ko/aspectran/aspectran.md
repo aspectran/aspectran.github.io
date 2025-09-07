@@ -5,7 +5,7 @@ headline: "Java Application Framework"
 title: "Aspectran"
 teaser: "Aspectran은 자바 기반의 애플리케이션 프레임워크로, 다양한 환경에서 독립적으로 실행될 수 있는 유연성과 확장성을 제공합니다."
 header:
-  image_fullwidth: "header_gettingstarted.jpg"
+  image_fullwidth: "submain_aspectran.jpg"
   caption: "My cute second daughter"
 breadcrumb: true
 permalink: /ko/aspectran/
