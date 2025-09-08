@@ -6,31 +6,51 @@ permalink: /
 full_width: true
 ---
 <style>
+  body {
+    background-image: url('/images/aspectran-world.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: #fff;
+  }
   .language-selector-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 80vh;
+    min-height: 90vh;
+    position: relative;
+    z-index: 2;
   }
   .language-selector {
     max-width: 500px;
     width: 100%;
-    padding: 2rem;
-    border: 1px solid #e6e6e6;
+    padding: 2.5rem;
+    background: rgba(0, 0, 0, 0.6);
     border-radius: 8px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
   .language-selector h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
     margin-bottom: 0.5rem;
+    color: #fff;
   }
   .language-selector .lead {
     font-size: 1.1rem;
-    color: #6c757d;
-    margin-bottom: 2rem;
+    color: #e0e0e0;
+    margin-bottom: 2.5rem;
   }
   .button {
     margin-bottom: 1rem;
+  }
+  .button.expanded {
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 </style>
 
@@ -40,10 +60,10 @@ full_width: true
     <p class="lead">Please select your preferred language.</p>
     <div class="grid-x grid-margin-x">
       <div class="cell small-12">
-        <a href="/en/" class="button large expanded">English</a>
+        <a href="/en/" class="button primary large expanded">English</a>
       </div>
       <div class="cell small-12">
-        <a href="/ko/" class="button large expanded">한국어</a>
+        <a href="/ko/" class="button secondary large expanded">한국어</a>
       </div>
     </div>
   </div>
