@@ -1,9 +1,7 @@
 ---
 layout: page
 title: Welcome to Aspectran
-description: "Aspectran is a framework for developing Java applications that can be executed as a standalone server or embedded in other applications."
 permalink: /
-full_width: true
 ---
 <style>
   body {
