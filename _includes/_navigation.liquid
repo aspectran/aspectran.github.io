@@ -15,7 +15,7 @@
     <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
       <div class="top-bar-logo">
         <div class="circle">
-          <a class="logo" href="{{ site.baseurl }}/{% if page.lang != nil and page.lang != site.default_lang %}{{ page.lang }}/{% endif %}" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
+          <a class="logo" href="{{ site.baseurl }}/{% if page.lang != nil %}{{ page.lang }}/{% endif %}" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
         </div>
       </div>
       <div class="top-bar-left">
