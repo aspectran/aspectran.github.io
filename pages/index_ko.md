@@ -7,15 +7,6 @@
 lang: ko
 layout: frontpage
 format: frontpage
-widget0:
-  title: Aspectran은 엔터프라이즈급 자바 웹 응용 프로그램을 구축하기 위한 가볍고 확장 가능한 프레임워크입니다.
-  url: /info/
-  text: |
-    POJO 방식의 경량 프레임워크<br/>
-    제어 반전(IoC) 및 의존성 주입(DI) 지원<br/>
-    관점 지향 프로그래밍(AOP) 지원<br/>
-    RESTful 웹서비스 구축 환경 지원
-  image: header_aspectran_thumb.png
 widget1:
   title: Aspectran
   url: /ko/aspectran/

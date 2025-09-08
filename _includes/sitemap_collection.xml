@@ -4,12 +4,8 @@
       <loc>{{ site.url }}{{ site.baseurl }}{{ link.url | remove: 'index.html' }}</loc>
     {% if link.lang != nil %}
       {% for lang in site.lang_order reversed %}
-        {% if lang != site.default_lang %}
-          {% assign url_prefix = '/' | append: link.lang | append: '/' %}
-          {% assign page_url = link.url | replace: url_prefix, '/' %}
+        {% if lang != link.lang %}
       <xhtml:link  rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}" />
-        {% else %}
-      <xhtml:link  rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}{{ page_url }}" />
         {% endif %}
       {% endfor %}
     {% endif %}

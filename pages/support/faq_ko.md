@@ -11,6 +11,7 @@ header:
 breadcrumb: true
 comments: true
 permalink: /ko/support/faq/
+published: false
 ---
 
 <div class="callout info radius">

@@ -52,8 +52,8 @@
 {% if lang != site.default_lang %}
 <link rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}">
 {% else %}
-<link rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}{{ page_url }}">
-<link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ site.baseurl }}{{ page_url }}">
+<link rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}">
+<link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}">
 {% endif %}
 {% endfor %}
 {% endif %}

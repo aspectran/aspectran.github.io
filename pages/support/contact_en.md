@@ -1,8 +1,8 @@
 ---
-lang: ko
+lang: en
 layout: page
 format: plate margin
-title: 고객 문의
+title: Contact Us
 subheadline:
 teaser: Do you have any questions?
 header:
@@ -10,9 +10,10 @@ header:
   caption: "Music while coding"
 breadcrumb: true
 comments: true
-permalink: /ko/support/contact/
+permalink: /en/support/contact/
+published: false
 ---
 
 <div class="callout info radius">
-  비공개 질문에 대해서는 <a href="mailto:aspectran@gmail.com">aspectran@gmail.com</a>으로 문의하십시오.
+  For non-public questions, please contact us by <a href="mailto:aspectran@gmail.com">aspectran@gmail.com</a>.
 </div>

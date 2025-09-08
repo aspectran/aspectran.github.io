@@ -9,7 +9,7 @@ layout: frontpage
 format: frontpage
 widget1:
   title: Aspectran
-  url: '/en/aspectran/'
+  url: /en/aspectran/
   text: |
     Aspectran is a lightweight framework for building high-performance Java applications.
 widget2:

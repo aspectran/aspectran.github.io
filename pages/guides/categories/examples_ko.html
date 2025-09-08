@@ -1,19 +1,16 @@
 ---
-lang: en
+lang: ko
 layout: page
 format: plate margin
-title: Documents
+title: 사용 예제
 headline: Aspectran Guides
-teaser: Here are some related documents to help you learn and get started with Aspectran.
-header:
-  image_fullwidth: "header_documentation.jpg"
-  caption: "My two daughters draw a picture on the car-free roads."
+teaser: Aspectran을 배우고 시작하는 데 도움이 되는 사용 예제들의 목록입니다.
 breadcrumb: true
-permalink: /en/guides/docs/
+permalink: /ko/guides/examples/
 noindex: true
 ---
 
-{% assign guides = site.guides | where: "category", "docs" %}
+{% assign guides = site.guides | where: "category", "examples" %}
 <div class="grid-x grid-margin-x">
 {% for guide in guides %}
   <div class="cell large-6 b20">
