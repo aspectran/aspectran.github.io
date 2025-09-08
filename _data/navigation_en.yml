@@ -1,35 +1,35 @@
 - title: Aspectran
-  url: "/aspectran/"
+  url: "/en/aspectran/"
   side: left
   dropdown:
   - title: "Why Aspectran"
-    url: "/why-aspectran/"
+    url: "/en/why-aspectran/"
   - title: "Aspectran Overview"
-    url: "/aspectran/overview/"
+    url: "/en/aspectran/overview/"
   - title: "Aspectran Getting Started"
-    url: "/aspectran/getting-started/"
+    url: "/en/aspectran/getting-started/"
   - title: "Aspectran User Guide"
-    url: "/aspectran/user-guide/"
+    url: "/en/aspectran/user-guide/"
   - title: "Aspectran Architecture"
-    url: "/aspectran/architecture/"
+    url: "/en/aspectran/architecture/"
 
 - title: Aspectow
-  url: "/aspectow/"
+  url: "/en/aspectow/"
   side: left
   dropdown:
   - title: "About Aspectow"
-    url: "/aspectow/"
+    url: "/en/aspectow/"
   - title: "Installing and Running Aspectow"
-    url: "/aspectow/installing-and-running/"
+    url: "/en/aspectow/installing-and-running/"
 
 - title: Guides
-  url: "/guides/"
+  url: "/en/guides/"
   side: left
 
 - title: Projects
-  url: "/projects/"
+  url: "/en/projects/"
   side: left
 
 - title: Docs
-  url: "/docs/"
+  url: "/en/docs/"
   side: right

@@ -7,7 +7,7 @@ headline: Everything you need to know about Aspectran
 title: Aspectran Documentation
 teaser: 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran 프레임워크를 배우고 사용하는 데 도움이 되는 모든 문서를 여기에서 찾아볼 수 있습니다. 설정 가이드, 사용자 가이드, 실용 가이드, 아키텍처 문서 등 필요한 정보를 쉽게 탐색하고 접근할 수 있도록 구성했습니다.
 breadcrumb: true
-permalink: /docs/
+permalink: /en/docs/
 ---
 
 원하는 정보를 빠르게 찾아 Aspectran의 강력한 기능을 최대한 활용해 보세요.

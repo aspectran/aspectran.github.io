@@ -9,7 +9,7 @@ header:
   image_fullwidth: "aspectran-world.jpg"
   caption: "Aspectran World"
 breadcrumb: true
-permalink: /why-aspectran/
+permalink: /en/why-aspectran/
 ---
 
 ## Introduction

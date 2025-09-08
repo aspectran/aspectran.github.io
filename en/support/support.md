@@ -2,5 +2,5 @@
 layout: redirect
 sitemap: false
 permalink: /support/
-redirect_to: /support/contact/
+redirect_to: /en/support/contact/
 ---

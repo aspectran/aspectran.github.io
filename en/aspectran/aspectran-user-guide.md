@@ -6,7 +6,7 @@ sidebar: toc-left
 title: Aspectran User Guide
 teaser: This is a guide document for developers who are new to Aspectran.
 breadcrumb: true
-permalink: /aspectran/user-guide/
+permalink: /en/aspectran/user-guide/
 ---
 
 ## 1. Aspectran 소개

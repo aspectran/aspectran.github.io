@@ -8,7 +8,7 @@ headline: "What is Aspectow?"
 teaser: "Aspectow is an all-in-one web application server built on Aspectran."
 breadcrumb: true
 comments: false
-permalink: /aspectow/
+permalink: /en/aspectow/
 ---
 
 ```
@@ -22,13 +22,13 @@ permalink: /aspectow/
 
 Aspectow is an all-in-one web application server based on Aspectran. It is divided into two products.
 
-* **[Aspectow Enterprise Edition](/en/aspectow/aspectow)**
+* **[Aspectow Enterprise Edition](/en/aspectow/aspectow-enterprise/)**
   Aspectow Enterprise Edition is an all-in-one web application server based on Aspectran,
   fully supports servlet specifications, and is suitable for building enterprise web applications.
   JBoss' [Undertow](http://undertow.io) web server and [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp),
   the JSP engine used by Apache Tomcat, are built in.
 
-* **[Aspectow Light Edition](/en/aspectow/aspectow-light)**
+* **[Aspectow Light Edition](/en/aspectow/aspectow-light/)**
   Aspectow Light Edition is a lightweight version with servlet specifications removed
   from Aspectow, an all-in-one web application server based on Aspectran, and is suitable
   for building high-performance REST API services.

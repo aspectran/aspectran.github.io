@@ -7,7 +7,7 @@ title: "Installing and Running Aspectow"
 headline: "All-in-one web application server"
 teaser: "This tutorial will walk you through how to download, install and run Aspectow – an all-in-one web application server based on Aspectran."
 breadcrumb: true
-permalink: /aspectow/installing-and-running/
+permalink: /en/aspectow/installing-and-running/
 ---
 
 ## 1. Prerequisites

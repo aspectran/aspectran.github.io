@@ -9,22 +9,22 @@ layout: frontpage
 format: frontpage
 widget1:
   title: Aspectran
-  url: '/aspectran/'
+  url: '/en/aspectran/'
   text: |
     Aspectran is a lightweight framework for building high-performance Java applications.
 widget2:
   title: Aspectow
-  url: /aspectow/
+  url: /en/aspectow/
   text: |
     Aspectow is an all-in-one web application server based on Aspectran.
 widget3:
   title: Guides
-  url: /guides/
+  url: /en/guides/
   text: |
     There are several related documents and usage examples to help you learn and get started with Aspectran.
 widget4:
   title: Projects
-  url: /projects/
+  url: /en/projects/
   text: |
     We are developing useful applications based on Aspectran.
 projects:
