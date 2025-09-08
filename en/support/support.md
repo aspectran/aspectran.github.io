@@ -1,6 +1,6 @@
 ---
 layout: redirect
 sitemap: false
-permalink: /support/
+permalink: /en/support/
 redirect_to: /en/support/contact/
 ---
