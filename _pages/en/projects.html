@@ -1,0 +1,73 @@
+---
+format: plate
+title: Projects
+headline: Aspectran based
+teaser: We are developing useful applications based on Aspectran.
+projects:
+  - headline: Working examples of using Aspectran
+    title: Aspectow AppMon
+    description: Aspectow AppMon provides an integrated view to observe logs and events of Aspectran-based application servers in real time.
+    thumb_img: examples/pr-log-relayer.png
+    url: https://public.aspectran.com/monitoring/
+    repo: https://github.com/aspectran/aspectow-appmon
+  - headline: Working examples of using Aspectran
+    title: Aspectran Demo Site
+    description: This site is a collection of reference applications created to show how to develop Aspectran applications following the recommended best practices.
+    thumb_img: examples/pr-demo-site.png
+    url: https://demo.aspectran.com
+    repo: https://github.com/aspectran/demo-app
+  - headline: Working examples of using Aspectran
+    title: Aspectran Demo Site on GAE
+    description: Aspectran Demo Site deployed on Google App Engine
+    thumb_img: examples/pr-demo-site.png
+    url: https://demo-gae.aspectran.com
+    repo: https://github.com/aspectran/demo-site
+  - headline: Working examples of using Aspectran
+    title: JPetStore Demo
+    description: JPetStore is a full web application built on top of MyBatis 3, Aspectran 6.
+    thumb_img: examples/pr-jpetstore.png
+    url: https://jpetstore.aspectran.com
+    repo: https://github.com/aspectran/aspectran-jpetstore
+  - headline: Reach Further With Text-To-Speech
+    title: Skylark Terminal
+    description: Skylark is a text to speech program that converts any written text into spoken words.
+    thumb_img: examples/pr-skylark.png
+    url: https://skylark.aspectran.com
+    repo: https://github.com/aspectran/skylark
+  - headline: A full-stack sample web application built on top of Aspectran 8
+    title: PetClinic Demo
+    description: The goal of the PetClinic Demo App is to provide and demonstrate a sample web application that leverages Aspectran and JPA.
+    thumb_img: examples/pr-skylark.png
+    url: https://petclinic.aspectran.com
+    repo: https://github.com/aspectran/aspectran-petclinic
+---
+
+<div class="grid-x grid-margin-x">
+  {% for project in page.projects %}
+  <div class="cell large-6 panel white b20">
+      <div class="grid-x grid-padding-x">
+        <div class="cell">
+          <p class="subheadline">{% if project.subheadline %}{{ project.subheadline }}{% endif %}</p>
+          <h3 class="underline">
+            <a href="{{ site.baseurl }}{{ project.url }}">{{ project.title }}</a>
+            <a href="{{ site.baseurl }}{{ project.url }}" class="float-right"><span class="fi-monitor"></span></a>
+          </h3>
+        </div>
+      {% if project.thumb_img %}
+        <div class="cell small-5 medium-4">
+          <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="alignleft" width="100%" alt="{{ project.title | escape_once }}"></a>
+        </div>
+        <div class="cell small-7 medium-8">
+          {% if project.repo %}<p class="source ellipses"><a class="icon-github" href="{{ project.repo }}"> {{ project.repo }}</a></p>{% endif %}
+          <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+        </div>
+      {% else %}
+        <div class="cell">
+          {% if project.repo %}<p class="source ellipses"><a class="icon-github" href="{{ project.repo }}"> {{ project.repo }}</a></p>{% endif %}
+          <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+        </div>
+      {% endif %}
+      </div>
+  </div>
+  {% endfor %}
+</div>

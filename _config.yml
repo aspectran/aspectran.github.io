@@ -113,34 +113,84 @@ collections:
   guides:
     output: true
     permalink: "/guides/:path/"
+  pages:
+    output: true
+    permalink: "/:path/"
 
 defaults:
-  -
-    scope:
-      path: "" 				# an empty string here means all files in the project
-      type: "pages"
+#  - scope:
+#      path: "" 				# an empty string here means all files in the project
+#      type: "pages"
+#    values:
+#      show_meta: false  	# Hide metadata for all pages
+#      author: "juho_jeong"  # Default author for pages
+  - scope:
+      path: "_pages/en" 				# an empty string here means all files in the project
     values:
+      lang: "en"
+      layout: "page"
+#      permalink: "/en/:path"
+      breadcrumb: true
       show_meta: false  	# Hide metadata for all pages
-      # sidebar: "" 		# Possible values › left, right › by default there will be no sidebar
-      comments: false
       author: "juho_jeong"  # Default author for pages
-  -
-    scope:
+  - scope:
+      path: "_pages/ko" 				# an empty string here means all files in the project
+    values:
+      lang: "ko"
+      layout: "page"
+#      permalink: "/ko/:path"
+      breadcrumb: true
+      show_meta: false  	# Hide metadata for all pages
+      author: "juho_jeong"  # Default author for pages
+  - scope:
+      path: "_guides/en" 				# an empty string here means all files in the project
+    values:
+      lang: "en"
+      layout: "page"
+      permalink: "/en/guides/:categories/:name"
+      breadcrumb: true
+      show_meta: false  	# Hide metadata for all pages
+      author: "juho_jeong"  # Default author for pages
+  - scope:
+      path: "_guides/ko" 				# an empty string here means all files in the project
+    values:
+      lang: "ko"
+      layout: "page"
+      permalink: "/ko/guides/:categories/:name"
+      breadcrumb: true
+      show_meta: false  	# Hide metadata for all pages
+      author: "juho_jeong"  # Default author for pages
+  - scope:
+      path: "_posts/en"
+    values:
+      lang: "en"
+      layout: "page"
+      format: "plate margin article"
+      permalink: "/en/posts/:name"
+      show_meta: true       # Show metadata for all posts
+      author: "juho_jeong"  # Default author for posts
+  - scope:
+      path: "_posts/ko"
+    values:
+      lang: "ko"
+      layout: "page"
+      format: "plate margin article"
+      permalink: "/ko/posts/:name"
+      show_meta: true       # Show metadata for all posts
+      author: "juho_jeong"  # Default author for posts
+  - scope:
       path: ""
       type: "posts"
     values:
       show_meta: true       # Show metadata for all posts
       # sidebar: ""         # Possible values › left, right › by default there will be no sidebar
-      comments: false
       author: "juho_jeong"  # Default author for posts
-  -
-    scope:
+  - scope:
       path: ""
       type: "guides"
     values:
       breadcrumb: true
       sidebar: toc
-      comments: true
       author: "juho_jeong"  # Default author for posts
 
 

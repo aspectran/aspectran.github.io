@@ -1,0 +1,20 @@
+---
+format: plate margin
+title: 관련 문서
+headline: Aspectran Guides
+teaser: Aspectran을 배우고 시작하는 데 도움이 되는 관련 문서들의 목록입니다.
+noindex: true
+---
+
+{% assign guides = site.guides | where: 'lang', page.lang | where: 'category', 'docs' %}
+<div class="grid-x grid-margin-x">
+{% for guide in guides %}
+  <div class="cell large-6 b20">
+    <h3 class="underline"><a href="{{ site.baseurl }}{{ guide.url }}">{{ guide.title }}</a></h3>
+    <p>
+      {% if guide.image.thumb %}<a href="{{ site.baseurl }}{{ guide.url }}" title="{{ guide.title | escape_once }}"><img src="{{ site.urlimg }}{{ guide.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title | escape_once }}"></a>{% endif %}
+      {% if guide.meta_description %}{{ guide.meta_description | strip_html | escape }}{% elsif guide.teaser %}{{ guide.teaser | strip_html | escape }}{% endif %}
+    </p>
+  </div>
+{% endfor %}
+</div>

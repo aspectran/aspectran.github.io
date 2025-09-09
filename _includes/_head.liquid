@@ -1,10 +1,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{% if page.meta_title %}{{ page.meta_title }}{% elsif page.title %}{{ page.title }}{% else %}{{ site.title }}{%
-  endif %}</title>
+<title>{% if page.meta_title %}{{ page.meta_title }}{% elsif page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
 <link rel="stylesheet" type="text/css" href="https://assets.aspectran.com/foundation/css/aspectran.css">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap"
-  rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
 <script src="https://assets.aspectran.com/js/modernizr-custom.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -60,15 +58,7 @@
 
 <link type="text/plain" rel="author" href="{{ site.url }}{{ site.baseurl }}/humans.txt">
 
-{% unless page.style == NULL %}
-<style type="text/css">
-  {
-      {
-      page.style
-    }
-  }
-</style>
-{% endunless %}
+{% include _style.liquid %}
 
 {% if site.google_analytics_tracking_id %}
 <!-- Global site tag (gtag.js) - Google Analytics -->

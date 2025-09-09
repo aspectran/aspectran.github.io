@@ -6,11 +6,13 @@
 *
 {% endcomment %}
 
-{% for post in paginator.posts %}
+{% assign posts = paginator.posts | where: "lang", page.lang | sort: 'date' %}
+
+{% for post in posts %}
   <div class="grid-x">
     <div class="cell b30">
       <p class="subheadline"><span class="subheader">{% if post.categories %}{{ post.categories | join: ' &middot; ' }}{% endif %}</span> – {% if post.subheadline %}{{ post.subheadline }}{% endif %}</p>
-      <h3 class="underline"><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
+      <h3 class="underline"><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3>
       <p>
         {% if post.image.thumb %}<a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><img src="{{ site.urlimg }}{{ post.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title | escape_once }}"></a>{% endif %}
 
@@ -27,7 +29,7 @@
     {% if paginator.previous_page %}
       <li class="pagination-previous"><a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}" aria-label="Previous page">Previous</a></li>
     {% else %}
-      <li class="pagination-previous disabled">Previous</a></li>
+      <li class="pagination-previous disabled">Previous</li>
     {% endif %}
 
     {% for page in (1..paginator.total_pages) %}
@@ -43,7 +45,7 @@
     {% if paginator.next_page %}
       <li class="pagination-next"><a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}" aria-label="Next page">Next</a></li>
     {% else %}
-      <li class="pagination-next disabled">Next</a></li>
+      <li class="pagination-next disabled">Next</li>
     {% endif %}
   </ul>
 </div>
