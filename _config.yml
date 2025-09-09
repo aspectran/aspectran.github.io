@@ -58,7 +58,7 @@ default_lang: 'en'
 safe: false
 encoding: "utf-8"
 keep_files: [".git"]
-include: [".htaccess"]
+include: ["_pages", ".htaccess"]
 
 # Exclude these files from your production _site
 exclude:
@@ -70,6 +70,8 @@ exclude:
   - INSTALL.md
   - CNAME
   - vendor
+  - renovate.json
+  - aspectran.github.io.iml
 
 
 # Paginates all X entries
