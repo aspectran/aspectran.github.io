@@ -6,6 +6,8 @@ headline: "통합 심층 분석 (Full-Text Version)"
 teaser: 이 문서는 Aspectran의 내부 아키텍처를 프레임워크 개발자의 관점에서 심층적으로 분석하여, 핵심 컴포넌트, 설계 원칙, 그리고 확장 지점을 이해하는 데 도움을 줍니다.
 ---
 
+![Aspectran 아키텍처의 통합](/images/docs/architecture.svg)
+
 ## 1. 서론
 
 ### 1.1. Aspectran 프레임워크 개요

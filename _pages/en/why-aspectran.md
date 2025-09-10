@@ -18,7 +18,7 @@ This philosophy is deeply embedded in the name of the framework itself. When dev
 
 Later in the development process, as AOP (Aspect-Oriented Programming) was integrated as a core concept, the project was renamed around July 2012 to reflect its new identity: **Aspectran**.
 
--   **Aspect** + **Tran**slet = **Aspectran**
+![Aspect + Tran(slet) = Aspectran](/images/docs/aspect_tran.svg)
 
 The change was more than just a new name; it symbolized the framework's evolutionary direction. It aimed to achieve both **structural simplicity and functional modularity** by adding the powerful cross-cutting concern separation of 'Aspect' on top of the clear request-processing structure represented by 'Translet'.
 
