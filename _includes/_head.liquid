@@ -45,13 +45,12 @@
 
 {% if page.lang != nil %}
 {% for lang in site.lang_order reversed %}
-{% assign url_prefix = '/' | append: page.lang | append: '/' %}
-{% assign page_url = page.url | replace: url_prefix, '/' %}
-{% if lang != site.default_lang %}
-<link rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}">
+{% if lang != link.lang %}
+{% if lang == site.default_lang %}
+<link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}">
 {% else %}
 <link rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}">
-<link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}">
+{% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
