@@ -1,0 +1,116 @@
+
+      <div class="top-bar-left{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+        <ul class="dropdown menu left" data-dropdown-menu data-close-on-click-inside="false">
+          {% if include.lang == 'ko' %}
+            {% assign navigation_data = site.data.navigation_ko %}
+          {% else %}
+            {% assign navigation_data = site.data.navigation_en %}
+          {% endif %}
+
+          {% for item in navigation_data %}
+
+            {% if item.url contains 'http' %}
+              {% assign domain = '' %}
+            {% elsif item.url == '#' %}
+              {% assign domain = '' %}
+            {% else %}
+              {% assign domain = site.url %}
+            {% endif %}
+
+            {% comment %}   If there are items for left side begin   {% endcomment %}
+            {% if item.side == 'left' %}
+
+              {% comment %}   If left side WITHOUT dropdown menu do   {% endcomment %}
+              {% if item.dropdown == nil %}
+                <li{% if page.url contains item.url %} class="active"{% endif %}>
+                  <a href="{{ site.baseurl }}{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
+                </li>
+
+              {% comment %}   If left side WITH dropdown menu do   {% endcomment %}
+              {% else %}
+
+                <li class="has-submenu{% if page.url contains item.url %} active{% endif %}">
+                  <a href="{{ site.baseurl }}{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
+                  <ul class="submenu menu vertical" data-submenu data-close-on-click-inside="true">
+                    {% for submenu_item in item.dropdown %}
+                      {% if submenu_item.url contains 'http' %}
+                        {% assign domain = '' %}
+                      {% else %}
+                        {% assign domain = site.url %}
+                      {% endif %}
+                      <li>
+                        <a href="{{ site.baseurl }}{{ submenu_item.url }}"{% if submenu_item.url contains 'http' %} target="_blank"{% endif %}>{{ submenu_item.title | escape }}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+
+                </li>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+        </ul>
+      </div>
+      <div class="top-bar-right{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+        <ul class="dropdown menu right" data-dropdown-menu data-close-on-click-inside="false">
+        {% for item in navigation_data %}
+
+          {% if item.url contains 'http' %}
+            {% assign domain = '' %}
+          {% elsif item.url == '#' %}
+            {% assign domain = '' %}
+          {% else %}
+            {% assign domain = site.url %}
+          {% endif %}
+
+          {% comment %}   If there are items for right side begin   {% endcomment %}
+          {% if item.side == 'right' %}
+            {% comment %}   If right side WITHOUT dropdown menu do   {% endcomment %}
+            {% if item.dropdown == nil %}
+              <li{% if page.url contains item.url %} class="active"{% endif %}><a href="{{ site.baseurl }}{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a></li>
+
+            {% comment %}   If right side WITH dropdown menu do   {% endcomment %}
+            {% else %}
+
+              <li{% if page.url contains item.url %} class="active"{% endif %}>
+                <a href="{{ site.baseurl }}{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
+                <ul class="menu vertical" data-submenu data-close-on-click-inside="false">
+                  {% for submenu_item in item.dropdown %}
+                    {% if submenu_item.url contains 'http' %}
+                      {% assign domain = '' %}
+                    {% else %}
+                      {% assign domain = site.url %}
+                    {% endif %}
+                    <li><a href="{{ site.baseurl }}{{ submenu_item.url }}"{% if submenu_item.url contains 'http' %} target="_blank"{% endif %}>{{ submenu_item.title | escape }}</a></li>
+                  {% endfor %}
+                </ul>
+
+              </li>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        </ul>
+
+        {% if include.lang != nil %}
+        <div class="settings lang-options">
+          <select name="lang" onchange="location.href=$(this).find('option:selected').attr('href');">
+          {% for lang in site.lang_order %}
+            {% assign url_prefix = '/' | append: include.lang | append: '/' %}
+            {% assign page_url = page.url | replace: url_prefix, '/' %}
+            {% assign page_url = '/' | append: lang | append: page_url %}
+            <option href="{{ site.url }}{{ site.baseurl }}{{ page_url }}"{% if include.lang == lang %} selected{% endif %}>{{ site.languages[lang] }}</option>
+          {% endfor %}
+          </select>
+        </div>
+        {% endif %}
+        <div class="quick-search-box">
+          <form name="google_quick_search">
+            <div class="input-group">
+              <input class="input-group-field" type="text" name="keyword" placeholder="Search">
+              <div class="input-group-button">
+                <button type="submit" class="button"><i class="fi-magnifying-glass"></i></button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>

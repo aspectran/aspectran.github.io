@@ -1,18 +1,16 @@
 ---
 layout: page
 format: plate margin
-title: "APON"
-headline: "Blog Category"
+title: News
+headline: Latest news on Aspectran
 header:
-  image_fullwidth: "header_blog.jpg"
-breadcrumb: true
-permalink: "/blog/apon/"
+  image_fullwidth: header_blog.jpg
 noindex: true
 sitemap: false
 ---
 
 <ul class="brief-list">
-  {% for post in site.categories.apon reversed %}
+  {% for post in site.categories.notice reversed %}
   <li><span class="icon-chevron-right"></span> <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
 </ul>

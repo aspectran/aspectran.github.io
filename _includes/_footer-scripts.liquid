@@ -1,3 +1,27 @@
+{% if page.auto_lang %}
+<script>
+  $(function() {
+    function getPreferredLanguageCode() {
+      const languages = navigator.languages;
+      if (languages && languages.length) {
+        for (const lang of languages) {
+          if (lang.startsWith('en') || lang.startsWith('ko')) {
+            return lang.substring(0, 2);
+          }
+        }
+        return 'en';
+      } else {
+        return 'en';
+      }
+    }
+    const lang = getPreferredLanguageCode();
+    console.log('auto_lang:', lang);
+    $(".auto-lang." + lang).show();
+    // $(".title-bar.auto-lang:not(:visible)").remove();
+    // $(".top-bar.auto-lang:not(:visible)").remove();
+  });
+</script>
+{% endif %}
 <script src="https://assets.aspectran.com/foundation/js/foundation.min.js"></script>
 <script src="https://assets.aspectran.com/js/jquery.backstretch.min.js"></script>
 <script>
