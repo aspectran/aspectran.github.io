@@ -1,12 +1,6 @@
       <div class="top-bar-left{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
         <ul class="dropdown menu left" data-dropdown-menu data-close-on-click-inside="false">
-          {% if include.lang == 'ko' %}
-            {% assign navigation_data = site.data.navigation_ko %}
-          {% else %}
-            {% assign navigation_data = site.data.navigation_en %}
-          {% endif %}
-
-          {% for item in navigation_data %}
+          {% for item in site.data.navigation[include.lang] %}
 
             {% if item.url contains 'http' %}
               {% assign domain = '' %}
@@ -52,7 +46,7 @@
       </div>
       <div class="top-bar-right{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
         <ul class="dropdown menu right" data-dropdown-menu data-close-on-click-inside="false">
-        {% for item in navigation_data %}
+        {% for item in site.data.navigation[include.lang] %}
 
           {% if item.url contains 'http' %}
             {% assign domain = '' %}

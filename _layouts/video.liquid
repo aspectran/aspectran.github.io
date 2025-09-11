@@ -14,8 +14,8 @@ format: video
           {{ page.iframe}}
         </div>
 
-        <div class="row">
-          <div class="medium-offset-2 medium-8 end columns">
+        <div class="grid-x">
+          <div class="cell medium-offset-2 medium-8 end">
             <header>
               {% if page.subheadline %}<p class="subheadline t30" itemprop="alternativeHeadline">{{ page.subheadline }}</p>{% endif %}
               <h1 itemprop="headline name">{{ page.title }}</h1>
@@ -32,10 +32,10 @@ format: video
             {% endif %}
 
             {{ content }}
-            {% if page.show_meta == true %}
-            {% include _meta_information.liquid %}
-            {% endif %}
           </div>
+          {% if page.show_meta == true %}
+            {% include _meta_information.liquid %}
+          {% endif %}
         </div><!-- /.grid-x -->
       </article>
 

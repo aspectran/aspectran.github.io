@@ -19,7 +19,7 @@ sitemap: false
         <a href="#" class="accordion-title"><span class="iconfont"></span>{% if post.subheadline %}{{ post.subheadline }} › {% endif %}<strong>{{ post.title }}</strong></a>
         <div class="accordion-content" data-tab-content>
           {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
-          <p class="text-right"><a class="button small" href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}">{{ site.data.language.read_more }}</a></p>
+          <p class="text-right"><a class="button small" href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}">{{ site.data.lang[page.lang].read_more }}</a></p>
         </div>
       </li>
       {% endfor %}

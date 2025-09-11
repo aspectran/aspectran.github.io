@@ -7,18 +7,21 @@
     </div>
 
     <footer id="footer-content">
-
-      {% if page.lang == 'ko' %}
-        {% include _footer-content_ko.liquid %}
+      <div id="footer">
+      {% if page.auto_lang != nil %}
+        {% for lang in site.lang_order %}
+          {% include _footer-content.liquid lang=lang auto_lang=true %}
+        {% endfor %}
       {% else %}
-        {% include _footer-content_en.liquid %}
+        {% include _footer-content.liquid lang=page.lang %}
       {% endif %}
+      </div>
 
       <div id="subfooter">
         <div class="grid-container">
           <nav class="grid-x">
             <section id="subfooter-left" class="medium-6 cell">
-              <p class="credits">Copyright © 2008-2025 The Aspectran Project</p>
+              <p class="credits">Copyright © 2008–2025 The Aspectran Project</p>
             </section>
 
             <section id="subfooter-right" class="medium-6 cell">
@@ -30,15 +33,12 @@
               </ul>
               {% endif %}
 
-              {% if page.lang != nil %}
-              <ul class="lang-options">
+              {% if page.auto_lang != nil %}
                 {% for lang in site.lang_order %}
-                  {% assign url_prefix = '/' | append: page.lang | append: '/' %}
-                  {% assign page_url = page.url | replace: url_prefix, '/' %}
-                  {% assign page_url = '/' | append: lang | append: page_url %}
-                  <li{% if page.lang == lang %} class="active"{% endif %}><a href="{{ site.url }}{{ site.baseurl }}{{ page_url }}" title="{{ site.languages[lang] }}" class="choice-preferred-lang" lang="{{ lang }}">{{ site.languages[lang] }}</a></li>
+                  {% include _footer-lang-switcher.liquid lang=lang auto_lang=true %}
                 {% endfor %}
-              </ul>
+              {% else %}
+                {% include _footer-lang-switcher.liquid lang=page.lang %}
               {% endif %}
             </section>
 
