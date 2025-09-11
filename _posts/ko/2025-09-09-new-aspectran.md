@@ -3,7 +3,7 @@ headline: Releases
 title:  Aspectran 9.0 릴리즈 노트
 breadcrumb: true
 categories:
-  - notice
+  - news
 tags:
   - release
 published: true

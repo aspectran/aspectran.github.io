@@ -3,7 +3,7 @@ headline: Releases
 title:  Aspectran 9.0 Releases
 breadcrumb: true
 categories:
-  - notice
+  - news
 tags:
   - release
 published: true

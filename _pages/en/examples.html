@@ -21,14 +21,14 @@ teaser: Here are some related usage examples to help you learn and get started w
       <div class="small-7 medium-8 cell">
         <p>
           {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
-          <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title | escape_once }}"><small>{{ site.data.lang[page.lang].read_more }}</small></a>
+          <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
         </p>
       </div>
     {% else %}
       <div class="cell">
         <p>
           {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
-          <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title | escape_once }}"><small>{{ site.data.lang[page.lang].read_more }}</small></a>
+          <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
         </p>
       </div>
     {% endif %}

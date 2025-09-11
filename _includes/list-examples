@@ -27,6 +27,6 @@
   {% for example in site.examples limit:include.entries offset:include.offset %}
     <li><a href="{{ site.baseurl }}{{ example.url }}"><span class="icon-chevron-right"></span> {% if example.subheadline %}<small>{{ example.subheadline }}</small> &middot; {% endif %}<strong>{{ example.title }}</strong></a></li>
   {% endfor %}
-    <li class="more"><a href="{{ site.baseurl }}/examples/"><strong>{{ site.data.lang[page.lang].more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a></li>
+    <li class="more"><a href="{{ site.baseurl }}/examples/"><strong>{{ site.data.messages[page.lang].more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a></li>
 
 </ul>

@@ -70,7 +70,7 @@ layout: default
     </div>
     {% endfor %}
     <div class="cell text-right">
-      <a href="{{ site.baseurl }}/{{ page.lang }}/projects/"><strong>{{ site.data.lang[page.lang].more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a>
+      <a href="{{ site.baseurl }}/{{ page.lang }}/projects/"><strong>{{ site.data.messages[page.lang].more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a>
     </div>
   </div>
 </div>
@@ -91,7 +91,7 @@ layout: default
 
             {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
 
-            <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.lang[page.lang].read_more }}</small></a>
+            <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
           </p>
         </div><!-- /.cell -->
         {% endif %}

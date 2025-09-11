@@ -7,10 +7,12 @@ header:
   image_fullwidth: header_blog.jpg
 noindex: true
 sitemap: false
+breadcrumb: true
+auto_lang: true
 ---
 
 <ul class="brief-list">
-  {% for post in site.categories.notice reversed %}
-  <li><span class="icon-chevron-right"></span> <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+  {% for post in site.categories.news reversed %}
+  <li class=" auto-lang {{ post.lang }}"><span class="icon-chevron-right"></span> <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
   {% endfor %}
 </ul>
