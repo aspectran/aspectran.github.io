@@ -1,24 +1,49 @@
+<script>
+  const supportedLanguages = ['en', 'ko'];
+  function getPreferredLangCodeFromLocalStorage() {
+    let langCode = localStorage.getItem("preferred-lang-code");
+    if (langCode && supportedLanguages.includes(langCode)) {
+      return langCode;
+    } else {
+      return null;
+    }
+  }
+  function setPreferredLangCodeToLocalStorage(langCode) {
+    localStorage.setItem("preferred-lang-code", langCode);
+  }
+  function getPreferredLangCode() {
+    let langCode = getPreferredLangCodeFromLocalStorage();
+    if (langCode) {
+      return langCode;
+    }
+    const languages = navigator.languages;
+    if (languages && languages.length) {
+      for (const lang of languages) {
+        let code = lang.substring(0, 2);
+        if (supportedLanguages.includes(code)) {
+          return code;
+        }
+      }
+    }
+    return 'en';
+  }
+  $(function() {
+    $(".choice-preferred-lang").on("click", function(e) {
+      e.preventDefault();
+      let langCode = $(this).attr("lang");
+      if (langCode) {
+        setPreferredLangCodeToLocalStorage(langCode);
+      }
+      location.href = $(this).attr("href");
+    });
+  });
+</script>
 {% if page.auto_lang %}
 <script>
   $(function() {
-    function getPreferredLanguageCode() {
-      const languages = navigator.languages;
-      if (languages && languages.length) {
-        for (const lang of languages) {
-          if (lang.startsWith('en') || lang.startsWith('ko')) {
-            return lang.substring(0, 2);
-          }
-        }
-        return 'en';
-      } else {
-        return 'en';
-      }
-    }
-    const lang = getPreferredLanguageCode();
-    console.log('auto_lang:', lang);
-    $(".auto-lang." + lang).show();
-    // $(".title-bar.auto-lang:not(:visible)").remove();
-    // $(".top-bar.auto-lang:not(:visible)").remove();
+    const langCode = getPreferredLangCode();
+    console.log('auto_lang:', langCode);
+    $(".auto-lang." + langCode).removeClass("auto-lang");
   });
 </script>
 {% endif %}

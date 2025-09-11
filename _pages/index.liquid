@@ -51,17 +51,24 @@ permalink: /
     letter-spacing: 1px;
   }
 </style>
-
+<script>
+  $(function() {
+    const langCode = getPreferredLangCode();
+    if (langCode) {
+      location.href = "/" + langCode + "/";
+    }
+  });
+</script>
 <div class="language-selector-wrapper">
   <div class="language-selector text-center">
     <h1>Welcome to Aspectran</h1>
     <p class="lead">Please select your preferred language.</p>
     <div class="grid-x grid-margin-x">
       <div class="cell small-12">
-        <a href="/en/" class="button primary large expanded">English</a>
+        <a href="/en/" class="choice-preferred-lang button primary large expanded" lang="en">English</a>
       </div>
       <div class="cell small-12">
-        <a href="/ko/" class="button secondary large expanded">한국어</a>
+        <a href="/ko/" class="choice-preferred-lang button secondary large expanded" lang="ko">한국어</a>
       </div>
     </div>
   </div>

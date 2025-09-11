@@ -1,7 +1,13 @@
 <nav id="navigation" class="no-js">
   <div class="title-bar" data-responsive-toggle="gnb-menu" data-hide-for="large" style="display:none">
     <div class="title-bar-left">
-      <a class="logo" href="{{ site.baseurl }}/{% if page.lang != nil %}{{ page.lang }}/{% endif %}" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
+      {% if page.auto_lang != nil %}
+        {% for lang in site.lang_order %}
+          {% include _navigation-logo.liquid lang=lang auto_lang=true %}
+        {% endfor %}
+      {% else %}
+        {% include _navigation-logo.liquid lang=page.lang %}
+      {% endif %}
     </div>
     <div class="title-bar-center">
       <a href="#top-of-page">{{ site.title }}</a>
@@ -14,20 +20,22 @@
     <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
       <div class="top-bar-logo">
         <div class="circle">
-          <a class="logo" href="{{ site.baseurl }}/{% if page.lang != nil %}{{ page.lang }}/{% endif %}" title="{{ site.title }}"><img src="{{ site.baseurl }}/assets/img/{{ site.logo_img }}" alt="Aspectran"/></a>
+          {% if page.auto_lang != nil %}
+            {% for lang in site.lang_order %}
+              {% include _navigation-logo.liquid lang=lang auto_lang=true %}
+            {% endfor %}
+          {% else %}
+            {% include _navigation-logo.liquid lang=page.lang %}
+          {% endif %}
         </div>
       </div>
-
-
-  {% if page.auto_lang != nil %}
-    {% for lang in site.lang_order %}
-      {% include _navigation-top-bar-inner.liquid lang=lang auto_lang=true %}
-    {% endfor %}
-  {% else %}
-    {% include _navigation-top-bar-inner.liquid lang=page.lang %}
-  {% endif %}
-
-
+      {% if page.auto_lang != nil %}
+        {% for lang in site.lang_order %}
+          {% include _navigation-top-bar-inner.liquid lang=lang auto_lang=true %}
+        {% endfor %}
+      {% else %}
+        {% include _navigation-top-bar-inner.liquid lang=page.lang %}
+      {% endif %}
     </div>
     {% if page.breadcrumb == true %}
       <div class="breadcrumbs-bar">

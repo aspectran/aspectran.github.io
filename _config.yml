@@ -109,26 +109,19 @@ excerpt_separator: "<!--more-->"
 #-------------------------------------------------------------------
 
 collections:
-  examples:
-    output: true
-    permalink: "/examples/:path/"
   pages:
     output: true
     permalink: "/:path/"
+  examples:
+    output: true
+    permalink: "/examples/:path/"
 
 defaults:
-#  - scope:
-#      path: "" 				# an empty string here means all files in the project
-#      type: "pages"
-#    values:
-#      show_meta: false  	# Hide metadata for all pages
-#      author: "juho_jeong"  # Default author for pages
   - scope:
       path: "_pages/en" 				# an empty string here means all files in the project
     values:
       lang: "en"
       layout: "page"
-#      permalink: "/en/:path"
       breadcrumb: true
       show_meta: false  	# Hide metadata for all pages
       author: "juho_jeong"  # Default author for pages
@@ -137,25 +130,6 @@ defaults:
     values:
       lang: "ko"
       layout: "page"
-#      permalink: "/ko/:path"
-      breadcrumb: true
-      show_meta: false  	# Hide metadata for all pages
-      author: "juho_jeong"  # Default author for pages
-  - scope:
-      path: "_examples/en" 				# an empty string here means all files in the project
-    values:
-      lang: "en"
-      layout: "page"
-      permalink: "/en/examples/:name"
-      breadcrumb: true
-      show_meta: false  	# Hide metadata for all pages
-      author: "juho_jeong"  # Default author for pages
-  - scope:
-      path: "_examples/ko" 				# an empty string here means all files in the project
-    values:
-      lang: "ko"
-      layout: "page"
-      permalink: "/ko/examples/:name"
       breadcrumb: true
       show_meta: false  	# Hide metadata for all pages
       author: "juho_jeong"  # Default author for pages
@@ -182,8 +156,25 @@ defaults:
       type: "posts"
     values:
       show_meta: true       # Show metadata for all posts
-      # sidebar: ""         # Possible values › left, right › by default there will be no sidebar
       author: "juho_jeong"  # Default author for posts
+  - scope:
+      path: "_examples/en" 	# an empty string here means all files in the project
+    values:
+      lang: "en"
+      layout: "page"
+      permalink: "/en/examples/:name"
+      breadcrumb: true
+      show_meta: false  	# Hide metadata for all pages
+      author: "juho_jeong"  # Default author for pages
+  - scope:
+      path: "_examples/ko" 	# an empty string here means all files in the project
+    values:
+      lang: "ko"
+      layout: "page"
+      permalink: "/ko/examples/:name"
+      breadcrumb: true
+      show_meta: false  	# Hide metadata for all pages
+      author: "juho_jeong"  # Default author for pages
 
 
 
