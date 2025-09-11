@@ -29,7 +29,7 @@ This section describes how to print "Hello, World" without writing Java code.
 
 The simplest configuration for printing "Hello World!" can be written as:
 
-[***gs-hello-world/app/config/app-config.xml***](https://github.com/aspectran/gs-hello-world/blob/master/app/config/app-config.xml)
+[***gs-hello-world/app/config/root-config.xml***](https://github.com/aspectran/gs-hello-world/blob/master/app/config/root-config.xml)
 
 ```xml{% raw %}
 <?xml version="1.0" encoding="UTF-8"?>

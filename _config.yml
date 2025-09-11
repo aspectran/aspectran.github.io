@@ -58,7 +58,7 @@ default_lang: 'en'
 safe: false
 encoding: "utf-8"
 keep_files: [".git"]
-include: ["_pages", ".htaccess"]
+include: [".htaccess"]
 
 # Exclude these files from your production _site
 exclude:
@@ -95,11 +95,11 @@ compress_html:
 
 
 # Paginates all X entries
-paginate: 5
+paginate: 10
 
 # Pagination path › Important for blog page in /blog/ to work
-paginate_path: "/blog/page:num"
-permalink: "/blog/:categories/:title/"
+paginate_path: "/blog/page:num/"
+permalink: "/blog/:name/"
 
 excerpt_separator: "<!--more-->"
 
@@ -109,9 +109,9 @@ excerpt_separator: "<!--more-->"
 #-------------------------------------------------------------------
 
 collections:
-  guides:
+  examples:
     output: true
-    permalink: "/guides/:path/"
+    permalink: "/examples/:path/"
   pages:
     output: true
     permalink: "/:path/"
@@ -142,20 +142,20 @@ defaults:
       show_meta: false  	# Hide metadata for all pages
       author: "juho_jeong"  # Default author for pages
   - scope:
-      path: "_guides/en" 				# an empty string here means all files in the project
+      path: "_examples/en" 				# an empty string here means all files in the project
     values:
       lang: "en"
       layout: "page"
-      permalink: "/en/guides/:categories/:name"
+      permalink: "/en/examples/:name"
       breadcrumb: true
       show_meta: false  	# Hide metadata for all pages
       author: "juho_jeong"  # Default author for pages
   - scope:
-      path: "_guides/ko" 				# an empty string here means all files in the project
+      path: "_examples/ko" 				# an empty string here means all files in the project
     values:
       lang: "ko"
       layout: "page"
-      permalink: "/ko/guides/:categories/:name"
+      permalink: "/ko/examples/:name"
       breadcrumb: true
       show_meta: false  	# Hide metadata for all pages
       author: "juho_jeong"  # Default author for pages
@@ -165,7 +165,7 @@ defaults:
       lang: "en"
       layout: "page"
       format: "plate margin article"
-      permalink: "/en/posts/:name"
+      permalink: "/en/blog/:name"
       show_meta: true       # Show metadata for all posts
       author: "juho_jeong"  # Default author for posts
   - scope:
@@ -174,7 +174,7 @@ defaults:
       lang: "ko"
       layout: "page"
       format: "plate margin article"
-      permalink: "/ko/posts/:name"
+      permalink: "/ko/blog/:name"
       show_meta: true       # Show metadata for all posts
       author: "juho_jeong"  # Default author for posts
   - scope:
@@ -183,13 +183,6 @@ defaults:
     values:
       show_meta: true       # Show metadata for all posts
       # sidebar: ""         # Possible values › left, right › by default there will be no sidebar
-      author: "juho_jeong"  # Default author for posts
-  - scope:
-      path: ""
-      type: "guides"
-    values:
-      breadcrumb: true
-      sidebar: toc
       author: "juho_jeong"  # Default author for posts
 
 

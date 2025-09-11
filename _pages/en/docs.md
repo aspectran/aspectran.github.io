@@ -14,7 +14,7 @@ teaser: 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran �
 -   [Aspectran XML 구성 가이드](aspectran-xml-configuration_ko.md)
 -   [WebActivityServlet 구성 가이드](aspectran-servlet-configuration_ko.md)
 
-## User Guide
+## User Guides
 
 -   [Aspectran User Guide](aspectran-user-guide_ko.md)
 -   [Aspectran Beans](aspectran-beans.md)

@@ -8,21 +8,19 @@
 
 {% assign posts = paginator.posts | where: 'lang', page.lang | sort: 'date' %}
 
-{% for post in posts %}
-  <div class="grid-x">
-    <div class="cell b30">
-      <p class="subheadline"><span class="subheader">{% if post.categories %}{{ post.categories | join: ' &middot; ' }}{% endif %}</span> – {% if post.subheadline %}{{ post.subheadline }}{% endif %}</p>
-      <h3 class="underline"><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3>
-      <p>
-        {% if post.image.thumb %}<a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><img src="{{ site.urlimg }}{{ post.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title | escape_once }}"></a>{% endif %}
-
-        {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% endif %}
-
-        <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
-      </p>
-    </div><!-- /.cell -->
-  </div><!-- /.grid-x -->
-{% endfor %}
+<div class="grid-x">
+  {% for post in posts %}
+  <div class="cell b30 auto-lang {{ post.lang }}">
+    <p class="subheadline"><span class="subheader">{% if post.categories %}{{ post.categories | join: ' &middot; ' }}{% endif %}</span>{% if post.headline %} – {{ post.headline }}{% endif %}</p>
+    <h3 class="underline"><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3>
+    <p>
+      {% if post.image.thumb %}<a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><img src="{{ site.urlimg }}{{ post.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title | escape_once }}"></a>{% endif %}
+      {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
+      <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.language.read_more }}</small></a>
+    </p>
+  </div>
+  {% endfor %}
+</div>
 
 <div id="pagination">
   <ul class="pagination text-center" role="navigation" aria-label="Pagination">
