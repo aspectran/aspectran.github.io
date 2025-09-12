@@ -1,6 +1,5 @@
 ---
 format: plate solid article
-sidebar: right
 title: "Aspectran 개요"
 teaser: "Aspectran은 JVM 기반의 경량 고성능 프레임워크로, 단순한 명령줄 애플리케이션부터 복잡한 엔터프라이즈 웹 서비스에 이르기까지 다양한 유형의 애플리케이션을 효율적으로 구축할 수 있도록 설계되었습니다."
 ---

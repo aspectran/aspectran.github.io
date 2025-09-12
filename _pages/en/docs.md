@@ -2,16 +2,17 @@
 format: plate solid article
 sidebar: right
 title: Aspectran Documentation
-teaser: This page is the index of the official Aspectran documentation.  Find all the resources you need to learn and use the Aspectran framework here. We've organized it for easy navigation and access, including setup guides, user guides, practical guides, and architectural documents.
+teaser: Explore Aspectran documentation to learn, configure, and unlock its full potential.
 ---
 
-Find the information you need quickly and maximize the power of Aspectran!
+Find all the resources you need to learn and use the Aspectran framework here.
+We've organized it for easy navigation and access, including configuration guides, user guides, practical guides, and architectural documents.
 
-## Aspectran Configuration
+## Configuration Guides
 
-*   [Aspectran Basic Configuration Guide](/en/docs/configurations/aspectran-configuration/)
-*   [Aspectran XML Configuration Guide](/en/docs/configurations/aspectran-xml-configuration/)
-*   [Servlet-based Web Application Configuration](/en/docs/configurations/aspectran-servlet-configuration/)
+*   [Aspectran Basic Configuration Guide](/en/docs/aspectran-configuration/)
+*   [Aspectran XML Configuration Guide](/en/docs/aspectran-xml-configuration/)
+*   [Servlet-based Web Application Configuration](/en/docs/aspectran-servlet-configuration/)
 
 ## User Guides
 

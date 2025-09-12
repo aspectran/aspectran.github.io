@@ -1,6 +1,5 @@
 ---
-format: plate solid article
-sidebar: right
+format: plate solid margin
 title: "Why Aspectran"
 teaser: '"지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학"'
 header:
@@ -18,6 +17,7 @@ Aspectran은 바로 이 문제, 즉 **"기능의 풍부함과 설계의 단순�
 
 이후 개발 과정에서 AOP(관점 지향 프로그래밍) 기능이 핵심 사상으로 통합되면서, 2012년 7월경 프로젝트는 새로운 정체성을 담은 이름으로 변경됩니다. 그것이 바로 **Aspectran**입니다.
 
+{: .text-center}
 ![Aspect + Tran(slet) = Aspectran](/images/docs/aspect_tran.svg)
 
 이름의 변화는 단순한 명칭 변경이 아니라, 'Translet'으로 대표되는 요청 처리의 명확한 구조 위에 'Aspect'라는 강력한 횡단 관심사 분리 기능을 더해, **구조의 단순함과 기능의 모듈화를 모두 달성하겠다**는 프레임워크의 진화 방향을 상징합니다.

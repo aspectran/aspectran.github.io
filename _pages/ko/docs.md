@@ -1,19 +1,20 @@
 ---
 format: plate solid article
 sidebar: right
-title: Aspectran Documentation
-teaser: 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran 프레임워크를 배우고 사용하는 데 도움이 되는 모든 문서를 여기에서 찾아볼 수 있습니다. 설정 가이드, 사용자 가이드, 실용 가이드, 아키텍처 문서 등 필요한 정보를 쉽게 탐색하고 접근할 수 있도록 구성했습니다.
+title: Aspectran 공식 문서
+teaser: Aspectran 문서를 통해 배우고 설정하며, 강력한 기능을 마음껏 활용해 보세요.
 ---
 
-원하는 정보를 빠르게 찾아 Aspectran의 강력한 기능을 최대한 활용해 보세요.
+이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran 프레임워크를 배우고 사용하는 데 도움이 되는 모든 문서를 여기에서 찾아볼 수 있습니다.
+구성 가이드, 사용자 가이드, 실용 가이드, 아키텍처 문서 등 필요한 정보를 쉽게 탐색하고 접근할 수 있도록 구성했습니다.
 
-## Aspectran Configuration
+## 구성 가이드
 
-*   [Aspectran 기본 구성 가이드](/ko/docs/configurations/aspectran-configuration/)
-*   [Aspectran XML 구성 가이드](/ko/docs/configurations/aspectran-xml-configuration/)
-*   [서블릿 기반 웹 애플리케이션 구성](/ko/docs/configurations/aspectran-servlet-configuration/)
+*   [Aspectran 기본 구성 가이드](/ko/docs/aspectran-configuration/)
+*   [Aspectran XML 구성 가이드](/ko/docs/aspectran-xml-configuration/)
+*   [서블릿 기반 웹 애플리케이션 구성](/ko/docs/aspectran-servlet-configuration/)
 
-## User Guides
+## 사용자 가이드
 
 *   [Aspectran 사용자 가이드](/ko/aspectran/user-guide/)
 *   [Aspectran Beans: 공식 가이드](/ko/docs/guides/aspectran-beans/)
@@ -25,18 +26,18 @@ teaser: 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran �
 *   [APON (Aspectran Parameters Object Notation) 소개](/ko/docs/guides/introduce-apon/)
 *   [AsEL (Aspectran Expression Language) 소개](/ko/docs/guides/introduce-asel/)
 
-## Practical Guides
+## 실용 가이드
 
 -   [Aspectran Bean 실용 가이드](/ko/docs/guides/practical-guide-to-beans/)
 -   [Aspectran Translet 실용 가이드](/ko/docs/guides/practical-guide-to-translets/)
 -   [PBE를 이용한 인증 토큰 활용 가이드](/ko/docs/guides/practical-guide-to-pbe-token-based-authentication/)
 
-## Architecture
+## 아키텍처
 
 -   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)
 -   [Aspectran 아키텍처: 통합 심층 분석](/ko/aspectran/architecture/)
 
-### Architecture 상세
+### 아키텍처 상세
 
 *   [ActivityContext 빌드 과정: 심층 분석](/ko/docs/architecture/activity-context-building/)
 *   [ActivityContext: Aspectran의 심장부](/ko/docs/architecture/activity-context/)
@@ -55,7 +56,7 @@ teaser: 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran �
 *   [Aspectran Session Manager: Deep Dive](/ko/docs/architecture/aspectran-session-manager/)
 *   [Aspectran AOP 프록시 메커니즘: `AbstractBeanProxy`와 `ProxyActivity`](/ko/docs/architecture/new-aop-proxy-mechanism/)
 
-### Package Deep Dive
+### 패키지 심층 분석
 
 *   Core Package
     *   [Aspectran Core Service](/ko/docs/architecture/packages/aspectran-core-service/)
