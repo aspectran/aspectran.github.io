@@ -8,11 +8,13 @@ teaser: Aspectran 문서를 통해 배우고 설정하며, 강력한 기능을 �
 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran 프레임워크를 배우고 사용하는 데 도움이 되는 모든 문서를 여기에서 찾아볼 수 있습니다.
 구성 가이드, 사용자 가이드, 실용 가이드, 아키텍처 문서 등 필요한 정보를 쉽게 탐색하고 접근할 수 있도록 구성했습니다.
 
+---
+
 ## 구성 가이드
 
-*   [Aspectran 기본 구성 가이드](/ko/docs/aspectran-configuration/)
-*   [Aspectran XML 구성 가이드](/ko/docs/aspectran-xml-configuration/)
-*   [서블릿 기반 웹 애플리케이션 구성](/ko/docs/aspectran-servlet-configuration/)
+*   [Aspectran 기본 구성 가이드](/ko/docs/guides/aspectran-configuration/)
+*   [Aspectran XML 구성 가이드](/ko/docs/guides/aspectran-xml-configuration/)
+*   [서블릿 기반 웹 애플리케이션 구성](/ko/docs/guides/aspectran-servlet-configuration/)
 
 ## 사용자 가이드
 
