@@ -1,5 +1,6 @@
 ---
 format: plate solid article
+sidebar: right
 title: "Aspectran 개요"
 teaser: "Aspectran에 대한 개요를 알아보고 핵심 개념을 한눈에 이해해보세요."
 ---
