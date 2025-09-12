@@ -22,12 +22,12 @@
   - title: "Installing and Running Aspectow"
     url: "/en/aspectow/installing-and-running/"
 
-- title: Examples
-  url: "/en/examples/"
-  side: left
-
 - title: Projects
   url: "/en/projects/"
+  side: left
+
+- title: Examples
+  url: "/en/examples/"
   side: left
 
 - title: Blog

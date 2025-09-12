@@ -22,12 +22,12 @@
   - title: "Aspectow 설치 및 실행"
     url: "/ko/aspectow/installing-and-running/"
 
-- title: 실용 예제
-  url: "/ko/examples/"
-  side: left
-
 - title: 프로젝트
   url: "/ko/projects/"
+  side: left
+
+- title: 실용 예제
+  url: "/ko/examples/"
   side: left
 
 - title: Blog
