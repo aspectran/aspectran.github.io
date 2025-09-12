@@ -12,7 +12,7 @@ teaser: 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran �
 
 *   [Aspectran 기본 구성 가이드](https://aspectran.com/en/docs/configurations/aspectran-configuration/)
 *   [Aspectran XML 구성 가이드](https://aspectran.com/en/docs/configurations/aspectran-xml-configuration/)
-*   [WebActivityServlet 구성 가이드](https://aspectran.com/en/docs/configurations/aspectran-servlet-configuration/)
+*   [서블릿 기반 웹 애플리케이션 구성](https://aspectran.com/en/docs/configurations/aspectran-servlet-configuration/)
 
 ## User Guides
 
