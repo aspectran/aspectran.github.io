@@ -1,29 +1,29 @@
 ---
 format: plate solid article
 sidebar: toc-left
-title: Aspectran 시작하기
-teaser: 이 가이드에서는 간단한 "Hello, World" 커맨드 라인 애플리케이션을 만들어보면서 Aspectran 프로젝트를 시작하는 방법을 안내합니다.
+title: Getting Started with Aspectran
+teaser: This guide will walk you through how to start an Aspectran project by creating a simple "Hello, World" command-line application.
 ---
 
-## 1. 개발 환경 설정
+## 1. Development Environment Setup
 
-*   **JDK (Java Development Kit)**: Aspectran은 최소 런타임 버전으로 Java 21 이상을 필요로 합니다. 최신 Java LTS 버전을 사용하는 것을 권장합니다.
-*   **Maven**: 프로젝트 빌드를 위해 Apache Maven 3.6.3 이상 버전이 설치되어 있어야 합니다.
+*   **JDK (Java Development Kit)**: Aspectran requires Java 21 or higher as the minimum runtime version. It is recommended to use the latest Java LTS version.
+*   **Maven**: Apache Maven 3.6.3 or higher must be installed for project builds.
 
-## 2. 프로젝트 파일 생성
+## 2. Project File Creation
 
-먼저, 프로젝트를 위한 디렉토리를 생성합니다.
+First, create a directory for your project.
 
 ```bash
 mkdir hello-aspectran
 cd hello-aspectran
 ```
 
-이제 이 디렉토리 안에 다음 세 개의 파일을 생성합니다: `pom.xml`, `aspectran-config.apon`, 그리고 `src/main/java/com/example/App.java`.
+Now, create these three files inside this directory: `pom.xml`, `aspectran-config.apon`, and `src/main/java/com/example/App.java`.
 
-### 2.1. Maven 설정 (`pom.xml`)
+### 2.1. Maven Configuration (`pom.xml`)
 
-프로젝트 루트에 `pom.xml` 파일을 만들고 아래 내용을 복사하여 붙여넣습니다. 이 파일은 프로젝트의 의존성을 관리하고 실행 가능한 JAR 파일을 만드는 방법을 정의합니다.
+Create a `pom.xml` file in the project root and copy and paste the content below. This file manages the project's dependencies and defines how to create an executable JAR file.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -102,12 +102,12 @@ cd hello-aspectran
 </project>
 ```
 
-### 2.2. Aspectran 구성 (`aspectran-config.apon`)
+### 2.2. Aspectran Configuration (`aspectran-config.apon`)
 
-프로젝트 루트에 `aspectran-config.apon` 파일을 만들고 다음 내용을 작성합니다. 이 파일은 Aspectran 셸의 동작을 설정합니다.
+Create an `aspectran-config.apon` file in the project root and write the following content. This file configures the behavior of the Aspectran shell.
 
 ```apon
-{% raw %}context: {
+context: {
     scan: [
         com.example
     ]
@@ -127,16 +127,16 @@ shell: {
         com.aspectran.shell.command.builtins.HelpCommand
         com.aspectran.shell.command.builtins.QuitCommand
     ]
-}{% endraw %}
+}
 ```
 
-### 2.3. 애플리케이션 코드 (`App.java`)
+### 2.3. Application Code (`App.java`)
 
-먼저 소스 디렉토리를 생성합니다.
+First, create the source directory.
 ```bash
 mkdir -p src/main/java/com/example
 ```
-그런 다음, `src/main/java/com/example/App.java` 파일을 생성하고 아래 코드를 작성합니다.
+Then, create the `src/main/java/com/example/App.java` file and write the code below.
 
 ```java
 package com.example;
@@ -159,32 +159,32 @@ public class App {
     }
 
     public static void main(String[] args) {
-        // Aspectran 셸을 실행하고, 커맨드 라인 인자를 그대로 전달합니다.
+        // Run the Aspectran shell and pass command-line arguments as is.
         JLineAspectranShell.main(args);
     }
 
 }
 ```
-*   `@Request("hello")`: `hello` 라는 이름의 명령어를 `hello()` 메소드에 매핑합니다.
-*   `@Transform(FormatType.TEXT)`: `hello()` 메소드의 반환값(`String`)을 일반 텍스트 형식으로 변환하여 콘솔에 출력하도록 지정합니다.
-*   `main()` 메소드: 커맨드 라인 인자를 `JLineAspectranShell.main()`으로 전달하여 셸을 구동합니다.
+*   `@Request("hello")`: Maps the command named `hello` to the `hello()` method.
+*   `@Transform(FormatType.TEXT)`: Specifies that the return value (`String`) of the `hello()` method should be converted to plain text format and output to the console.
+*   `main()` method: Starts the shell by passing command-line arguments to `JLineAspectranShell.main()`.
 
-## 3. 빌드 및 실행
+## 3. Build and Run
 
-이제 프로젝트를 빌드하고 실행할 준비가 되었습니다.
+Now you are ready to build and run the project.
 
-1.  **빌드**: 터미널에서 다음 명령어를 실행하여 실행 가능한 JAR 파일을 생성합니다.
+1.  **Build**: Run the following command in the terminal to create an executable JAR file.
     ```bash
     mvn package
     ```
-    빌드가 성공하면 `target` 디렉토리에 `hello-aspectran-1.0.0-SNAPSHOT.jar` 파일이 생성됩니다.
+    If the build is successful, a `hello-aspectran-1.0.0-SNAPSHOT.jar` file will be created in the `target` directory.
 
-2.  **실행**: 다음 명령어로 애플리케이션을 실행합니다. `aspectran-config.apon` 파일의 경로를 인자로 전달해야 합니다.
+2.  **Run**: Run the application with the following command. You must pass the path to the `aspectran-config.apon` file as an argument.
     ```bash
     java -jar target/hello-aspectran-1.0.0-SNAPSHOT.jar aspectran-config.apon
     ```
 
-    애플리케이션이 시작되면 다음과 같은 환영 메시지와 함께 Aspectran 셸 프롬프트가 나타납니다.
+    When the application starts, the Aspectran shell prompt will appear with a welcome message like this:
     ```
     Welcome to Hello Aspectran!
     To see a list of commands, type 'help'.
@@ -193,7 +193,7 @@ public class App {
 
     hello-aspectran>
     ```
-    *   `translet -l` 명령어를 사용하면 현재 애플리케이션에 정의된 모든 Translet의 목록을 확인할 수 있습니다.
+    *   You can check the list of all Translets defined in the current application using the `translet -l` command.
         ```text
         ------+-------------------------------------------------------------+-------
           No. | Translet Name                                               | Async
@@ -201,7 +201,7 @@ public class App {
             1 | hello                                                       | false
         ------+-------------------------------------------------------------+-------
         ```
-    *   `hello`를 입력하고 Enter를 누르면 `Hello, World!`가 출력됩니다.
-    *   `quit`를 입력하고 Enter를 누르면 애플리케이션이 종료됩니다.
+    *   Type `hello` and press Enter to output `Hello, World!`.
+    *   Type `quit` and press Enter to exit the application.
 
-이 방법은 구성 파일을 JAR 파일 외부에 두어, 애플리케이션을 다시 빌드하지 않고도 설정을 쉽게 변경할 수 있는 장점이 있습니다.
+This method has the advantage of keeping the configuration file outside the JAR file, allowing you to easily change settings without rebuilding the application.

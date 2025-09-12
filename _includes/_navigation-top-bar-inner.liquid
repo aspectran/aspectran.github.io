@@ -1,6 +1,7 @@
+{% assign navigation = site.data.navigation[include.lang] | default: site.data.navigation[site.default_lang] %}
       <div class="top-bar-left{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
         <ul class="dropdown menu left" data-dropdown-menu data-close-on-click-inside="false">
-          {% for item in site.data.navigation[include.lang] %}
+          {% for item in navigation %}
 
             {% if item.url contains 'http' %}
               {% assign domain = '' %}
@@ -46,7 +47,7 @@
       </div>
       <div class="top-bar-right{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
         <ul class="dropdown menu right" data-dropdown-menu data-close-on-click-inside="false">
-        {% for item in site.data.navigation[include.lang] %}
+        {% for item in navigation %}
 
           {% if item.url contains 'http' %}
             {% assign domain = '' %}

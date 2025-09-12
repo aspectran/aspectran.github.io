@@ -16,15 +16,15 @@ teaser: 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran �
 
 ## User Guides
 
-*   [Aspectran User Guide](https://aspectran.com/ko/aspectran/user-guide/)
-*   [Aspectran Beans](https://aspectran.com/ko/docs/guides/aspectran-beans/)
+*   [Aspectran 사용자 가이드](https://aspectran.com/ko/aspectran/user-guide/)
+*   [Aspectran Beans: 공식 가이드](https://aspectran.com/ko/docs/guides/aspectran-beans/)
 *   [Aspectran AOP 특징 분석](https://aspectran.com/ko/docs/guides/aspectran-aop/)
 *   [Aspectran의 얼굴마담: Translet 이해하기](https://aspectran.com/ko/docs/guides/aspectran-translet/)
 *   [Aspectran Scheduler: Translet을 이용한 강력한 작업 자동화](https://aspectran.com/ko/docs/guides/aspectran-scheduler/)
 *   [Aspectran 뷰(View) 기술](https://aspectran.com/ko/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](https://aspectran.com/ko/docs/guides/aspectran-profiles/)
-*   [APON(Aspectran Parameters Object Notation) 소개](https://aspectran.com/ko/docs/guides/introduce-apon/)
-*   [AsEL(Aspectran Expression Language) 소개](https://aspectran.com/ko/docs/guides/introduce-asel/)
+*   [APON (Aspectran Parameters Object Notation) 소개](https://aspectran.com/ko/docs/guides/introduce-apon/)
+*   [AsEL (Aspectran Expression Language) 소개](https://aspectran.com/ko/docs/guides/introduce-asel/)
 
 ## Practical Guides
 
@@ -34,8 +34,8 @@ teaser: 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran �
 
 ## Architecture
 
--   [Aspectran Architectural Philosophy](https://aspectran.com/ko/why-aspectran/)
--   [Aspectran Architecture](https://aspectran.com/ko/aspectran/architecture/)
+-   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](https://aspectran.com/ko/why-aspectran/)
+-   [Aspectran 아키텍처: 통합 심층 분석](https://aspectran.com/ko/aspectran/architecture/)
 
 ### Architecture 상세
 
@@ -53,8 +53,8 @@ teaser: 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran �
 *   [요청(Request) 및 응답(Response) 처리 메커니즘](https://aspectran.com/ko/docs/architecture/aspectran-request-response/)
 *   [Aspectran 설정 규칙 아키텍처 심층 분석](https://aspectran.com/ko/docs/architecture/aspectran-rule-architecture/)
 *   [Aspectran 서비스 아키텍처 심층 분석](https://aspectran.com/ko/docs/architecture/aspectran-services/)
-*   [Aspectran Session Manager](https://aspectran.com/ko/docs/architecture/aspectran-session-manager/)
-*   [Aspectran AOP 프록시 메커니즘](https://aspectran.com/ko/docs/architecture/new-aop-proxy-mechanism/)
+*   [Aspectran Session Manager: Deep Dive](https://aspectran.com/ko/docs/architecture/aspectran-session-manager/)
+*   [Aspectran AOP 프록시 메커니즘: `AbstractBeanProxy`와 `ProxyActivity`](https://aspectran.com/ko/docs/architecture/new-aop-proxy-mechanism/)
 
 ### Package Deep Dive
 
@@ -77,3 +77,5 @@ teaser: 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran �
 *   Web Package
     *   [Aspectran Web Service](https://aspectran.com/ko/docs/architecture/packages/aspectran-web-service/)
     *   [Aspectran Web Activity](https://aspectran.com/ko/docs/architecture/packages/aspectran-web-activity/)
+*   Other packages
+    *   [`com.aspectran.core.context.config` 패키지 상세 분석](architecture/packages/aspectran-config-parameters_ko.md)

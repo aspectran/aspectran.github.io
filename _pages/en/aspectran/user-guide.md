@@ -5,56 +5,56 @@ title: Aspectran User Guide
 teaser: This is a guide document for developers who are new to Aspectran.
 ---
 
-## 1. Aspectran 소개
+## 1. Introduction to Aspectran
 
-Aspectran은 JVM 기반의 경량 고성능 프레임워크로, 단순한 명령줄 애플리케이션부터 복잡한 엔터프라이즈 웹 서비스에 이르기까지 다양한 유형의 애플리케이션을 효율적으로 구축할 수 있도록 설계되었습니다. 이 가이드는 Aspectran을 처음 접하는 개발자들이 프레임워크의 핵심 개념을 깊이 이해하고, 실제 애플리케이션을 개발하며 발생할 수 있는 다양한 상황에 대처할 수 있도록 돕기 위해 작성되었습니다.
+Aspectran is a lightweight, high-performance framework based on the JVM, designed to efficiently build a wide range of applications, from simple command-line applications to complex enterprise web services. This guide is written to help developers new to Aspectran gain a deep understanding of the framework's core concepts and to cope with various situations that may arise while developing real applications.
 
-### 1.1. Aspectran이란?
+### 1.1. What is Aspectran?
 
-Aspectran은 최소한의 종속성과 최적화된 리소스 사용을 통해 빠른 시작 시간과 낮은 메모리 점유율을 자랑하는 프레임워크입니다. 이는 특히 마이크로서비스 아키텍처나 클라우드 환경에 적합합니다.
+Aspectran is a framework that boasts fast startup times and low memory footprint through minimal dependencies and optimized resource usage. This makes it particularly suitable for microservices architecture or cloud environments.
 
-개발자는 Aspectran을 통해 복잡한 프레임워크 내부 구조를 깊이 이해할 필요 없이, 일반 Java 객체(POJO)를 사용하여 비즈니스 로직에 집중할 수 있도록 직관적인 POJO 중심 프로그래밍 모델을 강조합니다.
+It emphasizes an intuitive POJO-centric programming model, allowing developers to focus on business logic using plain old Java objects (POJOs) without needing to deeply understand the complex internal structure of the framework.
 
-### 1.2. 핵심 철학 및 장점
+### 1.2. Core Philosophy and Advantages
 
-*   **POJO 중심 프로그래밍**: 특별한 인터페이스 구현이나 특정 프레임워크 클래스 상속 없이 일반 Java 객체(POJO)를 사용하여 비즈니스 로직을 구현할 수 있습니다. 이는 개발자가 프레임워크에 대한 학습 부담을 줄이고, 순수한 Java 코드로 비즈니스 문제를 해결하는 데 집중할 수 있게 합니다.
-*   **경량 및 고성능**: 최소한의 종속성과 최적화된 리소스 사용으로 빠른 시작 시간과 낮은 메모리 점유율을 제공합니다.
-*   **제어의 역전 (IoC) 및 의존성 주입 (DI)**: 프레임워크가 객체의 생성, 구성, 생명주기 관리를 담당하며, 필요한 의존성을 자동으로 주입하여 컴포넌트 간의 결합도를 최소화하고 유연하며 재사용 가능한 코드를 작성할 수 있도록 돕습니다.
-*   **관점 지향 프로그래밍 (AOP)**: 로깅, 트랜잭션, 보안 등 애플리케이션 전반에 걸쳐 반복적으로 나타나는 횡단 관심사를 모듈화하여 핵심 비즈니스 로직과 분리합니다.
-*   **환경 추상화를 위한 어댑터 패턴**: 동일한 비즈니스 로직이 어떤 환경(웹, 셸, 데몬 등)에서든 수정 없이 실행될 수 있도록 유연성을 제공합니다.
+*   **POJO-Centric Programming**: You can implement business logic using plain old Java objects (POJOs) without implementing special interfaces or inheriting from specific framework classes. This reduces the learning curve for developers and allows them to focus on solving business problems with pure Java code.
+*   **Lightweight and High-Performance**: Provides fast startup times and low memory footprint with minimal dependencies and optimized resource usage.
+*   **Inversion of Control (IoC) and Dependency Injection (DI)**: The framework takes responsibility for object creation, configuration, and lifecycle management, and automatically injects necessary dependencies to minimize coupling between components and help write flexible and reusable code.
+*   **Aspect-Oriented Programming (AOP)**: Modularizes cross-cutting concerns that appear repeatedly throughout the application, such as logging, transactions, and security, and separates them from the core business logic.
+*   **Adapter Pattern for Environmental Abstraction**: Provides the flexibility for the same business logic to run without modification in any environment (web, shell, daemon, etc.).
 
-## 2. Aspectran 시작하기
+## 2. Getting Started with Aspectran
 
-자세한 내용은 [Aspectran 시작하기](/ko/aspectran/getting-started/) 문서를 참고하세요.
+For more details, please refer to the [Getting Started with Aspectran](aspectran-getting-started_en.md) document.
 
-## 3. Aspectran 핵심 개념
+## 3. Aspectran Core Concepts
 
-Aspectran 프레임워크를 효과적으로 사용하기 위해서는 몇 가지 핵심 개념을 이해하는 것이 중요합니다.
+To use the Aspectran framework effectively, it is important to understand a few core concepts.
 
-### 3.1. Translet (트랜슬렛)
+### 3.1. Translet
 
-Aspectran에서 요청 처리의 핵심 개념은 `Activity`, `Translet`, `Action`입니다. 이들의 관계를 이해하는 것이 중요합니다.
+In Aspectran, the core concepts of request processing are `Activity`, `Translet`, and `Action`. It is important to understand their relationship.
 
-*   **Activity**: 실제로 요청을 처리하고 최종 응답을 생성하는 **실행 엔진**입니다.
-*   **Translet**: 특정 요청에 매핑되어 "어떻게 처리할 것인가"를 정의하는 **설계도 또는 규칙의 집합**입니다.
-*   **Action**: `Activity`에 의해 실행되며, 실제 비즈니스 로직을 수행하는 **개별 작업 단위**입니다.
+*   **Activity**: The **execution engine** that actually processes the request and generates the final response.
+*   **Translet**: A **blueprint or set of rules** that is mapped to a specific request and defines "how to process it."
+*   **Action**: An **individual unit of work** executed by the `Activity` that performs the actual business logic.
 
-Translet이라는 이름만 보면 실제 요청을 처리하는 주체로 보일 수 있으나, 이는 `Activity`에 직접 접근이 제한되는 사용자 관점에서 비롯된 오해입니다. 실제 모든 처리의 주체는 `Activity`입니다.
+The name Translet might suggest it is the main entity that processes requests, but this is a misunderstanding from a user's perspective where direct access to the `Activity` is restricted. The actual entity responsible for all processing is the `Activity`.
 
-#### 3.1.1. Translet의 역할 및 중요성
+#### 3.1.1. Role and Importance of Translet
 
-Translet의 핵심 역할은 **요청 처리 흐름을 정의하는 설계도**가 되는 것입니다.
+The core role of a Translet is to be a **blueprint that defines the request processing flow**.
 
-*   **요청 처리 규칙의 집합**: 특정 요청(웹 환경의 URL, 셸 환경의 명령어 등)에 매핑되어, 요청 파라미터 처리, 실행할 액션, 응답 생성 방식, 예외 처리 등 전체 처리 흐름을 선언적으로 정의합니다.
-*   **프로그래밍 인터페이스**: `Activity`와 사용자 코드 간의 데이터 공유 및 제어를 위한 통로 역할을 합니다.
-*   **유연한 처리 흐름**: 요청 처리, 액션 실행, 콘텐츠 생성, 변환, 응답 및 전달 등 다양한 처리 규칙을 조합하여 단순한 작업부터 복잡한 워크플로우까지 유연하게 설계할 수 있습니다.
+*   **Set of Request Processing Rules**: It is mapped to a specific request (e.g., a URL in a web environment, a command in a shell environment) and declaratively defines the entire processing flow, including request parameter handling, actions to be executed, response generation methods, and exception handling.
+*   **Programming Interface**: It acts as a channel for data sharing and control between the `Activity` and user code.
+*   **Flexible Processing Flow**: By combining various processing rules such as request handling, action execution, content generation, transformation, response, and forwarding, you can flexibly design everything from simple tasks to complex workflows.
 
-#### 3.1.2. Translet 정의 방법
+#### 3.1.2. How to Define a Translet
 
-Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니다.
+Aspectran provides two main ways to define a Translet.
 
-1.  **선언적 규칙 기반 (XML/APON)**:
-    전통적인 방식이며, XML 또는 APON(Aspectran Parameter Object Notation) 형식의 설정 파일을 사용하여 Translet의 처리 흐름을 선언적으로 정의합니다. 이를 통해 비즈니스 로직과 처리 흐름을 분리할 수 있습니다.
+1.  **Declarative Rule-Based (XML/APON)**:
+    This is the traditional method, where the processing flow of a Translet is declaratively defined using configuration files in XML or APON (Aspectran Parameter Object Notation) format. This allows for the separation of business logic and processing flow.
 
     ```xml
     <translet name="/user/info">
@@ -62,12 +62,12 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
       <transform format="json"/>
     </translet>
     ```
-    위 예제는 `/user/info` 요청이 들어오면 `userDao` 빈의 `getUserInfo` 메소드를 실행하고, 그 결과를 JSON 형식으로 변환하여 응답하는 Translet을 정의합니다.
+    The example above defines a Translet that, upon receiving a `/user/info` request, executes the `getUserInfo` method of the `userDao` bean and responds with the result transformed into JSON format.
 
-2.  **어노테이션 기반 (Java 코드)**:
-    Spring MVC의 `@RequestMapping`과 유사하게, Java 코드 내에서 어노테이션을 사용하여 Translet을 직접 정의하는 현대적인 방법입니다. 이는 개발자에게 더 높은 편의성과 생산성을 제공합니다.
+2.  **Annotation-Based (Java Code)**:
+    Similar to `@RequestMapping` in Spring MVC, this is a modern method of defining a Translet directly in Java code using annotations. This provides developers with greater convenience and productivity.
 
-    *   **기본 요청 처리**: `@Component`로 등록된 빈 클래스 내에서 `@RequestToGet`, `@RequestToPost` 등 HTTP 요청 메소드에 대응되는 어노테이션을 특정 메소드에 붙이면, Aspectran은 해당 메소드를 핵심 액션으로 삼아 암시적으로 Translet 규칙을 생성합니다.
+    *   **Basic Request Handling**: If you attach an annotation corresponding to an HTTP request method, such as `@RequestToGet` or `@RequestToPost`, to a specific method within a bean class registered with `@Component`, Aspectran will implicitly create a Translet rule with that method as the core action.
 
         ```java
         @Component
@@ -76,15 +76,15 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
             @Autowired
             private UserDao userDao;
 
-            @RequestToGet("/user/info/${userId}") // GET /user/info/${userId} 요청에 매핑
-            @Transform(format = "json") // 결과를 JSON으로 변환
+            @RequestToGet("/user/info/${userId}") // Mapped to GET /user/info/${userId} request
+            @Transform(format = "json") // Transform the result to JSON
             public User getUserInfo(Long userId) {
                 return userDao.getUserById(userId);
             }
         }
         ```
 
-    *   **비동기 요청 처리**: 시간이 오래 걸리는 작업을 처리해야 할 경우, `async = true` 속성을 사용하여 Translet을 비동기적으로 실행할 수 있습니다. 이는 요청 스레드를 차단하지 않고 백그라운드에서 작업을 수행하여 애플리케이션의 응답성을 유지하는 데 도움을 줍니다.
+    *   **Asynchronous Request Handling**: If you need to handle a long-running task, you can execute the Translet asynchronously by using the `async = true` attribute. This helps maintain the application's responsiveness by performing the task in the background without blocking the request thread.
 
         ```java
         @Component
@@ -95,11 +95,11 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
             @RequestToPost(path = "/reports/generate", async = true, timeout = 30000L)
             @Transform(format = "text")
             public String generateReport(Translet translet) {
-                // 요청 본문을 Aspectran의 Parameters 객체로 파싱합니다.
-                // Content-Type에 따라 JSON, XML 등이 자동으로 파싱됩니다.
+                // Parse the request body into Aspectran's Parameters object.
+                // JSON, XML, etc., are automatically parsed based on the Content-Type.
                 Parameters parameters = translet.getRequestAdapter().getBodyAsParameters();
 
-                // 비즈니스 로직은 Parameters 객체를 직접 사용합니다.
+                // The business logic directly uses the Parameters object.
                 reportService.generate(parameters);
 
                 return "Report generation has started in the background.";
@@ -107,47 +107,47 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
         }
         ```
 
-    *   **어노테이션 상세**: `@Request` 어노테이션은 요청 경로, HTTP 메소드 등 상세한 규칙을 정의할 때 사용합니다. 편의를 위해 `GET`, `POST` 등 각 HTTP 메소드에 해당하는 `@RequestToGet`, `@RequestToPost` 같은 전용 어노테이션도 제공됩니다. 이 어노테이션들은 `value` (경로), `async`, `timeout` 속성을 공통으로 가집니다.
+    *   **Annotation Details**: The `@Request` annotation is used to define detailed rules such as the request path and HTTP method. For convenience, dedicated annotations like `@RequestToGet` and `@RequestToPost` corresponding to each HTTP method are also provided. These annotations share common attributes like `value` (path), `async`, and `timeout`.
 
-    *   **동적 Translet 생성 (Scanning)**: 수백 개의 유사한 Translet을 반복해서 정의하는 대신, 단 하나의 규칙으로 런타임에 동적으로 Translet을 생성할 수 있습니다. 예를 들어, 특정 디렉터리 아래의 모든 JSP 파일을 스캔하여 각 파일을 뷰로 사용하는 Translet을 자동으로 생성하는 방식입니다.
+    *   **Dynamic Translet Generation (Scanning)**: Instead of repeatedly defining hundreds of similar Translets, you can dynamically generate Translets at runtime with a single rule. For example, you can scan all JSP files under a specific directory and automatically create a Translet that uses each file as a view.
 
         ```xml
         <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
           <description>
-            '/WEB-INF/jsp/' 디렉토리 하위 경로에서 모든 JSP 파일을 찾아서 Translet 등록을 자동으로 합니다.
-            검색된 jsp 파일의 경로는 template 요소의 file 속성 값으로 지정됩니다.
+            This automatically finds all JSP files in the '/WEB-INF/jsp/' directory and its subdirectories and registers them as Translets.
+            The path of the discovered jsp file is specified as the value of the file attribute of the template element.
           </description>
           <dispatch>
             <template/>
           </dispatch>
         </translet>
         ```
-        위 규칙은 `/WEB-INF/jsp/` 디렉터리와 그 하위 경로에 있는 모든 `.jsp` 파일을 스캔하여, 파일 경로에 따라 동적으로 Translet을 생성하고 등록합니다. 예를 들어, `/WEB-INF/jsp/user/list.jsp` 파일이 발견되면 `user/list`라는 이름의 Translet이 생성됩니다. 이 기능은 정적인 뷰 파일을 대량으로 서빙할 때 매우 유용하며, 반복적인 Translet 정의를 획기적으로 줄여줍니다.
+        The rule above scans for all `.jsp` files in the `/WEB-INF/jsp/` directory and its subdirectories, and dynamically creates and registers Translets based on the file paths. For example, if a file `/WEB-INF/jsp/user/list.jsp` is found, a Translet named `user/list` is created. This feature is very useful for serving a large number of static view files and dramatically reduces repetitive Translet definitions.
 
-#### 3.1.3. Translet의 생명주기 및 Activity와의 관계
+#### 3.1.3. Translet Lifecycle and Relationship with Activity
 
-`Activity`는 요청이 들어오면 **`TransletRuleRegistry`**에서 가장 적합한 Translet 규칙(설계도)을 찾아 인스턴스를 생성하고, 그 규칙에 따라 요청을 처리합니다. 즉, Translet은 '설계도'이고 `Activity`는 그 설계도를 보고 일하는 '실행 엔진'과 같습니다. `TransletRuleRegistry`는 빠르고 효율적인 조회를 위해 고도로 최적화된 자료구조이며, 요청 이름, 요청 메소드, 와일드카드 및 경로 변수 패턴을 사용하여 Translet을 찾아냅니다.
+When a request comes in, the `Activity` finds the most suitable Translet rule (blueprint) from the **`TransletRuleRegistry`**, creates an instance, and processes the request according to that rule. In other words, the Translet is the 'blueprint' and the `Activity` is the 'execution engine' that works by looking at that blueprint. The `TransletRuleRegistry` is a highly optimized data structure for fast and efficient lookups, using the request name, request method, wildcards, and path variable patterns to find a Translet.
 
-`Activity`는 Translet에 정의된 규칙에 따라 요청 정보를 파싱하고, 비즈니스 로직을 담고 있는 Action들을 순차적으로 실행합니다. `@RequestToGet`과 같은 어노테이션이 붙는 메소드를 Action 메소드라고 부르며, 기본적으로 Bean의 메소드를 호출하는 Invoke Action 외에 Echo Action, Header Action, Include Action 등 다양한 유형의 Action이 있습니다.
+The `Activity` parses the request information according to the rules defined in the Translet and sequentially executes the Actions that contain the business logic. Methods annotated with `@RequestToGet` and the like are called Action methods. In addition to the Invoke Action, which by default calls a bean's method, there are various types of Actions such as Echo Action, Header Action, and Include Action.
 
-이 과정에서 생성된 `Translet` 인스턴스는 `Activity`와 사용자 코드(주로 Action 메소드) 사이의 **'소통을 위한 매개체'** 역할을 합니다. Action 메소드의 인자로 `Translet` 타입이 선언되어 있으면, `Activity`는 메소드 호출 시 `Translet` 인스턴스를 자동으로 주입해 줍니다. 개발자는 이 `Translet` 인스턴스를 통해 `Activity`가 생성한 데이터에 접근(`getActivityData()` 메소드)하거나, 데이터를 추가적으로 가공하고 응답 로직을 임의로 제어하는 등 프레임워크와 상호작용할 수 있습니다.
+During this process, the created `Translet` instance acts as a **'medium for communication'** between the `Activity` and the user code (mainly the Action method). If a `Translet` type is declared as an argument in an Action method, the `Activity` will automatically inject the `Translet` instance when calling the method. Through this `Translet` instance, the developer can access the data created by the `Activity` (using the `getActivityData()` method), further process the data, and arbitrarily control the response logic, thus interacting with the framework.
 
-이처럼 Translet은 복잡한 내부 실행 로직(`Activity`)을 감추고 사용자에게는 명확하고 단순한 '설계도'와 '인터페이스'만을 보여주는, 잘 설계된 **퍼사드(Facade)**입니다.
+As such, the Translet is a well-designed **Facade** that hides the complex internal execution logic (`Activity`) and presents only a clear and simple 'blueprint' and 'interface' to the user.
 
-### 3.2. Bean (빈)
+### 3.2. Bean
 
-Bean은 Aspectran의 IoC(Inversion of Control) 컨테이너에 의해 관리되는 자바 객체입니다. 애플리케이션의 서비스, 데이터 접근 객체(DAO), 유틸리티 등 모든 구성 요소는 Bean으로 등록되어 프레임워크에 의해 생명주기가 관리되고, 필요한 곳에 의존성 주입(DI)을 통해 제공됩니다.
+A Bean is a Java object managed by Aspectran's IoC (Inversion of Control) container. All components of an application, such as services, data access objects (DAOs), and utilities, are registered as Beans, their lifecycle is managed by the framework, and they are provided where needed through dependency injection (DI).
 
-#### 3.2.1. IoC와 DI의 이해
+#### 3.2.1. Understanding IoC and DI
 
-*   **IoC (제어의 역전)**: 객체의 생성, 구성, 생명주기 관리를 개발자가 직접 하는 대신, Aspectran 컨테이너가 이를 대신합니다. 개발자는 객체를 정의하기만 하면, 프레임워크가 적절한 시점에 객체를 인스턴스화하고 필요한 의존성을 연결해 줍니다. 이를 통해 개발자는 비즈니스 로직에만 집중할 수 있습니다.
-*   **DI (의존성 주입)**: IoC를 구현하는 핵심 메커니즘입니다. 객체가 자신이 필요로 하는 다른 객체(의존성)를 직접 생성하거나 찾지 않고, 외부(IoC 컨테이너)로부터 주입받는 방식입니다. 이는 컴포넌트 간의 결합도를 낮추어 코드의 재사용성, 테스트 용이성, 유지보수성을 크게 향상시킵니다.
+*   **IoC (Inversion of Control)**: Instead of the developer directly managing the creation, configuration, and lifecycle of objects, the Aspectran container does it. The developer only needs to define the objects, and the framework will instantiate them at the appropriate time and connect the necessary dependencies. This allows the developer to focus solely on the business logic.
+*   **DI (Dependency Injection)**: This is the core mechanism for implementing IoC. It is a style where an object receives its dependencies (other objects it needs) from an external source (the IoC container) rather than creating or finding them itself. This lowers the coupling between components, greatly improving code reusability, testability, and maintainability.
 
-#### 3.2.2. 빈 정의 방법
+#### 3.2.2. How to Define a Bean
 
-Aspectran에서 Bean을 정의하는 가장 일반적인 방법은 어노테이션을 사용하는 것입니다.
+The most common way to define a Bean in Aspectran is by using annotations.
 
-*   **`@Component`를 사용한 자동 탐지**: 클래스에 `@Component` 어노테이션을 추가하는 것이 가장 쉽고 권장되는 방법입니다. Aspectran의 클래스패스 스캐너가 애플리케이션 시작 시 이를 자동으로 탐지하여 Bean으로 등록합니다.
+*   **Automatic Detection with `@Component`**: Adding the `@Component` annotation to a class is the easiest and most recommended method. Aspectran's classpath scanner will automatically detect it at application startup and register it as a Bean.
 
     ```java
     package com.example.myapp.service;
@@ -162,24 +162,24 @@ Aspectran에서 Bean을 정의하는 가장 일반적인 방법은 어노테이�
     }
     ```
 
-*   **`@Bean`을 사용한 명시적 정의**: `@Bean` 어노테이션은 Bean에 특정 ID를 부여하거나, 복잡한 초기화 로직이 필요한 경우, 또는 서드파티 라이브러리 객체를 Bean으로 등록할 때 유용합니다. `@Component` 클래스 내부에 객체를 반환하는 메소드에 `@Bean`을 붙여 사용할 수 있습니다.
+*   **Explicit Definition with `@Bean`**: The `@Bean` annotation is useful for giving a Bean a specific ID, when complex initialization logic is needed, or when registering a third-party library object as a Bean. It can be used on a method that returns an object within a `@Component` class.
 
     ```java
     @Component
     public class AppConfig {
-        @Bean("myCustomClient") // Bean의 ID를 myCustomClient로 지정
+        @Bean("myCustomClient") // Specifies the Bean's ID as myCustomClient
         public SomeLibraryClient someLibraryClient() {
-            // 복잡한 초기화 로직 또는 외부 라이브러리 객체 생성
+            // Complex initialization logic or creation of an external library object
             return new SomeLibraryClient("api.example.com", "your-api-key");
         }
     }
     ```
 
-#### 3.2.3. 의존성 주입 (`@Autowired`)
+#### 3.2.3. Dependency Injection (`@Autowired`)
 
-`@Autowired` 어노테이션을 사용하여 Aspectran 컨테이너가 관리하는 다른 Bean을 현재 Bean에 자동으로 주입받을 수 있습니다.
+You can use the `@Autowired` annotation to automatically inject other Beans managed by the Aspectran container into the current Bean.
 
-*   **생성자 주입 (권장)**: 의존성을 `final`로 선언하여 불변(immutable)하게 만들고, 객체가 생성될 때 모든 필수 의존성이 주입되었음을 보장합니다. 이는 코드의 안정성과 테스트 용이성을 높이는 가장 좋은 방법입니다.
+*   **Constructor Injection (Recommended)**: It makes dependencies `final`, ensuring they are immutable, and guarantees that all required dependencies are injected when the object is created. This is the best way to increase code stability and testability.
 
     ```java
     @Component
@@ -193,9 +193,9 @@ Aspectran에서 Bean을 정의하는 가장 일반적인 방법은 어노테이�
     }
     ```
 
-*   **필드 및 수정자(Setter) 주입**: 선택적 의존성을 주입할 때 유용하지만, 생성자 주입을 우선적으로 고려해야 합니다. 필드 주입은 `public` 필드에만 가능하며, 일반적으로 권장되지 않습니다.
+*   **Field and Setter Injection**: Useful for injecting optional dependencies, but constructor injection should be considered first. Field injection is only possible for `public` fields and is generally not recommended.
 
-*   **`@Qualifier`로 모호성 해결**: 동일한 타입의 Bean이 여러 개 있을 때, `@Qualifier("beanId")`를 사용하여 주입할 특정 Bean의 ID를 지정할 수 있습니다.
+*   **Resolving Ambiguity with `@Qualifier`**: When there are multiple Beans of the same type, you can use `@Qualifier("beanId")` to specify the ID of the specific Bean to inject.
 
     ```java
     public interface NotificationService { /* ... */ }
@@ -217,7 +217,7 @@ Aspectran에서 Bean을 정의하는 가장 일반적인 방법은 어노테이�
     }
     ```
 
-*   **`@Value`로 설정값 주입**: `@Value` 어노테이션을 사용하여 AsEL 표현식의 평가 결과(주로 외부 설정값)를 Bean의 필드나 생성자 파라미터에 주입할 수 있습니다.
+*   **Injecting Configuration Values with `@Value`**: You can use the `@Value` annotation to inject the evaluation result of an AsEL expression (usually an external configuration value) into a Bean's field or constructor parameter.
 
     ```java
     @Component
@@ -231,7 +231,7 @@ Aspectran에서 Bean을 정의하는 가장 일반적인 방법은 어노테이�
     }
     ```
 
-*   **컬렉션 주입 (`List<T>`, `Map<String, T>`)**: 동일한 인터페이스를 구현하는 모든 Bean을 `List`나 `Map`으로 한 번에 주입받을 수 있습니다. 이는 전략 패턴(Strategy Pattern) 등을 구현할 때 매우 유용합니다.
+*   **Collection Injection (`List<T>`, `Map<String, T>`)**: You can inject all Beans that implement the same interface at once into a `List` or `Map`. This is very useful for implementing patterns like the Strategy Pattern.
 
     ```java
     @Component
@@ -251,7 +251,7 @@ Aspectran에서 Bean을 정의하는 가장 일반적인 방법은 어노테이�
     }
     ```
 
-*   **선택적 의존성 주입 (`Optional<T>`)**: 특정 프로파일에서만 활성화되는 등, 존재하지 않을 수도 있는 Bean을 주입받아야 할 때 `java.util.Optional<T>`을 사용할 수 있습니다.
+*   **Optional Dependency Injection (`Optional<T>`)**: When you need to inject a Bean that may not exist, such as one that is only active in a specific profile, you can use `java.util.Optional<T>`.
 
     ```java
     @Component
@@ -269,64 +269,64 @@ Aspectran에서 Bean을 정의하는 가장 일반적인 방법은 어노테이�
     }
     ```
 
-#### 3.2.4. 빈 스코프 (Bean Scopes)
+#### 3.2.4. Bean Scopes
 
-Bean 스코프는 Bean 인스턴스의 생명주기와 가시성을 제어합니다. `@Scope` 어노테이션으로 설정할 수 있습니다.
+Bean scopes control the lifecycle and visibility of a Bean instance. They can be set with the `@Scope` annotation.
 
-| 스코프 (Scope) | 설명 | 생명주기 | 주요 사용 사례 |
-| :--- | :--- | :--- | :--- |
-| **`singleton`** | 컨테이너 내 단일 인스턴스 | 애플리케이션 전체 | 상태 없는 서비스, DAO |
-| **`prototype`** | 요청 시마다 새 인스턴스 | GC에 의해 관리 | 상태 있는 객체, Builder |
-| **`request`** | 요청마다 새 인스턴스 | 단일 `Activity` 실행 | 웹 요청 관련 데이터 처리 |
-| **`session`** | 세션마다 새 인스턴스 | 단일 사용자 세션 | 사용자별 데이터 관리 |
+| Scope         | Description                     | Lifecycle                | Primary Use Case          |
+| :------------ | :------------------------------ | :----------------------- | :------------------------ |
+| **`singleton`** | Single instance in the container| Entire application       | Stateless services, DAOs  |
+| **`prototype`** | New instance per request        | Managed by GC            | Stateful objects, Builders|
+| **`request`**   | New instance per request        | Single `Activity` execution| Web request data handling |
+| **`session`**   | New instance per session        | Single user session      | User-specific data management|
 
-*   **`singleton` (기본값)**: IoC 컨테이너 내에서 단 하나의 인스턴스만 생성되어 애플리케이션 전체에서 공유됩니다. 대부분의 서비스 Bean에 적합합니다.
-*   **`prototype`**: Bean을 주입받거나 요청할 때마다 매번 새로운 인스턴스가 생성됩니다. 컨테이너는 생성 이후의 생명주기를 관리하지 않으므로, `prototype` Bean이 리소스를 점유한다면 개발자가 직접 해제해야 합니다.
-*   **`request`**: 웹 환경에서 HTTP 요청마다 새로운 인스턴스가 생성되고, 해당 요청이 완료되면 소멸됩니다. 요청 관련 데이터를 담는 데 유용합니다.
-*   **`session`**: 웹 환경에서 사용자 세션마다 새로운 인스턴스가 생성되고, 해당 세션이 종료되면 소멸됩니다. 사용자별 데이터를 관리하는 데 사용됩니다.
+*   **`singleton` (default)**: Only one instance is created within the IoC container and shared throughout the application. Suitable for most service Beans.
+*   **`prototype`**: A new instance is created each time the Bean is injected or requested. The container does not manage the lifecycle after creation, so if a `prototype` Bean holds resources, the developer must release them manually.
+*   **`request`**: In a web environment, a new instance is created for each HTTP request and destroyed when the request is completed. Useful for holding request-related data.
+*   **`session`**: In a web environment, a new instance is created for each user session and destroyed when the session ends. Used for managing user-specific data.
 
-#### 3.2.5. 빈 생명주기 콜백
+#### 3.2.5. Bean Lifecycle Callbacks
 
-Aspectran은 Bean의 생성 및 소멸 시점에 특정 로직을 실행할 수 있도록 생명주기 콜백을 제공합니다. 주로 `@Initialize`와 `@Destroy` 어노테이션을 사용합니다.
+Aspectran provides lifecycle callbacks to execute specific logic at the time of a Bean's creation and destruction. The `@Initialize` and `@Destroy` annotations are mainly used for this.
 
-*   **`@Initialize`**: 모든 의존성이 주입된 후, Bean이 초기화될 때 실행됩니다. 초기화 작업(예: 데이터베이스 연결 설정)에 사용됩니다.
-*   **`@Destroy`**: Bean이 소멸되기 직전, 정리 작업(예: 리소스 해제)을 위해 실행됩니다.
+*   **`@Initialize`**: Executed after all dependencies have been injected, when the Bean is initialized. Used for initialization tasks (e.g., setting up a database connection).
+*   **`@Destroy`**: Executed just before the Bean is destroyed, for cleanup tasks (e.g., releasing resources).
 
     ```java
     @Component
     public class LifecycleBean {
         @Initialize
         public void setup() {
-            System.out.println("LifecycleBean 초기화됨");
+            System.out.println("LifecycleBean initialized");
         }
 
         @Destroy
         public void cleanup() {
-            System.out.println("LifecycleBean 소멸됨");
+            System.out.println("LifecycleBean destroyed");
         }
     }
     ```
 
-*   **인터페이스 기반 콜백**: `InitializableBean` 및 `DisposableBean` 인터페이스를 구현하여 동일한 목적을 달성할 수도 있습니다.
+*   **Interface-based Callbacks**: You can also achieve the same purpose by implementing the `InitializableBean` and `DisposableBean` interfaces.
 
     ```java
     @Component
     public class InterfaceBasedLifecycleBean implements InitializableBean, DisposableBean {
         @Override
         public void initialize() throws Exception {
-            System.out.println("InterfaceBasedLifecycleBean 초기화됨");
+            System.out.println("InterfaceBasedLifecycleBean initialized");
         }
 
         @Override
         public void destroy() throws Exception {
-            System.out.println("InterfaceBasedLifecycleBean 소멸됨");
+            System.out.println("InterfaceBasedLifecycleBean destroyed");
         }
     }
     ```
 
-#### 3.2.6. 고급 기능
+#### 3.2.6. Advanced Features
 
-*   **`FactoryBean`으로 복잡한 빈 생성하기**: 생성 로직이 매우 복잡하거나 캡슐화가 필요할 때 `FactoryBean` 인터페이스를 구현합니다. `getObject()` 메소드가 반환하는 객체가 실제 Bean으로 등록됩니다.
+*   **Creating Complex Beans with `FactoryBean`**: Implement the `FactoryBean` interface when the creation logic is very complex or requires encapsulation. The object returned by the `getObject()` method is registered as the actual Bean.
 
     ```java
     @Component
@@ -334,7 +334,7 @@ Aspectran은 Bean의 생성 및 소멸 시점에 특정 로직을 실행할 수 
     public class MyProductFactory implements FactoryBean<MyProduct> {
         @Override
         public MyProduct getObject() throws Exception {
-            // 복잡한 생성 및 설정 로직
+            // Complex creation and configuration logic
             return new MyProduct();
         }
         @Override
@@ -344,7 +344,7 @@ Aspectran은 Bean의 생성 및 소멸 시점에 특정 로직을 실행할 수 
     }
     ```
 
-*   **`Aware` 인터페이스로 프레임워크에 접근하기**: `ActivityContextAware`와 같은 `Aware` 인터페이스를 구현하면, Bean이 Aspectran의 내부 객체(예: `ActivityContext`, `BeanRegistry`)에 접근할 수 있습니다. 이는 프레임워크의 특정 부분과 상호작용해야 할 때 유용합니다.
+*   **Accessing the Framework with `Aware` Interfaces**: By implementing `Aware` interfaces like `ActivityContextAware`, a Bean can access Aspectran's internal objects (e.g., `ActivityContext`, `BeanRegistry`). This is useful when you need to interact with specific parts of the framework.
 
     ```java
     @Component
@@ -358,35 +358,35 @@ Aspectran은 Bean의 생성 및 소멸 시점에 특정 로직을 실행할 수 
 
         public void doSomethingWithContext() {
             if (context != null) {
-                System.out.println("ActivityContext에 접근: " + context.getName());
+                System.out.println("Accessed ActivityContext: " + context.getName());
             }
         }
     }
     ```
 
-*   **이벤트 발행 및 구독 (Event Handling)**: Aspectran은 애플리케이션 내의 컴포넌트(Bean) 간의 느슨한 결합을 위해 발행-구독(Publish-Subscribe) 방식의 이벤트 처리 메커니즘을 제공합니다. 이를 통해 특정 로직의 수행 결과를 다른 여러 컴포넌트에 전파해야 할 때, 직접 의존 관계를 맺지 않고 이벤트를 통해 간단하게 구현할 수 있습니다.
+*   **Event Handling (Publish-Subscribe)**: Aspectran provides a publish-subscribe event handling mechanism for loose coupling between components (Beans) within the application. This allows you to easily implement scenarios where the result of a specific logic needs to be propagated to multiple other components without creating direct dependencies.
 
-    *   **이벤트 리스너 만들기 (`@EventListener`)**: 이벤트를 수신하여 처리하는 리스너는 `@EventListener` 어노테이션을 사용하여 간단하게 만들 수 있습니다. 메소드는 반드시 하나의 파라미터를 가져야 하며, 이 파라미터의 타입이 구독할 이벤트의 타입이 됩니다.
+    *   **Creating an Event Listener (`@EventListener`)**: You can easily create a listener to receive and handle events using the `@EventListener` annotation. The method must have exactly one parameter, and the type of this parameter becomes the type of the event to subscribe to.
 
         ```java
-        // 1. 이벤트 정의 (POJO)
+        // 1. Define the event (POJO)
         public class OrderCompletedEvent {
             private final String orderId;
             public OrderCompletedEvent(String orderId) { this.orderId = orderId; }
             public String getOrderId() { return orderId; }
         }
 
-        // 2. 이벤트 리스너 빈 정의
+        // 2. Define the event listener bean
         @Component
         public class OrderEventListener {
             @EventListener
             public void handleOrderCompleted(OrderCompletedEvent event) {
-                System.out.println("주문 완료 이벤트 수신: " + event.getOrderId());
+                System.out.println("Received order completed event: " + event.getOrderId());
             }
         }
         ```
 
-    *   **이벤트 발행하기 (`EventPublisher`)**: `EventPublisher` 인터페이스를 통해 이벤트를 발행합니다. 이 타입의 Bean을 주입받아 `publish()` 메소드를 호출하기만 하면 됩니다.
+    *   **Publishing an Event (`EventPublisher`)**: You publish an event through the `EventPublisher` interface. You just need to inject a Bean of this type and call the `publish()` method.
 
         ```java
         @Component
@@ -399,95 +399,95 @@ Aspectran은 Bean의 생성 및 소멸 시점에 특정 로직을 실행할 수 
             }
 
             public void completeOrder(String orderId) {
-                System.out.println("주문 처리 완료: " + orderId);
-                eventPublisher.publish(new OrderCompletedEvent(orderId)); // 이벤트 발행
+                System.out.println("Order processing complete: " + orderId);
+                eventPublisher.publish(new OrderCompletedEvent(orderId)); // Publish event
             }
         }
         ```
 
-*   **비동기 메소드 실행 (`@Async`)**: `@Async` 어노테이션을 사용하면, 시간이 오래 걸리는 작업을 별도의 스레드에서 비동기적으로 실행하여 현재 요청 처리 스레드를 차단하지 않고 즉시 반환할 수 있습니다. 이 기능은 Aspectran의 Bean 프록시를 통해 구현됩니다.
+*   **Asynchronous Method Execution (`@Async`)**: Using the `@Async` annotation, you can execute long-running tasks asynchronously in a separate thread, allowing the current request processing thread to return immediately without being blocked. This feature is implemented through Aspectran's Bean proxy.
 
     ```java
     @Component
     public class MyAsyncTaskService {
         @Async
         public void doSomethingAsync() {
-            System.out.println("비동기 작업 실행 중...");
-            // 오래 걸리는 작업
+            System.out.println("Executing async task...");
+            // Long-running task
         }
 
         @Async
         public Future<String> doSomethingAndReturnAsync() {
-            return CompletableFuture.completedFuture("비동기 작업 완료!");
+            return CompletableFuture.completedFuture("Async task complete!");
         }
     }
     ```
 
-### 3.3. AOP (관점 지향 프로그래밍)
+### 3.3. AOP (Aspect-Oriented Programming)
 
-AOP(Aspect-Oriented Programming)는 로깅, 트랜잭션 관리, 보안, 캐싱 등 애플리케이션 전반에 걸쳐 반복적으로 나타나는 공통 기능(횡단 관심사)을 핵심 비즈니스 로직과 분리하여 모듈화하는 프로그래밍 패러다임입니다. Aspectran의 AOP는 프레임워크의 핵심 실행 모델인 `Activity`의 실행 흐름과 Bean 메소드 호출에 깊숙이 통합된 독자적인 모델을 가지고 있습니다.
+AOP (Aspect-Oriented Programming) is a programming paradigm that modularizes common functionalities (cross-cutting concerns) that appear repeatedly throughout an application, such as logging, transaction management, security, and caching, by separating them from the core business logic. Aspectran's AOP has its own unique model that is deeply integrated with the framework's core execution model, the `Activity`'s execution flow, and Bean method calls.
 
-#### 3.3.1. AOP의 필요성
+#### 3.3.1. The Need for AOP
 
-애플리케이션을 개발하다 보면 여러 모듈에서 반복적으로 나타나는 코드들이 있습니다. 예를 들어, 모든 서비스 메소드 시작 전에 로그를 남기거나, 데이터베이스 작업을 트랜잭션으로 묶는 것 등이 그렇습니다. 이러한 공통 기능들을 비즈니스 로직 코드 안에 직접 작성하면 코드가 복잡해지고, 변경이 어려워지며, 재사용성이 떨어집니다. AOP는 이러한 문제를 해결하여 비즈니스 로직을 깔끔하게 유지하고, 공통 기능을 한 곳에서 관리할 수 있도록 돕습니다.
+When developing an application, you often find code that is repeated across multiple modules. For example, logging before every service method starts, or wrapping database operations in a transaction. Writing these common functionalities directly within the business logic code makes the code complex, difficult to change, and less reusable. AOP helps solve these problems by allowing you to keep the business logic clean and manage common functionalities in one place.
 
-#### 3.3.2. Aspectran AOP의 주요 개념
+#### 3.3.2. Key Concepts of Aspectran AOP
 
-*   **Join Point (조인 포인트)**: `Advice`가 적용될 수 있는 애플리케이션 실행 중의 특정 지점입니다. Aspectran에서는 주로 Translet의 실행 단위(Activity 실행) 또는 Bean 메소드 실행이 Join Point가 됩니다.
-    *   **Activity 실행**: Translet 규칙에 따라 요청을 처리하는 `Activity`의 실행 전/후, 예외 발생 시 등 전체 흐름에 개입할 수 있습니다. 로깅, 트랜잭션, 인증 등 요청 처리 전반에 걸쳐 필요한 공통 기능을 효과적으로 모듈화할 수 있습니다.
-    *   **Bean 메소드 실행**: 특정 Bean의 메소드 실행을 Join Point로 삼을 수 있습니다.
+*   **Join Point**: A specific point during the execution of an application where `Advice` can be applied. In Aspectran, the execution of a Translet (Activity execution) or a Bean method execution are the main Join Points.
+    *   **Activity Execution**: You can intervene in the entire flow of an `Activity` that processes a request according to a Translet rule, such as before/after execution or when an exception occurs. This allows for effective modularization of common functionalities needed throughout request processing, such as logging, transactions, and authentication.
+    *   **Bean Method Execution**: The execution of a specific Bean's method can be a Join Point.
 
-*   **Pointcut (포인트컷)**: `Advice`를 적용할 대상을 정밀하게 지정하는 표현식입니다. Aspectran에서는 설정 파일의 `<aspect>` 규칙 내 `<joinpoint>` 엘리먼트를 통해 선언적으로 Pointcut을 정의합니다.
-    *   **포인트컷 표현식 구조**: `transletNamePattern[@beanOrClassPattern][^methodNamePattern]` 형태를 가집니다.
-        *   `transletNamePattern`: Translet 이름 패턴 (예: `/user/*`)
-        *   `@beanOrClassPattern`: Bean ID 또는 클래스 이름 패턴 (예: `@userService`)
-        *   `^methodNamePattern`: 메소드 이름 패턴 (예: `^get*`)
-    *   **다양한 패턴 형식 예시**:
-        *   모든 Translet에서 특정 Bean의 메소드를 대상: `*: @someService^execute*`
-        *   특정 Translet의 특정 Bean 메소드를 대상: `/user/list@userService^get*`
-        *   특정 Translet 자체를 대상: `/user/*`
-    *   **포함 및 제외 규칙**: `+` 접두사(포함)와 `-` 접두사(제외)를 사용하여 더욱 정교한 제어가 가능합니다.
+*   **Pointcut**: An expression that precisely specifies the target where `Advice` will be applied. In Aspectran, Pointcuts are declaratively defined through the `<joinpoint>` element within an `<aspect>` rule in the configuration file.
+    *   **Pointcut Expression Structure**: It has the form `transletNamePattern[@beanOrClassPattern][^methodNamePattern]`.
+        *   `transletNamePattern`: Translet name pattern (e.g., `/user/*`)
+        *   `@beanOrClassPattern`: Bean ID or class name pattern (e.g., `@userService`)
+        *   `^methodNamePattern`: Method name pattern (e.g., `^get*`)
+    *   **Examples of Various Pattern Formats**:
+        *   Targeting a method of a specific Bean in all Translets: `*: @someService^execute*`
+        *   Targeting a specific Bean method of a specific Translet: `/user/list@userService^get*`
+        *   Targeting a specific Translet itself: `/user/*`
+    *   **Inclusion and Exclusion Rules**: More precise control is possible using the `+` prefix (include) and `-` prefix (exclude).
 
-*   **Advice (어드바이스)**: Join Point에서 실제로 수행될 공통 기능 코드입니다. Aspectran은 다음과 같은 Advice 타입을 지원합니다:
-    *   `@Before`: Join Point 실행 전에 수행됩니다.
-    *   `@After`: Join Point가 성공적으로 실행된 후에 수행됩니다.
-    *   `@Around`: Join Point 실행 전후를 모두 감싸며, Join Point의 실행 여부를 제어할 수 있습니다.
-    *   `@Thrown`: Join Point 실행 중 예외가 발생했을 때 수행됩니다.
-    *   `@Finally`: Join Point의 성공/실패 여부와 관계없이 항상 수행됩니다.
-    *   **Advice의 구현**: Advice 로직은 특정 Bean의 메소드로 구현됩니다. Aspectran은 Join Point 대상에 따라 최적화된 위치에서 Advice를 실행합니다.
+*   **Advice**: The actual common functionality code to be executed at a Join Point. Aspectran supports the following Advice types:
+    *   `@Before`: Executed before the Join Point.
+    *   `@After`: Executed after the Join Point successfully completes.
+    *   `@Around`: Wraps around the Join Point execution and can control whether the Join Point is executed.
+    *   `@Thrown`: Executed when an exception occurs during the Join Point execution.
+    *   `@Finally`: Always executed regardless of the success or failure of the Join Point.
+    *   **Implementation of Advice**: The Advice logic is implemented as a method of a specific Bean. Aspectran executes the Advice at an optimized location depending on the Join Point target.
 
-*   **Aspect (애스펙트)**: `Advice`와 `Pointcut`을 결합한 모듈입니다. 설정 파일의 `<aspect>` 규칙 또는 `@Aspect` 어노테이션을 사용하여 정의합니다. 여러 공통 기능을 하나의 모듈로 캡슐화하여 관리할 수 있습니다.
+*   **Aspect**: A module that combines `Advice` and `Pointcut`. It is defined using an `<aspect>` rule in the configuration file or the `@Aspect` annotation. It allows for the encapsulation and management of multiple common functionalities as a single module.
 
-#### 3.3.3. Weaving 메커니즘: 지능적인 동적 프록시
+#### 3.3.3. Weaving Mechanism: Intelligent Dynamic Proxy
 
-Aspectran은 AOP를 적용하기 위해 **런타임에 동적 프록시(Dynamic Proxy)**를 사용합니다. 이 프록시는 매우 효율적이고 지능적으로 동작합니다.
+Aspectran uses a **runtime Dynamic Proxy** to apply AOP. This proxy operates very efficiently and intelligently.
 
-*   **선택적 어드바이스 적용으로 성능 최적화**: Aspectran의 AOP 프록시는 무조건 모든 메소드 호출을 가로채지 않습니다. 대신, 메소드에 `@Advisable` 어노테이션이 붙어 있는 경우에만 AOP 로직을 수행합니다. 이를 통해 불필요한 프록시 오버헤드를 원천적으로 제거하여 시스템 성능을 크게 향상시킵니다.
-*   **프록시 생성 방식**: 기본적으로 Javassist를 사용하여 프록시 객체를 생성하며, 인터페이스뿐만 아니라 일반 클래스에 대해서도 프록시를 만들 수 있습니다. 대상 Bean이 인터페이스를 구현한 경우 JDK 동적 프록시를 사용하도록 선택할 수도 있습니다.
+*   **Performance Optimization with Selective Advice Application**: Aspectran's AOP proxy does not intercept all method calls unconditionally. Instead, it performs AOP logic only if the method is annotated with `@Advisable`. This fundamentally eliminates unnecessary proxy overhead, significantly improving system performance.
+*   **Proxy Creation Method**: By default, it uses Javassist to create proxy objects, and can create proxies for regular classes as well as interfaces. If the target Bean implements an interface, you can also choose to use the JDK dynamic proxy.
 
-#### 3.3.4. 어노테이션 지원
+#### 3.3.4. Annotation Support
 
-`com.aspectran.core.component.bean.annotation` 패키지를 통해 XML 설정 없이 어노테이션만으로도 AOP를 포함한 다양한 Bean 설정을 할 수 있습니다. 주요 어노테이션은 다음과 같습니다:
+Through the `com.aspectran.core.component.bean.annotation` package, you can configure various Bean settings, including AOP, using only annotations without XML configuration. The main annotations are as follows:
 
-*   `@Component`, `@Bean`: Aspect를 Bean으로 등록합니다.
-*   `@Aspect`: 해당 Bean이 Aspect임을 정의합니다. `id` 속성으로 ID를 부여하고, `order` 속성으로 적용 우선순위를 지정할 수 있습니다.
-*   `@Joinpoint`: 어드바이스를 적용할 대상을 지정하는 Pointcut을 설정합니다.
-*   `@Before`, `@After`, `@Around`, `@Finally`, `@ExceptionThrown`: 각 어드바이스 타입을 정의하는 메소드에 사용됩니다.
-*   `@Advisable`: AOP 어드바이스를 적용할 메소드임을 명시적으로 선언합니다.
+*   `@Component`, `@Bean`: Registers an Aspect as a Bean.
+*   `@Aspect`: Defines that the Bean is an Aspect. You can assign an ID with the `id` attribute and specify the application priority with the `order` attribute.
+*   `@Joinpoint`: Sets the Pointcut that specifies the target to apply the advice to.
+*   `@Before`, `@After`, `@Around`, `@Finally`, `@ExceptionThrown`: Used on methods that define each advice type.
+*   `@Advisable`: Explicitly declares that the method is one to which AOP advice will be applied.
 
-#### 3.3.5. 실용적인 AOP 활용 예제: 선언적 트랜잭션
+#### 3.3.5. Practical AOP Example: Declarative Transactions
 
-AOP의 가장 강력한 활용 사례 중 하나는 **선언적 트랜잭션 관리**입니다. 서비스 레이어의 비즈니스 로직 코드에 트랜잭션 시작, 커밋, 롤백 코드를 직접 작성하는 대신, AOP를 사용하여 해당 로직들을 메소드 외부에서 투명하게 적용하는 방식입니다.
+One of the most powerful use cases for AOP is **declarative transaction management**. Instead of writing transaction start, commit, and rollback code directly in the business logic code of the service layer, AOP is used to apply that logic transparently from outside the method.
 
-Aspectran에서는 트랜잭션의 실제 로직을 담은 **어드바이스 Bean**과, 이를 언제 어디에 적용할지 결정하는 **Aspect**를 분리하여 유연하고 재사용 가능한 설계를 할 수 있습니다.
+In Aspectran, you can create a flexible and reusable design by separating the **advice Bean** that contains the actual transaction logic and the **Aspect** that decides when and where to apply it.
 
-*   **어노테이션 기반 예시**: `SqlSessionAdvice`를 상속받아 Aspect를 정의하고 `@Joinpoint`로 대상을 지정합니다.
+*   **Annotation-Based Example**: Define an Aspect by extending `SqlSessionAdvice` and specify the target with `@Joinpoint`.
 
     ```java
-    // SimpleTxAspect.java (트랜잭션 Aspect 정의 예시)
+    // SimpleTxAspect.java (Example of defining a transaction Aspect)
     @Component
     @Aspect(order = 0)
-    @Joinpoint(pointcut = "+: **@simpleSqlSession") // simpleSqlSession 빈의 모든 public 메소드에 적용
+    @Joinpoint(pointcut = "+: **@simpleSqlSession") // Applies to all public methods of the simpleSqlSession bean
     public class SimpleTxAspect extends SqlSessionAdvice {
         @Autowired
         public SimpleTxAspect(SqlSessionFactory sqlSessionFactory) { super(sqlSessionFactory); }
@@ -496,27 +496,27 @@ Aspectran에서는 트랜잭션의 실제 로직을 담은 **어드바이스 Bea
         @Finally public void close() { super.close(); }
     }
 
-    // OrderService.java (비즈니스 로직)
+    // OrderService.java (Business logic)
     @Component
-    @Bean(id = "simpleSqlSession") // Aspect의 Pointcut 대상이 되도록 ID 지정
+    @Bean(id = "simpleSqlSession") // Specify ID to be the target of the Aspect's Pointcut
     public class OrderService extends SqlSessionAgent {
         public OrderService() { super("simpleTxAspect"); }
         public void createOrder(Order order) {
-            // 이 메소드 호출 시 'simpleTxAspect'가 동작하여 트랜잭션이 자동으로 관리됩니다.
+            // When this method is called, 'simpleTxAspect' will operate, and the transaction will be managed automatically.
             insert("app.demo.mapper.OrderMapper.insertOrder", order);
         }
     }
     ```
 
-*   **XML 기반 예시**: 어드바이스 Bean과 Aspect를 XML로 명확하게 분리하여 정의합니다.
+*   **XML-Based Example**: Clearly separate and define the advice Bean and the Aspect in XML.
 
     ```xml
-    <!-- 1. 트랜잭션의 실제 동작을 담은 어드바이스 Bean을 정의 -->
+    <!-- 1. Define the advice Bean that contains the actual transaction logic -->
     <bean id="sqlSessionTxAdvice" class="com.aspectran.mybatis.SqlSessionAdvice" scope="prototype">
         <argument>#{sqlSessionFactory}</argument>
     </bean>
 
-    <!-- 2. simpleTxAspect: ID가 'simpleSqlSession'인 Bean을 감지 -->
+    <!-- 2. simpleTxAspect: Detects the Bean with ID 'simpleSqlSession' -->
     <aspect id="simpleTxAspect" order="0">
         <joinpoint pointcut="+: **@simpleSqlSession"/>
         <advice bean="sqlSessionTxAdvice">
@@ -527,39 +527,39 @@ Aspectran에서는 트랜잭션의 실제 로직을 담은 **어드바이스 Bea
     </aspect>
     ```
 
-이처럼 Aspectran의 AOP를 활용하면, 비즈니스 로직과 트랜잭션 처리 로직을 완벽하게 분리하여 코드의 가독성과 유지보수성을 크게 향상시킬 수 있습니다.
+By leveraging Aspectran's AOP in this way, you can perfectly separate business logic from transaction processing logic, greatly improving code readability and maintainability.
 
 ### 3.4. AsEL (Aspectran Expression Language)
 
-AsEL (Aspectran Expression Language)은 Aspectran의 설정 파일(XML, APON)이나 어노테이션 내에서 동적인 값을 참조하고 주입하기 위해 사용되는 강력한 표현 언어입니다. AsEL을 사용하면, 런타임에 생성되는 요청 데이터나 다른 빈(Bean)의 속성 값을 정적인 설정에 동적으로 결합할 수 있어 프레임워크의 유연성을 크게 높여줍니다. 특히 AsEL은 내부적으로 OGNL(Object-Graph Navigation Language)을 기반으로 동작하므로, 단순한 값 참조를 넘어 객체의 메소드를 호출하거나 속성을 탐색하는 등 복잡하고 동적인 표현식을 사용할 수 있습니다.
+AsEL (Aspectran Expression Language) is a powerful expression language used to reference and inject dynamic values within Aspectran's configuration files (XML, APON) or annotations. By using AsEL, you can dynamically combine runtime-generated request data or the property values of other beans with static configurations, greatly enhancing the framework's flexibility. In particular, since AsEL is based on OGNL (Object-Graph Navigation Language) internally, it can handle complex and dynamic expressions that go beyond simple value references, such as calling object methods or navigating properties.
 
-#### 3.4.1. AsEL 토큰 유형
+#### 3.4.1. AsEL Token Types
 
-AsEL은 세 가지 주요 토큰을 사용하여 서로 다른 스코프의 데이터에 접근합니다.
+AsEL uses three main tokens to access data in different scopes.
 
-*   **`${...}` (파라미터 토큰)**: 현재 요청의 **파라미터(Parameter)**에 접근합니다. 주로 Translet의 경로 변수(Path Variable)나 요청 파라미터(Request Parameter) 값을 참조하는 데 사용됩니다.
+*   **`${...}` (Parameter Token)**: Accesses the **parameters** of the current request. It is mainly used to reference path variables or request parameters of a Translet.
     ```xml
     <translet name="/users/${userId}">
       <action bean="userService" method="deleteUser">
         <arguments>
-          <item value="${userId}"/> <!-- URL 경로에서 추출된 userId 파라미터를 action의 인자로 전달 -->
+          <item value="${userId}"/> <!-- Passes the userId parameter extracted from the URL path as an argument to the action -->
         </arguments>
       </action>
     </translet>
     ```
 
-*   **`@{...}` (속성 토큰)**: 현재 `Activity` 컨텍스트의 **속성(Attribute)**에 접근합니다. 속성은 다른 액션의 결과나 AOP 어드바이스 등을 통해 `Activity` 내에서 생성되고 공유되는 데이터입니다.
+*   **`@{...}` (Attribute Token)**: Accesses the **attributes** of the current `Activity` context. Attributes are data created and shared within the `Activity`, such as the results of other actions or AOP advice.
     ```xml
     <action id="userResult" bean="userAction" method="getUser"/>
-    <!-- 위 action의 결과는 'userResult'라는 속성으로 저장됨 -->
+    <!-- The result of the above action is stored as an attribute named 'userResult' -->
     <dispatch name="user/detail">
         <attributes>
-            <item name="user" value="@{userResult}"/> <!-- 'userResult' 속성을 뷰 템플릿에 'user'라는 이름으로 전달 -->
+            <item name="user" value="@{userResult}"/> <!-- Passes the 'userResult' attribute to the view template as 'user' -->
         </attributes>
     </dispatch>
     ```
 
-*   **`#{...}` (빈 토큰)**: IoC 컨테이너에 등록된 **빈(Bean) 또는 빈의 속성**에 접근합니다. 정적인 설정값이나 다른 빈의 메소드 호출 결과를 참조할 때 유용합니다.
+*   **`#{...}` (Bean Token)**: Accesses a **bean or a bean's property** registered in the IoC container. It is useful for referencing static configuration values or the results of other bean method calls.
     ```xml
     <bean id="appConfig" class="com.example.AppConfig">
         <properties>
@@ -569,21 +569,21 @@ AsEL은 세 가지 주요 토큰을 사용하여 서로 다른 스코프의 데�
 
     <action bean="boardService" method="getArticleList">
         <arguments>
-            <!-- appConfig 빈의 defaultPageSize 속성 값을 인자로 전달 -->
+            <!-- Passes the value of the defaultPageSize property of the appConfig bean as an argument -->
             <item value="#{appConfig.defaultPageSize}"/>
         </arguments>
     </action>
     ```
 
-#### 3.4.2. @Value 어노테이션과 AsEL
+#### 3.4.2. @Value Annotation and AsEL
 
-`@Value` 어노테이션과 함께 사용하면 AsEL의 강력함을 코드 레벨까지 확장할 수 있습니다. 외부 설정 파일(`properties`)에 정의된 값을 Bean의 필드나 생성자 인자에 직접 주입할 수 있습니다.
+When used with the `@Value` annotation, the power of AsEL can be extended to the code level. You can inject values defined in an external configuration file (`properties`) directly into a Bean's fields or constructor arguments.
 
-*   **`%{...}` (프로퍼티 토큰)**: `@Value` 어노테이션 내에서 사용되며, `<properties>` 엘리먼트나 외부 설정 파일에 정의된 **프로퍼티(Property)** 값을 참조합니다.
+*   **`%{...}` (Property Token)**: Used within the `@Value` annotation, it references a **property** value defined in a `<properties>` element or an external configuration file.
 
 ```java
-// config.properties 파일 내용: app.version=1.2.3
-// XML 설정: <properties file="config.properties"/>
+// content of config.properties file: app.version=1.2.3
+// XML configuration: <properties file="config.properties"/>
 
 @Component
 public class AppInfo {
@@ -591,49 +591,49 @@ public class AppInfo {
 
     @Autowired
     public AppInfo(@Value("%{app.version:1.0.0}") String appVersion) {
-        // config.properties에 값이 있으면 "1.2.3"이 주입되고,
-        // 없으면 기본값 "1.0.0"이 주입됨
+        // If the value exists in config.properties, "1.2.3" is injected.
+        // Otherwise, the default value "1.0.0" is injected.
         this.appVersion = appVersion;
     }
 }
 ```
 
-AsEL을 잘 활용하면 정적인 설정을 동적인 애플리케이션 로직과 효과적으로 연결하여, 코드 변경 없이 설정만으로 다양한 상황에 대응할 수 있는 유연한 애플리케이션을 만들 수 있습니다.
+By making good use of AsEL, you can effectively connect static configurations with dynamic application logic to create flexible applications that can respond to various situations just by changing the configuration without modifying the code.
 
-## 4. Aspectran 주요 기능 활용
+## 4. Utilizing Aspectran's Main Features
 
-### 4.1. Profiles (프로필)
+### 4.1. Profiles
 
-Aspectran의 Profiles 기능은 애플리케이션의 전체 또는 일부 설정을 **개발(development), 테스트(test), 운영(production)**과 같은 특정 환경에 따라 다르게 적용할 수 있도록 지원하는 강력한 기능입니다. 이를 통해 코드 변경 없이 설정만으로 여러 환경에 쉽게 대응할 수 있습니다.
+Aspectran's Profiles feature is a powerful function that supports applying all or part of an application's configuration differently according to a specific environment, such as **development, test, or production**. This makes it easy to respond to multiple environments just by changing the configuration without any code changes.
 
-#### 4.1.1. 프로필의 필요성 및 활용
+#### 4.1.1. Need for and Use of Profiles
 
-*   **환경별 설정 관리**: 데이터베이스 연결 정보, API 키, 로깅 레벨 등 환경마다 달라지는 설정을 효율적으로 관리할 수 있습니다.
-*   **조건부 빈 로딩**: 특정 환경에서만 필요한 Bean(예: 개발용 Mock 서비스, 운영용 모니터링 도구)을 조건부로 로드할 수 있습니다.
+*   **Environment-specific Configuration Management**: You can efficiently manage settings that differ for each environment, such as database connection information, API keys, and logging levels.
+*   **Conditional Bean Loading**: You can conditionally load Beans that are needed only in a specific environment (e.g., mock services for development, monitoring tools for production).
 
-#### 4.1.2. 프로필 활성화 방법
+#### 4.1.2. How to Activate Profiles
 
-프로필은 주로 JVM 시스템 프로퍼티(`-D` 옵션)를 통해 활성화합니다.
+Profiles are mainly activated through JVM system properties (`-D` option).
 
-*   **`aspectran.profiles.active`**: 현재 활성화할 프로필을 지정합니다. 여러 프로필을 지정할 경우 쉼표(`,`)로 구분합니다.
+*   **`aspectran.profiles.active`**: Specifies the currently active profiles. If specifying multiple profiles, separate them with a comma (`,`).
     ```bash
-    # 'dev' 프로필을 활성화하여 애플리케이션 실행
+    # Run the application with the 'dev' profile activated
     java -Daspectran.profiles.active=dev -jar my-application.jar
 
-    # 'prod'와 'metrics' 두 개의 프로필을 동시에 활성화
+    # Activate both 'prod' and 'metrics' profiles simultaneously
     java -Daspectran.profiles.active=prod,metrics -jar my-application.jar
     ```
-*   **`aspectran.profiles.default`**: `aspectran.profiles.active`가 지정되지 않았을 때 기본으로 활성화할 프로필을 지정합니다.
-*   **`aspectran.profiles.base`**: 항상 활성화되어야 하는 기본 프로필을 지정합니다.
+*   **`aspectran.profiles.default`**: Specifies the default profile to be activated if `aspectran.profiles.active` is not specified.
+*   **`aspectran.profiles.base`**: Specifies the base profile that should always be active.
 
-#### 4.1.3. 프로필을 이용한 조건부 설정
+#### 4.1.3. Conditional Configuration Using Profiles
 
-Aspectran의 설정 파일(XML 또는 APON) 내 대부분의 엘리먼트에서 `profile` 속성을 사용하여 특정 프로필이 활성화되었을 때만 해당 설정을 적용하도록 할 수 있습니다.
+In Aspectran's configuration files (XML or APON), you can use the `profile` attribute on most elements to apply that setting only when a specific profile is active.
 
 ```xml
 <aspectran>
 
-    <!-- 'dev' 프로필이 활성화될 때만 적용되는 개발용 데이터베이스 설정 -->
+    <!-- Development database settings applied only when the 'dev' profile is active -->
     <properties profile="dev">
         <property name="db.driver">org.h2.Driver</property>
         <property name="db.url">jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1</property>
@@ -641,7 +641,7 @@ Aspectran의 설정 파일(XML 또는 APON) 내 대부분의 엘리먼트에서 
         <property name="db.password"></property>
     </properties>
 
-    <!-- 'prod' 프로필이 활성화될 때만 적용되는 운영용 데이터베이스 설정 -->
+    <!-- Production database settings applied only when the 'prod' profile is active -->
     <properties profile="prod">
         <property name="db.driver">com.mysql.cj.jdbc.Driver</property>
         <property name="db.url">jdbc:mysql://prod.db.server:3306/main_db</property>
@@ -649,36 +649,36 @@ Aspectran의 설정 파일(XML 또는 APON) 내 대부분의 엘리먼트에서 
         <property name="db.password">!PROD_DB_PASSWORD!</property>
     </properties>
 
-    <!-- 'prod' 프로필이 활성화될 때만 특정 설정 파일을 포함 -->
+    <!-- Include a specific configuration file only when the 'prod' profile is active -->
     <append file="/config/metrics-context.xml" profile="prod"/>
 
-    <!-- 'dev' 프로필이 활성화되지 않았을 때만 로드되는 Bean -->
+    <!-- A Bean that is loaded only when the 'dev' profile is not active -->
     <bean id="someBean" class="com.example.SomeBean" profile="!dev"/>
 
 </aspectran>
 ```
 
-#### 4.1.4. 프로필 표현식 (Profile Expressions)
+#### 4.1.4. Profile Expressions
 
-단순한 프로필 이름 외에도, 논리 연산자를 사용하여 복잡한 조건을 표현할 수 있습니다.
+In addition to simple profile names, you can use logical operators to express complex conditions.
 
-*   **`!` (NOT)**: 특정 프로필이 활성화되지 않았을 때 (예: `profile="!demo"`)
-*   **`()` (AND)**: 괄호 안의 모든 프로필이 활성화되었을 때 (예: `profile="(prod, metrics)"`)
-*   **`[]` (OR)**: 대괄호 안의 프로필 중 하나라도 활성화되었을 때 (쉼표 `,`로만 구분해도 OR로 동작) (예: `profile="[dev, test]"`)
-*   **복합 표현식**: 여러 연산자를 조합하여 복잡한 조건을 만들 수 있습니다.
+*   **`!` (NOT)**: When a specific profile is not active (e.g., `profile="!demo"`)
+*   **`()` (AND)**: When all profiles within the parentheses are active (e.g., `profile="(prod, metrics)"`)
+*   **`[]` (OR)**: When at least one of the profiles within the square brackets is active (separating with a comma `,` also works as OR) (e.g., `profile="[dev, test]"`)
+*   **Composite Expressions**: You can create complex conditions by combining multiple operators.
 
-#### 4.1.5. 사용 예제: 환경별 데이터베이스 설정
+#### 4.1.5. Usage Example: Environment-specific Database Configuration
 
-`dev`와 `prod` 환경에 따라 다른 데이터베이스 연결 정보를 설정하는 완전한 예제는 다음과 같습니다.
+Here is a complete example of setting different database connection information according to `dev` and `prod` environments.
 
 **`config/root-context.xml`**
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <aspectran>
 
-    <description>환경에 따라 다른 DB 설정을 로드합니다.</description>
+    <description>Loads different DB settings depending on the environment.</description>
 
-    <!-- 개발 환경 설정 -->
+    <!-- Development environment settings -->
     <properties profile="dev">
         <property name="db.driver">org.h2.Driver</property>
         <property name="db.url">jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1</property>
@@ -686,7 +686,7 @@ Aspectran의 설정 파일(XML 또는 APON) 내 대부분의 엘리먼트에서 
         <property name="db.password"></property>
     </properties>
 
-    <!-- 운영 환경 설정 -->
+    <!-- Production environment settings -->
     <properties profile="prod">
         <property name="db.driver">com.mysql.cj.jdbc.Driver</property>
         <property name="db.url">jdbc:mysql://prod.db.server:3306/main_db</property>
@@ -694,7 +694,7 @@ Aspectran의 설정 파일(XML 또는 APON) 내 대부분의 엘리먼트에서 
         <property name="db.password">!PROD_DB_PASSWORD!</property>
     </properties>
 
-    <!-- 데이터 소스 빈 정의 -->
+    <!-- Data source bean definition -->
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
         <property name="driverClassName" value="${db.driver}"/>
         <property name="jdbcUrl" value="${db.url}"/>
@@ -705,53 +705,53 @@ Aspectran의 설정 파일(XML 또는 APON) 내 대부분의 엘리먼트에서 
 </aspectran>
 ```
 
-**애플리케이션 실행:**
+**Running the Application:**
 
-- **개발 환경으로 실행:** `dev` 프로필을 활성화하면 H2 인메모리 데이터베이스를 사용합니다.
+- **Run in development environment:** Activating the `dev` profile uses the H2 in-memory database.
   ```bash
   java -Daspectran.profiles.active=dev -jar my-app.jar
   ```
 
-- **운영 환경으로 실행:** `prod` 프로필을 활성화하면 MySQL 데이터베이스를 사용합니다.
+- **Run in production environment:** Activating the `prod` profile uses the MySQL database.
   ```bash
   java -Daspectran.profiles.active=prod -jar my-app.jar
   ```
 
-### 4.2. Scheduler (스케줄러)
+### 4.2. Scheduler
 
-Aspectran Scheduler는 애플리케이션 내의 특정 작업을 **정해진 시간에 또는 주기적으로 자동 실행**할 수 있도록 하는 강력한 기능입니다. 이 기능을 통해 개발자는 배치(Batch) 작업, 데이터 동기화, 리포트 생성 등 다양한 백그라운드 태스크를 Aspectran의 핵심 컴포넌트인 Translet을 사용하여 손쉽게 구현하고 관리할 수 있습니다.
+Aspectran Scheduler is a powerful feature that allows specific tasks within an application to be **executed automatically at a set time or periodically**. With this feature, developers can easily implement and manage various background tasks such as batch jobs, data synchronization, and report generation using Aspectran's core component, the Translet.
 
-#### 4.2.1. 스케줄러의 역할 및 Quartz 기반 아키텍처
+#### 4.2.1. Role of the Scheduler and Quartz-based Architecture
 
-Aspectran Scheduler는 **Quartz 스케줄러 기반의 강력한 스케줄링 프레임워크를 코어에 내장**하고 있습니다. 개발자는 별도의 스케줄링 라이브러리를 직접 통합하는 복잡한 과정 없이, Aspectran이 제공하는 설정 규칙만으로 즉시 스케줄링 기능을 활성화하고 사용할 수 있습니다. 스케줄링의 복잡한 내부 동작을 신경 쓸 필요 없이, 자신이 가장 잘 아는 Translet을 사용하여 원하는 작업을 손쉽게 자동화할 수 있습니다.
+Aspectran Scheduler has a **powerful scheduling framework based on the Quartz scheduler built into its core**. Developers can immediately activate and use the scheduling feature with just the configuration rules provided by Aspectran, without the complex process of integrating a separate scheduling library themselves. Without worrying about the complex internal workings of scheduling, you can easily automate the tasks you want using the Translet you know best.
 
-#### 4.2.2. 스케줄러 설정 방법
+#### 4.2.2. How to Configure the Scheduler
 
-Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합니다.
+Aspectran provides two main ways to configure the scheduler.
 
-1.  **XML/APON 기반 설정**: 스케줄러 빈(Bean)과 스케줄 규칙(`<schedule>`)을 XML 또는 APON 파일에 명시적으로 정의합니다.
+1.  **XML/APON-based Configuration**: Explicitly define the scheduler bean and schedule rules (`<schedule>`) in an XML or APON file.
 
     ```xml
-    <!-- 스케줄러 빈 정의 -->
+    <!-- Scheduler bean definition -->
     <bean id="scheduler1" class="com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean">
         <property type="properties" name="quartzProperties">
             <entry name="org.quartz.scheduler.instanceName" value="MyScheduler"/>
             <entry name="org.quartz.threadPool.threadCount" value="10"/>
-            <!-- 기타 모든 Quartz 속성... -->
+            <!-- All other Quartz properties... -->
         </property>
     </bean>
 
-    <!-- 스케줄 규칙 정의 -->
+    <!-- Schedule rule definition -->
     <schedule id="my-daily-report" schedulerBean="scheduler1">
         <scheduler>
-            <trigger type="cron" expression="0 0 2 * * ?" /> <!-- 매일 새벽 2시 실행 -->
+            <trigger type="cron" expression="0 0 2 * * ?" /> <!-- Run every day at 2 AM -->
         </scheduler>
-        <job translet="/batch/daily-report"/> <!-- 실행할 Translet 지정 -->
+        <job translet="/batch/daily-report"/> <!-- Specify the Translet to run -->
         <job translet="/batch/log-archive"/>
     </schedule>
     ```
 
-2.  **어노테이션 기반 설정**: `@Schedule` 어노테이션을 사용하면, 스케줄러 빈 정의부터 잡(Job)과 트리거(Trigger) 설정까지 모든 것을 하나의 Java 클래스 안에서 선언적으로 처리할 수 있습니다. 이는 코드의 응집도를 높이고, XML 설정을 최소화하는 장점이 있습니다.
+2.  **Annotation-based Configuration**: Using the `@Schedule` annotation, you can declaratively handle everything from defining the scheduler bean to setting up jobs and triggers, all within a single Java class. This has the advantage of increasing code cohesion and minimizing XML configuration.
 
     ```java
     import com.aspectran.core.component.bean.annotation.Bean;
@@ -771,19 +771,19 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
     @Component
     @Schedule(
         id = "my-annotated-job",
-        scheduler = "mySchedulerBean", // 스케줄러 Bean의 ID
-        cronTrigger = @CronTrigger(expression = "0 0/1 * * * ?"), // 매 1분마다 실행
+        scheduler = "mySchedulerBean", // ID of the scheduler Bean
+        cronTrigger = @CronTrigger(expression = "0 0/1 * * * ?"), // Run every 1 minute
         jobs = { @Job(translet = "/annotated/task") }
     )
     public class MyScheduledTasks {
 
-        @Request("/annotated/task") // 스케줄러에 의해 실행될 Translet 메소드
+        @Request("/annotated/task") // Translet method to be executed by the scheduler
         @Transform(FormatType.TEXT)
         public String executeTask() {
-            return "스케줄링된 작업이 실행되었습니다: " + LocalDateTime.now();
+            return "Scheduled task has been executed: " + LocalDateTime.now();
         }
 
-        @Bean("mySchedulerBean") // Quartz Scheduler Bean 정의
+        @Bean("mySchedulerBean") // Quartz Scheduler Bean definition
         public org.quartz.Scheduler createScheduler() throws SchedulerException {
             Properties props = new Properties();
             props.put("org.quartz.scheduler.instanceName", "AnnotatedScheduler");
@@ -793,12 +793,12 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
     }
     ```
 
-#### 4.2.3. 트리거 (Trigger) 타입 상세
+#### 4.2.3. Trigger Type Details
 
-트리거는 잡(Job)이 실행될 시점을 정교하게 제어합니다. XML 방식의 `<trigger>` 요소와 어노테이션 방식의 `@SimpleTrigger`, `@CronTrigger` 어노테이션을 통해 설정할 수 있습니다.
+Triggers precisely control when a job is executed. They can be configured through the `<trigger>` element in XML or the `@SimpleTrigger` and `@CronTrigger` annotations in the annotation-based approach.
 
-*   **`simple` 트리거**: "지금부터 10초 후에 시작해서, 1시간마다, 총 5번 실행"과 같이 단순한 간격으로 작업을 반복할 때 사용합니다. 특정 간격으로 정해진 횟수만큼 또는 무한히 작업을 반복하는 데 가장 적합합니다.
-    *   **주요 속성**: `startDelaySeconds`, `intervalInSeconds/Minutes/Hours`, `repeatCount` (`-1`은 무한 반복), `repeatForever`.
+*   **`simple` trigger**: Used to repeat a task at simple intervals, such as "start 10 seconds from now, and run every hour, for a total of 5 times." It is best suited for repeating a task a set number of times or indefinitely at a specific interval.
+    *   **Main attributes**: `startDelaySeconds`, `intervalInSeconds/Minutes/Hours`, `repeatCount` (`-1` for infinite repeat), `repeatForever`.
     ```xml
     <trigger type="simple">
         startDelaySeconds: 10
@@ -810,38 +810,38 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
     @SimpleTrigger(
         startDelaySeconds = 300,
         intervalInSeconds = 30,
-        repeatCount = 9 // 최초 1회 실행 + 9회 반복 = 총 10회
+        repeatCount = 9 // 1 initial execution + 9 repeats = 10 total executions
     )
     ```
 
-*   **`cron` 트리거**: "매주 금요일 오후 5시 30분" 또는 "매달 마지막 날 새벽 1시"와 같이 달력과 연관된 복잡한 시간표에 따라 작업을 실행할 때 사용합니다. 강력한 **Cron 표현식**을 기반으로 동작하여 매우 유연하고 강력한 스케줄링을 제공합니다.
-    *   **주요 속성**: `expression` (Cron 표현식 문자열).
+*   **`cron` trigger**: Used to execute tasks according to a complex calendar-related schedule, such as "every Friday at 5:30 PM" or "at 1 AM on the last day of every month." It operates based on the powerful **Cron expression**, providing very flexible and powerful scheduling.
+    *   **Main attribute**: `expression` (Cron expression string).
     ```xml
-    <trigger type="cron" expression="0 50 23 * * ?" /> <!-- 매일 밤 11시 50분 -->
+    <trigger type="cron" expression="0 50 23 * * ?" /> <!-- Every night at 11:50 PM -->
     ```
     ```java
-    @CronTrigger(expression = "0 30 9 ? * MON-FRI") // 매주 월요일부터 금요일까지, 오전 9시 30분
+    @CronTrigger(expression = "0 30 9 ? * MON-FRI") // Every week from Monday to Friday, at 9:30 AM
     ```
 
-#### 4.2.4. 스케줄 잡 로깅 및 모니터링
+#### 4.2.4. Schedule Job Logging and Monitoring
 
-스케줄링된 작업의 실행 상태를 확인하고 디버깅하는 것은 매우 중요합니다. Aspectran은 스케줄 잡의 실행 이벤트를 Logback을 통해 상세하게 기록할 수 있도록 지원합니다.
+It is very important to check the execution status of scheduled tasks and to debug them. Aspectran supports detailed logging of schedule job execution events through Logback.
 
-*   **로깅 메커니즘**: `com.aspectran.core.scheduler.activity.ActivityJobReporter` 클래스를 통해 잡의 시작, 성공, 실패 등의 이벤트를 로깅합니다. 이 리포터는 Quartz의 `JobListener`와 연동되어 잡의 생명주기 동안 발생하는 주요 정보를 기록합니다.
-*   **Logback 설정 예제**: 스케줄러 로그를 별도의 파일로 분리하여 관리하려면 Logback의 `SiftingAppender`와 Aspectran의 `LoggingGroupDiscriminator`를 활용할 수 있습니다. 이를 통해 `LOGGING_GROUP` 값에 따라 별도의 스케줄러 로그 파일로 기록됩니다.
+*   **Logging Mechanism**: The `com.aspectran.core.scheduler.activity.ActivityJobReporter` class logs events such as the start, success, and failure of a job. This reporter is linked with Quartz's `JobListener` to record key information that occurs during the job's lifecycle.
+*   **Logback Configuration Example**: To manage scheduler logs in a separate file, you can use Logback's `SiftingAppender` and Aspectran's `LoggingGroupDiscriminator`. This allows scheduler logs to be recorded in a separate file based on the `LOGGING_GROUP` value.
 
-### 4.3. 응답 처리 (Response Handling)
+### 4.3. Response Handling
 
-Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하기 위해 크게 세 가지 방식을 제공합니다. 첫째, `dispatch`는 JSP나 Thymeleaf 같은 뷰 템플릿으로 처리를 위임하여 완전한 UI 페이지를 렌더링합니다. 둘째, `transform`은 선언적인 규칙을 통해 처리 결과를 JSON, XML 등 특정 데이터 형식으로 간편하게 변환합니다. 마지막으로, `RestResponse`는 Java 코드 내에서 HTTP 상태와 응답 데이터를 프로그래밍 방식으로 세밀하게 제어하여 동적인 REST API 응답을 구성할 때 사용됩니다.
+Aspectran provides three main ways to return the processing results of an action method to the client. First, `dispatch` delegates processing to a view template like JSP or Thymeleaf to render a complete UI page. Second, `transform` easily converts the processing result into a specific data format like JSON or XML through declarative rules. Finally, `RestResponse` is used to programmatically control the HTTP status and response data in detail within Java code to construct dynamic REST API responses.
 
-#### 4.3.1. Dispatch: 뷰 템플릿 렌더링
+#### 4.3.1. Dispatch: View Template Rendering
 
-`dispatch` 응답은 JSP, Thymeleaf, FreeMarker와 같은 외부 뷰 템플릿 엔진으로 처리를 위임하여 완전한 HTML 웹 페이지를 렌더링하는 데 사용됩니다. 이는 전통적인 웹 애플리케이션의 UI 화면을 구성하는 데 적합합니다.
+The `dispatch` response is used to render a complete HTML web page by delegating processing to an external view template engine such as JSP, Thymeleaf, or FreeMarker. This is suitable for constructing the UI screens of a traditional web application.
 
-`<dispatch>` 규칙의 `name` 속성에는 템플릿 파일의 경로를 지정하며, `dispatcher` 속성에는 렌더링을 담당할 `ViewDispatcher` 빈(bean)을 지정할 수 있습니다. 만약 `dispatcher` 속성이 생략되면 기본 `ViewDispatcher`가 사용됩니다.
+The `name` attribute of the `<dispatch>` rule specifies the path to the template file, and the `dispatcher` attribute can specify the `ViewDispatcher` bean responsible for rendering. If the `dispatcher` attribute is omitted, the default `ViewDispatcher` is used.
 
 ```xml
-<!-- 1. Thymeleaf 뷰 디스패처 빈 설정 -->
+<!-- 1. Thymeleaf view dispatcher bean configuration -->
 <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
     <properties>
         <property name="prefix" value="/WEB-INF/templates/"/>
@@ -850,17 +850,17 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
     </properties>
 </bean>
 
-<!-- 2. Translet에서 Dispatch 규칙을 사용하여 Thymeleaf 뷰 호출 -->
+<!-- 2. Using a Dispatch rule in a Translet to call a Thymeleaf view -->
 <translet name="/hello">
     <dispatch name="hello" dispatcher="thymeleafViewDispatcher" contentType="text/html" encoding="UTF-8"/>
 </translet>
 ```
 
-#### 4.3.2. Transform: 데이터 형식 변환
+#### 4.3.2. Transform: Data Format Conversion
 
-`transform` 응답은 액션의 처리 결과를 특정 데이터 형식(JSON, XML, 텍스트 등)으로 변환하여 응답 본문을 직접 생성하는 데 사용됩니다. 이는 주로 REST API의 응답을 생성하거나, 데이터 연동을 위한 특정 형식의 텍스트를 반환할 때 매우 유용합니다.
+The `transform` response is used to directly generate the response body by converting the processing result of an action into a specific data format (JSON, XML, text, etc.). This is very useful for generating responses for REST APIs or for returning text in a specific format for data integration.
 
-*   **JSON 변환**: `format="json"`을 사용하여 처리 결과를 JSON 문자열로 변환합니다. REST API에서 가장 흔하게 사용됩니다. `pretty="true"` 속성을 추가하면 가독성 좋게 출력됩니다.
+*   **JSON Conversion**: Use `format="json"` to convert the processing result into a JSON string. This is most commonly used in REST APIs. Adding the `pretty="true"` attribute will format the output for readability.
     ```xml
     <translet name="/api/users/1">
       <action bean="userService" method="getUser" id="user"/>
@@ -868,7 +868,7 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
     </translet>
     ```
 
-*   **XML 변환**: `format="xml"`을 사용하여 XML로 변환합니다.
+*   **XML Conversion**: Use `format="xml"` to convert to XML.
     ```xml
     <translet name="/api/users/1.xml">
       <action bean="userService" method="getUser" id="user"/>
@@ -876,33 +876,33 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
     </translet>
     ```
 
-*   **텍스트 변환 및 템플릿 활용**: `format="text"`을 사용하여 일반 텍스트로 변환합니다. `<template>` 규칙과 함께 사용하면 AsEL 토큰을 통해 동적인 텍스트 내용을 만들 수 있습니다.
+*   **Text Conversion and Template Usage**: Use `format="text"` to convert to plain text. When used with a `<template>` rule, you can create dynamic text content using AsEL tokens.
     ```xml
     <translet name="/api/users/1/info">
         <action bean="userService" method="getUser" id="user"/>
         <transform format="text">
           <template>
-            사용자 이름: @{user.name}
-            이메일: @{user.email}
+            User Name: @{user.name}
+            Email: @{user.email}
           </template>
         </transform>
     </translet>
     ```
 
-이 두 가지 응답 방식을 이해하면, 웹 페이지와 REST API를 모두 지원하는 유연한 애플리케이션을 효과적으로 구축할 수 있습니다.
+By understanding these two response methods, you can effectively build flexible applications that support both web pages and REST APIs.
 
-#### 4.3.3. RestResponse: 프로그래밍 방식의 REST 응답
+#### 4.3.3. RestResponse: Programmatic REST Response
 
-`transform` 규칙이 선언적으로 응답을 생성하는 간편한 방법을 제공하는 반면, `RestResponse` 인터페이스는 Java 코드 내에서 프로그래밍 방식으로 RESTful 응답을 동적으로 구성할 수 있는 더 유연하고 강력한 방법을 제공합니다. 이 방식을 사용하면, 조건에 따라 HTTP 상태 코드, 헤더, 응답 데이터를 세밀하게 제어할 수 있습니다.
+While the `transform` rule provides a convenient way to generate responses declaratively, the `RestResponse` interface offers a more flexible and powerful way to dynamically construct RESTful responses programmatically within Java code. This approach allows you to finely control the HTTP status code, headers, and response data based on conditions.
 
-일반적으로 액션 메소드에서 `DefaultRestResponse`의 인스턴스를 생성하고, 데이터를 설정한 뒤, `.ok()`, `.notFound()`, `.created()` 와 같은 메소드를 호출하여 최종 `RestResponse` 객체를 반환합니다.
+Typically, you create an instance of `DefaultRestResponse` in an action method, set the data, and then call methods like `.ok()`, `.notFound()`, or `.created()` to return the final `RestResponse` object.
 
-*   **주요 특징**:
-    *   **데이터 설정**: `setData("key", value)` 또는 생성자를 통해 응답 데이터를 설정합니다.
-    *   **상태 코드 체이닝**: `.ok()`, `.created(location)`, `.notFound()`, `.forbidden()` 등 직관적인 메소드를 체이닝하여 HTTP 상태 코드를 설정하고 응답 객체를 반환합니다.
-    *   **유연성**: 복잡한 비즈니스 로직의 결과에 따라 응답 내용과 상태를 동적으로 결정해야 할 때 매우 유용합니다.
+*   **Key Features**:
+    *   **Set Data**: Set the response data via `setData("key", value)` or through the constructor.
+    *   **Status Code Chaining**: Set the HTTP status code and return the response object by chaining intuitive methods like `.ok()`, `.created(location)`, `.notFound()`, `.forbidden()`.
+    *   **Flexibility**: Very useful when you need to dynamically determine the response content and status based on the results of complex business logic.
 
-*   **사용 예제**:
+*   **Usage Example**:
     ```java
     @Component
     public class CustomerActivity {
@@ -919,11 +919,11 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
             Customer customer = repository.getCustomer(id);
             RestResponse response = new DefaultRestResponse();
             if (customer != null) {
-                // 데이터와 함께 200 OK 상태를 반환
+                // Return 200 OK status with data
                 response.setData("customer", customer);
                 response.ok();
             } else {
-                // 404 Not Found 상태를 반환
+                // Return 404 Not Found status
                 response.notFound();
             }
             return response;
@@ -933,74 +933,88 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
         public RestResponse addCustomer(@NonNull Translet translet, @Required Customer customer) {
             int id = repository.insertCustomer(customer);
             String resourceUri = translet.getActualRequestName() + "/" + id;
-            // 생성된 리소스의 URI와 함께 201 Created 상태를 반환
+            // Return 201 Created status with the URI of the created resource
             return new DefaultRestResponse(customer).created(resourceUri);
         }
     }
     ```
-`RestResponse`를 사용하면, 선언적 방식인 `<transform>` 규칙보다 더 복잡하고 동적인 REST API 응답을 효과적으로 구현할 수 있습니다.
+With `RestResponse`, you can implement more complex and dynamic REST API responses more effectively than with the declarative `<transform>` rule.
 
-## 5. Aspectran 구성 설정
+## 5. Aspectran Configuration
 
-Aspectran 애플리케이션의 초기 구동 설정은 `com.aspectran.core.context.config.AspectranConfig` 객체를 통해 관리됩니다.
-이 설정은 주로 APON(Aspectran Parameter Object Notation) 형식의 `aspectran-config.apon` 파일로 로드되며,
-이 파일을 통해 XML 형식의 설정 파일(`context.rules`로 지정)을 포함하거나 어노테이션 기반 설정을 활성화할 수 있습니다.
+The initial startup configuration of an Aspectran application is managed through the `com.aspectran.core.context.config.AspectranConfig` object.
+This configuration is mainly loaded from an `aspectran-config.apon` file in APON (Aspectran Parameter Object Notation) format.
+Through this file, you can include configuration files in XML format (specified with `context.rules`) or enable annotation-based configuration.
 
-### 5.1. Aspectran 기본 구성 설정
+### 5.1. Aspectran Basic Configuration
 
-자세한 내용은 [Aspectran 기본 구성 설정](aspectran-configuration_kr.md) 문서를 참고하세요.
+For more details, please refer to the [Aspectran Basic Configuration](aspectran-configuration_en.md) document.
 
-### 5.2. Aspectran XML 구성 설정
+### 5.2. Aspectran XML Configuration
 
-자세한 내용은 [Aspectran XML 구성 설정](aspectran-xml-configuration_kr.md) 문서를 참고하세요.
+For more details, please refer to the [Aspectran XML Configuration](aspectran-xml-configuration_en.md) document.
 
-### 5.3. 어노테이션과 XML 설정의 조합
+### 5.3. Combining Annotations and XML Configuration
 
-대부분의 경우 어노테이션 기반의 컴포넌트 스캔을 기본으로 사용하고, 특정 Bean을 재정의하거나 외부 라이브러리를 등록할 때 XML 설정을 조합하여 사용하는 것이 일반적입니다.
-동일한 ID의 Bean이 둘 다에 정의된 경우, 나중에 로드되는 설정이 우선권을 가질 수 있으며, `<bean important="true">` 속성으로 덮어쓰기를 강제할 수 있습니다.
+In most cases, it is common to use annotation-based component scanning as the default and combine it with XML configuration when you need to override a specific Bean or register an external library.
+If a Bean with the same ID is defined in both, the configuration that is loaded later may take precedence, and you can force an override with the `<bean important="true">` attribute.
 
-## 6. 개발 팁 및 모범 사례
+## 6. Development Tips and Best Practices
 
-Aspectran 애플리케이션을 개발할 때 다음과 같은 팁과 모범 사례를 따르면 더 견고하고 유지보수하기 쉬운 코드를 작성할 수 있습니다.
+Following these tips and best practices when developing Aspectran applications will help you write more robust and maintainable code.
 
-### 6.1. 생성자 주입 선호
+### 6.1. Prefer Constructor Injection
 
-*   **불변성(Immutability)**: 의존성을 `final` 필드로 선언할 수 있어 Bean의 상태가 변경되지 않음을 보장합니다.
-*   **의존성 명시**: 객체가 기능하는 데 필요한 모든 의존성이 생성자에 명확하게 드러나므로, 코드의 가독성이 높아집니다.
-*   **순환 참조 방지**: 생성자 주입을 사용할 경우, Bean A와 B가 서로를 필요로 하는 순환 참조가 발생하면 애플리케이션 시작 시점에 오류가 발생하여 문제를 즉시 발견하고 해결할 수 있습니다.
+*   **Immutability**: You can declare dependencies as `final` fields, ensuring that the Bean's state does not change.
+*   **Explicit Dependencies**: All dependencies required for an object to function are clearly exposed in the constructor, which improves code readability.
+*   **Circular Reference Prevention**: When using constructor injection, if a circular reference occurs where Bean A and B need each other, an error will occur at application startup, allowing you to immediately discover and resolve the problem.
 
-### 6.2. 순환 의존성 피하기
+### 6.2. Avoid Circular Dependencies
 
-순환 의존성(Circular Dependency)은 두 개 이상의 Bean이 서로를 의존하는 상황을 말합니다. 이는 설계상의 문제를 나타내는 신호일 수 있으며, 코드의 복잡성을 증가시키고 테스트를 어렵게 만듭니다. 대부분의 경우, 책임을 분리하여 제3의 클래스로 옮기는 리팩토링을 통해 순환 의존성을 해결할 수 있습니다. 불가피한 경우, 수정자(setter) 주입을 사용하면 순환 참조 문제를 해결할 수 있지만, 이는 최후의 수단으로 고려해야 합니다.
+A Circular Dependency is a situation where two or more Beans depend on each other. This can be a sign of a design problem, increasing code complexity and making testing difficult. In most cases, circular dependencies can be resolved by refactoring to separate responsibilities into a third class. In unavoidable cases, using setter injection can solve the circular reference problem, but this should be considered a last resort.
 
-### 6.3. 싱글톤 빈과 상태 관리
+### 6.3. Singleton Beans and State Management
 
-싱글톤 Bean은 애플리케이션 전체에서 단 하나의 인스턴스만 존재하므로, 여러 스레드에서 동시에 접근할 수 있습니다. 만약 싱글톤 Bean이 변경 가능한 상태(예: 멤버 변수)를 가지고 있다면, 동시성(concurrency) 문제가 발생할 수 있습니다. 싱글톤 Bean은 가급적 상태를 가지지 않도록(stateless) 설계하는 것이 가장 좋습니다. 상태가 꼭 필요하다면 `ThreadLocal`을 사용하거나, 동기화(synchronization) 처리를 신중하게 구현해야 합니다.
+Since a singleton Bean has only one instance throughout the application, it can be accessed by multiple threads simultaneously. If a singleton Bean has a mutable state (e.g., member variables), concurrency issues can arise. It is best to design singleton Beans to be stateless if possible. If state is absolutely necessary, you should use `ThreadLocal` or carefully implement synchronization.
 
-### 6.4. `prototype` 빈의 생명주기 이해
+### 6.4. Understanding the Lifecycle of `prototype` Beans
 
-`prototype` 스코프의 Bean은 컨테이너가 생성하고 의존성을 주입한 후에는 더 이상 관리하지 않습니다. 따라서 `@Destroy`나 `DisposableBean`과 같은 소멸 관련 콜백이 **호출되지 않습니다.** `prototype` Bean이 데이터베이스 커넥션과 같은 중요한 리소스를 점유하고 있다면, 해당 리소스를 해제하는 로직을 개발자가 직접 호출해야 합니다.
+After the container creates and injects dependencies into a `prototype` scope Bean, it no longer manages it. Therefore, destruction-related callbacks like `@Destroy` or `DisposableBean` are **not called.** If a `prototype` Bean holds important resources like a database connection, the developer must manually call the logic to release those resources.
 
-## 7. 문제 해결 및 디버깅
+## 7. Troubleshooting and Debugging
 
-Aspectran 애플리케이션 개발 중 발생할 수 있는 일반적인 문제에 대한 해결 팁입니다.
+Here are some tips for solving common problems that may arise during Aspectran application development.
 
-### 7.1. 로깅 활용
+### 7.1. Utilizing Logging
 
-Aspectran은 SLF4J와 Logback을 기반으로 유연하고 강력한 로깅 시스템을 구축합니다. 애플리케이션의 동작을 이해하고 문제를 진단하는 데 로깅은 필수적입니다.
+Aspectran builds a flexible and powerful logging system based on SLF4J and Logback. Logging is essential for understanding the application's behavior and diagnosing problems.
 
-*   **로그 레벨 조정**: `logback.xml` 또는 `logback-test.xml` 파일에서 로그 레벨(TRACE, DEBUG, INFO, WARN, ERROR)을 조정하여 필요한 정보를 더 상세하게 얻을 수 있습니다.
-*   **스케줄러 로그 분리**: 스케줄링된 작업의 로그는 별도의 파일로 분리하여 모니터링할 수 있습니다. (`com.aspectran.core.scheduler.activity.ActivityJobReporter` 클래스 로그 활용)
+*   **Adjusting Log Levels**: You can get more detailed information by adjusting the log levels (TRACE, DEBUG, INFO, WARN, ERROR) in the `logback.xml` or `logback-test.xml` file.
+*   **Separating Scheduler Logs**: You can monitor the logs of scheduled tasks by separating them into a separate file. (Utilize the logs of the `com.aspectran.core.scheduler.activity.ActivityJobReporter` class)
 
-자세한 내용은 [Aspectran 로깅 메카니즘](architecture/aspectran-logging-mechanism.md) 문서를 참고하세요.
+For more details, please refer to the [Aspectran Logging Mechanism](architecture/aspectran-logging-mechanism_en.md) document.
 
-### 7.2. 일반적인 오류 메시지 및 해결 팁
+### 7.2. Common Error Messages and Troubleshooting Tips
 
-*   **`BeanNotFoundException`**: 요청한 Bean을 컨테이너에서 찾을 수 없을 때 발생합니다. 다음을 확인하세요:
-    *   Bean이 `@Component` 또는 `@Bean` 어노테이션으로 올바르게 정의되었는지.
-    *   메인 설정 파일(`aspectran.apon` 또는 `aspectran.xml`)의 `context.scan` 또는 `<bean-scan>`에 해당 Bean이 포함된 패키지가 올바르게 지정되었는지.
-    *   Bean ID나 타입이 올바르게 참조되었는지.
-*   **`NoActivityStateException`**: 현재 스레드에 `Activity` 컨텍스트가 없을 때 발생합니다. 주로 `@Async` 메소드 내에서 `CompletableFuture.supplyAsync()`와 같이 새로운 스레드 풀에서 코드를 실행할 때 발생할 수 있습니다. `@Async`에 의해 생성된 스레드 내에서 모든 작업을 동기적으로 처리하고 최종 결과만 `CompletableFuture.completedFuture()`로 감싸서 반환하는 것이 안전합니다.
-*   **설정 파일 파싱 오류**: XML 또는 APON 설정 파일의 문법 오류로 인해 발생합니다. 오류 메시지에 표시된 줄 번호와 위치를 확인하여 문법을 수정하세요.
+*   **`BeanNotFoundException`**: Occurs when the requested Bean cannot be found in the container. Check the following:
+    *   Whether the Bean is correctly defined with the `@Component` or `@Bean` annotation.
+    *   Whether the package containing the Bean is correctly specified in the `context.scan` or `<bean-scan>` of the main configuration file (`aspectran.apon` or `aspectran.xml`).
+    *   Whether the Bean ID or type is correctly referenced.
+*   **`NoActivityStateException`**: Occurs when there is no `Activity` context in the current thread. This can often happen when executing code in a new thread pool, such as with `CompletableFuture.supplyAsync()` inside an `@Async` method. It is safer to handle all tasks synchronously within the thread created by `@Async` and wrap only the final result with `CompletableFuture.completedFuture()`.
+*   **Configuration File Parsing Error**: Occurs due to a syntax error in the XML or APON configuration file. Check the line number and location indicated in the error message to correct the syntax.
 
-이 가이드가 Aspectran을 사용하는 데 도움이 되기를 바랍니다. 더 자세한 정보는 Aspectran 공식 문서와 예제 프로젝트를 참고하세요.
+## 8. Reference Documents
+
+We hope this guide helps you in using Aspectran. For more detailed information on each topic, please refer to the documents below.
+
+*   [Aspectran Basic Configuration Guide](https://aspectran.com/en/docs/configurations/aspectran-configuration/)
+*   [Aspectran XML Configuration Guide](https://aspectran.com/en/docs/configurations/aspectran-xml-configuration/)
+*   [Servlet-based Web Application Configuration](https://aspectran.com/en/docs/configurations/aspectran-servlet-configuration/)
+*   [Aspectran Beans](https://aspectran.com/en/docs/guides/aspectran-beans.md)
+*   [Aspectran AOP Feature Analysis](https://aspectran.com/en/docs/guides/aspectran-aop.md)
+*   [Understanding Translet: The Face of Aspectran](https://aspectran.com/en/docs/guides/aspectran-translet.md)
+*   [Aspectran Scheduler: Powerful Task Automation with Translets](https://aspectran.com/en/docs/guides/aspectran-scheduler.md)
+*   [Aspectran View Technologies](https://aspectran.com/en/docs/guides/aspectran-view-technologies.md)
+*   [Aspectran Profiles](https://aspectran.com/en/docs/guides/aspectran-profiles.md)
+*   [Introduction to APON (Aspectran Parameters Object Notation)](https://aspectran.com/en/docs/guides/introduce-apon.md)
+*   [Introduction to AsEL (Aspectran Expression Language)](https://aspectran.com/en/docs/guides/introduce-asel.md)

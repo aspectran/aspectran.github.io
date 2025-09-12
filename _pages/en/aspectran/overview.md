@@ -2,139 +2,139 @@
 format: plate solid article
 sidebar: right
 title: "Aspectran Overview"
-teaser: "Aspectran은 JVM 기반의 경량 고성능 프레임워크로, 단순한 명령줄 애플리케이션부터 복잡한 엔터프라이즈 웹 서비스에 이르기까지 다양한 유형의 애플리케이션을 효율적으로 구축할 수 있도록 설계되었습니다."
+teaser: "Aspectran is a lightweight, high-performance framework based on the JVM, designed to efficiently build a wide range of applications, from simple command-line applications to complex enterprise web services."
 ---
 
-## 소개
+## Introduction
 
-Aspectran은 JVM 기반의 경량 고성능 프레임워크로, 단순한 명령줄 애플리케이션부터 복잡한 엔터프라이즈 웹 서비스에 이르기까지 다양한 유형의 애플리케이션을 효율적으로 구축할 수 있도록 설계되었습니다. 최소한의 종속성과 최적화된 리소스 사용을 통해 빠른 시작 시간과 낮은 메모리 점유율을 자랑하며, 이는 특히 마이크로서비스 아키텍처나 클라우드 환경에 적합합니다.
+Aspectran is a lightweight, high-performance framework based on the JVM, designed to efficiently build a wide range of applications, from simple command-line applications to complex enterprise web services. It boasts fast startup times and low memory footprint through minimal dependencies and optimized resource usage, making it particularly suitable for microservices architecture or cloud environments.
 
-Aspectran은 개발자가 복잡한 프레임워크 내부 구조를 깊이 이해할 필요 없이, 일반 Java 객체(POJO)를 사용하여 비즈니스 로직에 집중할 수 있도록 직관적인 POJO 중심 프로그래밍 모델을 강조합니다. 제어의 역전(IoC), 의존성 주입(DI), 관점 지향 프로그래밍(AOP)과 같은 강력한 엔터프라이즈 패턴을 내장하여 코드의 모듈성, 재사용성 및 유지보수성을 극대화합니다. 또한, RESTful 웹 서비스 개발을 위한 최적화된 지원과 다양한 임베디드 웹 서버(Undertow, Jetty) 통합을 통해 현대적인 웹 애플리케이션 및 API 구축을 용이하게 합니다. 특히, **환경 추상화를 위한 어댑터 패턴**은 Aspectran의 유연성과 개발 생산성을 높이는 핵심적인 강점입니다.
+Aspectran emphasizes an intuitive POJO-centric programming model, allowing developers to focus on business logic using plain old Java objects (POJOs) without needing to deeply understand the complex internal structure of the framework. It embeds powerful enterprise patterns such as Inversion of Control (IoC), Dependency Injection (DI), and Aspect-Oriented Programming (AOP) to maximize code modularity, reusability, and maintainability. Additionally, it facilitates the building of modern web applications and APIs through optimized support for RESTful web service development and integration with various embedded web servers (Undertow, Jetty). In particular, the **adapter pattern for environment abstraction** is a key strength that enhances Aspectran's flexibility and development productivity.
 
-## 아키텍처 개요
+## Architecture Overview
 
-Aspectran은 모듈화된 계층형 아키텍처를 채택하여 유연성과 확장성을 제공합니다. 핵심은 `aspectran-core` 모듈에 구현된 Activity 기반의 요청 처리 메커니즘입니다. 각 계층은 명확한 역할을 가지며, **어댑터 패턴**을 통해 다양한 실행 환경의 차이를 추상화하여 비즈니스 로직이 환경에 독립적으로 동작하도록 합니다.
+Aspectran adopts a modular, layered architecture to provide flexibility and extensibility. The core is the Activity-based request processing mechanism implemented in the `aspectran-core` module. Each layer has a clear role, and through the **adapter pattern**, it abstracts the differences of various execution environments, allowing business logic to operate independently of the environment.
 
-*   **Activity Layer**: 모든 외부 요청(웹, 셸 등)을 수신하고, 해당 요청을 처리하기 위한 Activity 컨텍스트를 생성합니다. 이 계층은 요청의 생명주기를 관리하고, 적절한 Translet을 찾아 정해진 처리 규칙에 따라 요청을 처리합니다.
-*   **Translet Layer**: `Activity`가 요청을 처리할 때 참조하는 `Translet` 규칙이 정의된 계층입니다. `Activity`는 이 계층에 정의된 `Translet`의 규칙에 따라 `Action`을 실행하고, `Bean`을 사용하며, 최종적으로 `View`를 통해 응답을 생성하는 흐름을 제어합니다.
-*   **Bean Container Layer**: IoC/DI를 담당하는 핵심 계층으로, 애플리케이션의 모든 빈(객체)을 관리합니다. 빈의 생성, 초기화, 소멸 및 의존성 주입을 처리하여 컴포넌트 간의 느슨한 결합을 보장합니다.
-*   **AOP Layer**: Aspectran의 AOP 엔진이 위치하는 계층입니다. Translet 실행 전후, Bean 메서드 호출 전후 등 특정 조인 포인트에 Aspect를 적용하여 횡단 관심사를 처리합니다. 이는 핵심 비즈니스 로직과 독립적으로 동작하여 코드의 재사용성과 유지보수성을 높입니다.
-*   **View Layer**: 요청 처리 결과를 사용자에게 보여주기 위한 뷰를 렌더링하는 계층입니다. 다양한 템플릿 엔진(FreeMarker, Pebble, Thymeleaf 등)과의 통합을 통해 유연한 프레젠테이션 로직 구현을 지원합니다.
+*   **Activity Layer**: Receives all external requests (web, shell, etc.) and creates an Activity context to process those requests. This layer manages the lifecycle of the request and finds the appropriate Translet to process the request according to defined rules.
+*   **Translet Layer**: This layer defines the `Translet` rules that the `Activity` references when processing requests. The `Activity` controls the flow of executing `Action`s, using `Bean`s, and finally generating a response through `View` according to the `Translet` rules defined in this layer.
+*   **Bean Container Layer**: The core layer responsible for IoC/DI, managing all beans (objects) of the application. It handles bean creation, initialization, destruction, and dependency injection, ensuring loose coupling between components.
+*   **AOP Layer**: This layer houses Aspectran's AOP engine. It applies Aspects to specific join points, such as before/after Translet execution or before/after Bean method calls, to handle cross-cutting concerns. This operates independently of the core business logic, enhancing code reusability and maintainability.
+*   **View Layer**: This layer renders views to display the request processing results to the user. It supports flexible implementation of presentation logic through integration with various template engines (FreeMarker, Pebble, Thymeleaf, etc.).
 
-이러한 계층들은 서로 유기적으로 연결되어 요청 처리의 흐름을 구성하며, 각 모듈은 특정 기능 영역을 담당하여 전체 시스템의 모듈성을 강화합니다.
+These layers are organically connected to form the request processing flow, and each module is responsible for a specific functional area, strengthening the overall system's modularity.
 
-## 핵심 개념
+## Core Concepts
 
-Aspectran은 몇 가지 핵심 개념을 기반으로 동작하며, 이들은 프레임워크의 유연성과 강력함을 제공합니다.
+Aspectran operates based on several core concepts that provide its flexibility and power.
 
-*   **Activity (액티비티)**: Aspectran에서 모든 요청을 처리하는 **실행 엔진**이자 요청의 생명주기를 관리하는 컨텍스트입니다. 웹 요청, 셸 명령 등 모든 종류의 요청을 일관된 방식으로 처리합니다.
-*   **Translet (트랜슬렛)**: 특정 요청을 "어떻게 처리할 것인가"에 대한 **처리 규칙의 집합 또는 설계도**입니다. 요청/응답/예외 처리 규칙과 실행할 비즈니스 로직(Action)을 정의합니다. `Activity`는 이 설계도에 따라 요청을 처리하며, 이 과정에서 생성된 `Translet` 인스턴스는 `Activity`와 사용자 코드 간의 데이터 공유 및 제어를 위한 **인터페이스** 역할을 합니다.
-*   **Bean (빈)**: Aspectran의 IoC 컨테이너에 의해 관리되는 객체입니다. 애플리케이션의 구성 요소(서비스, DAO, 유틸리티 등)는 빈으로 등록되어 프레임워크에 의해 생명주기가 관리되고, 필요한 곳에 의존성 주입을 통해 제공됩니다. 싱글톤, 프로토타입, 요청, 세션 스코프를 지원하여 다양한 객체 생명주기 관리가 가능합니다.
-*   **Action (액션)**: `Activity` 내에서 실행되는 개별적인 작업 단위로, 그 실행 규칙은 `Translet`에 정의되어 있습니다. 데이터베이스 조회, 외부 API 호출, 비즈니스 로직 처리 등 특정 기능을 수행합니다. 다양한 유형의 액션을 제공하며, 그 처리 결과는 계층적으로 구조화되어 후속 처리나 뷰 렌더링에 활용됩니다.
-*   **Aspect (애스펙트)**: 관점 지향 프로그래밍(AOP)의 핵심 요소로, 로깅, 트랜잭션 관리, 보안, 예외 처리와 같은 횡단 관심사를 모듈화하여 관리합니다. 새로운 AOP 프록시 메커니즘은 성능을 최적화하고 비동기 실행 환경에서의 유연한 컨텍스트 관리를 지원합니다.
-*   **Template (템플릿)**: Translet이 처리한 결과를 사용자에게 보여주기 위한 뷰(View)를 렌더링하는 데 사용됩니다. FreeMarker, Pebble, Thymeleaf 등 다양한 템플릿 엔진과의 통합을 지원하여 유연한 UI/UX 구현을 가능하게 합니다.
+*   **Activity**: The **execution engine** that processes all requests in Aspectran and the context that manages the request's lifecycle. It processes all types of requests, such as web requests and shell commands, in a consistent manner.
+*   **Translet**: A **set of processing rules or a blueprint** for "how to handle" a specific request. It defines request/response/exception handling rules and the business logic (Action) to be executed. The `Activity` processes requests according to this blueprint, and the `Translet` instance created during this process acts as an **interface** for data sharing and control between the `Activity` and user code.
+*   **Bean**: An object managed by Aspectran's IoC container. Application components (services, DAOs, utilities, etc.) are registered as beans, their lifecycle is managed by the framework, and they are provided where needed through dependency injection. It supports singleton, prototype, request, and session scopes, allowing for flexible object lifecycle management.
+*   **Action**: An individual unit of work executed within an `Activity`, whose execution rules are defined in a `Translet`. It performs specific functions such as database queries, external API calls, and business logic processing. It provides various types of actions, and their processing results are hierarchically structured and utilized for subsequent processing or view rendering.
+*   **Aspect**: A core element of Aspect-Oriented Programming (AOP), it modularizes and manages cross-cutting concerns such as logging, transaction management, security, and exception handling. The new AOP proxy mechanism optimizes performance and supports flexible context management in asynchronous execution environments.
+*   **Template**: Used to render views to display the results processed by Translet to the user. It supports integration with various template engines like FreeMarker, Pebble, and Thymeleaf, enabling flexible UI/UX implementation.
 
-## 주요 기능
+## Key Features
 
-Aspectran은 현대적인 애플리케이션 개발을 위한 다양한 강력한 기능을 제공합니다.
+Aspectran provides various powerful features for modern application development.
 
-*   **POJO 프로그래밍**: Aspectran은 특별한 인터페이스 구현이나 특정 프레임워크 클래스 상속 없이 일반 Java 객체(POJO)를 사용하여 비즈니스 로직을 구현할 수 있도록 합니다. 이는 개발자가 프레임워크에 대한 학습 부담을 줄이고, 순수한 Java 코드로 비즈니스 문제를 해결하는 데 집중할 수 있게 합니다.
-*   **제어의 역전 (IoC)**: 프레임워크가 객체의 생성, 구성, 생명주기 관리를 담당합니다. 개발자는 객체를 직접 생성하거나 관리할 필요 없이, 프레임워크에 객체 생성을 위임함으로써 코드의 복잡성을 줄이고 테스트 용이성을 높일 수 있습니다.
-*   **의존성 주입 (DI)**: IoC 컨테이너의 핵심 기능으로, 객체가 필요로 하는 의존성(다른 객체)을 직접 생성하거나 찾지 않고, 프레임워크가 런타임에 자동으로 주입해 줍니다. 이를 통해 컴포넌트 간의 결합도를 최소화하고, 유연하고 재사용 가능한 코드를 작성할 수 있습니다.
-*   **관점 지향 프로그래밍 (AOP)**: 로깅, 트랜잭션, 보안, 캐싱 등 애플리케이션 전반에 걸쳐 반복적으로 나타나는 횡단 관심사를 모듈화하여 핵심 비즈니스 로직과 분리합니다. Aspectran의 AOP는 런타임에 동적으로 적용되어 코드의 중복을 제거하고 유지보수성을 향상시킵니다.
-*   **세션 관리**: Aspectran은 웹, 셸, 데몬 등 다양한 실행 환경에서 일관된 방식으로 상태를 유지할 수 있도록 **환경에 비종속적인 고성능 세션 관리 컴포넌트**를 제공합니다. 교체 가능한 저장소(파일, Redis 등)와 세밀한 생명주기 관리, 클러스터링 지원을 통해 엔터프라이즈급 기능을 갖추고 있습니다.
-*   **환경 설정 및 로딩**: Aspectran은 APON(Aspectran Object Notation) 또는 XML 형식의 설정 파일을 통해 애플리케이션을 구성합니다. 자체 개발한 `nodelet` 파싱 엔진을 사용하여 설정 파일을 효율적으로 로딩하며, 동적 리로딩 기능을 지원하여 개발 편의성을 높입니다.
-*   **AsEL (Aspectran Expression Language)**: Aspectran은 설정 파일 내에서 동적인 값을 처리하기 위해 자체 표현 언어인 AsEL을 제공합니다. AsEL은 `${...}`(파라미터), `@{...}`(속성), `#{...}`(빈 또는 빈의 속성)과 같은 토큰을 사용하여, 요청 데이터나 다른 빈의 속성 값을 런타임에 동적으로 참조하고 주입하는 강력한 기능을 지원합니다. 또한, 내부적으로 OGNL(Object-Graph Navigation Language)을 사용하여, 토큰 내에서 객체의 메소드를 호출하거나 속성을 탐색하는 등 복잡한 표현식도 처리할 수 있습니다.
-*   **로깅**: Aspectran은 SLF4J와 Logback을 기반으로 유연하고 강력한 로깅 시스템을 구축합니다. `LoggingGroupDiscriminator`라는 독자적인 기능을 통해 서비스나 기능 단위로 로그를 분리하여 관리할 수 있는 강력한 기능을 제공합니다.
-*   **RESTful 웹 서비스**: Aspectran은 RESTful API 개발에 최적화된 기능을 제공합니다. 간결한 설정으로 HTTP 메서드(GET, POST, PUT, DELETE 등)에 따른 요청을 처리하고, JSON/XML 등 다양한 형식으로 응답을 생성할 수 있습니다. 이는 마이크로서비스 아키텍처에서 효율적인 API 서버 구축을 가능하게 합니다.
-*   **빠른 개발 및 시작**: 설정보다 관례(Convention over Configuration) 원칙을 적극적으로 활용하여 개발자가 작성해야 할 상용구 코드(boilerplate code)를 최소화합니다. 또한, 경량 설계와 최적화된 초기화 과정을 통해 애플리케이션의 시작 시간을 단축시켜 개발 및 배포 효율성을 높입니다.
-*   **운영 등급 애플리케이션**: Aspectran은 안정성과 확장성을 고려하여 설계되었으며, 다양한 운영 환경에 유연하게 배포될 수 있습니다. 독립형 JVM 애플리케이션, 전통적인 서블릿 컨테이너(Tomcat, WildFly)의 웹 애플리케이션, 또는 다른 Java 애플리케이션에 임베디드되는 형태로 배포되어 안정적인 운영을 보장합니다. **환경 추상화를 위한 어댑터 패턴**은 동일한 비즈니스 로직이 어떤 환경에서든 수정 없이 실행될 수 있도록 합니다.
+*   **POJO Programming**: Aspectran allows implementing business logic using plain old Java objects (POJOs) without implementing special interfaces or inheriting from specific framework classes. This reduces the learning curve for developers and allows them to focus on solving business problems with pure Java code.
+*   **Inversion of Control (IoC)**: The framework is responsible for object creation, configuration, and lifecycle management. Developers can reduce code complexity and improve testability by delegating object creation to the framework instead of creating or managing objects directly.
+*   **Dependency Injection (DI)**: A core function of the IoC container, it automatically injects dependencies (other objects) that an object needs at runtime, instead of the object creating or finding them itself. This minimizes coupling between components and allows for writing flexible and reusable code.
+*   **Aspect-Oriented Programming (AOP)**: Modularizes cross-cutting concerns that appear repeatedly throughout the application, such as logging, transaction management, security, and caching, and separates them from the core business logic. Aspectran's AOP is dynamically applied at runtime, eliminating code duplication and improving maintainability.
+*   **Session Management**: Aspectran provides a **high-performance, environment-independent session management component** that can maintain state consistently across various execution environments such as web, shell, and daemon. It features enterprise-grade capabilities with pluggable storage (files, Redis, etc.), fine-grained lifecycle management, and clustering support.
+*   **Configuration and Loading**: Aspectran configures applications through configuration files in APON (Aspectran Object Notation) or XML format. It uses its self-developed `nodelet` parsing engine to efficiently load configuration files and supports dynamic reloading for enhanced development convenience.
+*   **AsEL (Aspectran Expression Language)**: Aspectran provides its own expression language, AsEL, for handling dynamic values within configuration files. AsEL supports powerful features such as dynamically referencing and injecting request data or properties of other beans at runtime using tokens like `${...}` (parameters), `@{...}` (attributes), and `#{...}` (beans or bean properties). Additionally, it can process complex expressions, such as calling object methods or navigating properties within tokens, by internally using OGNL (Object-Graph Navigation Language).
+*   **Logging**: Aspectran builds a flexible and powerful logging system based on SLF4J and Logback. It provides a powerful feature to separate and manage logs by service or function unit through its unique `LoggingGroupDiscriminator`.
+*   **RESTful Web Services**: Aspectran provides optimized features for RESTful API development. It can process requests based on HTTP methods (GET, POST, PUT, DELETE, etc.) with concise configuration and generate responses in various formats like JSON/XML. This enables efficient API server construction in microservice architectures.
+*   **Rapid Development and Startup**: Actively utilizes the Convention over Configuration principle to minimize boilerplate code that developers need to write. It also shortens application startup time through lightweight design and optimized initialization processes, enhancing development and deployment efficiency.
+*   **Production-Grade Applications**: Aspectran is designed with stability and scalability in mind and can be flexibly deployed in various operating environments. It can be deployed as a standalone JVM application, a web application in traditional servlet containers (Tomcat, WildFly), or embedded within other Java applications, ensuring stable operation. The **adapter pattern for environment abstraction** allows the same business logic to run without modification in any environment.
 
-## 모듈
+## Modules
 
-Aspectran은 기능별로 세분화된 모듈을 제공하여 필요한 기능만 선택적으로 사용할 수 있도록 합니다.
+Aspectran provides fine-grained modules by function, allowing you to selectively use only the features you need.
 
-*   **`aspectran-all`**: 모든 Aspectran 모듈과 그 종속성을 포함하는 단일 JAR 파일입니다. 개발 및 배포 편의성을 위해 모든 기능을 한 번에 포함하고자 할 때 유용합니다.
-*   **`aspectran-bom`**: Maven Bill of Materials (BOM)로, Aspectran 관련 모듈들의 일관된 버전 관리를 돕습니다. 프로젝트의 `pom.xml`에 추가하여 종속성 버전 충돌을 방지할 수 있습니다.
-*   **`aspectran-core`**: Aspectran 프레임워크의 심장부입니다. Activity, Translet, Bean 컨테이너, AOP 엔진 등 프레임워크의 핵심 API와 구현을 포함하며, 모든 Aspectran 기반 애플리케이션의 기본이 됩니다.
-*   **`aspectran-daemon`**: Aspectran 애플리케이션을 Unix 계열 시스템의 백그라운드 데몬이나 Windows 서비스로 실행할 수 있는 기능을 제공합니다. 장시간 실행되는 서버 애플리케이션이나 배치 작업에 적합합니다.
-*   **`aspectran-embed`**: 다른 Java 애플리케이션 내에 Aspectran을 임베드하여 사용할 수 있도록 합니다. 기존 애플리케이션에 Aspectran의 강력한 기능을 추가하고자 할 때 유용하며, 별도의 컨테이너 설정 없이 통합이 가능합니다.
-*   **`aspectran-logging`**: Aspectran 애플리케이션의 로깅을 위한 유연한 인터페이스를 제공합니다. **SLF4J와 Logback을 기본으로 사용하며, JCL, JUL, Log4j 등 다른 로깅 API의 브리지를 제공하여 기존 로깅 시스템과의 호환성을 보장합니다.**
-*   **`aspectran-shell`**: 대화형 명령줄(CLI) 애플리케이션을 쉽게 구축할 수 있도록 지원합니다. 사용자 입력을 처리하고, Translet을 통해 비즈니스 로직을 실행하며, 결과를 콘솔에 출력하는 기능을 제공합니다.
-*   **`aspectran-shell-jline`**: `aspectran-shell` 모듈을 JLine 3 라이브러리와 통합하여, 명령줄 자동 완성, 히스토리 관리, 색상 출력 등 더욱 풍부한 대화형 셸 환경을 제공합니다.
-*   **`aspectran-utils`**: Aspectran 프레임워크 내부 및 외부에서 유용하게 사용될 수 있는 다양한 일반 유틸리티 클래스들을 모아놓은 모듈입니다.
-*   **`aspectran-web`**: Jakarta EE (구 Java EE) 서블릿 API를 기반으로 웹 애플리케이션을 구축하기 위한 기능을 제공합니다. 웹 요청 처리, 세션 관리, 필터 및 인터셉터 등 웹 개발에 필요한 핵심 요소를 포함합니다.
-*   **`aspectran-rss-lettuce`**: **Redis 기반의 고성능 Lettuce 클라이언트를 사용한 세션 저장소 구현을 제공하여, 분산 환경에서 세션 데이터를 효율적으로 관리할 수 있도록 합니다.**
-*   **`aspectran-with-jetty`**: 임베디드 Jetty 웹 서버를 Aspectran 애플리케이션에 통합합니다. 별도의 웹 서버 설치 없이 Aspectran 애플리케이션을 독립적으로 실행할 수 있게 하여 배포를 간소화합니다.
-*   **`aspectran-with-undertow`**: 임베디드 Undertow 웹 서버를 Aspectran 애플리케이션에 통합합니다. Undertow는 경량 고성능 웹 서버로, 빠른 시작과 낮은 리소스 사용이 필요한 환경에 적합합니다.
-*   **`aspectran-with-freemarker`**: FreeMarker 템플릿 엔진을 Aspectran의 View 계층과 통합합니다. 서버 사이드 템플릿 렌더링을 통해 동적인 웹 페이지를 생성할 수 있습니다.
-*   **`aspectran-with-pebble`**: Pebble 템플릿 엔진을 Aspectran과 통합하여, 유연하고 강력한 템플릿 기능을 제공합니다.
-*   **`aspectran-with-thymeleaf`**: Thymeleaf 템플릿 엔진을 Aspectran과 통합합니다. HTML5 친화적인 템플릿 작성을 지원하며, 웹 표준을 준수하는 뷰를 쉽게 만들 수 있습니다.
-*   **`aspectran-with-jpa`**: **Jakarta Persistence API (JPA)와의 통합을 제공하여, 객체 관계형 매핑(ORM)을 통해 데이터베이스 작업을 효율적으로 수행할 수 있도록 합니다.**
-*   **`aspectran-with-mybatis`**: **MyBatis 영속성 프레임워크와의 통합을 제공합니다. SQL Mapper 기반의 데이터베이스 접근 방식을 선호하는 개발자에게 유용합니다.**
-*   **`aspectran-with-logback`**: Logback 로깅 프레임워크의 종속성을 편리하게 관리하기 위한 POM 모듈입니다. 주로 다른 모듈의 빌드 및 테스트 환경에서 사용됩니다.
+*   **`aspectran-all`**: A single JAR file that includes all Aspectran modules and their dependencies. Useful when you want to include all features at once for development and deployment convenience.
+*   **`aspectran-bom`**: Maven Bill of Materials (BOM), which helps manage consistent versions of Aspectran-related modules. You can add it to your project's `pom.xml` to prevent dependency version conflicts.
+*   **`aspectran-core`**: The heart of the Aspectran framework. It includes the core APIs and implementations of the framework, such as Activity, Translet, Bean container, and AOP engine, forming the basis of all Aspectran-based applications.
+*   **`aspectran-daemon`**: Provides functionality to run Aspectran applications as background daemons on Unix-like systems or as Windows services. Suitable for long-running server applications or batch jobs.
+*   **`aspectran-embed`**: Allows Aspectran to be embedded and used within other Java applications. Useful when you want to add Aspectran's powerful features to an existing application, and integration is possible without separate container configuration.
+*   **`aspectran-logging`**: Provides a flexible interface for logging in Aspectran applications. It uses SLF4J and Logback by default and provides bridges for other logging APIs like JCL, JUL, and Log4j to ensure compatibility with existing logging systems.
+*   **`aspectran-shell`**: Supports easy building of interactive command-line interface (CLI) applications. It provides functions to process user input, execute business logic through Translets, and output results to the console.
+*   **`aspectran-shell-jline`**: Integrates the `aspectran-shell` module with the JLine 3 library to provide a richer interactive shell environment, including command-line auto-completion, history management, and colored output.
+*   **`aspectran-utils`**: A module that collects various general utility classes that can be usefully employed both inside and outside the Aspectran framework.
+*   **`aspectran-web`**: Provides functionality for building web applications based on the Jakarta EE (formerly Java EE) Servlet API. It includes core elements necessary for web development, such as web request processing, session management, filters, and interceptors.
+*   **`aspectran-rss-lettuce`**: Provides a Redis-based high-performance Lettuce client implementation for session storage, allowing efficient management of session data in distributed environments.
+*   **`aspectran-with-jetty`**: Integrates the embedded Jetty web server into Aspectran applications. It simplifies deployment by allowing Aspectran applications to run independently without separate web server installation.
+*   **`aspectran-with-undertow`**: Integrates the embedded Undertow web server into Aspectran applications. Undertow is a lightweight, high-performance web server suitable for environments requiring fast startup and low resource usage.
+*   **`aspectran-with-freemarker`**: Integrates the FreeMarker template engine with Aspectran's View layer. It allows for the creation of dynamic web pages through server-side template rendering.
+*   **`aspectran-with-pebble`**: Integrates the Pebble template engine with Aspectran, providing flexible and powerful template features.
+*   **`aspectran-with-thymeleaf`**: Integrates the Thymeleaf template engine with Aspectran. It supports HTML5-friendly template writing and makes it easy to create web-standard-compliant views.
+*   **`aspectran-with-jpa`**: Provides integration with Jakarta Persistence API (JPA), allowing efficient database operations through object-relational mapping (ORM).
+*   **`aspectran-with-mybatis`**: Provides integration with the MyBatis persistence framework. Useful for developers who prefer a SQL Mapper-based approach to database access.
+*   **`aspectran-with-logback`**: A POM module for conveniently managing Logback logging framework dependencies. Primarily used in build and test environments of other modules.
 
-## 지원되는 실행 환경
+## Supported Execution Environments
 
-Aspectran은 다양한 환경에서 유연하게 배포 및 실행될 수 있도록 설계되었습니다.
+Aspectran is designed to be flexibly deployed and executed in various environments.
 
-*   **명령줄 셸 (대화형 및 백그라운드 모드)**: Aspectran은 강력한 CLI 애플리케이션 개발을 지원합니다. 대화형 모드에서는 사용자 입력을 받아 실시간으로 명령을 처리하며, 백그라운드 모드에서는 데몬 형태로 장시간 실행되는 배치 작업이나 서버 프로세스로 활용될 수 있습니다.
-*   **임베디드 웹 서버 (Undertow, Jetty)**: 별도의 웹 서버 설치 없이 Aspectran 애플리케이션 자체에 웹 서버를 내장하여 독립적으로 실행할 수 있습니다. 이는 마이크로서비스나 단일 실행 가능한 JAR/WAR 배포에 매우 유용하며, 개발 및 배포 과정을 간소화합니다.
-*   **서블릿 컨테이너 (Apache Tomcat, WildFly 등)**: 전통적인 웹 애플리케이션 배포 방식에 따라 Apache Tomcat, WildFly와 같은 표준 서블릿 컨테이너에 WAR 파일 형태로 배포될 수 있습니다. 이는 기존 인프라와의 호환성을 제공합니다.
+*   **Command-Line Shell (Interactive and Background Modes)**: Aspectran supports the development of powerful CLI applications. In interactive mode, it processes commands in real-time based on user input, while in background mode, it can be used as a daemon for long-running batch jobs or server processes.
+*   **Embedded Web Servers (Undertow, Jetty)**: Aspectran applications can run independently by embedding a web server directly within the application itself, without separate web server installation. This is very useful for microservices or single executable JAR/WAR deployments, simplifying the development and deployment process.
+*   **Servlet Containers (Apache Tomcat, WildFly, etc.)**: According to traditional web application deployment methods, it can be deployed as a WAR file to standard servlet containers like Apache Tomcat and WildFly. This provides compatibility with existing infrastructure.
 
-## 주요 사용 사례
+## Key Use Cases
 
-Aspectran은 그 유연성과 강력함 덕분에 다양한 유형의 애플리케이션 개발에 활용될 수 있습니다.
+Thanks to its flexibility and power, Aspectran can be used for developing various types of applications.
 
-*   **RESTful API 서버**: 경량의 고성능 특성과 RESTful 웹 서비스 지원을 통해 마이크로서비스 아키텍처의 핵심인 API 서버 구축에 매우 적합합니다.
-*   **웹 애플리케이션**: 다양한 템플릿 엔진 통합과 웹 모듈을 통해 전통적인 MVC 기반의 웹 애플리케이션을 효율적으로 개발할 수 있습니다.
-*   **명령줄 도구 (CLI Tools)**: 강력한 셸 모듈을 활용하여 복잡한 시스템 관리 도구, 배치 스크립트, 데이터 처리 유틸리티 등 다양한 명령줄 애플리케이션을 구축할 수 있습니다.
-*   **백엔드 서비스**: 데몬 모드를 통해 장시간 실행되는 백그라운드 서비스, 배치 처리 시스템, 데이터 동기화 서비스 등 다양한 백엔드 시스템을 안정적으로 운영할 수 있습니다.
-*   **임베디드 시스템**: `aspectran-embed` 모듈을 사용하여 기존 Java 애플리케이션 내부에 Aspectran의 IoC, DI, AOP 기능을 통합하여 특정 모듈의 기능을 강화하거나 유연성을 높일 수 있습니다.
+*   **RESTful API Server**: Its lightweight, high-performance characteristics and support for RESTful web services make it very suitable for building API servers, which are central to microservice architectures.
+*   **Web Application**: Traditional MVC-based web applications can be efficiently developed through its integration with various template engines and web modules.
+*   **Command-Line Tools (CLI Tools)**: Leveraging its powerful shell module, you can build various command-line applications such as complex system management tools, batch scripts, and data processing utilities.
+*   **Backend Services**: Through daemon mode, it can stably operate various backend systems such as long-running background services, batch processing systems, and data synchronization services.
+*   **Embedded Systems**: Using the `aspectran-embed` module, you can integrate Aspectran's IoC, DI, and AOP functionalities into existing Java applications to enhance the capabilities or flexibility of specific modules.
 
-## 빌드
+## Build
 
-Aspectran 프로젝트를 로컬 환경에서 빌드하고 실행하는 방법은 다음과 같습니다.
+Here's how to build and run the Aspectran project in your local environment.
 
 ```sh
-# 프로젝트 클론 및 빌드 (Maven 3.6.3 이상 필요)
+# Clone and build the project (requires Maven 3.6.3 or higher)
 git clone https://github.com/aspectran/aspectran.git
 cd aspectran
-./build rebuild   # 또는 ./mvnw clean install
+./build rebuild   # or ./mvnw clean install
 ```
-*   **Java 21 이상**: Aspectran은 최소 런타임 버전으로 Java 21을 필요로 합니다. 최신 Java LTS 버전을 사용하는 것을 권장합니다.
-*   **Maven**: 프로젝트 빌드를 위해 Apache Maven 3.6.3 이상 버전이 설치되어 있어야 합니다.
+*   **Java 21 or higher**: Aspectran requires Java 21 as the minimum runtime version. It is recommended to use the latest Java LTS version.
+*   **Maven**: Apache Maven 3.6.3 or higher must be installed for project builds.
 
-## 데모 실행
+## Run Demo
 
-Aspectran 데모 애플리케이션을 빌드하고 실행하여 프레임워크의 기능을 빠르게 탐색할 수 있습니다.
+You can quickly explore the framework's features by building and running the Aspectran demo application.
 
-``` sh
-./build demo      # 데모 애플리케이션을 빌드하고 시작합니다.
-# 웹 브라우저에서 http://localhost:8080 으로 접속하여 데모를 확인하세요.
+```sh
+./build demo      # Builds and starts the demo application.
+# Access http://localhost:8080 in your web browser to check out the demo.
 ```
-데모 애플리케이션은 Aspectran의 다양한 기능(웹 서비스, AOP, 빈 관리 등)을 보여주는 예제 코드를 포함하고 있습니다.
+The demo application includes example code demonstrating various Aspectran features (web services, AOP, bean management, etc.).
 
-## 지속적 통합
+## Continuous Integration
 
-Aspectran 프로젝트는 GitHub Actions 워크플로우를 통해 지속적인 통합(CI) 및 지속적인 배포(CD)를 관리합니다.
+The Aspectran project manages continuous integration (CI) and continuous deployment (CD) through GitHub Actions workflows.
 
-*   [GitHub Actions](https://github.com/aspectran/aspectran/actions): 프로젝트의 모든 변경 사항은 자동으로 빌드, 테스트 및 검증되어 코드 품질과 안정성을 보장합니다.
+*   [GitHub Actions](https://github.com/aspectran/aspectran/actions): All changes to the project are automatically built, tested, and verified to ensure code quality and stability.
 
-## 커뮤니티 및 지원
+## Community and Support
 
-Aspectran은 활발한 개발과 사용자 커뮤니티를 통해 지속적으로 발전하고 있습니다.
+Aspectran is continuously evolving through active development and a user community.
 
-*   **GitHub Issues**: 프로젝트 사용 중 발생하는 문제점, 버그 보고, 기능 제안 등은 GitHub Issues를 통해 공유하고 논의할 수 있습니다.
-*   **공식 문서**: Aspectran 공식 웹사이트에서 제공하는 상세한 문서를 통해 프레임워크의 모든 기능을 학습하고 활용할 수 있습니다.
-*   **기여**: Aspectran 프로젝트는 오픈 소스로 운영되며, 누구나 코드 기여, 문서 개선, 버그 수정 등을 통해 프로젝트 발전에 참여할 수 있습니다.
+*   **GitHub Issues**: Problems, bug reports, and feature suggestions during project use can be shared and discussed via GitHub Issues.
+*   **Official Documentation**: You can learn and utilize all features of the framework through the detailed documentation provided on the Aspectran official website.
+*   **Contribution**: The Aspectran project is open source, and anyone can participate in its development by contributing code, improving documentation, or fixing bugs.
 
-## 링크
+## Links
 
-*   **공식 사이트**: [https://aspectran.com/](https://aspectran.com/) - Aspectran에 대한 최신 정보, 문서 등을 확인할 수 있습니다.
-*   **데모**: [https://public.aspectran.com/](https://public.aspectran.com/) - Aspectran으로 구축된 실제 데모 웹애플리케이션들을 경험할 수 있습니다.
-*   **API 문서**: [https://javadoc.io/doc/com.aspectran/aspectran-all](https://javadoc.io/doc/com.aspectran/aspectran-all) - Aspectran의 모든 API에 대한 상세한 Javadoc 문서를 제공합니다.
+*   **Official Site**: [https://aspectran.com/](https://aspectran.com/) - You can find the latest information and documentation about Aspectran.
+*   **Demo**: [https://public.aspectran.com/](https://public.aspectran.com/) - Experience actual demo web applications built with Aspectran.
+*   **API Documentation**: [https://javadoc.io/doc/com.aspectran/aspectran-all](https://javadoc.io/doc/com.aspectran/aspectran-all) - Provides detailed Javadoc documentation for all Aspectran APIs.
 
-## 라이선스
+## License
 
-Aspectran은 [Apache 2.0 라이선스](http://www.apache.org/licenses/LICENSE-2.0) 하에 배포됩니다. 이는 상업적 및 비상업적 목적으로 자유롭게 사용, 수정, 배포할 수 있음을 의미합니다.
+Aspectran is distributed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0). This means it can be freely used, modified, and distributed for commercial and non-commercial purposes.
