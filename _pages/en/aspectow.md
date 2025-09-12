@@ -2,7 +2,6 @@
 format: plate
 sidebar: right
 title: "About Aspectow"
-headline: "What is Aspectow?"
 teaser: "Aspectow is an all-in-one web application server built on Aspectran."
 ---
 
