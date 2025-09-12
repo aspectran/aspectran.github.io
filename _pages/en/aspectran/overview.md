@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: right
 title: "Aspectran Overview"
-teaser: "Aspectran is a lightweight, high-performance framework based on the JVM, designed to efficiently build a wide range of applications, from simple command-line applications to complex enterprise web services."
+teaser: "Get an overview of Aspectran and understand its core concepts at a glance."
 ---
 
 ## Introduction

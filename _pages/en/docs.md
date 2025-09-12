@@ -12,11 +12,15 @@ We've organized it for easy navigation and access, including configuration guide
 
 ## Configuration Guides
 
+Configure Aspectran to fit your environment and needs.
+
 *   [Aspectran Basic Configuration Guide](/en/docs/guides/aspectran-configuration/)
 *   [Aspectran XML Configuration Guide](/en/docs/guides/aspectran-xml-configuration/)
 *   [Servlet-based Web Application Configuration](/en/docs/guides/aspectran-servlet-configuration/)
 
 ## User Guides
+
+Learn how to use Aspectran and get the most out of its features.
 
 *   [Aspectran User Guide](/en/aspectran/user-guide/)
 *   [Aspectran Beans: The Official Guide](/en/docs/guides/aspectran-beans/)
@@ -30,16 +34,20 @@ We've organized it for easy navigation and access, including configuration guide
 
 ## Practical Guides
 
+Access hands-on guides to apply Aspectran effectively in real scenarios.
+
 -   [Aspectran Beans: A Practical Guide to IoC/DI](/en/docs/guides/practical-guide-to-beans/)
 -   [A Practical Guide to Aspectran Translets](/en/docs/guides/practical-guide-to-translets/)
 -   [A Practical Guide to PBE Token-Based Authentication](/en/docs/guides/practical-guide-to-pbe-token-based-authentication/)
 
 ## Architecture
 
+Understand the high-level architecture of Aspectran and its core components.
+
 -   [Designing for Sustainable Simplicity: The Aspectran Architectural Philosophy](/en/why-aspectran/)
 -   [Aspectran Architecture: An Integrated Deep Dive ](/en/aspectran/architecture/)
 
-### Architecture Details
+Dive deeper into Aspectran’s architecture with detailed explanations.
 
 *   [ActivityContext Build Process: An In-Depth Analysis](/en/docs/architecture/activity-context-building/)
 *   [ActivityContext: The Heart of Aspectran](/en/docs/architecture/activity-context/)
@@ -59,6 +67,8 @@ We've organized it for easy navigation and access, including configuration guide
 *   [Aspectran AOP Proxy Mechanism: `AbstractBeanProxy` and `ProxyActivity`](/en/docs/architecture/new-aop-proxy-mechanism/)
 
 ### Package Deep Dive
+
+Explore Aspectran’s packages in detail and understand their functionalities.
 
 *   Core Package
     *   [Aspectran Core Service](/en/docs/architecture/packages/aspectran-core-service/)

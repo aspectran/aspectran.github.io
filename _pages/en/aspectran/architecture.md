@@ -1,9 +1,8 @@
 ---
 format: plate solid article
 sidebar: toc-left
-title: "Aspectran Architecture"
-headline: "An Integrated Deep Dive (Full-Text Version)"
-teaser: This document provides an in-depth analysis of Aspectran's internal architecture from the perspective of a framework developer. It helps you understand core components, design principles, and areas for extension.
+title: Aspectran Architecture
+teaser: An Integrated Deep Dive (Full-Text Version)
 ---
 
 ![Aspectran 아키텍처의 통합](/images/docs/architecture.svg)

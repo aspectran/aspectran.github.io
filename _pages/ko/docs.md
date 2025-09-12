@@ -12,11 +12,15 @@ teaser: Aspectran 문서를 통해 배우고 설정하며, 강력한 기능을 �
 
 ## 구성 가이드
 
+환경에 맞춘 설정과 최적화 방법을 제공합니다.
+
 *   [Aspectran 기본 구성 가이드](/ko/docs/guides/aspectran-configuration/)
 *   [Aspectran XML 구성 가이드](/ko/docs/guides/aspectran-xml-configuration/)
 *   [서블릿 기반 웹 애플리케이션 구성](/ko/docs/guides/aspectran-servlet-configuration/)
 
 ## 사용자 가이드
+
+Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
 
 *   [Aspectran 사용자 가이드](/ko/aspectran/user-guide/)
 *   [Aspectran Beans: 공식 가이드](/ko/docs/guides/aspectran-beans/)
@@ -30,16 +34,20 @@ teaser: Aspectran 문서를 통해 배우고 설정하며, 강력한 기능을 �
 
 ## 실용 가이드
 
+실제 시나리오에서 Aspectran을 효과적으로 적용하는 방법에 대한 실습 가이드를 살펴보세요.
+
 -   [Aspectran Bean 실용 가이드](/ko/docs/guides/practical-guide-to-beans/)
 -   [Aspectran Translet 실용 가이드](/ko/docs/guides/practical-guide-to-translets/)
 -   [PBE를 이용한 인증 토큰 활용 가이드](/ko/docs/guides/practical-guide-to-pbe-token-based-authentication/)
 
 ## 아키텍처
 
+Aspectran의 고수준 아키텍처와 핵심 구성 요소를 이해합니다.
+
 -   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)
 -   [Aspectran 아키텍처: 통합 심층 분석](/ko/aspectran/architecture/)
 
-### 아키텍처 상세
+자세한 설명과 함께 Aspectran의 아키텍처를 더 자세히 알아보세요.
 
 *   [ActivityContext 빌드 과정: 심층 분석](/ko/docs/architecture/activity-context-building/)
 *   [ActivityContext: Aspectran의 심장부](/ko/docs/architecture/activity-context/)
@@ -59,6 +67,8 @@ teaser: Aspectran 문서를 통해 배우고 설정하며, 강력한 기능을 �
 *   [Aspectran AOP 프록시 메커니즘: `AbstractBeanProxy`와 `ProxyActivity`](/ko/docs/architecture/new-aop-proxy-mechanism/)
 
 ### 패키지 심층 분석
+
+Aspectran의 패키지를 자세히 살펴보고 기능을 이해해 보세요.
 
 *   Core Package
     *   [Aspectran Core Service](/ko/docs/architecture/packages/aspectran-core-service/)
