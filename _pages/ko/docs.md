@@ -90,4 +90,4 @@ Aspectran의 패키지를 자세히 살펴보고 기능을 이해해 보세요.
     *   [Aspectran Web Service](/ko/docs/architecture/packages/aspectran-web-service/)
     *   [Aspectran Web Activity](/ko/docs/architecture/packages/aspectran-web-activity/)
 *   Other packages
-    *   [`com.aspectran.core.context.config` 패키지 상세 분석](architecture/packages/aspectran-config-parameters_ko.md)
+    *   [Aspectran Config Parameters](architecture/packages/aspectran-config-parameters/)

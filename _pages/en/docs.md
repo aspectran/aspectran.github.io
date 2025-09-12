@@ -90,4 +90,4 @@ Explore Aspectran’s packages in detail and understand their functionalities.
     *   [Aspectran Web Service](/en/docs/architecture/packages/aspectran-web-service/)
     *   [Aspectran Web Activity](/en/docs/architecture/packages/aspectran-web-activity/)
 *   Other packages
-    *   [In-Depth Analysis of the `com.aspectran.core.context.config` Package](/en/docs/architecture/packages/aspectran-config-parameters/)
+    *   [Aspectran Config Parameters](/en/docs/architecture/packages/aspectran-config-parameters/)
