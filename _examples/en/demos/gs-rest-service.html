@@ -65,7 +65,7 @@
 
 <script>
 var backend = "https://demo-gae.aspectran.com/examples";
-$(function() {
+$(function () {
   $("select[name=customerList]").change(function() {
     $("#details form, #cust-no").fadeOut(300);
     getCustomer($(this).val());
