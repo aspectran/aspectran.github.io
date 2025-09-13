@@ -1,11 +1,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% if page.meta_title %}{{ page.meta_title }}{% elsif page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
-<link rel="stylesheet" type="text/css" href="https://assets.aspectran.com/foundation/css/aspectran.css">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
+<link rel="stylesheet" type="text/css" href="http://localhost:8090/assets/bootstrap@5.3.7/css/aspectran.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap">
 <script src="https://assets.aspectran.com/js/modernizr-custom.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha256-pdY4ejLKO67E0CM2tbPtq1DJ3VGDVVdqAR6j3ZwdiE4=" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 
 {% if site.google_site_verification %}
 <meta name="google-site-verification" content="{{ site.google_site_verification}}">{% endif %}
@@ -13,7 +15,7 @@
 <meta name="msvalidate.01" content="{{ site.bing_webmastertools_id }}">{% endif %}
 {% if page.meta_description %}
 <meta name="description" content="{{ page.meta_description | strip_html | escape }}">{% elsif page.teaser %}
-<meta name="description" content="{{ page.teaser | strip_html | escape }}" />{% elsif site.description %}
+<meta name="description" content="{{ page.teaser | strip_html | escape }}">{% elsif site.description %}
 <meta name="description" content="{{ site.description | strip_html | escape }}">{% endif %}
 
 {% if site.google_author %}

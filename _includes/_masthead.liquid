@@ -2,33 +2,22 @@
 
 
   <div id="masthead"{% if page.format contains 'compact' %} class="masthead-compact"{% endif %}>
-    <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-      <div class="grid-x">
-        <div class="cell">
-          <header>
-          {% if page.inside_heading != true %}
-            {% if page.headline %}
-            <p class="headline" itemprop="alternativeHeadline">{% if page.headline %}{{ page.headline }}{% else %}&nbsp;{% endif %}</p>
-            {% endif %}
-            {% if page.title %}
-            <h1 itemprop="headline">{{ page.title }}</h1>
-            {% endif %}
-            {% if page.teaser %}
-            <p class="teaser" itemprop="description">
-              {{ page.teaser }}
-            </p>
-            {% endif %}
-          {% endif %}
-          </header>
-          {% if page.tabs %}
-          <dl class="tabs {{ page.tabs_align }}" data-tabs>
-            {% for tab in page.tabs %}
-            <dd class="tabs-title{% if tab.active == true %} is-active{% endif %}" id="tab-{{ tab.id }}"><a href="#{{ tab.id }}">{% if tab.bullet %} <span class="bullet {{ tab.bullet }}"></span>{% endif %} {{ tab.title }}{% if tab.indicator %} <span class="indicator {{ tab.indicator }}"></span>{% endif %}</a></dd>
-            {% endfor %}
-          </dl>
-          {% endif %}
-        </div>
-      </div>
+    <div class="container{% if page.format contains 'fluid' %} fluid{% endif %}">
+      <header>
+      {% if page.inside_heading != true %}
+        {% if page.headline %}
+        <p class="headline" itemprop="alternativeHeadline">{% if page.headline %}{{ page.headline }}{% else %}&nbsp;{% endif %}</p>
+        {% endif %}
+        {% if page.title %}
+        <h1 itemprop="headline">{{ page.title }}</h1>
+        {% endif %}
+        {% if page.teaser %}
+        <p class="teaser" itemprop="description">
+          {{ page.teaser }}
+        </p>
+        {% endif %}
+      {% endif %}
+      </header>
       {% unless page.header.image_fullwidth %}
       <div class="hexagons">
         <div class="hexagon hex1"></div>
@@ -41,14 +30,12 @@
       </div>
       {% endunless %}
     </div>
-    <div class="grid-container grid-x breadcrumbs-bar{% if page.format contains 'fluid' %} fluid{% endif %}">
-      <div class="cell">
-        {% if page.breadcrumb == true %}
+    <div class="container breadcrumb-bar">
+      {% if page.breadcrumb == true %}
         {% include _breadcrumb.liquid %}
-        {% else %}
+      {% else %}
         &nbsp;
-        {% endif %}
-      </div>
+      {% endif %}
     </div>
   </div>
 
@@ -57,34 +44,24 @@
 
 
   <div id="masthead" class="masthead-with-image-header">
-    <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-      <div class="grid-x">
-        <div class="cell">
-          <header>
-          {% if page.inside_heading != true %}
-            <p class="headline" itemprop="alternativeHeadline">{% if page.headline %}{{ page.headline }}{% else %}&nbsp;{% endif %}</p>
-            <h1 itemprop="headline">{{ page.title }}</h1>
-            {% if page.teaser %}
-            <p class="teaser" itemprop="description">
-              {{ page.teaser }}
-            </p>
-            {% endif %}
-          {% endif %}
-          </header>
-        </div>
-      </div>
+    <div class="container{% if page.format contains 'fluid' %} fluid{% endif %}">
+      <header>
+      {% if page.inside_heading != true %}
+        <p class="headline" itemprop="alternativeHeadline">{% if page.headline %}{{ page.headline }}{% else %}&nbsp;{% endif %}</p>
+        <h1 itemprop="headline">{{ page.title }}</h1>
+        {% if page.teaser %}
+        <p class="teaser" itemprop="description">
+          {{ page.teaser }}
+        </p>
+        {% endif %}
+      {% endif %}
+      </header>
     </div>
   </div>
   {% if page.breadcrumb == true %}
-  <div class="breadcrumbs-bar">
-    <div class="grid-container">
-      <div class="grid-x">
-        <div class="cell">
-          {% include _breadcrumb.liquid %}
-        </div>
-      </div>
+    <div class="container breadcrumb-bar">
+        {% include _breadcrumb.liquid %}
     </div>
-  </div>
   {% endif %}
 
 
@@ -93,17 +70,9 @@
 
 {% if page.breadcrumb == true %}
 <div id="masthead" class="no-header">
-  {% if page.breadcrumb == true %}
-  <div class="breadcrumbs-bar">
-    <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-      <div class="grid-x">
-        <div class="cell">
-          {% include _breadcrumb.liquid %}
-        </div>
-      </div>
-    </div>
+  <div class="container breadcrumb-bar">
+    {% include _breadcrumb.liquid %}
   </div>
-  {% endif %}
 </div>
 {% endif %}
 

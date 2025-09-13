@@ -11,8 +11,25 @@ breadcrumb: true
 auto_lang: true
 ---
 
-<ul class="brief-list">
-  {% for post in site.categories.news reversed %}
-  <li class=" auto-lang {{ post.lang }}"><span class="icon-chevron-right"></span> <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
-  {% endfor %}
-</ul>
+<div class="row">
+  <div class="col-12">
+    <div class="accordion">
+      {% assign posts = site.posts | sort: 'date' %}
+      {% for post in posts reversed %}
+      <div class="accordion-item auto-lang {{ post.lang }}">
+        <h2 class="accordion-header" id="heading{{ forloop.index }}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.index }}" aria-expanded="false" aria-controls="collapse{{ forloop.index }}">
+            {% if post.subheadline %}{{ post.subheadline }} › {% endif %}<strong>{{ post.title }}</strong>
+          </button>
+        </h2>
+        <div id="collapse{{ forloop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.index }}">
+          <div class="accordion-body">
+            {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
+            <p class="text-end mt-3"><a class="btn btn-sm btn-secondary" href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}">{{ site.data.messages[post.lang].read_more }}</a></p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

@@ -1,23 +1,29 @@
 <aside class="lazy-sticky">
-  <div class="panel radius white">
-    <h5 class="fi-social-github underline"> Aspectran project on GitHub</h5>
-    <p>
-      Check out Aspectran’s development progress or get involved on GitHub.
-    </p>
-    {% include link-box href="https://github.com/aspectran" %}
-
-    <h5 class="fi-social-github underline"> Aspectow Light &amp; Enterprise</h5>
-    <p>
-      Aspectow Light is a very lightweight web application server, primarily useful for building REST API servers.
-    </p>
-    {% include link-box href="https://github.com/aspectran/aspectow-light" %}
-    <p>
-      Aspectow Enterprise is a solution optimized for building enterprise web applications.
-    </p>
-    {% include link-box href="https://github.com/aspectran/aspectow-enterprise" %}
-
+  <div class="panel panel-default white">
+    <div class="panel-heading">
+      <h5 class="bi bi-github underline"> Aspectran project on GitHub</h5>
+    </div>
+    <div class="panel-body">
+      <p class="text-muted mb-0">
+        Check out Aspectran’s development progress or get involved on GitHub.
+      </p>
+      {% include link-box href="https://github.com/aspectran" %}
+    </div>
+    <div class="panel-heading mt-4">
+      <h5 class="bi bi-github underline"> Aspectow Light &amp; Enterprise</h5>
+    </div>
+    <div class="panel-body">
+      <p class="text-muted mb-0">
+        Aspectow Light is a very lightweight web application server, primarily useful for building REST API servers.
+      </p>
+      {% include link-box href="https://github.com/aspectran/aspectow-light" %}
+      <p class="text-muted mt-1 mb-0">
+        Aspectow Enterprise is a solution optimized for building enterprise web applications.
+      </p>
+      {% include link-box href="https://github.com/aspectran/aspectow-enterprise" %}
+    </div>
     {% if site.google_translate_website == true %}
-    <div id="google_translate_element"></div>
+      <div id="google_translate_element"></div>
     {% endif %}
   </div>
 </aside>

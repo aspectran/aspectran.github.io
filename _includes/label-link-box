@@ -1,7 +1,5 @@
-<div class="input-group">
-  <span class="input-group-label" style="white-space: nowrap;">{{ include.label }}</span>
-  <input class="input-group-field" type="text" value="{{ include.href }}" readonly>
-  <div class="input-group-button">
-    <input type="button" class="button" value="Go" onclick="window.open('{{ include.href }}')">
-  </div>
+<div class="input-group mt-1 mb-1">
+  <span class="input-group-text">{{ include.label }}</span>
+  <input type="text" class="form-control" value="{{ include.href }}" readonly>
+  <button class="btn btn-outline-secondary" type="button" onclick="window.open('{{ include.href }}')">Go</button>
 </div>

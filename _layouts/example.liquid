@@ -5,44 +5,41 @@ layout: default
 
 {% include _masthead.liquid %}
 
-<div class="grid-container">
-  {% if page.format contains "plate" %}
-    <div class="grid-x grid-padding-x">
-      <div class="cell contour">
-  {% endif %}
+  <div class="container contour pt-4 pb-4{% if page.format contains 'fluid' %} fluid{% endif %}">
 
-<div class="grid-x grid-padding-x t30">
-  <div class="cell">
+<div class="row">
+  <div class="col">
 
-    <dl class="tabs" data-tabs id="module-tabs">
+    <ul class="nav tabs nav-tabs" id="module-tabs" role="tablist">
       {% if content %}
-      <dd class="tabs-title is-active"><a href="#overview"><span class="bullet icon-code"></span> GETTING STARTED</a></dd>
+      <li class="tabs-title nav-item" role="presentation">
+        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true"><i class="bi bi-code-slash"></i> GETTING STARTED</button>
+      </li>
       {% endif %}
       {% if page.demo %}
-      <dd class="tabs-title" id="tab-demo"><a href="#demo"><span class="bullet icon-browser"></span> EXAMPLE DEMONSTRATION</a></dd>
+      <li class="tabs-title nav-item" role="presentation">
+        <button class="nav-link" id="demo-tab" data-bs-toggle="tab" data-bs-target="#demo" type="button" role="tab" aria-controls="demo" aria-selected="false"><i class="bi bi-display"></i> EXAMPLE DEMONSTRATION</button>
+      </li>
       {% endif %}
-      <dd class="tabs-title" id="tab-reviews"><a href="#reviews"><span class="bullet icon-chat"></span> REVIEWS <span class="indicator icon-chat"></span><span class="count">0 Comments</span></a></dd>
-    </dl>
+      <li class="tabs-title nav-item" role="presentation">
+        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false"><i class="bi bi-chat-dots"></i> REVIEWS <span class="badge bg-secondary ms-1">0</span></button>
+      </li>
+    </ul>
 
-    <div class="tabs-content" data-tabs-content="module-tabs">
-      <div class="tabs-panel is-active" id="overview" itemprop="articleSection">
-        <div class="grid-x grid-padding-x">
+    <div class="tab-content" id="module-tabs-content">
+      <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab" itemprop="articleSection">
+        <div class="row mt-3">
 
-          <div class="cell large-3 large-order-2 b20">
-            <aside class="lazy-sticky">
-              <div id="toc">
-                <div class="toc-title">Table of Contents</div>
-                <ul>
-                </ul>
-              </div>
+          <div class="col-lg-3 order-lg-2 mb-4">
+            <aside class="sticky-top" style="top: 2rem;">
               {% if page.demo %}
-              <div class="t20 show-for-large">
-                <h5 class="underline">Running the Application</h5>
-                <a href="#top-of-page" onclick="$('#tab-demo').click();"><img src="{{ site.urlimg }}{{ page.image.thumb }}" width="100%" alt="{{ page.title | escape_once }}"></a>
+              <div class="mt-3 d-none d-lg-block">
+                <h5 class="border-bottom pb-2 mb-3">Running the Application</h5>
+                <a href="#top-of-page" onclick="document.getElementById('demo-tab').click();"><img src="{{ site.urlimg }}{{ page.image.thumb }}" class="img-fluid" alt="{{ page.title | escape_once }}"></a>
               </div>
               {% endif %}
-              <div class="t20">
-                <h4 class="underline">Get the Code</h4>
+              <div class="mt-3">
+                <h4 class="border-bottom pb-2 mb-3">Get the Code</h4>
                 <p>Below is where you can find the source code for all this example application.</p>
                 {% for link in page.download %}
                 {% include label-link-box label=link.label href=link.url %}
@@ -56,9 +53,9 @@ layout: default
             </aside>
           </div>
 
-          <div class="cell large-9 large-order-1">
+          <div class="col-lg-9 order-lg-1">
             {% if page.asciinema %}
-            <div class="asciinema">
+            <div class="asciinema mb-4">
               <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
             </div>
             {% endif %}
@@ -67,26 +64,22 @@ layout: default
             </article>
           </div>
 
-        </div><!-- /.grid-x -->
+        </div><!-- /.row -->
       </div>
 
       {% if page.demo %}
-      <div class="tabs-panel" id="demo" itemprop="articleSection">
+      <div class="tab-pane fade" id="demo" role="tabpanel" aria-labelledby="demo-tab" itemprop="articleSection">
         {% include_relative demos/{{page.demo}} %}
       </div>
       {% endif %}
 
-      <div class="tabs-panel" id="reviews">
+      <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
       </div>
     </div>
 
   </div>
 </div>
 
-{% if page.format contains "plate" %}
-  </div>
-</div>
-{% endif %}
 </div>
 
 </section>

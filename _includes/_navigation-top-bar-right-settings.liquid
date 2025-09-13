@@ -1,0 +1,12 @@
+  <div class="settings lang-options{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+    <div class="input-group">
+      <select class="form-select" name="lang" onchange="setPreferredLangCodeToLocalStorage($(this).find('option:selected').attr('lang'));location.href=$(this).find('option:selected').attr('href');">
+        {% for lang in site.lang_order %}
+          {% assign url_prefix = '/' | append: include.lang | append: '/' %}
+          {% assign page_url = page.url | replace: url_prefix, '/' %}
+          {% assign page_url = '/' | append: lang | append: page_url %}
+          <option lang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}{{ page_url }}"{% if include.lang == lang %} selected{% endif %}>{{ site.languages[lang] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>

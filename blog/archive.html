@@ -12,19 +12,26 @@ sitemap: false
 breadcrumb: true
 auto_lang: true
 ---
+
 <div class="row">
-  <div class="columns t30">
-    <ul class="accordion" data-accordion data-allow-all-closed="true">
-      {% assign posts = site.posts | where: 'lang', page.lang | sort: 'date' %}
-      {% for post in posts limit:1000 %}
-      <li class="accordion-item" data-accordion-item>
-        <a href="#" class="accordion-title"><span class="iconfont"></span>{% if post.subheadline %}{{ post.subheadline }} › {% endif %}<strong>{{ post.title }}</strong></a>
-        <div class="accordion-content" data-tab-content>
-          {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
-          <p class="text-right"><a class="button small" href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}">{{ site.data.messages[page.lang].read_more }}</a></p>
+  <div class="col-12">
+    <div class="accordion border-top">
+      {% assign posts = site.posts | sort: 'date' %}
+      {% for post in posts reversed limit:1000 %}
+      <div class="accordion-item auto-lang {{ post.lang }}">
+        <h2 class="accordion-header" id="heading{{ forloop.index }}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.index }}" aria-expanded="false" aria-controls="collapse{{ forloop.index }}">
+            {% if post.subheadline %}{{ post.subheadline }} › {% endif %}<strong>{{ post.title }}</strong>
+          </button>
+        </h2>
+        <div id="collapse{{ forloop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.index }}">
+          <div class="accordion-body">
+            {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
+            <p class="text-end mt-3"><a class="btn btn-sm btn-secondary" href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}">{{ site.data.messages[post.lang].read_more }}</a></p>
+          </div>
         </div>
-      </li>
+      </div>
       {% endfor %}
-    </ul>
+    </div>
   </div>
 </div>

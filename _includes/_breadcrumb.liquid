@@ -5,18 +5,18 @@
 {% endcomment %}
 
 <nav role="navigation" aria-label="You are here:">
-  <ul class="breadcrumbs" itemprop="breadcrumb">
-    <li><a href="{{ site.baseurl }}{% if page.lang != nil %}/{{ page.lang }}{% endif %}/">Home</a></li>
+  <ol class="breadcrumb" itemprop="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ site.baseurl }}{% if page.lang != nil %}/{{ page.lang }}{% endif %}/">Home</a></li>
     {% assign url_prefix = '/' | append: page.lang | append: '/' %}
     {% assign page_url = page.url | replace: url_prefix, '/' %}
     {% assign crumbs = page_url | split: '/' %}
     {% for crumb in crumbs offset: 1 %}
       {% if forloop.last %}
-        <li><span class="show-for-sr">Current: </span> <span class="current">{{ page.title }}</span></li>
+        <li class="breadcrumb-item active">{{ page.title }}</li>
       {% else %}
         {% assign crumb_limit = forloop.index | plus: 1 %}
-        <li><a href="{{ site.baseurl }}{% if page.lang != nil %}/{{ page.lang }}{% endif %}{% for crumb2 in crumbs limit: crumb_limit %}{{ crumb2 | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ site.baseurl }}{% if page.lang != nil %}/{{ page.lang }}{% endif %}{% for crumb2 in crumbs limit: crumb_limit %}{{ crumb2 | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' }}</a></li>
       {% endif %}
     {% endfor %}
-  </ul>
+  </ol>
 </nav>

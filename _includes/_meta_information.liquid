@@ -1,24 +1,22 @@
-			<div id="page-meta" class="t50">
-				<p>
-					<!-- Look the author details up from the site config. -->
-					{% assign author = site.data.authors[page.author] %}
-					<!-- Output author details if some exist. -->
-					{% if author %}
-            <span itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name" class="pr20 icon-edit"><a href="{{ author.uri }}" target="_blank"> {{ author.name }}</a></span></span>
-          {% endif %}
+<div id="page-meta" class="mt-5">
+	<p>
+		<!-- Look the author details up from the site config. -->
+		{% assign author = site.data.authors[page.author] %}
+		<!-- Output author details if some exist. -->
+		{% if author %}
+		<span itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name" class="pe-3"><i class="bi bi-person-fill"></i><a href="{{ author.uri }}" target="_blank"> {{ author.name }}</a></span></span>
+	  {% endif %}
 
-          {% if page.date %}
-          <time class="icon-calendar pr20" datetime="{{ page.date | date: "%Y-%m-%d" }}" itemprop="datePublished"> {{ page.date | date: "%Y-%m-%d" }}</time>
-          {% endif %}
+	  {% if page.date %}
+	  <time class="pe-3" datetime="{{ page.date | date: "%Y-%m-%d" }}" itemprop="datePublished"><i class="bi bi-calendar-date-fill"></i> {{ page.date | date: "%Y-%m-%d" }}</time>
+	  {% endif %}
 
-          {% if page.categories %}<span class="icon-archive pr20"> {{ page.categories | join: ' · ' | upcase }}{% endif %}</span>
-          <br />
-          <span class="pr20">{% for tag in page.tags %}<span class="icon-price-tag pr10"> {{tag}}</span> {% endfor %}</span>
-        </p>
+	  {% if page.categories %}<span class="pe-3"><i class="bi bi-archive-fill"></i> {{ page.categories | join: ' · ' | upcase }}{% endif %}</span>
+	  <br />
+	  <span>{% for tag in page.tags %}<span class="pe-2"><i class="bi bi-tag-fill"></i> {{tag}}</span> {% endfor %}</span>
+	</p>
 
-        <div id="post-nav" class="grid-x">
-          <div class="cell text-center">
-            <a class="radius button small" href="{{ site.baseurl }}/blog/archive/" title="Blog {{ site.data.messages[page.lang].archive }}">{{ site.data.messages[page.lang].archive }}</a>
-          </div><!-- /.small-2.columns -->
-        </div>
-			</div><!--  /.page-meta -->
+	<div id="post-nav" class="text-center mt-4">
+	  <a class="btn btn-primary" href="{{ site.baseurl }}/blog/archive/" title="Blog {{ site.data.messages[page.lang].archive }}">{{ site.data.messages[page.lang].archive }}</a>
+	</div>
+</div>

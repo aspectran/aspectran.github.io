@@ -1,8 +1,8 @@
-              <ul class="lang-options{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
-                {% for lang in site.lang_order %}
-                  {% assign url_prefix = '/' | append: include.lang | append: '/' %}
-                  {% assign page_url = page.url | replace: url_prefix, '/' %}
-                  {% assign page_url = '/' | append: lang | append: page_url %}
-                  <li{% if include.lang == lang %} class="active"{% endif %}><a href="{{ site.url }}{{ site.baseurl }}{{ page_url }}" title="{{ site.languages[lang] }}" class="choice-preferred-lang" lang="{{ lang }}">{{ site.languages[lang] }}</a></li>
-                {% endfor %}
-              </ul>
+<ul class="lang-options{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+  {% for lang in site.lang_order %}
+    {% assign url_prefix = '/' | append: include.lang | append: '/' %}
+    {% assign page_url = page.url | replace: url_prefix, '/' %}
+    {% assign page_url = '/' | append: lang | append: page_url %}
+    <li{% if include.lang == lang %} class="active"{% endif %}><a href="{{ site.url }}{{ site.baseurl }}{{ page_url }}" title="{{ site.languages[lang] }}" class="choice-preferred-lang" lang="{{ lang }}">{{ site.languages[lang] }}</a></li>
+  {% endfor %}
+</ul>

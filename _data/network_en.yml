@@ -2,5 +2,5 @@
 
 - name: "GitHub"
   url: "https://github.com/aspectran"
-  class: "icon-github"
+  class: "bi bi-github"
   title: ""

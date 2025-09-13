@@ -1,9 +1,9 @@
-    <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-      <div id="up-to-top" class="grid-x">
-        <div class="cell" style="text-align: right;">
-          <a class="iconfont" href="#top-of-page">&#xf108;</a>
+    <div class="container{% if page.format contains 'fluid' %} fluid{% endif %}">
+      <div id="up-to-top" class="row">
+        <div class="col text-end">
+          <a href="#top-of-page"><i class="bi bi-chevron-up"></i></a>
         </div>
-      </div><!-- /.grid-x -->
+      </div>
     </div>
 
     <footer id="footer-content">
@@ -18,14 +18,14 @@
       </div>
 
       <div id="subfooter">
-        <div class="grid-container">
-          <nav class="grid-x">
-            <section id="subfooter-left" class="medium-6 cell">
+        <div class="container">
+          <nav class="row">
+            <section id="subfooter-left" class="col-md-6">
               <p class="credits">Copyright © 2008–2025 The Aspectran Project</p>
             </section>
 
-            <section id="subfooter-right" class="medium-6 cell">
-              {% if site.data.socialmedia != nill %}
+            <section id="subfooter-right" class="col-md-6">
+              {% if site.data.socialmedia != nill and site.data.socialmedia.size > 0 %}
               <ul class="social-icons">
                 {% for social_item in site.data.socialmedia %}
                 <li><a href="{{ social_item.url }}" target="_blank" class="{{ social_item.class }}" title="{{ social_item.title }}"></a></li>
@@ -44,5 +44,5 @@
 
           </nav>
         </div>
-      </div><!-- /#subfooter -->
-    </footer><!-- /#footer-content -->
+      </div>
+    </footer>

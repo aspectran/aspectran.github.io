@@ -4,33 +4,37 @@ title: 실용 예제
 teaser: Aspectran이 어떻게 활용되는지 실제 사례를 통해 알아보세요.
 ---
 
-<div class="grid-x grid-margin-x">
+<div class="row g-4">
   {% assign examples = site.examples | where: 'lang', page.lang | sort: 'date' %}
   {% for example in examples %}
-  <div class="cell large-6 panel white b20">
-    <div class="grid-x grid-padding-x">
-      <div class="cell">
-        <p class="subheadline">{% if example.headline %}{{ example.headline }}{% endif %}</p>
-        <h3 class="underline"><a href="{{ site.baseurl }}{{ example.url }}">{{ example.title }}</a></h3>
+  <div class="col-lg-6">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12">
+            <p class="text-muted mb-0">{% if example.headline %}{{ example.headline }}{% endif %}</p>
+            <h4 class="border-bottom pb-2 mb-3"><a href="{{ site.baseurl }}{{ example.url }}" class="text-decoration-none">{{ example.title }}</a></h4>
+          </div>
+        {% if example.image.thumb %}
+          <div class="col-md-4">
+            <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title | escape_once }}"><img src="{{ site.urlimg }}{{ example.image.thumb }}" class="img-fluid" alt="{{ example.title | escape_once }}"></a>
+          </div>
+          <div class="col-md-8">
+            <p>
+              {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
+              <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
+            </p>
+          </div>
+        {% else %}
+          <div class="col-12">
+            <p>
+              {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
+              <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
+            </p>
+          </div>
+        {% endif %}
+        </div>
       </div>
-    {% if example.image.thumb %}
-      <div class="small-5 medium-4 cell">
-        <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title | escape_once }}"><img src="{{ site.urlimg }}{{ example.image.thumb }}" class="alignleft" width="100%" alt="{{ example.title | escape_once }}"></a>
-      </div>
-      <div class="small-7 medium-8 cell">
-        <p>
-          {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
-          <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
-        </p>
-      </div>
-    {% else %}
-      <div class="cell">
-        <p>
-          {% if example.meta_description %}{{ example.meta_description | strip_html | escape }}{% elsif example.teaser %}{{ example.teaser | strip_html | escape }}{% endif %}
-          <a href="{{ site.baseurl }}{{ example.url }}" title="{{ example.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
-        </p>
-      </div>
-    {% endif %}
     </div>
   </div>
   {% endfor %}

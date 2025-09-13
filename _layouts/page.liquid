@@ -3,97 +3,89 @@ layout: default
 ---
 <section itemscope itemtype="https://schema.org/Article">
 
-{% include _masthead.liquid %}
+  {% include _masthead.liquid %}
 
-<div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
-{% if page.format contains "plate" %}
-  <div class="grid-x grid-padding-x">
-    <div class="cell contour">
-{% endif %}
+  <div class="container contour pb-4 {% if page.format contains 'fluid' %} fluid{% endif %}">
 
-  <div class="grid-x grid-padding-x">
-    {% if page.sidebar == "toc" %}
-    <div class="t30 large-3 large-push-9 cell">
-      {% include _sidebar-toc.liquid %}
-    </div>
-    {% elsif page.sidebar == "toc-left" %}
-    <div class="t30 large-3 cell">
-      {% include _sidebar-toc.liquid side="left" %}
-    </div>
-    {% endif %}
+    <div class="row">
+      {% if page.sidebar == "toc" %}
+      <div class="mt-4 col-lg-3 col-lg-push-9">
+        {% include _sidebar-toc.liquid %}
+      </div>
+      {% elsif page.sidebar == "toc-left" %}
+      <div class="mt-4 col-lg-3 cell">
+        {% include _sidebar-toc.liquid side="left" %}
+      </div>
+      {% endif %}
 
-    <div class="t30 cell {% if page.sidebar == 'toc' %}large-9 large-pull-3{% elsif page.sidebar == 'toc-left' %}large-9{% elsif page.sidebar == 'left' %}large-8 large-push-4{% elsif page.sidebar == 'right' %}large-8{% elsif page.format contains 'margin' %}large-10 large-offset-1{% endif %}">
-      <article>
+      <div class="mt-4 {% if page.sidebar == 'toc' %}col-lg-9 col-lg-pull-3{% elsif page.sidebar == 'toc-left' %}col-lg-9{% elsif page.sidebar == 'left' %}col-lg-8 col-lg-push-4{% elsif page.sidebar == 'right' %}col-lg-8{% elsif page.format contains 'margin' %}col-lg-10 offset-lg-1{% endif %}">
+        <article>
 
-        {% if page.inside_heading == true %}
+          {% if page.inside_heading == true %}
 
-        <header>
-          {% if page.image.title %}
-          <figure>
-            <img itemprop="image" src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}">
-            {% if page.image.caption_url and page.image.caption %}
-            <figcaption class="text-right">
-              <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
-            </figcaption>
-            {% elsif page.image.caption %}
-            <figcaption class="text-right">
-              {{ page.image.caption }}
-            </figcaption>
+          <header>
+            {% if page.image.title %}
+            <figure>
+              <img itemprop="image" src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}">
+              {% if page.image.caption_url and page.image.caption %}
+              <figcaption class="text-right">
+                <a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
+              </figcaption>
+              {% elsif page.image.caption %}
+              <figcaption class="text-right">
+                {{ page.image.caption }}
+              </figcaption>
+              {% endif %}
+            </figure>
             {% endif %}
-          </figure>
+
+            {% if page.subheadline %}
+            <p class="subheadline" itemprop="alternativeHeadline">{{ page.subheadline }}</p>
+            {% endif %}
+            <h1 itemprop="headline">{{ page.title }}</h1>
+            {% if page.teaser %}
+            <p class="teaser" itemprop="description">{{ page.teaser }}</p>
+            {% endif %}
+          </header>
+
           {% endif %}
 
-          {% if page.subheadline %}
-          <p class="subheadline" itemprop="alternativeHeadline">{{ page.subheadline }}</p>
-          {% endif %}
-          <h1 itemprop="headline">{{ page.title }}</h1>
-          {% if page.teaser %}
-          <p class="teaser" itemprop="description">{{ page.teaser }}</p>
-          {% endif %}
-        </header>
+          <span itemprop="articleBody">
+          {{ content }}
+          </span>
 
+          {% if page.show_meta == true %}
+          {% include _meta_information.liquid %}
+          {% endif %}
+
+        </article>
+
+        {% if page.comments == true %}
+        <div class="mt-2">
+          {% include _comments.liquid %}
+        </div>
         {% endif %}
 
-        <span itemprop="articleBody">
-        {{ content }}
-        </span>
+      </div>
 
-        {% if page.show_meta == true %}
-        {% include _meta_information.liquid %}
+      {% if page.sidebar == "left" %}
+      <div class="mt-4 col-lg-4 col-lg-pull-8">
+        {% include _sidebar.liquid %}
+      </div>
+      {% endif %}
+
+      {% if page.sidebar == "right" %}
+      <div class="mt-4 col-lg-4">
+        {% if page.lang == 'ko' %}
+          {% include _sidebar_ko.liquid %}
+        {% else %}
+          {% include _sidebar_en.liquid %}
         {% endif %}
-
-      </article>
-
-      {% if page.comments == true %}
-      <div class="t50">
-        {% include _comments.liquid %}
       </div>
       {% endif %}
 
     </div>
 
-    {% if page.sidebar == "left" %}
-    <div class="t30 large-4 cell large-pull-8">
-      {% include _sidebar.liquid %}
-    </div>
-    {% endif %}
-
-    {% if page.sidebar == "right" %}
-    <div class="t30 large-4 cell">
-      {% if page.lang == 'ko' %}
-        {% include _sidebar_ko.liquid %}
-      {% else %}
-        {% include _sidebar_en.liquid %}
-      {% endif %}
-    </div>
-    {% endif %}
-
-  </div><!-- /.grid-x -->
-
-{% if page.format contains "plate" %}
-    </div>
-  </div>
-{% endif %}
 </div>
 
 </section>

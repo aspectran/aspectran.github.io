@@ -8,42 +8,50 @@
 
 {% assign posts = paginator.posts | sort: 'date' %}
 
-<div class="grid-x">
+<div>
   {% for post in posts %}
-  <div class="cell b30 auto-lang {{ post.lang }}">
-    <p class="subheadline"><span class="subheader">{% if post.categories %}{{ post.categories | join: ' &middot; ' }}{% endif %}</span>{% if post.headline %} – {{ post.headline }}{% endif %}</p>
-    <h3 class="underline"><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3>
-    <p>
-      {% if post.image.thumb %}<a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><img src="{{ site.urlimg }}{{ post.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title | escape_once }}"></a>{% endif %}
-      {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
-      <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
-    </p>
+  <div class="mb-5 auto-lang {{ post.lang }}">
+    <p class="text-muted mb-0 text-uppercase">{% if post.categories %}{{ post.categories | join: ' &middot; ' }}{% endif %}{% if post.headline %} – {{ post.headline }}{% endif %}</p>
+    <h3 class="border-bottom pb-2 mb-3"><a href="{{ site.baseurl }}{{ post.url }}" class="text-decoration-none">{{ post.title }}</a></h3>
+    <div class="d-flex">
+      {% if post.image.thumb %}
+      <div class="flex-shrink-0 me-3">
+        <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><img src="{{ site.urlimg }}{{ post.image.thumb }}" style="width: 150px; height: 150px;" alt="{{ page.title | escape_once }}"></a>
+      </div>
+      {% endif %}
+      <div class="flex-grow-1">
+        <p>
+          {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
+          <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
+        </p>
+      </div>
+    </div>
   </div>
   {% endfor %}
 </div>
 
-<div id="pagination">
-  <ul class="pagination text-center" role="navigation" aria-label="Pagination">
+<nav id="pagination" aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
     {% if paginator.previous_page %}
-      <li class="pagination-previous"><a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}" aria-label="Previous page">Previous</a></li>
+      <li class="page-item"><a class="page-link" href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}" aria-label="Previous">Previous</a></li>
     {% else %}
-      <li class="pagination-previous disabled">Previous</li>
+      <li class="page-item disabled"><span class="page-link">Previous</span></li>
     {% endif %}
 
     {% for page in (1..paginator.total_pages) %}
       {% if page == paginator.page %}
-        <li class="current">{{ page }}</li>
+        <li class="page-item active" aria-current="page"><span class="page-link">{{ page }}</span></li>
       {% elsif page == 1 %}
-        <li><a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}" aria-label="Page {{ page }}">{{ page }}</a></li>
+        <li class="page-item"><a class="page-link" href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}" aria-label="Page {{ page }}">{{ page }}</a></li>
       {% else %}
-        <li><a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}" aria-label="Page {{ page }}">{{ page }}</a></li>
+        <li class="page-item"><a class="page-link" href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}" aria-label="Page {{ page }}">{{ page }}</a></li>
       {% endif %}
     {% endfor %}
 
     {% if paginator.next_page %}
-      <li class="pagination-next"><a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}" aria-label="Next page">Next</a></li>
+      <li class="page-item"><a class="page-link" href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}" aria-label="Next">Next</a></li>
     {% else %}
-      <li class="pagination-next disabled">Next</li>
+      <li class="page-item disabled"><span class="page-link">Next</span></li>
     {% endif %}
   </ul>
-</div>
+</nav>

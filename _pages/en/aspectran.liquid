@@ -6,94 +6,81 @@ teaser: Aspectran is a Java-based application framework that provides flexibilit
 
 <style>
   .card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    border: 1px solid #e9e9e9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s ease-in-out;
   }
   .card:hover {
     transform: translateY(-5px);
   }
-  .card-divider {
-    background: #f5f5f5;
-    font-weight: bold;
-  }
-  .card-divider a {
-    color: #000;
+  .card-header a {
+    color: inherit;
     text-decoration: none;
-  }
-  .card-section {
-    flex-grow: 1;
   }
 </style>
 
-<div class="grid-x grid-margin-x small-up-1 medium-up-2 large-up-3" data-equalizer data-equalize-on="medium">
-  <div class="cell d-flex">
-    <div class="card" data-equalizer-watch>
-      <a href="/en/why-aspectran/"><img src="https://placehold.co/600x300/7B1FA2/FFFFFF?text=Flexibility" alt="Why Aspectran"></a>
-      <div class="card-divider">
-        <a href="/en/why-aspectran/">Why Aspectran</a>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <a href="/en/why-aspectran/"><img src="https://placehold.co/600x300/7B1FA2/FFFFFF?text=Flexibility" class="card-img-top" alt="Why Aspectran"></a>
+      <div class="card-header">
+        <a href="/en/why-aspectran/"><strong>Why Aspectran</strong></a>
       </div>
-      <div class="card-section">
-        <p>Explains why you should choose Aspectran and how it differentiates itself from other frameworks. Aspectran simplifies complex enterprise application development by valuing flexibility and simplicity.</p>
-      </div>
-    </div>
-  </div>
-  <div class="cell d-flex">
-    <div class="card" data-equalizer-watch>
-      <a href="/en/aspectran/overview/"><img src="https://placehold.co/600x300/00ACC1/FFFFFF?text=Simplicity" alt="Aspectran Overview"></a>
-      <div class="card-divider">
-        <a href="/en/aspectran/overview/">Aspectran Overview</a>
-      </div>
-      <div class="card-section">
-        <p>Introduces the core concepts and features of the Aspectran framework. Learn how to enhance code modularity and reusability through component-based architecture and AOP.</p>
+      <div class="card-body">
+        <p class="card-text">Explains why you should choose Aspectran and how it differentiates itself from other frameworks. Aspectran simplifies complex enterprise application development by valuing flexibility and simplicity.</p>
       </div>
     </div>
   </div>
-  <div class="cell d-flex">
-    <div class="card" data-equalizer-watch>
-      <a href="/en/aspectran/getting-started/"><img src="https://placehold.co/600x300/C0CA33/FFFFFF?text=Productivity" alt="Getting Started with Aspectran"></a>
-      <div class="card-divider">
-        <a href="/en/aspectran/getting-started/">Getting Started with Aspectran</a>
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <a href="/en/aspectran/overview/"><img src="https://placehold.co/600x300/00ACC1/FFFFFF?text=Simplicity" class="card-img-top" alt="Aspectran Overview"></a>
+      <div class="card-header">
+        <a href="/en/aspectran/overview/"><strong>Aspectran Overview</strong></a>
       </div>
-      <div class="card-section">
-        <p>Guides you through setting up your development environment and creating your first Aspectran application. Experience the power of Aspectran firsthand through a few simple steps.</p>
-      </div>
-    </div>
-  </div>
-  <div class="cell d-flex">
-    <div class="card" data-equalizer-watch>
-      <a href="/en/aspectran/user-guide/"><img src="https://placehold.co/600x300/D81B60/FFFFFF?text=Extensibility" alt="Aspectran User Guide"></a>
-      <div class="card-divider">
-        <a href="/en/aspectran/user-guide/">Aspectran User Guide</a>
-      </div>
-      <div class="card-section">
-        <p>Provides detailed explanations of all framework features and usage examples. Master various advanced features such as transaction management, bean configuration, and scheduling to maximize productivity.</p>
+      <div class="card-body">
+        <p class="card-text">Introduces the core concepts and features of the Aspectran framework. Learn how to enhance code modularity and reusability through component-based architecture and AOP.</p>
       </div>
     </div>
   </div>
-  <div class="cell d-flex">
-    <div class="card" data-equalizer-watch>
-      <a href="/en/aspectran/architecture/"><img src="https://placehold.co/600x300/3949AB/FFFFFF?text=Architecture" alt="Aspectran Architecture"></a>
-      <div class="card-divider">
-        <a href="/en/aspectran/architecture/">Aspectran Architecture</a>
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <a href="/en/aspectran/getting-started/"><img src="https://placehold.co/600x300/C0CA33/FFFFFF?text=Productivity" class="card-img-top" alt="Getting Started with Aspectran"></a>
+      <div class="card-header">
+        <a href="/en/aspectran/getting-started/"><strong>Getting Started with Aspectran</strong></a>
       </div>
-      <div class="card-section">
-        <p>Delves deeply into Aspectran's internal structure and design philosophy. Understand how the framework can run independently across various environments without being constrained.</p>
+      <div class="card-body">
+        <p class="card-text">Guides you through setting up your development environment and creating your first Aspectran application. Experience the power of Aspectran firsthand through a few simple steps.</p>
       </div>
     </div>
   </div>
-  <div class="cell d-flex">
-    <div class="card" data-equalizer-watch>
-      <a href="/en/aspectran/architecture/"><img src="https://placehold.co/600x300/44535a/FFFFFF?text=Documentation" alt="Documentation"></a>
-      <div class="card-divider">
-        <a href="/en/docs/">Aspectran Documentation</a>
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <a href="/en/aspectran/user-guide/"><img src="https://placehold.co/600x300/D81B60/FFFFFF?text=Extensibility" class="card-img-top" alt="Aspectran User Guide"></a>
+      <div class="card-header">
+        <a href="/en/aspectran/user-guide/"><strong>Aspectran User Guide</strong></a>
       </div>
-      <div class="card-section">
-        <p>Find all the resources you need to learn and use the Aspectran framework here. We’ve organized it for easy navigation and access, including configuration guides, user guides, practical guides, and architectural documents.</p>
+      <div class="card-body">
+        <p class="card-text">Provides detailed explanations of all framework features and usage examples. Master various advanced features such as transaction management, bean configuration, and scheduling to maximize productivity.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <a href="/en/aspectran/architecture/"><img src="https://placehold.co/600x300/3949AB/FFFFFF?text=Architecture" class="card-img-top" alt="Aspectran Architecture"></a>
+      <div class="card-header">
+        <a href="/en/aspectran/architecture/"><strong>Aspectran Architecture</strong></a>
+      </div>
+      <div class="card-body">
+        <p class="card-text">Delves deeply into Aspectran's internal structure and design philosophy. Understand how the framework can run independently across various environments without being constrained.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <a href="/en/aspectran/architecture/"><img src="https://placehold.co/600x300/44535a/FFFFFF?text=Documentation" class="card-img-top" alt="Documentation"></a>
+      <div class="card-header">
+        <a href="/en/docs/"><strong>Aspectran Documentation</strong></a>
+      </div>
+      <div class="card-body">
+        <p class="card-text">Find all the resources you need to learn and use the Aspectran framework here. We’ve organized it for easy navigation and access, including configuration guides, user guides, practical guides, and architectural documents.</p>
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
-<nav id="navigation" class="no-js">
-  <div class="title-bar" data-responsive-toggle="gnb-menu" data-hide-for="large" style="display:none">
+<nav id="navigation" class="navbar navbar-expand-lg navbar-dark">
+  <div class="title-bar">
     <div class="title-bar-left">
       {% if page.auto_lang != nil %}
         {% for lang in site.lang_order %}
@@ -12,12 +12,14 @@
     <div class="title-bar-center">
       <a href="#top-of-page">{{ site.title }}</a>
     </div>
-    <div class="title-bar-right" data-toggle="gnb-menu">
-      <a class="menu-icon" title="Menu"></a>
+    <div class="title-bar-right">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
     </div>
   </div>
-  <div class="top-bar" id="gnb-menu" style="display:none">
-    <div class="grid-container{% if page.format contains 'fluid' %} fluid{% endif %}">
+  <div class="top-bar">
+    <div class="container collapse navbar-collapse" id="navbarSupportedContent">
       <div class="top-bar-logo">
         <div class="circle">
           {% if page.auto_lang != nil %}
@@ -29,20 +31,28 @@
           {% endif %}
         </div>
       </div>
-      {% if page.auto_lang != nil %}
-        {% for lang in site.lang_order %}
-          {% include _navigation-top-bar-inner.liquid lang=lang auto_lang=true %}
-        {% endfor %}
-      {% else %}
-        {% include _navigation-top-bar-inner.liquid lang=page.lang %}
-      {% endif %}
-    </div>
-    {% if page.breadcrumb == true %}
-      <div class="breadcrumbs-bar">
-        <div class="grid-container">
-          {% include _breadcrumb.liquid %}
-        </div>
+      <div class="top-bar-left me-auto{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+        {% if page.auto_lang != nil %}
+          {% for lang in site.lang_order %}
+            {% include _navigation-top-bar-left-nav.liquid lang=lang auto_lang=true %}
+          {% endfor %}
+        {% else %}
+          {% include _navigation-top-bar-left-nav.liquid lang=page.lang %}
+        {% endif %}
       </div>
-    {% endif %}
+      <div class="top-bar-right{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+        {% if page.auto_lang != nil %}
+          {% for lang in site.lang_order %}
+            {% include _navigation-top-bar-right-nav.liquid lang=lang auto_lang=true %}
+            {% include _navigation-top-bar-right-search.liquid lang=lang auto_lang=true %}
+            {% include _navigation-top-bar-right-settings.liquid lang=lang auto_lang=true %}
+          {% endfor %}
+        {% else %}
+          {% include _navigation-top-bar-right-nav.liquid lang=page.lang %}
+          {% include _navigation-top-bar-right-search.liquid lang=page.lang %}
+          {% include _navigation-top-bar-right-settings.liquid lang=page.lang %}
+        {% endif %}
+      </div>
+    </div>
   </div>
 </nav>

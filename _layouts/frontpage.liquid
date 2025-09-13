@@ -5,25 +5,25 @@ layout: default
 {% include _forkme-ribbon.liquid %}
 
 <div id="masthead">
-  <div class="grid-container">
-    <div class="grid-x grid-padding-x badges">
-      <div class="cell b10">
-        <a href="https://github.com/aspectran/aspectran/actions?query=workflow%3A%22Java+CI%22" target="_blank" title="Build Status"><img src="https://github.com/aspectran/aspectran/workflows/Java%20CI/badge.svg" alt=""/></a>
-        <a href="https://central.sonatype.com/artifact/com.aspectran/aspectran-project" target="_blank" title="Maven central"><img src="https://img.shields.io/maven-central/v/com.aspectran/aspectran-project" alt=""/></a>
-        <a href="https://github.com/aspectran/aspectran/blob/master/LICENSE.txt" target="_blank" title="Apache License 2.0"><img src="https://img.shields.io/:license-apache-orange.svg" alt=""/></a>
+  <div class="container pt-2 pt-lg-5">
+    <div class="row">
+      <div class="col-12 mb-2">
+        <a href="https://github.com/aspectran/aspectran/actions?query=workflow%3A%22Java+CI%22" target="_blank" title="Build Status"><img src="https://github.com/aspectran/aspectran/workflows/Java%20CI/badge.svg" alt="Build Status"/></a>
+        <a href="https://central.sonatype.com/artifact/com.aspectran/aspectran-project" target="_blank" title="Maven central"><img src="https://img.shields.io/maven-central/v/com.aspectran/aspectran-project" alt="Maven Central"/></a>
+        <a href="https://github.com/aspectran/aspectran/blob/master/LICENSE.txt" target="_blank" title="Apache License 2.0"><img src="https://img.shields.io/:license-apache-orange.svg" alt="License"/></a>
       </div>
     </div>
-    <div class="grid-x grid-padding-x t10">
-      <div class="medium-6 large-3 cell b10">
+    <div class="row g-4 mt-2">
+      <div class="col-md-6 col-lg-3">
         {% include _frontpage-widget.liquid widget=page.widget1 %}
       </div>
-      <div class="medium-6 large-3 cell b10">
+      <div class="col-md-6 col-lg-3">
         {% include _frontpage-widget.liquid widget=page.widget2 %}
       </div>
-      <div class="medium-6 large-3 cell b10">
+      <div class="col-md-6 col-lg-3">
         {% include _frontpage-widget.liquid widget=page.widget3 %}
       </div>
-      <div class="medium-6 large-3 cell b10">
+      <div class="col-md-6 col-lg-3">
         {% include _frontpage-widget.liquid widget=page.widget4 %}
       </div>
     </div>
@@ -31,75 +31,85 @@ layout: default
 </div>
 
 {% if page.asciinema %}
-<div class="asciinema hide-for-large">
-  <a href="https://asciinema.org/a/{{ page.asciinema }}"><img src="https://asciinema.org/a/{{ page.asciinema }}.png" width="836"/></a>
+<div class="asciinema d-lg-none">
+  <a href="https://asciinema.org/a/{{ page.asciinema }}"><img src="https://asciinema.org/a/{{ page.asciinema }}.png" class="img-fluid" /></a>
 </div>
-<div class="asciinema show-for-large">
+<div class="asciinema d-none d-lg-block">
   <script type="text/javascript" src="https://asciinema.org/a/{{ page.asciinema }}.js" id="asciicast-{{ page.asciinema }}" async></script>
 </div>
 {% endif %}
 
 {% unless page.projects == empty %}
-<div class="grid-container">
-  <div class="grid-x grid-margin-x t30">
+<div class="container">
+  <div class="row g-4 mt-4">
     {% for project in page.projects %}
-    <div class="cell large-6 panel white b20">
-        <div class="grid-x grid-margin-x">
-          <div class="cell">
-            {% if project.subheadline %}<p class="subheadline">{{ project.subheadline }}</p>{% endif %}
-            <h3 class="underline">
-              <a href="{{ site.baseurl }}{{ project.url }}">{{ project.title }}</a>
-              <a href="{{ site.baseurl }}{{ project.url }}" class="float-right"><span class="fi-monitor"></span></a>
-            </h3>
+    <div class="col-lg-6">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <h4 class="border-bottom pb-2 mb-3">
+                <a href="{{ site.baseurl }}{{ project.url }}" class="text-decoration-none">{{ project.title }}</a>
+                <a href="{{ site.baseurl }}{{ project.url }}" class="float-end text-decoration-none"><i class="bi bi-box-arrow-up-right"></i></a>
+              </h4>
+            </div>
+            {% if project.thumb_img %}
+            <div class="col-md-4">
+              <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
+            </div>
+            <div class="col-md-8">
+              {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+              <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+            </div>
+            {% else %}
+            <div class="col-12">
+              {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+              <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+            </div>
+            {% endif %}
           </div>
-        {% if project.thumb_img %}
-          <div class="cell small-5 medium-4">
-            <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="alignleft" width="100%" alt="{{ project.title | escape_once }}"></a>
-          </div>
-          <div class="cell small-7 medium-8">
-            {% if project.repo %}<p class="source ellipses"><a class="icon-github" href="{{ project.repo }}"> {{ project.repo }}</a></p>{% endif %}
-            <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
-          </div>
-        {% else %}
-          <div class="cell">
-            {% if project.repo %}<p class="source ellipses"><a class="icon-github" href="{{ project.repo }}">{{ project.repo }}</a></p>{% endif %}
-            <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
-          </div>
-        {% endif %}
         </div>
+      </div>
     </div>
     {% endfor %}
-    <div class="cell text-right">
-      <a href="{{ site.baseurl }}/{{ page.lang }}/projects/"><strong>{{ site.data.messages[page.lang].more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a>
+    <div class="col-12 text-end">
+      <a href="{{ site.baseurl }}/{{ page.lang }}/projects/"><strong>{{ site.data.messages[page.lang].more }}</strong> <i class="bi bi-arrow-right-short"></i>&nbsp;</a>
     </div>
   </div>
 </div>
 {% endunless %}
 
-<div class="grid-container">
-  <div class="grid-x">
-    <div class="large-8 cell t30">
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 mt-4">
       {% unless site.posts == empty %}
-      <div class="grid-x grid-padding-x">
       {% for post in site.posts limit:5 %}
         {% if post.lang == page.lang %}
-        <div class="cell b10">
-          <p class="subheadline"><span class="subheader">{% if post.categories %}{{ post.categories | join: ' &middot; ' }}{% endif %}</span> – {% if post.headline %}{{ post.headline }}{% endif %}</p>
-          <h3 class="underline"><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3>
-          <p>
-            {% if post.image.thumb %}<a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><img src="{{ site.urlimg }}{{ post.image.thumb }}" class="alignleft" width="150" height="150" alt="{{ page.title | escape_once }}"></a>{% endif %}
-
-            {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
-
-            <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
-          </p>
-        </div><!-- /.cell -->
+        <div class="mb-4">
+          <p class="text-muted text-uppercase mb-0">{% if post.categories %}{{ post.categories | join: ' &middot; ' }}{% endif %} – {% if post.headline %}{{ post.headline }}{% endif %}</p>
+          <h3 class="border-bottom pb-2 mb-3"><a href="{{ site.baseurl }}{{ post.url }}" class="text-decoration-none">{{ post.title }}</a></h3>
+          <div class="d-flex">
+            {% if post.image.thumb %}
+            <div class="flex-shrink-0 me-3">
+              <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><img src="{{ site.urlimg }}{{ post.image.thumb }}" style="width: 150px; height: 150px;" alt="{{ page.title | escape_once }}"></a>
+            </div>
+            {% endif %}
+            <div class="flex-grow-1">
+              <p>
+                {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
+                <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
+              </p>
+            </div>
+          </div>
+        </div><!-- /.mb-4 -->
         {% endif %}
       {% endfor %}
-      </div><!-- /.grid-x -->
+      <div class="text-end">
+        <a href="{{ site.baseurl }}/blog/"><strong>{{ site.data.messages[page.lang].more }}</strong> <i class="bi bi-arrow-right-short"></i>&nbsp;</a>
+      </div>
       {% endunless %}
     </div>
-    <div class="large-4 cell t30">
+    <div class="col-lg-4 mt-4">
       {% if page.lang == 'ko' %}
         {% include _sidebar_ko.liquid %}
       {% else %}
@@ -109,8 +119,10 @@ layout: default
   </div>
 </div>
 
-<div class="grid-container">
-  <div class="grid-x">
-    {{ content }}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      {{ content }}
+    </div>
   </div>
 </div>
