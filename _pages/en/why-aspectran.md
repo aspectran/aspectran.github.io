@@ -1,5 +1,5 @@
 ---
-format: plate solid margin
+format: plate solid margin article
 title: "Why Aspectran"
 teaser: '"Designing for Sustainable Simplicity: The Aspectran Architectural Philosophy"'
 header:
