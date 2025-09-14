@@ -1,53 +1,4 @@
 <script>
-  const supportedLanguages = ['en', 'ko'];
-  function getPreferredLangCodeFromLocalStorage() {
-    let langCode = localStorage.getItem("preferred-lang-code");
-    if (langCode && supportedLanguages.includes(langCode)) {
-      return langCode;
-    } else {
-      return null;
-    }
-  }
-  function setPreferredLangCodeToLocalStorage(langCode) {
-    localStorage.setItem("preferred-lang-code", langCode);
-  }
-  function getPreferredLangCode() {
-    let langCode = getPreferredLangCodeFromLocalStorage();
-    if (langCode) {
-      return langCode;
-    }
-    const languages = navigator.languages;
-    if (languages && languages.length) {
-      for (const lang of languages) {
-        let code = lang.substring(0, 2);
-        if (supportedLanguages.includes(code)) {
-          return code;
-        }
-      }
-    }
-    return 'en';
-  }
-  $(function () {
-    $(".choice-preferred-lang").on("click", function (e) {
-      e.preventDefault();
-      let langCode = $(this).attr("lang");
-      if (langCode) {
-        setPreferredLangCodeToLocalStorage(langCode);
-      }
-      location.href = $(this).attr("href");
-    });
-  });
-</script>
-{% if page.auto_lang %}
-<script>
-  $(function () {
-    const langCode = getPreferredLangCode();
-    console.log('auto_lang:', langCode);
-    $(".auto-lang." + langCode).removeClass("auto-lang");
-  });
-</script>
-{% endif %}
-<script>
   $(function () {
     const getStoredTheme = () => localStorage.getItem('theme');
     const setStoredTheme = theme => localStorage.setItem('theme', theme);
@@ -101,6 +52,55 @@
     });
   });
 </script>
+<script>
+  const supportedLanguages = ['en', 'ko'];
+  function getPreferredLangCodeFromLocalStorage() {
+    let langCode = localStorage.getItem("preferred-lang-code");
+    if (langCode && supportedLanguages.includes(langCode)) {
+      return langCode;
+    } else {
+      return null;
+    }
+  }
+  function setPreferredLangCodeToLocalStorage(langCode) {
+    localStorage.setItem("preferred-lang-code", langCode);
+  }
+  function getPreferredLangCode() {
+    let langCode = getPreferredLangCodeFromLocalStorage();
+    if (langCode) {
+      return langCode;
+    }
+    const languages = navigator.languages;
+    if (languages && languages.length) {
+      for (const lang of languages) {
+        let code = lang.substring(0, 2);
+        if (supportedLanguages.includes(code)) {
+          return code;
+        }
+      }
+    }
+    return 'en';
+  }
+  $(function () {
+    $(".choice-preferred-lang").on("click", function (e) {
+      e.preventDefault();
+      let langCode = $(this).attr("lang");
+      if (langCode) {
+        setPreferredLangCodeToLocalStorage(langCode);
+      }
+      location.href = $(this).attr("href");
+    });
+  });
+</script>
+{% if page.auto_lang %}
+<script>
+  $(function () {
+    const langCode = getPreferredLangCode();
+    console.log('auto_lang:', langCode);
+    $(".auto-lang." + langCode).removeClass("auto-lang");
+  });
+</script>
+{% endif %}
 <script src="https://assets.aspectran.com/js/jquery.backstretch.min.js"></script>
 <script>
   $(function () {
