@@ -1,0 +1,17 @@
+{% comment %}
+*
+* Displays an image with optional wrapper classes and image classes.
+*
+* Usage:
+* {% include image.html src="/path/to/image.png" alt="Description" class="img-fluid" p_class="text-center" %}
+*
+* Parameters:
+*   src     - (Required) The path to the image.
+*   alt     - (Required) The alt text for the image.
+*   class   - (Optional) Classes to apply to the <img> tag. Defaults to 'img-fluid'.
+*   p_class - (Optional) Classes to apply to the wrapping <p> tag. Defaults to 'text-center'.
+*
+{% endcomment %}
+<p class="{{ include.p_class | default: 'text-center' }}">
+  <img src="{{ include.src }}" alt="{{ include.alt }}" class="{{ include.class | default: 'img-fluid' }}">
+</p>

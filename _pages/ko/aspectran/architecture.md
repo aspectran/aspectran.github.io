@@ -5,7 +5,7 @@ title: Aspectran 아키텍처
 teaser: 통합 심층 분석 (Full-Text Version)
 ---
 
-![Aspectran 아키텍처의 통합](/images/docs/architecture_ko.svg)
+{% include image.liquid src="/images/docs/architecture_ko.svg" alt="Aspectran 아키텍처의 통합" %}
 
 ## 1. 서론
 

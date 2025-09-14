@@ -5,7 +5,7 @@ title: Aspectran Architecture
 teaser: An Integrated Deep Dive (Full-Text Version)
 ---
 
-![Aspectran 아키텍처의 통합](/images/docs/architecture_en.svg)
+{% include image.liquid src="/images/docs/architecture_en.svg" alt="Integration of Aspectran Architecture" %}
 
 ## 1. Introduction
 
