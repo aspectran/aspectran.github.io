@@ -2,15 +2,23 @@
 *
 * This include lets you easily display an alert. To use this include no `.html` ending is necessary.
 *
-* You can use the following kinds of alerts:
+* You can use the following kinds of alerts (mapped to Bootstrap alert types):
 *
-*  - warning  (foundation built-in)
-*  - info     (foundation built-in)
-*  - success  (foundation built-in)
-*  - alert    (foundation built-in)
-*  - text     (foundation built-in)
-*  - terminal (custom, see Alerts in _sass/_09_elements.scss)
-*  - ...      (define your own: .alert-box.<alert-type> { @include alert-style(<bg-color>);)
+*  - primary
+*  - secondary
+*  - success
+*  - danger
+*  - warning
+*  - info
+*  - light
+*  - dark
+*
+* An emoji icon is automatically added based on the alert type (success, danger, warning, info).
+*
+* Legacy types from Foundation are mapped as follows:
+*  - alert: mapped to 'danger'
+*  - text: mapped to 'secondary'
+*  - terminal: mapped to 'dark'
 *
 * You can even use markdown and <html>-tags inside the alert, but beware to use " and ' properly; for example:
 *
@@ -22,10 +30,29 @@
 *
 * You can also call for additional classes to be put on the alert div:
 *
-*     {% include alert success="Yay! you did it!" classes='round' %}
+*     {% include alert success="Yay! you did it!" classes='custom-class' %}
 *
 {% endcomment %}
 {% for entry in include %}
 {% if entry[0] == 'classes' %}{% continue %}{% endif %}
-<div class="panel alert-box {{ entry[0] }} radius {{ include.classes }}">{{ entry[1] | markdownify }}</div>
+{% assign type = entry[0] %}
+{% assign emoji = '' %}
+{% if type == 'alert' %}
+  {% assign type = 'danger' %}
+{% elsif type == 'text' %}
+  {% assign type = 'secondary' %}
+{% elsif type == 'terminal' %}
+  {% assign type = 'dark terminal' %}
+{% endif %}
+{% case type %}
+  {% when 'success' %}
+    {% assign emoji = '✅ ' %}
+  {% when 'danger' %}
+    {% assign emoji = '❗️ ' %}
+  {% when 'warning' %}
+    {% assign emoji = '⚠️ ' %}
+  {% when 'info' %}
+    {% assign emoji = 'ℹ️ ' %}
+{% endcase %}
+<div class="alert alert-{{ type }} {{ include.classes }}" role="alert">{{ entry[1] | strip | prepend: emoji | markdownify }}</div>
 {% endfor %}

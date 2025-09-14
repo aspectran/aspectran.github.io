@@ -5,10 +5,11 @@ title: Aspectran 공식 문서
 teaser: Aspectran 문서를 통해 배우고 설정하며, 강력한 기능을 마음껏 활용해 보세요.
 ---
 
+{% capture info_message %}
 이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran 프레임워크를 배우고 사용하는 데 도움이 되는 모든 문서를 여기에서 찾아볼 수 있습니다.
 구성 가이드, 사용자 가이드, 실용 가이드, 아키텍처 문서 등 필요한 정보를 쉽게 탐색하고 접근할 수 있도록 구성했습니다.
-
----
+{% endcapture %}
+{% include alert info=info_message %}
 
 ## 구성 가이드
 
