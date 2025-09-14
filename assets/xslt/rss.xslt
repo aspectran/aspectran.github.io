@@ -1,58 +1,84 @@
----
-layout: xml-style
-title: "RSS Feed (Styled)"
-sitemap: false
-rootMatcher: '/rss'
-disclaimer: |
-  This <a href="https://en.wikipedia.org/wiki/RSS" target="_blank">RSS feed</a> is meant to be used by <a href="https://en.wikipedia.org/wiki/Template:Aggregators" target="_blank">RSS reader applications and websites</a>.
----
-<div class="row">
-  <div class="columns">
-    <header class="t10 b10">
-    	<p class="subheadline"><xsl:value-of select="channel/description" disable-output-escaping="yes" /></p>
-    	<h1>
-    		<xsl:element name="a">
-    			<xsl:attribute name="href">
-    				<xsl:value-of select="channel/link" />
-    			</xsl:attribute>
-    			<xsl:value-of select="channel/title" disable-output-escaping="yes" />
-    		</xsl:element>
-    	</h1>
-    </header>
-    <ul class="accordion" data-accordion="" data-allow-all-closed="true">
-    	<xsl:for-each select="channel/item">
-    		<li class="accordion-item">
-    			<xsl:variable name="slug-id">
-    				<xsl:call-template name="slugify">
-    					<xsl:with-param name="text" select="guid" />
-    				</xsl:call-template>
-    			</xsl:variable>
-    			<xsl:element name="a">
-    				<xsl:attribute name="href"><xsl:value-of select="concat('#', $slug-id)"/></xsl:attribute>
-            <xsl:attribute name="role">tab</xsl:attribute>
-            <xsl:attribute name="class">accordion-title</xsl:attribute>
-            <xsl:attribute name="id"><xsl:value-of select="$slug-id"/>-heading</xsl:attribute>
-            <xsl:attribute name="aria-controls"><xsl:value-of select="$slug-id"/></xsl:attribute>
-    				<xsl:value-of select="title"/>
-    				<br/>
-    				<small><xsl:value-of select="pubDate"/></small>
-    			</xsl:element>
-    			<xsl:element name="div">
-            <xsl:attribute name="id"><xsl:value-of select="$slug-id"/></xsl:attribute>
-            <xsl:attribute name="data-tab-content"></xsl:attribute>
-            <xsl:attribute name="role">tabpanel</xsl:attribute>
-            <xsl:attribute name="class">accordion-content</xsl:attribute>
-            <xsl:attribute name="aria-labelledby"><xsl:value-of select="$slug-id"/>-heading</xsl:attribute>
-    				<h1>
-    					<xsl:element name="a">
-    						<xsl:attribute name="href"><xsl:value-of select="link"/></xsl:attribute>
-    						<xsl:value-of select="title"/>
-    					</xsl:element>
-    				</h1>
-    				<xsl:value-of select="description" disable-output-escaping="yes" />
-    			</xsl:element>
-    		</li>
-    	</xsl:for-each>
-    </ul>
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output method="html" encoding="UTF-8" indent="yes"/>
+
+<xsl:template match="/">
+  <html>
+    <head>
+      <title><xsl:value-of select="/rss/channel/title"/></title>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body>
+      <div class="container">
+        <xsl:apply-templates select="/rss/channel"/>
+      </div>
+    </body>
+  </html>
+</xsl:template>
+
+<xsl:template match="channel">
+  <div class="row">
+    <div class="col-12">
+      <header class="my-4">
+        <p class="lead"><xsl:value-of select="description" disable-output-escaping="yes" /></p>
+        <h1>
+          <a href="{link}">
+            <xsl:value-of select="title" disable-output-escaping="yes" />
+          </a>
+        </h1>
+      </header>
+      <div class="accordion" id="rssAccordion">
+        <xsl:apply-templates select="item"/>
+      </div>
+    </div>
   </div>
-</div>
+</xsl:template>
+
+<xsl:template match="item">
+  <xsl:variable name="slug-id">
+    <xsl:call-template name="slugify">
+      <xsl:with-param name="text" select="guid" />
+    </xsl:call-template>
+  </xsl:variable>
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <xsl:attribute name="id"><xsl:value-of select="concat($slug-id, '-heading')"/></xsl:attribute>
+      <button class="accordion-button collapsed" type="button">
+        <xsl:attribute name="data-bs-toggle">collapse</xsl:attribute>
+        <xsl:attribute name="data-bs-target"><xsl:value-of select="concat('#', $slug-id)"/></xsl:attribute>
+        <xsl:attribute name="aria-expanded">false</xsl:attribute>
+        <xsl:attribute name="aria-controls"><xsl:value-of select="$slug-id"/></xsl:attribute>
+        <xsl:value-of select="title"/>
+        <br/>
+        <small><xsl:value-of select="pubDate"/></small>
+      </button>
+    </h2>
+    <div class="accordion-collapse collapse">
+      <xsl:attribute name="id"><xsl:value-of select="$slug-id"/></xsl:attribute>
+      <xsl:attribute name="aria-labelledby"><xsl:value-of select="concat($slug-id, '-heading')"/></xsl:attribute>
+      <xsl:attribute name="data-bs-parent">#rssAccordion</xsl:attribute>
+      <div class="accordion-body">
+        <h1>
+          <a href="{link}"><xsl:value-of select="title"/></a>
+        </h1>
+        <xsl:value-of select="description" disable-output-escaping="yes" />
+      </div>
+    </div>
+  </div>
+</xsl:template>
+
+<xsl:template name="slugify">
+  <xsl:param name="text"/>
+  <xsl:variable name="lower" select="'abcdefghijklmnopqrstuvwxyz'"/>
+  <xsl:variable name="upper" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
+  <xsl:variable name="allowed" select="'0123456789abcdefghijklmnopqrstuvwxyz-'"/>
+  <xsl:variable name="lowercase" select="translate($text, $upper, $lower)"/>
+  <xsl:variable name="special-chars-to-dash" select="translate($lowercase, ' ~!@#$%^&amp;*()+=[]{}|\:;&quot;.?/
+`', '------------------------------')"/>
+  <xsl:variable name="cleaned" select="translate($special-chars-to-dash, translate($special-chars-to-dash, $allowed, ''), '')"/>
+  <xsl:variable name="no-multi-dash" select="normalize-space(translate($cleaned, '-', ' '))"/>
+  <xsl:value-of select="translate($no-multi-dash, ' ', '-')"/>
+</xsl:template>
+
+</xsl:stylesheet>
