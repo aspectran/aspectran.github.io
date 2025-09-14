@@ -3,22 +3,19 @@
 <svg xmlns:xlink="http://www.w3.org/1999/xlink"
      style="fill:none;stroke:none;fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;"
      version="1.1" xmlns="http://www.w3.org/2000/svg" width="451" height="312" viewBox="0 0 451 312">
-  <style class="text-font-style fontImports" data-font-family="Roboto">@import
-    url(https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;amp;display=block);
-  </style>
   <g id="items" style="isolation: isolate">
     <g id="blend" style="mix-blend-mode: normal">
       <g id="g-root-tx_aspectra_7rfkjyqxlhp-fill" data-item-order="0" transform="translate(165, 2)">
-        <g id="tx_aspectra_7rfkjyqxlhp-fill-merged" stroke="none" fill="#374840">
+        <g id="tx_aspectra_7rfkjyqxlhp-fill-merged" stroke="none" fill="#de8431">
           <g>
-            <text style="white-space: pre;" font-size="20px">
+            <text style="white-space: pre;" font-size="24px">
               <tspan x="12.73" y="33.92" dominant-baseline="ideographic">Aspectran</tspan>
             </text>
           </g>
         </g>
       </g>
       <g id="g-root-tx_aspect_1d2eg0jyqw6by-fill" data-item-order="0" transform="translate(64, 146)">
-        <g id="tx_aspect_1d2eg0jyqw6by-fill-merged" stroke="none" fill="#3a4455">
+        <g id="tx_aspect_1d2eg0jyqw6by-fill-merged" stroke="none" fill="#de8431">
           <g>
             <text style="white-space: pre;" font-size="20px">
               <tspan x="17.78" y="33.92" dominant-baseline="ideographic">Aspect</tspan>
@@ -28,7 +25,7 @@
       </g>
       <g id="g-root-ic_rota_1hgcivnyqxlhj-fill" data-item-order="0" transform="translate(189, 134)"></g>
       <g id="g-root-tx_translet_1ly1g9fyqw5j9-fill" data-item-order="0" transform="translate(292, 146)">
-        <g id="tx_translet_1ly1g9fyqw5j9-fill-merged" stroke="none" fill="#4c4034">
+        <g id="tx_translet_1ly1g9fyqw5j9-fill-merged" stroke="none" fill="#de8431">
           <g>
             <text style="white-space: pre;" font-size="20px"
             >
@@ -39,7 +36,7 @@
       </g>
       <g id="g-root-sy_3_cu_7rfkjyqw7b6-stroke" data-item-order="-92153" transform="translate(213, 38)">
         <g id="sy_3_cu_7rfkjyqw7b6-stroke" fill="none" stroke-linecap="round" stroke-linejoin="round"
-           stroke-miterlimit="4" stroke="#de8431" stroke-width="2">
+           stroke-miterlimit="4" stroke="#EE0EA0" stroke-width="2">
           <g>
             <path
               d="M 10 226.009C 39.147 204.116 58 169.26 58 130C 58 90.74 39.147 55.884 10 33.991C 30.056 18.927 54.985 10 82 10C 148.274 10 202 63.726 202 130C 202 196.274 148.274 250 82 250C 54.985 250 30.056 241.073 10 226.009Z"></path>

@@ -19,7 +19,7 @@
       <g id="g-root-sy_1_line_mccvgjygsc8y-fill" data-item-order="-101339"
          transform="translate(322.6666564941406, 122)"></g>
       <g id="g-root-tx_aspectra_zn6wqryh27ep-fill" data-item-order="0" transform="translate(304.6666564941406, 14)">
-        <g id="tx_aspectra_zn6wqryh27ep-fill-merged" stroke="none" fill="#484848">
+        <g id="tx_aspectra_zn6wqryh27ep-fill-merged" stroke="none" fill="#de8431">
           <g>
             <text style="white-space: pre;" font-weight="bold" font-size="25px">
               <tspan x="14.7" y="44.2" dominant-baseline="ideographic">Aspectran 아키텍처의 통합</tspan>
@@ -28,7 +28,7 @@
         </g>
       </g>
       <g id="g-root-tx_pojo_18itwznyh25u7-fill" data-item-order="0" transform="translate(154.66665649414062, 110)">
-        <g id="tx_pojo_18itwznyh25u7-fill-merged" stroke="none" fill="#46432d">
+        <g id="tx_pojo_18itwznyh25u7-fill-merged" stroke="none" fill="#de8431">
           <g>
             <text style=" white-space: pre;" font-size="20px">
               <tspan x="13.25" y="35.27" dominant-baseline="ideographic">POJO 중심</tspan>
@@ -38,20 +38,20 @@
       </g>
       <g id="g-root-ic_java_13z9kcjygy0hw-fill" data-item-order="0" transform="translate(262.6666564941406, 98)"></g>
       <g id="g-root-tx_iocdi_1ltny9vyh27f1-fill" data-item-order="0" transform="translate(166.66665649414062, 194)">
-        <g id="tx_iocdi_1ltny9vyh27f1-fill-merged" stroke="none" fill="#4c4034">
+        <g id="tx_iocdi_1ltny9vyh27f1-fill-merged" stroke="none" fill="#de8431">
           <g>
             <text style=" white-space: pre;" font-size="20px">
-              <tspan x="16.37" y="35.27" dominant-baseline="ideographic">IoC 및 DI</tspan>
+              <tspan x="9" y="35.27" dominant-baseline="ideographic">IoC 및 DI</tspan>
             </text>
           </g>
         </g>
       </g>
       <g id="g-root-ic_micr_dgpv7nygwkck-fill" data-item-order="0" transform="translate(262.6666564941406, 182)"></g>
       <g id="g-root-tx_aop_1upayiryh26mb-fill" data-item-order="0" transform="translate(202.66665649414062, 278)">
-        <g id="tx_aop_1upayiryh26mb-fill-merged" stroke="none" fill="#543a3a">
+        <g id="tx_aop_1upayiryh26mb-fill-merged" stroke="none" fill="#de8431">
           <g>
             <text style=" white-space: pre;" font-size="20px">
-              <tspan x="16.68" y="33.92" dominant-baseline="ideographic">AOP</tspan>
+              <tspan x="12" y="33.92" dominant-baseline="ideographic">AOP</tspan>
             </text>
           </g>
         </g>
@@ -59,30 +59,30 @@
       <g id="g-root-ic_puzz_4otphfygv4zq-fill" data-item-order="0" transform="translate(262.6666564941406, 266)"></g>
       <g id="g-root-ic_desi_mccvgjygsc8z-fill" data-item-order="0" transform="translate(586.6666259765625, 266)"></g>
       <g id="g-root-tx__qqaybnyh2611-fill" data-item-order="0" transform="translate(646.6666259765625, 266)">
-        <g id="tx__qqaybnyh2611-fill-merged" stroke="none" fill="#3a4455">
+        <g id="tx__qqaybnyh2611-fill-merged" stroke="none" fill="#de8431">
           <g>
             <text style=" white-space: pre;" font-size="20px">
-              <tspan x="12" y="35.27" dominant-baseline="ideographic">환경 독립적인 애플</tspan>
-              <tspan x="12" y="59.27" dominant-baseline="ideographic">리케이션</tspan>
+              <tspan x="12" y="35.27" dominant-baseline="ideographic">환경 독립적인</tspan>
+              <tspan x="12" y="59.27" dominant-baseline="ideographic">애플리케이션</tspan>
             </text>
           </g>
         </g>
       </g>
       <g id="g-root-tx__8znewzyh258h-fill" data-item-order="0" transform="translate(154.66665649414062, 362)">
-        <g id="tx__8znewzyh258h-fill-merged" stroke="none" fill="#573e4d">
+        <g id="tx__8znewzyh258h-fill-merged" stroke="none" fill="#de8431">
           <g>
             <text style=" white-space: pre;" font-size="20px">
-              <tspan x="12.53" y="35.27" dominant-baseline="ideographic">환경 추상화</tspan>
+              <tspan x="0" y="35.27" dominant-baseline="ideographic">환경 추상화</tspan>
             </text>
           </g>
         </g>
       </g>
       <g id="g-root-ic_doub_74s3nygtslj-fill" data-item-order="0" transform="translate(262.6666564941406, 350)"></g>
       <g id="g-root-tx__huny2ryh26tr-fill" data-item-order="0" transform="translate(106.66665649414062, 446)">
-        <g id="tx__huny2ryh26tr-fill-merged" stroke="none" fill="#4f3d58">
+        <g id="tx__huny2ryh26tr-fill-merged" stroke="none" fill="#de8431">
           <g>
             <text style=" white-space: pre;" font-size="20px">
-              <tspan x="20.97" y="35.27" dominant-baseline="ideographic">모듈화 및 확장성</tspan>
+              <tspan x="10" y="35.27" dominant-baseline="ideographic">모듈화 및 확장성</tspan>
             </text>
           </g>
         </g>
