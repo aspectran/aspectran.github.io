@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: "Aspectran AOP 프록시 메커니즘: `AbstractBeanProxy`와 `ProxyActivity`"
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

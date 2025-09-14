@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran의 빈 스코프(Bean Scopes) 심층 분석
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

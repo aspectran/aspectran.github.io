@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran 기본 구성 가이드
-headline: Aspectran Configuration
+subheadline: Aspectran Configuration
 teaser:
 ---
 

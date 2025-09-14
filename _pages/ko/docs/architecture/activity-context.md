@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: "ActivityContext: Aspectran의 심장부"
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

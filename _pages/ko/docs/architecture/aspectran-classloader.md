@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: "SiblingClassLoader: 동적이고 유연한 클래스 로딩의 핵심"
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

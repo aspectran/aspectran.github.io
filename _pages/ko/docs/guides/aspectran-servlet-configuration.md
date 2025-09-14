@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: 서블릿 기반 웹 애플리케이션 구성
-headline: Aspectran Configuration
+subheadline: Aspectran Configuration
 teaser:
 ---
 

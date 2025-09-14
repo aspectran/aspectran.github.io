@@ -1,5 +1,5 @@
 <div class="input-group mt-1 mb-1">
   <span class="input-group-text bi bi-link-45deg"></span>
   <input type="text" class="form-control" value="{{ include.href }}" readonly>
-  <button class="btn btn-outline-secondary" type="button" onclick="window.open('{{ include.href }}')">Go</button>
+  <button class="btn btn-outline-primary" type="button" onclick="window.open('{{ include.href }}')">Go</button>
 </div>

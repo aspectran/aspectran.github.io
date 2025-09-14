@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: "Adapter 아키텍처: 환경 독립성의 핵심"
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

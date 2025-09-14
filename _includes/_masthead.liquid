@@ -6,10 +6,10 @@
       <header>
       {% if page.inside_heading != true %}
         {% if page.headline %}
-        <p class="headline" itemprop="alternativeHeadline">{% if page.headline %}{{ page.headline }}{% else %}&nbsp;{% endif %}</p>
+        <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
         {% endif %}
-        {% if page.title %}
-        <h1 itemprop="headline">{{ page.title }}</h1>
+        {% if page.title or page.headline %}
+        <h1 itemprop="headline">{% if page.headline %}{{ page.headline }}{% else %}{{ page.title }}{% endif %}</h1>
         {% endif %}
         {% if page.teaser %}
         <p class="teaser" itemprop="description">
@@ -43,7 +43,7 @@
 {% elsif page.header.image_fullwidth or page.header.slide_images %}
 
 
-  <div id="masthead" class="masthead-with-image-header">
+  <div id="masthead" class="masthead-with-image">
     <div class="container{% if page.format contains 'fluid' %} fluid{% endif %}">
       <header>
       {% if page.inside_heading != true %}

@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: "Environment: 프로필과 속성을 이용한 환경 제어"
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 #

@@ -31,7 +31,7 @@
           {% endif %}
         </div>
       </div>
-      <div class="top-bar-left me-auto{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+      <div class="top-bar-left me-auto">
         {% if page.auto_lang != nil %}
           {% for lang in site.lang_order %}
             {% include _navigation-top-bar-left-nav.liquid lang=lang auto_lang=true %}
@@ -40,7 +40,7 @@
           {% include _navigation-top-bar-left-nav.liquid lang=page.lang %}
         {% endif %}
       </div>
-      <div class="top-bar-right{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+      <div class="top-bar-right">
         {% if page.auto_lang != nil %}
           {% for lang in site.lang_order %}
             {% include _navigation-top-bar-right-nav.liquid lang=lang auto_lang=true %}

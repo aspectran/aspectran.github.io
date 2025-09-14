@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: "ActivityContext 빌드 과정: 심층 분석"
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

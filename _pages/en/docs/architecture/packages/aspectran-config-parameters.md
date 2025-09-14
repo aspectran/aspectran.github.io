@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: In-Depth Analysis of the `com.aspectran.core.context.config` Package
-headline: Package Deep Dive
+subheadline: Package Deep Dive
 teaser:
 ---
 

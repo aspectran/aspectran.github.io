@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran 로깅 메커니즘 심층 분석
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

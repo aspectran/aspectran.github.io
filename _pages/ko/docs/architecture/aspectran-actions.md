@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: "Aspectran Actions: 개념, 종류 및 처리 결과"
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

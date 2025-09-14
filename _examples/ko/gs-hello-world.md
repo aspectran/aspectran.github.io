@@ -2,7 +2,7 @@
 layout: example
 format: plate solid article
 title: Aspectran Hello World Example
-headline: Getting Started
+subheadline: Getting Started
 teaser: Let's create a Hello World application with Aspectran.
 breadcrumb: true
 image:

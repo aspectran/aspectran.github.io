@@ -3,7 +3,7 @@ layout: page
 format: "plate solid article"
 sidebar: toc-left
 title: "Aspectow Light Edition"
-headline: "Lightweight web application server"
+subheadline: "Lightweight web application server"
 teaser: "Aspectow Light Edition is a very lightweight web application server that is primarily useful for building REST API servers."
 breadcrumb: true
 ---

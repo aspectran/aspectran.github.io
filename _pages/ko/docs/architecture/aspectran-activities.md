@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: "Activity 아키텍처: 요청 처리의 실행 엔진"
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

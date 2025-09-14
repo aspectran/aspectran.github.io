@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: "Aspectran Session Manager: Deep Dive"
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

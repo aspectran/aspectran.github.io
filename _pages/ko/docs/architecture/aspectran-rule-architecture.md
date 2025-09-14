@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran 설정 규칙 아키텍처 심층 분석
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

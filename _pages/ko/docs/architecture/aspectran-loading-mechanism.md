@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: "Aspectran 구성 로딩 메커니즘: `nodelet` 엔진 심층 분석"
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

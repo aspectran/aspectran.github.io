@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: 요청(Request) 및 응답(Response) 처리 메커니즘
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 

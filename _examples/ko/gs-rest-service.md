@@ -2,7 +2,7 @@
 layout: example
 format: plate solid article
 title: Building a RESTful Web Service
-headline: Getting Started
+subheadline: Getting Started
 teaser: A sample page that uses RESTful web services using HTTP support methods such as GET, PUT, POST and DELETE.
 breadcrumb: true
 image:

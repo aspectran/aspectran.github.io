@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran 실행 환경 심층 분석
-headline: Architecture Details
+subheadline: Architecture Details
 teaser:
 ---
 
