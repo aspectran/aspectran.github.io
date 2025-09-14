@@ -1,6 +1,6 @@
 root = true
 
-[*.{bat,html,java,js,jsp,md,properties,sh,sql,svg,txt,xml,xsd,apon,liquid}]
+[*.{bat,html,java,js,jsp,md,properties,sh,sql,svg,txt,xml,xsd,apon,liquid,xslt}]
 charset = utf-8
 indent_style = space
 indent_size = 2

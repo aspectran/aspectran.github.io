@@ -1,0 +1,41 @@
+---
+layout: null
+title: "Atom Feed"
+sitemap: false
+---
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="{{ site.baseurl }}/assets/xslt/atom.xslt"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ site.title | xml_escape }}</title>
+  <subtitle>{{ site.description | xml_escape }}</subtitle>
+  <link href="{{ site.url }}{{ site.baseurl }}/blog/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="{{ site.url }}{{ site.baseurl }}/" rel="alternate" type="text/html"/>
+  <updated>{{ site.posts.first.date | date_to_xmlschema }}</updated>
+  <id>{{ site.url }}{{ site.baseurl }}/</id>
+  {% if site.author %}
+  <author>
+    <name>{{ site.author.name | xml_escape }}</name>
+    <email>{{ site.author.email | xml_escape }}</email>
+  </author>
+  {% endif %}
+
+  {% for post in site.posts %}
+  <entry>
+    <title>{{ post.title | xml_escape }}</title>
+    <link href="{{ site.url }}{{ site.baseurl }}{{ post.url }}" rel="alternate" type="text/html" title="{{ post.title | xml_escape }}"/>
+    <published>{{ post.date | date_to_xmlschema }}</published>
+    <updated>{{ post.date | date_to_xmlschema }}</updated>
+    <id>{{ site.url }}{{ site.baseurl }}{{ post.url }}</id>
+    <content type="html">{{ post.content | xml_escape }}</content>
+    {% if post.author %}
+    <author>
+      <name>{{ post.author | xml_escape }}</name>
+    </author>
+    {% elsif site.author %}
+    <author>
+      <name>{{ site.author.name | xml_escape }}</name>
+    </author>
+    {% endif %}
+  </entry>
+  {% endfor %}
+</feed>
