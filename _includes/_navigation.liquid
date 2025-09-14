@@ -40,7 +40,7 @@
           {% include _navigation-top-bar-left-nav.liquid lang=page.lang %}
         {% endif %}
       </div>
-      <div class="top-bar-right d-flex align-items-center gap-2">
+      <div class="top-bar-right d-lg-flex align-items-center gap-3">
         {% if page.auto_lang != nil %}
           {% for lang in site.lang_order %}
             {% include _navigation-top-bar-right-nav.liquid lang=lang auto_lang=true %}
