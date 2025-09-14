@@ -1,4 +1,5 @@
-  <div class="settings lang-options{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+<div class="settings d-flex align-items-center gap-1{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+  <div class="lang-options">
     <div class="input-group">
       <select class="form-select" name="lang" onchange="setPreferredLangCodeToLocalStorage($(this).find('option:selected').attr('lang'));location.href=$(this).find('option:selected').attr('href');">
         {% for lang in site.lang_order %}
@@ -10,3 +11,32 @@
       </select>
     </div>
   </div>
+  <div class="theme-toggler dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="theme-toggler-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme">
+      <i class="bi theme-icon-active"></i>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-toggler-btn">
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light">
+          <i class="bi bi-sun-fill me-2 opacity-50"></i>
+          Light
+          <i class="bi bi-check2 ms-auto d-none"></i>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark">
+          <i class="bi bi-moon-stars-fill me-2 opacity-50"></i>
+          Dark
+          <i class="bi bi-check2 ms-auto d-none"></i>
+        </button>
+      </li>
+      <li>
+        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto">
+          <i class="bi bi-circle-half me-2 opacity-50"></i>
+          Auto
+          <i class="bi bi-check2 ms-auto d-none"></i>
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>
