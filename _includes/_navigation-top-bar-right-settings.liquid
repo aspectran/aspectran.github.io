@@ -1,5 +1,5 @@
 <div class="settings d-flex align-items-center gap-1{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
-  <div class="lang-options">
+  <div class="lang-switcher">
     <div class="input-group">
       <select class="form-select" name="lang" onchange="setPreferredLangCodeToLocalStorage($(this).find('option:selected').attr('lang'));location.href=$(this).find('option:selected').attr('href');">
         {% for lang in site.lang_order %}
