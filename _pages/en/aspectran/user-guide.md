@@ -25,7 +25,7 @@ It emphasizes an intuitive POJO-centric programming model, allowing developers t
 
 ## 2. Getting Started with Aspectran
 
-For more details, please refer to the [Getting Started with Aspectran](aspectran-getting-started_en.md) document.
+For more details, please refer to the [Getting Started with Aspectran](/en/aspectran/getting-started/) document.
 
 ## 3. Aspectran Core Concepts
 
@@ -948,11 +948,11 @@ Through this file, you can include configuration files in XML format (specified 
 
 ### 5.1. Aspectran Basic Configuration
 
-For more details, please refer to the [Aspectran Basic Configuration](aspectran-configuration_en.md) document.
+For more details, please refer to the [Aspectran Basic Configuration](/en/docs/guides/aspectran-configuration/) document.
 
 ### 5.2. Aspectran XML Configuration
 
-For more details, please refer to the [Aspectran XML Configuration](aspectran-xml-configuration_en.md) document.
+For more details, please refer to the [Aspectran XML Configuration](/en/docs/guides/aspectran-xml-configuration/) document.
 
 ### 5.3. Combining Annotations and XML Configuration
 
@@ -992,7 +992,7 @@ Aspectran builds a flexible and powerful logging system based on SLF4J and Logba
 *   **Adjusting Log Levels**: You can get more detailed information by adjusting the log levels (TRACE, DEBUG, INFO, WARN, ERROR) in the `logback.xml` or `logback-test.xml` file.
 *   **Separating Scheduler Logs**: You can monitor the logs of scheduled tasks by separating them into a separate file. (Utilize the logs of the `com.aspectran.core.scheduler.activity.ActivityJobReporter` class)
 
-For more details, please refer to the [Aspectran Logging Mechanism](architecture/aspectran-logging-mechanism_en.md) document.
+For more details, please refer to the [Aspectran Logging Mechanism](/en/docs/architecture/aspectran-logging-mechanism/) document.
 
 ### 7.2. Common Error Messages and Troubleshooting Tips
 
@@ -1007,14 +1007,14 @@ For more details, please refer to the [Aspectran Logging Mechanism](architecture
 
 We hope this guide helps you in using Aspectran. For more detailed information on each topic, please refer to the documents below.
 
-*   [Aspectran Basic Configuration Guide](https://aspectran.com/en/docs/configurations/aspectran-configuration/)
-*   [Aspectran XML Configuration Guide](https://aspectran.com/en/docs/configurations/aspectran-xml-configuration/)
-*   [Servlet-based Web Application Configuration](https://aspectran.com/en/docs/configurations/aspectran-servlet-configuration/)
-*   [Aspectran Beans](https://aspectran.com/en/docs/guides/aspectran-beans.md)
-*   [Aspectran AOP Feature Analysis](https://aspectran.com/en/docs/guides/aspectran-aop.md)
-*   [Understanding Translet: The Face of Aspectran](https://aspectran.com/en/docs/guides/aspectran-translet.md)
-*   [Aspectran Scheduler: Powerful Task Automation with Translets](https://aspectran.com/en/docs/guides/aspectran-scheduler.md)
-*   [Aspectran View Technologies](https://aspectran.com/en/docs/guides/aspectran-view-technologies.md)
-*   [Aspectran Profiles](https://aspectran.com/en/docs/guides/aspectran-profiles.md)
-*   [Introduction to APON (Aspectran Parameters Object Notation)](https://aspectran.com/en/docs/guides/introduce-apon.md)
-*   [Introduction to AsEL (Aspectran Expression Language)](https://aspectran.com/en/docs/guides/introduce-asel.md)
+*   [Aspectran Basic Configuration Guide](https://aspectran.com/en/docs/guides/aspectran-configuration/)
+*   [Aspectran XML Configuration Guide](https://aspectran.com/en/docs/guides/aspectran-xml-configuration/)
+*   [Servlet-based Web Application Configuration](https://aspectran.com/en/docs/guides/aspectran-servlet-configuration/)
+*   [Aspectran Beans](https://aspectran.com/en/docs/guides/aspectran-beans/)
+*   [Aspectran AOP Feature Analysis](https://aspectran.com/en/docs/guides/aspectran-aop/)
+*   [Understanding Translet: The Face of Aspectran](https://aspectran.com/en/docs/guides/aspectran-translet/)
+*   [Aspectran Scheduler: Powerful Task Automation with Translets](https://aspectran.com/en/docs/guides/aspectran-scheduler/)
+*   [Aspectran View Technologies](https://aspectran.com/en/docs/guides/aspectran-view-technologies/)
+*   [Aspectran Profiles](https://aspectran.com/en/docs/guides/aspectran-profiles/)
+*   [Introduction to APON (Aspectran Parameters Object Notation)](https://aspectran.com/en/docs/guides/introduce-apon/)
+*   [Introduction to AsEL (Aspectran Expression Language)](https://aspectran.com/en/docs/guides/introduce-asel/)

@@ -948,11 +948,11 @@ Aspectran 애플리케이션의 초기 구동 설정은 `com.aspectran.core.cont
 
 ### 5.1. Aspectran 기본 구성 설정
 
-자세한 내용은 [Aspectran 기본 구성 설정](aspectran-configuration_kr.md) 문서를 참고하세요.
+자세한 내용은 [Aspectran 기본 구성 설정](/en/docs/aspectran-configuration/) 문서를 참고하세요.
 
 ### 5.2. Aspectran XML 구성 설정
 
-자세한 내용은 [Aspectran XML 구성 설정](aspectran-xml-configuration_kr.md) 문서를 참고하세요.
+자세한 내용은 [Aspectran XML 구성 설정](/en/docs/aspectran-xml-configuration/) 문서를 참고하세요.
 
 ### 5.3. 어노테이션과 XML 설정의 조합
 
@@ -992,7 +992,7 @@ Aspectran은 SLF4J와 Logback을 기반으로 유연하고 강력한 로깅 시�
 *   **로그 레벨 조정**: `logback.xml` 또는 `logback-test.xml` 파일에서 로그 레벨(TRACE, DEBUG, INFO, WARN, ERROR)을 조정하여 필요한 정보를 더 상세하게 얻을 수 있습니다.
 *   **스케줄러 로그 분리**: 스케줄링된 작업의 로그는 별도의 파일로 분리하여 모니터링할 수 있습니다. (`com.aspectran.core.scheduler.activity.ActivityJobReporter` 클래스 로그 활용)
 
-자세한 내용은 [Aspectran 로깅 메카니즘](architecture/aspectran-logging-mechanism.md) 문서를 참고하세요.
+자세한 내용은 [Aspectran 로깅 메카니즘](/en/docs/architecture/aspectran-logging-mechanism/) 문서를 참고하세요.
 
 ### 7.2. 일반적인 오류 메시지 및 해결 팁
 
@@ -1003,4 +1003,18 @@ Aspectran은 SLF4J와 Logback을 기반으로 유연하고 강력한 로깅 시�
 *   **`NoActivityStateException`**: 현재 스레드에 `Activity` 컨텍스트가 없을 때 발생합니다. 주로 `@Async` 메소드 내에서 `CompletableFuture.supplyAsync()`와 같이 새로운 스레드 풀에서 코드를 실행할 때 발생할 수 있습니다. `@Async`에 의해 생성된 스레드 내에서 모든 작업을 동기적으로 처리하고 최종 결과만 `CompletableFuture.completedFuture()`로 감싸서 반환하는 것이 안전합니다.
 *   **설정 파일 파싱 오류**: XML 또는 APON 설정 파일의 문법 오류로 인해 발생합니다. 오류 메시지에 표시된 줄 번호와 위치를 확인하여 문법을 수정하세요.
 
-이 가이드가 Aspectran을 사용하는 데 도움이 되기를 바랍니다. 더 자세한 정보는 Aspectran 공식 문서와 예제 프로젝트를 참고하세요.
+## 8. 참고 문서
+
+이 가이드가 Aspectran을 사용하는 데 도움이 되기를 바랍니다. 각 주제에 대한 더 상세한 정보는 아래 문서들을 참고하십시오.
+
+*   [Aspectran 기본 구성 가이드](https://aspectran.com/ko/docs/guides/aspectran-configuration/)
+*   [Aspectran XML 구성 가이드](https://aspectran.com/ko/docs/guides/aspectran-xml-configuration/)
+*   [WebActivityServlet 구성 가이드](https://aspectran.com/ko/docs/guides/aspectran-servlet-configuration/)
+*   [Aspectran Beans](https://aspectran.com/ko/docs/guides/aspectran-beans/)
+*   [Aspectran AOP 특징 분석](https://aspectran.com/ko/docs/guides/aspectran-aop/)
+*   [Aspectran의 얼굴마담: Translet 이해하기](https://aspectran.com/ko/docs/guides/aspectran-translet/)
+*   [Aspectran Scheduler: Translet을 이용한 강력한 작업 자동화](https://aspectran.com/ko/docs/guides/aspectran-scheduler/)
+*   [Aspectran 뷰(View) 기술](https://aspectran.com/ko/docs/guides/aspectran-view-technologies/)
+*   [Aspectran Profiles](https://aspectran.com/ko/docs/guides/aspectran-profiles/)
+*   [APON(Aspectran Parameters Object Notation) 소개](https://aspectran.com/ko/docs/guides/introduce-apon/)
+*   [AsEL(Aspectran Expression Language) 소개](https://aspectran.com/ko/docs/guides/introduce-asel/)
