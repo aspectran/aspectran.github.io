@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran View Technologies
-headline:
-teaser:
+subheadline: User Guides
+parent_path: /docs
 ---
 
 Aspectran provides a very flexible view processing architecture for generating the final response. At the core of this architecture is the **`ViewDispatcher`**, which handles the integration of various view technologies.

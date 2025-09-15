@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: Introduction to APON (Aspectran Parameters Object Notation)
-headline:
-teaser:
+subheadline: User Guides
+parent_path: /docs
 ---
 
 ## 1. What is APON?

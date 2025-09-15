@@ -9,7 +9,7 @@ teaser: Explore Aspectran documentation to learn, configure, and unlock its full
 Find all the resources you need to learn and use the Aspectran framework here.
 We've organized it for easy navigation and access, including configuration guides, user guides, practical guides, and architectural documents.
 {% endcapture %}
-{% include alert info=info_message %}
+{% include alert.liquid info=info_message %}
 
 ## Configuration Guides
 

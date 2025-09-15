@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran 뷰(View) 기술
-headline:
-teaser:
+subheadline: 사용자 가이드
+parent_path: /docs
 ---
 
 Aspectran은 최종 응답을 생성하기 위해 매우 유연한 뷰(View) 처리 아키텍처를 제공합니다. 이 아키텍처의 핵심에는 다양한 뷰 기술을 통합 처리하는 **`ViewDispatcher`**가 있습니다.

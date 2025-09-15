@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "Understanding Translet: The Face of Aspectran"
-headline:
-teaser:
+subheadline: User Guides
+parent_path: /docs
 ---
 
 In the Aspectran framework, the **Translet**, by its name alone, might seem like the entity that processes requests. However, it is actually a specific **execution plan or blueprint** for **"how to handle a request?"** All actual execution is handled by an engine called `Activity`, and the Translet acts as a **medium** for communication between this `Activity` and the user code (Action).

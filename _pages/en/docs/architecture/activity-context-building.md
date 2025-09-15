@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "ActivityContext Build Process: An In-Depth Analysis"
-headline:
-teaser:
+subheadline: Architecture
+parent_path: /docs
 ---
 
 `ActivityContext`, the heart of an Aspectran application, is created through a systematic process by the `ActivityContextBuilder`. This build process is largely divided into four stages: **Configuration, Parsing, Creation, and Initialization**, and the entire process is led by the `com.aspectran.core.context.builder.HybridActivityContextBuilder` class.

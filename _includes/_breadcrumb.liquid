@@ -3,12 +3,15 @@
 *  http://stackoverflow.com/questions/9612235/what-are-some-good-ways-to-implement-breadcrumbs-on-a-jekyll-site
 *
 {% endcomment %}
-
 <nav role="navigation" aria-label="You are here:">
   <ol class="breadcrumb" itemprop="breadcrumb">
     <li class="breadcrumb-item"><a href="{{ site.baseurl }}{% if page.lang != nil %}/{{ page.lang }}{% endif %}/">Home</a></li>
-    {% assign url_prefix = '/' | append: page.lang | append: '/' %}
-    {% assign page_url = page.url | replace: url_prefix, '/' %}
+    {% if page.parent_path != nil %}
+      {% assign page_url = page.parent_path | append: '/ /' %}
+    {% else %}
+      {% assign url_prefix = '/' | append: page.lang | append: '/' %}
+      {% assign page_url = page.url | replace: url_prefix, '/' %}
+    {% endif %}
     {% assign crumbs = page_url | split: '/' %}
     {% for crumb in crumbs offset: 1 %}
       {% if forloop.last %}

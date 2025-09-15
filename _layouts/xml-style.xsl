@@ -20,7 +20,7 @@ breadcrumb: true
     {% include _masthead.liquid %}
     <div class="row t20">
         <div class="columns">
-            {% include alert warning=page.disclaimer classes="text-center" %}
+            {% include alert.liquid warning=page.disclaimer classes="text-center" %}
         </div>
     </div>
     ]]></xsl:text>

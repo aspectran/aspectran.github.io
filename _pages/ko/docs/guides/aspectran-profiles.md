@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran Profiles
-headline:
-teaser:
+subheadline: 사용자 가이드
+parent_path: /docs
 ---
 
 Aspectran의 Profiles 기능은 애플리케이션의 전체 또는 일부 설정을 특정 환경에서만 활성화하거나 비활성화할 수 있도록 지원하는 강력한 기능입니다. 예를 들어, '개발(development)', '테스트(test)', '운영(production)' 환경에 따라 서로 다른 데이터베이스 설정을 적용하거나 특정 빈(bean)을 로드해야 할 때 유용하게 사용할 수 있습니다.

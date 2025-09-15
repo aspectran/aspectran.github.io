@@ -2,9 +2,10 @@
 format: plate solid article
 sidebar: toc-left
 title:
-subheadline: Package Deep Dive
-teaser:
+subheadline: Architecture - Package Deep Dive
+parent_path: /docs
 ---
+
 # In-Depth Analysis of the `com.aspectran.core.activity` Package
 
 ## 1. Design Goals and Key Roles

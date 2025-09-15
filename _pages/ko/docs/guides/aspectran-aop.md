@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran AOP 특징 분석
-headline:
-teaser:
+subheadline: 사용자 가이드
+parent_path: /docs
 ---
 
 Aspectran의 AOP는 일반적인 Spring AOP나 AspectJ처럼 애플리케이션의 모든 메서드 호출을 대상으로 하기보다는, **핵심 실행 모델인 `Activity`의 실행 흐름과 Bean 메소드 호출에 깊숙이 통합된 독자적인 AOP 모델**을 가지고 있습니다. 이는 요청 처리의 전체 단계나 특정 메소드 호출을 Join Point로 삼아 더 강력하고 구조적인 AOP를 구현할 수 있게 합니다.

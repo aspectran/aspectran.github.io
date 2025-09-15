@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "Aspectran Beans: A Practical Guide to IoC/DI"
-headline:
-teaser:
+subheadline: User Guides
+parent_path: /docs
 ---
 
 Aspectran Beans is a powerful Inversion of Control (IoC) container built into the core of the Aspectran framework.

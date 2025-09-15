@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran 기본 구성 가이드
-subheadline: Aspectran Configuration
-teaser:
+subheadline: 사용자 가이드
+parent_path: /docs
 ---
 
 "기본 구성 설정"은 Aspectran 애플리케이션의 초기 구동에 필요한 핵심 설정 값을 제공하며, 이를 기반으로 어노테이션 기반의 컴포넌트 스캔 대상을 지정하거나, 추가적인 XML 또는 APON 형식의 규칙 파일을 로드하도록 지시할 수 있습니다.

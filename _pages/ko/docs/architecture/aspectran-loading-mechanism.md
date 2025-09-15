@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "Aspectran 구성 로딩 메커니즘: `nodelet` 엔진 심층 분석"
-subheadline: Architecture Details
-teaser:
+subheadline: 아키텍처
+parent_path: /docs
 ---
 
 Aspectran은 XML 또는 APON(Aspectran Object Notation) 형식의 설정 파일을 파싱하여 애플리케이션의 핵심 컴포넌트(Bean, Translet, Aspect 등)의 설계도인 `*Rule` 객체 트리를 생성합니다. 이 과정의 핵심에는 `com.aspectran.utils.nodelet` 패키지에 구현된, Aspectran을 위해 특별히 설계된 고성능 이벤트 기반 파싱 엔진 **`nodelet`**이 있습니다.

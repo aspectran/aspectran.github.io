@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: PBE를 이용한 인증 토큰 활용 가이드
-headline:
-teaser:
+subheadline: 사용자 가이드
+parent_path: /docs
 ---
 
 ## 1. 개요

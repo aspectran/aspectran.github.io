@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran XML 구성 가이드
-subheadline: Aspectran Configuration
-teaser:
+subheadline: 사용자 가이드
+parent_path: /docs
 ---
 
 Aspectran은 XML 설정을 통해 애플리케이션의 핵심 구성 요소인 빈(Bean), 트랜슬릿(Translet), 애스펙트(Aspect) 등을 정의합니다. XML을 사용하면 소스 코드 변경 없이 구성과 관계를 정의할 수 있어 유연성이 높습니다.

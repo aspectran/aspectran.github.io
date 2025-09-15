@@ -5,7 +5,7 @@
     <div class="container{% if page.format contains 'fluid' %} fluid{% endif %}">
       <header>
       {% if page.inside_heading != true %}
-        {% if page.headline %}
+        {% if page.subheadline %}
         <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
         {% endif %}
         {% if page.title or page.headline %}
@@ -47,8 +47,8 @@
     <div class="container{% if page.format contains 'fluid' %} fluid{% endif %}">
       <header>
       {% if page.inside_heading != true %}
-        <p class="headline" itemprop="alternativeHeadline">{% if page.headline %}{{ page.headline }}{% else %}&nbsp;{% endif %}</p>
-        <h1 itemprop="headline">{{ page.title }}</h1>
+        <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+        <h1 itemprop="headline">{% if page.headline %}{{ page.headline }}{% else %}{{ page.title }}{% endif %}</h1>
         {% if page.teaser %}
         <p class="teaser" itemprop="description">
           {{ page.teaser }}

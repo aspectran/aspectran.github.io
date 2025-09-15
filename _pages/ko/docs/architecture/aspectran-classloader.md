@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "SiblingClassLoader: 동적이고 유연한 클래스 로딩의 핵심"
-subheadline: Architecture Details
-teaser:
+subheadline: 아키텍처
+parent_path: /docs
 ---
 
 Aspectran 프레임워크는 자바의 표준 클래스 로딩 메커니즘을 넘어서는 독자적인 `com.aspectran.core.context.loader.SiblingClassLoader`를 구현하여 사용합니다. 이는 단순한 클래스 로딩을 넘어, 동적 리로딩(Hot Reloading)과 모듈형 애플리케이션 구조와 같은 고급 기능을 제공하기 위해 특별히 설계되었습니다.

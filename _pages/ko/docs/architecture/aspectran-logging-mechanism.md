@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: Aspectran 로깅 메커니즘 심층 분석
-subheadline: Architecture Details
-teaser:
+subheadline: 아키텍처
+parent_path: /docs
 ---
 
 Aspectran은 유연하고 강력한 로깅 시스템을 구축하기 위해 체계적인 접근 방식을 사용합니다. 이 문서는 Aspectran의 로깅 메커니즘을 분석하고 예제를 통해 설명합니다.

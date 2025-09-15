@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "Aspectran Session Manager: Deep Dive"
-subheadline: Architecture Details
-teaser:
+subheadline: 아키텍처
+parent_path: /docs
 ---
 
 ## 1. 소개

@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: A Practical Guide to Aspectran Translets
-headline:
-teaser:
+subheadline: User Guides
+parent_path: /docs
 ---
 
 This document provides a practical guide to defining and utilizing Translets, the request processing units in Aspectran. It focuses on handling request data, executing business logic, and controlling responses, which are common concerns for developers when writing actual code.

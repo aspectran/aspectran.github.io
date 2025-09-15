@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: In-Depth Analysis of Aspectran Configuration Rule Architecture
-headline:
-teaser:
+subheadline: Architecture
+parent_path: /docs
 ---
 
 Aspectran's `com.aspectran.core.context.rule` package is a collection of Java objects representing all of the framework's **configuration information**. Configuration files in XML or APON format are converted into these `Rule` objects by a parser (`NodeletParser`) and loaded into memory. In essence, these are pure data objects (POJOs) that serve as the **Blueprint** of the application.

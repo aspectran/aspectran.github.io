@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: A Practical Guide to PBE Token-Based Authentication
-headline:
-teaser:
+subheadline: User Guides
+parent_path: /docs
 ---
 
 ## 1. Overview

@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "Aspectran Architecture: An Integrated Deep Dive"
-headline:
-teaser:
+subheadline: Architecture
+parent_path: /docs
 ---
 #
 

@@ -2,11 +2,14 @@
 format: plate solid article
 sidebar: toc-left
 title: 서블릿 기반 웹 애플리케이션 구성
-subheadline: Aspectran Configuration
-teaser:
+subheadline: 사용자 가이드
+parent_path: /docs
 ---
 
+{% capture info_message %}
 전통적인 서블릿 컨테이너 환경에서 Aspectran을 서블릿으로 등록하여 웹 애플리케이션을 구축하는 방법을 안내합니다.
+{% endcapture %}
+{% include alert.liquid info=info_message %}
 
 ## 1. 서블릿 컨테이너 호환성
 

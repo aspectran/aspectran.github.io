@@ -2,11 +2,14 @@
 format: plate solid article
 sidebar: toc-left
 title: Servlet-based Web Application Configuration
-headline:
-teaser:
+subheadline: User Guides
+parent_path: /docs
 ---
 
+{% capture info_message %}
 This guide explains how to build a web application by registering Aspectran as a servlet in a traditional servlet container environment.
+{% endcapture %}
+{% include alert.liquid info=info_message %}
 
 ## 1. Servlet Container Compatibility
 

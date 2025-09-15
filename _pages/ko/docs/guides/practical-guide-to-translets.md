@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title:  Aspectran Translet 실용 가이드
-headline:
-teaser:
+subheadline: 사용자 가이드
+parent_path: /docs
 ---
 
 이 문서는 Aspectran에서 요청 처리 단위인 Translet을 정의하고 활용하는 실용적인 방법을 안내합니다. 개발자가 실제 코드를 작성할 때 주로 고민하는 요청 데이터 처리, 비즈니스 로직 실행, 응답 제어에 초점을 맞춥니다.

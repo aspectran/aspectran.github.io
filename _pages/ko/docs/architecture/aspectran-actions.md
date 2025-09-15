@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "Aspectran Actions: 개념, 종류 및 처리 결과"
-subheadline: Architecture Details
-teaser:
+subheadline: 아키텍처
+parent_path: /docs
 ---
 
 Aspectran 프레임워크에서 **Action**은 트랜슬릿(Translet)의 실행 흐름 내에서 특정 작업을 수행하는 가장 기본적인 실행 단위입니다. Action은 비즈니스 로직 호출, 데이터 조작, 흐름 제어 등 애플리케이션의 실질적인 행위를 담당합니다.

@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "ActivityContext: The Heart of Aspectran"
-headline:
-teaser:
+subheadline: Architecture
+parent_path: /docs
 ---
 
 ## 1. Core Concept: The Central Hub of the Application

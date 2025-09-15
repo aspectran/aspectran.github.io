@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "Aspectran Scheduler: Translet을 이용한 강력한 작업 자동화"
-headline:
-teaser:
+subheadline: 사용자 가이드
+parent_path: /docs
 ---
 
 Aspectran Scheduler는 애플리케이션 내의 특정 작업을 정해진 시간에 또는 주기적으로 실행할 수 있도록 하는 강력한 기능입니다. 이 기능을 통해 개발자는 배치(Batch) 작업, 데이터 동기화, 리포트 생성 등 다양한 백그라운드 태스크를 Aspectran의 핵심 컴포넌트인 **Translet**을 사용하여 손쉽게 구현하고 관리할 수 있습니다.

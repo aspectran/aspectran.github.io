@@ -2,8 +2,8 @@
 format: plate solid article
 sidebar: toc-left
 title: "Activity 아키텍처: 요청 처리의 실행 엔진"
-subheadline: Architecture Details
-teaser:
+subheadline: 아키텍처
+parent_path: /docs
 ---
 
 Aspectran의 **Activity 아키텍처**는 프레임워크의 요청 처리 모델의 핵심입니다. 다양한 실행 환경(웹, 셸, 데몬 등)에 걸쳐 일관된 방식으로 요청을 처리할 수 있도록 설계된 계층적이고 모듈화된 구조를 가집니다.
