@@ -286,6 +286,6 @@ server: {
 APON-related classes are included in the common utility package of the Aspectran framework.
 
 *   **Package Path**: `com.aspectran.core.util.apon`
-*   **Source Code**: [View on GitHub](https://github.com/aspectran/aspectran/tree/master/core/src/main/java/com/aspectran/core/util/apon)
+*   **Source Code**: [View on GitHub](https://github.com/aspectran/aspectran/tree/master/utils/src/main/java/com/aspectran/utils/apon)
 
-{% include label-link-box label="Source" href="https://github.com/aspectran/aspectran/tree/master/core/src/main/java/com/aspectran/core/util/apon" %}
+{% include label-link-box label="Source" href="https://github.com/aspectran/aspectran/tree/master/utils/src/main/java/com/aspectran/utils/apon" %}
