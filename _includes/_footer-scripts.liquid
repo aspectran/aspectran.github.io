@@ -302,6 +302,8 @@
     $('a:external').addClass('external');
     /* turn target into target=_blank for elements w external class */
     $(".external").attr('target', '_blank');
+    /* To apply Bootstrap table styles to tables created using Markdown in Jekyll */
+    $("article table").addClass("table table-striped table-bordered");
   });
 </script>
 
