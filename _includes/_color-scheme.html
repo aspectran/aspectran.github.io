@@ -1,0 +1,19 @@
+<script>
+  (() => {
+    const getStoredTheme = () => localStorage.getItem('theme');
+    const getPreferredTheme = () => {
+      const storedTheme = getStoredTheme();
+      if (storedTheme) {
+        return storedTheme;
+      }
+      return 'auto';
+    };
+    const setTheme = theme => {
+      const newTheme = theme === 'auto'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : theme;
+      document.documentElement.setAttribute('data-bs-theme', newTheme);
+    };
+    setTheme(getPreferredTheme());
+  })();
+</script>

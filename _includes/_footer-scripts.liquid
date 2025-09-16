@@ -33,9 +33,7 @@
       $themeToggler.find('.theme-icon-active').attr('class', 'bi theme-icon-active ' + iconClass);
     };
 
-    const preferredTheme = getPreferredTheme();
-    setTheme(preferredTheme);
-    showActiveTheme(preferredTheme);
+    showActiveTheme(getPreferredTheme());
 
     $(window.matchMedia('(prefers-color-scheme: dark)')).on('change', () => {
       const storedTheme = getStoredTheme();
