@@ -2,11 +2,11 @@
 layout: compress
 ---
 <!DOCTYPE html>
-<html class="no-js" lang="{% if page.lang == nil %}{{ site.default_lang }}{% else %}{{ page.lang }}{% endif %}">
+<html class="no-js" lang="{% if page.lang == nil %}{{ site.default_lang }}{% else %}{{ page.lang }}{% endif %}" {% if page.auto_lang %}data-auto-lang="true"{% endif %}>
 <head>
 {% include _head.liquid %}
 </head>
-<body id="top-of-page" class="{{ page.format }}" itemscope itemtype="https://schema.org/WebPage">
+<body id="top-of-page" class="{{ page.format }}" {% if page.sidebar %}data-sidebar="{{ page.sidebar }}"{% endif %} itemscope itemtype="https://schema.org/WebPage">
 
 {% unless page.skip_boilerplate %}
 {% include _navigation.liquid %}

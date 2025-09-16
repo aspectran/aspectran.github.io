@@ -18,6 +18,7 @@ author: juho_jeong
 # This URL is the main address for absolute links. Don't include a slash at the end.
 #
 url: 'https://aspectran.com'
+official_url: 'https://aspectran.com'
 baseurl: '' # does not include hostname
 
 # This is for the editing function in _/includes/improve_content
@@ -235,19 +236,3 @@ google_analytics_tracking_id: UA-66807210-2
 #-------------------------------------------------------------------
 
 google_translate_website: false
-
-
-
-#-------------------------------------------------------------------
-# tawk.to
-# More › https://www.tawk.to/knowledgebase/
-#
-#  tawk.to is a free live chat app that lets you monitor and chat
-#  with visitors on your website or from a free customizable page
-#
-#  To load the script add tawkto: true in front matter of each page
-#
-# used in _includes/footer-scripts
-#-------------------------------------------------------------------
-
-# tawkto_embed_uri:
