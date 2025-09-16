@@ -1,7 +1,9 @@
-<script src="https://assets.aspectran.com/js/jquery.backstretch.min.js"></script>
+<script src="{{ '/assets/js/global.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
+<script src="{{ '/assets/js/navigation.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 
-<script src="{{ '/assets/js/global.js' | relative_url }}" defer></script>
-<script src="{{ '/assets/js/navigation.js' | relative_url }}" defer></script>
+{% if page.header.image_fullwidth or page.header.slide_images and page.header.slide_images[0] %}
+<script src="https://assets.aspectran.com/js/jquery.backstretch.min.js"></script>
+{% endif %}
 
 // Header images
 {% if page.header.image_fullwidth %}
@@ -9,6 +11,7 @@
   $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 900, bgcolor: '#2A2E31'});
 </script>
 {% endif %}
+
 {% if page.header.slide_images and page.header.slide_images[0] %}
 <script>
   $("#masthead").backstretch([
