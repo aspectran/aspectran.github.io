@@ -22,7 +22,7 @@ Aspectow는 별도의 설치파일을 제공하지 않으며, GitHub의 저장�
 
 다음은 Aspectow Light Edition이 저장되어 있는 GitHub 저장소입니다.
 
-{% include label-link-box label="Aspectow Light Edition on GitHub" href="https://github.com/aspectran/aspectow-light" %}
+{% include label-link-box.liquid label="Aspectow Light Edition on GitHub" href="https://github.com/aspectran/aspectow-light" %}
 
 ## 3. 디렉토리 구조
 

@@ -99,7 +99,7 @@ We need to run `translet` with the name "hello" or "hello2".
 Here we will run it through *Aspectran Shell* in the console environment.
 
 First, download the ZIP file through the following link and extract it to the appropriate path.
-{% include label-link-box label="Download ZIP" href="https://github.com/aspectran/gs-hello-world/archive/master.zip" %}
+{% include label-link-box.liquid label="Download ZIP" href="https://github.com/aspectran/gs-hello-world/archive/master.zip" %}
 
 This Hello World application can be run in a console environment on Windows, Unix/Linux and macOS.
 Open the console and perform the following steps.

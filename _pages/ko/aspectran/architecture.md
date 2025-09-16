@@ -282,19 +282,19 @@ Aspectran의 아키텍처는 **모듈성, 유연성, 확장성, 그리고 성능
 
 본 문서는 다음의 개별 아키텍처 문서들을 종합하여 작성되었습니다. 각 주제에 대한 더 상세한 정보는 아래 문서들을 참고하십시오.
 
-*   `activity-context-building.md`
-*   `activity-context.md`
-*   `activity-environment.md`
-*   `aspectran-actions.md`
-*   `aspectran-activities.md`
-*   `aspectran-adapters.md`
-*   `aspectran-bean-scopes.md`
-*   `aspectran-classloader.md`
-*   `aspectran-execution-environments.md`
-*   `aspectran-loading-mechanism.md`
-*   `aspectran-logging-mechanism.md`
-*   `aspectran-request-response.md`
-*   `aspectran-rule-architecture.md`
-*   `aspectran-services.md`
-*   `aspectran-session-manager.md`
-*   `new-aop-proxy-mechanism.md`
+*   [ActivityContext 빌드 과정: 심층 분석](/ko/docs/architecture/activity-context-building/)
+*   [ActivityContext: Aspectran의 심장부](/ko/docs/architecture/activity-context/)
+*   [Environment: 프로필과 속성을 이용한 환경 제어](/ko/docs/architecture/activity-environment/)
+*   [Aspectran Actions: 개념, 종류 및 처리 결과](/ko/docs/architecture/aspectran-actions/)
+*   [Activity 아키텍처: 요청 처리의 실행 엔진](/ko/docs/architecture/aspectran-activities/)
+*   [Adapter 아키텍처: 환경 독립성의 핵심](/ko/docs/architecture/aspectran-adapters/)
+*   [Aspectran의 빈 스코프(Bean Scopes) 심층 분석](/ko/docs/architecture/aspectran-bean-scopes/)
+*   [SiblingClassLoader: 동적이고 유연한 클래스 로딩의 핵심](/ko/docs/architecture/aspectran-classloader/)
+*   [Aspectran 실행 환경 심층 분석](/ko/docs/architecture/aspectran-execution-environments/)
+*   [Aspectran 구성 로딩 메커니즘](/ko/docs/architecture/aspectran-loading-mechanism/)
+*   [Aspectran 로깅 메커니즘](/ko/docs/architecture/aspectran-logging-mechanism/)
+*   [요청(Request) 및 응답(Response) 처리 메커니즘](/ko/docs/architecture/aspectran-request-response/)
+*   [Aspectran 설정 규칙 아키텍처 심층 분석](/ko/docs/architecture/aspectran-rule-architecture/)
+*   [Aspectran 서비스 아키텍처 심층 분석](/ko/docs/architecture/aspectran-services/)
+*   [Aspectran Session Manager](/ko/docs/architecture/aspectran-session-manager/)
+*   [Aspectran AOP 프록시 메커니즘](/ko/docs/architecture/new-aop-proxy-mechanism/)
