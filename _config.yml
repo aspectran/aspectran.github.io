@@ -224,13 +224,3 @@ og_description:             "Aspectran is a lightweight framework for building h
 #-------------------------------------------------------------------
 
 google_analytics_tracking_id: UA-66807210-2
-
-
-
-#-------------------------------------------------------------------
-# Translate
-# https://translate.google.com/
-# used in _includes/google-translate
-#-------------------------------------------------------------------
-
-google_translate_website: false
