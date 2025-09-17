@@ -1,0 +1,10 @@
+<!-- Language detection -->
+<script>
+  (() => {
+    {% include _lang-detect.js %}
+    const langCode = getPreferredLangCode();
+    if (langCode) {
+      location.href = "/" + langCode + "{% if include.permalink %}{{ include.permalink }}{% else %}/{% endif %}";
+    }
+  })();
+</script>

@@ -1,5 +1,9 @@
 <meta charset="utf-8">
 {% include _color-scheme.html %}
+
+{% if page.lang_detect %}
+{% include lang-detect.liquid %}{% endif %}
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% if page.meta_title %}{{ page.meta_title }}{% elsif page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
 

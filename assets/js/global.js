@@ -1,35 +1,8 @@
 ---
 ---
 
-// Language functions (global)
-const supportedLanguages = ['en', 'ko'];
-function getPreferredLangCodeFromLocalStorage() {
-  let langCode = localStorage.getItem("preferred-lang-code");
-  if (langCode && supportedLanguages.includes(langCode)) {
-    return langCode;
-  } else {
-    return null;
-  }
-}
-function setPreferredLangCodeToLocalStorage(langCode) {
-  localStorage.setItem("preferred-lang-code", langCode);
-}
-function getPreferredLangCode() {
-  let langCode = getPreferredLangCodeFromLocalStorage();
-  if (langCode) {
-    return langCode;
-  }
-  const languages = navigator.languages;
-  if (languages && languages.length) {
-    for (const lang of languages) {
-      let code = lang.substring(0, 2);
-      if (supportedLanguages.includes(code)) {
-        return code;
-      }
-    }
-  }
-  return 'en';
-}
+// Language detection functions (global)
+{% include _lang-detect.js %}
 
 // Main jQuery document ready function
 $(function () {
@@ -86,7 +59,7 @@ $(function () {
   // Language click handler on footer
   $(".lang-switcher a[lang]").on("click", function (e) {
     e.preventDefault();
-    let langCode = $(this).attr("lang");
+    const langCode = $(this).attr("lang");
     if (langCode) {
       setPreferredLangCodeToLocalStorage(langCode);
     }

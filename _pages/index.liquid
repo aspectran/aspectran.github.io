@@ -1,4 +1,6 @@
 ---
+lang: en
+lang_detect: true
 layout: page
 title: Welcome to Aspectran
 permalink: /
@@ -20,14 +22,6 @@ permalink: /
     border: 1px solid rgba(255, 255, 255, 0.18);
   }
 </style>
-<script>
-  $(function () {
-    const langCode = getPreferredLangCode();
-    if (langCode) {
-      location.href = "/" + langCode + "/";
-    }
-  });
-</script>
 <div class="d-flex align-items-end align-items-md-center justify-content-center" style="min-height: 90vh;">
   <div class="language-selector text-center p-4 rounded-3 shadow-lg">
     <h1 class="text-white mb-3 d-none d-lg-block">Welcome to Aspectran</h1>
