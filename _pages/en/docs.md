@@ -45,8 +45,8 @@ Access hands-on guides to apply Aspectran effectively in real scenarios.
 
 Understand the high-level architecture of Aspectran and its core components.
 
--   [Designing for Sustainable Simplicity: The Aspectran Architectural Philosophy](/en/why-aspectran/)
--   [Aspectran Architecture: An Integrated Deep Dive ](/en/aspectran/architecture/)
+*   [Designing for Sustainable Simplicity: The Aspectran Architectural Philosophy](/en/why-aspectran/)
+*   [Aspectran Architecture: An Integrated Deep Dive ](/en/aspectran/architecture/)
 
 Dive deeper into Aspectran’s architecture with detailed explanations.
 
