@@ -5,7 +5,6 @@
 <script src="https://assets.aspectran.com/js/jquery.backstretch.min.js"></script>
 {% endif %}
 
-// Header images
 {% if page.header.image_fullwidth %}
 <script>
   $("#masthead").backstretch("{{ site.urlimg }}{{ page.header.image_fullwidth }}", {fade: 900, bgcolor: '#2A2E31'});
@@ -17,7 +16,7 @@
   $("#masthead").backstretch([
     "{{ site.urlimg }}{{ page.header.slide_images[0] }}"
   {% for image in page.header.slide_images %}
-  {% if forloop.index > 1 %}, "{{ site.urlimg }}{{ image }}"{% endif %}
+    {% if forloop.index > 1 %}, "{{ site.urlimg }}{{ image }}"{% endif %}
   {% endfor %}
   ], {duration: 2300, fade: 900});
 </script>

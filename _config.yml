@@ -140,7 +140,9 @@ defaults:
       lang: "en"
       layout: "page"
       format: "plate margin article"
+      breadcrumb: true
       permalink: "/en/blog/:name"
+      excerpt_separator: <!--more-->
       show_meta: true       # Show metadata for all posts
       author: "juho_jeong"  # Default author for posts
   - scope:
@@ -149,13 +151,9 @@ defaults:
       lang: "ko"
       layout: "page"
       format: "plate margin article"
+      breadcrumb: true
       permalink: "/ko/blog/:name"
-      show_meta: true       # Show metadata for all posts
-      author: "juho_jeong"  # Default author for posts
-  - scope:
-      path: ""
-      type: "posts"
-    values:
+      excerpt_separator: <!--more-->
       show_meta: true       # Show metadata for all posts
       author: "juho_jeong"  # Default author for posts
   - scope:
@@ -163,8 +161,8 @@ defaults:
     values:
       lang: "en"
       layout: "page"
-      permalink: "/en/examples/:name"
       breadcrumb: true
+      permalink: "/en/examples/:name"
       show_meta: false  	# Hide metadata for all pages
       author: "juho_jeong"  # Default author for pages
   - scope:

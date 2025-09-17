@@ -799,6 +799,7 @@ Triggers precisely control when a job is executed. They can be configured throug
 
 *   **`simple` trigger**: Used to repeat a task at simple intervals, such as "start 10 seconds from now, and run every hour, for a total of 5 times." It is best suited for repeating a task a set number of times or indefinitely at a specific interval.
     *   **Main attributes**: `startDelaySeconds`, `intervalInSeconds/Minutes/Hours`, `repeatCount` (`-1` for infinite repeat), `repeatForever`.
+
     ```xml
     <trigger type="simple">
         startDelaySeconds: 10
@@ -816,6 +817,7 @@ Triggers precisely control when a job is executed. They can be configured throug
 
 *   **`cron` trigger**: Used to execute tasks according to a complex calendar-related schedule, such as "every Friday at 5:30 PM" or "at 1 AM on the last day of every month." It operates based on the powerful **Cron expression**, providing very flexible and powerful scheduling.
     *   **Main attribute**: `expression` (Cron expression string).
+
     ```xml
     <trigger type="cron" expression="0 50 23 * * ?" /> <!-- Every night at 11:50 PM -->
     ```

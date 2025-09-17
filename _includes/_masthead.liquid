@@ -2,7 +2,7 @@
 
 
   <div id="masthead"{% if page.format contains 'compact' %} class="masthead-compact"{% endif %}>
-    <div class="container{% if page.format contains 'fluid' %} fluid{% endif %}">
+    <div class="container">
       <header>
       {% if page.inside_heading != true %}
         {% if page.subheadline %}
@@ -44,7 +44,7 @@
 
 
   <div id="masthead" class="masthead-with-image">
-    <div class="container{% if page.format contains 'fluid' %} fluid{% endif %}">
+    <div class="container">
       <header>
       {% if page.inside_heading != true %}
         <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
@@ -57,23 +57,24 @@
       {% endif %}
       </header>
     </div>
-  </div>
-  {% if page.breadcrumb == true %}
-    <div class="container breadcrumb-bar">
+    {% if page.breadcrumb == true %}
+      <div class="container breadcrumb-bar">
         {% include _breadcrumb.liquid %}
-    </div>
-  {% endif %}
-
+      </div>
+    {% endif %}
+  </div>
 
 {% else %}
 
 
 {% if page.breadcrumb == true %}
-<div id="masthead" class="no-header">
   <div class="container breadcrumb-bar">
-    {% include _breadcrumb.liquid %}
+    <div class="row">
+      <div class="col offset-lg-1">
+        {% include _breadcrumb.liquid %}
+      </div>
+    </div>
   </div>
-</div>
 {% endif %}
 
 

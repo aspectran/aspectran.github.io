@@ -799,6 +799,7 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
 
 *   **`simple` 트리거**: "지금부터 10초 후에 시작해서, 1시간마다, 총 5번 실행"과 같이 단순한 간격으로 작업을 반복할 때 사용합니다. 특정 간격으로 정해진 횟수만큼 또는 무한히 작업을 반복하는 데 가장 적합합니다.
     *   **주요 속성**: `startDelaySeconds`, `intervalInSeconds/Minutes/Hours`, `repeatCount` (`-1`은 무한 반복), `repeatForever`.
+
     ```xml
     <trigger type="simple">
         startDelaySeconds: 10
@@ -816,6 +817,7 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
 
 *   **`cron` 트리거**: "매주 금요일 오후 5시 30분" 또는 "매달 마지막 날 새벽 1시"와 같이 달력과 연관된 복잡한 시간표에 따라 작업을 실행할 때 사용합니다. 강력한 **Cron 표현식**을 기반으로 동작하여 매우 유연하고 강력한 스케줄링을 제공합니다.
     *   **주요 속성**: `expression` (Cron 표현식 문자열).
+
     ```xml
     <trigger type="cron" expression="0 50 23 * * ?" /> <!-- 매일 밤 11시 50분 -->
     ```
