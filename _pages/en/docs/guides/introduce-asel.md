@@ -89,16 +89,14 @@ The `~{...}` token is used to render the template with the specified ID at the c
 
 ```xml
 <!-- Built-in template rule definition -->
-<template id="welcomeMailTemplate">
-  <content>
-    Hello, @{user^name}! Welcome to our service.
-    Your current point balance is #{pointBean^currentPoints}.
-  </content>
+<template id="welcomeMailTemplate" style="apon">
+  |Hello, @{user^name}! Welcome to our service.
+  |Your current point balance is #{pointBean^currentPoints}.
 </template>
 
 <!-- Use the template by transforming it elsewhere -->
 <transform format="text">
-  <content>~{welcomeMailTemplate}</content>
+  <template>~{welcomeMailTemplate}</template>
 </transform>
 ```
 *   **Explanation**: In the example above, the `~{welcomeMailTemplate}` token finds and renders the template with the ID `welcomeMailTemplate`. The `@{user^name}` and `#{pointBean^currentPoints}` tokens inside the template are evaluated first, and then the final completed text is included as the content of the `<transform>`.

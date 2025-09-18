@@ -89,16 +89,15 @@ AsEL 표현식은 위에서 설명한 토큰 표현식을 OGNL 표현식과 조�
 
 ```xml
 <!-- 내장 템플릿 규칙 정의 -->
-<template id="welcomeMailTemplate">
-  <content>
-    Hello, @{user^name}! Welcome to our service.
-    Your current point balance is #{pointBean^currentPoints}.
-  </content>
+<template id="welcomeMailTemplate" style="apon">
+  |Hello, @{user^name}! Welcome to our service.
+  |Your current point balance is #{pointBean^currentPoints}.
 </template>
+
 
 <!-- 다른 곳에서 템플릿을 변환(transform)하여 사용 -->
 <transform format="text">
-  <content>~{welcomeMailTemplate}</content>
+  <template>~{welcomeMailTemplate}</template>
 </transform>
 ```
 *   **설명**: 위 예제에서 `~{welcomeMailTemplate}` 토큰은 `welcomeMailTemplate` ID를 가진 템플릿을 찾아 렌더링합니다. 템플릿 내부의 `@{user^name}`과 `#{pointBean^currentPoints}` 토큰들이 먼저 평가된 후, 최종적으로 완성된 텍스트가 `<transform>`의 내용으로 포함됩니다.
