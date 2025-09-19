@@ -37,28 +37,28 @@ Pointcut은 Advice를 적용할 대상을 정밀하게 지정하는 표현식입
     *   **모든 Translet에서 특정 Bean을 대상**: Translet 이름 패턴을 생략하고 `@`로 시작하면 모든 Translet이 대상이 됩니다.
         ```xml
         <joinpoint>
-          pointcut: {
-            type: wildcard
-            +: @someService^execute*
-          }
+            pointcut: {
+                type: wildcard
+                +: @someService^execute*
+            }
         </joinpoint>
         ```
     *   **특정 Translet의 특정 Bean을 대상**:
         ```xml
         <joinpoint>
-          pointcut: {
-            type: wildcard
-            +: /user/list@userService^get*
-          }
+            pointcut: {
+                type: wildcard
+                +: /user/list@userService^get*
+            }
         </joinpoint>
         ```
     *   **특정 Translet 자체를 대상**: Bean이나 메소드를 지정하지 않으면 해당 Translet을 실행하는 Activity의 실행 자체가 대상이 됩니다.
         ```xml
         <joinpoint>
-          pointcut: {
-            type: wildcard
-            +: /user/*
-          }
+            pointcut: {
+                type: wildcard
+                +: /user/*
+            }
         </joinpoint>
         ```
 

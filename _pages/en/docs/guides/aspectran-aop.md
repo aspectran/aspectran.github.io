@@ -37,28 +37,28 @@ A Pointcut is an expression that precisely specifies the target to which Advice 
     *   **Targeting a specific Bean in all Translets**: If you omit the Translet name pattern and start with `@`, all Translets become the target.
         ```xml
         <joinpoint>
-          pointcut: {
-            type: wildcard
-            +: @someService^execute*
-          }
+            pointcut: {
+                type: wildcard
+                +: @someService^execute*
+            }
         </joinpoint>
         ```
     *   **Targeting a specific Bean of a specific Translet**:
         ```xml
         <joinpoint>
-          pointcut: {
-            type: wildcard
-            +: /user/list@userService^get*
-          }
+            pointcut: {
+                type: wildcard
+                +: /user/list@userService^get*
+            }
         </joinpoint>
         ```
     *   **Targeting a specific Translet itself**: If you do not specify a Bean or method, the execution of the Activity that runs the Translet itself becomes the target.
         ```xml
         <joinpoint>
-          pointcut: {
-            type: wildcard
-            +: /user/*
-          }
+            pointcut: {
+                type: wildcard
+                +: /user/*
+            }
         </joinpoint>
         ```
 
