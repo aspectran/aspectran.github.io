@@ -40,6 +40,7 @@ Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
 -   [Aspectran Beans: IoC/DI 실용 가이드](/ko/docs/guides/practical-guide-to-beans/)
 -   [Aspectran Translet 실용 가이드](/ko/docs/guides/practical-guide-to-translets/)
 -   [PBE를 이용한 인증 토큰 활용 가이드](/ko/docs/guides/practical-guide-to-pbe-token-based-authentication/)
+-   [Aspectran에서 Thymeleaf 레이아웃 적용 가이드](/ko/docs/guides/practical-guide-to-thymeleaf-layout/)
 
 ## 아키텍처
 

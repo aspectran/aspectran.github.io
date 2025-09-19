@@ -40,6 +40,7 @@ Access hands-on guides to apply Aspectran effectively in real scenarios.
 -   [Aspectran Beans: A Practical Guide to IoC/DI](/en/docs/guides/practical-guide-to-beans/)
 -   [A Practical Guide to Aspectran Translets](/en/docs/guides/practical-guide-to-translets/)
 -   [A Practical Guide to PBE Token-Based Authentication](/en/docs/guides/practical-guide-to-pbe-token-based-authentication/)
+-   [Guide to Applying Thymeleaf Layout in Aspectran](/en/docs/guides/practical-guide-to-thymeleaf-layout/)
 
 ## Architecture
 
