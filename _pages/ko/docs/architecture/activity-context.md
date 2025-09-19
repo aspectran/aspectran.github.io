@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "ActivityContext: Aspectran의 심장부"
 subheadline: 아키텍처
 parent_path: /docs

@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Aspectran 로깅 메커니즘 심층 분석
 subheadline: 아키텍처
 parent_path: /docs

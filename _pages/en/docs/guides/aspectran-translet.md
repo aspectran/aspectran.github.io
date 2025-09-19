@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Understanding Translet: The Face of Aspectran"
 subheadline: User Guides
 parent_path: /docs

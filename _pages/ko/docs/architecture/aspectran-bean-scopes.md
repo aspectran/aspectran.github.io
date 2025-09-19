@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Aspectran의 빈 스코프(Bean Scopes) 심층 분석
 subheadline: 아키텍처
 parent_path: /docs

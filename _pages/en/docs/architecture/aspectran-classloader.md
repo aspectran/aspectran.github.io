@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "SiblingClassLoader: The Key to Dynamic and Flexible Class Loading"
 subheadline: Architecture
 parent_path: /docs

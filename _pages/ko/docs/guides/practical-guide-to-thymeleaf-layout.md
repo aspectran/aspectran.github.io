@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Aspectran에서 Thymeleaf 레이아웃 적용 가이드
 subheadline: 사용자 가이드
 parent_path: /docs
@@ -87,7 +87,7 @@ parent_path: /docs
 </aspectran>
 ```
 
-### 설정 설명:
+**설정 설명:**
 1.  **Thymeleaf 템플릿 엔진 (`thymeleaf`)**:
     - `FileTemplateResolver`를 사용하여 템플릿 파일의 위치(`prefix`)와 확장자(`suffix`)를 지정합니다.
     - `dialects` 프로퍼티에 `LayoutDialect`를 추가하여 레이아웃 기능을 활성화합니다. 이것이 가장 중요한 부분입니다.

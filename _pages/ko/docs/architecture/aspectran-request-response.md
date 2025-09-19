@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: 요청(Request) 및 응답(Response) 처리 메커니즘
 subheadline: 아키텍처
 parent_path: /docs

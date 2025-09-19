@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Request and Response Handling Mechanism
 subheadline: Architecture
 parent_path: /docs

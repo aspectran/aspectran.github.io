@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Aspectran AOP 특징 분석
 subheadline: 사용자 가이드
 parent_path: /docs

@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Adapter 아키텍처: 환경 독립성의 핵심"
 subheadline: 아키텍처
 parent_path: /docs

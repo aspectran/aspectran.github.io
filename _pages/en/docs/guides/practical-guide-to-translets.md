@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: A Practical Guide to Aspectran Translets
 subheadline: User Guides
 parent_path: /docs

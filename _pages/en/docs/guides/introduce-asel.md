@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Introduction to AsEL (Aspectran Expression Language)
 subheadline: User Guides
 parent_path: /docs

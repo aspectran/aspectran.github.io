@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: In-Depth Analysis of Aspectran Execution Environments
 subheadline: Architecture
 parent_path: /docs

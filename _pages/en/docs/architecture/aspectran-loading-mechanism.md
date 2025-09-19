@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Aspectran Configuration Loading Mechanism: An In-Depth Analysis of the `nodelet` Engine"
 subheadline: Architecture
 parent_path: /docs

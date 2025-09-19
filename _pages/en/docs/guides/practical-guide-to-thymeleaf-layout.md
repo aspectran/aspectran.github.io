@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Guide to Applying Thymeleaf Layout in Aspectran
 subheadline: User Guides
 parent_path: /docs
@@ -87,7 +87,7 @@ After adding the dependencies, you need to register the Thymeleaf template engin
 </aspectran>
 ```
 
-### Configuration Explanation:
+**Configuration Explanation:**
 1.  **Thymeleaf Template Engine (`thymeleaf`)**:
     -   Uses `FileTemplateResolver` to specify the location (`prefix`) and extension (`suffix`) of template files.
     -   Activates the layout feature by adding `LayoutDialect` to the `dialects` property. This is the most crucial part.

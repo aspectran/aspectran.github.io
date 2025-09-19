@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Aspectran Actions: Concepts, Types, and Processing Results"
 subheadline: Architecture
 parent_path: /docs

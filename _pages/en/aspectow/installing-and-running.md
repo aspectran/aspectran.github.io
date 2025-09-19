@@ -1,6 +1,6 @@
 ---
 format: "plate solid article"
-sidebar: toc-left
+sidebar: toc
 title: "Installing and Running Aspectow"
 teaser: "This tutorial will walk you through how to download, install and run Aspectow – an all-in-one web application server based on Aspectran."
 ---

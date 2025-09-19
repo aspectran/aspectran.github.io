@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Getting Started with Aspectran
 teaser: This guide will walk you through how to start an Aspectran project by creating a simple "Hello, World" command-line application.
 ---

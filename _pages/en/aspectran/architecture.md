@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Aspectran Architecture
 teaser: An Integrated Deep Dive (Full-Text Version)
 ---

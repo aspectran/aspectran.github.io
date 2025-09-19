@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Activity 아키텍처: 요청 처리의 실행 엔진"
 subheadline: 아키텍처
 parent_path: /docs

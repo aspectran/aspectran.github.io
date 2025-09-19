@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "SiblingClassLoader: 동적이고 유연한 클래스 로딩의 핵심"
 subheadline: 아키텍처
 parent_path: /docs

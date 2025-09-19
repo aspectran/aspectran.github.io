@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Environment: Controlling Environments with Profiles and Properties"
 subheadline: Architecture
 parent_path: /docs

@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Aspectran XML Configuration Guide
 subheadline: User Guides
 parent_path: /docs

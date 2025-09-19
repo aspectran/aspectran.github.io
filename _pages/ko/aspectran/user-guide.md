@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Aspectran 사용자 가이드
 teaser: Aspectran을 처음 접하는 개발자들을 위한 가이드 문서입니다.
 ---

@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Aspectran View Technologies
 subheadline: User Guides
 parent_path: /docs

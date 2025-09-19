@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Aspectran의 얼굴마담: Translet 이해하기"
 subheadline: 사용자 가이드
 parent_path: /docs

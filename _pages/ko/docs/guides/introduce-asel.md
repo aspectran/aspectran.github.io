@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: AsEL(Aspectran Expression Language) 소개
 subheadline: 사용자 가이드
 parent_path: /docs

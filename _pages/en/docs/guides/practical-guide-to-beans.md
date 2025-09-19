@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Aspectran Beans: A Practical Guide to IoC/DI"
 subheadline: User Guides
 parent_path: /docs

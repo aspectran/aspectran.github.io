@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Aspectran 구성 로딩 메커니즘: `nodelet` 엔진 심층 분석"
 subheadline: 아키텍처
 parent_path: /docs

@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "ActivityContext: The Heart of Aspectran"
 subheadline: Architecture
 parent_path: /docs

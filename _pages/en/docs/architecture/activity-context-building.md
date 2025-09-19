@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "ActivityContext Build Process: An In-Depth Analysis"
 subheadline: Architecture
 parent_path: /docs

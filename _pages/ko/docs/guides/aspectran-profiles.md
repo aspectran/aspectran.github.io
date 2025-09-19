@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Aspectran Profiles
 subheadline: 사용자 가이드
 parent_path: /docs

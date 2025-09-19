@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Adapter Architecture: The Core of Environmental Independence"
 subheadline: Architecture
 parent_path: /docs

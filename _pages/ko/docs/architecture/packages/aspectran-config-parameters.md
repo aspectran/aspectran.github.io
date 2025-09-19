@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "`com.aspectran.core.context.config` 패키지 상세 분석"
 subheadline: 아키텍처 - 패키지 심층 분석
 parent_path: /docs

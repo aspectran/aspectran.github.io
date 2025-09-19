@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Aspectran Actions: 개념, 종류 및 처리 결과"
 subheadline: 아키텍처
 parent_path: /docs

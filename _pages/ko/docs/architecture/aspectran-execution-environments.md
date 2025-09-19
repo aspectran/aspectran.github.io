@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: Aspectran 실행 환경 심층 분석
 subheadline: 아키텍처
 parent_path: /docs

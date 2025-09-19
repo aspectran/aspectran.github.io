@@ -1,6 +1,6 @@
 ---
 format: plate solid article
-sidebar: toc-left
+sidebar: toc
 title: "Activity Architecture: The Execution Engine of Request Processing"
 subheadline: Architecture
 parent_path: /docs
