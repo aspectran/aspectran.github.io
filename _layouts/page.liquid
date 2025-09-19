@@ -18,7 +18,7 @@ layout: default
       </div>
       {% endif %}
 
-      <div class="mt-4 {% if page.sidebar == 'toc' %}col-lg-9 order-lg-2{% elsif page.sidebar == 'toc-right' %}col-lg-9 order-lg-1{% elsif page.sidebar == 'left' %}col-lg-8 order-lg-1{% elsif page.sidebar == 'right' %}col-lg-8 order-lg-2{% elsif page.format contains 'margin' %}col-lg-10 offset-lg-1{% endif %}">
+      <div class="mt-4 {% if page.sidebar == 'toc' %}col-lg-9 order-lg-2{% elsif page.sidebar == 'toc-right' %}col-lg-9 order-lg-1{% elsif page.sidebar == 'left' %}col-lg-8 order-lg-2{% elsif page.sidebar == 'right' %}col-lg-8 order-lg-1{% elsif page.format contains 'margin' %}col-lg-10 offset-lg-1{% endif %}">
         <article>
 
           {% if page.inside_heading == true %}
@@ -68,14 +68,8 @@ layout: default
 
       </div>
 
-      {% if page.sidebar == "left" %}
-      <div class="mt-4 col-lg-4 order-lg-1">
-        {% include _sidebar.liquid %}
-      </div>
-      {% endif %}
-
-      {% if page.sidebar == "right" %}
-      <div class="mt-4 col-lg-4 order-lg-2">
+      {% if page.sidebar == "right" or page.sidebar == "left" %}
+      <div class="mt-4 col-lg-4 {% if page.sidebar == "right" %}order-lg-2{% else %}order-lg-1{% endif %}">
         {% if page.lang == 'ko' %}
           {% include _sidebar_ko.liquid %}
         {% else %}

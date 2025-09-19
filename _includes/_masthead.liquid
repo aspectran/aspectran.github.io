@@ -1,81 +1,78 @@
-{% if page.format contains "plate" or page.format contains "compact" or page.format contains "article" %}
+{% if page.title or page.headline or page.subheadline or page.teaser %}
+  {% unless page.header.image_fullwidth or page.header.slide_images %}
 
-
-  <div id="masthead"{% if page.format contains 'compact' %} class="masthead-compact"{% endif %}>
-    <div class="container">
-      <header>
-      {% if page.inside_heading != true %}
-        {% if page.subheadline %}
-        <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+    <div id="masthead"{% if page.format contains 'compact' %} class="masthead-compact"{% endif %}>
+      <div class="container">
+        <header>
+        {% if page.inside_heading != true %}
+          {% if page.subheadline %}
+          <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+          {% endif %}
+          {% if page.title or page.headline %}
+          <h1 itemprop="headline">{% if page.headline %}{{ page.headline }}{% else %}{{ page.title }}{% endif %}</h1>
+          {% endif %}
+          {% if page.teaser %}
+          <p class="teaser" itemprop="description">
+            {{ page.teaser }}
+          </p>
+          {% endif %}
         {% endif %}
-        {% if page.title or page.headline %}
-        <h1 itemprop="headline">{% if page.headline %}{{ page.headline }}{% else %}{{ page.title }}{% endif %}</h1>
-        {% endif %}
-        {% if page.teaser %}
-        <p class="teaser" itemprop="description">
-          {{ page.teaser }}
-        </p>
-        {% endif %}
-      {% endif %}
-      </header>
-      {% unless page.header.image_fullwidth %}
-      <div class="hexagons">
-        <div class="hexagon hex1"></div>
-        <div class="hexagon hex2"></div>
-        <div class="hexagon hex3"></div>
-        {% unless page.format contains 'compact' and page.title == nil %}
-        <div class="hexagon hex5"></div>
-        <div class="hexagon hex6"></div>
+        </header>
+        {% unless page.header.image_fullwidth %}
+        <div class="hexagons">
+          <div class="hexagon hex1"></div>
+          <div class="hexagon hex2"></div>
+          <div class="hexagon hex3"></div>
+          {% unless page.format contains 'compact' and page.title == nil %}
+          <div class="hexagon hex5"></div>
+          <div class="hexagon hex6"></div>
+          {% endunless %}
+        </div>
         {% endunless %}
       </div>
-      {% endunless %}
-    </div>
-    <div class="container breadcrumb-bar">
-      {% if page.breadcrumb == true %}
-        {% include _breadcrumb.liquid %}
-      {% else %}
-        &nbsp;
-      {% endif %}
-    </div>
-  </div>
-
-
-{% elsif page.header.image_fullwidth or page.header.slide_images %}
-
-
-  <div id="masthead" class="masthead-with-image">
-    <div class="container">
-      <header>
-      {% if page.inside_heading != true %}
-        <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
-        <h1 itemprop="headline">{% if page.headline %}{{ page.headline }}{% else %}{{ page.title }}{% endif %}</h1>
-        {% if page.teaser %}
-        <p class="teaser" itemprop="description">
-          {{ page.teaser }}
-        </p>
-        {% endif %}
-      {% endif %}
-      </header>
-    </div>
-    {% if page.breadcrumb == true %}
       <div class="container breadcrumb-bar">
-        {% include _breadcrumb.liquid %}
+        {% if page.breadcrumb == true %}
+          {% include _breadcrumb.liquid %}
+        {% else %}
+          &nbsp;
+        {% endif %}
       </div>
-    {% endif %}
-  </div>
+    </div>
 
+  {% else %}
+
+    <div id="masthead" class="masthead-with-image">
+      <div class="container">
+        <header>
+        {% if page.inside_heading != true %}
+          <p class="subheadline" itemprop="alternativeHeadline">{% if page.subheadline %}{{ page.subheadline }}{% else %}&nbsp;{% endif %}</p>
+          <h1 itemprop="headline">{% if page.headline %}{{ page.headline }}{% else %}{{ page.title }}{% endif %}</h1>
+          {% if page.teaser %}
+          <p class="teaser" itemprop="description">
+            {{ page.teaser }}
+          </p>
+          {% endif %}
+        {% endif %}
+        </header>
+      </div>
+      {% if page.breadcrumb == true %}
+        <div class="container breadcrumb-bar">
+          {% include _breadcrumb.liquid %}
+        </div>
+      {% endif %}
+    </div>
+
+  {% endunless %}
 {% else %}
 
-
-{% if page.breadcrumb == true %}
-  <div class="container breadcrumb-bar">
-    <div class="row">
-      <div class="col offset-lg-1">
-        {% include _breadcrumb.liquid %}
+  {% if page.breadcrumb == true %}
+    <div class="container breadcrumb-bar">
+      <div class="row">
+        <div class="col offset-lg-1">
+          {% include _breadcrumb.liquid %}
+        </div>
       </div>
     </div>
-  </div>
-{% endif %}
-
+  {% endif %}
 
 {% endif %}
