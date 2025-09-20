@@ -1,5 +1,4 @@
 ---
-layout: example
 format: plate solid article
 title: Building a RESTful Web Service
 subheadline: Getting Started

@@ -160,7 +160,7 @@ defaults:
       path: "_examples/en" 	# an empty string here means all files in the project
     values:
       lang: "en"
-      layout: "page"
+      layout: "example"
       breadcrumb: true
       permalink: "/en/examples/:name"
       show_meta: false  	# Hide metadata for all pages
@@ -169,7 +169,7 @@ defaults:
       path: "_examples/ko" 	# an empty string here means all files in the project
     values:
       lang: "ko"
-      layout: "page"
+      layout: "example"
       permalink: "/ko/examples/:name"
       breadcrumb: true
       show_meta: false  	# Hide metadata for all pages

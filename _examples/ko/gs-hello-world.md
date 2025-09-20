@@ -1,5 +1,4 @@
 ---
-layout: example
 format: plate solid article
 title: Aspectran Hello World Example
 subheadline: Getting Started
