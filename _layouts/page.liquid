@@ -5,20 +5,20 @@ layout: default
 
   {% include _masthead.liquid %}
 
-  <div class="container page-content pb-4">
+  <div class="container page-content">
 
     <div class="row">
       {% if page.sidebar == "toc" %}
-      <div class="mt-4 col-lg-3 order-lg-1">
+      <div class="col-lg-3 order-lg-1">
         {% include _sidebar-toc.liquid %}
       </div>
       {% elsif page.sidebar == "toc-right" %}
-      <div class="mt-4 col-lg-3 order-lg-2">
+      <div class="col-lg-3 order-lg-2">
         {% include _sidebar-toc.liquid side="right" %}
       </div>
       {% endif %}
 
-      <div class="mt-4 {% if page.sidebar == 'toc' %}col-lg-9 order-lg-2{% elsif page.sidebar == 'toc-right' %}col-lg-9 order-lg-1{% elsif page.sidebar == 'left' %}col-lg-8 order-lg-2{% elsif page.sidebar == 'right' %}col-lg-8 order-lg-1{% elsif page.format contains 'margin' %}col-lg-10 offset-lg-1{% endif %}">
+      <div class="{% if page.sidebar == 'toc' %}col-lg-9 order-lg-2{% elsif page.sidebar == 'toc-right' %}col-lg-9 order-lg-1{% elsif page.sidebar == 'left' %}col-lg-8 order-lg-2{% elsif page.sidebar == 'right' %}col-lg-8 order-lg-1{% elsif page.format contains 'margin' %}col-lg-10 offset-lg-1{% endif %}">
         <article>
 
           {% if page.inside_heading == true %}
@@ -69,7 +69,7 @@ layout: default
       </div>
 
       {% if page.sidebar == "right" or page.sidebar == "left" %}
-      <div class="mt-4 col-lg-4 {% if page.sidebar == "right" %}order-lg-2{% else %}order-lg-1{% endif %}">
+      <div class="col-lg-4 {% if page.sidebar == "right" %}order-lg-2{% else %}order-lg-1{% endif %}">
         {% if page.lang == 'ko' %}
           {% include _sidebar_ko.liquid %}
         {% else %}

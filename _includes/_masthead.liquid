@@ -1,7 +1,7 @@
 {% if page.title or page.headline or page.subheadline or page.teaser %}
   {% unless page.header.image_fullwidth or page.header.slide_images %}
 
-    <div id="masthead"{% if page.format contains 'compact' %} class="masthead-compact"{% endif %}>
+    <div id="masthead">
       <div class="container">
         <header>
         {% if page.inside_heading != true %}

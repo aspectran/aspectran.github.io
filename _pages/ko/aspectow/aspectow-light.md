@@ -1,5 +1,4 @@
 ---
-layout: page
 format: "plate solid article"
 sidebar: toc
 title: "Aspectow Light Edition"

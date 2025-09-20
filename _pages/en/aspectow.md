@@ -1,4 +1,5 @@
 ---
+format: article
 title: "About Aspectow"
 teaser: "Aspectow is an all-in-one web application server built on Aspectran."
 sidebar: right
