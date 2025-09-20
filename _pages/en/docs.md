@@ -1,7 +1,8 @@
 ---
+format: page solid article
 title: Aspectran Documentation
 teaser: Explore Aspectran documentation to learn, configure, and unlock its full potential.
-sidebar: left
+sidebar: toc
 ---
 
 {% capture info_message %}

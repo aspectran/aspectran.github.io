@@ -1,7 +1,8 @@
 ---
+format: page solid article
 title: Aspectran 문서
 teaser: Aspectran 문서를 통해 배우고 설정하며, 강력한 기능을 마음껏 활용해 보세요.
-sidebar: left
+sidebar: toc
 ---
 
 {% capture info_message %}
