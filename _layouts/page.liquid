@@ -9,16 +9,40 @@ layout: default
 
     <div class="row">
       {% if page.sidebar == "toc" %}
-      <div class="col-lg-3 order-lg-1">
+      <div class="col-lg-3 order-lg-1{% if page.format contains 'article' %} py-3 py-lg-4{% endif %}">
         {% include _sidebar-toc.liquid %}
       </div>
       {% elsif page.sidebar == "toc-right" %}
-      <div class="col-lg-3 order-lg-2">
+      <div class="col-lg-3 order-lg-2{% if page.format contains 'article' %} py-3 py-lg-4{% endif %}">
         {% include _sidebar-toc.liquid side="right" %}
       </div>
       {% endif %}
 
-      <div class="{% if page.sidebar == 'toc' %}col-lg-9 order-lg-2{% elsif page.sidebar == 'toc-right' %}col-lg-9 order-lg-1{% elsif page.sidebar == 'left' %}col-lg-8 order-lg-2{% elsif page.sidebar == 'right' %}col-lg-8 order-lg-1{% elsif page.format contains 'margin' %}col-lg-10 offset-lg-1{% endif %}">
+      {% comment %}
+      This block dynamically generates CSS classes based on page.sidebar and page.format.
+      {% endcomment %}
+      {% assign column_classes = "" %}
+      {% assign padding_classes = "" %}
+
+      {% if page.sidebar == 'toc' %}
+        {% assign column_classes = "col-lg-9 order-lg-2" %}
+      {% elsif page.sidebar == 'toc-right' %}
+        {% assign column_classes = "col-lg-9 order-lg-1" %}
+      {% elsif page.sidebar == 'left' %}
+        {% assign column_classes = "col-lg-8 order-lg-2" %}
+      {% elsif page.sidebar == 'right' %}
+        {% assign column_classes = "col-lg-8 order-lg-1" %}
+      {% elsif page.format contains 'margin' %}
+        {% assign column_classes = "col-lg-10 offset-lg-1" %}
+      {% endif %}
+
+      {% if page.format contains 'margin' %}
+        {% assign padding_classes = "py-2 py-lg-5" %}
+      {% elsif page.format contains 'article' %}
+        {% assign padding_classes = "py-3 py-lg-4" %}
+      {% endif %}
+
+      <div class="{{ column_classes }} {{ padding_classes }}">
         <article>
 
           {% if page.inside_heading == true %}
@@ -69,7 +93,7 @@ layout: default
       </div>
 
       {% if page.sidebar == "right" or page.sidebar == "left" %}
-      <div class="col-lg-4 {% if page.sidebar == "right" %}order-lg-2{% else %}order-lg-1{% endif %}">
+      <div class="mt-4 col-lg-4 {% if page.sidebar == "right" %}order-lg-2{% else %}order-lg-1{% endif %}">
         {% if page.lang == 'ko' %}
           {% include _sidebar_ko.liquid %}
         {% else %}
