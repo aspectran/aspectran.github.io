@@ -1,5 +1,5 @@
 {% capture widget_url %}{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ site.baseurl }}{{ include.widget.url }}{% endif %}{% endcapture %}
-<div>
+<div class="panel panel5">
   {% if include.widget.image or include.widget.video %}
   <a href="{{ widget_url }}">
     {% if include.widget.image %}
@@ -14,6 +14,6 @@
   {% endif %}
   <div>
     <h4><a href="{{ widget_url }}" class="text-decoration-none">{{ include.widget.title }}</a></h4>
-    <p><a href="{{ widget_url }}" class="text-decoration-none text-muted">{{ include.widget.text }}</a></p>
+    <p class="m-0"><a href="{{ widget_url }}" class="text-decoration-none text-muted">{{ include.widget.text }}</a></p>
   </div>
 </div>
