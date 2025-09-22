@@ -39,7 +39,7 @@ Create a `pom.xml` file in the project root and copy and paste the content below
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
-        <aspectran.version>9.0.0-SNAPSHOT</aspectran.version>
+        <aspectran.version>9.0.0</aspectran.version>
     </properties>
 
     <repositories>
