@@ -76,4 +76,4 @@ Aspectran은 'Aspect'와 'Translet'의 합성어입니다.
 
 ## 라이센스
 
-Aspectran은 [Apache 2.0 라이센스](http://www.apache.org/licenses/LICENSE-2.0)에 따라 공개된 오픈소스 소프트웨어입니다.
+Aspectran은 [Apache 2.0 라이센스](https://www.apache.org/licenses/LICENSE-2.0)에 따라 공개된 오픈소스 소프트웨어입니다.

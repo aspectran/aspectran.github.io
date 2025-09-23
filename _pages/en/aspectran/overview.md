@@ -137,4 +137,4 @@ Aspectran is continuously evolving through active development and a user communi
 
 ## License
 
-Aspectran is distributed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0). This means it can be freely used, modified, and distributed for commercial and non-commercial purposes.
+Aspectran is distributed under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0). This means it can be freely used, modified, and distributed for commercial and non-commercial purposes.
