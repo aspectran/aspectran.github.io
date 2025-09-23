@@ -63,7 +63,7 @@ Aspectran은 기능별로 세분화된 모듈을 제공하여 필요한 기능�
 *   **`aspectran-shell`**: 대화형 명령줄(CLI) 애플리케이션을 쉽게 구축할 수 있도록 지원합니다. 사용자 입력을 처리하고, Translet을 통해 비즈니스 로직을 실행하며, 결과를 콘솔에 출력하는 기능을 제공합니다.
 *   **`aspectran-shell-jline`**: `aspectran-shell` 모듈을 JLine 3 라이브러리와 통합하여, 명령줄 자동 완성, 히스토리 관리, 색상 출력 등 더욱 풍부한 대화형 셸 환경을 제공합니다.
 *   **`aspectran-utils`**: Aspectran 프레임워크 내부 및 외부에서 유용하게 사용될 수 있는 다양한 일반 유틸리티 클래스들을 모아놓은 모듈입니다.
-*   **`aspectran-web`**: Jakarta EE (구 Java EE) 서블릿 API를 기반으로 웹 애플리케이션을 구축하기 위한 기능을 제공합니다. 웹 요청 처리, 세션 관리, 필터 및 인터셉터 등 웹 개발에 필요한 핵심 요소를 포함합니다.
+*   **`aspectran-web`**: Jakarta EE (구 Java EE) 서블릿 API를 기반으로 웹 애플리케이션을 구축하기 위한 기능을 제공합니다. 웹 요청 처리, 세션 관리, 필터 등 웹 개발에 필요한 핵심 요소와 더불어 WebSocket, CORS, ETag, 멀티파트 요청 처리 등 풍부한 웹 지원 기능을 포함합니다.
 *   **`aspectran-rss-lettuce`**: **Redis 기반의 고성능 Lettuce 클라이언트를 사용한 세션 저장소 구현을 제공하여, 분산 환경에서 세션 데이터를 효율적으로 관리할 수 있도록 합니다.**
 *   **`aspectran-with-jetty`**: 임베디드 Jetty 웹 서버를 Aspectran 애플리케이션에 통합합니다. 별도의 웹 서버 설치 없이 Aspectran 애플리케이션을 독립적으로 실행할 수 있게 하여 배포를 간소화합니다.
 *   **`aspectran-with-undertow`**: 임베디드 Undertow 웹 서버를 Aspectran 애플리케이션에 통합합니다. Undertow는 경량 고성능 웹 서버로, 빠른 시작과 낮은 리소스 사용이 필요한 환경에 적합합니다.
