@@ -1,8 +1,8 @@
 ---
 format: plate solid article
-sidebar: toc
 title: Aspectran Architecture
 teaser: An Integrated Deep Dive (Full-Text Version)
+sidebar: toc
 ---
 
 {% include image.liquid src="/images/docs/architecture_en.svg" alt="Integration of Aspectran Architecture" %}

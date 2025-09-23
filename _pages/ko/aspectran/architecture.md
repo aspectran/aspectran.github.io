@@ -1,8 +1,8 @@
 ---
 format: plate solid article
-sidebar: toc
 title: Aspectran 아키텍처
 teaser: 통합 심층 분석 (Full-Text Version)
+sidebar: toc
 ---
 
 {% include image.liquid src="/images/docs/architecture_ko.svg" alt="Aspectran 아키텍처의 통합" %}

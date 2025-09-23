@@ -1,8 +1,8 @@
 ---
 format: plate solid article
-sidebar: toc
 title: Aspectran 시작하기
 teaser: 이 가이드에서는 간단한 "Hello, World" 커맨드 라인 애플리케이션을 만들어보면서 Aspectran 프로젝트를 시작하는 방법을 안내합니다.
+sidebar: toc
 ---
 
 ## 1. 개발 환경 설정

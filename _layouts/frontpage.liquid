@@ -2,18 +2,25 @@
 layout: default
 ---
 
-{% include _forkme-ribbon.liquid %}
-
+<style>
+  .panel5 {
+    border: 0;
+    opacity: .5;
+    padding: .5em 1em;
+    background: linear-gradient(180deg,rgb(53, 59, 62) 0%, rgb(68, 76, 82) 53%, rgb(66, 73, 78) 100%);
+  }
+</style>
 <div id="masthead">
-  <div class="container py-2 py-md-4">
+  <div class="container py-4">
     <div class="d-flex align-items-center justify-content-center gap-1">
       <a href="https://github.com/aspectran/aspectran/actions?query=workflow%3A%22Java+CI%22" target="_blank" title="Build Status"><img src="https://github.com/aspectran/aspectran/workflows/Java%20CI/badge.svg" alt="Build Status"/></a>
       <a href="https://central.sonatype.com/artifact/com.aspectran/aspectran-project" target="_blank" title="Maven central"><img src="https://img.shields.io/maven-central/v/com.aspectran/aspectran-project" alt="Maven Central"/></a>
-      <a href="https://github.com/aspectran/aspectran/blob/master/LICENSE.txt" target="_blank" title="Apache License 2.0"><img src="https://img.shields.io/:license-apache-orange.svg" alt="License"/></a>
+      <a href="https://javadoc.io/doc/com.aspectran/aspectran-all" target="_blank" title="Aspectran API Reference"><img src="https://javadoc.io/badge2/com.aspectran/aspectran-all/javadoc.svg" alt="Aspectran API Reference"/></a>
+      <a class="d-none d-md-block" href="https://github.com/aspectran/aspectran/blob/master/LICENSE.txt" target="_blank" title="Apache License 2.0"><img src="https://img.shields.io/:license-apache-orange.svg" alt="License"/></a>
     </div>
   </div>
-  <div class="container my-2">
-    <div class="row g-1 g-md-4">
+  <div class="container g-0 g-md-4">
+    <div class="row g-0 g-md-2">
       <div class="col-md-6 col-lg">
         {% include _frontpage-widget.liquid widget=page.widget1 %}
       </div>

@@ -1,8 +1,8 @@
 ---
 format: plate solid article
-sidebar: right
 title: "Aspectran Overview"
 teaser: "Get an overview of Aspectran and understand its core concepts at a glance."
+sidebar: toc
 ---
 
 ## Introduction
