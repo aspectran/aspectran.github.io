@@ -37,17 +37,18 @@ Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
 
 실제 시나리오에서 Aspectran을 효과적으로 적용하는 방법에 대한 실습 가이드를 살펴보세요.
 
--   [Aspectran Beans: IoC/DI 실용 가이드](/ko/docs/guides/practical-guide-to-beans/)
--   [Aspectran Translet 실용 가이드](/ko/docs/guides/practical-guide-to-translets/)
--   [PBE를 이용한 인증 토큰 활용 가이드](/ko/docs/guides/practical-guide-to-pbe-token-based-authentication/)
--   [Aspectran에서 Thymeleaf 레이아웃 적용 가이드](/ko/docs/guides/practical-guide-to-thymeleaf-layout/)
+*   [Aspectran Beans: IoC/DI 실용 가이드](/ko/docs/guides/practical-guide-to-beans/)
+*   [Aspectran Translet 실용 가이드](/ko/docs/guides/practical-guide-to-translets/)
+*   [PBE를 이용한 인증 토큰 활용 가이드](/ko/docs/guides/practical-guide-to-pbe-token-based-authentication/)
+*   [Aspectran에서 Thymeleaf 레이아웃 적용 가이드](/ko/docs/guides/practical-guide-to-thymeleaf-layout/)
+*   [레거시 시스템과 최신 Aspectran 애플리케이션 서버 연동 가이드](/ko/docs/guides/practical-guide-to-legacy-integration/)
 
 ## 아키텍처
 
 Aspectran의 고수준 아키텍처와 핵심 구성 요소를 이해합니다.
 
--   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)
--   [Aspectran 아키텍처: 통합 심층 분석](/ko/aspectran/architecture/)
+*   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)
+*   [Aspectran 아키텍처: 통합 심층 분석](/ko/aspectran/architecture/)
 
 자세한 설명과 함께 Aspectran의 아키텍처를 더 자세히 알아보세요.
 
