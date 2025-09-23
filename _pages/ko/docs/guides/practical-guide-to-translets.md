@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc
 title:  Aspectran Translet 실용 가이드
-subheadline: 사용자 가이드
+subheadline: 실용 가이드
 parent_path: /docs
 ---
 

@@ -2,7 +2,7 @@
 format: plate solid article
 sidebar: toc
 title: Guide to Applying Thymeleaf Layout in Aspectran
-subheadline: User Guides
+subheadline: Practical Guides
 parent_path: /docs
 ---
 
