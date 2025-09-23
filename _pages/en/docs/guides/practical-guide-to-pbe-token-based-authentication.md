@@ -93,9 +93,6 @@ public class AuthService {
 
 The client (e.g., a WebSocket client) sends the issued token included in its request. The server validates this token to check if the request is authorized.
 
-In `WebsocketExportService`, the token included in the URL path is validated upon WebSocket connection.
-
-`/Users/Aspectran/Projects/aspectran/aspectow-appmon/appmon/src/main/java/com/aspectran/appmon/service/websocket/WebsocketExportService.java`
 ```java
 @Override
 protected boolean checkAuthorized(@NonNull Session session) {

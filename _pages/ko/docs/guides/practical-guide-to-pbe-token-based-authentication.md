@@ -93,9 +93,6 @@ public class AuthService {
 
 클라이언트(예: 웹소켓 클라이언트)는 발급받은 토큰을 요청에 포함하여 전송합니다. 서버에서는 이 토큰을 검증하여 인가된 요청인지 확인합니다.
 
-`WebsocketExportService`에서는 웹소켓 연결 시 URL 경로에 포함된 토큰을 검증합니다.
-
-`/Users/Aspectran/Projects/aspectran/aspectow-appmon/appmon/src/main/java/com/aspectran/appmon/service/websocket/WebsocketExportService.java`
 ```java
 @Override
 protected boolean checkAuthorized(@NonNull Session session) {
