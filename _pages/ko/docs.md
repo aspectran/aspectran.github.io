@@ -49,6 +49,7 @@ Aspectran의 고수준 아키텍처와 핵심 구성 요소를 이해합니다.
 
 *   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)
 *   [Aspectran 아키텍처: 통합 심층 분석](/ko/aspectran/architecture/)
+*   [Aspectran 아키텍처 다이어그램](/ko/docs/architecture/aspectran-architecture-diagrams/)
 
 자세한 설명과 함께 Aspectran의 아키텍처를 더 자세히 알아보세요.
 
