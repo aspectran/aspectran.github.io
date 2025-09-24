@@ -1,26 +1,27 @@
 ---
-format: plate solid article
+format: fluid article
 sidebar: toc
-title: Aspectran Architecture Diagrams
-subheadline: Architecture
+title: Aspectran 아키텍처 다이어그램
+subheadline: 아키텍처
 parent_path: /docs
+mermaid: true
 ---
 
-These are diagrams that represent Aspectran's architecture from various perspectives. Each diagram emphasizes a specific aspect of the system to help understand the overall structure.
+Aspectran의 아키텍처를 다양한 관점에서 표현한 다이어그램입니다. 각 다이어그램은 시스템의 특정 측면을 강조하여 전체 구조를 이해하는 데 도움을 줍니다.
 
-- **Adapters**: Abstract the differences in execution environments (e.g., web, shell, daemon) and deliver requests to the `Activity` in a consistent manner.
-- **Activity**: The execution engine that manages the lifecycle of a request. It executes the processing steps defined in a `Translet` in sequence.
-- **Translet**: A set of rules for processing a request. It defines which `Action` to execute and how to send the result to a `View`.
-- **Actions**: The units that perform the actual business logic. They call `Bean`s or interact with databases.
-- **Core Components**: Provide core functionalities such as the `Bean` container, AOP engine, AsEL (Aspectran Expression Language), session manager, and scheduler.
-- **View**: The part that displays the processing result of an `Action` to the user. It supports various template engines like `JSP`, `Thymeleaf`, etc.
-- **Services**: Modules that encapsulate a specific execution environment or functionality and are organically integrated with the core.
+- **어댑터 (Adapters)**: 실행 환경(웹, 셸, 데몬 등)의 차이를 추상화하고, 일관된 방식으로 요청을 `Activity`로 전달합니다.
+- **액티비티 (Activity)**: 요청의 생명주기를 관리하는 실행 엔진입니다. `Translet`에 정의된 처리 단계를 순서대로 실행합니다.
+- **트랜슬릿 (Translet)**: 요청을 처리하는 규칙의 집합입니다. 어떤 `Action`을 실행하고, 결과를 어떻게 `View`로 보낼지 등을 정의합니다.
+- **액션 (Actions)**: 실제 비즈니스 로직을 수행하는 단위입니다. `Bean`을 호출하거나 데이터베이스와 상호작용합니다.
+- **코어 컴포넌트 (Core Components)**: `Bean` 컨테이너, AOP 엔진, AsEL(표현 언어), 세션 관리자, 스케줄러 등 핵심 기능을 제공합니다.
+- **뷰 (View)**: `Action`의 처리 결과를 사용자에게 보여주는 부분입니다. `JSP`, `Thymeleaf` 등 다양한 템플릿 엔진을 지원합니다.
+- **서비스 (Services)**: 특정 실행 환경이나 기능을 캡슐화하여 코어와 유기적으로 통합되는 모듈입니다.
 
 ---
 
-### 1. Modular Layered Architecture
+### 1. 모듈화 계층형 아키텍처 (Modular Layered Architecture)
 
-This diagram shows all the components of Aspectran divided by layer. It illustrates how external requests connect to core functionalities through adapters.
+Aspectran의 전체 구성 요소를 계층별로 나누어 표현한 다이어그램입니다. 외부 요청이 어댑터를 통해 어떻게 코어 기능과 연결되는지 보여줍니다.
 
 ```mermaid
 flowchart TB
@@ -88,9 +89,9 @@ flowchart TB
   Actions -->|dispatch| ViewDispatcher
 
   %% Notes
-  Note1["Adapter: Abstracts execution environments"]:::note
-  Note2["Translet: Declaratively designs processing steps"]:::note
-  Note3["ViewDispatcher: Renders through a template engine"]:::note
+  Note1["Adapter: 실행 환경 추상화"]:::note
+  Note2["Translet: 처리 단계를 선언적으로 설계"]:::note
+  Note3["ViewDispatcher: 템플릿 엔진을 통해 렌더링"]:::note
   Note1 --> Adapters
   Note2 --> TransletLayer
   Note3 --> ViewLayer
@@ -98,9 +99,9 @@ flowchart TB
 
 ---
 
-### 2. Detailed Layered Structure
+### 2. 계층 구조 상세 (Detailed Layered Structure)
 
-A diagram that shows in more detail the main component groups within the `Aspectran Runtime` and their interactions.
+`Aspectran Runtime` 내부의 주요 컴포넌트 그룹과 그들 간의 상호작용을 더 상세하게 보여주는 다이어그램입니다.
 
 ```mermaid
 flowchart TB
@@ -183,9 +184,9 @@ flowchart TB
 
 ---
 
-### 3. Pipeline-Centric View
+### 3. 파이프라인 중심 뷰 (Pipeline-Centric View)
 
-This diagram represents the process from when a request comes in until a response goes out in a pipeline format. It shows the architecture focusing on data flow and major processing steps.
+요청이 들어와서 응답이 나갈 때까지의 처리 과정을 파이프라인 형태로 표현한 다이어그램입니다. 데이터 흐름과 주요 처리 단계를 중심으로 아키텍처를 보여줍니다.
 
 ```mermaid
 flowchart LR
@@ -270,9 +271,9 @@ flowchart LR
 
 ---
 
-### 4. Simplified Pipeline View
+### 4. 파이프라인 축약 뷰 (Simplified Pipeline View)
 
-A more concise representation of the pipeline view. It is useful for quickly grasping the core processing flow.
+파이프라인 뷰를 더 간략하게 표현한 다이어그램입니다. 핵심 처리 흐름을 빠르게 파악하는 데 유용합니다.
 
 ```mermaid
 flowchart LR
@@ -323,60 +324,60 @@ flowchart LR
 
 ---
 
-### 5. Core Concept Map
+### 5. 핵심 개념 맵 (Core Concept Map)
 
-A diagram that illustrates the relationships between the five most important concepts that make up Aspectran (Activity, Translet, Bean, Action, Aspect) and the View (Template).
+Aspectran을 구성하는 가장 중요한 5가지 개념(Activity, Translet, Bean, Action, Aspect)과 뷰(Template)의 관계를 도식화한 다이어그램입니다.
 
 ```mermaid
 flowchart TB
   A[Aspectran Core Concepts]
 
   A --> ACT[Activity]
-  ACT --> ACT1[Execution engine for all requests]
-  ACT --> ACT2[Request lifecycle management context]
-  ACT --> ACT3[Consistent handling of all requests]
+  ACT --> ACT1[모든 요청의 실행 엔진]
+  ACT --> ACT2[요청 생명주기 관리 컨텍스트]
+  ACT --> ACT3[웹/셸 등 모든 요청 일관 처리]
 
   A --> TR[Translet]
-  TR --> TR1["Blueprint of processing rules (request, response, etc.)"]
-  TR --> TR2[Referenced and executed by Activity]
-  TR --> TR3[Reusable service unit]
+  TR --> TR1["처리 규칙의 설계도 (요청, 응답, 액션 등)"]
+  TR --> TR2[Activity가 참조하여 실행]
+  TR --> TR3[재사용 가능한 서비스 단위]
 
   A --> BEAN["Bean (IoC/DI)"]
-  BEAN --> BEAN1[Lifecycle managed by the container]
-  BEAN --> BEAN2["Dependency Injection (DI)"]
-  BEAN --> BEAN3[Scopes: singleton, prototype, request, session]
+  BEAN --> BEAN1[컨테이너가 생명주기 관리]
+  BEAN --> BEAN2["의존성 주입 (DI)"]
+  BEAN --> BEAN3[스코프: singleton, prototype, request, session]
 
   A --> ACTN[Action]
-  ACTN --> ACTN1[Defined as part of a Translet's rules]
-  ACTN --> ACTN2[Performs business logic]
-  ACTN --> ACTN3["Hierarchical results determine follow-up actions and view rendering"]
+  ACTN --> ACTN1[Translet의 일부로 규칙 정의]
+  ACTN --> ACTN2[비즈니스 로직 수행]
+  ACTN --> ACTN3["계층적 결과로 후속 처리 및 뷰 렌더링 결정"]
 
   A --> ASP["Aspect (AOP)"]
-  ASP --> ASP1["Separation of cross-cutting concerns (logging, tx, security)"]
-  ASP --> ASP2[AOP proxy performance optimization]
-  ASP --> ASP3[Asynchronous execution support]
+  ASP --> ASP1["횡단 관심사 분리 (로깅, 트랜잭션, 보안)"]
+  ASP --> ASP2[AOP 프록시 성능 최적화]
+  ASP --> ASP3[비동기 실행 지원]
 
   A --> TPL[Template / View]
-  TPL --> TPL1[Renders the result of Translet processing]
-  TPL --> TPL2[Supports FreeMarker, Pebble, Thymeleaf, etc.]
-  TPL --> TPL3[Dynamic UI/UX composition]
+  TPL --> TPL1[Translet 처리 결과 렌더링]
+  TPL --> TPL2[FreeMarker, Pebble, Thymeleaf 등 지원]
+  TPL --> TPL3[동적인 UI/UX 구성]
 
-  ACT -- references --> TR
-  TR -- execution plan --> ACTN
-  ACTN -- depends on/uses --> BEAN
-  ASP -- applies to --> ACT
-  ASP -- applies to --> BEAN
-  ACTN -- passes result to --> TPL
+  ACT -- 참조 --> TR
+  TR -- 실행 계획 --> ACTN
+  ACTN -- 의존성 주입/사용 --> BEAN
+  ASP -- 적용 --> ACT
+  ASP -- 적용 --> BEAN
+  ACTN -- 결과 전달 --> TPL
 
-  classDef concept fill:#e6f3ff,stroke:#0066cc
+  classDef concept stroke:#ff5544,stroke-width:3px
   class ACT,TR,BEAN,ACTN,ASP,TPL concept
 ```
 
 ---
 
-### 6. Core Package Relationships
+### 6. 코어 패키지 관계 (Core Package Relationships)
 
-This diagram shows the dependency relationships between major packages. It helps to understand the structure of how high-level execution environments depend on the core packages.
+주요 패키지 간의 의존성 관계를 보여주는 다이어그램입니다. 상위 레벨의 실행 환경이 어떻게 코어 패키지에 의존하는지 구조를 파악할 수 있습니다.
 
 ```mermaid
 graph TD
@@ -429,84 +430,86 @@ graph TD
   class DAEMON,SHELL,WEB,SCHED,CORE_SVC,CORE_ACT,CORE_CTX pkg
 ```
 
+이 다이어그램들은 Aspectran의 설계 사상과 내부 작동 방식을 이해하는 데 유용한 가이드가 될 것입니다.
+
 ---
 
-### 7. Request Lifecycle Sequence
+### 7. 요청 생명주기 시퀀스 (Request Lifecycle Sequence)
 
-This diagram shows the interaction between major components in chronological order, from when a user request occurs until the final response is delivered.
+사용자 요청이 발생했을 때부터 최종 응답이 전달될 때까지, 주요 컴포넌트 간의 상호작용을 시간 순서에 따라 보여주는 다이어그램입니다.
 
 ```mermaid
 sequenceDiagram
     autonumber
 
     actor Client
-    participant Adapter as "Execution Adapter<br>(Web/Shell...)"
-    participant CoreService as "Core Service"
-    participant Activity as "Activity"
-    participant Translet as "Translet"
-    participant Action as "Action"
-    participant Bean as "Business Bean"
-    participant ViewDispatcher as "View Dispatcher"
+    participant Adapter as "실행 어댑터<br>(Web/Shell...)"
+    participant CoreService as "코어 서비스"
+    participant Activity as "액티비티"
+    participant Translet as "트랜슬릿"
+    participant Action as "액션"
+    participant Bean as "비즈니스 빈"
+    participant ViewDispatcher as "뷰 디스패처"
 
-    Client->>Adapter: 1. Request
-    Adapter->>CoreService: 2. Request to perform activity
-    CoreService->>Activity: 3. Create and initialize Activity
+    Client->>Adapter: 1. 요청 (Request)
+    Adapter->>CoreService: 2. 액티비티 수행 요청
+    CoreService->>Activity: 3. Activity 생성 및 초기화
 
     activate Activity
-    Activity->>Activity: 4. Find Translet for the request
-    Activity->>+Translet: 5. Execute Translet
+    Activity->>Activity: 4. 요청에 해당하는 Translet 탐색
+    Activity->>+Translet: 5. Translet 실행
 
-    Translet->>+Action: 6. Execute Action
-    Action->>+Bean: 7. Invoke business logic
-    Bean-->>-Action: 8. Return result of logic
-    Action-->>-Translet: 9. Return Action Result
+    Translet->>+Action: 6. Action 실행
+    Action->>+Bean: 7. 비즈니스 로직 호출
+    Bean-->>-Action: 8. 로직 수행 결과 반환
+    Action-->>-Translet: 9. Action 결과 (ActionResult) 반환
 
-    alt If view rendering is needed (dispatch)
-        Translet->>+ViewDispatcher: 10. Delegate view rendering
-        ViewDispatcher->>ViewDispatcher: 11. Select and execute template engine
-        ViewDispatcher-->>-Translet: 12. Return rendered view (response)
+    alt 뷰 렌더링이 필요한 경우 (dispatch)
+        Translet->>+ViewDispatcher: 10. 뷰 렌더링 위임
+        ViewDispatcher->>ViewDispatcher: 11. 템플릿 엔진 선택 및 실행
+        ViewDispatcher-->>-Translet: 12. 렌더링된 뷰(응답) 반환
     end
 
-    Translet-->>-Activity: 13. Translet processing complete
+    Translet-->>-Activity: 13. Translet 처리 완료
 
-    Activity->>Adapter: 14. Generate final response
+    Activity->>Adapter: 14. 최종 응답 생성
     deactivate Activity
 
-    Adapter->>Client: 15. Send final response
+    Adapter->>Client: 15. 최종 응답 전송
 ```
 
 ---
 
-### 8. Bean Lifecycle & Scopes
+### 8. 빈 생명주기 및 스코프 (Bean Lifecycle & Scopes)
 
-This shows the entire process of how the IoC container creates and manages beans. It explains the lifecycle of a `singleton` bean and when `request`, `session`, and `prototype` scope beans are created and destroyed.
+IoC 컨테이너가 빈(Bean)을 생성하고 관리하는 전체 과정을 보여줍니다. `singleton` 빈의 생명주기와 `request`, `session`, `prototype` 스코프 빈이 언제 생성되고 소멸하는지 설명합니다.
 
 ```mermaid
 graph TD
     subgraph "Application Startup"
-        A[Application Start] --> B{IoC Container Initialization};
-        B --> C["Scan Bean Definitions<br>(XML/APON) and<br>Component Auto-Scan"];
+        A[애플리케이션 시작] --> B{IoC 컨테이너 초기화};
+        B --> C["빈 설정 정보 스캔<br>(XML/APON) 및<br>컴포넌트 자동 스캔"];
     end
 
     subgraph "Singleton Bean Lifecycle"
-        C --> D{Singleton Bean Creation};
-        D --> E["1. Instantiation"];
-        E --> F["2. Dependency Injection (DI)"];
-        F --> G["3. Execute Initialization Callbacks<br>(e.g., InitializableBean, @Initialize)"];
-        G --> H((Ready for use));
+        C --> D{싱글톤 빈 생성};
+        D --> E["1. 인스턴스화 (Instantiation)"];
+        E --> F["2. 의존성 주입 (DI)"];
+        F --> G["3. 초기화 콜백 실행<br>(e.g., InitializableBean, @Initialize)"];
+        G --> H((사용 준비 완료));
     end
 
     subgraph "Application Runtime"
-        H --> I{Application Running};
-        I -- "On Request" --> J{"'request' scope bean<br>Create & Destroy"};
-        I -- "On Session Creation" --> K{"'session' scope bean<br>Create & Destroy"};
-        I -- "On every call" --> L{"'prototype' scope bean<br>Create (destruction not managed)"};
+        H --> I{애플리케이션 실행};
+        I -- "요청 발생 시" --> J{"'request' 스코프 빈<br>생성 및 소멸"};
+        I -- "세션 생성 시" --> K{"'session' 스코프 빈<br>생성 및 소멸"};
+        I -- "호출 시마다" --> L{"'prototype' 스코프 빈<br>생성 (소멸은 관리 안 함)"};
     end
 
     subgraph "Application Shutdown"
-        I --> M{Application Shutdown};
-        M --> N["4. Execute Destruction Callbacks<br>(e.g., DisposableBean, @Destroy)"];
-        N --> O((Singleton Bean Destroyed));
+        I --> M{애플리케이션 종료};
+        M --> N["4. 소멸 콜백 실행<br>(e.g., DisposableBean, @Destroy)"];
+        N --> O((싱글톤 빈 소멸));
     end
 
     style H stroke:#155724
@@ -515,39 +518,39 @@ graph TD
 
 ---
 
-### 9. AOP Mechanism
+### 9. AOP 작동 방식 (AOP Mechanism)
 
-This shows the process where a method call is intercepted by an AOP proxy to execute advice that handles cross-cutting concerns like transactions and logging.
+메서드 호출이 AOP 프록시에 의해 가로채여, 트랜잭션, 로깅 등 횡단 관심사를 처리하는 어드바이스(Advice)가 실행되는 과정을 보여줍니다.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Client
-    participant Proxy as "AOP Proxy"
-    participant Aspect as "Aspect"
-    participant Target as "Target Bean"
+    participant Proxy as "AOP 프록시"
+    participant Aspect as "애스펙트"
+    participant Target as "대상 빈 (Target)"
 
-    Client->>Proxy: 1. Method Call
+    Client->>Proxy: 1. 메서드 호출
 
     activate Proxy
-    Proxy->>+Aspect: 2. Execute @Around or @Before advice
+    Proxy->>+Aspect: 2. @Around 또는 @Before 어드바이스 실행
 
-    note right of Aspect: Execute cross-cutting concern logic (e.g., start transaction, logging)
+    note right of Aspect: 횡단 관심사 로직 수행 (e.g., 트랜잭션 시작, 로깅)
 
-    Aspect->>+Target: 3. Invoke original method
+    Aspect->>+Target: 3. 원본 메서드 호출)
 
-    note right of Target: Execute core business logic
+    note right of Target: 핵심 비즈니스 로직 수행
 
-    Target-->>-Aspect: 4. Return business logic result
+    Target-->>-Aspect: 4. 비즈니스 로직 결과 반환
 
-    Aspect->>Aspect: 5. Execute @Around or @After advice
+    Aspect->>Aspect: 5. @Around 또는 @After 어드바이스 실행
 
-    note right of Aspect: Execute post-processing logic (e.g., commit/rollback transaction)
+    note right of Aspect: 후처리 로직 수행 (e.g., 트랜잭션 커밋/롤백)
 
-    Aspect-->>-Proxy: 6. Return final result
+    Aspect-->>-Proxy: 6. 최종 결과 반환
 
-    Proxy-->>Client: 7. Return final result
+    Proxy-->>Client: 7. 최종 결과 반환
     deactivate Proxy
 ```
 
-These diagrams will be a useful guide to understanding Aspectran's design philosophy and internal workings.
+이 다이어그램들은 Aspectran의 설계 사상과 내부 작동 방식을 이해하는 데 유용한 가이드가 될 것입니다.
