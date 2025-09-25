@@ -29,7 +29,7 @@ JSP is a classic view technology that is executed directly by the servlet contai
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-web</artifactId>
-    <version>8.6.0</version>
+    <version>9.0.0</version>
 </dependency>
 ```
 
@@ -56,7 +56,7 @@ Thymeleaf is a modern server-side Java template engine for both web and standalo
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-with-thymeleaf</artifactId>
-    <version>8.6.0</version>
+    <version>9.0.0</version>
 </dependency>
 ```
 
@@ -84,7 +84,7 @@ FreeMarker is a powerful and widely used template engine for generating any kind
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-with-freemarker</artifactId>
-    <version>8.6.0</version>
+    <version>9.0.0</version>
 </dependency>
 ```
 
@@ -112,7 +112,7 @@ Pebble is a lightweight yet powerful template engine inspired by Twig, known for
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-with-pebble</artifactId>
-    <version>8.6.0</version>
+    <version>9.0.0</version>
 </dependency>
 ```
 
