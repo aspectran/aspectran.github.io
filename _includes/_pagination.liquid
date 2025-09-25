@@ -6,7 +6,7 @@
 *
 {% endcomment %}
 
-{% assign posts = paginator.posts | sort: 'date' %}
+{% assign posts = paginator.posts | sort: 'date' | reverse %}
 
 <div class="pt-4">
   {% for post in posts %}
