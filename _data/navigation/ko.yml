@@ -17,10 +17,14 @@
   url: "/ko/aspectow/"
   side: left
   dropdown:
-  - title: "Aspectow 소개"
-    url: "/ko/aspectow/"
-  - title: "Aspectow 설치 및 실행"
-    url: "/ko/aspectow/installing-and-running/"
+  - title: "Why Aspectow"
+    url: "/ko/why-aspectow/"
+  - title: "Aspectow 시작하기"
+    url: "/ko/aspectow/getting-started/"
+  - title: "Aspectow 핵심 개념"
+    url: "/ko/aspectow/core-concepts/"
+  - title: "배포 및 운영 가이드"
+    url: "/ko/aspectow/deployment-and-operations/"
 
 - title: 프로젝트
   url: "/ko/projects/"

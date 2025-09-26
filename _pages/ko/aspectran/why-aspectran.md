@@ -7,6 +7,7 @@ header:
   caption: "Aspectran World"
 inside_heading: true
 sidebar: toc
+permalink: /ko/why-aspectran/
 ---
 
 ## 서론

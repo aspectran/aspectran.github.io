@@ -17,10 +17,14 @@
   url: "/en/aspectow/"
   side: left
   dropdown:
-  - title: "About Aspectow"
-    url: "/en/aspectow/"
-  - title: "Installing and Running Aspectow"
-    url: "/en/aspectow/installing-and-running/"
+  - title: "Why Aspectow"
+    url: "/en/why-aspectow/"
+  - title: "Aspectow Getting Started"
+    url: "/en/aspectow/getting-started/"
+  - title: "Aspectow Core Concepts"
+    url: "/en/aspectow/core-concepts/"
+  - title: "Deployment and Operations"
+    url: "/en/aspectow/deployment-and-operations/"
 
 - title: Projects
   url: "/en/projects/"
