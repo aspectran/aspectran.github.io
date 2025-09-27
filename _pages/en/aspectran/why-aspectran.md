@@ -1,10 +1,10 @@
 ---
 format: plate solid article margin
-title: "Why Aspectran"
+title: Why Aspectran
 teaser: '"Designing for Sustainable Simplicity: The Aspectran Architectural Philosophy"'
 header:
-  image_fullwidth: "aspectran-world.jpg"
-  caption: "Aspectran World"
+  image_fullwidth: header_aspectran.png
+  caption: Aspectran
 inside_heading: true
 sidebar: toc
 permalink: /en/why-aspectran/

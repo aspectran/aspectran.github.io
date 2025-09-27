@@ -1,7 +1,10 @@
 ---
 format: plate solid article
 title: Why Aspectow
-teaser: The most practical enterprise WAS for microservices architecture (MSA)
+teaser: '"The most practical enterprise WAS for microservices architecture (MSA)"'
+header:
+  image_fullwidth: header_aspectow.png
+  caption: Aspectow
 inside_heading: true
 sidebar: toc
 permalink: /en/why-aspectow/

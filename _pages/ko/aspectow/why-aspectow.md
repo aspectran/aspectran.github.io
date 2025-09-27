@@ -1,7 +1,10 @@
 ---
 format: plate solid article margin
 title: Why Aspectow
-teaser: 마이크로서비스 아키텍처(MSA)를 위한 가장 실용적인 엔터프라이즈 WAS
+teaser: '"마이크로서비스 아키텍처(MSA)를 위한 가장 실용적인 엔터프라이즈 WAS"'
+header:
+  image_fullwidth: header_aspectow.png
+  caption: Aspectow
 inside_heading: true
 sidebar: toc
 permalink: /ko/why-aspectow/
