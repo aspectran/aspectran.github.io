@@ -54,10 +54,10 @@ projects:
             </h4>
           </div>
           {% if project.thumb_img %}
-          <div class="col-md-4">
+          <div class="col-4">
             <a href="{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
           </div>
-          <div class="col-md-8">
+          <div class="col-8">
             {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
             <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
           </div>
