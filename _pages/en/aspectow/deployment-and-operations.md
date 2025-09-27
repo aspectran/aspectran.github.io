@@ -126,5 +126,5 @@ sidebar: toc
 ### Windows 환경
 
 *   `daemon.bat`: 콘솔 창에 실행 과정을 표시하며 데몬으로 실행
-*   `shell.bat` / `jline-shell.bat`: 대화형 셸 모드로 실행
+*   `shell.bat`: 대화형 셸 모드로 실행
 *   `procrun\` 디렉터리: Windows 서비스 설치/제거/관리를 위한 `prunsrv.exe` 관련 스크립트
