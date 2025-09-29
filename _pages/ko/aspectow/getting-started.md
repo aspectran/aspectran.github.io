@@ -22,11 +22,21 @@ cd aspectow-todo-webapp
 
 ## 3. 프로젝트 실행
 
-클론한 프로젝트 디렉토리로 이동하여 Maven 명령어를 통해 애플리케이션을 빌드하고 실행합니다.
+클론한 프로젝트 디렉토리로 이동하여 Maven 명령어로 애플리케이션을 빌드하고, 쉘 스크립트로 실행합니다.
 
+- `mvn clean package`: 프로젝트를 빌드하여 `app/lib` 디렉터리에 라이브러리들을 생성합니다.
+- `shell.sh` 또는 `shell.bat`: Aspectow 대화형 쉘을 시작합니다.
+
+**Linux/macOS**
 ```bash
 mvn clean package
-/bin/shell.sh
+./bin/shell.sh
+```
+
+**Windows**
+```cmd
+mvn clean package
+bin\shell.bat
 ```
 
 애플리케이션이 성공적으로 시작되면, 다음과 같은 그리팅 메시지와 함께 `aspectow` 프롬프트가 명령을 기다립니다.
@@ -157,5 +167,5 @@ IDE(예: IntelliJ IDEA, Eclipse)를 사용하는 경우, 특정 클래스(예: `
 ## 11. 다음 단계
 
 *   **코드 탐색**: 클론한 프로젝트의 코드를 살펴보며 Aspectran의 구조와 동작 방식을 이해해 보세요.
-*   **핵심 개념 학습**: Aspectow의 [핵심 개념 문서](/ko/aspectow/core-concepts/)를 읽고 Aspectran 프레임워크와 Aspectow WAS의 주요 특징을 더 깊이 알아보세요.
+*   **핵심 개념 학습**: [Aspectow 아키텍처](/ko/aspectow/architecture/)를 읽고 Aspectran 프레임워크와 Aspectow WAS의 주요 특징을 더 깊이 알아보세요.
 *   **나만의 애플리케이션 개발**: Aspectow [스타터 프로젝트](/ko/projects/)를 기반으로 자신만의 애플리케이션 개발을 시작해 보세요.

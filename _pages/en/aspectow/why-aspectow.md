@@ -104,14 +104,14 @@ Instead of providing an installable package like Apache Tomcat, Aspectow offers 
 
 These projects provide only the basic environment and are intended to be used as a skeleton for starting a new project.
 
-*   **Aspectow**: The default starter for the Aspectow Enterprise Edition.
-*   **Aspectow Light**: The default starter for the Aspectow Light Edition.
-*   **Aspectow Jetty**: The default starter for the Aspectow Jetty Edition.
+*   [Aspectow](https://github.com/aspectran/aspectow): The default starter for the Aspectow Enterprise Edition.
+*   [Aspectow Light](https://github.com/aspectran/aspectow-light): The default starter for the Aspectow Light Edition.
+*   [Aspectow Jetty](https://github.com/aspectran/aspectow-jetty): The default starter for the Aspectow Jetty Edition.
 
 ### Sample Projects
 
 These are complete, runnable projects that demonstrate how to use specific features or libraries.
 
-*   **ToDo Webapp**: A simple ToDo example application based on the Aspectow Enterprise Edition.
-*   **JPetStore Webapp**: A database integration example application using MyBatis.
-*   **Petclinic Webapp**: A web application example using JPA and Thymeleaf.
+*   [ToDo Webapp](https://github.com/aspectran/aspectow-todo-webapp): A simple ToDo example application based on the Aspectow Enterprise Edition.
+*   [JPetStore Webapp](https://github.com/aspectran/aspectran-jpetstore): A database integration example application using MyBatis.
+*   [Petclinic Webapp](https://github.com/aspectran/aspectran-petclinic): A web application example using JPA and Thymeleaf.

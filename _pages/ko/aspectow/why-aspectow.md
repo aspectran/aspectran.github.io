@@ -104,14 +104,14 @@ Aspectow는 Apache Tomcat처럼 설치 가능한 패키지를 제공하는 대�
 
 기본 환경만 구성되어 있어, 새로운 프로젝트를 시작하는 뼈대로 사용하기 위한 프로젝트입니다.
 
-*   **Aspectow**: Aspectow Enterprise 에디션의 기본 스타터입니다.
-*   **Aspectow Light**: Aspectow Light 에디션의 기본 스타터입니다.
-*   **Aspectow Jetty**: Aspectow Jetty 에디션의 기본 스타터입니다.
+*   [Aspectow](https://github.com/aspectran/aspectow): Aspectow Enterprise 에디션의 기본 스타터입니다.
+*   [Aspectow Light](https://github.com/aspectran/aspectow-light): Aspectow Light 에디션의 기본 스타터입니다.
+*   [Aspectow Jetty](https://github.com/aspectran/aspectow-jetty): Aspectow Jetty 에디션의 기본 스타터입니다.
 
 ### 샘플 프로젝트 (Sample Projects)
 
 특정 기능이나 라이브러리 활용법을 보여주는 완전한 예제이며, 바로 실행해 볼 수 있는 프로젝트입니다.
 
-*   **ToDo 웹앱**: Aspectow Enterprise 에디션 기반의 간단한 ToDo 예제 애플리케이션입니다.
-*   **JPetStore 웹앱**: MyBatis를 사용하는 데이터베이스 연동 예제 애플리케이션입니다.
-*   **Petclinic 웹앱**: JPA와 Thymeleaf를 사용하는 웹 애플리케이션 예제입니다.
+*   [ToDo 웹앱](https://github.com/aspectran/aspectow-todo-webapp): Aspectow Enterprise 에디션 기반의 간단한 ToDo 예제 애플리케이션입니다.
+*   [JPetStore 웹앱](https://github.com/aspectran/aspectran-jpetstore): MyBatis를 사용하는 데이터베이스 연동 예제 애플리케이션입니다.
+*   [Petclinic 웹앱](https://github.com/aspectran/aspectran-petclinic): JPA와 Thymeleaf를 사용하는 웹 애플리케이션 예제입니다.

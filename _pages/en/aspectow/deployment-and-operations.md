@@ -1,11 +1,9 @@
 ---
 format: plate solid article
 title: Aspectow Deployment and Operations Guide
-teaser: This guide provides instructions for deploying Aspectow applications and managing them as services on various operating systems.
+teaser: This guide provides detailed instructions on how to deploy and manage Aspectow applications as services in Linux/Unix and Windows environments.
 sidebar: toc
 ---
-
-This guide provides detailed instructions on how to deploy and manage Aspectow applications as services in Linux/Unix and Windows environments. You can build an efficient operational environment by utilizing the provided scripts.
 
 There are two main execution methods described in this guide:
 1.  **Automated Deployment and Service Management**: The standard operational method using scripts in the `setup` directory to install the application on a server, build/deploy it, and manage it as a system service. **(Recommended)**
@@ -93,13 +91,13 @@ Once the initial installation and deployment are complete, you can register and 
     cd [BASE_DIR]
     ./setup/install-service.sh
     ```
-    *   Start/Stop/Status Check: `sudo systemctl start|stop|status [APP_NAME]`
-    *   Remove Service: `./setup/uninstall-service.sh`
+  *   Start/Stop/Status Check: `sudo systemctl start|stop|status [APP_NAME]`
+  *   Remove Service: `./setup/uninstall-service.sh`
 
 *   **Windows**: Register as a Windows Service
-    *   As guided at the end of the `install-app.bat` execution, run `install.bat` in the `app\bin\procrun` directory of the new installation path with **Administrator privileges**.
-    *   Start/Stop Service: `net start|stop [ServiceName]` or manage from the `Services` app (`services.msc`).
-    *   Remove Service: Run `uninstall.bat` in `app\bin\procrun` with Administrator privileges.
+  *   As guided at the end of the `install-app.bat` execution, run `install.bat` in the `app\bin\procrun` directory of the new installation path with **Administrator privileges**.
+  *   Start/Stop Service: `net start|stop [ServiceName]` or manage from the `Services` app (`services.msc`).
+  *   Remove Service: Run `uninstall.bat` in `app\bin\procrun` with Administrator privileges.
 
 #### `procrun.options` File Settings
 
@@ -152,3 +150,11 @@ The `app/bin/run.options` file defines common settings for all manually executed
 *   `shell.bat`: Runs in interactive shell mode with JLine applied **(Recommended)**.
 *   `legacy-shell.bat`: A basic shell for older console environments where compatibility is important.
 *   `procrun\` directory: Scripts related to `prunsrv.exe` for Windows service installation/uninstallation/management.
+
+---
+
+### Related Guides
+
+After deploying the application, it is recommended to configure a reverse proxy like Nginx in a production environment. Learn more in the guide below.
+
+- [Nginx Reverse Proxy and Clustering Guide](/en/aspectow/nginx-reverse-proxy-guide/)

@@ -21,10 +21,12 @@
     url: "/ko/why-aspectow/"
   - title: "Aspectow 시작하기"
     url: "/ko/aspectow/getting-started/"
-  - title: "Aspectow 핵심 개념"
-    url: "/ko/aspectow/core-concepts/"
+  - title: "Aspectow 아키텍처"
+    url: "/ko/aspectow/architecture/"
   - title: "배포 및 운영 가이드"
     url: "/ko/aspectow/deployment-and-operations/"
+  - title: "Nginx 리버스 프록시 및 클러스터링 가이드"
+    url: "/ko/aspectow/nginx-reverse-proxy-guide/"
 
 - title: 프로젝트
   url: "/ko/projects/"

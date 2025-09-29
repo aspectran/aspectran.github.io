@@ -21,10 +21,12 @@
     url: "/en/why-aspectow/"
   - title: "Aspectow Getting Started"
     url: "/en/aspectow/getting-started/"
-  - title: "Aspectow Core Concepts"
-    url: "/en/aspectow/core-concepts/"
+  - title: "Aspectow Architecture"
+    url: "/en/aspectow/architecture/"
   - title: "Deployment and Operations"
     url: "/en/aspectow/deployment-and-operations/"
+  - title: "Nginx Reverse Proxy and Clustering Guide"
+    url: "/en/aspectow/nginx-reverse-proxy-guide/"
 
 - title: Projects
   url: "/en/projects/"
