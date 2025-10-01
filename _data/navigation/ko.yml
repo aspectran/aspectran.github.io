@@ -27,6 +27,8 @@
     url: "/ko/aspectow/deployment-and-operations/"
   - title: "Nginx 리버스 프록시 및 클러스터링 가이드"
     url: "/ko/aspectow/nginx-reverse-proxy-guide/"
+  - title: "Aspectow AppMon"
+    url: "/ko/aspectow/appmon/"
 
 - title: 프로젝트
   url: "/ko/projects/"

@@ -27,6 +27,8 @@
     url: "/en/aspectow/deployment-and-operations/"
   - title: "Nginx Reverse Proxy and Clustering Guide"
     url: "/en/aspectow/nginx-reverse-proxy-guide/"
+  - title: "Aspectow AppMon"
+    url: "/en/aspectow/appmon/"
 
 - title: Projects
   url: "/en/projects/"
