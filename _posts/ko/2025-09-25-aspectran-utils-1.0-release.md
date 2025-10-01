@@ -28,7 +28,7 @@ Maven 프로젝트의 `pom.xml`에 다음 의존성을 추가하여 바로 사�
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-utils-legacy</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 

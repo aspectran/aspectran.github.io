@@ -28,7 +28,7 @@ You can start using it right away by adding the following dependency to your Mav
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-utils-legacy</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 

@@ -33,7 +33,7 @@ For Maven projects, add the following dependency to your `pom.xml` file:
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-utils-legacy</artifactId>
-    <version>1.0.0</version> <!-- Adjust to the actual version -->
+    <version>1.0.1</version> <!-- Adjust to the actual version -->
 </dependency>
 ```
 
