@@ -53,10 +53,10 @@ Once the application starts successfully, you will see a greeting message and th
 DEBUG 2025-09-25 20:02:28.080 [demo] Initialized DefaultSessionManager@1e0a864d(shell) - c.a.c.c.AbstractComponent.initialize(65)
 
      ___                         __
-    /   |  ___  ____  ___  ___  / /____   ___  ____
-   / /| | / __|/ __ |/ _ |/ __|/ __/ __|/ __ |/ __ |
-  / ___ |(__  ) /_/ /  __/ /  / / / /  / /_/ / / / /  Aspectow
- /_/  |_|____/ .___/|___/|___/|__/_/   |__(_(_/ /_/   Enterprise Edition
+    /   |  _________  ___  _____/ /_____ _      __
+   / /| | / ___/ __ \/ _ \/ ___/ __/ __ \ | /| / /
+  / ___ |(__  ) /_/ /  __/ /__/ /_/ /_/ / |/ |/ /
+ /_/  |_/____/ .___/\___/\___/\__/\____/|__/|__/    Enterprise Edition
 =========== /_/ ==========================================================
 :: Built with Aspectran :: 9.0.2
 
