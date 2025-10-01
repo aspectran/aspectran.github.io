@@ -5,8 +5,6 @@ teaser: Aspectow AppMon은 Aspectran 프레임워크 기반의 애플리케이�
 sidebar: toc
 ---
 
-# Aspectow AppMon 소개
-
 ## 1. 개요
 
 Aspectow AppMon은 Aspectran 프레임워크 기반의 애플리케이션을 위한 경량(Lightweight) 실시간 모니터링 솔루션입니다. 애플리케이션의 성능에 미치는 영향을 최소화하면서, 운영 중에 발생하는 다양한 이벤트, 로그, 시스템 메트릭 등을 웹 UI를 통해 실시간으로 관찰할 수 있도록 설계되었습니다.
