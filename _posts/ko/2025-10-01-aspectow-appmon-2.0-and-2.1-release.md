@@ -1,6 +1,6 @@
 ---
 subheadline: Releases
-title:  'Aspectow AppMon 2.0.0 및 2.1.0 출시: 더 빠르고, 더 유연하게!'
+title: "Aspectow AppMon 2.0.0 및 2.1.0 출시: 더 빠르고, 더 유연하게!"
 categories:
   - news
 tags:

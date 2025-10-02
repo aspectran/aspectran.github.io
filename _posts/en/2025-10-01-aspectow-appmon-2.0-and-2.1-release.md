@@ -1,6 +1,6 @@
 ---
 subheadline: Releases
-title:  'Aspectow AppMon 2.0.0 and 2.1.0 Released: Faster and More Flexible!'
+title: "Aspectow AppMon 2.0.0 and 2.1.0 Released: Faster and More Flexible!"
 categories:
   - news
 tags:
