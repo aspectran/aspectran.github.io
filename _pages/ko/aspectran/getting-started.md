@@ -39,7 +39,7 @@ cd hello-aspectran
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
-        <aspectran.version>9.0.2</aspectran.version>
+        <aspectran.version>9.0.3</aspectran.version>
     </properties>
 
     <repositories>
