@@ -9,12 +9,12 @@ tags:
   - Hibernate
   - JPA
   - ClassLoader
-published: true
+published: false
 ---
 
 ## 문제 상황
 
-[Aspectran PetClinic 데모](https://github.com/aspectran/petclinic)를 Hibernate 7.0.0.Final에서 7.1.2.Final로 업그레이드하는 과정에서 다음과 같은 오류가 발생했습니다:
+[Aspectran PetClinic 데모](https://github.com/aspectran/petclinic)를 Hibernate 7.0.9.Final에서 7.1.2.Final로 업그레이드하는 과정에서 다음과 같은 오류가 발생했습니다:
 
 ```
 java.lang.ClassCastException: class app.petclinic.owner.Owner cannot be cast to
@@ -29,7 +29,7 @@ at app.petclinic.owner.OwnerDao.findById(OwnerDao.java:100)
 
 **Hibernate 7.0.1+ 버전부터는 Thread Context ClassLoader를 자동으로 감지하지 않습니다.**
 
-- ✅ **Hibernate 7.0.0.Final**: Context ClassLoader를 자동으로 사용
+- ✅ **Hibernate 7.0.9.Final**: Context ClassLoader를 자동으로 사용
 - ❌ **Hibernate 7.0.1+**: 명시적인 ClassLoader 설정 필요
 
 이는 마이너 버전 업데이트에서 발생한 호환성을 깨는 변경사항이며, 적절한 ClassLoader 관리가 중요한 프레임워크 통합에 영향을 미칩니다.
@@ -135,12 +135,12 @@ public class DefaultEntityManagerFactory extends EntityManagerFactoryBean {
 ## 테스트된 버전
 
 - ✅ Aspectran 9.0.2
-- ✅ Hibernate 7.0.0.Final - 7.1.2.Final
+- ✅ Hibernate 7.0.9.Final - 7.1.2.Final
 - ✅ Jakarta EE 10
 - ✅ Java 21
 
 ## 참고 자료
 
-- [Aspectran PetClinic 데모](https://github.com/aspectran/petclinic)
+- [Aspectran PetClinic 데모](https://github.com/aspectran/aspectran-petclinic)
 - [Hibernate ORM 7.1 문서](https://docs.jboss.org/hibernate/orm/7.1/)
 - [Aspectran 프레임워크](https://aspectran.com/)
