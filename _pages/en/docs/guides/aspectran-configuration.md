@@ -72,6 +72,8 @@ context: {
 - **`name`**: Specifies a unique name for the `ActivityContext`.
 - **`rules`**: Specifies the path to the core rule files written in XML or APON format. You can specify multiple files in an array. These files define major rules such as **Bean, Translet, and Aspect**.
 - **`resources`**: Adds multiple directory paths for the application classloader to find libraries (JAR files) or resources. For example, `resources: [ /lib/ext ]` means adding the `/lib/ext` directory under the application's execution location to the classpath.
+
+    > **Note:** When running the application in an IDE (Integrated Development Environment), Aspectran automatically ignores this `resources` setting to prevent `ClassCastException` due to classloader conflicts. This is to avoid duplicate loading of classes from the IDE's classpath and classes contained in JAR files in the directories specified by `resources`.
 - **`scan`**: Specifies the base packages for component scanning. Aspectran finds classes annotated with `@Component`, `@Bean`, `@Aspect`, etc., in the specified packages and automatically registers them as beans.
 - **`profiles`**: Sets up profiles to distinguish the application's execution environment.
     - **`base`**: Specifies the base profiles that should always be active.
