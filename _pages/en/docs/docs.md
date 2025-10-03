@@ -12,7 +12,7 @@ We've organized it for easy navigation and access, including configuration guide
 {% endcapture %}
 {% include alert.liquid info=info_message %}
 
-## Configuration Guides
+## <i class="bi bi-gear-wide-connected"></i> Configuration Guides
 
 Configure Aspectran to fit your environment and needs.
 
@@ -20,7 +20,7 @@ Configure Aspectran to fit your environment and needs.
 *   [Aspectran XML Configuration Guide](/en/docs/guides/aspectran-xml-configuration/)
 *   [Servlet-based Web Application Configuration](/en/docs/guides/aspectran-servlet-configuration/)
 
-## User Guides
+## <i class="bi bi-person-workspace"></i> User Guides
 
 Learn how to use Aspectran and get the most out of its features.
 
@@ -34,7 +34,7 @@ Learn how to use Aspectran and get the most out of its features.
 *   [Introduction to APON (Aspectran Parameters Object Notation) 소개](/en/docs/guides/introduce-apon/)
 *   [Introduction to AsEL (Aspectran Expression Language)](/en/docs/guides/introduce-asel/)
 
-## Practical Guides
+## <i class="bi bi-braces-asterisk"></i> Practical Guides
 
 Access hands-on guides to apply Aspectran effectively in real scenarios.
 
@@ -45,7 +45,7 @@ Access hands-on guides to apply Aspectran effectively in real scenarios.
 *   [Guide to Integrating Legacy Systems with Modern Aspectran Application Servers](/en/docs/guides/practical-guide-to-legacy-integration/)
 *   [Using CORS (Cross-Origin Resource Sharing) in Aspectran](/en/docs/guides/practical-guide-to-cors/)
 
-## Architecture
+## <i class="bi bi-cpu"></i> Architecture
 
 Understand the high-level architecture of Aspectran and its core components.
 
@@ -72,7 +72,7 @@ Dive deeper into Aspectran’s architecture with detailed explanations.
 *   [Aspectran Session Manager: Deep Dive](/en/docs/architecture/aspectran-session-manager/)
 *   [Aspectran AOP Proxy Mechanism: `AbstractBeanProxy` and `ProxyActivity`](/en/docs/architecture/new-aop-proxy-mechanism/)
 
-### Package Deep Dive
+### <i class="bi bi-crosshair"></i> Package Deep Dive
 
 Explore Aspectran’s packages in detail and understand their functionalities.
 

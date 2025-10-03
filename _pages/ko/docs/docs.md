@@ -12,7 +12,7 @@ permalink: /ko/docs/
 {% endcapture %}
 {% include alert.liquid info=info_message %}
 
-## 구성 가이드
+## <i class="bi bi-gear-wide-connected"></i> 구성 가이드
 
 환경에 맞춘 설정과 최적화 방법을 제공합니다.
 
@@ -20,7 +20,7 @@ permalink: /ko/docs/
 *   [Aspectran XML 구성 가이드](/ko/docs/guides/aspectran-xml-configuration/)
 *   [서블릿 기반 웹 애플리케이션 구성](/ko/docs/guides/aspectran-servlet-configuration/)
 
-## 사용자 가이드
+## <i class="bi bi-person-workspace"></i> 사용자 가이드
 
 Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
 
@@ -34,7 +34,7 @@ Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
 *   [APON (Aspectran Parameters Object Notation) 소개](/ko/docs/guides/introduce-apon/)
 *   [AsEL (Aspectran Expression Language) 소개](/ko/docs/guides/introduce-asel/)
 
-## 실용 가이드
+## <i class="bi bi-braces-asterisk"></i> 실용 가이드
 
 실제 시나리오에서 Aspectran을 효과적으로 적용하는 방법에 대한 실습 가이드를 살펴보세요.
 
@@ -45,7 +45,7 @@ Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
 *   [레거시 시스템과 최신 Aspectran 애플리케이션 서버 연동 가이드](/ko/docs/guides/practical-guide-to-legacy-integration/)
 *   [Aspectran에서 CORS(Cross-Origin Resource Sharing) 활용하기](/ko/docs/guides/practical-guide-to-cors/)
 
-## 아키텍처
+## <i class="bi bi-cpu"></i> 아키텍처
 
 Aspectran의 고수준 아키텍처와 핵심 구성 요소를 이해합니다.
 
@@ -72,7 +72,7 @@ Aspectran의 고수준 아키텍처와 핵심 구성 요소를 이해합니다.
 *   [Aspectran Session Manager: Deep Dive](/ko/docs/architecture/aspectran-session-manager/)
 *   [Aspectran AOP 프록시 메커니즘: `AbstractBeanProxy`와 `ProxyActivity`](/ko/docs/architecture/new-aop-proxy-mechanism/)
 
-### 패키지 심층 분석
+### <i class="bi bi-crosshair"></i> 패키지 심층 분석
 
 Aspectran의 패키지를 자세히 살펴보고 기능을 이해해 보세요.
 

@@ -13,7 +13,7 @@
 *  - light
 *  - dark
 *
-* An emoji icon is automatically added based on the alert type (success, danger, warning, info).
+* An icon is automatically added based on the alert type (success, danger, warning, info).
 *
 * Legacy types from Foundation are mapped as follows:
 *  - alert: mapped to 'danger'
@@ -36,7 +36,7 @@
 {% for entry in include %}
 {% if entry[0] == 'classes' %}{% continue %}{% endif %}
 {% assign type = entry[0] %}
-{% assign emoji = '' %}
+{% assign icon = '' %}
 {% if type == 'alert' %}
   {% assign type = 'danger' %}
 {% elsif type == 'text' %}
@@ -46,13 +46,16 @@
 {% endif %}
 {% case type %}
   {% when 'success' %}
-    {% assign emoji = '✅ ' %}
+    {% assign icon = '<i class="bi bi-check-circle fs-3 pe-3"></i>' %}
   {% when 'danger' %}
-    {% assign emoji = '❗️ ' %}
+    {% assign icon = '<i class="bi bi-check-circle fs-3 pe-3"></i>️' %}
   {% when 'warning' %}
-    {% assign emoji = '⚠️ ' %}
+    {% assign icon = '<i class="bi bi-exclamation-triangle fs-3 pe-3"></i>' %}
   {% when 'info' %}
-    {% assign emoji = 'ℹ️ ' %}
+    {% assign icon = '<i class="bi bi-info-circle fs-3 pe-3"></i>' %}
 {% endcase %}
-<div class="alert alert-{{ type }} {{ include.classes }}" role="alert">{{ entry[1] | strip | prepend: emoji | markdownify }}</div>
+<div class="alert alert-{{ type }} d-flex align-items-center py-2 {{ include.classes }}" role="alert">
+  {{ icon }}
+  {{ entry[1] | strip | markdownify }}
+</div>
 {% endfor %}
