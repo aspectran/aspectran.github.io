@@ -149,7 +149,31 @@ The `<template>` element is mainly used with the `<transform>` response rule to 
 
 The template content can be written directly within the XML configuration file or referenced from an external resource using the `file`, `resource`, or `url` attributes.
 
-Additionally, Aspectran provides a built-in `token` engine that supports simple dynamic text generation using expressions like `${...}` or `@{...}`.
+The processing method for the template is determined by the `engine` attribute of the `<template>` tag.
+
+### Template Engine (`engine` attribute)
+
+Aspectran's template processing is determined by the `engine` attribute, which can be categorized into three main types:
+
+1.  **`engine="token"` (or omitted)**
+    *   **Processing Engine**: Aspectran's built-in token engine.
+    *   **Description**: This is the default behavior. It parses and replaces Aspectran's native tokens (e.g., `${...}` for parameters, `@{...}` for attributes) with their corresponding values at runtime. This is the standard way to generate dynamic text responses and replaces the legacy `builtin` engine.
+
+2.  **`engine="none"`**
+    *   **Processing Engine**: None (Raw Text).
+    *   **Description**: The template content is not processed and is output as is. This is useful when you want to return pre-formatted static content like JSON or XML without any modifications.
+
+3.  **`engine="[custom-bean-id]"`**
+    *   **Processing Engine**: External template engine bean.
+    *   **Description**: When a value other than `token` or `none` is provided, Aspectran treats it as a bean ID and delegates the template rendering to that bean. This is how you integrate with third-party template engines like FreeMarker, Thymeleaf, or Pebble.
+
+Here is a summary table:
+
+| `engine` Attribute | Processing Engine | Description / Use Case |
+| :--- | :--- | :--- |
+| **(omitted)** or `token` | Aspectran's built-in token engine | Parses and replaces native tokens like `${...}` and `@{...}`. **(Recommended Default)** |
+| `none` | None (Raw Text) | Outputs the template content as is, without any processing. (e.g., for static JSON/XML) |
+| (custom bean ID) | External template engine bean | Delegates rendering to a specified bean. (e.g., for FreeMarker, Thymeleaf integration) |
 
 ### Template Styles (TextStyleType)
 
@@ -169,14 +193,15 @@ You can control the output format by specifying the `style` attribute in the `<t
 **Example 1: Referencing an external file**
 ```xml
 <transform format="text" encoding="UTF-8">
-    <template engine="token" file="/path/to/my-template.txt"/>
+    <!-- If the engine attribute is omitted, it defaults to "token" -->
+    <template file="/path/to/my-template.txt"/>
 </transform>
 ```
 
 **Example 2: Inline template using APON style**
 ```xml
 <transform format="text" encoding="UTF-8">
-    <template engine="token" style="apon">
+    <template style="apon">
         |----------------------------------------------------------
         |The input parameters and attributes are as follows:
         |   input-1: ${input-1} - This is a parameter.

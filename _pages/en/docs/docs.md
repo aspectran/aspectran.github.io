@@ -43,6 +43,7 @@ Access hands-on guides to apply Aspectran effectively in real scenarios.
 *   [A Practical Guide to PBE Token-Based Authentication](/en/docs/guides/practical-guide-to-pbe-token-based-authentication/)
 *   [Guide to Applying Thymeleaf Layout in Aspectran](/en/docs/guides/practical-guide-to-thymeleaf-layout/)
 *   [Guide to Integrating Legacy Systems with Modern Aspectran Application Servers](/en/docs/guides/practical-guide-to-legacy-integration/)
+*   [Using CORS (Cross-Origin Resource Sharing) in Aspectran](/en/docs/guides/practical-guide-to-cors/)
 
 ## Architecture
 

@@ -64,8 +64,8 @@ category: examples
 
   <bean id="corsProcessor" class="com.aspectran.web.support.cors.DefaultCorsProcessor">
     <property name="allowedOrigins" type="set">
-      <value>https://www.aspectran.com</value>
-      <value>https://backend.aspectran.com</value>
+      <value>https://aspectran.com</value>
+      <value>https://backend1.aspectran.com</value>
       <value>https://backend2.aspectran.com</value>
     </property>
     <property name="allowedMethods" type="set">

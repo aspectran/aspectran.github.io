@@ -149,7 +149,31 @@ Pebble은 Twig에서 영감을 받은 가볍지만 강력한 템플릿 엔진으
 
 템플릿 내용은 XML 설정 파일 내에 직접 작성하거나, `file`, `resource`, `url` 속성을 사용하여 외부 리소스를 참조할 수 있습니다.
 
-또한, Aspectran은 내장된 `token` 엔진을 제공하여 `${...}`나 `@{...}` 같은 표현식을 사용한 간단한 동적 텍스트 생성도 지원합니다.
+템플릿을 처리하는 방식은 `<template>` 태그의 `engine` 속성 값에 따라 결정됩니다.
+
+### 템플릿 엔진 (`engine` 속성)
+
+Aspectran의 템플릿 처리는 `engine` 속성에 따라 결정되며, 크게 세 가지 유형으로 나눌 수 있습니다.
+
+1.  **`engine="token"` (또는 생략 시)**
+    *   **처리 엔진**: Aspectran 내장 토큰 엔진
+    *   **설명**: 기본값입니다. `${...}`(파라미터), `@{...}`(속성) 같은 Aspectran 고유의 토큰을 파싱하여 실행 시점에 실제 값으로 치환합니다. 동적인 텍스트 응답을 생성하는 표준적인 방법이며, 과거의 `builtin` 엔진을 대체합니다.
+
+2.  **`engine="none"`**
+    *   **처리 엔진**: 처리 안 함 (Raw Text)
+    *   **설명**: 템플릿 내용을 전혀 처리하지 않고 원본 그대로 출력합니다. 미리 서식이 지정된 정적 JSON이나 XML을 수정 없이 반환하고 싶을 때 유용합니다.
+
+3.  **`engine="[사용자 정의 빈 ID]"`**
+    *   **처리 엔진**: 외부 템플릿 엔진 빈
+    *   **설명**: `token`이나 `none`이 아닌 값이 오면, Aspectran은 이를 빈(Bean) ID로 간주하고 해당 빈에 템플릿 렌더링을 위임합니다. FreeMarker, Thymeleaf, Pebble 같은 서드파티 템플릿 엔진과 연동하는 방식입니다.
+
+다음은 요약 테이블입니다.
+
+| `engine` 속성 값 | 처리 엔진 | 설명 및 용도 |
+| :--- | :--- | :--- |
+| **(생략)** 또는 `token` | Aspectran 내장 토큰 엔진 | `${...}`, `@{...}` 같은 Aspectran 고유 토큰을 파싱하여 값을 치환합니다. **(권장 기본값)** |
+| `none` | 처리 안 함 (Raw Text) | 템플릿 내용을 아무 처리 없이 그대로 출력합니다. (정적 JSON/XML 등) |
+| (사용자 정의 빈 ID) | 외부 템플릿 엔진 빈 | 지정된 ID의 빈(Bean)에게 템플릿 처리를 위임합니다. (FreeMarker, Thymeleaf 등 연동) |
 
 ### 템플릿 스타일 (TextStyleType)
 
@@ -169,14 +193,15 @@ Pebble은 Twig에서 영감을 받은 가볍지만 강력한 템플릿 엔진으
 **예제 1: 외부 파일 참조**
 ```xml
 <transform format="text" encoding="UTF-8">
-    <template engine="token" file="/path/to/my-template.txt"/>
+    <!-- engine 속성을 생략하면 기본값인 "token"으로 처리됩니다 -->
+    <template file="/path/to/my-template.txt"/>
 </transform>
 ```
 
 **예제 2: APON 스타일을 사용한 인라인 템플릿**
 ```xml
 <transform format="text" encoding="UTF-8">
-    <template engine="token" style="apon">
+    <template style="apon">
         |----------------------------------------------------------
         |The input parameters and attributes are as follows:
         |   input-1: ${input-1} - This is a parameter.

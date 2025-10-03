@@ -43,6 +43,7 @@ Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
 *   [PBE를 이용한 인증 토큰 활용 가이드](/ko/docs/guides/practical-guide-to-pbe-token-based-authentication/)
 *   [Aspectran에서 Thymeleaf 레이아웃 적용 가이드](/ko/docs/guides/practical-guide-to-thymeleaf-layout/)
 *   [레거시 시스템과 최신 Aspectran 애플리케이션 서버 연동 가이드](/ko/docs/guides/practical-guide-to-legacy-integration/)
+*   [Aspectran에서 CORS(Cross-Origin Resource Sharing) 활용하기](/ko/docs/guides/practical-guide-to-cors/)
 
 ## 아키텍처
 
