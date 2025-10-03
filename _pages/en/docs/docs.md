@@ -1,5 +1,5 @@
 ---
-format: page solid article
+format: plate solid article
 title: Aspectran Docs
 teaser: Explore Aspectran documentation to learn, configure, and unlock its full potential.
 sidebar: toc
