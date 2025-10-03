@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: 요청(Request) 및 응답(Response) 처리 메커니즘
 subheadline: 아키텍처
-parent_path: /docs
 ---
 
 Aspectran 프레임워크는 `Activity`의 생명 주기 동안 들어오는 요청을 처리하고 적절한 응답을 생성하기 위한 강력하고 유연한 메커니즘을 제공합니다. 이 메커니즘은 핵심 추상화와 각 실행 환경에 특화된 구체적인 확장으로 구성됩니다.

@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: 레거시 시스템과 최신 Aspectran 애플리케이션 서버 연동 가이드
 subheadline: 실용 가이드
-parent_path: /docs
 ---
 
 ## 서론

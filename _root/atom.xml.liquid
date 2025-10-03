@@ -2,7 +2,6 @@
 layout: null
 title: "Atom Feed"
 permalink: /atom.xml
-sitemap: false
 ---
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="{{ site.baseurl }}/assets/xslt/atom.xslt" ?>
@@ -69,45 +68,6 @@ sitemap: false
 
 			<published>{{ post.date | date_to_xmlschema }}</published>
 		</entry>
-	{% endfor %}
-
-	{% for doc in site.docs %}
-	{% unless doc.draft == true %}
-		<entry>
-			<id>{{ site.url }}{{ site.baseurl }}{{ doc.url }}</id>
-			<title>{{ doc.title | strip_html | strip_newlines | xml_escape }}</title>
-			<link href="{{ site.url }}{{ site.baseurl }}{{ doc.url }}" rel="alternate" type="text/html" title="{{ doc.title | xml_escape }}" />
-			<updated>{{ site.time | date_to_xmlschema }}</updated>
-
-			{% if doc.author %}
-				{% assign author = site.data.authors[doc.author] %}
-				<author>
-					{% if author.name %}
-						<name>{{ author.name | xml_escape }}</name>
-					{% else %}
-						<name>{{ doc.author | xml_escape }}</name>
-					{% endif %}
-					{% if author.email %}
-						<email>{{ author.email | xml_escape }}</email>
-					{% endif %}
-					{% if author.uri %}
-						<uri>{{ author.uri | xml_escape }}</uri>
-					{% endif %}
-				</author>
-			{% endif %}
-			<summary>{{ doc.teaser | xml_escape }}</summary>
-			<content type="html" xml:base="{{ site.url }}{{ site.baseurl }}{{ doc.url }}">{{ doc.content | xml_escape }}</content>
-
-			{% for category in doc.categories %}
-				<category term="{{ category | xml_escape }}" />
-			{% endfor %}
-			{% for tag in doc.tags %}
-				<category term="{{ tag | xml_escape }}" />
-			{% endfor %}
-
-			<published>{{ site.time | date_to_xmlschema }}</published>
-		</entry>
-	{% endunless %}
 	{% endfor %}
 
 </feed>

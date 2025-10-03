@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: Aspectran 실행 환경 심층 분석
 subheadline: 아키텍처
-parent_path: /docs
 ---
 
 Aspectran은 핵심 서비스(`CoreService`)와 실행 단위(`Activity`) 개념을 기반으로, 다양한 실행 환경을 지원하는 특수 모듈을 제공합니다. 이러한 모듈성은 개발자가 장기 실행 백그라운드 프로세스, 대화형 명령줄 도구, 임베디드 라이브러리, 고성능 웹 애플리케이션 등 특정 사용 사례에 가장 적합한 방식으로 Aspectran 애플리케이션을 배포할 수 있도록 합니다.

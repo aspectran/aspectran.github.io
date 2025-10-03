@@ -34,10 +34,6 @@
   url: "/ko/projects/"
   side: left
 
-- title: 실용 예제
-  url: "/ko/examples/"
-  side: left
-
 - title: Blog
   url: "/blog/"
   side: right

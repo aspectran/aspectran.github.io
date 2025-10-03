@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "Aspectran Beans: IoC/DI 실용 가이드"
 subheadline: 실용 가이드
-parent_path: /docs
 ---
 
 Aspectran Beans는 Aspectran 프레임워크의 핵심에 내장된 강력한 IoC(Inversion of Control) 컨테이너입니다.

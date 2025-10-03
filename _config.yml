@@ -63,15 +63,10 @@ include: [".htaccess"]
 
 # Exclude these files from your production _site
 exclude:
-#  - .sass-cache
   - Gemfile
   - Gemfile.lock
   - LICENSE
   - README.md
-  - INSTALL.md
-  - CNAME
-  - vendor
-  - renovate.json
   - aspectran.github.io.iml
 
 
@@ -110,70 +105,62 @@ excerpt_separator: "<!--more-->"
 #-------------------------------------------------------------------
 
 collections:
+  root:
+    output: true
+    permalink: "/:path"
   pages:
     output: true
     permalink: "/:path/"
-  examples:
-    output: true
-    permalink: "/examples/:path/"
 
 defaults:
   - scope:
-      path: "_pages/en" 				# an empty string here means all files in the project
+      path: "_pages"
+      type: "pages"
     values:
       lang: "en"
       layout: "page"
       breadcrumb: true
-      show_meta: false  	# Hide metadata for all pages
-      author: "juho_jeong"  # Default author for pages
+      show_meta: false  	  # Hide metadata for all pages
+      author: "juho_jeong"    # Default author for pages
   - scope:
-      path: "_pages/ko" 				# an empty string here means all files in the project
+      path: "_pages/en"
+      type: "pages"
+    values:
+      lang: "en"
+  - scope:
+      path: "_pages/ko"
+      type: "pages"
     values:
       lang: "ko"
+  - scope:
+      path: "_pages/*/docs/*/"
+      type: "pages"
+    values:
+      format: "plate solid article"
+      sidebar: "toc"
+      parent_path: "/docs"    # Relative path for breadcrumb
+  - scope:
+      path: "_posts"
+      type: "posts"
+    values:
       layout: "page"
+      format: "plate solid margin article"
       breadcrumb: true
-      show_meta: false  	# Hide metadata for all pages
-      author: "juho_jeong"  # Default author for pages
+      show_meta: true
+      excerpt_separator: <!--more-->
+      author: "juho_jeong"    # Default author for posts
   - scope:
       path: "_posts/en"
+      type: "posts"
     values:
       lang: "en"
-      layout: "page"
-      format: "plate margin article"
-      breadcrumb: true
       permalink: "/en/blog/:name"
-      excerpt_separator: <!--more-->
-      show_meta: true       # Show metadata for all posts
-      author: "juho_jeong"  # Default author for posts
   - scope:
       path: "_posts/ko"
+      type: "posts"
     values:
       lang: "ko"
-      layout: "page"
-      format: "plate margin article"
-      breadcrumb: true
       permalink: "/ko/blog/:name"
-      excerpt_separator: <!--more-->
-      show_meta: true       # Show metadata for all posts
-      author: "juho_jeong"  # Default author for posts
-  - scope:
-      path: "_examples/en" 	# an empty string here means all files in the project
-    values:
-      lang: "en"
-      layout: "example"
-      breadcrumb: true
-      permalink: "/en/examples/:name"
-      show_meta: false  	# Hide metadata for all pages
-      author: "juho_jeong"  # Default author for pages
-  - scope:
-      path: "_examples/ko" 	# an empty string here means all files in the project
-    values:
-      lang: "ko"
-      layout: "example"
-      permalink: "/ko/examples/:name"
-      breadcrumb: true
-      show_meta: false  	# Hide metadata for all pages
-      author: "juho_jeong"  # Default author for pages
 
 
 

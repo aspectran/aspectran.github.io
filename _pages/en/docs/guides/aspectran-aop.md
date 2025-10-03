@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: Aspectran AOP Feature Analysis
 subheadline: User Guides
-parent_path: /docs
 ---
 
 Rather than targeting all method calls in an application like general Spring AOP or AspectJ, Aspectran's AOP has a **unique AOP model that is deeply integrated with the execution flow of its core execution model, the `Activity`, and Bean method calls**. This allows for the implementation of more powerful and structured AOP by using the entire request processing stage or specific method calls as Join Points.

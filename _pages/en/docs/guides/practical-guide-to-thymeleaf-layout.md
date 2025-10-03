@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: Guide to Applying Thymeleaf Layout in Aspectran
 subheadline: Practical Guides
-parent_path: /docs
 ---
 
 This guide provides a step-by-step explanation of how to apply a common layout using the Thymeleaf template engine and Thymeleaf Layout Dialect in an Aspectran framework environment.

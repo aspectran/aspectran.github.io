@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: In-Depth Analysis of Bean Scopes in Aspectran
 subheadline: Architecture
-parent_path: /docs
 ---
 
 Aspectran's IoC container supports the concept of **Scope**, which specifies the range for managing the lifecycle of a Bean. The scope determines when a bean instance is created, how long it is maintained, and how it is destroyed. It provides four standard scopes defined in the `com.aspectran.core.context.rule.type.ScopeType` enum class.

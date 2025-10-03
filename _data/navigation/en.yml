@@ -34,10 +34,6 @@
   url: "/en/projects/"
   side: left
 
-- title: Examples
-  url: "/en/examples/"
-  side: left
-
 - title: Blog
   url: "/blog/"
   side: right

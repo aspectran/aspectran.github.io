@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "SiblingClassLoader: The Key to Dynamic and Flexible Class Loading"
 subheadline: Architecture
-parent_path: /docs
 ---
 
 The Aspectran framework uses its own proprietary `com.aspectran.core.context.loader.SiblingClassLoader`, which goes beyond Java's standard class loading mechanism. It is specially designed to provide advanced features such as dynamic reloading (Hot Reloading) and a modular application structure, going beyond simple class loading.

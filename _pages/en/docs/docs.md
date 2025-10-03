@@ -1,6 +1,6 @@
 ---
 format: page solid article
-title: Aspectran Documentation
+title: Aspectran Docs
 teaser: Explore Aspectran documentation to learn, configure, and unlock its full potential.
 sidebar: toc
 permalink: /en/docs/

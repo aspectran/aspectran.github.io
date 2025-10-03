@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: Aspectran Profiles
 subheadline: User Guides
-parent_path: /docs
 ---
 
 Aspectran's Profiles feature is a powerful function that allows you to enable or disable all or part of an application's configuration only in a specific environment. For example, it can be usefully employed when you need to apply different database settings or load specific beans for 'development', 'test', and 'production' environments.

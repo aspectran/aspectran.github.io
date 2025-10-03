@@ -6,7 +6,6 @@
 # Start development with › $ jekyll serve --config _config.yml,_config_dev.yml
 
 # Server
-plugins: [jekyll-paginate]
 host: "localhost"
 port: 4000
 

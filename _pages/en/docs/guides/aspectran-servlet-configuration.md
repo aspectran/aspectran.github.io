@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: Servlet-based Web Application Configuration
 subheadline: User Guides
-parent_path: /docs
 ---
 
 {% capture info_message %}

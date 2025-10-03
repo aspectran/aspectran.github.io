@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "`com.aspectran.core.activity.process` 패키지 상세 분석"
 subheadline: 아키텍처 - 패키지 심층 분석
-parent_path: /docs
 ---
 
 ## 1. 설계 목표 및 주요 역할

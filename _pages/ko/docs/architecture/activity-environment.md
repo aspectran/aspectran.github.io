@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "Environment: 프로필과 속성을 이용한 환경 제어"
 subheadline: 아키텍처
-parent_path: /docs
 ---
 #
 

@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: In-Depth Analysis of the `com.aspectran.undertow.service` Package
 subheadline: Architecture - Package Deep Dive
-parent_path: /docs
 ---
 
 ## 1. Design Goals and Key Roles

@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "Using CORS (Cross-Origin Resource Sharing) in Aspectran"
 subheadline: Practical Guides
-parent_path: /docs
 ---
 
 {% capture info_message %}

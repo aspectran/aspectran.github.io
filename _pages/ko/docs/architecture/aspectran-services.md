@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: Aspectran 서비스 아키텍처 심층 분석
 subheadline: 아키텍처
-parent_path: /docs
 ---
 
 Aspectran의 서비스(`Service`)는 프레임워크의 생명주기를 관리하고, 특정 실행 환경의 진입점 역할을 하는 핵심 컨테이너입니다. 어떤 환경(웹, 셸, 데몬 등)에서 애플리케이션을 구동할지에 따라 적합한 서비스 구현체가 사용됩니다. 이 서비스 아키텍처는 계층적이고 모듈화된 구조를 통해 높은 유연성과 확장성을 제공합니다.

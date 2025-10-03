@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: Aspectran XML Configuration Guide
 subheadline: User Guides
-parent_path: /docs
 ---
 
 Aspectran uses XML configuration to define the core components of an application, such as beans, translets, and aspects. Using XML provides high flexibility by allowing you to define configurations and relationships without changing the source code.

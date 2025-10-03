@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "Activity Architecture: The Execution Engine of Request Processing"
 subheadline: Architecture
-parent_path: /docs
 ---
 
 Aspectran's **Activity Architecture** is the core of the framework's request processing model. It has a hierarchical and modular structure designed to handle requests in a consistent manner across various execution environments (web, shell, daemon, etc.).

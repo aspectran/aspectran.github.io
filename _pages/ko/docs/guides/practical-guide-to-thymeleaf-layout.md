@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: Aspectran에서 Thymeleaf 레이아웃 적용 가이드
 subheadline: 실용 가이드
-parent_path: /docs
 ---
 
 이 가이드는 Aspectran 프레임워크 환경에서 Thymeleaf 템플릿 엔진과 Thymeleaf Layout Dialect를 사용하여 공통 레이아웃을 적용하는 방법을 단계별로 안내합니다.

@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "Aspectran에서 CORS(Cross-Origin Resource Sharing) 활용하기"
 subheadline: 실용 가이드
-parent_path: /docs
 ---
 
 {% capture info_message %}

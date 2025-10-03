@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "ActivityContext: Aspectran의 심장부"
 subheadline: 아키텍처
-parent_path: /docs
 ---
 
 ## 1. 핵심 개념: 애플리케이션의 중앙 허브

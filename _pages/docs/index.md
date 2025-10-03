@@ -1,5 +1,4 @@
 ---
-lang: en
 lang_detect: true
 layout: redirect
 sitemap: false

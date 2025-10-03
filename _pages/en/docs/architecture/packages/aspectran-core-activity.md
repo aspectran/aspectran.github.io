@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title:
 subheadline: Architecture - Package Deep Dive
-parent_path: /docs
 ---
 
 # In-Depth Analysis of the `com.aspectran.core.activity` Package

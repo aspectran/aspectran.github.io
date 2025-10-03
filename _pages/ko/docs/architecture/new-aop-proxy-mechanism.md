@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "Aspectran AOP 프록시 메커니즘: `AbstractBeanProxy`와 `ProxyActivity`"
 subheadline: 아키텍처
-parent_path: /docs
 ---
 
 ## 1. 개요

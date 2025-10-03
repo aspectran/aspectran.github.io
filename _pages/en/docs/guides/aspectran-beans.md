@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "Aspectran Beans: The Official Guide"
 subheadline: User Guides
-parent_path: /docs
 ---
 
 {% capture info_message %}

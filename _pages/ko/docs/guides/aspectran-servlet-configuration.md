@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: 서블릿 기반 웹 애플리케이션 구성
 subheadline: 사용자 가이드
-parent_path: /docs
 ---
 
 {% capture info_message %}

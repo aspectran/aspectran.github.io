@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: Guide to Integrating Legacy Systems with Modern Aspectran Application Servers
 subheadline: Practical Guides
-parent_path: /docs
 ---
 
 ## Introduction

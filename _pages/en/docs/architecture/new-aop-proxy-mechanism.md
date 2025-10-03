@@ -1,9 +1,6 @@
 ---
-format: plate solid article
-sidebar: toc
 title: "Aspectran AOP Proxy Mechanism: `AbstractBeanProxy` and `ProxyActivity`"
 subheadline: Architecture
-parent_path: /docs
 ---
 
 ## 1. Overview

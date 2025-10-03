@@ -3,7 +3,6 @@ format: fluid article
 sidebar: toc
 title: Aspectran Architecture Diagrams
 subheadline: Architecture
-parent_path: /docs
 mermaid: true
 ---
 
