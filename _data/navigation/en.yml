@@ -23,6 +23,8 @@
     url: "/en/aspectow/getting-started/"
   - title: "Aspectow Architecture"
     url: "/en/aspectow/architecture/"
+  - title: "Aspectow Configuration Guide"
+    url: "/en/aspectow/configuration-guide/"
   - title: "Deployment and Operations"
     url: "/en/aspectow/deployment-and-operations/"
     sub_items:

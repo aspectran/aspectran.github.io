@@ -64,16 +64,20 @@ Aspectow AppMon saves event counting data to a database to maintain statistics. 
 
 ## 6. How to Configure AppMon
 
-All of AppMon's behavior is configured through the `appmon-config.apon` file. This file consists of several sections that define what to monitor and how.
+All of AppMon's behavior is configured through the `appmon-config.apon` file. Furthermore, AppMon has a flexible architecture where default settings are built into the library, and users can override them in the project's `/config/appmon` directory.
 
-### Main Configuration Sections
+### 6.1. `appmon-config.apon` File Details
+
+This file consists of several sections that define what to monitor and how.
+
+#### Main Configuration Sections
 
 - **`counterPersistInterval`**: Sets the interval, in minutes, for saving aggregated event counter data to the database. If not set, it defaults to 5 minutes.
 - **`pollingConfig`**: Configures the behavior when a client connects via Long-Polling (`pollingInterval`, `sessionTimeout`, etc.).
 - **`domain`**: Defines and logically groups the server instances to be monitored. Each `domain` points to a single monitoring target server and contains the endpoint information for connecting to it.
 - **`instance`**: Defines the individual application or component unit to be monitored. Most of the detailed settings are located under this section.
 
-### `instance` Detailed Settings
+#### `instance` Detailed Settings
 
 Under the `instance` section, you can configure `event`, `metric`, and `log` to collect the desired data.
 
@@ -93,9 +97,7 @@ Under the `instance` section, you can configure `event`, `metric`, and `log` to 
   - `file`: Specifies the path to the log file to be tailed.
   - `lastLines`: Specifies the number of last lines of the log to display on initial UI access.
 
-### Configuration Example (`appmon-config.apon`)
-
-Here is an example configuration that defines two servers (`backend1`, `backend2`) as monitoring targets and details the monitoring of a `jpetstore` instance among them.
+#### Configuration Example (`appmon-config.apon`)
 
 ```apon
 # DB persistence interval (in minutes), 0 to disable
@@ -153,6 +155,51 @@ instance: {
         sampleInterval: 300
     }
 }
+```
+
+### 6.2. Step-by-Step Configuration Guide
+
+AppMon's configuration is based on the concept of 'override', and the typical configuration steps are as follows.
+
+#### Step 1: Define Monitoring Targets
+
+> **File to modify: `/config/appmon/appmon-config.apon`**
+
+First and foremost, you need to create the `appmon-config.apon` file described above in the project's `/config/appmon/` directory and specify the `instance`, `event`, `metric`, `log`, etc., to be monitored.
+
+#### Step 2: Select DB Type and Configure Connection
+
+> **Configuration method: Java System Properties**
+
+AppMon uses Java system properties to specify which database to use for storing monitoring data.
+
+1.  **Select DB Profile**: Use the `-Daspectran.profiles.base.appmon` property to select one of `h2`, `mariadb`, `mysql`, or `oracle`.
+2.  **Provide DB Connection Info**: Pass the connection details for the selected database as separate system properties.
+
+```bash
+# Example of passing system properties on Java startup (MariaDB)
+-Daspectran.profiles.base.appmon=mariadb \
+-Dappmon.db-mariadb.url=jdbc:mariadb://127.0.0.1:3306/appmon \
+-Dappmon.db-mariadb.username=appmon \
+-Dappmon.db-mariadb.password=your-password
+```
+
+#### Step 3: Configure UI Assets and JSP
+
+> **Related files: `appmon-assets.xml`, `webapps/appmon/WEB-INF/jsp/appmon/**`**
+
+-   **`appmon-assets.xml`**: Determines where to load the AppMon UI's static assets, like CSS and JavaScript, based on the profile (`dev`/`prod`). It can be set to load from a local source or a CDN.
+-   **JSP Files**: The JSP files that make up the AppMon UI are not included in the library **to allow users to directly modify the UI for their own use**. Therefore, you must copy the contents of the original project's `/webapps/appmon/WEB-INF/jsp/appmon` directory to the same path within your own project.
+
+#### Step 4: Set the Domain Identifier (Production Environment)
+
+> **Configuration method: Java System Property**
+
+In a production environment where you might be monitoring multiple server groups, you need to tell the current instance which domain it belongs to using the `-Dappmon.domain` system property. This value must match one of the `domain` names defined in `appmon-config.apon`.
+
+```bash
+# Specify that the current instance belongs to the 'prod-cluster' domain
+-Dappmon.domain=prod-cluster
 ```
 
 ## 7. Conclusion

@@ -28,7 +28,7 @@
               {% if submenu_item.sub_items %}
                 {% for sub_item in submenu_item.sub_items %}
                   <li>
-                    <a class="dropdown-item ps-4" href="{{ site.baseurl }}{{ sub_item.url }}"{% if sub_item.url contains 'http' %} target="_blank"{% endif %}>
+                    <a class="dropdown-item ps-3 bi bi-arrow-return-right" href="{{ site.baseurl }}{{ sub_item.url }}"{% if sub_item.url contains 'http' %} target="_blank"{% endif %}>
                       {{ sub_item.title | escape }}
                     </a>
                   </li>

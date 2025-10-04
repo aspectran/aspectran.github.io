@@ -23,6 +23,8 @@
     url: "/ko/aspectow/getting-started/"
   - title: "Aspectow 아키텍처"
     url: "/ko/aspectow/architecture/"
+  - title: "Aspectow 구성 가이드"
+    url: "/ko/aspectow/configuration-guide/"
   - title: "배포 및 운영 가이드"
     url: "/ko/aspectow/deployment-and-operations/"
     sub_items:

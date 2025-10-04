@@ -64,16 +64,20 @@ Aspectow AppMon은 이벤트 카운팅 데이터를 데이터베이스에 저장
 
 ## 6. AppMon 설정 방법
 
-AppMon의 모든 동작은 `appmon-config.apon` 파일을 통해 설정됩니다. 이 파일은 모니터링할 대상과 방법을 정의하는 여러 섹션으로 구성됩니다.
+AppMon의 모든 동작은 `appmon-config.apon` 파일을 통해 설정됩니다. 또한, AppMon은 기본 설정을 라이브러리에 내장하고, 사용자가 프로젝트의 `/config/appmon` 디렉토리에서 이를 재정의하는 유연한 구조를 가집니다.
 
-### 주요 설정 섹션
+### 6.1. `appmon-config.apon` 파일 상세
+
+이 파일은 모니터링할 대상과 방법을 정의하는 여러 섹션으로 구성됩니다.
+
+#### 주요 설정 섹션
 
 - **`counterPersistInterval`**: 이벤트 카운터의 집계 데이터를 데이터베이스에 저장하는 주기를 분(minute) 단위로 설정합니다. 설정하지 않으면 기본값인 5분으로 동작합니다.
 - **`pollingConfig`**: 클라이언트가 Long-Polling 방식으로 접속할 때의 동작을 설정합니다. (`pollingInterval`, `sessionTimeout` 등)
 - **`domain`**: 모니터링 대상이 되는 서버 인스턴스를 정의하고 논리적으로 그룹화합니다. 각 `domain`은 하나의 모니터링 대상 서버를 가리키며, 해당 서버에 접속하기 위한 엔드포인트(`endpoint`) 정보를 포함합니다.
 - **`instance`**: 모니터링할 개별 애플리케이션 또는 컴포넌트 단위를 정의합니다. 대부분의 상세 설정이 이 섹션 아래에 위치합니다.
 
-### `instance` 상세 설정
+#### `instance` 상세 설정
 
 `instance` 섹션 아래에는 `event`, `metric`, `log`를 설정하여 원하는 데이터를 수집할 수 있습니다.
 
@@ -93,9 +97,7 @@ AppMon의 모든 동작은 `appmon-config.apon` 파일을 통해 설정됩니다
   - `file`: 테일링할 로그 파일의 경로를 지정합니다.
   - `lastLines`: UI에 처음 접속했을 때 보여줄 로그의 마지막 라인 수를 지정합니다.
 
-### 설정 예시 (`appmon-config.apon`)
-
-다음은 2개의 서버(`backend1`, `backend2`)를 모니터링 대상으로 정의하고, 그 중 `jpetstore` 인스턴스를 상세하게 모니터링하는 설정 예시입니다.
+#### 설정 예시 (`appmon-config.apon`)
 
 ```apon
 # DB 저장 주기 (분 단위), 0으로 설정하면 비활성화
@@ -153,6 +155,51 @@ instance: {
         sampleInterval: 300
     }
 }
+```
+
+### 6.2. 단계별 설정 가이드
+
+AppMon의 설정은 '재정의(Override)' 개념을 기반으로 동작하며, 일반적인 설정 단계는 다음과 같습니다.
+
+#### 1단계: 모니터링 대상 정의
+
+> **수정할 파일: `/config/appmon/appmon-config.apon`**
+
+가장 먼저, 위에서 설명한 `appmon-config.apon` 파일을 프로젝트의 `/config/appmon/` 디렉토리에 생성하고, 모니터링할 `instance`, `event`, `metric`, `log` 등을 지정합니다.
+
+#### 2단계: 데이터베이스 종류 선택 및 접속 정보 설정
+
+> **설정 방법: Java 시스템 속성(System Properties) 사용**
+
+AppMon은 모니터링 데이터를 저장할 DB를 Java 시스템 속성을 통해 지정합니다.
+
+1.  **DB 프로필 선택**: `-Daspectran.profiles.base.appmon` 속성을 사용하여 `h2`, `mariadb`, `mysql`, `oracle` 중 하나를 선택합니다.
+2.  **DB 접속 정보 전달**: 선택한 DB에 맞는 접속 정보를 별도의 시스템 속성으로 전달합니다.
+
+```bash
+# Java 실행 시 시스템 속성 전달 예시 (MariaDB)
+-Daspectran.profiles.base.appmon=mariadb \
+-Dappmon.db-mariadb.url=jdbc:mariadb://127.0.0.1:3306/appmon \
+-Dappmon.db-mariadb.username=appmon \
+-Dappmon.db-mariadb.password=your-password
+```
+
+#### 3단계: UI 애셋 및 JSP 설정
+
+> **관련 파일: `appmon-assets.xml`, `webapps/appmon/WEB-INF/jsp/appmon/**`**
+
+-   **`appmon-assets.xml`**: 프로파일(`dev`/`prod`)에 따라 AppMon UI의 CSS, JavaScript 등 정적 애셋을 로컬에서 가져올지, CDN에서 가져올지 결정합니다.
+-   **JSP 파일 복사**: AppMon UI를 구성하는 JSP 파일들은 **사용자가 직접 UI를 수정해서 사용할 수 있도록** 라이브러리에 포함되어 있지 않습니다. 따라서, 원본 프로젝트의 `/webapps/appmon/WEB-INF/jsp/appmon` 디렉토리 내용을 자신의 프로젝트 내 동일 경로로 복사해 와야 합니다.
+
+#### 4단계: 도메인 식별자 설정 (운영 환경)
+
+> **설정 방법: Java 시스템 속성 사용**
+
+여러 서버 그룹을 모니터링하는 운영 환경에서는, `-Dappmon.domain` 시스템 속성을 사용하여 현재 인스턴스가 어떤 도메인에 속하는지 알려주어야 합니다. 이 값은 `appmon-config.apon`에 정의된 여러 `domain` 중 하나와 일치해야 합니다.
+
+```bash
+# 현재 인스턴스가 'prod-cluster' 도메인에 속함을 지정
+-Dappmon.domain=prod-cluster
 ```
 
 ## 7. 결론
