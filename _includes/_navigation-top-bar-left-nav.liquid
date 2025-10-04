@@ -20,14 +20,20 @@
           <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="{{ site.baseurl }}{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
           <ul class="dropdown-menu">
             {% for submenu_item in item.dropdown %}
-              {% if submenu_item.url contains 'http' %}
-                {% assign domain = '' %}
-              {% else %}
-                {% assign domain = site.url %}
-              {% endif %}
               <li>
-                <a class="dropdown-item" href="{{ site.baseurl }}{{ submenu_item.url }}"{% if submenu_item.url contains 'http' %} target="_blank"{% endif %}>{{ submenu_item.title | escape }}</a>
+                <a class="dropdown-item" href="{{ site.baseurl }}{{ submenu_item.url }}"{% if submenu_item.url contains 'http' %} target="_blank"{% endif %}>
+                  {{ submenu_item.title | escape }}
+                </a>
               </li>
+              {% if submenu_item.sub_items %}
+                {% for sub_item in submenu_item.sub_items %}
+                  <li>
+                    <a class="dropdown-item ps-4" href="{{ site.baseurl }}{{ sub_item.url }}"{% if sub_item.url contains 'http' %} target="_blank"{% endif %}>
+                      {{ sub_item.title | escape }}
+                    </a>
+                  </li>
+                {% endfor %}
+              {% endif %}
             {% endfor %}
           </ul>
         </li>
