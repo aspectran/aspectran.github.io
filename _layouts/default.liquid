@@ -2,7 +2,7 @@
 layout: compress
 ---
 <!DOCTYPE html>
-<html class="no-js" lang="{% if page.lang == nil %}{{ site.default_lang }}{% else %}{{ page.lang }}{% endif %}" {% if page.auto_lang %}data-auto-lang="true"{% endif %}>
+<html lang="{% if page.lang == nil %}{{ site.default_lang }}{% else %}{{ page.lang }}{% endif %}" {% if page.auto_lang %}data-auto-lang="true"{% endif %}>
 <head>
 {% include _head.liquid %}
 </head>

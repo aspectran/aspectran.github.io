@@ -10,9 +10,10 @@
 # Idea and Code by: http://codingtips.kanishkkunal.in/about/
 ---
 <!DOCTYPE html>
-<html>
+<html lang="{% if page.lang == nil %}{{ site.default_lang }}{% else %}{{ page.lang }}{% endif %}">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Redirecting...</title>
 {% if page.lang_detect %}
   {% include lang-detect.liquid permalink=page.permalink %}
 {% else %}
@@ -25,7 +26,7 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #44535a;
+    background-color: #42494e;
     color: #8599a2;
   }
   a:hover, a:visited {
