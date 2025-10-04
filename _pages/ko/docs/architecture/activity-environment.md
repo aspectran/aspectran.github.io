@@ -49,7 +49,7 @@ subheadline: 아키텍처
 </bean>
 ```
 
-애플리케이션 실행 시 `-Daspectran.profiles.active=prod` 와 같은 JVM 옵션을 주면, `EnvironmentProfiles`가 이를 감지하여 `prod` 프로필을 활성화하고, MySQL 데이터소스 속성만 적용이 등록됩니다.
+애플리케이션 실행 시 `-Daspectran.profiles.active=prod` 와 같은 JVM 옵션을 주면, `EnvironmentProfiles`가 이를 감지하여 `prod` 프로필을 활성화하고, MySQL 데이터소스 속성만 적용됩니다.
 
 ## 3. 속성(Properties) 관리
 
