@@ -38,7 +38,11 @@ cd hello-aspectran
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <maven.compiler.release>21</maven.compiler.release>
+        <!-- [Critical] Must be 'true' to preserve method parameter names, which Aspectran requires for runtime argument mapping. -->
+        <maven.compiler.parameters>true</maven.compiler.parameters>
+
         <aspectran.version>9.0.3</aspectran.version>
     </properties>
 
