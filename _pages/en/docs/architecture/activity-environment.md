@@ -31,18 +31,18 @@ Profiles are a feature that groups beans and properties to be activated only in 
 ### Configuration Example (XML)
 
 ```xml
-<!-- H2 datasource bean registered only when the dev profile is active -->
-<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" profile="dev">
-    <properties>
+<!-- H2 datasource applicable only when the dev profile is active -->
+<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <properties profile="dev">
         <item name="driverClassName">org.h2.Driver</item>
         <item name="jdbcUrl">jdbc:h2:mem:testdb</item>
         <item name="username">sa</item>
     </properties>
 </bean>
 
-<!-- MySQL datasource bean registered only when the prod profile is active -->
-<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" profile="prod">
-    <properties>
+<!-- MySQL datasource applicable only when the prod profile is active -->
+<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <properties profile="prod">
         <item name="driverClassName">com.mysql.cj.jdbc.Driver</item>
         <item name="jdbcUrl">jdbc:mysql://localhost:3306/prod_db</item>
         <item name="username">prod_user</item>

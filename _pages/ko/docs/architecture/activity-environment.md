@@ -32,18 +32,18 @@ subheadline: 아키텍처
 ### 설정 예제 (XML)
 
 ```xml
-<!-- 개발(dev) 프로필이 활성화될 때만 등록되는 H2 데이터소스 빈 -->
-<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" profile="dev">
-    <properties>
+<!-- 개발(dev) 프로필이 활성화될 때만 적용되는 H2 데이터소스 -->
+<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <properties profile="dev">
         <item name="driverClassName">org.h2.Driver</item>
         <item name="jdbcUrl">jdbc:h2:mem:testdb</item>
         <item name="username">sa</item>
     </properties>
 </bean>
 
-<!-- 운영(prod) 프로필이 활성화될 때만 등록되는 MySQL 데이터소스 빈 -->
-<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" profile="prod">
-    <properties>
+<!-- 운영(prod) 프로필이 활성화될 때만 적용되는 MySQL 데이터소스 -->
+<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <properties profile="prod">
         <item name="driverClassName">com.mysql.cj.jdbc.Driver</item>
         <item name="jdbcUrl">jdbc:mysql://localhost:3306/prod_db</item>
         <item name="username">prod_user</item>
