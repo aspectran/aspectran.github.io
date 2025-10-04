@@ -1,0 +1,131 @@
+---
+title: Projects
+teaser: Starter and sample projects are provided to initiate new project development.
+permalink: /en/projects/
+starter_projects:
+  - subheadline: Starter Projects
+    title: Aspectow Enterprise Edition
+    description: The default starter for the Aspectow Enterprise Edition.
+    thumb_img: header_modules_thumb.jpg
+    url: https://github.com/aspectran/aspectow
+    repo: https://github.com/aspectran/aspectow
+  - subheadline: Starter Projects
+    title: Aspectow Light Edition
+    description: The default starter for the Aspectow Light Edition.
+    thumb_img: header_modules_thumb.jpg
+    url: https://github.com/aspectran/aspectow-light
+    repo: https://github.com/aspectran/aspectow-light
+  - subheadline: Starter Projects
+    title: Aspectow Jetty Edition
+    description: The default starter for the Aspectow Jetty Edition.
+    thumb_img: header_modules_thumb.jpg
+    url: https://github.com/aspectran/aspectow-jetty
+    repo: https://github.com/aspectran/aspectow-jetty
+sample_projects:
+  - subheadline: Monitoring Solution
+    title: Aspectow AppMon
+    description: Aspectow AppMon provides an integrated view to observe logs and events of Aspectran-based application servers in real time.
+    thumb_img: examples/pr-log-relayer.png
+    url: https://public.aspectran.com/monitoring/
+    repo: https://github.com/aspectran/aspectow-appmon
+  - subheadline: Sample Project
+    title: Aspectow Demo
+    description: This site is a collection of reference applications created to showcase examples of Aspectran applications following recommended best practices.
+    thumb_img: examples/pr-demo-site.png
+    url: https://public.aspectran.com
+    repo: https://github.com/aspectran/demo-app
+  - subheadline: Sample Project
+    title: ToDo Webapp
+    description: A simple ToDo example application based on the Aspectow Enterprise Edition.
+    thumb_img: examples/pr-skylark.png
+    url: https://github.com/aspectran/aspectow-todo-webapp
+    repo: https://github.com/aspectran/aspectow-todo-webapp
+  - subheadline: Sample Project
+    title: JPetStore Demo
+    description: The JPetStore demo app provides and demonstrates a complete web application built on MyBatis 3 and Aspectran 9.
+    thumb_img: examples/pr-jpetstore.png
+    url: https://jpetstore.aspectran.com
+    repo: https://github.com/aspectran/aspectran-jpetstore
+  - subheadline: Sample Project
+    title: PetClinic Demo
+    description: The PetClinic Demo App provides and demonstrates a sample web application leveraging Aspectran and JPA.
+    thumb_img: examples/pr-skylark.png
+    url: https://petclinic.aspectran.com
+    repo: https://github.com/aspectran/aspectran-petclinic
+  - subheadline: Sample Project
+    title: Demo Site for Servlet-Based Aspectran
+    description: A web application to guide the traditional way of building web applications using the Servlet-based Aspectran framework.
+    thumb_img: examples/pr-demo-site.png
+    url: https://demo.aspectran.com
+    repo: https://github.com/aspectran/demo-site
+---
+
+<h2 class="mt-4 mb-3 underline">Sample Projects</h2>
+<div class="row g-3">
+  {% for project in page.sample_projects %}
+  <div class="col-lg-6">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12">
+            <p class="text-muted mb-0">{% if project.headline %}{{ project.headline }}{% endif %}</p>
+            <h4 class="border-bottom pb-2 mb-3">
+              <a href="{{ project.url }}" class="text-decoration-none">{{ project.title }}</a>
+              <a href="{{ project.url }}" class="float-end text-decoration-none"><i class="bi bi-box-arrow-up-right"></i></a>
+            </h4>
+          </div>
+          {% if project.thumb_img %}
+          <div class="col-4">
+            <a href="{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
+          </div>
+          <div class="col-8">
+            {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+            <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+          </div>
+          {% else %}
+          <div class="col-12">
+            {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+            <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<h2 class="mt-4 mb-3 underline">Starter Projects</h2>
+<div class="row g-3">
+  {% for project in page.starter_projects %}
+  <div class="col-lg-6">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12">
+            <p class="text-muted mb-0">{% if project.headline %}{{ project.headline }}{% endif %}</p>
+            <h4 class="border-bottom pb-2 mb-3">
+              <a href="{{ project.url }}" class="text-decoration-none">{{ project.title }}</a>
+              <a href="{{ project.url }}" class="float-end text-decoration-none"><i class="bi bi-box-arrow-up-right"></i></a>
+            </h4>
+          </div>
+          {% if project.thumb_img %}
+          <div class="col-4">
+            <a href="{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
+          </div>
+          <div class="col-8">
+            {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+            <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+          </div>
+          {% else %}
+          <div class="col-12">
+            {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+            <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>

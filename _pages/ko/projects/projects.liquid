@@ -1,0 +1,131 @@
+---
+title: 프로젝트
+teaser: 새로운 프로젝트 개발에 착수할 수 있는 스타터 프로젝트와 샘플 프로젝트를 제공합니다.
+permalink: /ko/projects/
+starter_projects:
+  - subheadline: Starter Projects
+    title: Aspectow Enterprise Edition
+    description: Aspectow Enterprise 에디션의 기본 스타터입니다.
+    thumb_img: header_modules_thumb.jpg
+    url: https://github.com/aspectran/aspectow
+    repo: https://github.com/aspectran/aspectow
+  - subheadline: Starter Projects
+    title: Aspectow Light Edition
+    description: Aspectow Light 에디션의 기본 스타터입니다.
+    thumb_img: header_modules_thumb.jpg
+    url: https://github.com/aspectran/aspectow-light
+    repo: https://github.com/aspectran/aspectow-light
+  - subheadline: Starter Projects
+    title: Aspectow Jetty Edition
+    description: Aspectow Jetty 에디션의 기본 스타터입니다.
+    thumb_img: header_modules_thumb.jpg
+    url: https://github.com/aspectran/aspectow-jetty
+    repo: https://github.com/aspectran/aspectow-jetty
+sample_projects:
+  - subheadline: Monitoring Solution
+    title: Aspectow AppMon
+    description: Aspectow AppMon은 Aspectran 기반 애플리케이션 서버의 로그와 이벤트를 실시간으로 관찰할 수 있는 통합 뷰를 제공합니다.
+    thumb_img: examples/pr-log-relayer.png
+    url: https://public.aspectran.com/monitoring/
+    repo: https://github.com/aspectran/aspectow-appmon
+  - subheadline: Sample Project
+    title: Aspectow Demo
+    description: 이 사이트는 권장되는 모범 사례를 따르는 Aspectran 애플리케이션의 예를 보여주기 위해 만들어진 참조 애플리케이션 모음입니다.
+    thumb_img: examples/pr-demo-site.png
+    url: https://public.aspectran.com
+    repo: https://github.com/aspectran/aspectow-demo
+  - subheadline: Sample Project
+    title: ToDo 웹앱
+    description: Aspectow Enterprise 에디션 기반의 간단한 ToDo 예제 애플리케이션입니다.
+    thumb_img: examples/pr-skylark.png
+    url: https://github.com/aspectran/aspectow-todo-webapp
+    repo: https://github.com/aspectran/aspectow-todo-webapp
+  - subheadline: Sample Project
+    title: JPetStore Demo
+    description: JPetStore 데모 앱은 MyBatis 3와 Aspectran 9 위에 구축된 완전한 웹 애플리케이션을 제공하고 시연하는 것입니다.
+    thumb_img: examples/pr-jpetstore.png
+    url: https://jpetstore.aspectran.com
+    repo: https://github.com/aspectran/aspectran-jpetstore
+  - subheadline: Sample Project
+    title: PetClinic Demo
+    description: PetClinic 데모 앱은 Aspectran과 JPA를 활용한 샘플 웹 애플리케이션을 제공하고 시연하는 것입니다.
+    thumb_img: examples/pr-skylark.png
+    url: https://petclinic.aspectran.com
+    repo: https://github.com/aspectran/aspectran-petclinic
+  - subheadline: Sample Project
+    title: 서블릿 기반 Aspectran 데모 사이트
+    description: 서블릿으로 구동되는 Aspectran을 사용하여 웹 애플리케이션을 구축하는 전통적인 방식을 안내하기 위해 만들어진 웹 애플리케이션입니다.
+    thumb_img: examples/pr-demo-site.png
+    url: https://demo.aspectran.com
+    repo: https://github.com/aspectran/demo-site
+---
+
+<h2 class="mt-4 mb-3 underline">샘플 프로젝트</h2>
+<div class="row g-3">
+  {% for project in page.sample_projects %}
+  <div class="col-lg-6">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12">
+            <p class="text-muted mb-0">{% if project.headline %}{{ project.headline }}{% endif %}</p>
+            <h4 class="border-bottom pb-2 mb-3">
+              <a href="{{ project.url }}" class="text-decoration-none">{{ project.title }}</a>
+              <a href="{{ project.url }}" class="float-end text-decoration-none"><i class="bi bi-box-arrow-up-right"></i></a>
+            </h4>
+          </div>
+          {% if project.thumb_img %}
+          <div class="col-4">
+            <a href="{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
+          </div>
+          <div class="col-8">
+            {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+            <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+          </div>
+          {% else %}
+          <div class="col-12">
+            {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+            <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<h2 class="mt-4 mb-3 underline">스타터 프로젝트</h2>
+<div class="row g-3">
+  {% for project in page.starter_projects %}
+  <div class="col-lg-6">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12">
+            <p class="text-muted mb-0">{% if project.headline %}{{ project.headline }}{% endif %}</p>
+            <h4 class="border-bottom pb-2 mb-3">
+              <a href="{{ project.url }}" class="text-decoration-none">{{ project.title }}</a>
+              <a href="{{ project.url }}" class="float-end text-decoration-none"><i class="bi bi-box-arrow-up-right"></i></a>
+            </h4>
+          </div>
+          {% if project.thumb_img %}
+          <div class="col-4">
+            <a href="{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
+          </div>
+          <div class="col-8">
+            {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+            <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+          </div>
+          {% else %}
+          <div class="col-12">
+            {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+            <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
