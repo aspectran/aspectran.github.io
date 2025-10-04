@@ -32,17 +32,14 @@ subheadline: 아키텍처
 ### 설정 예제 (XML)
 
 ```xml
-<!-- 개발(dev) 프로필이 활성화될 때만 적용되는 H2 데이터소스 -->
 <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <!-- 개발(dev) 프로필이 활성화될 때만 적용되는 H2 데이터소스 -->
     <properties profile="dev">
         <item name="driverClassName">org.h2.Driver</item>
         <item name="jdbcUrl">jdbc:h2:mem:testdb</item>
         <item name="username">sa</item>
     </properties>
-</bean>
-
-<!-- 운영(prod) 프로필이 활성화될 때만 적용되는 MySQL 데이터소스 -->
-<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <!-- 운영(prod) 프로필이 활성화될 때만 적용되는 MySQL 데이터소스 -->
     <properties profile="prod">
         <item name="driverClassName">com.mysql.cj.jdbc.Driver</item>
         <item name="jdbcUrl">jdbc:mysql://localhost:3306/prod_db</item>
@@ -52,7 +49,7 @@ subheadline: 아키텍처
 </bean>
 ```
 
-애플리케이션 실행 시 `-Daspectran.profiles.active=prod` 와 같은 JVM 옵션을 주면, `EnvironmentProfiles`가 이를 감지하여 `prod` 프로필을 활성화하고, MySQL 데이터소스 빈만 `ActivityContext`에 등록됩니다.
+애플리케이션 실행 시 `-Daspectran.profiles.active=prod` 와 같은 JVM 옵션을 주면, `EnvironmentProfiles`가 이를 감지하여 `prod` 프로필을 활성화하고, MySQL 데이터소스 속성만 적용이 등록됩니다.
 
 ## 3. 속성(Properties) 관리
 

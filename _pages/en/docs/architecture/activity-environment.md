@@ -31,17 +31,14 @@ Profiles are a feature that groups beans and properties to be activated only in 
 ### Configuration Example (XML)
 
 ```xml
-<!-- H2 datasource applicable only when the dev profile is active -->
 <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <!-- H2 datasource applicable only when the dev profile is active -->
     <properties profile="dev">
         <item name="driverClassName">org.h2.Driver</item>
         <item name="jdbcUrl">jdbc:h2:mem:testdb</item>
         <item name="username">sa</item>
     </properties>
-</bean>
-
-<!-- MySQL datasource applicable only when the prod profile is active -->
-<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <!-- MySQL datasource applicable only when the prod profile is active -->
     <properties profile="prod">
         <item name="driverClassName">com.mysql.cj.jdbc.Driver</item>
         <item name="jdbcUrl">jdbc:mysql://localhost:3306/prod_db</item>
@@ -51,7 +48,7 @@ Profiles are a feature that groups beans and properties to be activated only in 
 </bean>
 ```
 
-When running the application, if you provide a JVM option like `-Daspectran.profiles.active=prod`, `EnvironmentProfiles` detects this, activates the `prod` profile, and only the MySQL datasource bean is registered in the `ActivityContext`.
+When running the application, if you provide a JVM option like `-Daspectran.profiles.active=prod`, `EnvironmentProfiles` detects this, activates the `prod` profile, and applies only the MySQL datasource properties.
 
 ## 3. Property Management
 
