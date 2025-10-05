@@ -293,7 +293,26 @@ server: {
 }
 ```
 
-## 5. 라이브러리 정보
+## 5. JavaScript에서 APON 활용하기 (apon.js)
+
+웹 및 Node.js 환경에서는 공식 `apon.js` 라이브러리를 사용하여 APON 형식의 문자열을 파싱하거나 객체를 APON 문자열로 변환할 수 있습니다.
+
+### 설치 (npm)
+
+npm을 통해 `apon.js`를 설치할 수 있습니다.
+
+```bash
+npm install apon
+```
+
+### 관련 링크
+
+*   **GitHub 저장소**: [https://github.com/aspectran/apon.js](https://github.com/aspectran/apon.js)
+*   **라이브 데모**: [https://aspectran.github.io/apon.js/](https://aspectran.github.io/apon.js/)
+
+자세한 API 사용법은 GitHub 저장소의 `README.md` 파일을 참고해 주세요.
+
+## 6. 라이브러리 정보
 
 APON 관련 클래스들은 Aspectran 프레임워크의 공통 유틸리티 패키지에 포함되어 있습니다.
 

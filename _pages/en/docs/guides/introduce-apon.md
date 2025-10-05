@@ -291,7 +291,26 @@ server: {
 }
 ```
 
-## 5. Library Information
+## 5. Using APON in JavaScript (apon.js)
+
+For web and Node.js environments, you can use the official `apon.js` library to parse and stringify APON-formatted strings.
+
+### Installation (npm)
+
+You can install `apon.js` via npm:
+
+```bash
+npm install apon
+```
+
+### Resources
+
+*   **GitHub Repository**: [https://github.com/aspectran/apon.js](https://github.com/aspectran/apon.js)
+*   **Live Demo**: [https://aspectran.github.io/apon.js/](https://aspectran.github.io/apon.js/)
+
+For detailed API usage, please refer to the `README.md` file in the GitHub repository.
+
+## 6. Library Information
 
 APON-related classes are included in the common utility package of the Aspectran framework.
 
