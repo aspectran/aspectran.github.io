@@ -12,6 +12,7 @@ We are excited to announce the simultaneous release of two important new version
 
 These releases fundamentally innovate AppMon's architecture and add new features focused on user convenience.
 <!--more-->
+
 Version 2.0.0 marks a rebirth, built entirely on the Aspectran framework for maximized performance, while version 2.1.0 takes configuration flexibility and code quality to the next level.
 
 ## Major Architectural Change: A Complete Transition to Aspectran 9.0 (v2.0.0)
