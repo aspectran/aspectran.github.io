@@ -1,0 +1,59 @@
+title:
+  starter_projects: 스타터 프로젝트 (Starter Projects)
+  sample_projects: 샘플 프로젝트 (Sample Projects)
+starter_projects:
+  - subheadline: Starter Projects
+    title: Aspectow Enterprise Edition
+    description: The default starter for the Aspectow Enterprise Edition.
+    thumb_img: header_modules_thumb.jpg
+    url: https://github.com/aspectran/aspectow
+    repo: https://github.com/aspectran/aspectow
+  - subheadline: Starter Projects
+    title: Aspectow Light Edition
+    description: The default starter for the Aspectow Light Edition.
+    thumb_img: header_modules_thumb.jpg
+    url: https://github.com/aspectran/aspectow-light
+    repo: https://github.com/aspectran/aspectow-light
+  - subheadline: Starter Projects
+    title: Aspectow Jetty Edition
+    description: The default starter for the Aspectow Jetty Edition.
+    thumb_img: header_modules_thumb.jpg
+    url: https://github.com/aspectran/aspectow-jetty
+    repo: https://github.com/aspectran/aspectow-jetty
+sample_projects:
+  - subheadline: Monitoring Solution
+    title: Aspectow AppMon
+    description: Aspectow AppMon provides an integrated view to observe logs and events of Aspectran-based application servers in real time.
+    thumb_img: projects/appmon.png
+    url: https://public.aspectran.com/monitoring/
+    repo: https://github.com/aspectran/aspectow-appmon
+  - subheadline: Sample Project
+    title: ToDo Webapp
+    description: A simple ToDo example application based on the Aspectow Enterprise Edition.
+    thumb_img: projects/todo.png
+    url: https://github.com/aspectran/aspectow-todo-webapp
+    repo: https://github.com/aspectran/aspectow-todo-webapp
+  - subheadline: Sample Project
+    title: JPetStore Demo
+    description: The JPetStore demo app provides and demonstrates a complete web application built on MyBatis 3 and Aspectran 9.
+    thumb_img: projects/jpetstore.png
+    url: https://jpetstore.aspectran.com
+    repo: https://github.com/aspectran/aspectran-jpetstore
+  - subheadline: Sample Project
+    title: PetClinic Demo
+    description: The PetClinic Demo App provides and demonstrates a sample web application leveraging Aspectran and JPA.
+    thumb_img: projects/petclinic.png
+    url: https://petclinic.aspectran.com
+    repo: https://github.com/aspectran/aspectran-petclinic
+  - subheadline: Sample Project
+    title: Aspectow Demo
+    description: This site is a collection of reference applications created to showcase examples of Aspectran applications following recommended best practices.
+    thumb_img: projects/demo.png
+    url: https://public.aspectran.com
+    repo: https://github.com/aspectran/demo-app
+  - subheadline: Sample Project
+    title: Demo Site for Servlet-Based Aspectran
+    description: A web application to guide the traditional way of building web applications using the Servlet-based Aspectran framework.
+    thumb_img: projects/demo.png
+    url: https://demo.aspectran.com
+    repo: https://github.com/aspectran/demo-site

@@ -49,45 +49,44 @@ layout: default
 </div>
 {% endif %}
 
-{% unless page.projects == empty %}
 <div class="container">
   <div class="row g-3 pt-3">
-    {% for project in page.projects %}
-    <div class="col-lg-6">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-12">
-              <h4 class="border-bottom pb-2 mb-3">
-                <a href="{{ site.baseurl }}{{ project.url }}" class="text-decoration-none">{{ project.title }}</a>
-                <a href="{{ site.baseurl }}{{ project.url }}" class="float-end text-decoration-none"><i class="bi bi-box-arrow-up-right"></i></a>
-              </h4>
+    {% for project in site.data.projects[page.lang].sample_projects limit:4 %}
+      <div class="col-lg-6">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12">
+                <p class="text-muted mb-0">{% if project.headline %}{{ project.headline }}{% endif %}</p>
+                <h4 class="border-bottom pb-2 mb-3">
+                  <a href="{{ project.url }}" class="text-decoration-none">{{ project.title }}</a>
+                  <a href="{{ project.url }}" class="float-end text-decoration-none"><i class="bi bi-box-arrow-up-right"></i></a>
+                </h4>
+              </div>
+              {% if project.thumb_img %}
+                <div class="col-4">
+                  <a href="{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
+                </div>
+                <div class="col-8 ps-1">
+                  {% if project.repo %}<p class="source ellipses mb-1"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+                  <p class="mb-0">{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+                </div>
+              {% else %}
+                <div class="col-12">
+                  {% if project.repo %}<p class="source ellipses mb-1"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
+                  <p class="mb-0">{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
+                </div>
+              {% endif %}
             </div>
-            {% if project.thumb_img %}
-            <div class="col-4">
-              <a href="{{ site.baseurl }}{{ project.url }}" title="{{ project.title | escape_once }}"><img src="{{ site.urlimg }}{{ project.thumb_img }}" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
-            </div>
-            <div class="col-8">
-              {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
-              <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
-            </div>
-            {% else %}
-            <div class="col-12">
-              {% if project.repo %}<p class="source ellipses"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
-              <p>{% if project.description %}{{ project.description | strip_html | escape }}{% endif %}</p>
-            </div>
-            {% endif %}
           </div>
         </div>
       </div>
-    </div>
     {% endfor %}
-    <div class="col-12 text-end">
-      <a href="{{ site.baseurl }}/{{ page.lang }}/projects/"><strong>{{ site.data.messages[page.lang].more }}</strong> <i class="bi bi-arrow-right-short"></i>&nbsp;</a>
+    <div class="col-12 text-end mt-1">
+      <a href="{{ site.baseurl }}/{{ page.lang }}/projects/"><strong>{{ site.data.messages[page.lang].more }}</strong> <i class="bi bi-arrow-right"></i></a>
     </div>
   </div>
 </div>
-{% endunless %}
 
 <div class="container">
   <div class="row">
@@ -114,8 +113,8 @@ layout: default
         </div>
         {% endif %}
       {% endfor %}
-      <div class="text-end">
-        <a href="{{ site.baseurl }}/blog/"><strong>{{ site.data.messages[page.lang].more }}</strong> <i class="bi bi-arrow-right-short"></i>&nbsp;</a>
+      <div class="text-end mt-1">
+        <a href="{{ site.baseurl }}/blog/"><strong>{{ site.data.messages[page.lang].more }}</strong> <i class="bi bi-arrow-right"></i></a>
       </div>
       {% endunless %}
     </div>
