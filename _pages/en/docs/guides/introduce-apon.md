@@ -18,6 +18,19 @@ APON is specifically designed to simplify the creation of configuration files fo
 *   **Long String Support**: Supports a `text` type that makes it easy to write multi-line text.
 *   **Comment Support**: The `#` character can be used to add comments to the code. It must be written on a new line.
 
+### Comparison with JSON and YAML
+
+APON is a data format that combines features from both JSON and YAML to enhance readability and convenience. The main differences between each format are as follows.
+
+| Category | JSON | YAML | APON |
+| :--- | :--- | :--- | :--- |
+| **Primary Purpose** | Data Interchange (API) | General-purpose Configuration | **Aspectran-specific Configuration** |
+| **Structure Definition** | Parentheses (`{ }`, `[ ]`) | **Indentation** | Parentheses (`{ }`, `[ ]`) |
+| **Item Separation** | Comma (`,`) | Newline + Indentation | **Newline** |
+| **Comments** | Not supported | Supported (`#`) | Supported (`#`) |
+
+The biggest differences are in **how the structure is defined** and **how items are separated**. APON creates an explicit structure with parentheses like JSON, but uses newlines as item separators to maximize readability. This is a distinct feature from YAML, which defines the entire structure through the combination of newlines and indentation.
+
 ## 2. Basic Syntax
 
 ### Single Value (Parameter)
