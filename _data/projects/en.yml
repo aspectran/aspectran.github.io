@@ -1,59 +1,59 @@
 title:
-  starter_projects: Starter Projects
-  sample_projects: Sample Projects
+  starter_projects: 스타터 프로젝트 (Starter Projects)
+  sample_projects: 샘플 프로젝트 (Sample Projects)
 starter_projects:
   - subheadline: Starter Projects
     title: Aspectow Enterprise Edition
-    description: Aspectow Enterprise 에디션의 기본 스타터입니다.
-    caption: Enterprise
+    description: The default starter for the Aspectow Enterprise Edition.
+    thumb_img: header_modules_thumb.jpg
     url: https://github.com/aspectran/aspectow
     repo: https://github.com/aspectran/aspectow
   - subheadline: Starter Projects
     title: Aspectow Light Edition
-    description: Aspectow Light 에디션의 기본 스타터입니다.
-    caption: Light
+    description: The default starter for the Aspectow Light Edition.
+    thumb_img: header_modules_thumb.jpg
     url: https://github.com/aspectran/aspectow-light
     repo: https://github.com/aspectran/aspectow-light
   - subheadline: Starter Projects
     title: Aspectow Jetty Edition
-    description: Aspectow Jetty 에디션의 기본 스타터입니다.
-    caption: Jetty
+    description: The default starter for the Aspectow Jetty Edition.
+    thumb_img: header_modules_thumb.jpg
     url: https://github.com/aspectran/aspectow-jetty
     repo: https://github.com/aspectran/aspectow-jetty
 sample_projects:
   - subheadline: Monitoring Solution
     title: Aspectow AppMon
-    description: Aspectow AppMon은 Aspectran 기반 애플리케이션 서버의 로그와 이벤트를 실시간으로 관찰할 수 있는 통합 뷰를 제공합니다.
+    description: Aspectow AppMon provides an integrated view to observe logs and events of Aspectran-based application servers in real time.
     thumb_img: projects/appmon.png
     url: https://public.aspectran.com/monitoring/
     repo: https://github.com/aspectran/aspectow-appmon
   - subheadline: Sample Project
-    title: ToDo 웹앱
-    description: Aspectow Enterprise 에디션 기반의 간단한 ToDo 예제 애플리케이션입니다.
+    title: ToDo Webapp
+    description: A simple ToDo example application based on the Aspectow Enterprise Edition.
     thumb_img: projects/todo.png
     url: https://github.com/aspectran/aspectow-todo-webapp
     repo: https://github.com/aspectran/aspectow-todo-webapp
   - subheadline: Sample Project
     title: JPetStore Demo
-    description: JPetStore 데모 앱은 MyBatis 3와 Aspectran 9 위에 구축된 완전한 웹 애플리케이션을 제공하고 시연하는 것입니다.
+    description: The JPetStore demo app provides and demonstrates a complete web application built on MyBatis 3 and Aspectran 9.
     thumb_img: projects/jpetstore.png
     url: https://jpetstore.aspectran.com
     repo: https://github.com/aspectran/aspectran-jpetstore
   - subheadline: Sample Project
     title: PetClinic Demo
-    description: PetClinic 데모 앱은 Aspectran과 JPA를 활용한 샘플 웹 애플리케이션을 제공하고 시연하는 것입니다.
+    description: The PetClinic Demo App provides and demonstrates a sample web application leveraging Aspectran and JPA.
     thumb_img: projects/petclinic.png
     url: https://petclinic.aspectran.com
     repo: https://github.com/aspectran/aspectran-petclinic
   - subheadline: Sample Project
     title: Aspectow Demo
-    description: 이 사이트는 권장되는 모범 사례를 따르는 Aspectran 애플리케이션의 예를 보여주기 위해 만들어진 참조 애플리케이션 모음입니다.
+    description: This site is a collection of reference applications created to showcase examples of Aspectran applications following recommended best practices.
     thumb_img: projects/demo.png
     url: https://public.aspectran.com
-    repo: https://github.com/aspectran/aspectow-demo
+    repo: https://github.com/aspectran/demo-app
   - subheadline: Sample Project
-    title: 서블릿 기반 Aspectran 데모 사이트
-    description: 서블릿으로 구동되는 Aspectran을 사용하여 웹 애플리케이션을 구축하는 전통적인 방식을 안내하기 위해 만들어진 웹 애플리케이션입니다.
+    title: Demo Site for Servlet-Based Aspectran
+    description: A web application to guide the traditional way of building web applications using the Servlet-based Aspectran framework.
     thumb_img: projects/demo.png
     url: https://demo.aspectran.com
     repo: https://github.com/aspectran/demo-site
