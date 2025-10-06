@@ -31,7 +31,7 @@
         </div>
         {% endunless %}
       </div>
-      <div class="container breadcrumb-bar">
+      <div class="container breadcrumb-bar d-none d-sm-block">
         {% if page.breadcrumb == true %}
           {% include _breadcrumb.liquid %}
         {% else %}
@@ -57,7 +57,7 @@
         </header>
       </div>
       {% if page.breadcrumb == true %}
-        <div class="container breadcrumb-bar">
+        <div class="container breadcrumb-bar d-none d-sm-block">
           {% include _breadcrumb.liquid %}
         </div>
       {% endif %}
@@ -67,7 +67,7 @@
 {% else %}
 
   {% if page.breadcrumb == true %}
-    <div class="container breadcrumb-bar">
+    <div class="container breadcrumb-bar d-none d-sm-block">
       <div class="row">
         <div class="col offset-lg-1">
           {% include _breadcrumb.liquid %}

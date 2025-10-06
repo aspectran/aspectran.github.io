@@ -15,7 +15,7 @@
     {% assign crumbs = page_url | split: '/' %}
     {% for crumb in crumbs offset: 1 %}
       {% if forloop.last %}
-        <li class="breadcrumb-item active">{{ page.title }}</li>
+        <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
       {% else %}
         {% assign crumb_limit = forloop.index | plus: 1 %}
         <li class="breadcrumb-item"><a href="{{ site.baseurl }}{% if page.lang != nil %}/{{ page.lang }}{% endif %}{% for crumb2 in crumbs limit: crumb_limit %}{{ crumb2 | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' }}</a></li>
