@@ -45,19 +45,19 @@ starter_projects:
   - subheadline: Starter Projects
     title: Aspectow Enterprise Edition
     description: Aspectow Enterprise 에디션의 기본 스타터입니다.
-    caption: Enterprise
+    caption: Aspectow\nEnterprise
     url: https://github.com/aspectran/aspectow
     repo: https://github.com/aspectran/aspectow
   - subheadline: Starter Projects
     title: Aspectow Light Edition
     description: Aspectow Light 에디션의 기본 스타터입니다.
-    caption: Light
+    caption: Aspectow\nLight
     url: https://github.com/aspectran/aspectow-light
     repo: https://github.com/aspectran/aspectow-light
   - subheadline: Starter Projects
     title: Aspectow Jetty Edition
     description: Aspectow Jetty 에디션의 기본 스타터입니다.
-    caption: Jetty
+    caption: Aspectow\nJetty
     url: https://github.com/aspectran/aspectow-jetty
     repo: https://github.com/aspectran/aspectow-jetty
 
@@ -65,5 +65,12 @@ tools_and_libraries:
   - subheadline: Tools & Libraries
     title: APON.js
     description: APON(Aspectran Parameters Object Notation)을 파싱하고 문자열로 변환하기 위한 가볍고 의존성 없는 JavaScript 라이브러리입니다.
+    caption: APON.js
     url: https://aspectran.github.io/apon.js/
     repo: https://github.com/aspectran/apon.js
+  - subheadline: Tools & Libraries
+    title: Aspectran Utils (Legacy)
+    description: 레거시 시스템(JDK 1.6 ~ 17)과 최신 Aspectran 애플리케이션 서버 간의 API 호출 및 응답 처리를 지원하도록 설계된 기타 유틸리티 클래스 모음입니다.
+    caption: Aspectran Utils\n(Legacy)
+    url: https://github.com/aspectran/aspectran-utils-legacy
+    repo: https://github.com/aspectran/aspectran-utils-legacy

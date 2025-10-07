@@ -45,19 +45,19 @@ starter_projects:
   - subheadline: Starter Projects
     title: Aspectow Enterprise Edition
     description: The default starter for the Aspectow Enterprise Edition.
-    thumb_img: header_modules_thumb.jpg
+    caption: Aspectow\nEnterprise
     url: https://github.com/aspectran/aspectow
     repo: https://github.com/aspectran/aspectow
   - subheadline: Starter Projects
     title: Aspectow Light Edition
     description: The default starter for the Aspectow Light Edition.
-    thumb_img: header_modules_thumb.jpg
+    caption: Aspectow\nLight
     url: https://github.com/aspectran/aspectow-light
     repo: https://github.com/aspectran/aspectow-light
   - subheadline: Starter Projects
     title: Aspectow Jetty Edition
     description: The default starter for the Aspectow Jetty Edition.
-    thumb_img: header_modules_thumb.jpg
+    caption: Aspectow\nJetty
     url: https://github.com/aspectran/aspectow-jetty
     repo: https://github.com/aspectran/aspectow-jetty
 
@@ -65,5 +65,12 @@ tools_and_libraries:
   - subheadline: Tools & Libraries
     title: APON.js
     description: A lightweight, dependency-free JavaScript library for parsing and stringifying APON (Aspectran Parameters Object Notation).
+    caption: APON.js
     url: https://aspectran.github.io/apon.js/
     repo: https://github.com/aspectran/apon.js
+  - subheadline: Tools & Libraries
+    title: Aspectran Utils (Legacy)
+    description: A collection of miscellaneous utility classes designed to support API calls and response handling between legacy systems (JDK 1.6 to JDK 17) and modern Aspectran application servers.
+    caption: Aspectran Utils\n(Legacy)
+    url: https://github.com/aspectran/aspectran-utils-legacy
+    repo: https://github.com/aspectran/aspectran-utils-legacy

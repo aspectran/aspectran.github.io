@@ -52,7 +52,7 @@ layout: page
             </div>
             <div class="col-4">
               <a href="{{ project.url }}" title="{{ project.title | escape_once }}">
-                <img src="https://placehold.co/300x150/353b3e/c3cdd5?text=Aspectow\n{{ project.caption | escape_once }}&font=raleway" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
+                <img src="https://placehold.co/300x180/353b3e/c3cdd5?text={{ project.caption | escape_once }}&font=raleway" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
             </div>
             <div class="col-8 ps-1">
               {% if project.repo %}<p class="source ellipses mb-1"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
@@ -81,7 +81,7 @@ layout: page
             </div>
             <div class="col-4">
               <a href="{{ project.url }}" title="{{ project.title | escape_once }}">
-                <img src="https://placehold.co/300x150/353b3e/c3cdd5?text={{ project.title | escape_once }}&font=raleway" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
+                <img src="https://placehold.co/300x180/353b3e/c3cdd5?text={{ project.caption | escape_once }}&font=raleway" class="img-fluid" alt="{{ project.title | escape_once }}"></a>
             </div>
             <div class="col-8 ps-1">
               {% if project.repo %}<p class="source ellipses mb-1"><a href="{{ project.repo }}"><i class="bi bi-github"></i> {{ project.repo | remove: "https://github.com/" }}</a></p>{% endif %}
