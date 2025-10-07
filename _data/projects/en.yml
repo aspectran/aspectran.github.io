@@ -44,19 +44,19 @@ sample_projects:
 starter_projects:
   - subheadline: Starter Projects
     title: Aspectow Enterprise Edition
-    description: The default starter for the Aspectow Enterprise Edition.
+    description: An all-in-one starter for building enterprise web applications. It provides a full-featured, servlet-compliant environment with a built-in Undertow server and JSP support.
     caption: Aspectow\nEnterprise
     url: https://github.com/aspectran/aspectow
     repo: https://github.com/aspectran/aspectow
   - subheadline: Starter Projects
     title: Aspectow Light Edition
-    description: The default starter for the Aspectow Light Edition.
+    description: A lightweight, non-servlet starter optimized for building high-performance REST APIs and microservices. It includes an embedded Undertow server for a minimal footprint and fast startup.
     caption: Aspectow\nLight
     url: https://github.com/aspectran/aspectow-light
     repo: https://github.com/aspectran/aspectow-light
   - subheadline: Starter Projects
     title: Aspectow Jetty Edition
-    description: The default starter for the Aspectow Jetty Edition.
+    description: An all-in-one starter for building enterprise web applications, pre-configured with an embedded Jetty server. It provides a full-featured, servlet-compliant environment, offering an alternative to the default Undertow server.
     caption: Aspectow\nJetty
     url: https://github.com/aspectran/aspectow-jetty
     repo: https://github.com/aspectran/aspectow-jetty

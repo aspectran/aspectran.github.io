@@ -44,19 +44,19 @@ sample_projects:
 starter_projects:
   - subheadline: Starter Projects
     title: Aspectow Enterprise Edition
-    description: Aspectow Enterprise 에디션의 기본 스타터입니다.
+    description: 엔터프라이즈 웹 애플리케이션을 구축하기 위한 올인원(all-in-one) 스타터입니다. JSP를 지원하는 임베디드 Undertow 서버와 함께, 모든 기능이 포함된 서블릿(servlet) 호환 환경을 제공합니다.
     caption: Aspectow\nEnterprise
     url: https://github.com/aspectran/aspectow
     repo: https://github.com/aspectran/aspectow
   - subheadline: Starter Projects
     title: Aspectow Light Edition
-    description: Aspectow Light 에디션의 기본 스타터입니다.
+    description: 고성능 REST API 및 마이크로서비스 구축에 최적화된 경량의 비(non)-서블릿 스타터입니다. 최소한의 메모리 사용량과 빠른 시작을 위해 임베디드 Undertow 서버를 포함합니다.
     caption: Aspectow\nLight
     url: https://github.com/aspectran/aspectow-light
     repo: https://github.com/aspectran/aspectow-light
   - subheadline: Starter Projects
     title: Aspectow Jetty Edition
-    description: Aspectow Jetty 에디션의 기본 스타터입니다.
+    description: 엔터프라이즈 웹 애플리케이션을 구축하기 위한 올인원(all-in-one) 스타터로, 임베디드 Jetty 서버가 미리 구성되어 있습니다. 모든 기능이 포함된 서블릿 호환 환경을 제공하며, 기본 Undertow 서버의 대안이 됩니다.
     caption: Aspectow\nJetty
     url: https://github.com/aspectran/aspectow-jetty
     repo: https://github.com/aspectran/aspectow-jetty
