@@ -533,6 +533,33 @@ If you need to activate or deactivate multiple `<argument>` or `<property>` elem
 ```
 The recommended style is to use `<argument>`/`<property>` for defining individual items and `<arguments>`/`<properties>` only for grouping multiple items according to a profile.
 
+#### Separating Configuration Files by Profile with `<append>`
+
+While grouping properties is useful, a more powerful way to manage environment-specific beans in XML is to separate them into different files and include them conditionally using the `<append>` element. By adding the `profile` attribute to the `<append>` element, you can instruct Aspectran to load a specific configuration file only when the corresponding profile is active.
+
+This is the idiomatic way to control which beans are registered in XML based on the environment.
+
+**Example:**
+
+Imagine you have separate bean definitions for development and production environments.
+
+1.  **Create profile-specific XML files:**
+    -   `conf/db/dev-beans.xml`: Contains beans for the development environment.
+    -   `conf/db/prod-beans.xml`: Contains beans for the production environment.
+
+2.  **Conditionally include them in your main configuration file:**
+    ```xml
+    <!-- Main Configuration -->
+    <aspectran>
+        ...
+        <append resource="conf/common-beans.xml"/>
+        <append resource="conf/db/dev-beans.xml" profile="dev"/>
+        <append resource="conf/db/prod-beans.xml" profile="prod"/>
+        ...
+    </aspectran>
+    ```
+In this setup, if the `dev` profile is active, `dev-beans.xml` will be loaded. If the `prod` profile is active, `prod-beans.xml` will be loaded instead. This allows for a clean and complete separation of environment-specific bean definitions.
+
 #### Component Scanning (`<bean scan="...">`)
 
 You can also enable component scanning in XML using `<bean scan="...">`.
@@ -544,18 +571,16 @@ You can also enable component scanning in XML using `<bean scan="...">`.
 
 #### Inner Beans and Nesting Limits
 
-You can define an anonymous inner bean that will only be used as a property of another bean. To prevent excessive configuration complexity, Aspectran **limits the maximum nesting of inner beans to 3 levels (depth)**.
+You can define an anonymous inner bean that will only be used as a property of another bean. Thanks to a flexible parsing architecture, there is no arbitrary limit on the nesting depth of inner beans, but it is recommended to keep the structure simple for readability.
 
 ```xml
 <bean id="outerBean" class="com.example.OuterBean">
-    <properties>
-        <item name="inner">
-            <!-- Inner bean without an ID (level 1) -->
-            <bean class="com.example.InnerBean">
-                <!-- ... -->
-            </bean>
-        </item>
-    </properties>
+    <property name="inner">
+        <!-- Inner bean without an ID (level 1) -->
+        <bean class="com.example.InnerBean">
+            <!-- ... -->
+        </bean>
+    </property>
 </bean>
 ```
 

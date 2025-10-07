@@ -97,40 +97,53 @@ Aspectran 프레임워크의 전역적인 동작을 제어하는 설정을 정�
 ```xml
 <!-- 'dev' 프로파일이 활성화될 때 적용될 환경 설정 -->
 <environment profile="dev">
-    <properties>
-        <item name="db.driver" value="org.h2.Driver"/>
-        <item name="db.url" value="jdbc:h2:mem:devdb"/>
-    </properties>
+    <property name="db.driver" value="org.h2.Driver"/>
+    <property name="db.url" value="jdbc:h2:mem:devdb"/>
 </environment>
 
 <!-- 'prod' 프로파일이 활성화될 때 적용될 환경 설정 -->
 <environment profile="prod">
-    <properties>
-        <item name="db.driver" value="com.mysql.cj.jdbc.Driver"/>
-        <item name="db.url" value="jdbc:mysql://prod.db.server/main"/>
-    </properties>
+    <property name="db.driver" value="com.mysql.cj.jdbc.Driver"/>
+    <property name="db.url" value="jdbc:mysql://prod.db.server/main"/>
 </environment>
 ```
 
 ### 1.6. `<append>`
 
-다른 XML 또는 APON 설정 파일을 현재 설정에 포함시켜 설정을 모듈화합니다.
+다른 XML 또는 APON 설정 파일을 현재 설정에 포함시킵니다. 이 요소는 설정을 모듈화하는 기본이며, 특히 XML에서 환경별 빈(Bean) 정의를 관리하는 핵심적인 메커니즘입니다.
+
+`profile` 속성을 사용하면 전체 설정 파일을 조건부로 포함시킬 수 있는데, 이것이 활성화된 환경(예: 개발, 운영)에 따라 어떤 빈을 등록할지 제어하는 가장 관용적인 방법입니다.
 
 #### `<append>` 속성 상세
 
 -   `file`: 파일 시스템 경로를 기준으로 파일을 포함합니다.
--   `resource`: 클래스패스 경로를 기준으로 리소스를 포함합니다.
+-   `resource`: 클래스패스 경로를 기준으로 리소스를 포함합니다. 가장 일반적으로 사용됩니다.
 -   `url`: URL을 통해 원격 파일을 포함합니다.
 -   `format`: 포함할 파일의 형식 (`xml` 또는 `apon`)을 지정합니다. 생략 시 파일 확장자에 따라 자동 감지되며, 확장자가 없으면 `xml`이 기본값입니다.
--   `profile`: 특정 프로파일이 활성화되었을 때만 해당 파일을 포함합니다.
+-   `profile`: 특정 프로파일이 활성화되었을 때만 해당 파일을 포함하는 강력한 속성입니다.
 
-```xml
-<!-- 공통 빈 설정 파일 포함 -->
-<append resource="config/common-beans.xml"/>
+**예시: 프로파일별로 데이터베이스 빈 관리하기**
 
-<!-- 'prod' 프로파일에서만 통계 관련 설정 파일 포함 -->
-<append resource="config/metrics-context.xml" profile="prod"/>
-```
+가장 흔한 사용 사례는 각 환경에 맞는 데이터베이스 커넥션 빈을 다르게 정의하는 것입니다.
+
+1.  **프로파일별 XML 파일 생성:**
+    -   `config/db/dev-db.xml`: 개발 환경을 위한 `dataSource` 빈을 정의합니다. (예: 인메모리 H2 데이터베이스)
+    -   `config/db/prod-db.xml`: 운영 환경을 위한 `dataSource` 빈을 정의합니다. (예: 커넥션 풀이 적용된 MySQL)
+
+2.  **메인 설정에서 조건부로 포함:**
+    ```xml
+    <aspectran>
+        ...
+        <!-- 공통 설정 포함 -->
+        <append resource="config/common-context.xml"/>
+
+        <!-- 활성화된 프로파일에 따라 적절한 데이터베이스 설정 포함 -->
+        <append resource="config/db/dev-db.xml" profile="dev"/>
+        <append resource="config/db/prod-db.xml" profile="prod"/>
+        ...
+    </aspectran>
+    ```
+이 설정에서 `dev` 프로파일이 활성화되면 `dev-db.xml`만 로드되어 H2 `dataSource`가 등록되고, `prod` 프로파일이 활성화되면 `prod-db.xml`이 로드되어 MySQL `dataSource`가 등록됩니다. 이를 통해 환경별 구성을 깔끔하고 견고하게 관리할 수 있습니다.
 
 ## 2. 공통 파라미터 및 속성
 

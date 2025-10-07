@@ -533,6 +533,33 @@ XML을 사용하면 소스 코드 변경 없이 빈의 구성과 관계를 정�
 ```
 개별 아이템을 정의할 때는 `<argument>`/`<property>`를 사용하고, 여러 아이템을 프로파일에 따라 그룹화할 때만 `<arguments>`/`<properties>`를 사용하는 것이 권장되는 스타일입니다.
 
+#### `<append>`를 이용한 프로파일별 설정 파일 분리
+
+속성을 그룹화하는 것도 유용하지만, XML에서 환경별 빈을 관리하는 더 강력한 방법은 빈들을 아예 다른 파일로 분리하고 `<append>` 요소를 사용하여 조건부로 포함하는 것입니다. `<append>` 요소에 `profile` 속성을 추가하면, 해당 프로파일이 활성화될 때만 특정 설정 파일을 로드하도록 Aspectran에 지시할 수 있습니다.
+
+이것이 XML에서 환경에 따라 어떤 빈을 등록할지 제어하는 가장 관용적인 방법입니다.
+
+**예시:**
+
+개발 환경과 운영 환경을 위한 빈 정의가 별도로 있다고 가정해 보겠습니다.
+
+1.  **프로파일별 XML 파일 생성:**
+    -   `conf/db/dev-beans.xml`: 개발 환경을 위한 빈들을 포함합니다.
+    -   `conf/db/prod-beans.xml`: 운영 환경을 위한 빈들을 포함합니다.
+
+2.  **메인 설정 파일에서 조건부로 포함:**
+    ```xml
+    <!-- 메인 설정 -->
+    <aspectran>
+        ...
+        <append resource="conf/common-beans.xml"/>
+        <append resource="conf/db/dev-beans.xml" profile="dev"/>
+        <append resource="conf/db/prod-beans.xml" profile="prod"/>
+        ...
+    </aspectran>
+    ```
+이 설정에서 `dev` 프로파일이 활성화되면 `dev-beans.xml`이 로드되고, `prod` 프로파일이 활성화되면 `prod-beans.xml`이 대신 로드됩니다. 이를 통해 환경별 빈 정의를 깔끔하고 완벽하게 분리할 수 있습니다.
+
 #### 컴포넌트 스캔 (`<bean scan="...">`)
 
 XML에서도 `<bean scan="...">`을 사용하여 컴포넌트 스캔을 활성화할 수 있습니다.
@@ -544,18 +571,16 @@ XML에서도 `<bean scan="...">`을 사용하여 컴포넌트 스캔을 활성�
 
 #### 내부 빈과 중첩 제한
 
-다른 빈의 속성으로만 사용될 익명의 내부 빈을 정의할 수 있습니다. Aspectran은 설정의 과도한 복잡성을 방지하기 위해 **내부 빈의 최대 중첩을 3단계(depth)로 제한**합니다.
+다른 빈의 속성으로만 사용될 익명의 내부 빈을 정의할 수 있습니다. 유연한 파싱 아키텍처 덕분에 내부 빈의 중첩 깊이에 대한 임의의 제한은 없지만, 가독성을 위해 구조를 단순하게 유지하는 것이 좋습니다.
 
 ```xml
 <bean id="outerBean" class="com.example.OuterBean">
-    <properties>
-        <item name="inner">
-            <!-- ID가 없는 내부 빈 (1단계) -->
-            <bean class="com.example.InnerBean">
-                <!-- ... -->
-            </bean>
-        </item>
-    </properties>
+    <property name="inner">
+        <!-- ID가 없는 내부 빈 (1단계) -->
+        <bean class="com.example.InnerBean">
+            <!-- ... -->
+        </bean>
+    </property>
 </bean>
 ```
 

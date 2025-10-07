@@ -97,40 +97,53 @@ Defines properties that will only be applied when a specific profile is active. 
 ```xml
 <!-- Environment settings to be applied when the 'dev' profile is active -->
 <environment profile="dev">
-    <properties>
-        <item name="db.driver" value="org.h2.Driver"/>
-        <item name="db.url" value="jdbc:h2:mem:devdb"/>
-    </properties>
+    <property name="db.driver" value="org.h2.Driver"/>
+    <property name="db.url" value="jdbc:h2:mem:devdb"/>
 </environment>
 
 <!-- Environment settings to be applied when the 'prod' profile is active -->
 <environment profile="prod">
-    <properties>
-        <item name="db.driver" value="com.mysql.cj.jdbc.Driver"/>
-        <item name="db.url" value="jdbc:mysql://prod.db.server/main"/>
-    </properties>
+    <property name="db.driver" value="com.mysql.cj.jdbc.Driver"/>
+    <property name="db.url" value="jdbc:mysql://prod.db.server/main"/>
 </environment>
 ```
 
 ### 1.6. `<append>`
 
-Includes other XML or APON configuration files into the current configuration, allowing for modularization of settings.
+Includes other XML or APON configuration files into the current configuration. This element is fundamental for modularizing settings and is the primary mechanism for managing environment-specific bean definitions in XML.
+
+By using the `profile` attribute, you can conditionally include entire configuration files, which is the idiomatic way to control which beans are registered based on the active environment (e.g., development, production).
 
 #### `<append>` Attribute Details
 
 -   `file`: Includes a file based on a file system path.
--   `resource`: Includes a resource based on a classpath path.
+-   `resource`: Includes a resource based on a classpath path. This is the most common attribute.
 -   `url`: Includes a remote file via a URL.
 -   `format`: Specifies the format of the file to be included (`xml` or `apon`). If omitted, it is auto-detected based on the file extension. If there is no extension, `xml` is the default.
--   `profile`: Includes the file only when a specific profile is active.
+-   `profile`: A powerful attribute that includes the file only when a specific profile is active.
 
-```xml
-<!-- Include a common bean configuration file -->
-<append resource="config/common-beans.xml"/>
+**Example: Managing Database Beans by Profile**
 
-<!-- Include a metrics-related configuration file only in the 'prod' profile -->
-<append resource="config/metrics-context.xml" profile="prod"/>
-```
+A common use case is to define different database connection beans for each environment.
+
+1.  **Create profile-specific XML files:**
+    -   `config/db/dev-db.xml`: Defines the `dataSource` bean for the development environment (e.g., an in-memory H2 database).
+    -   `config/db/prod-db.xml`: Defines the `dataSource` bean for the production environment (e.g., a pooled connection to MySQL).
+
+2.  **Conditionally include them in your main configuration:**
+    ```xml
+    <aspectran>
+        ...
+        <!-- Include common configurations -->
+        <append resource="config/common-context.xml"/>
+
+        <!-- Include the appropriate database configuration based on the active profile -->
+        <append resource="config/db/dev-db.xml" profile="dev"/>
+        <append resource="config/db/prod-db.xml" profile="prod"/>
+        ...
+    </aspectran>
+    ```
+In this setup, if the `dev` profile is active, only `dev-db.xml` is loaded, registering the H2 `dataSource`. If the `prod` profile is active, `prod-db.xml` is loaded, registering the MySQL `dataSource`. This provides a clean and robust way to manage environment-specific configurations.
 
 ## 2. Common Parameters and Properties
 
