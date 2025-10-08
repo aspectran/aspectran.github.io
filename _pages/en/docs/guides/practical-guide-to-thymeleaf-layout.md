@@ -141,27 +141,25 @@ Finally, create the actual content page that inherits from the base layout creat
 **`webroot/WEB-INF/thymeleaf/index.html`**
 ```html
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{templates/default}"
-      layout:fragment="content">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{templates/default}">
 <body>
-
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <h2>Welcome to Aspectran with Thymeleaf!</h2>
-            <p>This page is using the `default.html` layout.</p>
+  <div layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>Welcome to Aspectran with Thymeleaf!</h2>
+                <p>This page is using the `default.html` layout.</p>
+            </div>
         </div>
     </div>
-</div>
-
+  </div>
 </body>
 </html>
 ```
 
 -   `layout:decorate="~{templates/default}"`: Specifies that this page will use the `templates/default.html` file as its layout. `~{...}` is Thymeleaf's Fragment Expression syntax.
--   `layout:fragment="content"`: Indicates that the content within the `<body>` tag of this HTML document will be inserted into the `layout:fragment="content"` section of the layout.
+-   `layout:fragment="content"`: Defines the block of content that will be inserted into the `layout:fragment="content"` section of the layout.
 
 Now, when you send a request to a URL like `/thymeleaf/index`, the content of `index.html` will be applied to the `default.html` layout, rendering a complete HTML page.
 

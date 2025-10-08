@@ -141,27 +141,25 @@ subheadline: 실용 가이드
 **`webroot/WEB-INF/thymeleaf/index.html`**
 ```html
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{templates/default}"
-      layout:fragment="content">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{templates/default}">
 <body>
-
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <h2>Welcome to Aspectran with Thymeleaf!</h2>
-            <p>이 페이지는 `default.html` 레이아웃을 사용하고 있습니다.</p>
+  <div layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>Welcome to Aspectran with Thymeleaf!</h2>
+                <p>이 페이지는 `default.html` 레이아웃을 사용하고 있습니다.</p>
+            </div>
         </div>
     </div>
-</div>
-
+  </div>
 </body>
 </html>
 ```
 
 - `layout:decorate="~{templates/default}"`: 이 페이지가 `templates/default.html` 파일을 레이아웃으로 사용하도록 지정합니다. `~{...}`는 Thymeleaf의 Fragment Expression 구문입니다.
-- `layout:fragment="content"`: 이 HTML 문서의 `<body>` 태그 안의 내용이 레이아웃의 `layout:fragment="content"` 부분에 삽입될 것임을 나타냅니다.
+- `layout:fragment="content"`: 레이아웃의 `layout:fragment="content"` 부분에 삽입될 콘텐츠 블록을 정의합니다.
 
 이제 `/thymeleaf/index`와 같은 URL로 요청을 보내면, `index.html`의 콘텐츠가 `default.html` 레이아웃에 적용되어 완전한 HTML 페이지가 렌더링됩니다.
 
