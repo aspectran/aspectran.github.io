@@ -43,7 +43,7 @@ cd hello-aspectran
         <!-- [Critical] Must be 'true' to preserve method parameter names, which Aspectran requires for runtime argument mapping. -->
         <maven.compiler.parameters>true</maven.compiler.parameters>
 
-        <aspectran.version>9.0.3</aspectran.version>
+        <aspectran.version>9.1.0</aspectran.version>
     </properties>
 
     <repositories>
