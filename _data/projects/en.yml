@@ -74,3 +74,9 @@ tools_and_libraries:
     caption: Aspectran Utils\n(Legacy)
     url: https://github.com/aspectran/aspectran-utils-legacy
     repo: https://github.com/aspectran/aspectran-utils-legacy
+  - subheadline: Tools & Libraries
+    title: Aspectran Assets
+    description: A utility project for building and deploying CSS, JS, and Images commonly used in Aspectran's demo applications. It uses a SASS compiler to build minified CSS from SASS sources for various front-end frameworks and provides a runnable server to test the generated assets.
+    caption: Aspectran\nAssets
+    url: https://github.com/aspectran/aspectran-assets
+    repo: https://github.com/aspectran/aspectran-assets

@@ -74,3 +74,9 @@ tools_and_libraries:
     caption: Aspectran Utils\n(Legacy)
     url: https://github.com/aspectran/aspectran-utils-legacy
     repo: https://github.com/aspectran/aspectran-utils-legacy
+  - subheadline: Tools & Libraries
+    title: Aspectran Assets
+    description: Aspectran 데모 애플리케이션에서 공통으로 사용되는 CSS, JS, 이미지 등을 빌드하고 배포하기 위한 유틸리티 프로젝트입니다. SASS 컴파일러를 사용하여 다양한 프론트엔드 프레임워크의 SASS 소스로부터 경량화된 CSS를 빌드하고, 생성된 에셋을 테스트하기 위한 실행 가능한 서버를 제공합니다.
+    caption: Aspectran\nAssets
+    url: https://github.com/aspectran/aspectran-assets
+    repo: https://github.com/aspectran/aspectran-assets
