@@ -265,15 +265,15 @@ Aspectow 프로젝트를 올바르게 빌드하기 위해 `pom.xml`의 `<propert
       ```
       - `workerName` (문자열): 클러스터 환경에서 각 서버 인스턴스를 식별하기 위한 고유한 워커 이름입니다. 세션 ID에 포함됩니다.
       - `maxActiveSessions` (정수): 동시에 메모리에 유지할 수 있는 최대 세션 수를 제한합니다.
-      - `maxIdleSeconds` (정수): 사용자가 아무런 요청을 하지 않았을 때, 세션을 유효하게 유지할 최대 시간(초)입니다. 이 시간이 지나면 세션은 무효화됩니다.
-      - `evictionIdleSeconds` (정수): 만료된 세션을 제거하는 스캐빈저가 동작할 때, 이 시간 이상 유휴 상태인 세션을 제거 대상으로 간주합니다.
-      - `maxIdleSecondsForNew` (정수): 로그인은 했지만 아직 인증되지 않은 새로운 세션을 유지할 최대 유휴 시간(초)입니다.
-      - `evictionIdleSecondsForNew` (정수): 인증되지 않은 새로운 세션에 대한 제거 정책 시간(초)입니다.
-      - `scavengingIntervalSeconds` (정수): 만료된 세션을 주기적으로 검사하고 정리하는 스캐빈저 스레드의 실행 간격(초)입니다.
-      - `saveOnCreate` (불리언): 세션이 생성될 때 즉시 영구 저장소(파일 또는 Redis)에 저장할지 여부를 결정합니다.
-      - `saveOnInactiveEviction` (불리언): 유휴 상태로 인해 세션이 제거될 때, 해당 세션 데이터를 영구 저장소에 저장할지 여부를 결정합니다.
-      - `removeUnloadableSessions` (불리언): 영구 저장소에서 세션 데이터를 불러올 수 없을 경우, 해당 세션 파일을 삭제할지 여부를 결정합니다.
-      - `clusterEnabled` (불리언): 세션 클러스터링을 활성화할지 여부를 결정합니다. `true`로 설정하면 `sessionStore`에 Redis 같은 공유 저장소를 설정해야 합니다.
+      - `maxIdleSeconds` (정수): 일반 세션의 최대 유효 시간(초)입니다. 이 시간 동안 요청이 없으면 세션은 '만료'되어 더 이상 사용할 수 없게 됩니다.
+      - `maxIdleSecondsForNew` (정수): 세션 생성 후 첫 번째 요청에만 적용되는 특별 유휴 시간(초)입니다. 두 번째 요청이 시작되면 세션은 일반 세션으로 승격되어 `maxIdleSeconds`를 따르게 됩니다. 봇, 크롤러 등의 단일 요청 세션을 빠르게 만료시키는 데 사용됩니다.
+      - `scavengingIntervalSeconds` (정수): `maxIdleSeconds`에 의해 '만료'된 세션들을 찾아서 **영구적으로 삭제**하는 정리 작업(Scavenging)의 실행 주기(초)입니다.
+      - `evictionIdleSeconds` (정수): 메모리 관리를 위해, 비활성 세션을 **메모리 캐시에서 제거(Evict)하기까지 대기하는 유휴 시간(초)**입니다. 세션이 영구 삭제되는 것이 아니며, 필요시 영구 저장소에서 다시 읽어올 수 있습니다.
+      - `evictionIdleSecondsForNew` (정수): `evictionIdleSeconds`와 동일한 캐시 제거 정책이지만, '신규' 세션(첫 번째 요청 중인 세션)에만 적용됩니다.
+      - `saveOnCreate` (불리언): `false`인 경우, 세션을 사용한 마지막 요청이 완료될 때 영구 저장소에 저장됩니다. 이는 불필요한 I/O를 줄여 성능을 최적화합니다. `clusterEnabled`가 `true`이면 이 값과 무관하게 항상 생성 시점에 저장됩니다.
+      - `saveOnInactiveEviction` (불리언): `true`인 경우, 비활성 세션이 메모리에서 제거(evict)될 때 영구 저장소에 저장하여 데이터 유실을 방지합니다. `clusterEnabled`가 `true`이면 이 값과 무관하게 항상 제거 시점에 저장됩니다.
+      - `removeUnloadableSessions` (불리언): 영구 저장소에서 세션 데이터를 읽어올 수 없을 경우(예: 역직렬화 실패), 해당 세션을 저장소에서 삭제할지 여부를 결정합니다.
+      - `clusterEnabled` (불리언): `true`로 설정하면 데이터 일관성을 위해 생성, 요청 완료, 메모리 제거 등 여러 시점에 걸쳐 세션 데이터가 중앙 저장소에 적극적으로 저장됩니다.
     - `sessionStore`: 실제 세션 데이터가 저장될 저장소를 지정합니다. 프로파일에 따라 개발 환경에서는 파일 기반 세션(`FileSessionStoreFactoryBean`)을, 운영 환경에서는 Redis 기반 세션(`DefaultLettuceSessionStoreFactoryBean`)을 사용하도록 설정하여 고가용성 클러스터링 환경을 지원합니다.
 
 #### `tow-context-appmon.xml`

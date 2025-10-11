@@ -83,22 +83,28 @@ The `clusterEnabled` flag in `SessionManagerConfig` is a key switch that determi
 #### Single Server Mode (`clusterEnabled: false`)
 
 - **Data Reliability**: Primarily trusts `SessionCache` (memory).
-- **Operation**: When a session is requested, it first checks the memory cache and immediately returns the data if found. The disk (`FileSessionStore`) is mainly used only for backup purposes for recovery during server restarts. Since there is no concern about data being changed simultaneously in multiple places, once a session is loaded into memory, it is read and written only in memory for optimal performance.
-- **Main Goal**: **Maximum Performance**. Minimizes unnecessary disk I/O.
+- **Operation**: When a session is requested, it first checks the memory cache and immediately returns the data if found. The `SessionStore` (persistent storage) is mainly used for backup purposes for recovery during server restarts. Since there is no concern about data being changed simultaneously in multiple places, the goal is to read and write only in memory for optimal performance.
+- **Save Points**:
+  - If `saveOnCreate` is `false`, the session is saved when the **last request using it completes**. This is a performance optimization that prevents unnecessary storage access for short-lived sessions (e.g., bot access) that are created and destroyed within a single request.
+  - If `saveOnCreate` is `true`, the session is saved immediately upon creation.
+- **Main Goal**: **Maximum Performance**. Minimizes unnecessary storage I/O.
 
 #### Cluster Mode (`clusterEnabled: true`)
 
-- **Data Reliability**: Trusts `SessionStore` (Redis) as the sole **Single Source of Truth**.
-- **Operation**: Assumes an environment where requests are distributed across multiple servers by a load balancer. The local memory cache is treated as a "copy," and additional checks are performed to ensure data consistency:
-  - **Session Load**: Even if a session exists in the local cache, the possibility that this data has been changed by another server is always considered. Therefore, when checking the validity of a session, it compares metadata such as the last access time stored in `SessionStore` (Redis) to determine if the local cache data is stale. If it is stale, it is removed from the cache, and the latest data is re-read from `SessionStore`.
-  - **Session Save**: When session data changes, it is immediately saved to `SessionStore` (Redis) to update the data in the central store. This ensures that all other servers can retrieve the latest data on the next request.
+- **Data Reliability**: Trusts `SessionStore` (e.g., Redis, a central store) as the sole **Single Source of Truth**.
+- **Operation**: Assumes an environment where requests are distributed across multiple servers by a load balancer. Each server's local memory cache is treated as a "copy" and is continuously synchronized with the central store for data consistency.
+  - **Session Load**: Even if a session exists in the local cache, it considers the possibility that it has been changed by another server and compares it with the data in the central store to maintain the latest state.
+  - **Session Save**: To ensure data consistency, save operations occur actively at multiple points in time.
+    1.  **On Creation**: When a new session is created, it is immediately saved to the central store so that all servers in the cluster can recognize it.
+    2.  **On Last Request Completion**: When the last request finishes, any changes to session attributes during request processing are reflected in the central store.
+    3.  **On Eviction from Memory**: When an inactive session is removed from a specific server's memory, its final state is safely stored in the central store just before removal.
 - **Main Goal**: **Data Consistency**. Always ensures the same session state regardless of which server node processes the request.
 
 | Category | Single Server Mode (`clusterEnabled: false`) | Cluster Mode (`clusterEnabled: true`) |
 | :--- | :--- | :--- |
-| **Data Reliability** | Primarily trusts `SessionCache` (memory) | Ultimately trusts `SessionStore` (Redis) |
-| **Session Load Strategy** | No disk access if in cache | Checks data consistency by comparing with Store even if in cache |
-| **Session Save Strategy** | Saves only to local disk | Saves to central Redis to propagate to all nodes |
+| **Data Reliability** | Primarily trusts `SessionCache` (memory) | Ultimately trusts `SessionStore` (central store) |
+| **Session Load Strategy** | No storage access if in cache | Checks data consistency by comparing with Store even if in cache |
+| **Session Save Strategy** | Mainly saves on last request completion (performance-optimized) | Saves at multiple points like creation, completion, and eviction (consistency-focused) |
 | **Main Goal** | **Maximum Performance** | **Data Consistency** |
 
 ---
@@ -110,7 +116,7 @@ Aspectran has a sophisticated timeout policy that quickly removes unnecessary se
 ### 4.1. Separation of New and Regular Sessions
 
 - **Problem**: Web crawlers, bots, load balancer health checks, etc., may create sessions without actual interaction, leading to a large accumulation of unnecessary "ghost sessions."
-- **Solution**: Aspectran differentiates between "new sessions" (no attributes stored) and "regular sessions" (at least one attribute stored) and applies different timeouts accordingly.
+- **Solution**: Aspectran considers a session a "new session" only for the first request after its creation, applying a special timeout. From the second request onwards, it is promoted to a "regular session" and the normal timeout is applied.
 
 ### 4.2. Detailed Configuration Item Analysis
 
@@ -137,12 +143,15 @@ In such cases, it is advantageous to set the maximum idle time for new sessions 
 
 - **`workerName`** (jn0): A unique name for the worker to be included in the session ID. If multiple session managers are used in one application, this value must be set to be unique to prevent session ID collisions.
 - **`maxActiveSessions`** (99999): Specifies the maximum number of sessions that can be active simultaneously.
-- **`maxIdleSeconds`** (489 seconds): Maximum idle time for **regular sessions**. Expires if no request for 489 seconds.
-- **`maxIdleSecondsForNew`** (60 seconds): Maximum idle time for **new sessions**. Expires if no attributes are added within 60 seconds after session creation.
-- **`scavengingIntervalSeconds`** (90 seconds): `HouseKeeper` runs cleanup tasks every 90 seconds.
-- **`evictionIdleSeconds`** (258 seconds): After a regular session expires, it is **permanently deleted** from storage after a grace period of 258 seconds.
-- **`evictionIdleSecondsForNew`** (30 seconds): After a new session expires, it is permanently deleted after a grace period of 30 seconds.
+- **`maxIdleSeconds`** (489 seconds): Maximum idle time for **regular sessions**. If a session is not used for this duration, it becomes 'expired'.
+- **`maxIdleSecondsForNew`** (60 seconds): A special maximum idle time that applies only to **new sessions** (sessions in their first request). From the second request onwards, the session is promoted to a regular session and is not affected by this setting.
+- **`scavengingIntervalSeconds`** (90 seconds): The interval (in seconds) at which the `HouseKeeper` (session scavenger) runs to permanently delete expired sessions.
+- **`evictionIdleSeconds`** (258 seconds): The idle time in seconds before an inactive session is **evicted from the memory cache**. This setting is key to the memory management cache policy. (Note: Internally, this value is also reused by the `HouseKeeper` as a grace period for permanently deleting expired sessions.)
+- **`evictionIdleSecondsForNew`** (30 seconds): The cache eviction policy time (in seconds) for new sessions.
 - **`clusterEnabled`** (true): Specifies that it is a clustering environment, operating in a mode that ensures session data consistency. (Refer to section 3.3 for details)
+- **`saveOnCreate`** (boolean): If `true`, the session is saved to persistent storage immediately upon creation. If `false`, it provides a performance optimization by saving only when the last request using the session completes, thus reducing unnecessary I/O. (Note: If `clusterEnabled` is `true`, the session is always saved on creation regardless of this value.)
+- **`saveOnInactiveEviction`** (boolean): If `true`, when a session is evicted from the memory cache due to inactivity, its data is saved to persistent storage just before eviction. This prevents session data loss. (Note: If `clusterEnabled` is `true`, the session is always saved on eviction regardless of this value.)
+- **`removeUnloadableSessions`** (boolean): If `true`, when session data cannot be read from persistent storage (e.g., due to deserialization failure after a class change), the corresponding session data will be deleted from the store.
 
 ---
 

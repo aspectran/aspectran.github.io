@@ -159,6 +159,19 @@ Deploys the main web application to the server's root path (`/`) and has the fol
     - `sessionManagerConfig`: Configures the detailed behavior of the session manager through a `SessionManagerConfig` Bean.
     - `sessionStore`: Specifies the storage where actual session data will be saved. It supports high-availability clustering by allowing different session stores for different profiles, such as `FileSessionStoreFactoryBean` for development and `DefaultLettuceSessionStoreFactoryBean` (Redis) for production.
 
+    Key properties for `SessionManagerConfig` include:
+    - `workerName` (String): A unique name to identify each server instance in a cluster environment, which is included in the session ID.
+    - `maxActiveSessions` (int): Limits the maximum number of sessions that can be held in memory simultaneously.
+    - `maxIdleSeconds` (int): The maximum validity time (in seconds) for a regular session. If there are no requests during this time, the session 'expires' and can no longer be used.
+    - `maxIdleSecondsForNew` (int): A special idle time (in seconds) that applies only to the first request after session creation. When the second request begins, the session is promoted to a regular session and will then follow `maxIdleSeconds`. Used to quickly expire single-request sessions from bots, crawlers, etc.
+    - `scavengingIntervalSeconds` (int): The execution interval (in seconds) for the cleanup job (Scavenging) that finds sessions 'expired' by `maxIdleSeconds` and **permanently deletes** them.
+    - `evictionIdleSeconds` (int): For memory management, this is the **idle time (in seconds) to wait before evicting an inactive session from the memory cache**. The session is not permanently deleted and can be read again from the persistent store if needed.
+    - `evictionIdleSecondsForNew` (int): The same cache eviction policy as `evictionIdleSeconds`, but applies only to 'new' sessions (sessions in their first request).
+    - `saveOnCreate` (boolean): If `false`, the session is saved to persistent storage only when the last request using it completes. This optimizes performance by avoiding unnecessary I/O. If `clusterEnabled` is `true`, it is always saved on creation regardless of this value.
+    - `saveOnInactiveEviction` (boolean): If `true`, it prevents data loss by saving the session to persistent storage when it is evicted from memory due to inactivity. If `clusterEnabled` is `true`, it is always saved on eviction regardless of this value.
+    - `removeUnloadableSessions` (boolean): Determines whether to delete a session from the store if its data cannot be loaded (e.g., due to deserialization failure).
+    - `clusterEnabled` (boolean): If set to `true`, session data is aggressively saved to the central store at multiple points (creation, request completion, eviction) to ensure data consistency.
+
 #### `tow-context-appmon.xml`
 
 Deploys the built-in monitoring tool, AppMon, as a separate web application at the `/appmon` path. It has a structure similar to `tow-context-root.xml`.
