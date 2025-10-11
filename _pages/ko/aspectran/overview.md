@@ -97,13 +97,13 @@ Aspectran은 그 유연성과 강력함 덕분에 다양한 유형의 애플리�
 Aspectran 프로젝트를 로컬 환경에서 빌드하고 실행하는 방법은 다음과 같습니다.
 
 ```sh
-# 프로젝트 클론 및 빌드 (Maven 3.6.3 이상 필요)
+# 프로젝트 클론 및 빌드 (Maven 3.9.4 이상 필요)
 git clone https://github.com/aspectran/aspectran.git
 cd aspectran
 ./build rebuild   # 또는 ./mvnw clean install
 ```
 *   **Java 21 이상**: Aspectran은 최소 런타임 버전으로 Java 21을 필요로 합니다. 최신 Java LTS 버전을 사용하는 것을 권장합니다.
-*   **Maven**: 프로젝트 빌드를 위해 Apache Maven 3.6.3 이상 버전이 설치되어 있어야 합니다.
+*   **Maven**: 프로젝트 빌드를 위해 Apache Maven 3.9.4 이상 버전이 설치되어 있어야 합니다.
 
 ## 데모 실행
 

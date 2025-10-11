@@ -97,13 +97,13 @@ Thanks to its flexibility and power, Aspectran can be used for developing variou
 Here's how to build and run the Aspectran project in your local environment.
 
 ```sh
-# Clone and build the project (requires Maven 3.6.3 or higher)
+# Clone and build the project (requires Maven 3.9.4 or higher)
 git clone https://github.com/aspectran/aspectran.git
 cd aspectran
 ./build rebuild   # or ./mvnw clean install
 ```
 *   **Java 21 or higher**: Aspectran requires Java 21 as the minimum runtime version. It is recommended to use the latest Java LTS version.
-*   **Maven**: Apache Maven 3.6.3 or higher must be installed for project builds.
+*   **Maven**: Apache Maven 3.9.4 or higher must be installed for project builds.
 
 ## Run Demo
 

@@ -8,7 +8,7 @@ sidebar: toc
 ## 1. Development Environment Setup
 
 *   **JDK (Java Development Kit)**: Aspectran requires Java 21 or higher as the minimum runtime version. It is recommended to use the latest Java LTS version.
-*   **Maven**: Apache Maven 3.6.3 or higher must be installed for project builds.
+*   **Maven**: Apache Maven 3.9.4 or higher must be installed for project builds.
 
 ## 2. Project File Creation
 
