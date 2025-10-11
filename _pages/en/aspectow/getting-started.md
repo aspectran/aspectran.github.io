@@ -45,7 +45,7 @@ Once the application starts successfully, you will see a greeting message and th
 
 ```
 ---------------------------------------------------------------------------------
- Aspectran : 9.0.2
+ Aspectran : 9.1.0
  JVM       : OpenJDK 64-Bit Server VM (build 23.0.2+7, mixed mode, sharing)
  OS        : Mac OS X 26.0 aarch64
 ---------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ DEBUG 2025-09-25 20:02:28.080 [demo] Initialized DefaultSessionManager@1e0a864d(
   / ___ |(__  ) /_/ /  __/ /__/ /_/ /_/ / |/ |/ /
  /_/  |_/____/ .___/\___/\___/\__/\____/|__/|__/    Enterprise Edition
 =========== /_/ ==========================================================
-:: Built with Aspectran :: 9.0.2
+:: Built with Aspectran :: 9.1.0
 
 To see a list of all built-in commands, type help.
 To get help for a specific command, type command_name -h.

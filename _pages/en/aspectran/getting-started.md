@@ -78,7 +78,7 @@ Create a `pom.xml` file in the project root and copy and paste the content below
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.0</version>
+                <version>3.14.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
