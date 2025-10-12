@@ -74,6 +74,7 @@ cd hello-aspectran
     </dependencies>
 
     <build>
+        <finalName>hello-aspectran</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -81,21 +82,24 @@ cd hello-aspectran
                 <version>3.14.1</version>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
+                <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.6.0</version>
                 <executions>
                     <execution>
+                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>single</goal>
                         </goals>
                         <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
                                     <mainClass>com.example.App</mainClass>
-                                </transformer>
-                            </transformers>
+                                </manifest>
+                            </archive>
                         </configuration>
                     </execution>
                 </executions>
@@ -111,7 +115,7 @@ cd hello-aspectran
 프로젝트 루트에 `aspectran-config.apon` 파일을 만들고 다음 내용을 작성합니다. 이 파일은 Aspectran 셸의 동작을 설정합니다.
 
 ```apon
-{% raw %}context: {
+context: {
     scan: [
         com.example
     ]
@@ -131,7 +135,7 @@ shell: {
         com.aspectran.shell.command.builtins.HelpCommand
         com.aspectran.shell.command.builtins.QuitCommand
     ]
-}{% endraw %}
+}
 ```
 
 ### 2.3. 애플리케이션 코드 (`App.java`)
@@ -181,11 +185,11 @@ public class App {
     ```bash
     mvn package
     ```
-    빌드가 성공하면 `target` 디렉토리에 `hello-aspectran-1.0.0-SNAPSHOT.jar` 파일이 생성됩니다.
+    빌드가 성공하면 `target` 디렉토리에 `hello-aspectran-jar-with-dependencies.jar` 파일이 생성됩니다.
 
 2.  **실행**: 다음 명령어로 애플리케이션을 실행합니다. `aspectran-config.apon` 파일의 경로를 인자로 전달해야 합니다.
     ```bash
-    java -jar target/hello-aspectran-1.0.0-SNAPSHOT.jar aspectran-config.apon
+    java -jar target/hello-aspectran-jar-with-dependencies.jar aspectran-config.apon
     ```
 
     애플리케이션이 시작되면 다음과 같은 환영 메시지와 함께 Aspectran 셸 프롬프트가 나타납니다.

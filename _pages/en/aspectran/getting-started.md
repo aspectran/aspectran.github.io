@@ -74,6 +74,7 @@ Create a `pom.xml` file in the project root and copy and paste the content below
     </dependencies>
 
     <build>
+        <finalName>hello-aspectran</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -81,21 +82,24 @@ Create a `pom.xml` file in the project root and copy and paste the content below
                 <version>3.14.1</version>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
+                <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.6.0</version>
                 <executions>
                     <execution>
+                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>single</goal>
                         </goals>
                         <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
                                     <mainClass>com.example.App</mainClass>
-                                </transformer>
-                            </transformers>
+                                </manifest>
+                            </archive>
                         </configuration>
                     </execution>
                 </executions>
@@ -111,7 +115,7 @@ Create a `pom.xml` file in the project root and copy and paste the content below
 Create an `aspectran-config.apon` file in the project root and write the following content. This file configures the behavior of the Aspectran shell.
 
 ```apon
-{% raw %}context: {
+context: {
     scan: [
         com.example
     ]
@@ -131,7 +135,7 @@ shell: {
         com.aspectran.shell.command.builtins.HelpCommand
         com.aspectran.shell.command.builtins.QuitCommand
     ]
-}{% endraw %}
+}
 ```
 
 ### 2.3. Application Code (`App.java`)
@@ -181,11 +185,11 @@ Now you are ready to build and run the project.
     ```bash
     mvn package
     ```
-    If the build is successful, a `hello-aspectran-1.0.0-SNAPSHOT.jar` file will be created in the `target` directory.
+    If the build is successful, a `hello-aspectran-jar-with-dependencies.jar` file will be created in the `target` directory.
 
 2.  **Run**: Run the application with the following command. You must pass the path to the `aspectran-config.apon` file as an argument.
     ```bash
-    java -jar target/hello-aspectran-1.0.0-SNAPSHOT.jar aspectran-config.apon
+    java -jar target/hello-aspectran-jar-with-dependencies.jar aspectran-config.apon
     ```
 
     When the application starts, the Aspectran shell prompt will appear with a welcome message like this:
