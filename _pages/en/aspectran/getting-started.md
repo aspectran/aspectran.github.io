@@ -83,7 +83,7 @@ Create a `pom.xml` file in the project root and copy and paste the content below
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.7.1</version>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
