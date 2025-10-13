@@ -43,7 +43,7 @@ Create a `pom.xml` file in the project root and copy and paste the content below
         <!-- [Critical] Must be 'true' to preserve method parameter names, which Aspectran requires for runtime argument mapping. -->
         <maven.compiler.parameters>true</maven.compiler.parameters>
 
-        <aspectran.version>9.1.1</aspectran.version>
+        <aspectran.version>9.1.2</aspectran.version>
     </properties>
 
     <repositories>
