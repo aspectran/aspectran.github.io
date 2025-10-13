@@ -295,6 +295,7 @@ daemon: {
         pollingInterval: 5000
         requeuable: true
         incoming: /cmd/incoming
+        enabled: true
     }
     commands: [
         com.aspectran.undertow.daemon.command.UndertowCommand
