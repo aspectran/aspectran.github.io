@@ -7,9 +7,9 @@
 *    › category
 *    › tag
 *
-*   Example for Category: {% include list-posts entries='3' offset='1' category='design' %}
+*   Example for Category: {% include list-posts.liquid entries='3' offset='1' category='design' %}
 *
-*   Example for Tag: {% include list-posts entries='5' tag='terminal' %}
+*   Example for Tag: {% include list-posts.liquid entries='5' tag='terminal' %}
 *
 *
 *   This loop works like this:
@@ -35,14 +35,14 @@
 
   {% elsif category %}
 
-    {% for post in site.categories.[category] limit:include.entries offset:include.offset %}
+    {% for post in site.categories[category] limit:include.entries offset:include.offset %}
       <li><a href="{{ site.baseurl }}{{ post.url }}"><span class="icon-chevron-right"></span> {% if post.subheadline %}{{ post.subheadline }} &middot; {% endif %}<strong>{{ post.title }}</strong></a></li>
     {% endfor %}
       <li class="text-right"><a href="{{ site.baseurl }}/blog/archive/"><strong>{{ site.data.messages[page.lang].more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a></li>
 
   {% elsif tag %}
 
-    {% for post in site.tags.[tag] limit:include.entries %}
+    {% for post in site.tags[tag] limit:include.entries %}
       <li><a href="{{ site.baseurl }}{{ post.url }}"><span class="icon-chevron-right"></span> {% if post.subheadline %}{{ post.subheadline }} &middot; {% endif %}<strong>{{ post.title }}</strong></a></li>
     {% endfor %}
 
