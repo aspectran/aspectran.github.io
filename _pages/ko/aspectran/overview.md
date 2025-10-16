@@ -59,19 +59,19 @@ Aspectran은 기능별로 세분화된 모듈을 제공하여 필요한 기능�
 *   **`aspectran-core`**: Aspectran 프레임워크의 심장부입니다. Activity, Translet, Bean 컨테이너, AOP 엔진 등 프레임워크의 핵심 API와 구현을 포함하며, 모든 Aspectran 기반 애플리케이션의 기본이 됩니다.
 *   **`aspectran-daemon`**: Aspectran 애플리케이션을 Unix 계열 시스템의 백그라운드 데몬이나 Windows 서비스로 실행할 수 있는 기능을 제공합니다. 장시간 실행되는 서버 애플리케이션이나 배치 작업에 적합합니다.
 *   **`aspectran-embed`**: 다른 Java 애플리케이션 내에 Aspectran을 임베드하여 사용할 수 있도록 합니다. 기존 애플리케이션에 Aspectran의 강력한 기능을 추가하고자 할 때 유용하며, 별도의 컨테이너 설정 없이 통합이 가능합니다.
-*   **`aspectran-logging`**: Aspectran 애플리케이션의 로깅을 위한 유연한 인터페이스를 제공합니다. **SLF4J와 Logback을 기본으로 사용하며, JCL, JUL, Log4j 등 다른 로깅 API의 브리지를 제공하여 기존 로깅 시스템과의 호환성을 보장합니다.**
+*   **`aspectran-logging`**: Aspectran 애플리케이션의 로깅을 위한 유연한 인터페이스를 제공합니다. SLF4J와 Logback을 기본으로 사용하며, JCL, JUL, Log4j 등 다른 로깅 API의 브리지를 제공하여 기존 로깅 시스템과의 호환성을 보장합니다.
 *   **`aspectran-shell`**: 대화형 명령줄(CLI) 애플리케이션을 쉽게 구축할 수 있도록 지원합니다. 사용자 입력을 처리하고, Translet을 통해 비즈니스 로직을 실행하며, 결과를 콘솔에 출력하는 기능을 제공합니다.
 *   **`aspectran-shell-jline`**: `aspectran-shell` 모듈을 JLine 3 라이브러리와 통합하여, 명령줄 자동 완성, 히스토리 관리, 색상 출력 등 더욱 풍부한 대화형 셸 환경을 제공합니다.
 *   **`aspectran-utils`**: Aspectran 프레임워크 내부 및 외부에서 유용하게 사용될 수 있는 다양한 일반 유틸리티 클래스들을 모아놓은 모듈입니다.
 *   **`aspectran-web`**: Jakarta EE (구 Java EE) 서블릿 API를 기반으로 웹 애플리케이션을 구축하기 위한 기능을 제공합니다. 웹 요청 처리, 세션 관리, 필터 등 웹 개발에 필요한 핵심 요소와 더불어 WebSocket, CORS, ETag, 멀티파트 요청 처리 등 풍부한 웹 지원 기능을 포함합니다.
-*   **`aspectran-rss-lettuce`**: **Redis 기반의 고성능 Lettuce 클라이언트를 사용한 세션 저장소 구현을 제공하여, 분산 환경에서 세션 데이터를 효율적으로 관리할 수 있도록 합니다.**
+*   **`aspectran-rss-lettuce`**: Redis 기반의 고성능 Lettuce 클라이언트를 사용한 세션 저장소 구현을 제공하여, 분산 환경에서 세션 데이터를 효율적으로 관리할 수 있도록 합니다.
 *   **`aspectran-with-jetty`**: 임베디드 Jetty 웹 서버를 Aspectran 애플리케이션에 통합합니다. 별도의 웹 서버 설치 없이 Aspectran 애플리케이션을 독립적으로 실행할 수 있게 하여 배포를 간소화합니다.
 *   **`aspectran-with-undertow`**: 임베디드 Undertow 웹 서버를 Aspectran 애플리케이션에 통합합니다. Undertow는 경량 고성능 웹 서버로, 빠른 시작과 낮은 리소스 사용이 필요한 환경에 적합합니다.
 *   **`aspectran-with-freemarker`**: FreeMarker 템플릿 엔진을 Aspectran의 View 계층과 통합합니다. 서버 사이드 템플릿 렌더링을 통해 동적인 웹 페이지를 생성할 수 있습니다.
 *   **`aspectran-with-pebble`**: Pebble 템플릿 엔진을 Aspectran과 통합하여, 유연하고 강력한 템플릿 기능을 제공합니다.
 *   **`aspectran-with-thymeleaf`**: Thymeleaf 템플릿 엔진을 Aspectran과 통합합니다. HTML5 친화적인 템플릿 작성을 지원하며, 웹 표준을 준수하는 뷰를 쉽게 만들 수 있습니다.
-*   **`aspectran-with-jpa`**: **Jakarta Persistence API (JPA)와의 통합을 제공하여, 객체 관계형 매핑(ORM)을 통해 데이터베이스 작업을 효율적으로 수행할 수 있도록 합니다.**
-*   **`aspectran-with-mybatis`**: **MyBatis 영속성 프레임워크와의 통합을 제공합니다. SQL Mapper 기반의 데이터베이스 접근 방식을 선호하는 개발자에게 유용합니다.**
+*   **`aspectran-with-jpa`**: Jakarta Persistence API (JPA)와의 통합을 제공하여, 객체 관계형 매핑(ORM)을 통해 데이터베이스 작업을 효율적으로 수행할 수 있도록 합니다.
+*   **`aspectran-with-mybatis`**: MyBatis 영속성 프레임워크와의 통합을 제공합니다. SQL Mapper 기반의 데이터베이스 접근 방식을 선호하는 개발자에게 유용합니다.
 *   **`aspectran-with-logback`**: Logback 로깅 프레임워크의 종속성을 편리하게 관리하기 위한 POM 모듈입니다. 주로 다른 모듈의 빌드 및 테스트 환경에서 사용됩니다.
 
 ## 지원되는 실행 환경
@@ -96,12 +96,22 @@ Aspectran은 그 유연성과 강력함 덕분에 다양한 유형의 애플리�
 
 Aspectran 프로젝트를 로컬 환경에서 빌드하고 실행하는 방법은 다음과 같습니다.
 
+먼저, 저장소를 복제합니다.
 ```sh
-# 프로젝트 클론 및 빌드 (Maven 3.9.4 이상 필요)
 git clone https://github.com/aspectran/aspectran.git
 cd aspectran
-./build rebuild   # 또는 ./mvnw clean install
 ```
+
+그런 다음 운영 체제에 맞는 빌드 스크립트를 실행합니다.
+```sh
+# Unix 계열 시스템 (Linux, macOS, Git Bash)
+./build.sh rebuild
+
+# Windows (명령 프롬프트 또는 PowerShell)
+.\build.bat rebuild
+```
+또는 Maven을 직접 사용할 수도 있습니다: `./mvnw clean install`.
+
 *   **Java 21 이상**: Aspectran은 최소 런타임 버전으로 Java 21을 필요로 합니다. 최신 Java LTS 버전을 사용하는 것을 권장합니다.
 *   **Maven**: 프로젝트 빌드를 위해 Apache Maven 3.9.4 이상 버전이 설치되어 있어야 합니다.
 
@@ -109,10 +119,16 @@ cd aspectran
 
 Aspectran 데모 애플리케이션을 빌드하고 실행하여 프레임워크의 기능을 빠르게 탐색할 수 있습니다.
 
-``` sh
-./build demo      # 데모 애플리케이션을 빌드하고 시작합니다.
-# 웹 브라우저에서 http://localhost:8080 으로 접속하여 데모를 확인하세요.
+운영 체제에 맞는 데모 스크립트를 실행합니다.
+```sh
+# Unix 계열 시스템 (Linux, macOS, Git Bash)
+./build.sh demo
+
+# Windows (명령 프롬프트 또는 PowerShell)
+.\build.bat demo
 ```
+그런 다음 웹 브라우저에서 http://localhost:8080 으로 접속하여 데모를 확인하세요.
+
 데모 애플리케이션은 Aspectran의 다양한 기능(웹 서비스, AOP, 빈 관리 등)을 보여주는 예제 코드를 포함하고 있습니다.
 
 ## 지속적 통합

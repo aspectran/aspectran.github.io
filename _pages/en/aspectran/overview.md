@@ -96,12 +96,22 @@ Thanks to its flexibility and power, Aspectran can be used for developing variou
 
 Here's how to build and run the Aspectran project in your local environment.
 
+First, clone the repository:
 ```sh
-# Clone and build the project (requires Maven 3.9.4 or higher)
 git clone https://github.com/aspectran/aspectran.git
 cd aspectran
-./build rebuild   # or ./mvnw clean install
 ```
+
+Then, run the build script for your operating system:
+```sh
+# On Unix-like systems (Linux, macOS, Git Bash)
+./build.sh rebuild
+
+# On Windows (Command Prompt or PowerShell)
+.\build.bat rebuild
+```
+Alternatively, you can use Maven directly: `./mvnw clean install`.
+
 *   **Java 21 or higher**: Aspectran requires Java 21 as the minimum runtime version. It is recommended to use the latest Java LTS version.
 *   **Maven**: Apache Maven 3.9.4 or higher must be installed for project builds.
 
@@ -109,10 +119,16 @@ cd aspectran
 
 You can quickly explore the framework's features by building and running the Aspectran demo application.
 
+Run the demo script for your operating system:
 ```sh
-./build demo      # Builds and starts the demo application.
-# Access http://localhost:8080 in your web browser to check out the demo.
+# On Unix-like systems (Linux, macOS, Git Bash)
+./build.sh demo
+
+# On Windows (Command Prompt or PowerShell)
+.\build.bat demo
 ```
+Then, access http://localhost:8080 in your web browser to check out the demo.
+
 The demo application includes example code demonstrating various Aspectran features (web services, AOP, bean management, etc.).
 
 ## Continuous Integration
