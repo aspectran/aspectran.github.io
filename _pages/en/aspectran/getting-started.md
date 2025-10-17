@@ -115,7 +115,7 @@ Create a `pom.xml` file in the project root and copy and paste the content below
 Create an `aspectran-config.apon` file in the project root and write the following content. This file configures the behavior of the Aspectran shell.
 
 ```apon
-context: {
+{% raw %}context: {
     scan: [
         com.example
     ]
@@ -135,7 +135,7 @@ shell: {
         com.aspectran.shell.command.builtins.HelpCommand
         com.aspectran.shell.command.builtins.QuitCommand
     ]
-}
+}{% endraw %}
 ```
 
 ### 2.3. Application Code (`App.java`)

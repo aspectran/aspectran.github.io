@@ -115,7 +115,7 @@ cd hello-aspectran
 프로젝트 루트에 `aspectran-config.apon` 파일을 만들고 다음 내용을 작성합니다. 이 파일은 Aspectran 셸의 동작을 설정합니다.
 
 ```apon
-context: {
+{% raw %}context: {
     scan: [
         com.example
     ]
@@ -135,7 +135,7 @@ shell: {
         com.aspectran.shell.command.builtins.HelpCommand
         com.aspectran.shell.command.builtins.QuitCommand
     ]
-}
+}{% endraw %}
 ```
 
 ### 2.3. 애플리케이션 코드 (`App.java`)
