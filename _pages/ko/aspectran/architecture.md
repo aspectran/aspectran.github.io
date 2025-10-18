@@ -154,7 +154,7 @@ Aspectran 프레임워크의 가장 강력한 아키텍처 특징 중 하나는 
 
 *   **빌드 과정 (`ActivityContextBuilder`)**: `HybridActivityContextBuilder`는 **설정, 파싱, 생성, 초기화**의 4단계에 걸쳐 `ActivityContext`를 빌드합니다.
     1.  **설정**: `setContextRules()` (설정 파일 경로), `setBasePackages()` (컴포넌트 스캔), `setActiveProfiles()` (프로필 활성화) 등을 통해 빌더를 구성합니다.
-    2.  **파싱**: `build()` 메소드가 호출되면 `HybridActivityContextParser`가 설정 파일(XML/APON)을 읽어 `AspectRule`, `BeanRule` 등 내부 `Rule` 객체로 변환하고, 스캔된 클래스도 `BeanRule`로 만들어 `ActivityRuleAssistant`에 임시 저장합니다.
+    2.  **파싱**: `build()` 메소드가 호출되면 `HybridActivityContextRuleParser`가 설정 파일(XML/APON)을 읽어 `AspectRule`, `BeanRule` 등 내부 `Rule` 객체로 변환하고, 스캔된 클래스도 `BeanRule`로 만들어 `RuleParsingContext`에 임시 저장합니다.
     3.  **생성**: 파싱된 규칙을 바탕으로 `DefaultActivityContext` 인스턴스를 생성하고, 모든 레지스트리를 설정합니다. `BeanReferenceInspector`와 `AspectRuleValidator`를 통해 빈 참조와 애스펙트 규칙의 유효성을 검증합니다.
     4.  **초기화**: `ActivityContext`의 `initialize()` 메소드가 호출되어 모든 싱글톤 빈의 인스턴스화 및 의존성 주입을 완료합니다. 설정에 따라 `ContextReloadingTimer`를 통한 **자동 리로딩(Hot-Reloading)** 기능이 활성화됩니다.
 

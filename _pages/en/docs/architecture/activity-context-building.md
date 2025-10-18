@@ -18,15 +18,15 @@ Everything starts with creating an instance of `ActivityContextBuilder`. After t
 
 ## 2. Build & Parsing
 
-Once the configuration is complete, the `build()` method is called to start the actual build process. The substantive work of this stage is handled by `com.aspectran.core.context.rule.parser.HybridActivityContextParser`.
+Once the configuration is complete, the `build()` method is called to start the actual build process. The substantive work of this stage is handled by `com.aspectran.core.context.rule.parser.HybridActivityContextRuleParser`.
 
-1.  **Parser Initialization**: `HybridActivityContextParser` internally creates a core helper object called `ActivityRuleAssistant`. `ActivityRuleAssistant` temporarily stores all parsed rules (`*Rule` objects), sets up relationships between rules, and is ultimately responsible for configuring the registries.
+1.  **Parser Initialization**: `HybridActivityContextRuleParser` internally creates a core helper object called `RuleParsingContext`. `RuleParsingContext` temporarily stores all parsed rules (`*Rule` objects), sets up relationships between rules, and is ultimately responsible for configuring the registries.
 
 2.  **Rule Parsing**: The parser performs its work based on the configured `contextRules` and `basePackages`.
     *   **File-based Parsing**: It iterates through the configuration files specified in `contextRules` and parses their content using `XmlActivityContextParser` or `AponActivityContextParser` depending on the file extension. The parsed result is converted into a tree of rule objects defined in the `com.aspectran.core.context.rule` package, such as `AspectRule`, `BeanRule`, and `TransletRule`.
     *   **Annotation-based Parsing**: It scans the package paths specified in `basePackages` to find classes annotated with `@Component`, `@Bean`, `@Aspect`, etc. `AnnotatedClassParser` analyzes these classes and creates equivalent `BeanRule` and `AspectRule` objects.
 
-3.  **Rule Registration**: All created `*Rule` objects are added to the appropriate internal collections by `ActivityRuleAssistant`. At this point, the rules are only loaded into memory; no actual instances have been created yet.
+3.  **Rule Registration**: All created `*Rule` objects are added to the appropriate internal collections by `RuleParsingContext`. At this point, the rules are only loaded into memory; no actual instances have been created yet.
 
 ## 3. Context Creation
 
@@ -34,7 +34,7 @@ This is the stage where the actual `ActivityContext` instance is created based o
 
 1.  **`DefaultActivityContext` Creation**: The `createActivityContext()` method creates an instance of `com.aspectran.core.context.DefaultActivityContext`.
 
-2.  **Registry Injection**: `ActivityRuleAssistant` categorizes all the temporarily stored rules and creates final registry objects like `AspectRuleRegistry`, `BeanRuleRegistry`, and `TransletRuleRegistry`, which are then injected into `DefaultActivityContext`.
+2.  **Registry Injection**: `RuleParsingContext` categorizes all the temporarily stored rules and creates final registry objects like `AspectRuleRegistry`, `BeanRuleRegistry`, and `TransletRuleRegistry`, which are then injected into `DefaultActivityContext`.
 
 3.  **Validation**: The validity of the rules is checked to ensure that the context can operate correctly.
     *   **`BeanReferenceInspector`**: It tracks all relationships that reference other beans from `@Autowired` or configuration files and checks for errors such as referencing a non-existent bean or circular references.

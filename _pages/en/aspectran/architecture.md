@@ -154,7 +154,7 @@ The `ActivityContext` is the **core container (IoC Container)** of an Aspectran 
 
 *   **Build Process (`ActivityContextBuilder`)**: `HybridActivityContextBuilder` builds the `ActivityContext` in four stages: **configuration, parsing, creation, and initialization**.
   1.  **Configuration**: The builder is configured through methods like `setContextRules()` (configuration file paths), `setBasePackages()` (component scanning), and `setActiveProfiles()` (profile activation).
-  2.  **Parsing**: When the `build()` method is called, `HybridActivityContextParser` reads the configuration files (XML/APON), converts them into internal `Rule` objects like `AspectRule` and `BeanRule`, and also creates `BeanRule`s for scanned classes, temporarily storing them in `ActivityRuleAssistant`.
+  2.  **Parsing**: When the `build()` method is called, `HybridActivityContextRuleParser` reads the configuration files (XML/APON), converts them into internal `Rule` objects like `AspectRule` and `BeanRule`, and also creates `BeanRule`s for scanned classes, temporarily storing them in `RuleParsingContext`.
   3.  **Creation**: A `DefaultActivityContext` instance is created based on the parsed rules, and all registries are set up. The validity of bean references and aspect rules is verified through `BeanReferenceInspector` and `AspectRuleValidator`.
   4.  **Initialization**: The `initialize()` method of `ActivityContext` is called to complete the instantiation and dependency injection of all singleton beans. The **auto-reloading (Hot-Reloading)** feature is activated through `ContextReloadingTimer` according to the configuration.
 

@@ -18,15 +18,15 @@ Aspectran 애플리케이션의 심장부인 `ActivityContext`는 `ActivityConte
 
 ## 2. 빌드 실행 및 파싱 (Build & Parsing)
 
-설정이 완료되면, `build()` 메서드를 호출하여 실제 빌드 프로세스를 시작합니다. 이 단계의 실질적인 작업은 `com.aspectran.core.context.rule.parser.HybridActivityContextParser`가 담당합니다.
+설정이 완료되면, `build()` 메서드를 호출하여 실제 빌드 프로세스를 시작합니다. 이 단계의 실질적인 작업은 `com.aspectran.core.context.rule.parser.HybridActivityContextRuleParser`가 담당합니다.
 
-1.  **파서 초기화**: `HybridActivityContextParser`는 `ActivityRuleAssistant`라는 핵심 헬퍼 객체를 내부적으로 생성합니다. `ActivityRuleAssistant`는 파싱된 모든 규칙(`*Rule` 객체)을 임시로 보관하고, 규칙 간의 관계를 설정하며, 최종적으로 레지스트리를 구성하는 역할을 합니다.
+1.  **파서 초기화**: `HybridActivityContextRuleParser`는 `RuleParsingContext`라는 핵심 헬퍼 객체를 내부적으로 생성합니다. `RuleParsingContext`는 파싱된 모든 규칙(`*Rule` 객체)을 임시로 보관하고, 규칙 간의 관계를 설정하며, 최종적으로 레지스트리를 구성하는 역할을 합니다.
 
 2.  **규칙 파싱**: 파서는 설정된 `contextRules`와 `basePackages`를 기반으로 작업을 수행합니다.
     *   **파일 기반 파싱**: `contextRules`에 명시된 설정 파일들을 순회하며, 파일 확장자에 따라 `XmlActivityContextParser` 또는 `AponActivityContextParser`를 사용하여 내용을 파싱합니다. 파싱된 결과물은 `AspectRule`, `BeanRule`, `TransletRule` 등 `com.aspectran.core.context.rule` 패키지에 정의된 규칙(Rule) 객체의 트리 형태로 변환됩니다.
     *   **어노테이션 기반 파싱**: `basePackages`에 명시된 패키지 경로를 스캔하여 `@Component`, `@Bean`, `@Aspect` 등의 어노테이션이 붙은 클래스를 찾습니다. `AnnotatedClassParser`는 이 클래스들을 분석하여 동등한 `BeanRule`과 `AspectRule` 객체를 생성합니다.
 
-3.  **규칙 등록**: 생성된 모든 `*Rule` 객체들은 `ActivityRuleAssistant`에 의해 적절한 내부 컬렉션에 추가됩니다. 이 시점까지는 규칙들이 메모리에 로드만 된 상태이며, 아직 실제 인스턴스가 생성되지는 않습니다.
+3.  **규칙 등록**: 생성된 모든 `*Rule` 객체들은 `RuleParsingContext`에 의해 적절한 내부 컬렉션에 추가됩니다. 이 시점까지는 규칙들이 메모리에 로드만 된 상태이며, 아직 실제 인스턴스가 생성되지는 않습니다.
 
 ## 3. 컨텍스트 생성 (Context Creation)
 
@@ -34,7 +34,7 @@ Aspectran 애플리케이션의 심장부인 `ActivityContext`는 `ActivityConte
 
 1.  **`DefaultActivityContext` 생성**: `createActivityContext()` 메서드가 `com.aspectran.core.context.DefaultActivityContext`의 인스턴스를 생성합니다.
 
-2.  **레지스트리 주입**: `ActivityRuleAssistant`가 임시 보관하던 모든 규칙들을 종류별로 분류하여 `AspectRuleRegistry`, `BeanRuleRegistry`, `TransletRuleRegistry` 등의 최종 레지스트리 객체로 만들어 `DefaultActivityContext`에 주입합니다.
+2.  **레지스트리 주입**: `RuleParsingContext`가 임시 보관하던 모든 규칙들을 종류별로 분류하여 `AspectRuleRegistry`, `BeanRuleRegistry`, `TransletRuleRegistry` 등의 최종 레지스트리 객체로 만들어 `DefaultActivityContext`에 주입합니다.
 
 3.  **유효성 검증 (Validation)**: 컨텍스트가 올바르게 동작할 수 있도록 규칙들의 유효성을 검사합니다.
     *   **`BeanReferenceInspector`**: `@Autowired`나 설정 파일에서 다른 빈을 참조하는 모든 관계를 추적하여, 존재하지 않는 빈을 참조하거나 순환 참조가 발생하는 등의 오류가 없는지 검사합니다.

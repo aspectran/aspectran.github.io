@@ -97,7 +97,7 @@ The process of parsing this XML is as follows:
     *   The parser encounters the `</translet>` end tag.
     *   The `endNodelet` of `TransletNodeletAdder` is executed.
     *   `TransletRule transletRule = AspectranNodeParsingContext.popObject()`: The fully configured `TransletRule` is popped from the stack.
-    *   `AspectranNodeParsingContext.assistant().addTransletRule(transletRule)`: The completed rule is finally registered with `ActivityRuleAssistant`.
+    *   `AspectranNodeParsingContext.getCurrentRuleParsingContext().addTransletRule(transletRule)`: The completed rule is finally registered with `RuleParsingContext`.
     *   **Object Stack State**: `[ ]` (empty)
 
 #### Example 2: Reusing Complex Structures with the `mount` Feature
@@ -196,7 +196,7 @@ In the pointcut string, the part before the `@` delimiter represents the Transle
 8.  **`</aspect>` End**:
     *   The `endNodelet` of `AspectNodeletAdder` is executed.
     *   It pops the `AspectRule`, which is now filled with all information (joinpoint, advice, etc.), from the stack.
-    *   The completed `aspectRule` is finally registered with `ActivityRuleAssistant`.
+    *   The completed `aspectRule` is finally registered with `RuleParsingContext`.
     *   **Object Stack**: `[ ]` (empty)
 
 As you can see, even complex AOP rules are parsed in a very systematic and predictable way through state management using `Nodelet` and `Object Stack`, and rule reuse via `with()`.

@@ -97,7 +97,7 @@ Aspectran은 위에서 설명한 `nodelet` 엔진을 사용하여 자신의 복�
     *   파서가 `</translet>` 종료 태그를 만납니다.
     *   `TransletNodeletAdder`의 `endNodelet`이 실행됩니다.
     *   `TransletRule transletRule = AspectranNodeParsingContext.popObject()`: 완전히 구성된 `TransletRule`을 스택에서 꺼냅니다.
-    *   `AspectranNodeParsingContext.assistant().addTransletRule(transletRule)`: 완성된 규칙을 `ActivityRuleAssistant`에 최종 등록합니다.
+    *   `AspectranNodeParsingContext.getCurrentRuleParsingContext().addTransletRule(transletRule)`: 완성된 규칙을 `RuleParsingContext`에 최종 등록합니다.
     *   **Object Stack 상태**: `[ ]` (비어 있음)
 
 #### 예제 2: `mount` 기능을 활용한 복잡한 구조 재사용
@@ -196,7 +196,7 @@ AOP 규칙은 여러 컴포넌트가 복합적으로 관계를 맺기 때문에 
 8.  **`</aspect>` 종료**:
     *   `AspectNodeletAdder`의 `endNodelet`이 실행됩니다.
     *   모든 정보(joinpoint, advice 등)가 채워진 `AspectRule`을 스택에서 pop합니다.
-    *   완성된 `aspectRule`을 `ActivityRuleAssistant`에 최종 등록합니다.
+    *   완성된 `aspectRule`을 `RuleParsingContext`에 최종 등록합니다.
     *   **Object Stack**: `[ ]` (비어 있음)
 
 이처럼 복잡한 AOP 규칙조차도 `Nodelet`과 `Object Stack`을 이용한 상태 관리, 그리고 `with()`를 통한 규칙 재사용을 통해 매우 체계적이고 예측 가능하게 파싱되는 것을 확인할 수 있습니다.
