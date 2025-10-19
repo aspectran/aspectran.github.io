@@ -25,6 +25,8 @@ The core of Aspectran Beans is to help you write cleaner, more modular, and easi
 
 The easiest way to register a bean is to add the `@Component` annotation to a class. At application startup, Aspectran's classpath scanner will automatically detect it and register it as a bean.
 
+The `@Component` annotation serves as the primary entry point for all annotation-based configuration. Other configuration annotations such as `@Bean`, `@Aspect`, `@Schedule`, and `@Profile` are only processed if they are on a class that is also marked with `@Component`. If these annotations are used on a class without `@Component`, they will be ignored, and a warning will be logged at startup. Therefore, always start by adding `@Component` to any class you intend to configure with annotations.
+
 ```java
 package com.example.myapp.service;
 
@@ -207,7 +209,7 @@ public class MainService {
 
 ### Environment-specific Configuration with `@Profile`
 
-The `@Profile` annotation allows you to register a bean only when a specific profile (e.g., `dev`, `prod`) is active.
+The `@Profile` annotation allows you to register a bean only when a specific profile (e.g., `dev`, `prod`) is active. This annotation must be placed on a class that is also annotated with `@Component` to take effect.
 
 ```java
 // Mock service to be used only in the development environment
@@ -609,3 +611,7 @@ After the container creates and injects dependencies into a `prototype` scope be
 ### Singleton Beans and State
 
 Since a singleton bean has only one instance throughout the application, it can be accessed by multiple threads simultaneously. If a singleton bean has a mutable state (e.g., member variables), concurrency issues can arise. It is best to design singleton beans to be stateless. If state is absolutely necessary, use `ThreadLocal` or carefully implement synchronization.
+
+### Always Use `@Component` as the Entry Point
+
+Remember that annotations like `@Aspect`, `@Bean`, `@Schedule`, and `@Profile` are only activated on classes that are also marked with `@Component`. The framework's component scanner looks for `@Component` first and then processes other annotations on those classes. Using other configuration annotations without `@Component` will result in them being ignored, which can be a common source of configuration errors. The framework will log a warning if it detects such cases.
