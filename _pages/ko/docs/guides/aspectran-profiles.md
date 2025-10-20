@@ -84,8 +84,8 @@ Aspectran의 설정 파일 (XML 기반) 내 대부분의 엘리먼트에서 `pro
 
 - **복합 표현식**: 여러 연산자를 조합하여 복잡한 조건을 만들 수 있습니다.
   ```xml
-  <!-- 'rss-lettuce', 'rss-lettuce-masterreplica', 'rss-lettuce-cluster' 프로필이 모두 활성화되지 않았을 때 적용 -->
-  <properties profile="(!rss-lettuce, !rss-lettuce-masterreplica, !rss-lettuce-cluster)">
+  <!-- 'rss-lettuce', 'rss-lettuce-primaryreplica', 'rss-lettuce-cluster' 프로필이 모두 활성화되지 않았을 때 적용 -->
+  <properties profile="(!rss-lettuce, !rss-lettuce-primaryreplica, !rss-lettuce-cluster)">
       <!-- ... -->
   </properties>
   ```

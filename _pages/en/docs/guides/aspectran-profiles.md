@@ -84,8 +84,8 @@ In addition to simple profile names, you can use logical operators to express co
 
 - **Composite Expressions**: You can create complex conditions by combining multiple operators.
   ```xml
-  <!-- Applied when none of the 'rss-lettuce', 'rss-lettuce-masterreplica', 'rss-lettuce-cluster' profiles are active -->
-  <properties profile="(!rss-lettuce, !rss-lettuce-masterreplica, !rss-lettuce-cluster)">
+  <!-- Applied when none of the 'rss-lettuce', 'rss-lettuce-primaryreplica', 'rss-lettuce-cluster' profiles are active -->
+  <properties profile="(!rss-lettuce, !rss-lettuce-primaryreplica, !rss-lettuce-cluster)">
       <!-- ... -->
   </properties>
   ```
