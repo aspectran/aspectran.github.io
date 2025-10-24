@@ -56,6 +56,7 @@ Understand the high-level architecture of Aspectran and its core components.
 Dive deeper into Aspectran’s architecture with detailed explanations.
 
 *   [ActivityContext Build Process: An In-Depth Analysis](/en/docs/architecture/activity-context-building/)
+*   [In-Depth Analysis of the Aspectran Auto-Reloading Mechanism](/en/docs/architecture/aspectran-reloading-mechanism/)
 *   [ActivityContext: The Heart of Aspectran](/en/docs/architecture/activity-context/)
 *   [Environment: Controlling Environments with Profiles and Properties](/en/docs/architecture/activity-environment/)
 *   [Aspectran Actions: Concepts, Types, and Processing Results](/en/docs/architecture/aspectran-actions/)

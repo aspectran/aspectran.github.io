@@ -56,6 +56,7 @@ Aspectran의 고수준 아키텍처와 핵심 구성 요소를 이해합니다.
 자세한 설명과 함께 Aspectran의 아키텍처를 더 자세히 알아보세요.
 
 *   [ActivityContext 빌드 과정: 심층 분석](/ko/docs/architecture/activity-context-building/)
+*   [Aspectran 자동 리로딩 메커니즘 심층 분석](/ko/docs/architecture/aspectran-reloading-mechanism/)
 *   [ActivityContext: Aspectran의 심장부](/ko/docs/architecture/activity-context/)
 *   [Environment: 프로필과 속성을 이용한 환경 제어](/ko/docs/architecture/activity-environment/)
 *   [Aspectran Actions: 개념, 종류 및 처리 결과](/ko/docs/architecture/aspectran-actions/)
