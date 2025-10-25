@@ -30,13 +30,16 @@ Auto-reloading is performed through the following clear steps:
     context: {
         autoReload: {
             enabled: true
-            scanIntervalSeconds: 10
+            scanIntervalSeconds: 5
         }
     }
     ```
 2.  **Initialization and Monitoring Start**: At the final stage of the context build process, if the `autoReload` setting is `true`, `ActivityContextBuilder` starts the `ContextReloadingTimer`. At this time, all configuration files referenced during the build process and resources specified in `<resourceLocations>` are registered as monitoring targets.
-3.  **Change Monitoring**: `ContextReloadingTask` checks the `lastModified` timestamp of the registered files at the interval specified by `scanIntervalSeconds` (e.g., every 10 seconds).
-4.  **Change Detection and Restart Trigger**: If a file's timestamp differs from the previously recorded value, it is considered a modification. `ContextReloadingTask` then calls the `restart()` method of the `ServiceLifeCycle` instance it holds.
+3.  **Change Monitoring**: `ContextReloadingTask` checks the `lastModified` timestamp of the registered files at the interval specified by `scanIntervalSeconds` (e.g., every 5 seconds).
+4.  **Change Detection and Restart Trigger**: The reloading logic is designed to be safe against incomplete file updates (e.g., when copying multiple files). A restart is triggered only after a "quiet period" with no detected changes has passed.
+    - When a file change is first detected, the task simply notes the change and waits for the next scan.
+    - If the next scan reveals no further changes, it means a quiet period equivalent to `scanIntervalSeconds` has passed. The task then calls the `restart()` method of the `ServiceLifeCycle` instance.
+    - If changes are detected continuously in every scan, the restart is deferred until a scan completes with no new changes.
 5.  **Restart Execution**: The service that receives the `restart()` call destroys the existing `ActivityContext` and re-executes the context build process from the beginning. In this process, a new `ActivityContext` with the changed settings applied is created and reflected in the application.
 
 ## 4. Hierarchical Services and Reloading

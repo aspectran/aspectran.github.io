@@ -30,13 +30,16 @@ Aspectran 프레임워크의 자동 리로딩(Hot-Reloading) 기능은 애플리
     context: {
         autoReload: {
             enabled: true
-            scanIntervalSeconds: 10
+            scanIntervalSeconds: 5
         }
     }
     ```
 2.  **초기화 및 감시 시작**: `ActivityContextBuilder`가 컨텍스트를 빌드하는 마지막 단계에서, `autoReload` 설정이 `true`이면 `ContextReloadingTimer`를 시작합니다. 이때, 빌드 과정에서 참조된 모든 설정 파일과 `<resourceLocations>`에 지정된 리소스들이 감시 대상으로 등록됩니다.
-3.  **변경 감시**: `ContextReloadingTask`가 `scanIntervalSeconds`에 설정된 주기(예: 10초)마다 등록된 파일들의 `lastModified` 타임스탬프를 검사합니다.
-4.  **변경 감지 및 재시작 트리거**: 파일의 타임스탬프가 이전에 기록된 값과 다르면, 변경이 감지된 것으로 간주합니다. `ContextReloadingTask`는 자신이 참조하고 있던 `ServiceLifeCycle` 인스턴스의 `restart()` 메서드를 호출합니다.
+3.  **변경 감시**: `ContextReloadingTask`가 `scanIntervalSeconds`에 설정된 주기(예: 5초)마다 등록된 파일들의 `lastModified` 타임스탬프를 검사합니다.
+4.  **변경 감지 및 재시작 트리거**: 리로딩 로직은 여러 파일이 복사되는 등 불완전한 파일 업데이트 상황에 대해 안전하도록 설계되었습니다. 재시작은 변경이 감지되지 않는 '고요한 기간'이 지난 후에만 트리거됩니다.
+    - 파일 변경이 처음 감지되면, 태스크는 변경 사실만 기록하고 다음 스캔을 기다립니다.
+    - 만약 다음 스캔에서 더 이상의 변경이 감지되지 않으면, `scanIntervalSeconds` 만큼의 고요한 기간이 지난 것으로 간주합니다. 그 후 태스크는 `ServiceLifeCycle` 인스턴스의 `restart()` 메서드를 호출합니다.
+    - 만약 스캔할 때마다 계속해서 변경이 감지된다면, 새로운 변경이 없는 스캔이 완료될 때까지 재시작은 보류됩니다.
 5.  **재시작 실행**: `restart()` 호출을 받은 서비스는 기존 `ActivityContext`를 파괴하고, `ActivityContextBuilder`를 통해 컨텍스트 빌드 과정을 처음부터 다시 수행합니다. 이 과정에서 변경된 설정이 적용된 새로운 `ActivityContext`가 생성되어 애플리케이션에 반영됩니다.
 
 ## 4. 계층적 서비스와 리로딩
