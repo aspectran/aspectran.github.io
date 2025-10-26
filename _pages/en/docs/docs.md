@@ -44,6 +44,7 @@ Access hands-on guides to apply Aspectran effectively in real scenarios.
 *   [Guide to Applying Thymeleaf Layout in Aspectran](/en/docs/guides/practical-guide-to-thymeleaf-layout/)
 *   [Guide to Integrating Legacy Systems with Modern Aspectran Application Servers](/en/docs/guides/practical-guide-to-legacy-integration/)
 *   [Using CORS (Cross-Origin Resource Sharing) in Aspectran](/en/docs/guides/practical-guide-to-cors/)
+*   [Practical Guide to Custom Type Converters](/en/docs/guides/practical-guide-to-type-converter/)
 
 ## <i class="bi bi-cpu"></i> Architecture
 
