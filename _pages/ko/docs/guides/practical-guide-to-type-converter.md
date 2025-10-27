@@ -15,23 +15,21 @@ Aspectran은 요청 파라미터(항상 문자열)를 필요한 모든 커스텀
 ```java
 package com.example.converter;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
+import com.aspectran.core.component.converter.TypeConverter;
 
-import java.lang.annotation.Annotation;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 
 public class YearMonthConverter implements TypeConverter<YearMonth> {
 
     @Override
-    public YearMonth convert(String value, Annotation[] annotations, Activity activity) {
-        if (value == null) {
+    public YearMonth convert(String src) {
+        if (src == null) {
             return null;
         }
         try {
             // 핵심 변환 로직
-            return YearMonth.parse(value);
+            return YearMonth.parse(src);
         } catch (DateTimeParseException e) {
             // 변환 실패 시 특정 예외를 다시 던지는 것이 좋지만,
             // 여기서는 간단하게 null을 반환합니다.
@@ -44,34 +42,34 @@ public class YearMonthConverter implements TypeConverter<YearMonth> {
 
 ## 2. 커스텀 컨버터 등록하기
 
-Aspectran이 새로운 컨버터를 인식하게 하려면 애플리케이션 시작 시 `TypeConverterRegistry`에 등록해야 합니다. 가장 쉬운 방법은 `@Component`와 `@Initialize` 애너테이션을 사용하는 것입니다.
+Aspectran이 새로운 컨버터를 인식하게 하려면 등록 과정이 필요합니다. 권장하는 방법은 `TypeConverterRegistrationBean`을 상속받는 설정 컴포넌트를 만드는 것입니다.
 
-초기화 클래스에 애너테이션을 추가하기만 하면 됩니다. Aspectran의 컴포넌트 스캐너가 이를 자동으로 감지하여 싱글턴 빈으로 생성하고, 시작 시점에 `initialize()` 메소드를 실행합니다.
+`TypeConverterRegistrationBean`을 상속하면, 여러분의 컴포넌트는 자동으로 `ActivityContextAware`가 되어 변환기를 등록할 수 있는 기능을 갖게 됩니다. 그 다음, `@Initialize` 애너테이션이 붙은 메소드 안에서 상속받은 `register()` 메소드를 호출하여 커스텀 변환기를 등록할 수 있습니다.
 
-**`CustomConverterInitializer.java`**
+**`ConverterConfiguration.java`**
 ```java
-package com.example.app;
+package com.example.config;
 
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Initialize;
-import com.aspectran.core.context.converter.TypeConverterRegistry;
+import com.aspectran.core.component.converter.TypeConverterRegistrationBean;
 import com.example.converter.YearMonthConverter;
 
 import java.time.YearMonth;
 
 @Component
-public class CustomConverterInitializer {
+public class ConverterConfiguration extends TypeConverterRegistrationBean {
 
     @Initialize
-    public void initialize() {
-        // YearMonth 클래스에 대해 YearMonthConverter를 등록합니다.
-        TypeConverterRegistry.register(YearMonth.class, new YearMonthConverter());
+    public void registerConverters() {
+        // 'register' 메소드는 TypeConverterRegistrationBean으로부터 상속받았습니다.
+        register(YearMonth.class, new YearMonthConverter());
     }
 
 }
 ```
 
-이때, 해당 패키지(`com.example.app`)가 메인 Aspectran 설정의 컴포넌트 스캔 경로에 포함되어 있는지 확인해야 합니다.
+이때, 해당 패키지(`com.example.config`)가 메인 Aspectran 설정의 컴포넌트 스캔 경로에 포함되어 있는지 확인해야 합니다.
 
 
 ## 3. 액션 메소드에서 사용하기

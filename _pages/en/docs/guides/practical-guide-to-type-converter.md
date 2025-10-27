@@ -3,8 +3,6 @@ title: Practical Guide to Custom Type Converters
 subheadline: Practical Guides
 ---
 
-# Practical Guide to Custom Type Converters
-
 Aspectran provides a powerful `TypeConverter` interface that allows you to convert incoming request parameters (which are always strings) into any custom object type you need. This guide will walk you through how to create, register, and use your own custom `TypeConverter`.
 
 Let's say you want to handle `yyyy-MM` formatted strings as `java.time.YearMonth` objects in your action methods.
@@ -17,23 +15,21 @@ First, create a class that implements the `TypeConverter<T>` interface. The gene
 ```java
 package com.example.converter;
 
-import com.aspectran.core.activity.Activity;
-import com.aspectran.core.context.converter.TypeConverter;
+import com.aspectran.core.component.converter.TypeConverter;
 
-import java.lang.annotation.Annotation;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 
 public class YearMonthConverter implements TypeConverter<YearMonth> {
 
     @Override
-    public YearMonth convert(String value, Annotation[] annotations, Activity activity) {
-        if (value == null) {
+    public YearMonth convert(String src) {
+        if (src == null) {
             return null;
         }
         try {
             // The core conversion logic
-            return YearMonth.parse(value);
+            return YearMonth.parse(src);
         } catch (DateTimeParseException e) {
             // It's good practice to re-throw a specific exception if conversion fails,
             // but for simplicity, we'll return null here.
@@ -46,34 +42,34 @@ public class YearMonthConverter implements TypeConverter<YearMonth> {
 
 ## 2. Register Your Custom Converter
 
-For Aspectran to recognize your new converter, you need to register it with the `TypeConverterRegistry` when the application starts. The easiest way to do this is to use the `@Component` and `@Initialize` annotations.
+For Aspectran to recognize your new converter, you need to register it. The recommended way is to create a configuration component that extends `TypeConverterRegistrationBean`.
 
-Simply add the annotations to your initializer class. Aspectran's component scanner will automatically detect it, create it as a singleton bean, and run the `initialize()` method upon startup.
+By extending `TypeConverterRegistrationBean`, your component automatically becomes `ActivityContextAware` and gains the ability to register converters. Then, in a method annotated with `@Initialize`, you can call the inherited `register()` method to add your custom converters.
 
-**`CustomConverterInitializer.java`**
+**`ConverterConfiguration.java`**
 ```java
-package com.example.app;
+package com.example.config;
 
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Initialize;
-import com.aspectran.core.context.converter.TypeConverterRegistry;
+import com.aspectran.core.component.converter.TypeConverterRegistrationBean;
 import com.example.converter.YearMonthConverter;
 
 import java.time.YearMonth;
 
 @Component
-public class CustomConverterInitializer {
+public class ConverterConfiguration extends TypeConverterRegistrationBean {
 
     @Initialize
-    public void initialize() {
-        // Register YearMonthConverter for the YearMonth class
-        TypeConverterRegistry.register(YearMonth.class, new YearMonthConverter());
+    public void registerConverters() {
+        // The 'register' method is inherited from TypeConverterRegistrationBean
+        register(YearMonth.class, new YearMonthConverter());
     }
 
 }
 ```
 
-Make sure that the package (`com.example.app` in this case) is included in the component scan paths in your main Aspectran configuration.
+Make sure that the package (`com.example.config` in this case) is included in the component scan paths in your main Aspectran configuration.
 
 ## 3. Use it in Your Action Methods
 
