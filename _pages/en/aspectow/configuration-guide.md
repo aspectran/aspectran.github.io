@@ -56,9 +56,10 @@ The following properties are essential in the `<properties>` section of `pom.xml
 
 ```xml
 <properties>
-    <!-- [Critical] Must be 'true' to preserve method parameter names, which Aspectran requires for runtime argument mapping. -->
-    <maven.compiler.parameters>true</maven.compiler.parameters>
+    <!-- Sets the Java compiler to version 21 and preserves parameter names,
+    which is critical for Aspectran's runtime argument mapping. -->
     <maven.compiler.release>21</maven.compiler.release>
+    <maven.compiler.parameters>true</maven.compiler.parameters>
 </properties>
 ```
 
