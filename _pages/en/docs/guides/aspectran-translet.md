@@ -88,7 +88,7 @@ public class UserApiController {
     // Creates a Translet rule for a GET /user/info/${userId} request.
     // This method becomes an Action executed by the Activity.
     @RequestToGet("/user/info/${userId}")
-    @Transform(format = "json") // Transforms the result to JSON.
+    @Transform(format = FormatType.JSON) // Transforms the result to JSON.
     public User getUserInfo(long userId, Translet translet) { // (1)
         // The return value of the method becomes the response content.
         return userDao.getUserById(userId);
@@ -107,7 +107,7 @@ If you need to handle a long-running task, you can instruct the `Activity` to **
     async = true, // Enables asynchronous execution.
     timeout = 30000L
 )
-@Transform(format = "text")
+@Transform(format = FormatType.TEXT)
 public String generateReport(Translet translet) {
     // Parse the request body into Aspectran's Parameters object.
     // JSON, XML, etc., are automatically parsed based on the Content-Type.

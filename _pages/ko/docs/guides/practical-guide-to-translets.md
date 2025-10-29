@@ -138,10 +138,10 @@ public void getOrders(
 
 ### 4.1. 어노테이션 기반 응답 규칙
 
-*   **`@Transform(format = "...")`**: 메소드가 반환하는 객체(주로 POJO나 `Map`)를 지정된 형식(json, xml, text 등)의 문자열로 변환하여 응답합니다. REST API 구현에 매우 유용합니다.
+*   **`@Transform`**: 메소드가 반환하는 객체(주로 POJO나 `Map`)를 지정된 형식의 문자열로 변환하여 응답합니다. `format` 속성에는 `FormatType` enum 값(예: `FormatType.JSON`, `FormatType.XML`)을 지정합니다. REST API 구현에 매우 유용합니다.
     ```java
     @RequestToGet("/api/users/${userId}")
-    @Transform(format = "json")
+    @Transform(format = FormatType.JSON)
     public User getUser(@Required long userId) {
         return userService.getUser(userId);
     }

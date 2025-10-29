@@ -77,7 +77,7 @@ Aspectran provides two main ways to define a Translet.
             private UserDao userDao;
 
             @RequestToGet("/user/info/${userId}") // Mapped to GET /user/info/${userId} request
-            @Transform(format = "json") // Transform the result to JSON
+            @Transform(format = FormatType.JSON) // Transform the result to JSON
             public User getUserInfo(Long userId) {
                 return userDao.getUserById(userId);
             }
@@ -93,7 +93,7 @@ Aspectran provides two main ways to define a Translet.
             private ReportService reportService;
 
             @RequestToPost(path = "/reports/generate", async = true, timeout = 30000L)
-            @Transform(format = "text")
+            @Transform(format = FormatType.TEXT)
             public String generateReport(Translet translet) {
                 // Parse the request body into Aspectran's Parameters object.
                 // JSON, XML, etc., are automatically parsed based on the Content-Type.

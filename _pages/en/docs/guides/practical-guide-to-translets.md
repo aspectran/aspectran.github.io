@@ -138,10 +138,10 @@ You can easily control the response through the return value of the action metho
 
 ### 4.1. Annotation-based Response Rules
 
-*   **`@Transform(format = "...")`**: Transforms the object returned by the method (usually a POJO or `Map`) into a string of the specified format (json, xml, text, etc.) and responds. Very useful for implementing REST APIs.
+*   **`@Transform`**: Transforms the object returned by the method (usually a POJO or `Map`) into a string of a specified format and responds. The `format` attribute takes a `FormatType` enum value (e.g., `FormatType.JSON`, `FormatType.XML`). Very useful for implementing REST APIs.
     ```java
     @RequestToGet("/api/users/${userId}")
-    @Transform(format = "json")
+    @Transform(format = FormatType.JSON)
     public User getUser(@Required long userId) {
         return userService.getUser(userId);
     }

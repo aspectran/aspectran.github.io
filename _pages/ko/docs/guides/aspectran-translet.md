@@ -88,7 +88,7 @@ public class UserApiController {
     // GET /user/info/${userId} 요청에 대한 Translet 규칙을 생성합니다.
     // 이 메소드는 Activity에 의해 실행되는 Action이 됩니다.
     @RequestToGet("/user/info/${userId}")
-    @Transform(format = "json") // 결과를 JSON으로 변환합니다.
+    @Transform(format = FormatType.JSON) // 결과를 JSON으로 변환합니다.
     public User getUserInfo(long userId, Translet translet) { // (1)
         // 메소드의 반환값이 바로 응답 콘텐츠가 됩니다.
         return userDao.getUserById(userId);
@@ -107,7 +107,7 @@ public class UserApiController {
     async = true, // 비동기 실행을 활성화합니다.
     timeout = 30000L
 )
-@Transform(format = "text")
+@Transform(format = FormatType.TEXT)
 public String generateReport(Translet translet) {
     // 요청 본문을 Aspectran의 Parameters 객체로 파싱합니다.
     // Content-Type에 따라 JSON, XML 등이 자동으로 파싱됩니다.

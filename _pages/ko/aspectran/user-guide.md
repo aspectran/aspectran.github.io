@@ -77,7 +77,7 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
             private UserDao userDao;
 
             @RequestToGet("/user/info/${userId}") // GET /user/info/${userId} 요청에 매핑
-            @Transform(format = "json") // 결과를 JSON으로 변환
+            @Transform(format = FormatType.JSON) // 결과를 JSON으로 변환
             public User getUserInfo(Long userId) {
                 return userDao.getUserById(userId);
             }
@@ -93,7 +93,7 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
             private ReportService reportService;
 
             @RequestToPost(path = "/reports/generate", async = true, timeout = 30000L)
-            @Transform(format = "text")
+            @Transform(format = FormatType.TEXT)
             public String generateReport(Translet translet) {
                 // 요청 본문을 Aspectran의 Parameters 객체로 파싱합니다.
                 // Content-Type에 따라 JSON, XML 등이 자동으로 파싱됩니다.
