@@ -29,7 +29,7 @@ A single Translet defines the processing flow for a specific request. This can i
 -   **Action Execution**: Defines which business logic to perform.
 -   **Content Generation**: Combines processing results to generate content for the response.
 -   **Transformation**: Transforms the generated content into a final response format like JSON, XML, or text.
--   **Response and Dispatch**: Responds to the user with the final result or forwards the processing to another Translet.
+-   **Response Control**: Allows you to directly respond with data like JSON or XML, dispatch to a view template for UI rendering, or forward/redirect the processing to another Translet or URL.
 
 By combining these rules, you can flexibly design everything from very simple tasks to complex workflows.
 
@@ -37,13 +37,26 @@ By combining these rules, you can flexibly design everything from very simple ta
 
 When the application starts, Aspectran parses all defined Translet rules and registers them in a central repository called the **`TransletRuleRegistry`**.
 
-When a user request comes in, the `Activity` finds the most suitable Translet rule (blueprint) from this registry.
+When a user request comes in, the `Activity` finds the most suitable Translet rule (blueprint) from this registry. Aspectran searches for rules based on a clear priority system, ensuring that the most specific rule is always chosen first.
 
 1.  **Request Name**: It looks for an exact match, like `/user/info`.
 2.  **Request Method**: In a web environment, this corresponds to HTTP methods like `GET`, `POST`, etc. Even with the same request name, a different Translet can be executed based on this request method.
 3.  **Wildcard and Path Variable Patterns**: It supports patterns like `/users/*` or `/users/${userId}`, allowing for very efficient implementation of RESTful APIs.
 
 The `Activity` performs the actual request processing task according to the found Translet rule. In other words, **the Translet is the 'blueprint', and the Activity is the 'construction worker'** that works by looking at that blueprint.
+
+### Search Priority: The Most Specific Rule Wins!
+
+When finding a Translet, the following priorities are applied:
+
+1.  **Exact Match First**: Rules with a name that exactly matches the request, without any wildcards (`*`) or path variables (`${...}`), are always chosen first.
+2.  **More Specific Patterns Take Precedence**: If multiple wildcard patterns match a request, the rule with the more specific pattern wins.
+    -   **Example**: For a `GET /users/info` request, if both a `/users/*` rule and a `/users/info` rule exist, the more specific `/users/info` rule will be selected. Similarly, a `/users/${userId}/profile` pattern is more specific than `/users/${userId}/*` and would be chosen first.
+3.  **Fallback for Non-GET Requests**: If no exact match is found for a `POST`, `PUT`, etc., request, Aspectran will look for a rule that has no method specified (implicitly a `GET` rule) as a fallback.
+    -   **Example**: If a `POST /users` request arrives, but there is no `/users` rule explicitly defined with `method="post"`, and only a `<translet name="/users">...</translet>` rule (with no method) exists, that rule will be selected to handle the request.
+4.  **Later Definitions Override Earlier Ones**: If multiple Translet rules are defined with the same request name and method, the **last one defined (or registered)** will overwrite the previous ones. This can be useful for overriding specific rules when your Aspectran configuration is split across multiple files or when using the include feature to import settings from another file.
+
+This priority system allows developers to define general-purpose rules alongside specific ones, leading to flexible and intuitive code management.
 
 ## 3. Dynamic Translet Generation (Scanning)
 
