@@ -240,6 +240,124 @@ public class MyProductFactory implements FactoryBean<MyProduct> {
 }
 ```
 
+`FactoryBean` 인터페이스에는 팩토리가 생성하는 객체의 스코프를 결정하는 `isSingleton()` 메소드도 포함되어 있습니다.
+
+-   **`isSingleton()`이 `true`를 반환할 경우 (기본값):** `getObject()`가 반환하는 객체는 **싱글톤**으로 취급됩니다. 프레임워크는 `getObject()`를 한 번만 호출하고 그 결과를 캐시에 저장한 뒤, 이후의 모든 빈 요청에 대해 이 캐시된 인스턴스를 반환합니다.
+-   **`isSingleton()`이 `false`를 반환할 경우:** 객체는 **프로토타입**으로 취급됩니다. 프레임워크는 빈이 요청될 때마다 `getObject()`를 호출하여 매번 새로운 인스턴스를 생성합니다. 반환된 객체는 캐시에 저장되지 않습니다.
+
+이를 통해, `FactoryBean` 자체는 싱글톤 빈이면서도, 그것이 생산하는 객체가 공유되는 싱글톤일지 아니면 매번 새로 생성되는 프로토타입일지를 세밀하게 제어할 수 있습니다.
+
+```java
+@Component
+@Bean("myPrototypeProduct")
+public class MyProductFactory implements FactoryBean<MyProduct> {
+    @Override
+    public MyProduct getObject() throws Exception {
+        // "myPrototypeProduct" 빈이 요청될 때마다 이 메소드가 호출됩니다.
+        return new MyProduct();
+    }
+
+    @Override
+    public boolean isSingleton() {
+        // 생성된 객체가 프로토타입임을 나타내기 위해 false를 반환합니다.
+        return false;
+    }
+}
+```
+
+`FactoryBean` 인터페이스에는 팩토리가 생성하는 객체의 스코프를 결정하는 `isSingleton()` 메소드도 포함되어 있습니다.
+
+-   **`isSingleton()`이 `true`를 반환할 경우 (기본값):** `getObject()`가 반환하는 객체는 **싱글톤**으로 취급됩니다. 프레임워크는 `getObject()`를 한 번만 호출하고 그 결과를 캐시에 저장한 뒤, 이후의 모든 빈 요청에 대해 이 캐시된 인스턴스를 반환합니다.
+-   **`isSingleton()`이 `false`를 반환할 경우:** 객체는 **프로토타입**으로 취급됩니다. 프레임워크는 빈이 요청될 때마다 `getObject()`를 호출하여 매번 새로운 인스턴스를 생성합니다. 반환된 객체는 캐시에 저장되지 않습니다.
+
+이를 통해, `FactoryBean` 자체는 싱글톤 빈이면서도, 그것이 생산하는 객체가 공유되는 싱글톤일지 아니면 매번 새로 생성되는 프로토타입일지를 세밀하게 제어할 수 있습니다.
+
+```java
+@Component
+@Bean("myPrototypeProduct")
+public class MyProductFactory implements FactoryBean<MyProduct> {
+    @Override
+    public MyProduct getObject() throws Exception {
+        // "myPrototypeProduct" 빈이 요청될 때마다 이 메소드가 호출됩니다.
+        return new MyProduct();
+    }
+
+    @Override
+    public boolean isSingleton() {
+        // 생성된 객체가 프로토타입임을 나타내기 위해 false를 반환합니다.
+        return false;
+    }
+}
+```
+
+### 팩토리 메소드로 빈 생성하기
+
+`FactoryBean` 외에도, Aspectran은 전용 팩토리 메소드를 사용하여 빈을 생성하는 방법을 제공합니다. 이는 복잡한 객체 생성 로직을 캡슐화하거나 서드파티 라이브러리를 통합하기 위한 강력한 패턴입니다.
+
+#### 어노테이션 사용하기 (`@Bean` 메소드)
+
+팩토리 메소드를 사용하는 가장 일반적인 방법은 `@Component` 클래스 내의 메소드에 `@Bean` 어노테이션을 붙이는 것입니다. 이 메소드가 반환하는 객체가 빈으로 등록됩니다.
+
+```java
+@Component
+public class AppConfig {
+    @Bean(id = "someClient")
+    public SomeLibraryClient createSomeLibraryClient() {
+        // 복잡한 설정 로직
+        SomeLibraryClient client = new SomeLibraryClient();
+        client.setApiKey("your-api-key");
+        client.setEndpoint("api.example.com");
+        return client;
+    }
+}
+```
+이 경우, `@Initialize`나 `@Destroy`와 같은 생명주기 어노테이션은 생산물 객체에 적용되므로 `SomeLibraryClient` 클래스 자체에 위치해야 합니다.
+
+#### XML 설정 사용하기
+
+XML에서는 팩토리 메소드를 선언하는 두 가지 뚜렷한 방식이 있으며, 핵심적인 차이점은 `<bean>` 태그가 무엇을 정의하는지, 그리고 생명주기 콜백(`initMethod`, `destroyMethod`)이 어디에 적용되는지에 있습니다.
+
+**스타일 1: 생산물 빈 정의하기 (`factoryBean` 사용)**
+
+이것은 `<bean>` 태그가 최종 **생산물(product) 객체**를 정의하는 진정한 팩토리 메소드 패턴입니다. 모든 생명주기 메소드는 이 생산물에 적용됩니다.
+
+```xml
+<!-- 먼저, 팩토리 자체를 일반 빈으로 정의합니다 -->
+<bean id="myProductFactory" class="com.example.MyProductFactory"/>
+
+<!-- 그 다음, 팩토리를 사용하여 생산물 빈을 정의합니다 -->
+<bean id="myProduct"
+      factoryBean="myProductFactory"
+      factoryMethod="createInstance"
+      initMethod="initializeProduct"
+      destroyMethod="cleanupProduct"/>
+```
+이 경우, `initializeProduct`와 `cleanupProduct` 메소드는 `MyProductFactory`가 아닌 `MyProduct` 클래스(생산물)에 존재해야 합니다.
+
+**정적(static)** 팩토리 메소드의 경우, 별도의 팩토리 빈 정의 없이 `class:` 접두사를 사용할 수 있습니다.
+```xml
+<bean id="myProduct"
+      factoryBean="class:com.example.MyProductFactory"
+      factoryMethod="createStaticInstance"
+      initMethod="initializeProduct"/>
+```
+여기서도 `initializeProduct`는 생산물 객체에 대해 호출됩니다.
+
+**스타일 2: 팩토리 빈 정의하기 (`class` + `factoryMethod` 사용)**
+
+이 패턴은 `FactoryBean`을 구현하는 것과 더 유사합니다. `<bean>` 태그는 **팩토리 객체 자체**를 정의하며, 생명주기 메소드들은 이 팩토리 인스턴스에 적용됩니다.
+
+```xml
+<bean id="myProduct"
+      class="com.example.MyProductFactory"
+      factoryMethod="createStaticInstance"
+      initMethod="initializeFactory"
+      destroyMethod="cleanupFactory"/>
+```
+이 스타일에서는 `initializeFactory`와 `cleanupFactory` 메소드가 `MyProductFactory` 클래스에 존재해야 합니다. 그런 다음 이 초기화된 팩토리에서 `createStaticInstance` 메소드가 호출되어 "myProduct" 빈으로 노출될 최종 객체를 생산합니다. 생산물 자체는 이러한 생명주기 호출을 받지 않습니다.
+
+이 차이점을 이해하는 것은 XML 설정에서 빈의 생명주기를 올바르게 관리하는 데 매우 중요합니다.
+
 ### `Aware` 인터페이스로 프레임워크에 접근하기
 
 `ActivityContextAware`와 같은 `Aware` 인터페이스를 구현하면, 빈이 Aspectran의 내부 객체(e.g., `ActivityContext`)에 접근할 수 있습니다.

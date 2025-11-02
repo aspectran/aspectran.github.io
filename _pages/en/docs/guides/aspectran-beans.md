@@ -240,6 +240,99 @@ public class MyProductFactory implements FactoryBean<MyProduct> {
 }
 ```
 
+The `FactoryBean` interface also includes a `isSingleton()` method, which determines the scope of the object created by the factory.
+
+-   **If `isSingleton()` returns `true` (the default):** The object returned by `getObject()` is treated as a singleton. The framework calls `getObject()` only once, caches the result, and returns this cached instance for all subsequent requests for that bean.
+-   **If `isSingleton()` returns `false`:** The object is treated as a prototype. The framework calls `getObject()` every time the bean is requested, creating a new instance for each request. The returned object is not cached.
+
+This allows a single `FactoryBean` instance (which is itself a singleton bean) to have fine-grained control over whether the object it produces is a shared singleton or a new prototype instance.
+
+```java
+@Component
+@Bean("myPrototypeProduct")
+public class MyProductFactory implements FactoryBean<MyProduct> {
+    @Override
+    public MyProduct getObject() throws Exception {
+        // This method will be called for every request for "myPrototypeProduct".
+        return new MyProduct();
+    }
+
+    @Override
+    public boolean isSingleton() {
+        // Return false to indicate that the created object is a prototype.
+        return false;
+    }
+}
+```
+
+### Creating Beans with a Factory Method
+
+In addition to `FactoryBean`, Aspectran provides a way to create beans using a dedicated factory method. This is a powerful pattern for encapsulating complex object creation logic or integrating third-party libraries.
+
+#### Using Annotations (`@Bean` on a method)
+
+The most common way to use a factory method is to annotate a method with `@Bean` inside a `@Component` class. The object returned by the method is registered as a bean.
+
+```java
+@Component
+public class AppConfig {
+    @Bean(id = "someClient")
+    public SomeLibraryClient createSomeLibraryClient() {
+        // Complex setup logic
+        SomeLibraryClient client = new SomeLibraryClient();
+        client.setApiKey("your-api-key");
+        client.setEndpoint("api.example.com");
+        return client;
+    }
+}
+```
+In this case, any lifecycle annotations like `@Initialize` or `@Destroy` should be placed on the `SomeLibraryClient` class itself, as they apply to the product object.
+
+#### Using XML Configuration
+
+There are two distinct ways to declare a factory method in XML, and the key difference lies in what the `<bean>` tag defines and where lifecycle callbacks (`initMethod`, `destroyMethod`) are applied.
+
+**Style 1: Defining the Product Bean (using `factoryBean`)**
+
+This is the true factory method pattern where the `<bean>` tag defines the final **product object**. All lifecycle methods apply to this product.
+
+```xml
+<!-- First, define the factory itself as a regular bean -->
+<bean id="myProductFactory" class="com.example.MyProductFactory"/>
+
+<!-- Then, define the product bean using the factory -->
+<bean id="myProduct"
+      factoryBean="myProductFactory"
+      factoryMethod="createInstance"
+      initMethod="initializeProduct"
+      destroyMethod="cleanupProduct"/>
+```
+In this case, `initializeProduct` and `cleanupProduct` methods must exist on the `MyProduct` class (the product), not on `MyProductFactory`.
+
+For **static** factory methods, you can use the `class:` prefix without defining a separate factory bean:
+```xml
+<bean id="myProduct"
+      factoryBean="class:com.example.MyProductFactory"
+      factoryMethod="createStaticInstance"
+      initMethod="initializeProduct"/>
+```
+Here too, `initializeProduct` is called on the product object.
+
+**Style 2: Defining the Factory Bean (using `class` + `factoryMethod`)**
+
+This pattern is more analogous to implementing `FactoryBean`. The `<bean>` tag defines the **factory object itself**, and lifecycle methods apply to this factory instance.
+
+```xml
+<bean id="myProduct"
+      class="com.example.MyProductFactory"
+      factoryMethod="createStaticInstance"
+      initMethod="initializeFactory"
+      destroyMethod="cleanupFactory"/>
+```
+In this style, `initializeFactory` and `cleanupFactory` methods must exist on the `MyProductFactory` class. The `createStaticInstance` method is then called on this initialized factory to produce the final object that gets exposed as the "myProduct" bean. The product itself does not receive these lifecycle calls.
+
+Understanding this distinction is crucial for correctly managing bean lifecycles in XML configurations.
+
 ### Accessing the Framework with `Aware` Interfaces
 
 By implementing `Aware` interfaces like `ActivityContextAware`, a bean can access Aspectran's internal objects (e.g., `ActivityContext`).

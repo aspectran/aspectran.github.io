@@ -462,7 +462,50 @@ context: {
 </aspectran>
 ```
 
+##### 팩토리 메소드 사용하기
 
+어노테이션 기반의 `@Bean` 메소드와 유사하게, XML에서도 팩토리 메소드를 사용하여 복잡한 객체 생성 로직을 캡슐화할 수 있습니다. XML에서는 두 가지 뚜렷한 방식으로 이를 선언할 수 있으며, 핵심적인 차이점은 `<bean>` 태그가 무엇을 정의하는지, 그리고 생명주기 콜백(`initMethod`, `destroyMethod`)이 어디에 적용되는지에 있습니다.
+
+**스타일 1: 생산물 빈 정의하기 (`factoryBean` 사용)**
+
+이것은 `<bean>` 태그가 최종 **생산물(product) 객체**를 정의하는 진정한 팩토리 메소드 패턴입니다. 모든 생명주기 메소드는 이 생산물에 적용됩니다.
+
+```xml
+<!-- 먼저, 팩토리 자체를 일반 빈으로 정의합니다 -->
+<bean id="myProductFactory" class="com.example.MyProductFactory"/>
+
+<!-- 그 다음, 팩토리를 사용하여 생산물 빈을 정의합니다 -->
+<bean id="myProduct"
+      factoryBean="myProductFactory"
+      factoryMethod="createInstance"
+      initMethod="initializeProduct"
+      destroyMethod="cleanupProduct"/>
+```
+이 경우, `initializeProduct`와 `cleanupProduct` 메소드는 `MyProductFactory`가 아닌 `MyProduct` 클래스(생산물)에 존재해야 합니다.
+
+**정적(static)** 팩토리 메소드의 경우, 별도의 팩토리 빈 정의 없이 `class:` 접두사를 사용할 수 있습니다.
+```xml
+<bean id="myProduct"
+      factoryBean="class:com.example.MyProductFactory"
+      factoryMethod="createStaticInstance"
+      initMethod="initializeProduct"/>
+```
+여기서도 `initializeProduct`는 생산물 객체에 대해 호출됩니다.
+
+**스타일 2: 팩토리 빈 정의하기 (`class` + `factoryMethod` 사용)**
+
+이 패턴은 `FactoryBean`을 구현하는 것과 더 유사합니다. `<bean>` 태그는 **팩토리 객체 자체**를 정의하며, 생명주기 메소드들은 이 팩토리 인스턴스에 적용됩니다.
+
+```xml
+<bean id="myProduct"
+      class="com.example.MyProductFactory"
+      factoryMethod="createStaticInstance"
+      initMethod="initializeFactory"
+      destroyMethod="cleanupFactory"/>
+```
+이 스타일에서는 `initializeFactory`와 `cleanupFactory` 메소드가 `MyProductFactory` 클래스에 존재해야 합니다. 그런 다음 이 초기화된 팩토리에서 `createStaticInstance` 메소드가 호출되어 "myProduct" 빈으로 노출될 최종 객체를 생산합니다. 생산물 자체는 이러한 생명주기 호출을 받지 않습니다.
+
+이 차이점을 이해하는 것은 XML 설정에서 빈의 생명주기를 올바르게 관리하는 데 매우 중요합니다.
 
 ### XML을 이용한 빈 일괄 정의
 
