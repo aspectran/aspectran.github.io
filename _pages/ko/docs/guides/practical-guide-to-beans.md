@@ -386,6 +386,31 @@ public class MyProductFactory implements FactoryBean<MyProduct> {
 }
 ```
 
+`FactoryBean` 인터페이스에는 팩토리가 생성하는 객체의 스코프를 결정하는 `isSingleton()` 메소드도 포함되어 있습니다.
+
+-   **`isSingleton()`이 `true`를 반환할 경우 (기본값):** `getObject()`가 반환하는 객체는 **싱글톤**으로 취급됩니다. 프레임워크는 `getObject()`를 한 번만 호출하고 그 결과를 캐시에 저장한 뒤, 이후의 모든 빈 요청에 대해 이 캐시된 인스턴스를 반환합니다.
+-   **`isSingleton()`이 `false`를 반환할 경우:** 객체는 **프로토타입**으로 취급됩니다. 프레임워크는 빈이 요청될 때마다 `getObject()`를 호출하여 매번 새로운 인스턴스를 생성합니다. 반환된 객체는 캐시에 저장되지 않습니다.
+
+이를 통해, `FactoryBean` 자체는 싱글톤 빈이면서도, 그것이 생산하는 객체가 공유되는 싱글톤일지 아니면 매번 새로 생성되는 프로토타입일지를 세밀하게 제어할 수 있습니다.
+
+```java
+@Component
+@Bean("myPrototypeProduct")
+public class MyProductFactory implements FactoryBean<MyProduct> {
+    @Override
+    public MyProduct getObject() throws Exception {
+        // "myPrototypeProduct" 빈이 요청될 때마다 이 메소드가 호출됩니다.
+        return new MyProduct();
+    }
+
+    @Override
+    public boolean isSingleton() {
+        // 생성된 객체가 프로토타입임을 나타내기 위해 false를 반환합니다.
+        return false;
+    }
+}
+```
+
 ### `Aware` 인터페이스로 프레임워크에 접근하기
 
 빈이 Aspectran의 내부 프레임워크 객체에 접근해야 하는 경우, `Aware` 인터페이스를 구현할 수 있습니다.
