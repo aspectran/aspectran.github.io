@@ -31,8 +31,9 @@ Learn how to use Aspectran and get the most out of its features.
 *   [Aspectran Scheduler: Powerful Task Automation with Translets](/en/docs/guides/aspectran-scheduler/)
 *   [Aspectran View Technologies](/en/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](/en/docs/guides/aspectran-profiles/)
-*   [Introduction to APON (Aspectran Parameters Object Notation) 소개](/en/docs/guides/introduce-apon/)
 *   [Introduction to AsEL (Aspectran Expression Language)](/en/docs/guides/introduce-asel/)
+*   [Introduction to APON (Aspectran Parameters Object Notation) 소개](/en/docs/guides/introduce-apon/)
+*   [Aspectran JSON Utilities Guide](/en/docs/guides/aspectran-json-guide/)
 
 ## <i class="bi bi-braces-asterisk"></i> Practical Guides
 
