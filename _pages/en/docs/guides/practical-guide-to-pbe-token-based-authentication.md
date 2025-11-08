@@ -27,7 +27,7 @@ Token-based authentication in Aspectran is primarily achieved through the follow
 
 #### 2.3. `TimeLimitedPBTokenIssuer`
 
-- **Role**: Issues and validates **time-limited tokens**, which are mainly used for authentication. It extends `PBTokenIssuer` to add expiration time functionality.
+- **Role**: Issues and validates **time-limited tokens**, which are mainly used for authentication.
 - **Token Structure**: It is structured as `encrypt(expiration_timestamp + "_" + payload)`.
     - **Expiration Timestamp**: The time when the token expires, converted to a base-36 string.
     - **Payload**: Additional data, such as user information, contained in a `Parameters` object.
@@ -68,7 +68,7 @@ public class AuthService {
      * Issues a token with the default expiration time (30 seconds).
      */
     public String issueSimpleToken() {
-        return TimeLimitedPBTokenIssuer.getToken();
+        return TimeLimitedPBTokenIssuer.createToken();
     }
 
     /**
@@ -80,7 +80,7 @@ public class AuthService {
         payload.putValue("role", role);
 
         long expirationMillis = 1000 * 60 * 60; // 1 hour
-        return TimeLimitedPBTokenIssuer.getToken(payload, expirationMillis);
+        return TimeLimitedPBTokenIssuer.createToken(payload, expirationMillis);
     }
 
 }
@@ -113,7 +113,7 @@ If the token validation is successful, you can extract the user information cont
 
 ```java
 try {
-    Parameters payload = TimeLimitedPBTokenIssuer.getPayload(token);
+    Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token);
     String userId = payload.getString("userId");
     // ... perform additional logic using userId
 } catch (InvalidPBTokenException e) {

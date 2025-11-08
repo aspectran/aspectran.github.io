@@ -27,7 +27,7 @@ Aspectran의 토큰 기반 인증은 주로 다음 세 가지 핵심 컴포넌�
 
 #### 2.3. `TimeLimitedPBTokenIssuer`
 
-- **역할**: 인증에 주로 사용되는 **시간제한이 있는 토큰**을 발급하고 검증합니다. `PBTokenIssuer`를 상속받아 만료 시간 기능을 추가했습니다.
+- **역할**: 인증에 주로 사용되는 **시간제한이 있는 토큰**을 발급하고 검증합니다.
 - **토큰 구조**: `암호화(만료_타임스탬프 + "_" + 페이로드)` 형태로 구성됩니다.
     - **만료 타임스탬프**: 토큰이 만료되는 시간을 36진수 문자열로 변환한 값입니다.
     - **페이로드**: `Parameters` 객체에 담긴 사용자 정보 등 부가 데이터입니다.
@@ -68,7 +68,7 @@ public class AuthService {
      * 기본 만료 시간(30초)을 가진 토큰을 발급합니다.
      */
     public String issueSimpleToken() {
-        return TimeLimitedPBTokenIssuer.getToken();
+        return TimeLimitedPBTokenIssuer.createToken();
     }
 
     /**
@@ -80,7 +80,7 @@ public class AuthService {
         payload.putValue("role", role);
 
         long expirationMillis = 1000 * 60 * 60; // 1 hour
-        return TimeLimitedPBTokenIssuer.getToken(payload, expirationMillis);
+        return TimeLimitedPBTokenIssuer.createToken(payload, expirationMillis);
     }
 
 }
@@ -113,7 +113,7 @@ protected boolean checkAuthorized(@NonNull Session session) {
 
 ```java
 try {
-    Parameters payload = TimeLimitedPBTokenIssuer.getPayload(token);
+    Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token);
     String userId = payload.getString("userId");
     // ... userId를 사용하여 추가 로직 수행
 } catch (InvalidPBTokenException e) {
