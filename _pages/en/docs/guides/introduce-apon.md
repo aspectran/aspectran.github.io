@@ -122,7 +122,7 @@ Let's explore how to convert APON-formatted text into a Java object and vice ver
 
 ### Step 1: Define Java Parameters Classes to Map to APON
 
-You need to define classes in Java that implement the `Parameters` interface corresponding to the APON data structure. Each class corresponds to a hierarchical level in APON, and you define the name, type, and array status of each parameter using `ParameterDefinition`.
+You need to define classes in Java that implement the `Parameters` interface corresponding to the APON data structure. Each class corresponds to a hierarchical level in APON, and you define the name, type, and array status of each parameter using `ParameterKey`.
 
 **Example APON:**
 ```apon
@@ -141,27 +141,27 @@ server: {
 ***RootConfig.java***
 ```java
 import com.aspectran.utils.apon.DefaultParameters;
-import com.aspectran.utils.apon.ParameterDefinition;
-import com.aspectran.utils.apon.ParameterValueType;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.ValueType;
 import com.aspectran.utils.apon.Parameters;
 
 public class RootConfig extends DefaultParameters implements Parameters {
 
-    public static final ParameterDefinition server;
+    public static final ParameterKey server;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
         // Has a hierarchical structure containing other Parameters
-        server = new ParameterDefinition("server", ServerConfig.class);
+        server = new ParameterKey("server", ServerConfig.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 server
         };
     }
 
     public RootConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 }
 ```
@@ -169,25 +169,25 @@ public class RootConfig extends DefaultParameters implements Parameters {
 ***ServerConfig.java***
 ```java
 import com.aspectran.utils.apon.DefaultParameters;
-import com.aspectran.utils.apon.ParameterDefinition;
-import com.aspectran.utils.apon.ParameterValueType;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.ValueType;
 import com.aspectran.utils.apon.Parameters;
 
 public class ServerConfig extends DefaultParameters implements Parameters {
 
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition port;
-    public static final ParameterDefinition features;
+    public static final ParameterKey name;
+    public static final ParameterKey port;
+    public static final ParameterKey features;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
-        port = new ParameterDefinition("port", ParameterValueType.INT);
+        name = new ParameterKey("name", ValueType.STRING);
+        port = new ParameterKey("port", ValueType.INT);
         // The 'features' parameter is of string type and is an array that can hold multiple values (third argument is true)
-        features = new ParameterDefinition("features", ParameterValueType.STRING, true);
+        features = new ParameterKey("features", ValueType.STRING, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 name,
                 port,
                 features
@@ -195,7 +195,7 @@ public class ServerConfig extends DefaultParameters implements Parameters {
     }
 
     public ServerConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 }
 ```

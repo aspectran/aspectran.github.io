@@ -124,7 +124,7 @@ APON 형식의 텍스트를 자바 객체로 변환하거나, 자바 객체를 A
 ### 1단계: APON에 매핑될 자바 Parameters 클래스 정의
 
 APON 데이터 구조에 맞춰 자바에서 `Parameters` 인터페이스를 구현하는 클래스를 정의해야 합니다. 각 클래스는 APON의 계층 구조에 대응되며,
-`ParameterDefinition`을 통해 각 Parameter의 이름, 타입, 배열 여부 등을 정의합니다.
+`ParameterKey`를 통해 각 Parameter의 이름, 타입, 배열 여부 등을 정의합니다.
 
 **예시 APON:**
 ```apon
@@ -143,27 +143,27 @@ server: {
 ***RootConfig.java***
 ```java
 import com.aspectran.utils.apon.DefaultParameters;
-import com.aspectran.utils.apon.ParameterDefinition;
-import com.aspectran.utils.apon.ParameterValueType;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.ValueType;
 import com.aspectran.utils.apon.Parameters;
 
 public class RootConfig extends DefaultParameters implements Parameters {
 
-    public static final ParameterDefinition server;
+    public static final ParameterKey server;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
         // 다른 Parameter를 포함하는 계층적 구조를 가짐
-        naserverme = new ParameterDefinition("server", ServerConfig.class);
+        naserverme = new ParameterKey("server", ServerConfig.class);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 server
         };
     }
 
     public RootConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 }
 ```
@@ -171,25 +171,25 @@ public class RootConfig extends DefaultParameters implements Parameters {
 ***ServerConfig.java***
 ```java
 import com.aspectran.utils.apon.DefaultParameters;
-import com.aspectran.utils.apon.ParameterDefinition;
-import com.aspectran.utils.apon.ParameterValueType;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.ValueType;
 import com.aspectran.utils.apon.Parameters;
 
 public class ServerConfig extends DefaultParameters implements Parameters {
 
-    public static final ParameterDefinition name;
-    public static final ParameterDefinition port;
-    public static final ParameterDefinition features;
+    public static final ParameterKey name;
+    public static final ParameterKey port;
+    public static final ParameterKey features;
 
-    private static final ParameterDefinition[] parameterDefinitions;
+    private static final ParameterKey[] parameterKeys;
 
     static {
-        name = new ParameterDefinition("name", ParameterValueType.STRING);
-        port = new ParameterDefinition("port", ParameterValueType.INT);
+        name = new ParameterKey("name", ValueType.STRING);
+        port = new ParameterKey("port", ValueType.INT);
         // features Parameter는 string 타입이며, 여러 값을 가질 수 있는 배열임 (세 번째 인자 true)
-        features = new ParameterDefinition("features", ParameterValueType.STRING, true);
+        features = new ParameterKey("features", ValueType.STRING, true);
 
-        parameterDefinitions = new ParameterDefinition[] {
+        parameterKeys = new ParameterKey[] {
                 name,
                 port,
                 features
@@ -197,7 +197,7 @@ public class ServerConfig extends DefaultParameters implements Parameters {
     }
 
     public ServerConfig() {
-        super(parameterDefinitions);
+        super(parameterKeys);
     }
 }
 ```
