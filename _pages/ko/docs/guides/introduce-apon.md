@@ -98,9 +98,9 @@ APON은 다양한 데이터 타입을 지원하며, `이름(타입): 값`의 형
 | `string` | `java.lang.String` | `name(string): Hello, World.` |
 | `text` | `java.lang.String` | 아래 `text` 타입 예제 참조            |
 | `int` | `java.lang.Integer` | `age(int): 30`                |
-| `long` | `java.lang.Long` | `id(long): 12345L`            |
-| `float` | `java.lang.Float` | `score(float): 95.5f`         |
-| `double` | `java.lang.Double` | `pi(double): 3.14159d`        |
+| `long` | `java.lang.Long` | `id(long): 12345`            |
+| `float` | `java.lang.Float` | `score(float): 95.5`         |
+| `double` | `java.lang.Double` | `pi(double): 3.14159`        |
 | `boolean` | `java.lang.Boolean` | `isAdmin(boolean): true`      |
 | `parameters` | `com.aspectran.utils.apon.Parameters` | 중첩된 Parameter 구조                   |
 
@@ -142,12 +142,12 @@ server: {
 
 ***RootConfig.java***
 ```java
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterDefinition;
 import com.aspectran.utils.apon.ParameterValueType;
 import com.aspectran.utils.apon.Parameters;
 
-public class RootConfig extends AbstractParameters implements Parameters {
+public class RootConfig extends DefaultParameters implements Parameters {
 
     public static final ParameterDefinition server;
 
@@ -170,12 +170,12 @@ public class RootConfig extends AbstractParameters implements Parameters {
 
 ***ServerConfig.java***
 ```java
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterDefinition;
 import com.aspectran.utils.apon.ParameterValueType;
 import com.aspectran.utils.apon.Parameters;
 
-public class ServerConfig extends AbstractParameters implements Parameters {
+public class ServerConfig extends DefaultParameters implements Parameters {
 
     public static final ParameterDefinition name;
     public static final ParameterDefinition port;

@@ -157,14 +157,14 @@ assertEquals("test", query);
 
 #### 타입이 지정된 Parameters를 사용한 타입 안전 변환
 
-더 견고하고 타입 안전한 처리를 위해 `AbstractParameters`를 확장하고 예상되는 파라미터와 해당 타입을 지정하는 클래스를 정의할 수 있습니다. 이는 런타임 타입 오류를 방지하므로 강력히 권장됩니다.
+더 견고하고 타입 안전한 처리를 위해 `DefaultParameters`를 확장하고 예상되는 파라미터와 해당 타입을 지정하는 클래스를 정의할 수 있습니다. 이는 런타임 타입 오류를 방지하므로 강력히 권장됩니다.
 
 **예제: 타입이 지정된 `Parameters` 객체 사용**
 
 먼저, 타입이 지정된 `Parameters` 클래스를 정의합니다:
 
 ```java
-public class SearchQuery extends AbstractParameters {
+public class SearchQuery extends DefaultParameters {
     private static final ParameterKey userId = new ParameterKey("userId", ValueType.INT);
     private static final ParameterKey query = new ParameterKey("query", ValueType.STRING);
     private static final ParameterKey maxResults = new ParameterKey("maxResults", ValueType.FLOAT);

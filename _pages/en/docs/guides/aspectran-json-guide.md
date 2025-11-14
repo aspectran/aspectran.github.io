@@ -157,14 +157,14 @@ assertEquals("test", query);
 
 #### Type-Safe Conversion with Typed Parameters
 
-For more robust and type-safe handling, you can define a class that extends `AbstractParameters` and specifies the expected parameters and their types. This is highly recommended as it prevents runtime type errors.
+For more robust and type-safe handling, you can define a class that extends `DefaultParameters` and specifies the expected parameters and their types. This is highly recommended as it prevents runtime type errors.
 
 **Example: Using a typed `Parameters` object**
 
 First, define your typed `Parameters` class:
 
 ```java
-public class SearchQuery extends AbstractParameters {
+public class SearchQuery extends DefaultParameters {
     private static final ParameterKey userId = new ParameterKey("userId", ValueType.INT);
     private static final ParameterKey query = new ParameterKey("query", ValueType.STRING);
     private static final ParameterKey maxResults = new ParameterKey("maxResults", ValueType.FLOAT);

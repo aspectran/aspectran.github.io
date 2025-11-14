@@ -97,9 +97,9 @@ If the type is omitted, it is automatically determined based on the value's form
 | `string` | `java.lang.String` | `name(string): Hello, World.` |
 | `text` | `java.lang.String` | See the `text` type example below |
 | `int` | `java.lang.Integer` | `age(int): 30` |
-| `long` | `java.lang.Long` | `id(long): 12345L` |
-| `float` | `java.lang.Float` | `score(float): 95.5f` |
-| `double` | `java.lang.Double` | `pi(double): 3.14159d` |
+| `long` | `java.lang.Long` | `id(long): 12345` |
+| `float` | `java.lang.Float` | `score(float): 95.5` |
+| `double` | `java.lang.Double` | `pi(double): 3.14159` |
 | `boolean` | `java.lang.Boolean` | `isAdmin(boolean): true` |
 | `parameters` | `com.aspectran.utils.apon.Parameters` | Nested Parameter structure |
 
@@ -140,12 +140,12 @@ server: {
 
 ***RootConfig.java***
 ```java
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterDefinition;
 import com.aspectran.utils.apon.ParameterValueType;
 import com.aspectran.utils.apon.Parameters;
 
-public class RootConfig extends AbstractParameters implements Parameters {
+public class RootConfig extends DefaultParameters implements Parameters {
 
     public static final ParameterDefinition server;
 
@@ -168,12 +168,12 @@ public class RootConfig extends AbstractParameters implements Parameters {
 
 ***ServerConfig.java***
 ```java
-import com.aspectran.utils.apon.AbstractParameters;
+import com.aspectran.utils.apon.DefaultParameters;
 import com.aspectran.utils.apon.ParameterDefinition;
 import com.aspectran.utils.apon.ParameterValueType;
 import com.aspectran.utils.apon.Parameters;
 
-public class ServerConfig extends AbstractParameters implements Parameters {
+public class ServerConfig extends DefaultParameters implements Parameters {
 
     public static final ParameterDefinition name;
     public static final ParameterDefinition port;
