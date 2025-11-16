@@ -12,6 +12,8 @@ Aspectran's JSON module is built around a few key classes:
 - **`JsonParser`**: A simple, one-shot parser for converting a JSON string into standard Java `Map` and `List` objects.
 - **`JsonReader`**: A streaming pull-parser for reading JSON token by token, ideal for large files or fine-grained processing.
 - **`JsonWriter`**: A streaming writer for producing JSON text, with options for pretty-printing and custom serialization.
+- **`JsonBuilder`**: A fluent API for programmatically constructing JSON objects and arrays.
+- **`JsonString`**: A wrapper to embed raw, pre-formatted JSON into a `JsonWriter` stream without re-escaping.
 - **`JsonToParameters`**: A utility to convert JSON text directly into Aspectran's `Parameters` objects, which is particularly useful in API development.
 
 ---
@@ -22,14 +24,23 @@ Aspectran's JSON module is built around a few key classes:
 
 For quick and simple use cases, `JsonParser` can convert a JSON string into a nested structure of `Map<String, Object>` and `List<Object>`.
 
+When parsing numbers, `JsonParser` attempts to infer the most appropriate Java numeric type:
+- Integers that fit within `int` range are parsed as `java.lang.Integer`.
+- Larger integers are parsed as `java.lang.Long`.
+- Numbers with decimal points are parsed as `java.lang.Double`.
+
 **Example:**
 
 ```java
-String json = "{\"name\":\"John Doe\",\"age\":30,\"isStudent\":false}";
+String json = "{\"name\":\"John Doe\",\"age\":30,\"isStudent\":false,\"bigNumber\":123456789012345,\"pi\":3.14}";
 Map<String, Object> result = (Map<String, Object>)JsonParser.parse(json);
 
 assertEquals("John Doe", result.get("name"));
-assertEquals(30, result.get("age"));
+assertEquals(30, result.get("age")); // Parsed as Integer
+assertTrue(result.get("bigNumber") instanceof Long); // Parsed as Long
+assertEquals(123456789012345L, result.get("bigNumber"));
+assertTrue(result.get("pi") instanceof Double); // Parsed as Double
+assertEquals(3.14, result.get("pi"));
 ```
 
 ### 2. Streaming with `JsonReader`
@@ -38,19 +49,31 @@ assertEquals(30, result.get("age"));
 
 **Example: Reading a simple object**
 
+`JsonReader` provides specific methods like `nextInt()`, `nextLong()`, `nextDouble()`, and `nextString()` to retrieve values as their respective types. It's important to use the correct method for the expected type, as attempting to read a value with an incompatible method (e.g., `nextInt()` for a very large number or a decimal) may result in a `NumberFormatException` or `IllegalStateException`.
+
 ```java
-String json = "{\"name\":\"John Doe\",\"age\":30}";
+String json = "{\"name\":\"John Doe\",\"age\":30,\"balance\":123456789012345.67,\"count\":10000000000}";
 JsonReader reader = new JsonReader(new StringReader(json));
 
 reader.beginObject();
 while (reader.hasNext()) {
     String name = reader.nextName();
-    if (name.equals("name")) {
-        System.out.println(reader.nextString());
-    } else if (name.equals("age")) {
-        System.out.println(reader.nextInt());
-    } else {
-        reader.skipValue(); // Ignore other properties
+    switch (name) {
+        case "name":
+            System.out.println("Name: " + reader.nextString());
+            break;
+        case "age":
+            System.out.println("Age: " + reader.nextInt()); // Reads as int
+            break;
+        case "balance":
+            System.out.println("Balance: " + reader.nextDouble()); // Reads as double
+            break;
+        case "count":
+            System.out.println("Count: " + reader.nextLong()); // Reads as long
+            break;
+        default:
+            reader.skipValue(); // Ignore other properties
+            break;
     }
 }
 reader.endObject();
@@ -132,7 +155,70 @@ writer.endObject();
 assertEquals("{\n  \"price\": \"19.99\"\n}", writer.toString().trim());
 ```
 
-### 4. Practical Guide: JSON in Aspectran APIs
+#### Embedding Raw JSON with `JsonString`
+
+Sometimes, you may have a string that is already valid JSON and you want to embed it as a JSON object or array, not as a string literal. If you pass a regular string to `JsonWriter`, it will be escaped. To prevent this, wrap it in a `JsonString` object.
+
+**Example:**
+
+```java
+String rawJson = "{\"active\":true,\"value\":100}";
+JsonString jsonString = new JsonString(rawJson);
+
+StringWriter stringWriter = new StringWriter();
+JsonWriter writer = new JsonWriter(stringWriter);
+
+writer.beginObject();
+writer.name("config").value(jsonString); // Embed as raw JSON
+writer.name("description").value(rawJson); // Embed as an escaped string
+writer.endObject();
+
+System.out.println(writer.toString());
+```
+
+**Output (pretty-printed):**
+
+```json
+{
+  "config": {
+    "active": true,
+    "value": 100
+  },
+  "description": "{\"active\":true,\"value\":100}"
+}
+```
+
+### 4. Fluent JSON Generation with `JsonBuilder`
+
+For programmatically constructing JSON, `JsonBuilder` offers a convenient and readable fluent API. It simplifies the creation of complex objects and arrays without managing the underlying `JsonWriter` state manually.
+
+**Example:**
+
+```java
+import com.aspectran.utils.json.JsonBuilder;
+
+String json = new JsonBuilder()
+    .object() // Root object
+        .put("id", 123)
+        .put("name", "Product")
+        .array("tags")
+            .put("A")
+            .put("B")
+        .endArray()
+    .endObject()
+    .toString();
+
+// To get pretty-printed output, use new JsonBuilder().prettyPrint(true)
+System.out.println(json);
+```
+
+**Output (compact):**
+
+```json
+{"id":123,"name":"Product","tags":["A","B"]}
+```
+
+### 5. Practical Guide: JSON in Aspectran APIs
 
 In a typical Aspectran API, you often need to convert an incoming JSON request body into a `Parameters` object to work with it inside your translets. The `JsonToParameters` utility is designed for this exact purpose.
 
@@ -191,7 +277,7 @@ SearchQuery searchQuery = JsonToParameters.from(jsonRequestBody, SearchQuery.cla
 
 assertEquals(456, searchQuery.getUserId());
 assertEquals("advanced", searchQuery.getQuery());
-assertEquals(50.5f, searchQuery.getMaxResults(), 0.01f);
+assertEquals(50.5f, searchQuery.getMaxResults());
 ```
 
 This approach provides compile-time safety and makes your code cleaner and more maintainable when handling JSON payloads in your Aspectran applications.

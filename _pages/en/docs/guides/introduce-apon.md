@@ -111,7 +111,9 @@ numbers: [
 ## 3. Data Types
 
 APON supports various data types, and the type can be specified in the format `name(type): value`.
-If the type is omitted, it is automatically determined based on the value's format.
+If the type is omitted, it is automatically determined based on the value's format. For numeric values, the parser attempts to infer the most appropriate type: integers are typically parsed as `java.lang.Integer` (or `java.lang.Long` for larger values), and numbers with decimal points are parsed as `java.lang.Double`.
+
+**Important Note on `float`:** If you intend a decimal number to be parsed as a `java.lang.Float`, you must explicitly specify the type as `float` in the APON text (e.g., `score(float): 95.5`) or define a `ParameterKey` with `ValueType.FLOAT`. Otherwise, decimal numbers will default to `java.lang.Double`.
 
 | Value Type | Java Object Type | Example |
 | :--- | :--- |:------------------------------|
