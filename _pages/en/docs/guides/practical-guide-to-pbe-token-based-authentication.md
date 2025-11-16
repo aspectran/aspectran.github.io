@@ -11,7 +11,7 @@ This document explains how authentication tokens are generated and utilized, cen
 
 ## 2. Core Components
 
-Token-based authentication in Aspectran is primarily achieved through the following three core components.
+Token-based authentication in Aspectran is primarily achieved through the following core components.
 
 #### 2.1. `PBEncryptionUtils`
 
@@ -23,15 +23,22 @@ Token-based authentication in Aspectran is primarily achieved through the follow
 
 #### 2.2. `PBTokenIssuer`
 
-- **Role**: Issues the most basic form of a token. It creates a token by encrypting a `Parameters` object but does not include an expiration time.
+- **Role**: Issues a basic token without an expiration time. It's useful for scenarios where tokens do not need to expire automatically or are managed through other means (e.g., a revocation list).
+- **Functionality**: It encrypts a `Parameters` object to create a token. It provides methods to create, parse, and validate these tokens, either using the globally configured password or by supplying a password on a per-operation basis.
 
 #### 2.3. `TimeLimitedPBTokenIssuer`
 
-- **Role**: Issues and validates **time-limited tokens**, which are mainly used for authentication.
-- **Token Structure**: It is structured as `encrypt(expiration_timestamp + "_" + payload)`.
-    - **Expiration Timestamp**: The time when the token expires, converted to a base-36 string.
+- **Role**: Issues and validates **time-limited tokens**, which are primarily used for authentication.
+- **Token Structure**: The token is structured as `encrypt(expiration_timestamp + "_" + payload)`.
+    - **Expiration Timestamp**: The expiration time (as a Unix timestamp in milliseconds) is converted to a base-36 string to make it shorter.
     - **Payload**: Additional data, such as user information, contained in a `Parameters` object.
-- **Exception Handling**: When token validation fails, it throws an `InvalidPBTokenException` (invalid token) or `ExpiredPBTokenException` (expired token), enabling clear error handling.
+- **Default Expiration**: If no expiration time is specified, a default of 30 seconds is used.
+
+#### 2.4. Exception Handling
+
+When parsing or validating a token, specific exceptions are thrown to indicate the nature of the failure:
+- `InvalidPBTokenException`: This is the base exception, thrown when a token is malformed, has been tampered with, or cannot be decrypted.
+- `ExpiredPBTokenException`: A subclass of `InvalidPBTokenException`, this is thrown specifically when a time-limited token has passed its expiration time. This allows you to handle expired tokens differently from invalid ones, for example, by prompting the user to refresh their session.
 
 ## 3. Example of Authentication Token Generation and Usage
 
@@ -88,36 +95,38 @@ public class AuthService {
 
 #### 3.3. Validating a Token
 
-The client (e.g., a WebSocket client) sends the issued token included in its request. The server validates this token to check if the request is authorized.
+The client (e.g., a WebSocket client) sends the issued token included in its request. The server validates this token to check if the request is authorized. A robust implementation should handle different failure scenarios, such as expired tokens versus invalid ones.
 
 ```java
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.security.ExpiredPBTokenException;
+import com.aspectran.utils.security.InvalidPBTokenException;
+import com.aspectran.utils.security.TimeLimitedPBTokenIssuer;
+
+...
+
 @Override
 protected boolean checkAuthorized(@NonNull Session session) {
     // Extract the token from the URL path. (e.g., /backend/{token}/websocket)
     String token = session.getPathParameters().get("token");
     try {
-        // Validate the token's validity (whether it has been tampered with) and expiration time at once.
-        // AppMonManager.validateToken(token) internally calls TimeLimitedPBTokenIssuer.validate(token).
-        TimeLimitedPBTokenIssuer.validate(token);
+        // Validate the token and parse the payload in one step.
+        Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token);
+        String userId = payload.getString("userId");
+        // Store user information in the session for later use
+        session.setAttribute("userId", userId);
+        logger.debug("Successfully validated token for user: {}", userId);
+        return true;
+    } catch (ExpiredPBTokenException e) {
+        // Handle expired tokens specifically
+        logger.warn("Expired token received: {}", e.getToken());
+        // Optionally, you could trigger a token refresh flow here.
+        return false;
     } catch (InvalidPBTokenException e) {
-        // If the token is invalid or expired
-        logger.error("Invalid token: {}", token);
+        // Handle all other invalid token errors (malformed, tampered, etc.)
+        logger.error("Invalid token received: {}", e.getToken(), e);
         return false;
     }
-    // Validation successful
-    return true;
-}
-```
-
-If the token validation is successful, you can extract the user information contained in the payload and use it in your business logic as needed.
-
-```java
-try {
-    Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token);
-    String userId = payload.getString("userId");
-    // ... perform additional logic using userId
-} catch (InvalidPBTokenException e) {
-    // Handle exception
 }
 ```
 
@@ -149,6 +158,86 @@ Unlike in the demo, **you should never store passwords in plaintext in a configu
     ```
 
 - **External Configuration Management Tools**: Dynamically inject the password by integrating with external secret management tools like HashiCorp Vault or AWS Secrets Manager.
+
+#### 4.3. Using Different Passwords per Token
+
+While `PBEncryptionUtils` sets a global default password, there may be cases where you need to use a different password for a specific token. Both `PBTokenIssuer` and `TimeLimitedPBTokenIssuer` provide method overloads that accept an `encryptionPassword`.
+
+This is useful in multi-tenant environments or when integrating with external systems that have their own encryption secrets.
+
+**Issuing a token with a custom password:**
+```java
+import com.aspectran.utils.security.TimeLimitedPBTokenIssuer;
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.apon.VariableParameters;
+
+...
+
+String customPassword = "a-very-secret-password-for-a-tenant";
+Parameters payload = new VariableParameters();
+payload.putValue("data", "confidential");
+
+String token = TimeLimitedPBTokenIssuer.createToken(payload, 3600 * 1000, customPassword);
+```
+
+**Validating a token with a custom password:**
+```java
+try {
+    Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token, customPassword);
+    // Token is valid and payload is extracted
+} catch (InvalidPBTokenException e) {
+    // Handle exception
+}
+```
+
+#### 4.4. Working with Custom Payload Types
+
+For better type safety and code organization, you can define a custom class that extends `com.aspectran.utils.apon.Defaultarameters` to represent your token payload. When parsing the token, you can specify this class to have the payload automatically mapped to your custom type.
+
+**1. Define a custom payload class:**
+```java
+import com.aspectran.utils.apon.Defaultarameters;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.ParameterValueType;
+
+public class UserPayload extends Defaultarameters {
+
+    private static final ParameterKey userId = new ParameterKey("userId", ParameterValueType.STRING);
+    private static final ParameterKey role = new ParameterKey("role", ParameterValueType.STRING);
+
+    public UserPayload() {
+        super(userId, role);
+    }
+
+    public String getUserId() {
+        return getString(userId);
+    }
+
+    public String getRole() {
+        return getString(role);
+    }
+
+}
+```
+
+**2. Issue and parse a token with the custom type:**
+```java
+// Issuing
+UserPayload payloadToIssue = new UserPayload();
+payloadToIssue.putValue("userId", "testuser");
+payloadToIssue.putValue("role", "admin");
+String token = TimeLimitedPBTokenIssuer.createToken(payloadToIssue);
+
+// Parsing
+try {
+    UserPayload parsedPayload = TimeLimitedPBTokenIssuer.parseToken(token, UserPayload.class);
+    String userId = parsedPayload.getUserId(); // Type-safe access
+    String role = parsedPayload.getRole();
+    System.out.println("User: " + userId + ", Role: " + role);
+} catch (InvalidPBTokenException e) {
+    // Handle exception
+}
+```
 
 ## 5. Conclusion
 

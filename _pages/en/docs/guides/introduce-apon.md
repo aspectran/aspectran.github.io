@@ -59,6 +59,9 @@ indented: "Trailing spaces  "
 
 A set of Parameters is represented by enclosing them in braces (`{ }`). It can have a hierarchical structure containing other sub-Parameters.
 
+APON's default and most common style for root-level parameters is the "compact style," where the outermost braces are omitted. A non-compact style, where root-level parameters are enclosed in braces, also exists for JSON-like appearance but offers no functional difference.
+
+**Example of a nested Parameters set:**
 ```apon
 user: {
   name: John Doe
@@ -70,9 +73,18 @@ user: {
 }
 ```
 
+**Example of root-level parameters in compact style (without outermost braces):**
+```apon
+name: John Doe
+age: 30
+city: New York
+```
+
 ### Array
 
 An array is represented by putting multiple values inside square brackets (`[ ]`). Each element is separated by a newline.
+
+APON also supports root-level arrays, which can be parsed directly into an `ArrayParameters` object.
 
 ```apon
 users: [
@@ -84,6 +96,15 @@ numbers: [
   1
   2
   3
+]
+```
+
+**Example of a root-level array:**
+```apon
+[
+  "apple"
+  "banana"
+  "cherry"
 ]
 ```
 
@@ -120,9 +141,9 @@ description(text): (
 
 Let's explore how to convert APON-formatted text into a Java object and vice versa.
 
-### Step 1: Define Java Parameters Classes to Map to APON
+### Defining a Schema with `Parameters` Classes
 
-You need to define classes in Java that implement the `Parameters` interface corresponding to the APON data structure. Each class corresponds to a hierarchical level in APON, and you define the name, type, and array status of each parameter using `ParameterKey`.
+You need to define classes in Java that implement the `Parameters` interface corresponding to the APON data structure. Each class corresponds to a hierarchical level in APON, and you define the name, type, and array status of each parameter using `ParameterKey`. For more flexible parsing, you can also define alternative names (aliases) for a parameter.
 
 **Example APON:**
 ```apon
@@ -200,35 +221,46 @@ public class ServerConfig extends DefaultParameters implements Parameters {
 }
 ```
 
-### Step 2: Reading an APON File (AponReader)
+### Reading APON Text (AponReader)
 
 The `AponReader` class allows you to read an APON-formatted text file and convert it into a defined `Parameters` Java object.
+
+**Example: Reading a root object and a root array**
 
 ```java
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.Parameters;
-import java.io.FileReader;
-import java.io.Reader;
+import com.aspectran.utils.apon.RootConfig; // Assuming RootConfig is defined as in Step 1
+import com.aspectran.utils.apon.ArrayParameters; // Import ArrayParameters
+import com.aspectran.utils.apon.DefaultParameters; // Import DefaultParameters
 
-public class AponTest {
+public class AponReaderTest {
     public static void main(String[] args) {
         try {
-            // 1. Create a Reader to read the APON file
-            Reader fileReader = new FileReader("root-config.apon");
+            // Example 1: Reading a root object (can be compact or non-compact style)
+            String apon1 = """
+                name: John Doe
+                age: 30
+                """;
+            Parameters params1 = AponReader.read(apon1, new RootConfig());
+            System.out.println("Object Name: " + params1.getString("name"));
 
-            // 2. Create a top-level Parameters object defined according to the APON structure
-            Parameters rootParams = new RootConfig(); // RootConfig contains the server parameter
+            // Example 2: Reading a root array
+            String apon2 = """
+                [
+                  "apple"
+                  "banana"
+                  "cherry"
+                ]
+                """;
+            // For root arrays, you should explicitly provide an ArrayParameters instance
+            ArrayParameters arrayParams = AponReader.read(apon2, new ArrayParameters());
+            System.out.println("Array Content: " + arrayParams.getValueList());
 
-            // 3. Use AponReader to read the file content into the Parameters object
-            AponReader.read(fileReader, rootParams);
-
-            // 4. Use the converted object
-            Parameters serverConfig = rootParams.getParameters("server");
-            String serverName = serverConfig.getString("name");
-            int port = serverConfig.getInt("port");
-
-            System.out.println("Server Name: " + serverName);
-            System.out.println("Port: " + port);
+            // If you provide a non-ArrayParameters object for a root array,
+            // AponReader will add the array as a parameter named "" (ArrayParameters.NONAME)
+            Parameters defaultParams = AponReader.read(apon2, new DefaultParameters());
+            System.out.println("Array as named parameter: " + defaultParams.getValueList(ArrayParameters.NONAME));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -237,11 +269,62 @@ public class AponTest {
 }
 ```
 
-### Step 3: Creating an APON File (AponWriter)
+### Modern Parsing (AponParser)
+
+`AponParser` provides a more efficient and intuitive alternative to `AponReader`, especially for handling multi-dimensional arrays. `AponParser` parses nested arrays directly into nested `List` objects.
+
+**Example: Parsing a multi-dimensional array with AponParser**
+
+```java
+import com.aspectran.utils.apon.AponParser;
+import com.aspectran.utils.apon.ArrayParameters;
+import com.aspectran.utils.apon.Parameters;
+import java.util.List;
+
+public class AponParserTest {
+    public static void main(String[] args) {
+        try {
+            String apon = """
+                [
+                  [ "a", "b" ],
+                  [ "c", "d", "e" ]
+                ]
+                """;
+
+            // Use AponParser to parse the string into an ArrayParameters object
+            ArrayParameters rootArrayParams = AponParser.parse(apon, ArrayParameters.class);
+
+            // AponParser correctly parses nested arrays into List<List<Object>>
+            List<List<String>> matrix = (List<List<String>>)rootArrayParams.getValueList();
+
+            System.out.println("Matrix: " + matrix);
+            // Output: Matrix: [[a, b], [c, d, e]]
+
+            // You can also parse a root object with AponParser
+            String objectApon = """
+                {
+                  name: John Doe
+                  age: 30
+                }
+                """;
+            Parameters rootObjectParams = AponParser.parse(objectApon);
+            System.out.println("Object Name: " + rootObjectParams.getString("name"));
+            // Output: Object Name: John Doe
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Writing APON Text (AponWriter)
 
 The `AponWriter` class makes it easy to convert a `Parameters` Java object into an APON-formatted string.
 
 `AponWriter` works intelligently, automatically enclosing values in double quotes and performing necessary escaping when quotes are required (e.g., if the value has leading/trailing spaces, or contains quotes or newline characters). Therefore, developers only need to set the values of the `Parameters` object without worrying about the quoting rules.
+
+By default, `AponWriter` outputs root-level parameters in "compact style" (without outermost braces). While a non-compact style (with outermost braces) can be enabled by setting the `compactStyle` property on your root `Parameters` object to `false`, this is rarely needed as it offers no functional difference.
 
 ```java
 import com.aspectran.utils.apon.AponWriter;
@@ -261,16 +344,18 @@ public class AponWriteTest {
             Parameters rootParams = new RootConfig(); // RootConfig contains the server parameter
             rootParams.putValue("server", serverConfig);
 
-            // 2. Create a Writer to store the APON text
-            Writer writer = new StringWriter();
-
-            // 3. Use AponWriter to write the Parameters object in APON format
-            try (AponWriterCloseable aponWriter = new AponWriterCloseable(writer)) {
-                aponWriter.write(rootParams);
-            }
-
-            // 4. Print the converted APON string
-            System.out.println(writer);
+            // Example: Default compact style output (no outermost braces)
+            String apon = new AponWriter().write(rootParams).toString();
+            System.out.println("Default Compact Style Output:\n" + apon);
+            // Output:
+            // server: {
+            //   name: NewServer
+            //   port: 9090
+            //   features: [
+            //     WebService
+            //     Security
+            //   ]
+            // }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -279,19 +364,115 @@ public class AponWriteTest {
 }
 ```
 
-**Output Result:**
+`AponWriter` also offers several configuration options for advanced control over the output. For example, you can disable pretty-printing for a compact output or configure how `null` values are handled.
+
+It's important to note that even when `prettyPrint(false)` is used, newlines are not entirely removed. This is because newlines serve as fundamental delimiters for parameters and array elements in APON, unlike formats that use commas. Disabling pretty-printing primarily removes indentation.
+
+```java
+// Example of compact output (without indentation, but retaining newlines as delimiters)
+String compactApon = new AponWriter().prettyPrint(false).write(rootParams).toString();
+System.out.println(compactApon);
+// Output: server:{
+// name:NewServer
+// port:9090
+// features:[
+// HTTP2
+// SSL
+// ]
+// }
+```
+
+### Creating APON Programmatically (AponLines)
+
+For situations where you need to build an APON string dynamically in your code, the `AponLines` class provides a convenient fluent API. It simplifies the process of creating nested structures and arrays without manual string concatenation.
+
+```java
+import com.aspectran.utils.apon.AponLines;
+
+public class AponLinesTest {
+    public static void main(String[] args) {
+        AponLines lines = new AponLines()
+            .block("server")
+                .line("name", "MyWebApp")
+                .line("port", 8080)
+                .array("features")
+                    .line("HTTP2")
+                    .line("SSL")
+                .end()
+            .end();
+
+        String apon = lines.toString();
+        System.out.println(apon);
+    }
+}
+```
+
+**Output:**
 ```apon
 server: {
-  name: NewServer
-  port: 9090
+  name: MyWebApp
+  port: 8080
   features: [
-    WebService
-    Security
+    HTTP2
+    SSL
   ]
 }
 ```
 
-## 5. Using APON in JavaScript (apon.js)
+## 5. Converting Other Formats to APON
+
+The `com.aspectran.utils.apon` package includes powerful utilities to convert data from other common formats like JSON, XML, and Java objects directly into `Parameters` objects.
+
+### From JSON
+
+Use `JsonToParameters` to parse a JSON string into a `Parameters` object.
+
+```java
+import com.aspectran.utils.apon.JsonToParameters;
+import com.aspectran.utils.apon.Parameters;
+
+String json = "{\"name\":\"John\", \"age\":30, \"cars\":[\"Ford\", \"BMW\"]}";
+Parameters params = JsonToParameters.from(json);
+
+System.out.println(params.getString("name")); // John
+System.out.println(params.getInt("age")); // 30
+```
+
+### From XML
+
+Use `XmlToParameters` to convert an XML document into a `Parameters` object. XML elements become parameter names, and attributes are treated as nested parameters.
+
+```java
+import com.aspectran.utils.apon.XmlToParameters;
+import com.aspectran.utils.apon.Parameters;
+
+String xml = "<user><name>John</name><age>30</age></user>";
+Parameters params = XmlToParameters.from(xml);
+
+System.out.println(params.getParameters("user").getString("name")); // John
+```
+
+### From a Java Object
+
+Use `ObjectToParameters` to convert a JavaBean-style object into a `Parameters` object by reflecting its properties.
+
+```java
+import com.aspectran.utils.apon.ObjectToParameters;
+import com.aspectran.utils.apon.Parameters;
+
+public class User {
+    public String getName() { return "John"; }
+    public int getAge() { return 30; }
+}
+
+User user = new User();
+Parameters params = ObjectToParameters.from(user);
+
+System.out.println(params.getString("name")); // John
+System.out.println(params.getInt("age")); // 30
+```
+
+## 6. Using APON in JavaScript (apon.js)
 
 For web and Node.js environments, you can use the official `apon.js` library to parse and stringify APON-formatted strings.
 
@@ -310,7 +491,7 @@ npm install apon
 
 For detailed API usage, please refer to the `README.md` file in the GitHub repository.
 
-## 6. Library Information
+## 7. Library Information
 
 APON-related classes are included in the common utility package of the Aspectran framework.
 

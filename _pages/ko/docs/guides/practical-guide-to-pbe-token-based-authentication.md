@@ -11,7 +11,7 @@ Aspectran은 패스워드 기반 암호화(Password-Based Encryption, PBE)를 �
 
 ## 2. 핵심 컴포넌트
 
-Aspectran의 토큰 기반 인증은 주로 다음 세 가지 핵심 컴포넌트를 통해 이루어집니다.
+Aspectran의 토큰 기반 인증은 주로 다음 핵심 컴포넌트를 통해 이루어집니다.
 
 #### 2.1. `PBEncryptionUtils`
 
@@ -23,15 +23,22 @@ Aspectran의 토큰 기반 인증은 주로 다음 세 가지 핵심 컴포넌�
 
 #### 2.2. `PBTokenIssuer`
 
-- **역할**: 가장 기본적인 형태의 토큰을 발급합니다. `Parameters` 객체를 암호화하여 토큰을 생성하지만, 만료 시간은 포함하지 않습니다.
+- **역할**: 만료 시간이 없는 기본 토큰을 발급합니다. 토큰이 자동으로 만료될 필요가 없거나, 다른 수단(예: 폐기 목록)을 통해 관리되는 시나리오에 유용합니다.
+- **기능**: `Parameters` 객체를 암호화하여 토큰을 생성합니다. 전역적으로 설정된 패스워드를 사용하거나, 작업 단위로 패스워드를 직접 제공하여 토큰을 생성, 분석, 검증하는 메서드를 제공합니다.
 
 #### 2.3. `TimeLimitedPBTokenIssuer`
 
 - **역할**: 인증에 주로 사용되는 **시간제한이 있는 토큰**을 발급하고 검증합니다.
 - **토큰 구조**: `암호화(만료_타임스탬프 + "_" + 페이로드)` 형태로 구성됩니다.
-    - **만료 타임스탬프**: 토큰이 만료되는 시간을 36진수 문자열로 변환한 값입니다.
+    - **만료 타임스탬프**: 만료 시간(밀리초 단위의 Unix 타임스탬프)을 36진수 문자열로 변환하여 길이를 줄입니다.
     - **페이로드**: `Parameters` 객체에 담긴 사용자 정보 등 부가 데이터입니다.
-- **예외 처리**: 토큰 검증 실패 시 `InvalidPBTokenException`(유효하지 않은 토큰) 또는 `ExpiredPBTokenException`(만료된 토큰)을 발생시켜 명확한 오류 처리를 가능하게 합니다.
+- **기본 만료 시간**: 만료 시간을 별도로 지정하지 않으면 기본값인 30초가 적용됩니다.
+
+#### 2.4. 예외 처리
+
+토큰을 분석하거나 검증할 때, 실패 원인을 나타내기 위해 다음과 같은 특정 예외가 발생합니다.
+- `InvalidPBTokenException`: 토큰의 형식이 잘못되었거나, 변조되었거나, 복호화할 수 없는 경우에 발생하는 기본 예외입니다.
+- `ExpiredPBTokenException`: `InvalidPBTokenException`의 하위 클래스로, 시간제한이 있는 토큰이 만료 시간을 초과했을 때 특별히 발생합니다. 이를 통해 만료된 토큰을 유효하지 않은 다른 토큰과 다르게 처리할 수 있습니다(예: 사용자에게 세션 갱신을 요청).
 
 ## 3. 인증 토큰의 생성 및 활용 예시
 
@@ -88,36 +95,38 @@ public class AuthService {
 
 #### 3.3. 토큰 검증
 
-클라이언트(예: 웹소켓 클라이언트)는 발급받은 토큰을 요청에 포함하여 전송합니다. 서버에서는 이 토큰을 검증하여 인가된 요청인지 확인합니다.
+클라이언트(예: 웹소켓 클라이언트)는 발급받은 토큰을 요청에 포함하여 전송합니다. 서버에서는 이 토큰을 검증하여 인가된 요청인지 확인합니다. 만료된 토큰과 유효하지 않은 토큰 같은 다양한 실패 시나리오를 처리하는 견고한 구현이 필요합니다.
 
 ```java
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.security.ExpiredPBTokenException;
+import com.aspectran.utils.security.InvalidPBTokenException;
+import com.aspectran.utils.security.TimeLimitedPBTokenIssuer;
+
+...
+
 @Override
 protected boolean checkAuthorized(@NonNull Session session) {
     // URL 경로에서 토큰을 추출합니다. (e.g., /backend/{token}/websocket)
     String token = session.getPathParameters().get("token");
     try {
-        // 토큰의 유효성(변조 여부)과 만료 시간을 한 번에 검증합니다.
-        // AppMonManager.validateToken(token)은 내부적으로 TimeLimitedPBTokenIssuer.validate(token)를 호출합니다.
-        TimeLimitedPBTokenIssuer.validate(token);
+        // 한 번에 토큰을 검증하고 페이로드를 분석합니다.
+        Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token);
+        String userId = payload.getString("userId");
+        // 나중에 사용하기 위해 세션에 사용자 정보를 저장합니다.
+        session.setAttribute("userId", userId);
+        logger.debug("사용자 {}에 대한 토큰 검증 성공", userId);
+        return true;
+    } catch (ExpiredPBTokenException e) {
+        // 만료된 토큰을 구체적으로 처리합니다.
+        logger.warn("만료된 토큰 수신: {}", e.getToken());
+        // 선택적으로, 여기서 토큰 갱신 절차를 시작할 수 있습니다.
+        return false;
     } catch (InvalidPBTokenException e) {
-        // 토큰이 유효하지 않거나 만료된 경우
-        logger.error("Invalid token: {}", token);
+        // 다른 모든 유효하지 않은 토큰 오류(형식 오류, 변조 등)를 처리합니다.
+        logger.error("유효하지 않은 토큰 수신: {}", e.getToken(), e);
         return false;
     }
-    // 검증 성공
-    return true;
-}
-```
-
-토큰 검증에 성공하면, 필요에 따라 페이로드에 담긴 사용자 정보를 추출하여 비즈니스 로직에 활용할 수 있습니다.
-
-```java
-try {
-    Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token);
-    String userId = payload.getString("userId");
-    // ... userId를 사용하여 추가 로직 수행
-} catch (InvalidPBTokenException e) {
-    // 예외 처리
 }
 ```
 
@@ -149,6 +158,86 @@ system: {
     ```
 
 - **외부 설정 관리 도구**: HashiCorp Vault, AWS Secrets Manager 등과 같은 외부 시크릿 관리 도구와 연동하여 패스워드를 동적으로 주입받습니다.
+
+#### 4.3. 토큰별로 다른 패스워드 사용하기
+
+`PBEncryptionUtils`가 전역 기본 패스워드를 설정하지만, 특정 토큰에 대해 다른 패스워드를 사용해야 하는 경우가 있을 수 있습니다. `PBTokenIssuer`와 `TimeLimitedPBTokenIssuer`는 모두 `encryptionPassword`를 인자로 받는 메서드 오버로드를 제공합니다.
+
+이는 멀티테넌트 환경이나 자체 암호화 시크릿을 가진 외부 시스템과 통합할 때 유용합니다.
+
+**사용자 정의 패스워드로 토큰 발급하기:**
+```java
+import com.aspectran.utils.security.TimeLimitedPBTokenIssuer;
+import com.aspectran.utils.apon.Parameters;
+import com.aspectran.utils.apon.VariableParameters;
+
+...
+
+String customPassword = "a-very-secret-password-for-a-tenant";
+Parameters payload = new VariableParameters();
+payload.putValue("data", "confidential");
+
+String token = TimeLimitedPBTokenIssuer.createToken(payload, 3600 * 1000, customPassword);
+```
+
+**사용자 정의 패스워드로 토큰 검증하기:**
+```java
+try {
+    Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token, customPassword);
+    // 토큰이 유효하고 페이로드가 추출되었습니다.
+} catch (InvalidPBTokenException e) {
+    // 예외 처리
+}
+```
+
+#### 4.4. 사용자 정의 페이로드 타입으로 작업하기
+
+더 나은 타입 안정성과 코드 구성을 위해, `com.aspectran.utils.apon.Defaultarameters`를 확장하는 사용자 정의 클래스를 정의하여 토큰 페이로드를 나타낼 수 있습니다. 토큰을 분석할 때 이 클래스를 지정하면 페이로드가 자동으로 사용자 정의 타입에 매핑됩니다.
+
+**1. 사용자 정의 페이로드 클래스 정의:**
+```java
+import com.aspectran.utils.apon.Defaultarameters;
+import com.aspectran.utils.apon.ParameterKey;
+import com.aspectran.utils.apon.ParameterValueType;
+
+public class UserPayload extends Defaultarameters {
+
+    private static final ParameterKey userId = new ParameterKey("userId", ParameterValueType.STRING);
+    private static final ParameterKey role = new ParameterKey("role", ParameterValueType.STRING);
+
+    public UserPayload() {
+        super(userId, role);
+    }
+
+    public String getUserId() {
+        return getString(userId);
+    }
+
+    public String getRole() {
+        return getString(role);
+    }
+
+}
+```
+
+**2. 사용자 정의 타입으로 토큰 발급 및 분석:**
+```java
+// 발급
+UserPayload payloadToIssue = new UserPayload();
+payloadToIssue.putValue("userId", "testuser");
+payloadToIssue.putValue("role", "admin");
+String token = TimeLimitedPBTokenIssuer.createToken(payloadToIssue);
+
+// 분석
+try {
+    UserPayload parsedPayload = TimeLimitedPBTokenIssuer.parseToken(token, UserPayload.class);
+    String userId = parsedPayload.getUserId(); // 타입-세이프 접근
+    String role = parsedPayload.getRole();
+    System.out.println("User: " + userId + ", Role: " + role);
+} catch (InvalidPBTokenException e) {
+    // 예외 처리
+}
+```
 
 ## 5. 결론
 
