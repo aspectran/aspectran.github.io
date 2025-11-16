@@ -155,7 +155,7 @@ public class RootConfig extends DefaultParameters implements Parameters {
 
     static {
         // 다른 Parameter를 포함하는 계층적 구조를 가짐
-        naserverme = new ParameterKey("server", ServerConfig.class);
+        server = new ParameterKey("server", ServerConfig.class);
 
         parameterKeys = new ParameterKey[] {
                 server
