@@ -238,42 +238,67 @@ For the complete architecture of AppMon configuration, detailed descriptions of 
 
 ## 7. Key Feature Usage: AppMon Dashboard Access Control
 
-AppMon runs in a separate `appmon` web context, distinct from the `root` context. Therefore, a secure access control mechanism is needed when opening the AppMon dashboard screen through a menu in the `root` context. Aspectow solves this using a **Time-Limited, Password-Based Encryption (PBE) Token**.
+AppMon runs in a separate `appmon` web context, distinct from the `root` context. Therefore, a secure access control mechanism is needed to prevent unauthorized access when opening the AppMon dashboard. Aspectow solves this by issuing a temporary authentication cookie from the trusted `root` context, which is then validated by the `appmon` context.
 
-#### Step 1: Create a 'Gatekeeper' Translet (`root` Context)
+#### Step 1: Issue an Authentication Cookie (`root` Context)
 
-First, define a 'gatekeeper' translet in the `root` context to act as an entry point to the AppMon dashboard.
+First, define a 'gatekeeper' translet in the `root` context. This translet acts as a secure entry point to the AppMon dashboard. When a user accesses this translet, it issues a secure, time-limited, HttpOnly authentication cookie and then redirects the user to the AppMon dashboard.
 
-**Example from `aspectow/demo/home/monitoring.xml`**
+**Example from `root-web-config.xml`**
 ```xml
+<bean id="appMonCookieIssuer" class="com.aspectran.appmon.common.auth.AppMonCookieIssuer"/>
+
 <translet name="/monitoring/${instances}">
-    <attribute name="token">#{class:com.aspectran.utils.security.TimeLimitedPBTokenIssuer^token}</attribute>
-    <redirect path="/appmon/front/@{token}/${instances}"/>
+    <action bean="appMonCookieIssuer" method="issueCookie">
+        <argument>/appmon</argument>
+        <argument valueType="int">3600</argument>
+    </action>
+    <redirect path="/appmon/dashboard/"/>
 </translet>
 ```
-1.  A user accesses the `/monitoring` path to open AppMon. If they want to directly see the dashboard for a specific instance (e.g., `appmon`), they send a request by appending the instance name to the path, like `/monitoring/appmon`.
-2.  The translet generates a short-lived **security token** using `TimeLimitedPBTokenIssuer`.
-3.  It then **redirects** the user's browser to the AppMon context's `/appmon/front/...` path, including the generated token and the passed `instances` value in the path.
+1. A user accesses the `/monitoring` path to open AppMon.
+2. The translet calls the `issueCookie` method on the `appMonCookieIssuer` bean. This method generates a time-limited PBE token and sets it in an `HttpOnly` cookie named `appmon-auth-token`. The cookie's path is set to `/appmon`, and its maximum age is 3600 seconds (1 hour).
+3. It then **redirects** the user's browser to the AppMon context's `/appmon/dashboard/` path. The browser automatically includes the newly issued cookie in the request.
 
-#### Step 2: Token Validation and Page Processing (`appmon` Context)
+#### Step 2: Validate the Authentication Cookie (`appmon` Context)
 
-The `appmon` context receives the redirected request and validates the token's authenticity. This logic is implemented in `FrontActivity.java`.
+In the `appmon` context, an aspect (`AppMonAuthCheckAspect`) is configured to intercept all incoming requests. This aspect checks for the presence and validity of the `appmon-auth-token` cookie.
 
-**Excerpt from `FrontActivity.java`**
+**Excerpt from `AppMonAuthCheckAspect.java`**
 ```java
-@Request("/front/${token}/${instances}")
-public Map<String, String> front(Translet translet, String token, String instances) {
-    try {
-        // 1. Validate the received token.
-        AppMonManager.validateToken(token);
-        // 2. If validation is successful, render the AppMon dashboard page.
-        return Map.of("include", "appmon/appmon", ...);
-    } catch (Exception e) {
-        // 3. If validation fails, log an error and redirect to home.
-        logger.error("Invalid token: {}", token);
-        translet.redirect("/");
-        return null;
+@Component
+@Aspect("appMonAuthCheckAspect")
+@Joinpoint(pointcut = {
+        "+: /**",
+        "-: /auth-expired"
+})
+public class AppMonAuthCheckAspect {
+
+    // ...
+
+    @Before
+    public void before(@NonNull Translet translet) {
+        Cookie cookie = WebUtils.getCookie(translet, AUTH_TOKEN_NAME);
+        if (cookie == null) {
+            reject(translet);
+            return;
+        }
+
+        String token = cookie.getValue();
+        try {
+            // Validate the token and refresh the cookie's expiration time
+            appMonCookieIssuer.refreshCookie(translet, token);
+        } catch (Exception e) {
+            reject(translet);
+        }
     }
+
+    // ...
 }
 ```
-This method is a secure access control mechanism that uses the `root` context as a trusted certificate authority, allowing only users who have been issued a valid token to access the `appmon` context.
+1. For every request to the `appmon` context, the `before` advice in `AppMonAuthCheckAspect` is executed.
+2. It retrieves the `appmon-auth-token` cookie. If the cookie is missing, the request is rejected.
+3. If the cookie exists, it calls `appMonCookieIssuer.refreshCookie()`. This method validates the token. If valid, it issues a new cookie with a refreshed expiration time, effectively extending the user's session.
+4. If the token is invalid (e.g., expired or tampered with), an exception is thrown, and the request is rejected, redirecting the user.
+
+This mechanism establishes a secure bridge between the two web contexts, where the `root` context acts as a trusted authority that vouches for the user's authenticity by issuing a secure cookie.

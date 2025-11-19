@@ -342,42 +342,67 @@ AppMon 설정의 전체 아키텍처, 각 설정 항목에 대한 상세한 설�
 
 ## 7. 주요 기능 활용: AppMon 대시보드 접근 제어
 
-AppMon은 `root` 컨텍스트와 분리된 별도의 `appmon` 웹 컨텍스트에서 동작합니다. 따라서 `root` 컨텍스트의 메뉴 등을 통해 AppMon 대시보드 화면을 열 때, 두 컨텍스트 간의 안전한 접근 제어 메커니즘이 필요합니다. Aspectow는 이를 **시간제한이 있는 PBE 토큰(Time-Limited, Password-Based Encryption Token)**을 통해 해결합니다.
+AppMon은 `root` 컨텍스트와 분리된 별도의 `appmon` 웹 컨텍스트에서 동작합니다. 따라서 AppMon 대시보드를 열 때 허가되지 않은 접근을 막기 위한 안전한 접근 제어 메커니즘이 필요합니다. Aspectow는 신뢰할 수 있는 `root` 컨텍스트에서 임시 인증 쿠키를 발급하고, `appmon` 컨텍스트가 이를 검증하는 방식으로 이 문제를 해결합니다.
 
-#### 1단계: '게이트키퍼' 역할의 Translet 생성 (`root` 컨텍스트)
+#### 1단계: 인증 쿠키 발급 (`root` 컨텍스트)
 
-먼저, `root` 컨텍스트에 AppMon 대시보드로 진입하기 위한 '게이트키퍼' 역할의 Translet을 정의합니다.
+먼저, `root` 컨텍스트에 '게이트키퍼' 역할의 Translet을 정의합니다. 이 Translet은 AppMon 대시보드로의 안전한 진입점 역할을 합니다. 사용자가 이 Translet에 접근하면, 안전한 시간제한이 있는 HttpOnly 인증 쿠키를 발급한 후 사용자를 AppMon 대시보드로 리다이렉트합니다.
 
-**`aspectow/demo/home/monitoring.xml` 예시**
+**`root-web-config.xml` 예시**
 ```xml
+<bean id="appMonCookieIssuer" class="com.aspectran.appmon.common.auth.AppMonCookieIssuer"/>
+
 <translet name="/monitoring/${instances}">
-    <attribute name="token">#{class:com.aspectran.utils.security.TimeLimitedPBTokenIssuer^token}</attribute>
-    <redirect path="/appmon/front/@{token}/${instances}"/>
+    <action bean="appMonCookieIssuer" method="issueCookie">
+        <argument>/appmon</argument>
+        <argument valueType="int">3600</argument>
+    </action>
+    <redirect path="/appmon/dashboard/"/>
 </translet>
 ```
-1.  사용자는 AppMon을 열기 위해 `/monitoring` 경로로 접근합니다. 만약 특정 인스턴스(예: `appmon`)의 대시보드를 바로 보고 싶다면, `/monitoring/appmon`과 같이 경로 뒤에 인스턴스 이름을 붙여 요청합니다.
-2.  Translet은 `TimeLimitedPBTokenIssuer`를 통해 짧은 시간 동안만 유효한 **보안 토큰**을 생성합니다.
-3.  생성된 토큰과 전달받은 `instances` 값을 경로에 포함하여, AppMon 컨텍스트의 `/appmon/front/...` 경로로 사용자의 브라우저를 **리다이렉트**시킵니다.
+1. 사용자가 AppMon을 열기 위해 `/monitoring` 경로로 접근합니다.
+2. Translet은 `appMonCookieIssuer` 빈의 `issueCookie` 메소드를 호출합니다. 이 메소드는 시간제한이 있는 PBE 토큰을 생성하여 `appmon-auth-token`이라는 이름의 `HttpOnly` 쿠키에 설정합니다. 쿠키의 경로는 `/appmon`으로 설정되고, 최대 유효 시간은 3600초(1시간)입니다.
+3. 그 후 사용자의 브라우저를 AppMon 컨텍스트의 `/appmon/dashboard/` 경로로 **리다이렉트**합니다. 브라우저는 요청 시 새로 발급된 쿠키를 자동으로 포함하여 전송합니다.
 
-#### 2단계: 토큰 검증 및 페이지 처리 (`appmon` 컨텍스트)
+#### 2단계: 인증 쿠키 검증 (`appmon` 컨텍스트)
 
-`appmon` 컨텍스트는 리다이렉트된 요청을 받아 토큰의 유효성을 검증합니다. 이 로직은 `FrontActivity.java`에 구현되어 있습니다.
+`appmon` 컨텍스트에서는 모든 들어오는 요청을 가로채도록 Aspect(`AppMonAuthCheckAspect`)가 설정되어 있습니다. 이 Aspect는 `appmon-auth-token` 쿠키의 존재 여부와 유효성을 검사합니다.
 
-**`FrontActivity.java`의 일부**
+**`AppMonAuthCheckAspect.java`의 일부**
 ```java
-@Request("/front/${token}/${instances}")
-public Map<String, String> front(Translet translet, String token, String instances) {
-   try {
-       // 1. 전달받은 토큰을 검증합니다.
-       AppMonManager.validateToken(token);
-       // 2. 검증 성공 시, AppMon 대시보드 페이지를 렌더링합니다.
-       return Map.of("include", "appmon/appmon", ...);
-   } catch (Exception e) {
-       // 3. 검증 실패 시, 에러를 기록하고 홈으로 리다이렉트합니다.
-       logger.error("Invalid token: {}", token);
-       translet.redirect("/");
-       return null;
-   }
+@Component
+@Aspect("appMonAuthCheckAspect")
+@Joinpoint(pointcut = {
+        "+: /**",
+        "-: /auth-expired"
+})
+public class AppMonAuthCheckAspect {
+
+    // ...
+
+    @Before
+    public void before(@NonNull Translet translet) {
+        Cookie cookie = WebUtils.getCookie(translet, AUTH_TOKEN_NAME);
+        if (cookie == null) {
+            reject(translet);
+            return;
+        }
+
+        String token = cookie.getValue();
+        try {
+            // 토큰을 검증하고 쿠키의 만료 시간을 갱신합니다.
+            appMonCookieIssuer.refreshCookie(translet, token);
+        } catch (Exception e) {
+            reject(translet);
+        }
+    }
+
+    // ...
 }
 ```
-이러한 방식은 `root` 컨텍스트를 신뢰할 수 있는 인증 기관으로 사용하여, 유효한 토큰을 발급받은 사용자만이 `appmon` 컨텍스트에 접근할 수 있도록 하는 안전한 접근 제어 메커니즘입니다.
+1. `appmon` 컨텍스트에 대한 모든 요청에 대해 `AppMonAuthCheckAspect`의 `before` 어드바이스가 실행됩니다.
+2. `appmon-auth-token` 쿠키를 가져옵니다. 쿠키가 없으면 요청이 거부됩니다.
+3. 쿠키가 존재하면 `appMonCookieIssuer.refreshCookie()`를 호출합니다. 이 메소드는 토큰을 검증합니다. 유효한 경우, 만료 시간이 갱신된 새 쿠키를 발급하여 사용자의 세션을 효과적으로 연장합니다.
+4. 토큰이 유효하지 않은 경우(예: 만료되었거나 변조된 경우), 예외가 발생하고 요청이 거부되어 사용자는 리다이렉트됩니다.
+
+이 메커니즘은 `root` 컨텍스트가 보안 쿠키를 발급하여 사용자의 신원을 보증하는 신뢰할 수 있는 기관 역할을 하는, 두 웹 컨텍스트 간의 안전한 다리를 구축합니다.
