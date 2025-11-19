@@ -277,7 +277,7 @@ SearchQuery searchQuery = JsonToParameters.from(jsonRequestBody, SearchQuery.cla
 
 assertEquals(456, searchQuery.getUserId());
 assertEquals("advanced", searchQuery.getQuery());
-assertEquals(50.5f, searchQuery.getMaxResults());
+assertEquals(50.5, searchQuery.getMaxResults());
 ```
 
 This approach provides compile-time safety and makes your code cleaner and more maintainable when handling JSON payloads in your Aspectran applications.

@@ -277,7 +277,7 @@ SearchQuery searchQuery = JsonToParameters.from(jsonRequestBody, SearchQuery.cla
 
 assertEquals(456, searchQuery.getUserId());
 assertEquals("advanced", searchQuery.getQuery());
-assertEquals(50.5f, searchQuery.getMaxResults());
+assertEquals(50.5, searchQuery.getMaxResults());
 ```
 
 이 접근 방식은 Aspectran 애플리케이션에서 JSON 페이로드를 처리할 때 컴파일 타임 안전성을 제공하고 코드를 더 깔끔하고 유지보수하기 쉽게 만듭니다.
