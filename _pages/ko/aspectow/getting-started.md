@@ -45,7 +45,7 @@ bin\shell.bat
 
 ```
 ---------------------------------------------------------------------------------
- Aspectran : 9.3.0
+ Aspectran : 9.4.0
  JVM       : OpenJDK 64-Bit Server VM (build 23.0.2+7, mixed mode, sharing)
  OS        : Mac OS X 26.0 aarch64
 ---------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ DEBUG 2025-09-25 20:02:28.080 [demo] Initialized DefaultSessionManager@1e0a864d(
   / ___ |(__  ) /_/ /  __/ /__/ /_/ /_/ / |/ |/ /
  /_/  |_/____/ .___/\___/\___/\__/\____/|__/|__/    Enterprise Edition
 =========== /_/ ==========================================================
-:: Built with Aspectran :: 9.3.0
+:: Built with Aspectran :: 9.4.0
 
 To see a list of all built-in commands, type help.
 To get help for a specific command, type command_name -h.
