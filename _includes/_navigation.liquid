@@ -21,15 +21,13 @@
   <div class="top-bar collapse navbar-collapse" id="navbarSupportedContent">
     <div class="container d-lg-flex g-0 g-lg-4">
       <div class="top-bar-logo">
-        <div class="circle">
-          {% if page.auto_lang != nil %}
-            {% for lang in site.lang_order %}
-              {% include _navigation-logo.liquid lang=lang auto_lang=true %}
-            {% endfor %}
-          {% else %}
-            {% include _navigation-logo.liquid lang=page.lang %}
-          {% endif %}
-        </div>
+        {% if page.auto_lang != nil %}
+          {% for lang in site.lang_order %}
+            {% include _navigation-logo.liquid lang=lang auto_lang=true %}
+          {% endfor %}
+        {% else %}
+          {% include _navigation-logo.liquid lang=page.lang %}
+        {% endif %}
       </div>
       <div class="top-bar-left me-auto">
         {% if page.auto_lang != nil %}
