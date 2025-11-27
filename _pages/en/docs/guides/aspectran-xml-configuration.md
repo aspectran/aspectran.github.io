@@ -170,7 +170,7 @@ The elements below are like aliases for `<item>` named for a specific purpose an
 -   `value`: Specifies the value of the item as a literal. You can use AsEL (e.g., `#{...}`, `%{...}`) to reference other beans or properties.
 -   `valueType`: Explicitly specifies the type of the value (`string`, `int`, `long`, `float`, `double`, `boolean`, `file`, `bean`, etc.).
 -   `type`: Specifies the collection type (`array`, `list`, `set`, `map`, `properties`).
--   `tokenize`: If set to `true`, the string in the `value` attribute is split by a delimiter (default: `,`) to create an array or list.
+-   `tokenize`: A boolean attribute that determines whether to parse the value for special tokens (like `#{...}`, `@{...}`). If `true` (the default), the value is parsed for token expressions. If `false`, the entire value is treated as a single literal string.
 -   `mandatory`: If set to `true`, it indicates that the item is a required value (mainly used in `<parameter>`).
 -   `secret`: If set to `true`, the value of the item is managed in an encrypted state.
 
