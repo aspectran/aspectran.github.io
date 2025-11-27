@@ -309,7 +309,7 @@ Defines reusable templates at the top level.
 -   `name`: Specifies the name or path of the template.
 -   `file`: Specifies the template file based on a file system path.
 -   `resource`: Specifies the template resource based on a classpath path.
---   `url`: Specifies a remote template via a URL.
+-   `url`: Specifies a remote template via a URL.
 -   `style`: Specifies the style if using an APON-formatted template (`apon`, `compact`, `compressed`).
 -   `contentType`: Specifies the `Content-Type` of the template result.
 -   `encoding`: Specifies the character encoding of the template file.
