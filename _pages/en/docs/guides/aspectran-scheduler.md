@@ -30,13 +30,11 @@ Define a bean that creates the scheduler instance. Using the `QuartzSchedulerFac
 
 ```xml
 <bean id="scheduler1" class="com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean">
-    <properties>
-        <item type="properties" name="quartzProperties">
-            <entry name="org.quartz.scheduler.instanceName">MyScheduler</entry>
-            <entry name="org.quartz.threadPool.threadCount">10</entry>
-            <!-- All other Quartz properties... -->
-        </item>
-    </properties>
+    <property type="properties" name="quartzProperties">
+        <entry name="org.quartz.scheduler.instanceName">MyScheduler</entry>
+        <entry name="org.quartz.threadPool.threadCount">10</entry>
+        <!-- All other Quartz properties... -->
+    </property>
 </bean>
 ```
 
@@ -48,10 +46,12 @@ Define a bean that creates the scheduler instance. Using the `QuartzSchedulerFac
 Using the defined scheduler bean, define a `<schedule>` rule group. This rule represents a **group of jobs that share a single execution cycle (trigger)**.
 
 ```xml
-<schedule id="my-schedule" schedulerBean="scheduler1">
+<schedule id="my-schedule">
     <!-- 1. Define when to execute (trigger) -->
-    <scheduler>
-        <trigger type="cron" expression="0 0 2 * * ?" />
+    <scheduler bean="scheduler1">
+        <trigger type="cron">
+            expression: 0 0 2 * * ?
+        </trigger>
     </scheduler>
 
     <!-- 2. Define what to execute (job) -->
@@ -159,7 +159,9 @@ The `cron` trigger is used to execute tasks according to a complex calendar-rela
 
 -   **Example (XML):** Run every night at 11:50 PM
     ```xml
-    <trigger type="cron" expression="0 50 23 * * ?" />
+    <trigger type="cron">
+        expression: 0 50 23 * * ?
+    </trigger>
     ```
 
 -   **Example (Annotation):** Run every week from Monday to Friday, at 9:30 AM

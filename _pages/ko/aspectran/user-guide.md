@@ -742,9 +742,11 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
     </bean>
 
     <!-- 스케줄 규칙 정의 -->
-    <schedule id="my-daily-report" schedulerBean="scheduler1">
-        <scheduler>
-            <trigger type="cron" expression="0 0 2 * * ?" /> <!-- 매일 새벽 2시 실행 -->
+    <schedule id="my-daily-report">
+        <scheduler bean="scheduler1">
+            <trigger type="cron">
+                expression: 0 0 2 * * ? <!-- 매일 새벽 2시 실행 -->
+            </trigger>
         </scheduler>
         <job translet="/batch/daily-report"/> <!-- 실행할 Translet 지정 -->
         <job translet="/batch/log-archive"/>
@@ -819,7 +821,9 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
     *   **주요 속성**: `expression` (Cron 표현식 문자열).
 
     ```xml
-    <trigger type="cron" expression="0 50 23 * * ?" /> <!-- 매일 밤 11시 50분 -->
+    <trigger type="cron">
+        expression: 0 50 23 * * ?
+    </trigger>
     ```
     ```java
     @CronTrigger(expression = "0 30 9 ? * MON-FRI") // 매주 월요일부터 금요일까지, 오전 9시 30분
@@ -1018,5 +1022,6 @@ Aspectran은 SLF4J와 Logback을 기반으로 유연하고 강력한 로깅 시�
 *   [Aspectran Scheduler: Translet을 이용한 강력한 작업 자동화](https://aspectran.com/ko/docs/guides/aspectran-scheduler/)
 *   [Aspectran 뷰(View) 기술](https://aspectran.com/ko/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](https://aspectran.com/ko/docs/guides/aspectran-profiles/)
-*   [APON(Aspectran Parameters Object Notation) 소개](https://aspectran.com/ko/docs/guides/introduce-apon/)
 *   [AsEL(Aspectran Expression Language) 소개](https://aspectran.com/ko/docs/guides/introduce-asel/)
+*   [APON(Aspectran Parameters Object Notation) 소개](https://aspectran.com/ko/docs/guides/introduce-apon/)
+*   [Aspectran JSON 유틸리티 가이드](https://aspectran.com/ko/docs/guides/aspectran-json-guide/)

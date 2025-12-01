@@ -30,13 +30,11 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
 
 ```xml
 <bean id="scheduler1" class="com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean">
-    <properties>
-        <item type="properties" name="quartzProperties">
-            <entry name="org.quartz.scheduler.instanceName">MyScheduler</entry>
-            <entry name="org.quartz.threadPool.threadCount">10</entry>
-            <!-- 기타 모든 Quartz 속성... -->
-        </item>
-    </properties>
+    <property type="properties" name="quartzProperties">
+        <entry name="org.quartz.scheduler.instanceName">MyScheduler</entry>
+        <entry name="org.quartz.threadPool.threadCount">10</entry>
+        <!-- 기타 모든 Quartz 속성... -->
+    </property>
 </bean>
 ```
 
@@ -48,10 +46,12 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
 정의된 스케줄러 빈을 사용하여, `<schedule>` 규칙 그룹을 정의합니다. 이 규칙은 **하나의 실행 주기(트리거)를 공유하는 잡(Job)들의 그룹**을 의미합니다.
 
 ```xml
-<schedule id="my-schedule" schedulerBean="scheduler1">
+<schedule id="my-schedule">
     <!-- 1. 언제 실행할지 정의 (트리거) -->
-    <scheduler>
-        <trigger type="cron" expression="0 0 2 * * ?" />
+    <scheduler bean="scheduler1">
+        <trigger type="cron">
+            expression: 0 0 2 * * ?
+        </trigger>
     </scheduler>
 
     <!-- 2. 무엇을 실행할지 정의 (잡) -->
@@ -159,7 +159,9 @@ public class AnnotatedScheduledTasks {
 
 -   **예제 (XML):** 매일 밤 11시 50분에 실행
     ```xml
-    <trigger type="cron" expression="0 50 23 * * ?" />
+    <trigger type="cron">
+        expression: 0 50 23 * * ?
+    </trigger>
     ```
 
 -   **예제 (어노테이션):** 매주 월요일부터 금요일까지, 오전 9시 30분에 실행

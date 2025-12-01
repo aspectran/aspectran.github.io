@@ -742,9 +742,11 @@ Aspectran provides two main ways to configure the scheduler.
     </bean>
 
     <!-- Schedule rule definition -->
-    <schedule id="my-daily-report" schedulerBean="scheduler1">
-        <scheduler>
-            <trigger type="cron" expression="0 0 2 * * ?" /> <!-- Run every day at 2 AM -->
+    <schedule id="my-daily-report">
+        <scheduler bean="scheduler1">
+            <trigger type="cron">
+                expression: 0 0 2 * * ? <!-- Run every day at 2 AM -->
+            </trigger>
         </scheduler>
         <job translet="/batch/daily-report"/> <!-- Specify the Translet to run -->
         <job translet="/batch/log-archive"/>
@@ -819,7 +821,9 @@ Triggers precisely control when a job is executed. They can be configured throug
     *   **Main attribute**: `expression` (Cron expression string).
 
     ```xml
-    <trigger type="cron" expression="0 50 23 * * ?" /> <!-- Every night at 11:50 PM -->
+    <trigger type="cron">
+        expression: 0 50 23 * * ?
+    </trigger>
     ```
     ```java
     @CronTrigger(expression = "0 30 9 ? * MON-FRI") // Every week from Monday to Friday, at 9:30 AM
@@ -994,7 +998,7 @@ Aspectran builds a flexible and powerful logging system based on SLF4J and Logba
 *   **Adjusting Log Levels**: You can get more detailed information by adjusting the log levels (TRACE, DEBUG, INFO, WARN, ERROR) in the `logback.xml` or `logback-test.xml` file.
 *   **Separating Scheduler Logs**: You can monitor the logs of scheduled tasks by separating them into a separate file. (Utilize the logs of the `com.aspectran.core.scheduler.activity.ActivityJobReporter` class)
 
-For more details, please refer to the [Aspectran Logging Mechanism](/en/docs/architecture/aspectran-logging-mechanism/) document.
+For more details, please refer to the [Aspectran Logging Mechanism](architecture/aspectran-logging-mechanism_en.md) document.
 
 ### 7.2. Common Error Messages and Troubleshooting Tips
 
@@ -1018,5 +1022,6 @@ We hope this guide helps you in using Aspectran. For more detailed information o
 *   [Aspectran Scheduler: Powerful Task Automation with Translets](https://aspectran.com/en/docs/guides/aspectran-scheduler/)
 *   [Aspectran View Technologies](https://aspectran.com/en/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](https://aspectran.com/en/docs/guides/aspectran-profiles/)
-*   [Introduction to APON (Aspectran Parameters Object Notation)](https://aspectran.com/en/docs/guides/introduce-apon/)
 *   [Introduction to AsEL (Aspectran Expression Language)](https://aspectran.com/en/docs/guides/introduce-asel/)
+*   [Introduction to APON (Aspectran Parameters Object Notation)](https://aspectran.com/en/docs/guides/introduce-apon/)
+*   [Aspectran JSON Utilities Guide](https://aspectran.com/en/docs/guides/aspectran-json-guide/)
