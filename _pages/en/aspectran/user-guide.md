@@ -652,9 +652,6 @@ In Aspectran's configuration files (XML or APON), you can use the `profile` attr
     <!-- Include a specific configuration file only when the 'prod' profile is active -->
     <append file="/config/metrics-context.xml" profile="prod"/>
 
-    <!-- A Bean that is loaded only when the 'dev' profile is not active -->
-    <bean id="someBean" class="com.example.SomeBean" profile="!dev"/>
-
 </aspectran>
 ```
 

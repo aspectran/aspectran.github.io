@@ -652,9 +652,6 @@ Aspectran의 설정 파일(XML 또는 APON) 내 대부분의 엘리먼트에서 
     <!-- 'prod' 프로필이 활성화될 때만 특정 설정 파일을 포함 -->
     <append file="/config/metrics-context.xml" profile="prod"/>
 
-    <!-- 'dev' 프로필이 활성화되지 않았을 때만 로드되는 Bean -->
-    <bean id="someBean" class="com.example.SomeBean" profile="!dev"/>
-
 </aspectran>
 ```
 
