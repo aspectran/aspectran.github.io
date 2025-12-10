@@ -34,10 +34,8 @@ JSP는 서블릿 컨테이너에 의해 직접 실행되는 고전적인 뷰 기
 ```xml
 <!-- 1. JSP 뷰 디스패처 빈 설정 -->
 <bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
-    <properties>
-        <property name="prefix" value="/WEB-INF/jsp/"/>
-        <property name="suffix" value=".jsp"/>
-    </properties>
+    <property name="prefix" value="/WEB-INF/jsp/"/>
+    <property name="suffix" value=".jsp"/>
 </bean>
 
 <!-- 2. Dispatch 규칙 정의 -->
@@ -61,11 +59,9 @@ Thymeleaf는 웹 및 독립 실행형 환경 모두를 위한 최신 서버 사�
 ```xml
 <!-- 1. Thymeleaf 뷰 디스패처 빈 설정 -->
 <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
-    <properties>
-        <property name="prefix" value="/WEB-INF/templates/"/>
-        <property name="suffix" value=".html"/>
-        <property name="templateEngine" value-ref="thymeleafEngine"/>
-    </properties>
+    <property name="prefix" value="/WEB-INF/templates/"/>
+    <property name="suffix" value=".html"/>
+    <property name="templateEngine" value-ref="thymeleafEngine"/>
 </bean>
 
 <!-- 2. Dispatch 규칙 정의 -->
@@ -89,11 +85,9 @@ FreeMarker는 HTML부터 이메일까지 모든 종류의 텍스트 출력을 �
 ```xml
 <!-- 1. FreeMarker 뷰 디스패처 빈 설정 -->
 <bean id="freeMarkerViewDispatcher" class="com.aspectran.freemarker.view.FreeMarkerViewDispatcher">
-    <properties>
-        <property name="prefix" value="/WEB-INF/templates/"/>
-        <property name="suffix" value=".ftl"/>
-        <property name="templateEngine" value-ref="freeMarkerEngine"/>
-    </properties>
+    <property name="prefix" value="/WEB-INF/templates/"/>
+    <property name="suffix" value=".ftl"/>
+    <property name="templateEngine" value-ref="freeMarkerEngine"/>
 </bean>
 
 <!-- 2. Dispatch 규칙 정의 -->

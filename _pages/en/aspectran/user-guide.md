@@ -634,20 +634,20 @@ In Aspectran's configuration files (XML or APON), you can use the `profile` attr
 <aspectran>
 
     <!-- Development database settings applied only when the 'dev' profile is active -->
-    <properties profile="dev">
+    <environment profile="dev">
         <property name="db.driver">org.h2.Driver</property>
         <property name="db.url">jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1</property>
         <property name="db.username">sa</property>
         <property name="db.password"></property>
-    </properties>
+    </environment>
 
     <!-- Production database settings applied only when the 'prod' profile is active -->
-    <properties profile="prod">
+    <environment profile="prod">
         <property name="db.driver">com.mysql.cj.jdbc.Driver</property>
         <property name="db.url">jdbc:mysql://prod.db.server:3306/main_db</property>
         <property name="db.username">prod_db_user</property>
         <property name="db.password">!PROD_DB_PASSWORD!</property>
-    </properties>
+    </environment>
 
     <!-- Include a specific configuration file only when the 'prod' profile is active -->
     <append file="/config/metrics-context.xml" profile="prod"/>
@@ -679,20 +679,20 @@ Here is a complete example of setting different database connection information 
     <description>Loads different DB settings depending on the environment.</description>
 
     <!-- Development environment settings -->
-    <properties profile="dev">
+    <environment profile="dev">
         <property name="db.driver">org.h2.Driver</property>
         <property name="db.url">jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1</property>
         <property name="db.username">sa</property>
         <property name="db.password"></property>
-    </properties>
+    </environment>
 
     <!-- Production environment settings -->
-    <properties profile="prod">
+    <environment profile="prod">
         <property name="db.driver">com.mysql.cj.jdbc.Driver</property>
         <property name="db.url">jdbc:mysql://prod.db.server:3306/main_db</property>
         <property name="db.username">prod_db_user</property>
         <property name="db.password">!PROD_DB_PASSWORD!</property>
-    </properties>
+    </environment>
 
     <!-- Data source bean definition -->
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
@@ -849,11 +849,9 @@ The `name` attribute of the `<dispatch>` rule specifies the path to the template
 ```xml
 <!-- 1. Thymeleaf view dispatcher bean configuration -->
 <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
-    <properties>
-        <property name="prefix" value="/WEB-INF/templates/"/>
-        <property name="suffix" value=".html"/>
-        <property name="templateEngine" value-ref="thymeleafEngine"/>
-    </properties>
+    <property name="prefix" value="/WEB-INF/templates/"/>
+    <property name="suffix" value=".html"/>
+    <property name="templateEngine" value-ref="thymeleafEngine"/>
 </bean>
 
 <!-- 2. Using a Dispatch rule in a Translet to call a Thymeleaf view -->

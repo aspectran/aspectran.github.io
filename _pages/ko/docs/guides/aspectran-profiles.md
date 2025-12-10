@@ -39,20 +39,20 @@ Aspectran의 설정 파일 (XML 기반) 내 대부분의 엘리먼트에서 `pro
 <aspectran>
 
     <!-- 'dev' 프로필이 활성화될 때만 적용되는 프로퍼티 -->
-    <properties profile="dev">
+    <environment profile="dev">
         <property name="db.driver">org.h2.Driver</property>
         <property name="db.url">jdbc:h2:mem:testdb</property>
         <property name="db.username">sa</property>
         <property name="db.password"></property>
-    </properties>
+    </environment>
 
     <!-- 'prod' 프로필이 활성화될 때만 적용되는 프로퍼티 -->
-    <properties profile="prod">
+    <environment profile="prod">
         <property name="db.driver">com.mysql.cj.jdbc.Driver</property>
         <property name="db.url">jdbc:mysql://localhost:3306/prod_db</property>
         <property name="db.username">prod_user</property>
         <property name="db.password">prod_password</property>
-    </properties>
+    </environment>
 
     <!-- 'prod' 프로필이 활성화될 때만 해당 설정 파일을 포함 -->
     <append file="/config/metrics-context.xml" profile="prod"/>
@@ -102,20 +102,20 @@ Aspectran의 설정 파일 (XML 기반) 내 대부분의 엘리먼트에서 `pro
     <description>환경에 따라 다른 DB 설정을 로드합니다.</description>
 
     <!-- 개발 환경 설정 -->
-    <properties profile="dev">
+    <environment profile="dev">
         <property name="db.driver">org.h2.Driver</property>
         <property name="db.url">jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1</property>
         <property name="db.username">sa</property>
         <property name="db.password"></property>
-    </properties>
+    </environment>
 
     <!-- 운영 환경 설정 -->
-    <properties profile="prod">
+    <environment profile="prod">
         <property name="db.driver">com.mysql.cj.jdbc.Driver</property>
         <property name="db.url">jdbc:mysql://prod.db.server:3306/main_db</property>
         <property name="db.username">prod_db_user</property>
         <property name="db.password">!PROD_DB_PASSWORD!</property>
-    </properties>
+    </environment>
 
     <!-- 데이터 소스 빈 정의 -->
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">

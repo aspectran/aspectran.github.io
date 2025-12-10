@@ -126,18 +126,16 @@ Aspectran은 불필요한 세션을 신속하게 제거하여 시스템 리소�
 
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
-    <arguments>
-        <item>
-            workerName: jn0
-            maxActiveSessions: 99999
-            maxIdleSeconds: 489
-            evictionIdleSeconds: 258
-            maxIdleSecondsForNew: 60
-            evictionIdleSecondsForNew: 30
-            scavengingIntervalSeconds: 90
-            clusterEnabled: true
-        </item>
-    </arguments>
+    <argument>
+        workerName: jn0
+        maxActiveSessions: 99999
+        maxIdleSeconds: 489
+        evictionIdleSeconds: 258
+        maxIdleSecondsForNew: 60
+        evictionIdleSecondsForNew: 30
+        scavengingIntervalSeconds: 90
+        clusterEnabled: true
+    </argument>
 </bean>
 ```
 
@@ -209,29 +207,23 @@ shell: {
 ```xml
 <bean id="tow.context.jpetstore.sessionManager"
       class="com.aspectran.undertow.server.session.TowSessionManager">
-    <properties>
-        <item name="sessionManagerConfig">
-            <bean class="com.aspectran.core.context.config.SessionManagerConfig">
-                <arguments>
-                    <item>
-                        workerName: jn0
-                        maxActiveSessions: 99999
-                        maxIdleSeconds: 489
-                        maxIdleSecondsForNew: 60
-                        scavengingIntervalSeconds: 90
-                        clusterEnabled: true
-                    </item>
-                </arguments>
-            </bean>
-        </item>
-    </properties>
+      <property name="sessionManagerConfig">
+          <bean class="com.aspectran.core.context.config.SessionManagerConfig">
+              <argument>
+                  workerName: jn0
+                  maxActiveSessions: 99999
+                  maxIdleSeconds: 489
+                  maxIdleSecondsForNew: 60
+                  scavengingIntervalSeconds: 90
+                  clusterEnabled: true
+              </argument>
+          </bean>
+      </property>
     <!-- 기본 프로필: FileStore 사용 -->
     <properties profile="!prod">
         <item name="sessionStore">
             <bean class="com.aspectran.core.component.session.FileSessionStoreFactoryBean">
-                <properties>
-                    <item name="storeDir">/work/_sessions/jpetstore</item>
-                </properties>
+                <property name="storeDir">/work/_sessions/jpetstore</property>
             </bean>
         </item>
     </properties>
@@ -239,15 +231,11 @@ shell: {
     <properties profile="prod">
         <item name="sessionStore">
             <bean class="com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionStoreFactoryBean">
-                <properties>
-                    <item name="poolConfig">
-                        <bean class="com.aspectran.core.component.session.redis.lettuce.RedisConnectionPoolConfig">
-                            <properties>
-                                <item name="uri">%{system:redis.uri}/11</item>
-                            </properties>
-                        </bean>
-                    </item>
-                </properties>
+                <property name="poolConfig">
+                    <bean class="com.aspectran.core.component.session.redis.lettuce.RedisConnectionPoolConfig">
+                        <property name="uri">%{system:redis.uri}/11</property>
+                    </bean>
+                </property>
             </bean>
         </item>
     </properties>

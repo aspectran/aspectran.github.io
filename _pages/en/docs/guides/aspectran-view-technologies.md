@@ -34,10 +34,8 @@ JSP is a classic view technology that is executed directly by the servlet contai
 ```xml
 <!-- 1. JSP View Dispatcher Bean Configuration -->
 <bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
-    <properties>
-        <property name="prefix" value="/WEB-INF/jsp/"/>
-        <property name="suffix" value=".jsp"/>
-    </properties>
+    <property name="prefix" value="/WEB-INF/jsp/"/>
+    <property name="suffix" value=".jsp"/>
 </bean>
 
 <!-- 2. Dispatch Rule Definition -->
@@ -61,11 +59,9 @@ Thymeleaf is a modern server-side Java template engine for both web and standalo
 ```xml
 <!-- 1. Thymeleaf View Dispatcher Bean Configuration -->
 <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
-    <properties>
-        <property name="prefix" value="/WEB-INF/templates/"/>
-        <property name="suffix" value=".html"/>
-        <property name="templateEngine" value-ref="thymeleafEngine"/>
-    </properties>
+    <property name="prefix" value="/WEB-INF/templates/"/>
+    <property name="suffix" value=".html"/>
+    <property name="templateEngine" value-ref="thymeleafEngine"/>
 </bean>
 
 <!-- 2. Dispatch Rule Definition -->
@@ -89,11 +85,9 @@ FreeMarker is a powerful and widely used template engine for generating any kind
 ```xml
 <!-- 1. FreeMarker View Dispatcher Bean Configuration -->
 <bean id="freeMarkerViewDispatcher" class="com.aspectran.freemarker.view.FreeMarkerViewDispatcher">
-    <properties>
-        <property name="prefix" value="/WEB-INF/templates/"/>
-        <property name="suffix" value=".ftl"/>
-        <property name="templateEngine" value-ref="freeMarkerEngine"/>
-    </properties>
+    <property name="prefix" value="/WEB-INF/templates/"/>
+    <property name="suffix" value=".ftl"/>
+    <property name="templateEngine" value-ref="freeMarkerEngine"/>
 </bean>
 
 <!-- 2. Dispatch Rule Definition -->
