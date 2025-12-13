@@ -58,7 +58,6 @@ Aspectran 프레임워크의 전역적인 동작을 제어하는 설정을 정�
 
 ```xml
 <settings>
-    <description>애플리케이션의 전역 설정을 정의합니다.</description>
     <setting name="transletNamePrefix" value="/api"/>
     <setting name="transletNameSuffix" value=".json"/>
     <setting name="pointcutPatternVerifiable" value="true"/>

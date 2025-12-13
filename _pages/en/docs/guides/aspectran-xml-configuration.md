@@ -58,7 +58,6 @@ Defines settings that control the global behavior of the Aspectran framework. `<
 
 ```xml
 <settings>
-    <description>Defines the global settings for the application.</description>
     <setting name="transletNamePrefix" value="/api"/>
     <setting name="transletNameSuffix" value=".json"/>
     <setting name="pointcutPatternVerifiable" value="true"/>
