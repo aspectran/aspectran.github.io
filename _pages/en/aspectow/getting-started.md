@@ -157,7 +157,7 @@ This approach is highly effective for getting immediate feedback and resolving i
 
 Consider the following tips and best practices when developing Aspectran web applications like `aspectow-todo-webapp`.
 
-### 1. Logging Configuration
+### 10.1. Logging Configuration
 
 To effectively check the application's debug logs, you need to adjust the logging settings appropriately.
 
