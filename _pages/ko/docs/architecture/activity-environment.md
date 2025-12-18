@@ -72,7 +72,7 @@ subheadline: 아키텍처
     <item name="file.upload-path" value="#{bean:uploadPath.path}/uploads"/>
 
     <!-- 현재 트랜슬릿의 'userId' 파라미터 값을 참조 -->
-    <item name="user.home.dir" value="/home/#(param:userId)"/>
+    <item name="user.home.dir" value="/home/${userId}"/>
 </properties>
 ```
 

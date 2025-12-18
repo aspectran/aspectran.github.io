@@ -101,7 +101,7 @@ The most common use case is passing the result of an Action as a model to a view
     ```xml
     <translet name="/user/detail">
         <action id="userInfo" bean="userDao" method="getUser">
-            <argument name="id">#(param:userId)</argument>
+            <argument name="id">${userId}</argument>
         </action>
         <response>
             <dispatch name="user/detail.peb"/>

@@ -72,7 +72,7 @@ One of the major features of `ActivityEnvironment` is that property values can b
     <item name="file.upload-path" value="#{bean:uploadPath.path}/uploads"/>
 
     <!-- References the 'userId' parameter of the current translet -->
-    <item name="user.home.dir" value="/home/#(param:userId)"/>
+    <item name="user.home.dir" value="/home/${userId}"/>
 </properties>
 ```
 

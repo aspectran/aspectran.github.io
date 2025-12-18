@@ -101,7 +101,7 @@ Action의 처리 결과 값은 다음과 같은 다양한 시나리오에서 핵
     ```xml
     <translet name="/user/detail">
         <action id="userInfo" bean="userDao" method="getUser">
-            <argument name="id">#(param:userId)</argument>
+            <argument name="id">${userId}</argument>
         </action>
         <response>
             <dispatch name="user/detail.peb"/>
