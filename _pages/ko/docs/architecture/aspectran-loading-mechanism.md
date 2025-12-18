@@ -142,13 +142,13 @@ AOP 규칙은 여러 컴포넌트가 복합적으로 관계를 맺기 때문에 
     </joinpoint>
     <advice bean="loggingAdvice">
         <before>
-            <action bean="profiler" method="start"/>
+            <invoke method="start"/>
         </before>
     </advice>
 </aspect>
 ```
 
-이 XML은 이름이 `/example/hello`인 Translet에서 `helloAction` 빈의 `say`로 시작하는 모든 메소드(`joinpoint`)가 실행되기 전(`before`)에 `loggingAdvice` 빈의 `profiler.start()` 액션을 실행하라는 AOP 규칙을 정의합니다.
+이 XML은 이름이 `/example/hello`인 Translet에서 `helloAction` 빈의 `say`로 시작하는 모든 메소드(`joinpoint`)가 실행되기 전(`before`)에 `loggingAdvice` 빈의 `start()` 메소드를 실행하라는 AOP 규칙을 정의합니다.
 
 포인트컷 문자열에서 `@` 구분자 앞은 Translet의 이름, 뒤는 Bean의 ID를 나타내며, `^` 구분자 뒤는 호출할 메소드명을 의미합니다. 각 부분에는 와일드카드를 사용할 수 있습니다. 만약 특정 Translet을 지정하지 않고 모든 Translet을 대상으로 하려면 `@` 구분자로 패턴을 시작해야 합니다 (예: `+ "@helloAction^say*"`).
 

@@ -110,9 +110,9 @@ The most common use case is passing the result of an Action as a model to a view
     ```
 *   **Pebble Template (`user/detail.peb`):**
     ```html
-    <h1>User Information</h1>
+    {% raw %}<h1>User Information</h1>
     <p>Name: {{ userInfo.name }}</p>
-    <p>Email: {{ userInfo.email }}</p>
+    <p>Email: {{ userInfo.email }}</p>{% endraw %}
     ```
     The `actionId` `userInfo` becomes the name of the model object in the template, allowing access to the data in a way like `userInfo.name`.
 

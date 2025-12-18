@@ -110,9 +110,9 @@ Action의 처리 결과 값은 다음과 같은 다양한 시나리오에서 핵
     ```
 *   **Pebble 템플릿 (`user/detail.peb`):**
     ```html
-    <h1>사용자 정보</h1>
+    {% raw %}<h1>사용자 정보</h1>
     <p>이름: {{ userInfo.name }}</p>
-    <p>이메일: {{ userInfo.email }}</p>
+    <p>이메일: {{ userInfo.email }}</p>{% endraw %}
     ```
     `userInfo`라는 `actionId`가 템플릿에서 모델 객체의 이름이 되어 `userInfo.name`과 같은 방식으로 데이터에 접근할 수 있습니다.
 

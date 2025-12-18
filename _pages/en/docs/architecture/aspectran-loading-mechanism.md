@@ -142,13 +142,13 @@ Since AOP rules involve complex relationships between multiple components, the p
     </joinpoint>
     <advice bean="loggingAdvice">
         <before>
-            <action bean="profiler" method="start"/>
+            <invoke method="start"/>
         </before>
     </advice>
 </aspect>
 ```
 
-This XML defines an AOP rule that executes the `profiler.start()` action of the `loggingAdvice` bean `before` any method starting with `say` (`joinpoint`) of the `helloAction` bean is executed in the Translet named `/example/hello`.
+This XML defines an AOP rule that executes the `start()` method of the `loggingAdvice` bean `before` any method starting with `say` (`joinpoint`) of the `helloAction` bean is executed in the Translet named `/example/hello`.
 
 In the pointcut string, the part before the `@` delimiter represents the Translet's name, the part after it represents the Bean's ID, and the part after the `^` delimiter represents the method name to be called. Wildcards can be used in each part. If you want to target all Translets instead of a specific one, the pattern must start with the `@` delimiter (e.g., `+ "@helloAction^say*"`).
 
