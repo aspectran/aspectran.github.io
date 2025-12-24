@@ -58,8 +58,8 @@ Aspectran provides two main ways to define a Translet.
 
     ```xml
     <translet name="/user/info">
-      <action bean="userDao" method="getUserInfo"/>
-      <transform format="json"/>
+        <action bean="userDao" method="getUserInfo"/>
+        <transform format="json"/>
     </translet>
     ```
     The example above defines a Translet that, upon receiving a `/user/info` request, executes the `getUserInfo` method of the `userDao` bean and responds with the result transformed into JSON format.
@@ -113,13 +113,13 @@ Aspectran provides two main ways to define a Translet.
 
         ```xml
         <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
-          <description>
-            This automatically finds all JSP files in the '/WEB-INF/jsp/' directory and its subdirectories and registers them as Translets.
-            The path of the discovered jsp file is specified as the value of the file attribute of the template element.
-          </description>
-          <dispatch>
-            <template/>
-          </dispatch>
+            <description>
+                This automatically finds all JSP files in the '/WEB-INF/jsp/' directory and its subdirectories and registers them as Translets.
+                The path of the discovered jsp file is specified as the value of the file attribute of the template element.
+            </description>
+            <dispatch>
+                <template/>
+            </dispatch>
         </translet>
         ```
         The rule above scans for all `.jsp` files in the `/WEB-INF/jsp/` directory and its subdirectories, and dynamically creates and registers Translets based on the file paths. For example, if a file `/WEB-INF/jsp/user/list.jsp` is found, a Translet named `user/list` is created. This feature is very useful for serving a large number of static view files and dramatically reduces repetitive Translet definitions.
@@ -540,11 +540,9 @@ AsEL uses three main tokens to access data in different scopes.
 *   **`${...}` (Parameter Token)**: Accesses the **parameters** of the current request. It is mainly used to reference path variables or request parameters of a Translet.
     ```xml
     <translet name="/users/${userId}">
-      <action bean="userService" method="deleteUser">
-        <arguments>
-          <item value="${userId}"/> <!-- Passes the userId parameter extracted from the URL path as an argument to the action -->
-        </arguments>
-      </action>
+        <action bean="userService" method="deleteUser">
+            <argument value="${userId}"/> <!-- Passes the userId parameter extracted from the URL path as an argument to the action -->
+        </action>
     </translet>
     ```
 
@@ -553,25 +551,19 @@ AsEL uses three main tokens to access data in different scopes.
     <action id="userResult" bean="userAction" method="getUser"/>
     <!-- The result of the above action is stored as an attribute named 'userResult' -->
     <dispatch name="user/detail">
-        <attributes>
-            <item name="user" value="@{userResult}"/> <!-- Passes the 'userResult' attribute to the view template as 'user' -->
-        </attributes>
+        <attribute name="user" value="@{userResult}"/> <!-- Passes the 'userResult' attribute to the view template as 'user' -->
     </dispatch>
     ```
 
 *   **`#{...}` (Bean Token)**: Accesses a **bean or a bean's property** registered in the IoC container. It is useful for referencing static configuration values or the results of other bean method calls.
     ```xml
     <bean id="appConfig" class="com.example.AppConfig">
-        <properties>
-            <item name="defaultPageSize">20</item>
-        </properties>
+        <property name="defaultPageSize">20</property>
     </bean>
 
     <action bean="boardService" method="getArticleList">
-        <arguments>
-            <!-- Passes the value of the defaultPageSize property of the appConfig bean as an argument -->
-            <item value="#{appConfig.defaultPageSize}"/>
-        </arguments>
+        <!-- Passes the value of the defaultPageSize property of the appConfig bean as an argument -->
+        <argument value="#{appConfig.defaultPageSize}"/>
     </action>
     ```
 
@@ -864,16 +856,16 @@ The `transform` response is used to directly generate the response body by conve
 *   **JSON Conversion**: Use `format="json"` to convert the processing result into a JSON string. This is most commonly used in REST APIs. Adding the `pretty="true"` attribute will format the output for readability.
     ```xml
     <translet name="/api/users/1">
-      <action bean="userService" method="getUser" id="user"/>
-      <transform format="json" pretty="true"/>
+        <action bean="userService" method="getUser" id="user"/>
+        <transform format="json" pretty="true"/>
     </translet>
     ```
 
 *   **XML Conversion**: Use `format="xml"` to convert to XML.
     ```xml
     <translet name="/api/users/1.xml">
-      <action bean="userService" method="getUser" id="user"/>
-      <transform format="xml" pretty="true"/>
+        <action bean="userService" method="getUser" id="user"/>
+        <transform format="xml" pretty="true"/>
     </translet>
     ```
 
@@ -882,10 +874,10 @@ The `transform` response is used to directly generate the response body by conve
     <translet name="/api/users/1/info">
         <action bean="userService" method="getUser" id="user"/>
         <transform format="text">
-          <template>
-            User Name: @{user.name}
-            Email: @{user.email}
-          </template>
+            <template>
+                User Name: @{user.name}
+                Email: @{user.email}
+            </template>
         </transform>
     </translet>
     ```

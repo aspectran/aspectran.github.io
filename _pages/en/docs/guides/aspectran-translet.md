@@ -16,8 +16,8 @@ A Translet is defined as a **collection of declarative rules** in XML or APON (A
 ```xml
 <translet name="/user/info">
   <!-- Rules that define how to handle the request -->
-  <action bean="userDao" method="getUserInfo"/>
-  <transform format="json"/>
+    <action bean="userDao" method="getUserInfo"/>
+    <transform format="json"/>
 </translet>
 ```
 
@@ -64,11 +64,11 @@ One of Aspectran's most powerful features is **dynamic Translet generation**. Fo
 
 ```xml
 <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
-  <description>
-    This automatically finds all JSP files in the '/WEB-INF/jsp/' directory and its subdirectories and registers them as Translets.
-    The path of the discovered jsp file is specified as the value of the file attribute of the template element.
-  </description>
-  <dispatch name="/"/>
+    <description>
+        This automatically finds all JSP files in the '/WEB-INF/jsp/' directory and its subdirectories and registers them as Translets.
+        The path of the discovered jsp file is specified as the value of the file attribute of the template element.
+    </description>
+    <dispatch name="/"/>
 </translet>
 ```
 

@@ -307,7 +307,9 @@ public class MyService {
 ```xml
 <aspect id="serviceLayerExceptionAspect">
     <joinpoint>
-        pointcut: { +: **@*Service^** }
+        pointcut: {
+            +: **@*Service^**
+        }
     </joinpoint>
     <advice bean="loggingAdviceBean"/> <!-- 다른 어드바이스를 가질 수 있음 -->
     <exception>
@@ -545,9 +547,7 @@ Aspectran은 생성자 주입과 수정자 주입 두 가지 주요 의존성 �
 <bean id="resourceManager" class="com.example.app.ResourceManager"
       initMethod="initialize"
       destroyMethod="cleanup">
-    <properties>
-        <item name="resourcePath" value="/data/my-resource.dat"/>
-    </properties>
+    <property name="resourcePath" value="/data/my-resource.dat"/>
 </bean>
 ```
 `resourceManager`가 생성될 때, `resourcePath` 속성이 설정된 후 `initialize()`가 호출됩니다. 애플리케이션이 종료될 때 `cleanup()`이 호출됩니다.
@@ -560,7 +560,7 @@ Aspectran은 생성자 주입과 수정자 주입 두 가지 주요 의존성 �
 <bean scan="com.example.app.**">
     <filter>
         exclude: [
-            "*.*Repository"
+            *.*Repository
         ]
     </filter>
 </bean>
@@ -594,10 +594,8 @@ Aspectran은 생성자 주입과 수정자 주입 두 가지 주요 의존성 �
 ```xml
 <translet name="/users/view" method="GET">
     <request>
-        <parameters>
-            <!-- 이 트랜슬릿에는 'userId' 매개변수가 필수입니다. -->
-            <item name="userId" mandatory="true"/>
-        </parameters>
+        <!-- 이 트랜슬릿에는 'userId' 매개변수가 필수입니다. -->
+        <parameter name="userId" mandatory="true"/>
     </request>
     ...
 </translet>
@@ -617,10 +615,8 @@ Aspectran은 생성자 주입과 수정자 주입 두 가지 주요 의존성 �
     <!-- 'userService' 빈에서 'getUser' 메소드 호출 -->
     <!-- 반환 값은 'user'라는 이름의 속성에 저장됩니다. -->
     <action id="user" bean="userService" method="getUser">
-        <arguments>
-            <!-- 'userId' 요청 매개변수를 메소드에 전달 -->
-            <item value="@{userId}"/>
-        </arguments>
+        <!-- 'userId' 요청 매개변수를 메소드에 전달 -->
+        <argument value="@{userId}"/>
     </action>
     ```
 

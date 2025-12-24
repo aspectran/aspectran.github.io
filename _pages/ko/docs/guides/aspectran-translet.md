@@ -15,9 +15,9 @@ Translet은 XML 또는 APON(Aspectran Object Notation) 형식의 **선언적인 
 
 ```xml
 <translet name="/user/info">
-  <!-- 요청을 어떻게 처리할지 정의하는 규칙들 -->
-  <action bean="userDao" method="getUserInfo"/>
-  <transform format="json"/>
+    <!-- 요청을 어떻게 처리할지 정의하는 규칙들 -->
+    <action bean="userDao" method="getUserInfo"/>
+    <transform format="json"/>
 </translet>
 ```
 
@@ -64,11 +64,11 @@ Aspectran의 가장 강력한 기능 중 하나는 **동적 Translet 생성**입
 
 ```xml
 <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
-  <description>
-    '/WEB-INF/jsp/' 디렉토리 하위 경로에서 모든 JSP 파일을 찾아서 Translet 등록을 자동으로 합니다.
-    검색된 jsp 파일의 경로는 template 요소의 file 속성 값으로 지정됩니다.
-  </description>
-  <dispatch name="/"/>
+    <description>
+        '/WEB-INF/jsp/' 디렉토리 하위 경로에서 모든 JSP 파일을 찾아서 Translet 등록을 자동으로 합니다.
+        검색된 jsp 파일의 경로는 template 요소의 file 속성 값으로 지정됩니다.
+    </description>
+    <dispatch name="/"/>
 </translet>
 ```
 

@@ -307,7 +307,9 @@ The `<exception>` block contains one or more `<thrown>` elements, each configure
 ```xml
 <aspect id="serviceLayerExceptionAspect">
     <joinpoint>
-        pointcut: { +: **@*Service^** }
+        pointcut: {
+            +: **@*Service^**
+        }
     </joinpoint>
     <advice bean="loggingAdviceBean"/> <!-- Can have other advice -->
     <exception>
@@ -545,9 +547,7 @@ You can specify methods to be called at certain points in a bean's lifecycle.
 <bean id="resourceManager" class="com.example.app.ResourceManager"
       initMethod="initialize"
       destroyMethod="cleanup">
-    <properties>
-        <item name="resourcePath" value="/data/my-resource.dat"/>
-    </properties>
+    <property name="resourcePath" value="/data/my-resource.dat"/>
 </bean>
 ```
 When `resourceManager` is created, `initialize()` is called after its `resourcePath` property is set. When the application shuts down, `cleanup()` is called.
@@ -560,7 +560,7 @@ When using `<bean scan="...">`, you can use `<filter>` to include or exclude spe
 <bean scan="com.example.app.**">
     <filter>
         exclude: [
-            "*.*Repository"
+            *.*Repository
         ]
     </filter>
 </bean>
@@ -594,10 +594,8 @@ You can also define required parameters for the translet. If a required paramete
 ```xml
 <translet name="/users/view" method="GET">
     <request>
-        <parameters>
-            <!-- The 'userId' parameter is mandatory for this translet. -->
-            <item name="userId" mandatory="true"/>
-        </parameters>
+        <!-- The 'userId' parameter is mandatory for this translet. -->
+        <parameter name="userId" mandatory="true"/>
     </request>
     ...
 </translet>
@@ -617,10 +615,8 @@ The "content" section of a translet (represented by `<content>` or implicitly by
     <!-- Call the 'getUser' method on the 'userService' bean -->
     <!-- The return value will be stored in an attribute named 'user' -->
     <action id="user" bean="userService" method="getUser">
-        <arguments>
-            <!-- Pass the 'userId' request parameter to the method -->
-            <item value="@{userId}"/>
-        </arguments>
+        <!-- Pass the 'userId' request parameter to the method -->
+        <argument value="@{userId}"/>
     </action>
     ```
 

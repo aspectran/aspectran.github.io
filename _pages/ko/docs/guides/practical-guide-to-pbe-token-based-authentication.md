@@ -48,7 +48,6 @@ Aspectran의 토큰 기반 인증은 주로 다음 핵심 컴포넌트를 통해
 
 먼저, `aspectran-config.apon` 파일에서 시스템 속성을 통해 암호화에 사용할 패스워드를 설정합니다.
 
-`/Users/Aspectran/Projects/aspectran/aspectran/demo/app/config/aspectran-config.apon`
 ```apon
 system: {
     properties: {

@@ -58,8 +58,8 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
 
     ```xml
     <translet name="/user/info">
-      <action bean="userDao" method="getUserInfo"/>
-      <transform format="json"/>
+        <action bean="userDao" method="getUserInfo"/>
+        <transform format="json"/>
     </translet>
     ```
     위 예제는 `/user/info` 요청이 들어오면 `userDao` 빈의 `getUserInfo` 메소드를 실행하고, 그 결과를 JSON 형식으로 변환하여 응답하는 Translet을 정의합니다.
@@ -113,13 +113,13 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
 
         ```xml
         <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
-          <description>
-            '/WEB-INF/jsp/' 디렉토리 하위 경로에서 모든 JSP 파일을 찾아서 Translet 등록을 자동으로 합니다.
-            검색된 jsp 파일의 경로는 template 요소의 file 속성 값으로 지정됩니다.
-          </description>
-          <dispatch>
-            <template/>
-          </dispatch>
+            <description>
+                '/WEB-INF/jsp/' 디렉토리 하위 경로에서 모든 JSP 파일을 찾아서 Translet 등록을 자동으로 합니다.
+               검색된 jsp 파일의 경로는 template 요소의 file 속성 값으로 지정됩니다.
+            </description>
+            <dispatch>
+                <template/>
+            </dispatch>
         </translet>
         ```
         위 규칙은 `/WEB-INF/jsp/` 디렉터리와 그 하위 경로에 있는 모든 `.jsp` 파일을 스캔하여, 파일 경로에 따라 동적으로 Translet을 생성하고 등록합니다. 예를 들어, `/WEB-INF/jsp/user/list.jsp` 파일이 발견되면 `user/list`라는 이름의 Translet이 생성됩니다. 이 기능은 정적인 뷰 파일을 대량으로 서빙할 때 매우 유용하며, 반복적인 Translet 정의를 획기적으로 줄여줍니다.
@@ -540,11 +540,9 @@ AsEL은 세 가지 주요 토큰을 사용하여 서로 다른 스코프의 데�
 *   **`${...}` (파라미터 토큰)**: 현재 요청의 **파라미터(Parameter)**에 접근합니다. 주로 Translet의 경로 변수(Path Variable)나 요청 파라미터(Request Parameter) 값을 참조하는 데 사용됩니다.
     ```xml
     <translet name="/users/${userId}">
-      <action bean="userService" method="deleteUser">
-        <arguments>
-          <item value="${userId}"/> <!-- URL 경로에서 추출된 userId 파라미터를 action의 인자로 전달 -->
-        </arguments>
-      </action>
+        <action bean="userService" method="deleteUser">
+            <argument value="${userId}"/> <!-- URL 경로에서 추출된 userId 파라미터를 action의 인자로 전달 -->
+        </action>
     </translet>
     ```
 
@@ -553,25 +551,19 @@ AsEL은 세 가지 주요 토큰을 사용하여 서로 다른 스코프의 데�
     <action id="userResult" bean="userAction" method="getUser"/>
     <!-- 위 action의 결과는 'userResult'라는 속성으로 저장됨 -->
     <dispatch name="user/detail">
-        <attributes>
-            <item name="user" value="@{userResult}"/> <!-- 'userResult' 속성을 뷰 템플릿에 'user'라는 이름으로 전달 -->
-        </attributes>
+        <attribute name="user" value="@{userResult}"/> <!-- 'userResult' 속성을 뷰 템플릿에 'user'라는 이름으로 전달 -->
     </dispatch>
     ```
 
 *   **`#{...}` (빈 토큰)**: IoC 컨테이너에 등록된 **빈(Bean) 또는 빈의 속성**에 접근합니다. 정적인 설정값이나 다른 빈의 메소드 호출 결과를 참조할 때 유용합니다.
     ```xml
     <bean id="appConfig" class="com.example.AppConfig">
-        <properties>
-            <item name="defaultPageSize">20</item>
-        </properties>
+        <property name="defaultPageSize">20</property>
     </bean>
 
     <action bean="boardService" method="getArticleList">
-        <arguments>
-            <!-- appConfig 빈의 defaultPageSize 속성 값을 인자로 전달 -->
-            <item value="#{appConfig.defaultPageSize}"/>
-        </arguments>
+        <!-- appConfig 빈의 defaultPageSize 속성 값을 인자로 전달 -->
+        <argument value="#{appConfig.defaultPageSize}"/>
     </action>
     ```
 
@@ -864,16 +856,16 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
 *   **JSON 변환**: `format="json"`을 사용하여 처리 결과를 JSON 문자열로 변환합니다. REST API에서 가장 흔하게 사용됩니다. `pretty="true"` 속성을 추가하면 가독성 좋게 출력됩니다.
     ```xml
     <translet name="/api/users/1">
-      <action bean="userService" method="getUser" id="user"/>
-      <transform format="json" pretty="true"/>
+        <action bean="userService" method="getUser" id="user"/>
+        <transform format="json" pretty="true"/>
     </translet>
     ```
 
 *   **XML 변환**: `format="xml"`을 사용하여 XML로 변환합니다.
     ```xml
     <translet name="/api/users/1.xml">
-      <action bean="userService" method="getUser" id="user"/>
-      <transform format="xml" pretty="true"/>
+        <action bean="userService" method="getUser" id="user"/>
+        <transform format="xml" pretty="true"/>
     </translet>
     ```
 
@@ -882,10 +874,10 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
     <translet name="/api/users/1/info">
         <action bean="userService" method="getUser" id="user"/>
         <transform format="text">
-          <template>
-            사용자 이름: @{user.name}
-            이메일: @{user.email}
-          </template>
+            <template>
+                사용자 이름: @{user.name}
+                이메일: @{user.email}
+            </template>
         </transform>
     </translet>
     ```

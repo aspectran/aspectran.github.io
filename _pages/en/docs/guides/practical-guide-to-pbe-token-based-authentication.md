@@ -48,7 +48,6 @@ Let's look at how tokens are configured and used in a real Aspectran application
 
 First, set the password to be used for encryption through system properties in the `aspectran-config.apon` file.
 
-`/Users/Aspectran/Projects/aspectran/aspectran/demo/app/config/aspectran-config.apon`
 ```apon
 system: {
     properties: {
