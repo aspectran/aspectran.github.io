@@ -5,8 +5,8 @@
       <div class="d-none d-sm-block mt-1"><a class="logo float-start me-3 me-lg-4" href="https://aspectran.com/aspectran/" title="Aspectran"></a></div>
       {% endif %}
       <div>
-        <a href="{{ site.baseurl }}/{% if include.lang != nil %}{{ include.lang }}/{% endif %}aspectran/" title="{{ site.title }}"><h5>{{ site.data.messages[include.lang].about_aspectran }}</h5></a>
-        <p><a href="{{ site.baseurl }}/{% if include.lang != nil %}{{ include.lang }}/{% endif %}aspectran/">{{ site.data.messages[include.lang].aspectran_teaser }}</a></p>
+        <a href="/{% if include.lang != nil %}{{ include.lang }}/{% endif %}aspectran/" title="{{ site.title }}"><h5>{{ site.data.messages[include.lang].about_aspectran }}</h5></a>
+        <p><a href="/{% if include.lang != nil %}{{ include.lang }}/{% endif %}aspectran/">{{ site.data.messages[include.lang].aspectran_teaser }}</a></p>
       </div>
     </div>
     <div class="col-sm-4 col-md-5 col-lg-3 offset-lg-1">
@@ -15,8 +15,12 @@
       {% endfor %}
       <ul class="list-unstyled">
         {% for network_item in site.data.network_en offset: 1 %}
-          {% if network_item.url contains 'http' %}{% assign domain = '' %}{% else %}{% assign domain = site.baseurl %}{% endif %}
-          <li {% if network_item.class %}class="{{ network_item.class }}" {% endif %}> <a href="{{ domain }}{{ network_item.url }}" {% if network_item.url contains 'http' %}target="_blank" {% endif %} title="{{ network_item.title }}">{{ network_item.name }}</a></li>
+          {% if network_item.url contains 'http' %}
+            {% assign external_domain = '' %}
+          {% else %}
+            {% assign external_domain = site.url %}
+          {% endif %}
+          <li {% if network_item.class %}class="{{ network_item.class }}" {% endif %}> <a href="{{ external_domain }}{{ network_item.url }}" {% if external_domain == '' %}target="_blank" {% endif %} title="{{ network_item.title }}">{{ network_item.name }}</a></li>
         {% endfor %}
       </ul>
     </div>

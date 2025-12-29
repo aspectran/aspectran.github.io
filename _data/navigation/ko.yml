@@ -12,6 +12,9 @@
     url: "/ko/aspectran/user-guide/"
   - title: "Aspectran 아키텍처"
     url: "/ko/aspectran/architecture/"
+    sub_items:
+      - title: "Aspectran 아키텍처 다이어그램"
+        url: "/ko/docs/architecture/aspectran-architecture-diagrams/"
 
 - title: Aspectow
   url: "/ko/aspectow/"

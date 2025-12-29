@@ -9,7 +9,7 @@
         {% assign page_url = page.url | replace: url_prefix, '/' %}
         {% assign page_url = '/' | append: lang | append: page_url %}
         <li>
-          <a class="dropdown-item d-flex align-items-center{% if include.lang == lang %} active{% endif %}" href="{{ site.url }}{{ site.baseurl }}{{ page_url }}" onclick="setPreferredLangCodeToLocalStorage('{{ lang }}')">
+          <a class="dropdown-item d-flex align-items-center{% if include.lang == lang %} active{% endif %}" href="{{ site.url }}{{ page_url }}" onclick="setPreferredLangCodeToLocalStorage('{{ lang }}')">
             {{ site.languages[lang] }}
             {% if include.lang == lang %}<i class="bi bi-check2 ms-auto"></i>{% endif %}
           </a>

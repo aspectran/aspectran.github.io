@@ -1,4 +1,4 @@
-{% capture widget_url %}{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ site.baseurl }}{{ include.widget.url }}{% endif %}{% endcapture %}
+{% capture widget_url %}{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ include.widget.url }}{% endif %}{% endcapture %}
 <div class="panel panel5">
   {% if include.widget.image or include.widget.video %}
   <a href="{{ widget_url }}">

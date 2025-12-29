@@ -1,4 +1,4 @@
-{% capture widget_url %}{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ site.baseurl }}{{ include.widget.url }}{% endif %}{% endcapture %}
+{% capture widget_url %}{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ include.widget.url }}{% endif %}{% endcapture %}
 <div class="row align-items-center">
   <div class="col-md-3 text-center text-md-start">
     <a href="{{ widget_url }}">

@@ -23,7 +23,7 @@ breadcrumb: true
         <div id="collapse{{ forloop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.index }}">
           <div class="accordion-body">
             {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
-            <p class="text-end mt-3"><a class="btn btn-sm btn-secondary" href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}">{{ site.data.messages[post.lang].read_more }}</a></p>
+            <p class="text-end mt-3"><a class="btn btn-sm btn-secondary" href="{{ post.url }}" title="{{ post.title | escape_once }}">{{ site.data.messages[post.lang].read_more }}</a></p>
           </div>
         </div>
       </div>

@@ -1,13 +1,13 @@
 {% for link in include.links %}
 	{% unless link.sitemap == false or link.noindex == true or link.published == false %}
     <url>
-      <loc>{{ site.url }}{{ site.baseurl }}{{ link.url | remove: 'index.html' }}</loc>
+      <loc>{{ site.url }}{{ link.url | remove: 'index.html' }}</loc>
     {% if link.lang != nil %}
       {% for lang in site.lang_order reversed %}
         {% if lang != link.lang %}
           {% assign url_prefix = '/' | append: link.lang | append: '/' %}
           {% assign page_url = link.url | replace: url_prefix, '/' %}
-      <xhtml:link  rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}{{ site.baseurl }}/{{ lang }}{{ page_url }}" />
+      <xhtml:link  rel="alternate" hreflang="{{ lang }}" href="{{ site.url }}/{{ lang }}{{ page_url }}" />
         {% endif %}
       {% endfor %}
     {% endif %}

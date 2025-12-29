@@ -20,7 +20,6 @@ timezone: "Asia/Seoul"
 #
 url: 'https://aspectran.com'
 official_url: 'https://aspectran.com'
-baseurl: '' # does not include hostname
 
 # This is for the editing function in _/includes/improve_content
 # Leave it empty if your site is not on GitHub/GitHub Pages

@@ -12,6 +12,9 @@
     url: "/en/aspectran/user-guide/"
   - title: "Aspectran Architecture"
     url: "/en/aspectran/architecture/"
+    sub_items:
+      - title: "Aspectran Architecture Diagrams"
+        url: "/en/docs/architecture/aspectran-architecture-diagrams/"
 
 - title: Aspectow
   url: "/en/aspectow/"

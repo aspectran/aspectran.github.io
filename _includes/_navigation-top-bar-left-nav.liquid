@@ -13,18 +13,18 @@
 
       {% if item.dropdown == nil %}
         <li class="nav-item{% if page.url contains item.url %} active{% endif %}">
-          <a class="nav-link {{ item.class }}" href="{{ site.baseurl }}{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
+          <a class="nav-link {{ item.class }}" href="{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
         </li>
       {% else %}
         <li class="nav-item dropdown{% if page.url contains item.url %} active{% endif %}">
-          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="{{ site.baseurl }}{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="{{ item.url }}"{% if item.url contains 'http' %} target="_blank"{% endif %}>{{ item.title | escape }}</a>
           <ul class="dropdown-menu">
             {% for dropdown_item in item.dropdown %}
               {% if dropdown_item.title == '-' %}
                 <li><hr class="dropdown-divider"/></li>
               {% else %}
                 <li>
-                  <a class="dropdown-item {{ dropdown_item.class }}" href="{{ site.baseurl }}{{ dropdown_item.url }}"{% if dropdown_item.url contains 'http' %} target="_blank"{% endif %}>
+                  <a class="dropdown-item {{ dropdown_item.class }}" href="{{ dropdown_item.url }}"{% if dropdown_item.url contains 'http' %} target="_blank"{% endif %}>
                     {{ dropdown_item.title | escape }}
                   </a>
                 </li>
@@ -32,7 +32,7 @@
               {% if dropdown_item.sub_items %}
                 {% for sub_item in dropdown_item.sub_items %}
                   <li>
-                    <a class="dropdown-item sub-item bi bi-arrow-return-right {{ sub_item.class }}" href="{{ site.baseurl }}{{ sub_item.url }}"{% if sub_item.url contains 'http' %} target="_blank"{% endif %}>
+                    <a class="dropdown-item sub-item bi bi-arrow-return-right {{ sub_item.class }}" href="{{ sub_item.url }}"{% if sub_item.url contains 'http' %} target="_blank"{% endif %}>
                       {{ sub_item.title | escape }}
                     </a>
                   </li>

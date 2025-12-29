@@ -29,21 +29,21 @@
   {% if category == NULL and tag == NULL %}
 
     {% for post in site.posts limit:include.entries offset:include.offset %}
-      <li><a href="{{ site.baseurl }}{{ post.url }}"><span class="icon-chevron-right"></span> {% if post.subheadline %}<small>{{ post.subheadline }}</small> &middot; {% endif %}<strong>{{ post.title }}</strong></a></li>
+      <li><a href="{{ post.url }}"><span class="icon-chevron-right"></span> {% if post.subheadline %}<small>{{ post.subheadline }}</small> &middot; {% endif %}<strong>{{ post.title }}</strong></a></li>
     {% endfor %}
-      <li class="more"><a href="{{ site.baseurl }}/blog/archive/"><strong>{{ site.data.messages[page.lang].more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a></li>
+      <li class="more"><a href="/blog/archive/"><strong>{{ site.data.messages[page.lang].more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a></li>
 
   {% elsif category %}
 
     {% for post in site.categories[category] limit:include.entries offset:include.offset %}
-      <li><a href="{{ site.baseurl }}{{ post.url }}"><span class="icon-chevron-right"></span> {% if post.subheadline %}{{ post.subheadline }} &middot; {% endif %}<strong>{{ post.title }}</strong></a></li>
+      <li><a href="{{ post.url }}"><span class="icon-chevron-right"></span> {% if post.subheadline %}{{ post.subheadline }} &middot; {% endif %}<strong>{{ post.title }}</strong></a></li>
     {% endfor %}
-      <li class="text-right"><a href="{{ site.baseurl }}/blog/archive/"><strong>{{ site.data.messages[page.lang].more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a></li>
+      <li class="text-right"><a href="/blog/archive/"><strong>{{ site.data.messages[page.lang].more }}</strong> <span class="icon-chevron-right"></span>&nbsp;</a></li>
 
   {% elsif tag %}
 
     {% for post in site.tags[tag] limit:include.entries %}
-      <li><a href="{{ site.baseurl }}{{ post.url }}"><span class="icon-chevron-right"></span> {% if post.subheadline %}{{ post.subheadline }} &middot; {% endif %}<strong>{{ post.title }}</strong></a></li>
+      <li><a href="{{ post.url }}"><span class="icon-chevron-right"></span> {% if post.subheadline %}{{ post.subheadline }} &middot; {% endif %}<strong>{{ post.title }}</strong></a></li>
     {% endfor %}
 
   {% endif %}
