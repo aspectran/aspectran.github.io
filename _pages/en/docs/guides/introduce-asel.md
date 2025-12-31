@@ -9,67 +9,107 @@ This guide will first explore 'Token Expressions', a basic feature of Aspectran,
 
 ## 1. Token Expressions (Aspectran's Basic Feature)
 
-Token expressions are simple expressions used to directly access specific data (Beans, attributes, parameters, etc.) within Aspectran's configuration. Each token has a defined syntax and role.
+Token expressions are simple yet powerful placeholders used to directly access specific data (Beans, attributes, parameters, etc.) within Aspectran's configuration. They act as bridges connecting your configuration to the runtime data.
 
-| Token Type | Expression Syntax | Description |
-| :--- | :--- | :--- |
-| **Bean** | `#{beanId}` | References the Bean object with the ID `beanId`. |
-| **Attribute** | `@{attributeName}` | References the `attributeName` attribute of the current request. |
-| **Parameter** | `${parameterName}` | References the `parameterName` parameter of the current request. |
-| **Property** | `%{propertyName}` | References the `propertyName` environment property of the application. |
-| **Template** | `~{templateId}` | Renders the template with the ID `templateId` and **includes the result**. |
+| Token Type | Expression Syntax | Description | Usage Example |
+| :--- | :--- | :--- | :--- |
+| **Bean** | `#{beanId}` | References the Bean object with the ID `beanId`. | `#{userService}` |
+| **Attribute** | `@{attributeName}` | References the `attributeName` attribute of the current request context. Attributes are often used to pass data between actions. | `@{userInfo}` |
+| **Parameter** | `${parameterName}` | References the `parameterName` parameter of the current request (e.g., HTTP query parameter). | `${userId}` |
+| **Property** | `%{propertyName}` | References the `propertyName` environment property (e.g., from properties files or system properties). | `%{app.uploadDir}` |
+| **Template** | `~{templateId}` | Renders the template with the ID `templateId` and **includes the result**. | `~{emailTemplate}` |
 
 ### 1.1. Property Accessor: `^`
 
-To access a specific property (Getter) of an object referenced by a token expression, use the `^` separator instead of `.`.
+To access a specific property (Getter) of an object referenced by a token expression, use the `^` separator instead of `.`. This is a unique feature of Aspectran to distinguish between dot-delimited IDs and property access.
 
 *   **Syntax**: `#{beanId^propertyName}`
-*   **Explanation**: If you use `.`, the entire `bean.property` is recognized as a single ID. However, using `^` finds the `propertyName` property from the object referenced by the `beanId` token.
+*   **Java Equivalent**: `getBean("beanId").getPropertyName()`
+*   **Explanation**: If you use `.`, Aspectran interprets `bean.property` as the full ID of the bean. Using `^` explicitly tells Aspectran to "get the bean first, then access its property".
 
 ### 1.2. Setting Default Values
 
-You can use the `:` separator to specify a default value to be used if a parameter or attribute is not present. This feature is mainly used within the `<item>` tag.
+You can use the `:` separator to specify a default value to be used if a parameter or attribute is null or missing. This prevents runtime errors and simplifies configuration.
 
 ```xml
 <attributes>
-    <!-- If the 'name' parameter is not present, use "Jane" as the default value -->
-    <item name="name">${name:Jane}</item>
+    <!-- If 'page' parameter is missing, default to "1" -->
+    <item name="page">${page:1}</item>
+
+    <!-- If 'sort' parameter is missing, default to "desc" -->
+    <item name="sort">${sort:desc}</item>
 </attributes>
 ```
 
 ### 1.3. Token Directives
 
-You can specify the source of a value within a token expression using a colon (`:`). These are called token directives, and you can use the types defined in `TokenDirectiveType`.
+You can specify the source of a value within a token expression using a colon (`:`). These are called token directives.
 
 | Directive | Description | Example |
 | :--- | :--- | :--- |
-| **`field`** | References the value of a static field. | `#{field:com.example.Constant^STATIC_FIELD}` |
+| **`field`** | References the value of a static field. | `#{field:java.awt.Color^RED}` |
 | **`method`** | Calls a static method and uses its return value. | `#{method:java.lang.System^currentTimeMillis}` |
 | **`class`** | References a static property (getter) of a class. | `#{class:java.io.File^separator}` |
-| **`classpath`** | References a property from a resource on the classpath (usually a .properties file). | `%{classpath:config/app.properties^db.url}` |
-| **`system`** | References a Java System Property value. | `%{system:java.version}` |
+| **`classpath`** | References a property from a resource on the classpath. | `%{classpath:config/jdbc.properties^jdbc.url}` |
+| **`system`** | References a Java System Property value. | `%{system:user.home}` |
 
 ## 2. AsEL Expressions (Token Expressions + OGNL)
 
-AsEL expressions are used by combining the token expressions described above with OGNL expressions. This enables dynamic data processing and operations that go beyond simple value references. They can be used freely in places like the `@Value` annotation or templates.
+AsEL expressions combine the simplicity of token expressions with the power of OGNL (Object-Graph Navigation Language). This enables dynamic data processing, mathematical operations, and complex conditional logic directly in your configuration.
 
-*   **Bean Property Reference (using `^`)**
+*   **Bean Property Reference**
     ```java
-    @Value("%{properties^property1}")
-    public String property1;
+    // Accessing a property using the getter method
+    @Value("%{properties^serverPort}")
+    public int port;
     ```
 
-*   **Combining Multiple Token Expressions and OGNL Operators**
+*   **String Concatenation**
     ```java
-    @Value("#{properties^property1} + '/' + #{properties^property2}")
-    public String combinedPath;
+    // Combining static strings with dynamic values
+    @Value("'User: ' + @{user^name} + ' (ID: ' + ${userId} + ')'")
+    public String userDescription;
     ```
 
-*   **Performing Conditional Logic with the Value of a Token Expression**
+*   **Arithmetic & Logical Operations**
     ```java
-    @Value("%{app.mode} == 'development'")
-    public boolean isDevelopmentMode;
+    // Calculating values dynamically
+    @Value("#{cart^totalPrice} * 1.1") // Adding 10% tax
+    public double totalWithTax;
     ```
+
+*   **Conditional Logic (Ternary Operator)**
+    ```java
+    // Switching values based on conditions
+    @Value("%{app.mode} == 'dev' ? 'DEBUG' : 'INFO'")
+    public String logLevel;
+    ```
+
+*   **List and Map Access**
+    ```java
+    // Accessing elements in a List or Map
+    @Value("@{userList}[0]") // First user in the list
+    public User firstUser;
+
+    @Value("@{configMap}['timeout']") // Value for key 'timeout'
+    public int timeout;
+    ```
+
+### 2.1. String Concatenation Rules
+
+When an AsEL expression contains multiple tokens or a mix of literal text and tokens, the entire string is evaluated as a single OGNL expression. Therefore, you must strictly follow OGNL syntax, such as using single quotes (`'`) for literal text and the `+` operator for concatenation.
+
+*   **Correct Example**:
+    ```java
+    @Value("'User: ' + @{user^name} + ' (ID: ' + ${userId} + ')'")
+    ```
+    In this case, `@{user^name}` and `${userId}` are substituted with OGNL variables (e.g., `#__var1__`), and OGNL evaluates the combined string successfully.
+
+*   **Incorrect Example**:
+    ```java
+    @Value("User: @{user^name} (ID: ${userId})")
+    ```
+    This will cause an `ExpressionParserException` because `User:` and `(ID:` are not valid OGNL syntax when used without quotes and operators.
 
 ## 3. Template Usage
 
@@ -87,8 +127,8 @@ The `~{...}` token is used to render the template with the specified ID at the c
 ```xml
 <!-- Built-in template rule definition -->
 <template id="welcomeMailTemplate" style="apon">
-  |Hello, @{user^name}! Welcome to our service.
-  |Your current point balance is #{pointBean^currentPoints}.
+    |Hello, @{user^name}! Welcome to our service.
+    |Your current point balance is #{pointBean^currentPoints}.
 </template>
 
 <!-- Use the template by transforming it elsewhere -->

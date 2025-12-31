@@ -9,67 +9,107 @@ AsEL(Aspectran Expression Language)은 Aspectran 프레임워크에 내장된 �
 
 ## 1. 토큰 표현식 (Aspectran 기본 기능)
 
-토큰 표현식은 Aspectran의 설정 내에서 특정 데이터(Bean, 속성, 파라미터 등)에 직접 접근하기 위한 간단한 표현식입니다. 각 토큰은 정해진 구문과 역할을 가집니다.
+토큰 표현식은 Aspectran의 설정 내에서 특정 데이터(Bean, 속성, 파라미터 등)에 직접 접근하기 위한 간단하지만 강력한 플레이스홀더입니다. 설정 파일과 실행 시간(Runtime)의 데이터를 연결해 주는 다리 역할을 합니다.
 
-| 토큰 종류 | 표현식 구문 | 설명 |
-| :--- | :--- | :--- |
-| **Bean** | `#{beanId}` | ID가 `beanId`인 Bean 객체를 참조합니다. |
-| **Attribute** | `@{attributeName}` | 현재 요청(Request)의 `attributeName` 어트리뷰트를 참조합니다. |
-| **Parameter** | `${parameterName}` | 현재 요청(Request)의 `parameterName` 파라미터를 참조합니다. |
-| **Property** | `%{propertyName}` | 애플리케이션의 `propertyName` 환경 속성을 참조합니다. |
-| **Template** | `~{templateId}` | ID가 `templateId`인 템플릿을 렌더링하고 **그 결과를 포함**시킵니다. |
+| 토큰 종류 | 표현식 구문 | 설명 | 사용 예시 |
+| :--- | :--- | :--- | :--- |
+| **Bean** | `#{beanId}` | ID가 `beanId`인 Bean 객체를 참조합니다. | `#{userService}` |
+| **Attribute** | `@{attributeName}` | 현재 요청(Request) 컨텍스트의 `attributeName` 속성을 참조합니다. 액션 간 데이터 전달에 주로 사용됩니다. | `@{userInfo}` |
+| **Parameter** | `${parameterName}` | 현재 요청의 `parameterName` 파라미터를 참조합니다. (예: HTTP 쿼리 파라미터) | `${userId}` |
+| **Property** | `%{propertyName}` | 애플리케이션의 `propertyName` 환경 속성을 참조합니다. (프로퍼티 파일이나 시스템 속성 등) | `%{app.uploadDir}` |
+| **Template** | `~{templateId}` | ID가 `templateId`인 템플릿을 렌더링하고 **그 결과를 포함**시킵니다. | `~{emailTemplate}` |
 
 ### 1.1. 프로퍼티(속성) 접근자: `^`
 
-토큰 표현식이 참조하는 객체의 특정 속성(Getter)에 접근할 때는 `.` 대신 `^` 구분자를 사용합니다.
+토큰 표현식이 참조하는 객체의 특정 속성(Getter)에 접근할 때는 `.` 대신 `^` 구분자를 사용합니다. 이는 Aspectran만의 독특한 문법으로, 점(.)으로 구분된 ID와 실제 프로퍼티 접근을 명확히 구별하기 위함입니다.
 
 *   **구문**: `#{beanId^propertyName}`
-*   **설명**: `.`를 사용하면 `bean.property` 전체가 하나의 ID로 인식되지만, `^`를 사용하면 `beanId` 토큰이 참조하는 객체에서 `propertyName` 속성을 찾습니다.
+*   **Java 대응**: `getBean("beanId").getPropertyName()`
+*   **설명**: 만약 `.`를 사용하면 Aspectran은 `bean.property` 전체를 하나의 빈 ID로 해석합니다. `^`를 사용함으로써 "빈을 먼저 찾고, 그 다음 프로퍼티에 접근하라"고 명시적으로 지시하는 것입니다.
 
 ### 1.2. 기본값 설정
 
-`:` 구분자를 사용하여 파라미터나 어트리뷰트가 없을 경우 사용할 기본값을 지정할 수 있습니다. 이 기능은 주로 `<item>` 태그 내에서 사용됩니다.
+`:` 구분자를 사용하여 파라미터나 어트리뷰트가 없거나 null일 경우 사용할 기본값을 지정할 수 있습니다. 이를 통해 런타임 오류를 방지하고 설정을 단순화할 수 있습니다.
 
 ```xml
 <attributes>
-    <!-- 'name' 파라미터가 없으면 "Jane"을 기본값으로 사용 -->
-    <item name="name">${name:Jane}</item>
+    <!-- 'page' 파라미터가 없으면 "1"을 기본값으로 사용 -->
+    <item name="page">${page:1}</item>
+
+    <!-- 'sort' 파라미터가 없으면 "desc"를 기본값으로 사용 -->
+    <item name="sort">${sort:desc}</item>
 </attributes>
 ```
 
 ### 1.3. 토큰 지시자 (Token Directives)
 
-토큰 표현식 내에서 콜론(`:`)을 사용하여 값의 출처를 명시할 수 있습니다. 이를 토큰 지시자라고 하며, `TokenDirectiveType`에 정의된 유형들을 사용할 수 있습니다.
+토큰 표현식 내에서 콜론(`:`)을 사용하여 값의 출처를 명시할 수 있습니다. 이를 토큰 지시자라고 합니다.
 
 | 지시자 | 설명 | 예시 |
 | :--- | :--- | :--- |
-| **`field`** | 정적(static) 필드의 값을 참조합니다. | `#{field:com.example.Constant^STATIC_FIELD}` |
+| **`field`** | 정적(static) 필드의 값을 참조합니다. | `#{field:java.awt.Color^RED}` |
 | **`method`** | 정적(static) 메소드를 호출하고 반환 값을 사용합니다. | `#{method:java.lang.System^currentTimeMillis}` |
 | **`class`** | 클래스의 정적(static) 프로퍼티(getter)를 참조합니다. | `#{class:java.io.File^separator}` |
-| **`classpath`** | 클래스패스에 있는 자원(주로 .properties 파일)의 속성을 참조합니다. | `%{classpath:config/app.properties^db.url}` |
-| **`system`** | 자바 시스템 속성(System Property) 값을 참조합니다. | `%{system:java.version}` |
+| **`classpath`** | 클래스패스에 있는 자원(주로 .properties 파일)의 속성을 참조합니다. | `%{classpath:config/jdbc.properties^jdbc.url}` |
+| **`system`** | 자바 시스템 속성(System Property) 값을 참조합니다. | `%{system:user.home}` |
 
 ## 2. AsEL 표현식 (토큰 표현식 + OGNL)
 
-AsEL 표현식은 위에서 설명한 토큰 표현식을 OGNL 표현식과 조합하여 사용합니다. 이를 통해 단순한 값 참조를 넘어, 동적인 데이터 처리와 연산이 가능해집니다. `@Value` 어노테이션이나 템플릿 등에서 자유롭게 사용할 수 있습니다.
+AsEL 표현식은 토큰 표현식의 간결함과 OGNL(Object-Graph Navigation Language)의 강력함을 결합한 것입니다. 이를 통해 설정 파일 내에서 직접 동적인 데이터 처리, 수학 연산, 복잡한 조건부 로직 등을 수행할 수 있습니다.
 
-*   **Bean 속성 참조 (`^` 사용)**
+*   **Bean 속성 참조**
     ```java
-    @Value("%{properties^property1}")
-    public String property1;
+    // Getter 메소드를 통한 속성 값 참조
+    @Value("%{properties^serverPort}")
+    public int port;
     ```
 
-*   **여러 토큰 표현식과 OGNL 연산자 조합**
+*   **문자열 결합**
     ```java
-    @Value("#{properties^property1} + '/' + #{properties^property2}")
-    public String combinedPath;
+    // 정적 문자열과 동적 값의 결합
+    @Value("'사용자: ' + @{user^name} + ' (ID: ' + ${userId} + ')'")
+    public String userDescription;
     ```
 
-*   **토큰 표현식의 값으로 조건부 로직 수행**
+*   **산술 및 논리 연산**
     ```java
-    @Value("%{app.mode} == 'development'")
-    public boolean isDevelopmentMode;
+    // 값을 동적으로 계산
+    @Value("#{cart^totalPrice} * 1.1") // 10% 세금 추가
+    public double totalWithTax;
     ```
+
+*   **조건부 로직 (삼항 연산자)**
+    ```java
+    // 조건에 따라 다른 값 사용
+    @Value("%{app.mode} == 'dev' ? 'DEBUG' : 'INFO'")
+    public String logLevel;
+    ```
+
+*   **리스트 및 맵 접근**
+    ```java
+    // List나 Map의 요소에 접근
+    @Value("@{userList}[0]") // 리스트의 첫 번째 사용자
+    public User firstUser;
+
+    @Value("@{configMap}['timeout']") // 'timeout' 키에 해당하는 값
+    public int timeout;
+    ```
+
+### 2.1. 문자열 결합 규칙
+
+AsEL 표현식에 여러 개의 토큰이 포함되거나 일반 텍스트와 토큰이 혼합된 경우, 전체 문자열은 **하나의 OGNL 표현식**으로 평가됩니다. 따라서 일반 텍스트에는 작은따옴표(`'`)를 사용하고 결합에는 `+` 연산자를 사용하는 등 OGNL 문법을 엄격히 따라야 합니다.
+
+*   **올바른 예**:
+    ```java
+    @Value("'사용자: ' + @{user^name} + ' (ID: ' + ${userId} + ')'")
+    ```
+    이 경우 `@{user^name}`과 `${userId}`는 OGNL 변수(예: `#__var1__`)로 치환되며, OGNL 엔진에 의해 전체 문자열이 성공적으로 결합됩니다.
+
+*   **잘못된 예**:
+    ```java
+    @Value("사용자: @{user^name} (ID: ${userId})")
+    ```
+    이 표현식은 `사용자:`와 `(ID:` 부분이 따옴표와 연산자 없이 사용되었기 때문에 OGNL 문법 오류(`ExpressionParserException`)를 발생시킵니다.
 
 ## 3. 템플릿 활용
 
@@ -87,10 +127,9 @@ AsEL 표현식은 위에서 설명한 토큰 표현식을 OGNL 표현식과 조�
 ```xml
 <!-- 내장 템플릿 규칙 정의 -->
 <template id="welcomeMailTemplate" style="apon">
-  |Hello, @{user^name}! Welcome to our service.
-  |Your current point balance is #{pointBean^currentPoints}.
+    |Hello, @{user^name}! Welcome to our service.
+    |Your current point balance is #{pointBean^currentPoints}.
 </template>
-
 
 <!-- 다른 곳에서 템플릿을 변환(transform)하여 사용 -->
 <transform format="text">
