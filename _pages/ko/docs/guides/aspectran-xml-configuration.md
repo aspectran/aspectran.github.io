@@ -298,7 +298,7 @@ public class MyService {
 }
 ```
 
-### 3.5. 애스펙트에서 예외 처리 (`<exception>`)
+### 3.4. 애스펙트에서 예외 처리 (`<exception>`)
 
 주요 어드바이스 로직 외에도, `<aspect>`는 전용 예외 처리 어드바이스를 정의하기 위해 `<exception>` 블록을 포함할 수 있습니다. 이는 로깅이나 예외 변환과 같은 횡단 관심사의 오류 처리를 메인 어드바이스 빈을 복잡하게 만들지 않고 깔끔하게 관리하는 방법을 제공합니다.
 
@@ -328,7 +328,7 @@ public class MyService {
 -   서비스 메소드가 `DataAccessLayerException`을 발생시키면, 요청은 `/error/databaseError` 트랜슬릿으로 포워드됩니다.
 -   다른 예외가 발생하면, `errorLoggingService` 빈의 `logGenericError` 메소드가 호출됩니다.
 
-### 3.6. AOP 예제
+### 3.5. AOP 예제
 
 **예제 1: 액티비티 레벨 요청 로깅**
 
@@ -866,20 +866,57 @@ Aspectran은 생성자 주입과 수정자 주입 두 가지 주요 의존성 �
 
 ## 7. 템플릿(`<template>`) 관련 요소
 
-최상위 레벨에서 재사용 가능한 템플릿을 정의합니다.
+최상위 레벨에서 재사용 가능한 템플릿을 정의합니다. 정의된 템플릿은 `~{templateId}` 토큰을 사용하여 애플리케이션의 어느 곳에서나 참조하고 렌더링할 수 있습니다.
 
 #### `<template>` 속성 상세
 
 -   `id`: 템플릿을 식별하는 고유 ID입니다.
 -   `engine`: 사용할 템플릿 엔진 빈의 ID를 지정합니다.
+    -   생략하거나 `token`(기본값)으로 설정하면, Aspectran의 내장 토큰 엔진을 사용하여 `${...}` 및 `@{...}` 토큰을 파싱합니다.
+    -   `none`으로 설정하면, 내용을 원시 텍스트(Raw Text)로 취급합니다.
+    -   그 외의 경우, 외부 템플릿 엔진 빈(예: FreeMarker, Pebble)의 ID를 지정합니다.
 -   `name`: 템플릿의 이름 또는 경로를 지정합니다.
 -   `file`: 파일 시스템 경로를 기준으로 템플릿 파일을 지정합니다.
 -   `resource`: 클래스패스 경로를 기준으로 템플릿 리소스를 지정합니다.
 -   `url`: URL을 통해 원격 템플릿을 지정합니다.
 -   `style`: APON 형식의 템플릿을 사용할 경우 스타일을 지정합니다. (`apon`, `compact`, `compressed`)
+    -   `apon`: 파이프(`|`) 문자를 사용하여 들여쓰기와 줄 바꿈을 보존합니다.
+    -   `compact`: JSON이나 XML에서 불필요한 공백을 제거합니다.
+    -   `compressed`: 크기를 최소화하기 위해 필수적이지 않은 모든 공백을 제거합니다.
 -   `contentType`: 템플릿 결과물의 `Content-Type`을 지정합니다.
 -   `encoding`: 템플릿 파일의 문자 인코딩을 지정합니다.
 -   `noCache`: `true`로 설정하면, 템플릿을 캐시하지 않습니다. 기본값은 `false`입니다.
+
+### 7.1. 예제: 재사용 가능한 토큰 템플릿 정의
+
+이 예제는 가독성을 위해 `apon` 스타일을 사용하고 동적인 값 처리를 위해 토큰 표현식을 사용하는 간단한 텍스트 템플릿을 정의합니다.
+
+```xml
+<!-- 최상위 레벨에서 재사용 가능한 템플릿 정의 -->
+<template id="welcomeMailTemplate" style="apon">
+    |안녕하세요, @{user^name}님.
+    |
+    |Aspectran에 오신 것을 환영합니다!
+    |현재 보유 포인트는 #{pointService^points}점 입니다.
+    |
+    |감사합니다.
+    |Aspectran 팀 드림
+</template>
+```
+
+### 7.2. 예제: 트랜슬릿에서 템플릿 사용
+
+`~{templateId}` 토큰을 사용하여 `<transform>` 액션 내에서 정의된 템플릿을 렌더링할 수 있습니다.
+
+```xml
+<translet name="/mail/welcome">
+    <action id="user" bean="userService" method="getUser"/>
+    <transform format="text">
+        <template>~{welcomeMailTemplate}</template>
+    </transform>
+</translet>
+```
+이 예제에서 `/mail/welcome`이 요청되면 `welcomeMailTemplate`이 렌더링됩니다. 템플릿 내부의 `@{user^name}` 및 `#{pointService^points}` 토큰이 평가되고, 결과 텍스트가 응답으로 반환됩니다.
 
 ## 8. 예외 처리 (`<exception>`)
 

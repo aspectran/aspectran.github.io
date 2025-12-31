@@ -298,7 +298,7 @@ public class MyService {
 }
 ```
 
-### 3.5. Exception Handling in Aspects (`<exception>`)
+### 3.4. Exception Handling in Aspects (`<exception>`)
 
 In addition to the main advice logic, an `<aspect>` can contain an `<exception>` block to define dedicated exception handling advice. This provides a clean way to manage cross-cutting error handling, such as logging or transforming exceptions, without cluttering the main advice bean.
 
@@ -328,7 +328,7 @@ In this example:
 -   If a service method throws a `DataAccessLayerException`, the request is forwarded to the `/error/databaseError` translet.
 -   If any other exception is thrown, the `logGenericError` method on the `errorLoggingService` bean is invoked.
 
-### 3.6. AOP Examples
+### 3.5. AOP Examples
 
 **Example 1: Activity-level Request Logging**
 
@@ -866,20 +866,57 @@ In the configuration above, the `daily-batch` schedule is managed by `mainSchedu
 
 ## 7. Template-related Elements (`<template>`)
 
-Defines reusable templates at the top level.
+Defines reusable templates at the top level. The defined template can be referenced and rendered anywhere in the application using the `~{templateId}` token.
 
 #### `<template>` Attribute Details
 
 -   `id`: A unique ID to identify the template.
 -   `engine`: Specifies the ID of the template engine bean to use.
+    -   If omitted or set to `token` (default), Aspectran's built-in token engine is used to parse `${...}` and `@{...}` tokens.
+    -   If set to `none`, the content is treated as raw text.
+    -   Otherwise, it specifies the ID of an external template engine bean (e.g., FreeMarker, Pebble).
 -   `name`: Specifies the name or path of the template.
 -   `file`: Specifies the template file based on a file system path.
 -   `resource`: Specifies the template resource based on a classpath path.
 -   `url`: Specifies a remote template via a URL.
 -   `style`: Specifies the style if using an APON-formatted template (`apon`, `compact`, `compressed`).
+    -   `apon`: Preserves indentation and line breaks using the pipe (`|`) character.
+    -   `compact`: Removes unnecessary whitespace from JSON or XML.
+    -   `compressed`: Removes all non-essential whitespace to minimize size.
 -   `contentType`: Specifies the `Content-Type` of the template result.
 -   `encoding`: Specifies the character encoding of the template file.
 -   `noCache`: If set to `true`, the template is not cached. The default is `false`.
+
+### 7.1. Example: Defining a Reusable Token Template
+
+This example defines a simple text template using the `apon` style for readability and token expressions for dynamic values.
+
+```xml
+<!-- Define a reusable template at the top level -->
+<template id="welcomeMailTemplate" style="apon">
+    |Dear @{user^name},
+    |
+    |Welcome to Aspectran!
+    |Your current point balance is: #{pointService^points}
+    |
+    |Best regards,
+    |The Aspectran Team
+</template>
+```
+
+### 7.2. Example: Using a Template in a Translet
+
+You can use the `~{templateId}` token to render the defined template within a `<transform>` action.
+
+```xml
+<translet name="/mail/welcome">
+    <action id="user" bean="userService" method="getUser"/>
+    <transform format="text">
+        <template>~{welcomeMailTemplate}</template>
+    </transform>
+</translet>
+```
+In this example, when `/mail/welcome` is requested, the `welcomeMailTemplate` is rendered. The `@{user^name}` and `#{pointService^points}` tokens inside the template are evaluated, and the resulting text is returned as the response.
 
 ## 8. Exception Handling (`<exception>`)
 
