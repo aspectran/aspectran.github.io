@@ -129,9 +129,9 @@ numbers: [
 **루트 레벨 배열의 예:**
 ```apon
 [
-  "apple"
-  "banana"
-  "cherry"
+  apple
+  banana
+  cherry
 ]
 ```
 
@@ -277,9 +277,9 @@ public class AponReaderTest {
             // 예제 2: 루트 배열 읽기
             String apon2 = """
                 [
-                  "apple"
-                  "banana"
-                  "cherry"
+                  apple
+                  banana
+                  cherry
                 ]
                 """;
             // 루트 배열의 경우, 명시적으로 ArrayParameters 인스턴스를 제공해야 합니다.
@@ -315,11 +315,17 @@ public class AponParserTest {
         try {
             String apon = """
                 [
-                  [ "a", "b" ],
-                  [ "c", "d", "e" ]
+                  [
+                    a
+                    b
+                  ],
+                  [
+                    c
+                    d
+                    e
+                  ]
                 ]
                 """;
-
             // AponParser를 사용하여 문자열을 ArrayParameters 객체로 파싱
             ArrayParameters rootArrayParams = AponParser.parse(apon, ArrayParameters.class);
 

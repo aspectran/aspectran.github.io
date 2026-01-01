@@ -129,9 +129,9 @@ numbers: [
 **Example of a root-level array:**
 ```apon
 [
-  "apple"
-  "banana"
-  "cherry"
+  apple
+  banana
+  cherry
 ]
 ```
 
@@ -277,9 +277,9 @@ public class AponReaderTest {
             // Example 2: Reading a root array
             String apon2 = """
                 [
-                  "apple"
-                  "banana"
-                  "cherry"
+                  apple
+                  banana
+                  cherry
                 ]
                 """;
             // For root arrays, you should explicitly provide an ArrayParameters instance
@@ -315,8 +315,15 @@ public class AponParserTest {
         try {
             String apon = """
                 [
-                  [ "a", "b" ],
-                  [ "c", "d", "e" ]
+                  [
+                    a
+                    b
+                  ],
+                  [
+                    c
+                    d
+                    e
+                  ]
                 ]
                 """;
 
