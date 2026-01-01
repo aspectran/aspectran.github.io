@@ -29,30 +29,57 @@ APON is a data format that combines features from both JSON and YAML to enhance 
 | **Item Separation** | Comma (`,`) | Newline + Indentation | **Newline** |
 | **Comments** | Not supported | Supported (`#`) | Supported (`#`) |
 
-The biggest differences are in **how the structure is defined** and **how items are separated**. APON creates an explicit structure with parentheses like JSON, but uses newlines as item separators to maximize readability. This is a distinct feature from YAML, which defines the entire structure through the combination of newlines and indentation.
+The biggest differences are in **how the structure is defined** and **how items are separated**. APON creates an explicit structure with parentheses like JSON, but uses newlines as item separators to maximize readability. This is a distinct feature from YAML, which defines the entire structure through the combination of newlines and indentation. Also, by not using commas (`,`), APON prevents syntax errors common in JSON (like trailing comma issues) when adding or removing items, and keeps change history in version control systems (like Git) clean.
 
 ## 2. Basic Syntax
+
+### Comments
+
+In APON, comments must start with the `#` character on a **new line**.
+**Inline comments** (adding a comment after a parameter value on the same line) are **not supported**.
+
+This design choice avoids forcing the use of quotes when the `#` character is part of the data value (e.g., CSS color codes like `#FFFFFF` or hashtags), thereby increasing input flexibility.
+
+```apon
+# Correct usage of comments
+timeout: 30
+
+# Incorrect usage (treated as a string value, not a comment)
+# The value of timeout becomes the string "30 # 30 seconds", not the number 30.
+timeout: 30 # 30 seconds
+```
 
 ### Single Value (Parameter)
 
 The most basic unit in APON can have a single value in the format `name: value`.
+Keys and values are separated by a colon (`:`), and the value extends from the colon to the **end of the line**.
+
+This characteristic offers several advantages:
+*   Quotes are not required even if the value contains spaces in the middle.
+*   Values containing special characters, like URLs or file paths, can be written as-is without escaping.
+*   There is no need to type a comma (`,`) to indicate the end of a value.
+
 It is common to omit quotes (`"`) unless the value has the following special conditions:
 
-*   If there are spaces at the beginning or end of the value.
+*   If there are spaces at the beginning or end of the value (spaces in the middle are fine).
 *   If the value contains single (`'`) or double (`"`) quotes.
 *   If the value contains a newline character (`\n`).
+*   If the value is an empty string.
 
 ```apon
-# Example without double quotes
+# Example without double quotes (Value extends to the end of the line)
 name: John Doe
 age: 30
 city: New York
+url: https://example.com/api?query=value
+color: #FF5733
 
 # Example requiring double quotes
 message: "'Hello, World'"
 message: "First line\nNew line"
 indented: "  Leading spaces"
 indented: "Trailing spaces  "
+empty: ""
 ```
 
 ### Set (Parameters)
