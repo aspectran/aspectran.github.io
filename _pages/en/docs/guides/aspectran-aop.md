@@ -7,8 +7,6 @@ Rather than targeting all method calls in an application like general Spring AOP
 
 Key features are as follows:
 
----
-
 ### 1. Join Point (When to intervene?)
 
 Aspectran AOP's Join Points are broadly divided into two categories:
@@ -239,8 +237,6 @@ public class OrderService {
 *   **How it works**: When `OrderService` receives the `SimpleSqlSession` Bean and calls a method like `createOrder`, which in turn calls a method of the `sqlSession` object (`insert`, `update`, etc.), the method of the `SimpleSqlSession` Bean is invoked. At this point, since it matches the Pointcut condition of `simpleTxAspect` (`**: @simpleSqlSession`), the AOP advice is applied. The `@Before` advice starts the transaction, and after the method execution finishes, `@After` and `@Finally` handle the commit and session closing, respectively.
 
 By leveraging Aspectran's AOP in this way, you can perfectly separate business logic from transaction processing logic, greatly improving code readability and maintainability.
-
----
 
 ### Conclusion
 

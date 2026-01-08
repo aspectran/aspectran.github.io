@@ -162,6 +162,3 @@ subheadline: 실용 가이드
 - `layout:fragment="content"`: 레이아웃의 `layout:fragment="content"` 부분에 삽입될 콘텐츠 블록을 정의합니다.
 
 이제 `/thymeleaf/index`와 같은 URL로 요청을 보내면, `index.html`의 콘텐츠가 `default.html` 레이아웃에 적용되어 완전한 HTML 페이지가 렌더링됩니다.
-
----
-이상으로 Aspectran에서 Thymeleaf Layout Dialect를 설정하고 사용하는 방법에 대한 설명을 마칩니다.

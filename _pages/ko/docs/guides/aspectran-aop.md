@@ -7,8 +7,6 @@ Aspectran의 AOP는 일반적인 Spring AOP나 AspectJ처럼 애플리케이션�
 
 주요 특징은 다음과 같습니다.
 
----
-
 ### 1. Join Point (언제 개입할 것인가?)
 
 Aspectran AOP의 Join Point는 크게 두 가지로 나뉩니다.
@@ -239,8 +237,6 @@ public class OrderService {
 *   **동작 원리**: `OrderService`가 `SimpleSqlSession` Bean을 주입받고, `createOrder`와 같은 메소드 안에서 `sqlSession` 객체의 메소드(`insert`, `update` 등)를 호출하면, `SimpleSqlSession` Bean의 메소드가 호출됩니다. 이 때 `simpleTxAspect`의 Pointcut (`**: @simpleSqlSession`) 조건과 일치하므로 AOP 어드바이스가 적용됩니다. `@Before` 어드바이스가 트랜잭션을 시작하고, 메소드 실행이 끝나면 `@After`와 `@Finally`가 각각 커밋과 세션 종료를 처리합니다.
 
 이처럼 Aspectran의 AOP를 활용하면, 비즈니스 로직과 트랜잭션 처리 로직을 완벽하게 분리하여 코드의 가독성과 유지보수성을 크게 향상시킬 수 있습니다.
-
----
 
 ### 결론
 

@@ -162,6 +162,3 @@ Finally, create the actual content page that inherits from the base layout creat
 -   `layout:fragment="content"`: Defines the block of content that will be inserted into the `layout:fragment="content"` section of the layout.
 
 Now, when you send a request to a URL like `/thymeleaf/index`, the content of `index.html` will be applied to the `default.html` layout, rendering a complete HTML page.
-
----
-This concludes the guide on how to set up and use Thymeleaf Layout Dialect in Aspectran.

@@ -6,8 +6,6 @@ subheadline: Practical Guides
 Aspectran Beans is a powerful Inversion of Control (IoC) container built into the core of the Aspectran framework.
 Inspired by the robust concepts of Spring Beans (IoC, DI, etc.), it has been redesigned from the ground up to align with Aspectran's core philosophy of being **POJO-based, simple, and fast in development and startup speed**.
 
----
-
 ## 1. Core Concepts: IoC and DI
 
 The core of Aspectran Beans is to help you write cleaner, more modular, and easier-to-test code by managing your application's objects (called "beans").
@@ -15,8 +13,6 @@ The core of Aspectran Beans is to help you write cleaner, more modular, and easi
 -   **IoC (Inversion of Control)**: Instead of you creating and managing the lifecycle of your objects, the Aspectran container does it for you. You just define the objects, and the framework instantiates, configures, and assembles them at the appropriate time. This "inversion" of control allows you to focus solely on your business logic.
 
 -   **DI (Dependency Injection)**: This is the primary mechanism for implementing IoC. Instead of an object creating its own dependencies (`new MyService()`), it receives them from an external source (the IoC container). This reduces the coupling between components, making them easier to manage, test, and reuse.
-
----
 
 ## 2. Defining Beans
 
@@ -87,8 +83,6 @@ public class AppConfig {
     }
 }
 ```
-
----
 
 ## 3. Dependency Injection
 
@@ -273,8 +267,6 @@ public class MainService {
 }
 ```
 
----
-
 ## 4. Understanding Bean Scopes
 
 Bean scopes control the lifecycle of a bean instance. You can set the scope of a bean with the `@Scope` annotation.
@@ -300,8 +292,6 @@ public class MyPrototypeBean {
     }
 }
 ```
-
----
 
 ## 5. Bean Lifecycle Management
 
@@ -351,8 +341,6 @@ public class LifecycleBean implements InitializableBean, DisposableBean {
     }
 }
 ```
-
----
 
 ## 6. Advanced Features
 
@@ -440,8 +428,6 @@ public class MyAwareBean implements ActivityContextAware {
     }
 }
 ```
-
----
 
 ## 7. Bean-related Configuration
 

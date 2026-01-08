@@ -6,8 +6,6 @@ subheadline: 실용 가이드
 Aspectran Beans는 Aspectran 프레임워크의 핵심에 내장된 강력한 IoC(Inversion of Control) 컨테이너입니다.
 Spring Beans의 견고한 개념(IoC, DI 등)에서 영감을 받았지만, **POJO 기반, 단순함, 그리고 빠른 개발 및 구동 속도**라는 Aspectran의 핵심 철학에 맞춰 처음부터 다시 설계되었습니다.
 
----
-
 ## 1. 핵심 개념: IoC와 DI
 
 Aspectran Beans의 핵심은 애플리케이션의 객체("빈"이라 불림)를 관리하여 더 깨끗하고, 모듈화되고, 테스트하기 쉬운 코드를 작성하도록 돕는 것입니다.
@@ -15,8 +13,6 @@ Aspectran Beans의 핵심은 애플리케이션의 객체("빈"이라 불림)를
 -   **IoC (Inversion of Control, 제어의 역전)**: 개발자가 객체의 생명주기를 직접 생성하고 관리하는 대신, Aspectran 컨테이너가 이를 대신합니다. 개발자는 객체를 정의하기만 하면, 프레임워크가 적절한 시점에 객체를 인스턴스화, 설정 및 조립합니다. 이러한 제어의 "역전"을 통해 개발자는 비즈니스 로직에만 집중할 수 있습니다.
 
 -   **DI (Dependency Injection, 의존성 주입)**: IoC를 구현하는 주요 메커니즘입니다. 객체가 자신의 의존성을 직접 생성하는 대신(`new MyService()`), 외부 소스(IoC 컨테이너)로부터 의존성을 "주입"받습니다. 이를 통해 컴포넌트 간의 결합도를 낮추어 관리, 테스트, 재사용이 더 쉬워집니다.
-
----
 
 ## 2. 빈(Bean) 정의하기
 
@@ -88,8 +84,6 @@ public class AppConfig {
     }
 }
 ```
-
----
 
 ## 3. 의존성 주입 (Dependency Injection)
 
@@ -274,8 +268,6 @@ public class MainService {
 }
 ```
 
----
-
 ## 4. 빈 스코프(Bean Scopes) 이해하기
 
 빈 스코프는 빈 인스턴스의 생명주기를 제어합니다. `@Scope` 어노테이션으로 빈의 스코프를 설정할 수 있습니다.
@@ -301,8 +293,6 @@ public class MyPrototypeBean {
     }
 }
 ```
-
----
 
 ## 5. 빈 생명주기(Lifecycle) 관리
 
@@ -352,8 +342,6 @@ public class LifecycleBean implements InitializableBean, DisposableBean {
     }
 }
 ```
-
----
 
 ## 6. 고급 기능
 
@@ -441,8 +429,6 @@ public class MyAwareBean implements ActivityContextAware {
     }
 }
 ```
-
----
 
 ## 7. 빈 관련 구성 설정
 
