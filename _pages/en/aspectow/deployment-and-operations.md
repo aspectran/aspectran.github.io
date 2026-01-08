@@ -9,8 +9,6 @@ There are two main execution methods described in this guide:
 1.  **Automated Deployment and Service Management**: The standard operational method using scripts in the `setup` directory to install the application on a server, build/deploy it, and manage it as a system service. **(Recommended)**
 2.  **Manual Execution and Management**: A method for running the application directly for development or testing purposes using scripts in the `app/bin` directory.
 
----
-
 ## 1. Prerequisites
 
 Before proceeding with the deployment, the following software must be installed on the server.
@@ -18,8 +16,6 @@ Before proceeding with the deployment, the following software must be installed 
 *   **Java (JDK)**: Version 21 or higher
 *   **Git**: Required to fetch the application from the source code repository.
 *   **Apache Maven**: Required to build the application source code.
-
----
 
 ## 2. Automated Deployment and Service Management (Using `setup` Scripts)
 
@@ -122,8 +118,6 @@ The `setup/scripts` directory is divided by platform (`linux`/`windows`) and con
 *   `8-pull_deploy_webapps_only.sh|bat`: After pulling the latest source, deploys only the web application files.
 *   `9-pull_deploy_config_webapps_only.sh|bat`: After pulling the latest source, deploys both configuration and web application files.
 
----
-
 ## 3. Manual Execution and Management (Using `app/bin` Scripts)
 
 Used when running the application directly without registering it as a service, for purposes such as development and debugging. All related scripts are located in the `[BASE_DIR]/app/bin` directory.
@@ -150,8 +144,6 @@ The `app/bin/run.options` file defines common settings for all manually executed
 *   `shell.bat`: Runs in interactive shell mode with JLine applied **(Recommended)**.
 *   `legacy-shell.bat`: A basic shell for older console environments where compatibility is important.
 *   `procrun\` directory: Scripts related to `prunsrv.exe` for Windows service installation/uninstallation/management.
-
----
 
 ### Related Guides
 
