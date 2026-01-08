@@ -223,7 +223,7 @@ flowchart LR
     Req[RequestAdapter]
     Act[Activity]
     TL[Translet Execution]
-    Adv[Advice / Interceptors]
+    Adv[Advice]
     Res[ResponseAdapter]
   end
 
@@ -294,7 +294,7 @@ flowchart LR
     Req[RequestAdapter]
     Act[Activity]
     TL[Translet Execution]
-    Adv[Advice/Interceptors]
+    Adv[Advice]
     Res[ResponseAdapter]
   end
 
