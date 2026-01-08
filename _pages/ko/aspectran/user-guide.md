@@ -944,12 +944,6 @@ Aspectran 애플리케이션의 초기 구동 설정은 `com.aspectran.core.cont
 이 설정은 주로 APON(Aspectran Parameter Object Notation) 형식의 `aspectran-config.apon` 파일로 로드되며,
 이 파일을 통해 XML 형식의 설정 파일(`context.rules`로 지정)을 포함하거나 어노테이션 기반 설정을 활성화할 수 있습니다.
 
-## 5. Aspectran 구성 설정
-
-Aspectran 애플리케이션의 초기 구동 설정은 `com.aspectran.core.context.config.AspectranConfig` 객체를 통해 관리됩니다.
-이 설정은 주로 APON(Aspectran Parameter Object Notation) 형식의 `aspectran-config.apon` 파일로 로드되며,
-이 파일을 통해 XML 형식의 설정 파일(`context.rules`로 지정)을 포함하거나 어노테이션 기반 설정을 활성화할 수 있습니다.
-
 ### 5.1. Aspectran 기본 구성 설정
 
 "기본 구성 설정"은 Aspectran 애플리케이션의 초기 구동에 필요한 핵심 설정을 다룹니다. 주로 `aspectran-config.apon` 파일을 통해 시스템 속성, 컨텍스트 규칙, 환경별 설정 등을 정의합니다.
