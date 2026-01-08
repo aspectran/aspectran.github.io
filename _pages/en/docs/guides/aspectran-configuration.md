@@ -16,8 +16,6 @@ The `aspectran-config.apon` file is loaded into an `AspectranConfig` object and 
 *   `daemon`: Settings for the daemon process environment.
 *   `web`: Settings for the web application environment.
 
----
-
 ## 1. System Settings (`system`)
 
 You can add system-level properties. This is mainly used to define values that affect external libraries or JVM system properties.
@@ -36,8 +34,6 @@ system: {
 ```
 
 - **`properties`**: The key-value pairs defined here are registered as system properties via `System.setProperty()`.
-
----
 
 ## 2. Context Settings (`context`)
 
@@ -81,8 +77,6 @@ context: {
     - **`enabled`**: Enables or disables the auto-reload feature (`true` or `false`).
 - **`singleton`**: A setting to prevent the application from running concurrently if it is already running. Setting it to `true` can prevent duplicate execution.
 
----
-
 ## 3. Scheduler Settings (`scheduler`)
 
 Defines the settings required to manage scheduled tasks within the application.
@@ -98,8 +92,6 @@ scheduler: {
 - **`startDelaySeconds`**: Specifies the time in seconds to wait before the scheduler starts executing the first job after it has started.
 - **`waitOnShutdown`**: Sets whether to wait for currently executing scheduled jobs to complete when the application shuts down.
 - **`enabled`**: Sets whether to enable the scheduler feature. Scheduling will only work if this is set to `true`.
-
----
 
 ## 4. Shell Application Settings (`shell`)
 
@@ -146,8 +138,6 @@ These are the default commands provided by the Aspectran framework, and develope
 | `jetty` | `com.aspectran.jetty.shell.command.JettyCommand`<br/>Controls the embedded Jetty server (start/stop/restart/status). |
 | `undertow` | `com.aspectran.undertow.shell.command.UndertowCommand`<br/>Controls the embedded Undertow server (start/stop/restart/status). |
 
----
-
 ## 5. Daemon Application Settings (`daemon`)
 
 Defines the environment for running Aspectran as a background daemon process.
@@ -178,8 +168,6 @@ These are the default commands provided by the Aspectran framework, and develope
 | `jetty` | `com.aspectran.jetty.daemon.command.JettyCommand`<br/>Controls the embedded Jetty server. |
 | `undertow` | `com.aspectran.undertow.daemon.command.UndertowCommand`<br/>Controls the embedded Undertow server. |
 
----
-
 ## 6. Web Application Settings (`web`)
 
 Defines the environment for running Aspectran as a web application.
@@ -189,8 +177,6 @@ Defines the environment for running Aspectran as a web application.
 - **`trailingSlashRedirect`**: Sets whether to automatically redirect by adding a slash (`/`) to the end of a URI if it is missing.
 - **`legacyHeadHandling`**: Sets whether to treat HEAD requests like GET requests for compatibility with legacy systems.
 - **`acceptable`**: Defines Translet request URL patterns to be allowed (`+`) or denied (`-`) in the web environment. `/**` means all requests.
-
----
 
 ## 7. Full Configuration Example
 

@@ -5,15 +5,13 @@ teaser: Aspectran을 처음 접하는 개발자들을 위한 가이드 문서입
 sidebar: toc
 ---
 
-## 1. Aspectran 소개
-
 Aspectran은 JVM 기반의 경량 고성능 프레임워크로, 단순한 명령줄 애플리케이션부터 복잡한 엔터프라이즈 웹 서비스에 이르기까지 다양한 유형의 애플리케이션을 효율적으로 구축할 수 있도록 설계되었습니다. 이 가이드는 Aspectran을 처음 접하는 개발자들이 프레임워크의 핵심 개념을 깊이 이해하고, 실제 애플리케이션을 개발하며 발생할 수 있는 다양한 상황에 대처할 수 있도록 돕기 위해 작성되었습니다.
+
+## 1. Aspectran 소개
 
 ### 1.1. Aspectran이란?
 
-Aspectran은 최소한의 종속성과 최적화된 리소스 사용을 통해 빠른 시작 시간과 낮은 메모리 점유율을 자랑하는 프레임워크입니다. 이는 특히 마이크로서비스 아키텍처나 클라우드 환경에 적합합니다.
-
-개발자는 Aspectran을 통해 복잡한 프레임워크 내부 구조를 깊이 이해할 필요 없이, 일반 Java 객체(POJO)를 사용하여 비즈니스 로직에 집중할 수 있도록 직관적인 POJO 중심 프로그래밍 모델을 강조합니다.
+Aspectran은 간단한 커맨드 라인 도구부터 복잡한 엔터프라이즈 웹 서비스까지 다양한 애플리케이션을 개발할 수 있는 자바(Java) 기반의 경량 고성능 프레임워크입니다. 웹(Web), 셸(Shell), 데몬(Daemon) 등 다양한 플랫폼에서 일관된 프로그래밍 환경을 제공하며, 개발자가 유연하고 재사용 가능한 컴포넌트를 쉽게 구축할 수 있도록 지원합니다.
 
 ### 1.2. 핵심 철학 및 장점
 
@@ -25,7 +23,14 @@ Aspectran은 최소한의 종속성과 최적화된 리소스 사용을 통해 �
 
 ## 2. Aspectran 시작하기
 
-자세한 내용은 [Aspectran 시작하기](/ko/aspectran/getting-started/) 문서를 참고하세요.
+Aspectran은 쉽게 시작할 수 있도록 설계되었습니다. 간단한 "Hello, World" 애플리케이션을 직접 만들어보며 Aspectran 프로젝트의 기본 구조와 동작 방식을 빠르게 파악할 수 있습니다.
+
+1.  **프로젝트 설정**: Maven 프로젝트를 생성하고 `aspectran-core` 의존성을 추가합니다.
+2.  **구성**: `aspectran-config.apon` 파일을 생성하여 컴포넌트 스캔을 위한 베이스 패키지를 지정합니다.
+3.  **코드 작성**: `@Component`와 `@Request` 어노테이션을 사용하여 명령을 처리할 간단한 POJO 클래스를 작성합니다.
+4.  **실행**: 프로젝트를 빌드하고 독립형 애플리케이션으로 실행합니다.
+
+첫 번째 Aspectran 애플리케이션을 만드는 단계별 튜토리얼은 [Aspectran 시작하기](/ko/aspectran/getting-started/) 문서를 참고하세요.
 
 ## 3. Aspectran 핵심 개념
 
@@ -939,15 +944,42 @@ Aspectran 애플리케이션의 초기 구동 설정은 `com.aspectran.core.cont
 이 설정은 주로 APON(Aspectran Parameter Object Notation) 형식의 `aspectran-config.apon` 파일로 로드되며,
 이 파일을 통해 XML 형식의 설정 파일(`context.rules`로 지정)을 포함하거나 어노테이션 기반 설정을 활성화할 수 있습니다.
 
+## 5. Aspectran 구성 설정
+
+Aspectran 애플리케이션의 초기 구동 설정은 `com.aspectran.core.context.config.AspectranConfig` 객체를 통해 관리됩니다.
+이 설정은 주로 APON(Aspectran Parameter Object Notation) 형식의 `aspectran-config.apon` 파일로 로드되며,
+이 파일을 통해 XML 형식의 설정 파일(`context.rules`로 지정)을 포함하거나 어노테이션 기반 설정을 활성화할 수 있습니다.
+
 ### 5.1. Aspectran 기본 구성 설정
 
-자세한 내용은 [Aspectran 기본 구성 설정](/en/docs/aspectran-configuration/) 문서를 참고하세요.
+"기본 구성 설정"은 Aspectran 애플리케이션의 초기 구동에 필요한 핵심 설정을 다룹니다. 주로 `aspectran-config.apon` 파일을 통해 시스템 속성, 컨텍스트 규칙, 환경별 설정 등을 정의합니다.
+
+*   **`system`**: 시스템 레벨의 속성(예: 암호화 키, 스레드 풀 설정)을 정의합니다.
+*   **`context`**: `ActivityContext` 구성을 위한 설정으로, XML 규칙 파일 경로(`rules`), 컴포넌트 스캔 대상 패키지(`scan`), 활성 프로필(`profiles`) 등을 지정합니다.
+*   **`web` / `scheduler` / `shell` / `daemon`**: 각 런타임 환경에 특화된 상세 설정을 제공합니다.
+
+자세한 내용은 [Aspectran 기본 구성 설정](/ko/docs/aspectran-configuration/) 문서를 참고하세요.
 
 ### 5.2. Aspectran XML 구성 설정
 
-자세한 내용은 [Aspectran XML 구성 설정](/en/docs/aspectran-xml-configuration/) 문서를 참고하세요.
+XML 구성은 Bean, Translet, Aspect 등 애플리케이션의 핵심 구성 요소를 명시적으로 정의하는 데 사용됩니다. 소스 코드를 수정하지 않고도 구성과 관계를 변경할 수 있어 높은 유연성을 제공합니다.
 
-### 5.3. 어노테이션과 XML 설정의 조합
+*   **구조**: `<aspectran>`을 루트 엘리먼트로 하며, 그 하위에 `<bean>`, `<translet>`, `<aspect>`, `<schedule>` 등의 요소를 배치합니다.
+*   **DTD 검증**: Aspectran은 설정 파일의 구조적 유효성을 검증하기 위해 복잡한 XSD 대신 단순하고 명확한 DTD(Document Type Definition)를 사용합니다.
+
+자세한 내용은 [Aspectran XML 구성 설정](/ko/docs/aspectran-xml-configuration/) 문서를 참고하세요.
+
+### 5.3. 서블릿 기반 웹 애플리케이션 구성
+
+전통적인 서블릿 컨테이너(Tomcat, Jetty 등) 환경에서 Aspectran을 구동하기 위해서는 `web.xml` 배포 서술자에 Aspectran의 `WebActivityServlet`과 `WebServiceListener`를 등록해야 합니다.
+
+*   **`WebServiceListener`**: Aspectran 서비스의 생명주기(시작/종료)를 관리합니다.
+*   **`WebActivityServlet`**: 모든 웹 요청을 받아 적절한 Translet으로 연결해 주는 프론트 컨트롤러(Front Controller) 역할을 수행합니다.
+*   **`aspectran:config`**: 루트 설정 파일의 위치(예: `classpath:config/aspectran-config.apon`)를 지정하는 컨텍스트 파라미터입니다.
+
+자세한 내용은 [서블릿 기반 웹 애플리케이션 구성](/ko/docs/guides/aspectran-servlet-configuration/) 문서를 참고하세요.
+
+### 5.4. 어노테이션과 XML 설정의 조합
 
 대부분의 경우 어노테이션 기반의 컴포넌트 스캔을 기본으로 사용하고, 특정 Bean을 재정의하거나 외부 라이브러리를 등록할 때 XML 설정을 조합하여 사용하는 것이 일반적입니다.
 동일한 ID의 Bean이 둘 다에 정의된 경우, 나중에 로드되는 설정이 우선권을 가질 수 있으며, `<bean important="true">` 속성으로 덮어쓰기를 강제할 수 있습니다.

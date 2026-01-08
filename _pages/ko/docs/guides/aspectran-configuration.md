@@ -16,8 +16,6 @@ subheadline: 사용자 가이드
 *   `daemon`: 데몬(Daemon) 프로세스 환경 관련 설정.
 *   `web`: 웹 애플리케이션 환경 관련 설정.
 
----
-
 ## 1. 시스템 설정 (`system`)
 
 시스템 레벨의 속성 값을 추가로 설정할 수 있습니다. 주로 외부 라이브러리나 JVM 시스템 속성에 영향을 주는 값을 정의하는 데 사용됩니다.
@@ -36,8 +34,6 @@ system: {
 ```
 
 - **`properties`**: 여기에 정의된 키-값 쌍은 `System.setProperty()`를 통해 시스템 속성으로 등록됩니다.
-
----
 
 ## 2. 컨텍스트 설정 (`context`)
 
@@ -81,8 +77,6 @@ context: {
     - **`enabled`**: 자동 리로드 기능을 활성화합니다 (`true` 또는 `false`).
 - **`singleton`**: 애플리케이션이 이미 구동 중일 때, 중복으로 구동되는 것을 방지하기 위한 설정입니다. `true`로 설정하면 중복 실행을 막을 수 있습니다.
 
----
-
 ## 3. 스케줄러 설정 (`scheduler`)
 
 애플리케이션 내에서 스케줄링된 작업을 관리하는 데 필요한 설정을 정의합니다.
@@ -98,8 +92,6 @@ scheduler: {
 - **`startDelaySeconds`**: 스케줄러가 시작된 후, 첫 작업을 실행하기까지 대기하는 시간(초)을 지정합니다.
 - **`waitOnShutdown`**: 애플리케이션이 종료될 때, 현재 실행 중인 스케줄링된 작업이 완료될 때까지 대기할지 여부를 설정합니다.
 - **`enabled`**: 스케줄러 기능을 활성화할지 여부를 설정합니다. `true`로 설정해야 스케줄링이 동작합니다.
-
----
 
 ## 4. 셸 애플리케이션 설정 (`shell`)
 
@@ -146,8 +138,6 @@ Aspectran 프레임워크에서 기본으로 제공하는 명령어들이며, �
 | `jetty` | `com.aspectran.jetty.shell.command.JettyCommand`<br/>내장된 Jetty 서버를 제어합니다 (시작/중지/재시작/상태확인). |
 | `undertow` | `com.aspectran.undertow.shell.command.UndertowCommand`<br/>내장된 Undertow 서버를 제어합니다 (시작/중지/재시작/상태확인). |
 
----
-
 ## 5. 데몬 애플리케이션 설정 (`daemon`)
 
 Aspectran을 백그라운드 데몬 프로세스로 실행할 때의 환경을 정의합니다.
@@ -178,8 +168,6 @@ Aspectran 프레임워크에서 기본으로 제공하는 명령어들이며, �
 | `jetty` | `com.aspectran.jetty.daemon.command.JettyCommand`<br/>내장된 Jetty 서버를 제어합니다. |
 | `undertow` | `com.aspectran.undertow.daemon.command.UndertowCommand`<br/>내장된 Undertow 서버를 제어합니다. |
 
----
-
 ## 6. 웹 애플리케이션 설정 (`web`)
 
 Aspectran을 웹 애플리케이션으로 실행할 때의 환경을 정의합니다.
@@ -189,8 +177,6 @@ Aspectran을 웹 애플리케이션으로 실행할 때의 환경을 정의합�
 - **`trailingSlashRedirect`**: URI 끝에 슬래시(`/`)가 없을 때 자동으로 슬래시를 붙여 리디렉션할지 여부를 설정합니다.
 - **`legacyHeadHandling`**: 레거시 시스템과의 호환성을 위해 HEAD 요청을 GET 요청처럼 처리할지 여부를 설정합니다.
 - **`acceptable`**: 웹 환경에서 허용(`+`)하거나 거부(`-`)할 Translet 요청 URL 패턴을 정의합니다. `/**`는 모든 요청을 의미합니다.
-
----
 
 ## 7. 전체 설정 예제
 

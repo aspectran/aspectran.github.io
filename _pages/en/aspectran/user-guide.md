@@ -5,15 +5,21 @@ teaser: This is a guide document for developers who are new to Aspectran.
 sidebar: toc
 ---
 
-## 1. Introduction to Aspectran
-
 Aspectran is a lightweight, high-performance framework based on the JVM, designed to efficiently build a wide range of applications, from simple command-line applications to complex enterprise web services. This guide is written to help developers new to Aspectran gain a deep understanding of the framework's core concepts and to cope with various situations that may arise while developing real applications.
+
+## 1. Introduction to Aspectran
 
 ### 1.1. What is Aspectran?
 
-Aspectran is a framework that boasts fast startup times and low memory footprint through minimal dependencies and optimized resource usage. This makes it particularly suitable for microservices architecture or cloud environments.
+Aspectran is a lightweight, high-performance Java framework capable of developing various applications, from simple command-line tools to complex enterprise web services. It offers a consistent programming environment across different platforms like Web, Shell, and Daemon, enabling developers to easily build flexible and reusable components.
 
-It emphasizes an intuitive POJO-centric programming model, allowing developers to focus on business logic using plain old Java objects (POJOs) without needing to deeply understand the complex internal structure of the framework.
+### 1.2. Core Philosophy and Advantages
+
+*   **POJO-Centric Programming**: You can implement business logic using plain old Java objects (POJOs) without implementing special interfaces or inheriting from specific framework classes. This reduces the learning curve for developers and allows them to focus on solving business problems with pure Java code.
+*   **Lightweight and High-Performance**: Provides fast startup times and low memory footprint with minimal dependencies and optimized resource usage.
+*   **Inversion of Control (IoC) and Dependency Injection (DI)**: The framework takes responsibility for object creation, configuration, and lifecycle management, and automatically injects necessary dependencies to minimize coupling between components and help write flexible and reusable code.
+*   **Aspect-Oriented Programming (AOP)**: Modularizes cross-cutting concerns that appear repeatedly throughout the application, such as logging, transactions, and security, and separates them from the core business logic.
+*   **Adapter Pattern for Environmental Abstraction**: Provides the flexibility for the same business logic to run without modification in any environment (web, shell, daemon, etc.).
 
 ### 1.2. Core Philosophy and Advantages
 
@@ -25,7 +31,14 @@ It emphasizes an intuitive POJO-centric programming model, allowing developers t
 
 ## 2. Getting Started with Aspectran
 
-For more details, please refer to the [Getting Started with Aspectran](/en/aspectran/getting-started/) document.
+Aspectran is designed to be easy to start with. You can quickly create a "Hello, World" application to understand the basic structure and workflow of an Aspectran project.
+
+1.  **Project Setup**: Create a Maven project and add the `aspectran-core` dependency.
+2.  **Configuration**: Create an `aspectran-config.apon` file to define the base package for component scanning.
+3.  **Code**: Write a simple POJO class annotated with `@Component` and `@Request` to handle commands.
+4.  **Run**: Build the project and run it as a standalone application.
+
+For a step-by-step tutorial on building your first Aspectran application, please refer to the [Getting Started with Aspectran](/en/aspectran/getting-started/) document.
 
 ## 3. Aspectran Core Concepts
 
@@ -936,18 +949,39 @@ With `RestResponse`, you can implement more complex and dynamic REST API respons
 ## 5. Aspectran Configuration
 
 The initial startup configuration of an Aspectran application is managed through the `com.aspectran.core.context.config.AspectranConfig` object.
-This configuration is mainly loaded from an `aspectran-config.apon` file in APON (Aspectran Parameter Object Notation) format.
+This configuration is typically loaded from an `aspectran-config.apon` file in APON (Aspectran Parameter Object Notation) format.
 Through this file, you can include configuration files in XML format (specified with `context.rules`) or enable annotation-based configuration.
 
 ### 5.1. Aspectran Basic Configuration
+
+The "Basic Configuration" covers the core settings required for the initial startup of an Aspectran application. It is primarily managed via the `aspectran-config.apon` file, where you define system properties, context rules, and environment-specific settings.
+
+*   **`system`**: Defines system-level properties (e.g., encryption keys, thread pool settings).
+*   **`context`**: Configures the `ActivityContext`, including paths to XML rule files (`rules`), base packages for component scanning (`scan`), and active profiles (`profiles`).
+*   **`web` / `scheduler` / `shell` / `daemon`**: Specific settings for each runtime environment.
 
 For more details, please refer to the [Aspectran Basic Configuration](/en/docs/guides/aspectran-configuration/) document.
 
 ### 5.2. Aspectran XML Configuration
 
+XML configuration is used to explicitly define the core components of an application, such as Beans, Translets, and Aspects. It provides high flexibility by allowing you to change configurations and relationships without modifying the source code.
+
+*   **Structure**: The root element is `<aspectran>`, and it contains child elements like `<bean>`, `<translet>`, `<aspect>`, and `<schedule>`.
+*   **DTD Validation**: Aspectran uses DTD (Document Type Definition) for structural validation of configuration files, prioritizing simplicity and clarity.
+
 For more details, please refer to the [Aspectran XML Configuration](/en/docs/guides/aspectran-xml-configuration/) document.
 
-### 5.3. Combining Annotations and XML Configuration
+### 5.3. Servlet-based Web Application Configuration
+
+To run Aspectran in a traditional servlet container (like Tomcat or Jetty), you need to register Aspectran's `WebActivityServlet` and `WebServiceListener` in the `web.xml` deployment descriptor.
+
+*   **`WebServiceListener`**: Manages the lifecycle (start/stop) of the Aspectran service.
+*   **`WebActivityServlet`**: Acts as a Front Controller that handles all incoming web requests and dispatches them to the appropriate Translets.
+*   **`aspectran:config`**: A context parameter used to specify the location of the root configuration file (e.g., `classpath:config/aspectran-config.apon`).
+
+For more details, please refer to the [Servlet-based Web Application Configuration](/en/docs/guides/aspectran-servlet-configuration/) document.
+
+### 5.4. Combining Annotations and XML Configuration
 
 In most cases, it is common to use annotation-based component scanning as the default and combine it with XML configuration when you need to override a specific Bean or register an external library.
 If a Bean with the same ID is defined in both, the configuration that is loaded later may take precedence, and you can force an override with the `<bean important="true">` attribute.
