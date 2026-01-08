@@ -1017,7 +1017,7 @@ Aspectran은 SLF4J와 Logback을 기반으로 유연하고 강력한 로깅 시�
 *   **로그 레벨 조정**: `logback.xml` 또는 `logback-test.xml` 파일에서 로그 레벨(TRACE, DEBUG, INFO, WARN, ERROR)을 조정하여 필요한 정보를 더 상세하게 얻을 수 있습니다.
 *   **스케줄러 로그 분리**: 스케줄링된 작업의 로그는 별도의 파일로 분리하여 모니터링할 수 있습니다. (`com.aspectran.core.scheduler.activity.ActivityJobReporter` 클래스 로그 활용)
 
-자세한 내용은 [Aspectran 로깅 메카니즘](/en/docs/architecture/aspectran-logging-mechanism/) 문서를 참고하세요.
+자세한 내용은 [Aspectran 로깅 메카니즘](/ko/docs/architecture/aspectran-logging-mechanism/) 문서를 참고하세요.
 
 ### 7.2. 일반적인 오류 메시지 및 해결 팁
 
