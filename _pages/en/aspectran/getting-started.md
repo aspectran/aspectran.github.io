@@ -44,7 +44,7 @@ Create a `pom.xml` file in the project root and copy and paste the content below
         <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.parameters>true</maven.compiler.parameters>
 
-        <aspectran.version>9.4.1</aspectran.version>
+        <aspectran.version>9.4.2</aspectran.version>
     </properties>
 
     <repositories>
