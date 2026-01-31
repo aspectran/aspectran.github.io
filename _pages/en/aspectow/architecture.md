@@ -3,65 +3,164 @@ format: plate solid article
 title: Aspectow Architecture
 teaser: This document explains the architecture and key components of Aspectow to provide an in-depth understanding for developing and operating Aspectow-based applications.
 sidebar: toc
+mermaid: true
 ---
 
-## 1. Relationship with the Aspectran Engine
+## 1. Overview: Engine and Platform
 
-Aspectow is an enterprise WAS (Web Application Server) 'product' built on the powerful open-source framework, **Aspectran**. Aspectran is an all-in-one framework that provides Dependency Injection (DI), Aspect-Oriented Programming (AOP), and a request handling flow similar to MVC.
+Aspectow is an enterprise WAS (Web Application Server) product built on the powerful open-source framework, **Aspectran**.
 
-Aspectow leverages these core concepts of Aspectran (such as Translet, Activity, Bean, Aspect) to process the application's business logic, adding value on top as a WAS in terms of stability, performance, and management convenience. In other words, if Aspectran is the 'brain' of the application, Aspectow is the 'body' and 'environment' that helps the brain function optimally.
+- **Aspectran (Engine)**: The core engine that provides Dependency Injection (DI), Aspect-Oriented Programming (AOP), and a request processing pipeline similar to MVC. It acts as the 'brain' of the application.
+- **Aspectow (Platform)**: Provides an integrated runtime environment and operational platform to ensure the Aspectran engine performs with optimal stability and performance. It acts as the 'body' and 'environment' of the application.
 
-## 2. AOP-Centric Architecture: The Translet
+Aspectow maintains the flexibility of Aspectran while adding the stability, performance, and management convenience required in enterprise environments, offering an optimal experience for both developers and operators.
 
-As the name Aspectran suggests, Aspectow's architecture is centered around the philosophy of **Aspect-Oriented Programming (AOP)**. It aims to maximize code modularity and reusability by separating cross-cutting concerns from business logic.
+### 1.1. Aspectow Runtime Stack
+Illustrates the hierarchical structure of Aspectow operating on top of the OS and JVM, and how it encompasses user applications.
 
-### The Birth of the Translet
+```mermaid
+flowchart TB
+    subgraph App["User Application Layer"]
+        direction TB
+        Components["Translets, Beans, Web Resources, Biz Logic"]
+    end
+    subgraph Platform["Aspectow Platform Layer"]
+        direction TB
+        Services["Aspectran Service Container<br>Session & AppMon"]
+        WebServer["Embedded Web Server (Undertow / Jetty)"]
+    end
+    subgraph Infra["Infrastructure Layer"]
+        direction TB
+        JVM["Java Virtual Machine (JVM)"]
+        OS["Operating System (Shell / Daemon)"]
+    end
+    App --- Platform --- Infra
+```
 
-In the traditional MVC pattern, the controller often takes on multiple responsibilities, such as handling requests, calling business logic, and rendering views, which can easily lead to complex code. Aspectran views this entire request-response process as a single, independent 'aspect' and encapsulates it into a concept called the **Translet**.
+## 2. System Directory Architecture
 
-A Translet is a **complete blueprint of processing rules** that defines what tasks to perform for a specific request. This allows developers to focus purely on business logic, while common functionalities like transactions, security, and logging can be transparently applied before and after the Translet's execution through aspects.
+Aspectow follows a standardized directory structure designed to maximize the efficiency of deployment, operation, and maintenance. Each directory has a clear architectural intent.
 
-### Core Components
+### 2.1. Immutable Zone
+This is where system binaries and application code are located. It is updated at deployment time and should not be changed during runtime.
 
-- **Translet**: A set of rules mapped to a web request (URL) that defines what tasks to perform.
-- **Activity**: The execution agent that performs the actual request processing work according to the rules defined in the Translet.
-- **Action**: An individual unit of work executed within an Activity. For example, it can perform tasks like querying a database or executing business logic.
+- **`app/bin/`**: Contains shell scripts (`start.sh`, `stop.sh`, etc.) for server startup and management.
+- **`app/lib/`**: Contains the Aspectow engine and application JAR libraries.
+- **`app/webapps/`**: Contains static web resources such as HTML, CSS, JavaScript, and JSP.
 
-This structure clearly separates the request handling flow from the actual business logic, complementing the shortcomings of the traditional MVC pattern and significantly improving maintainability.
+### 2.2. Mutable Zone
+This area contains data created at runtime or configuration information that varies by environment.
 
-## 3. Aspectow as a WAS
+- **`config/`**: Contains application configuration (`aspectran-config.apon`, `root-context.xml`) and server environment settings (`server.xml`, `logging`). Even if the code is the same, you can flexibly respond to development, testing, and production environments by simply swapping the `config`.
+- **`logs/`**: Stores server operation logs and application logs.
+- **`work/`**: Stores temporary data generated during server execution (session storage, JSP compilation results, etc.). Specifically, for **Safe Reloading**, JAR files from `app/lib` are copied here and loaded to prevent file locking issues. This allows files in `app/lib` to be safely replaced even while the server is running.
+- **`temp/`**: Used as the system temporary directory (`java.io.tmpdir`).
 
-Based on the AOP/Translet core architecture described above, Aspectow provides features as an enterprise-grade WAS.
+### 2.3. System Directory Architecture
+Shows the physical interaction between the Immutable Zone (updated at deployment) and the Mutable Zone (where data changes during operation).
 
-### 3.1. Web Server Integration
+```mermaid
+graph TD
+    subgraph "Aspectow Home"
+        direction TB
+        subgraph Immutable["Immutable Zone"]
+            direction TB
+            BIN["app/bin/<br>(Startup Scripts)"]
+            LIB["app/lib/<br>(Engine & App Libs)"]
+            WEB["app/webapps/<br>(Web Resources)"]
+        end
+        subgraph Mutable["Mutable Zone"]
+            direction TB
+            CONF["config/<br>(Config: apon, xml)"]
+            LOGS["logs/<br>(Operation Logs)"]
+            WORK["work/<br>(Resource Isolation & Temp Data)"]
+        end
+        Runtime(Aspectow Runtime Process)
+        BIN -->|Executes| Runtime
+        LIB -.->|Loads| Runtime
+        CONF -.->|Refers Config| Runtime
+        Runtime -->|Writes Logs| LOGS
+        Runtime -->|Resource Isolation Space| WORK
+    end
+```
 
-Aspectow comes with high-performance embedded web servers like JBoss's **Undertow** or Eclipse's **Jetty**. This allows you to run the application and handle web requests immediately without any separate web server configuration.
+## 3. Server Runtime Model
 
-### 3.2. Servlet Container Support
+The process by which Aspectow runs as a WAS and processes requests follows this hierarchical flow:
 
-- **Enterprise and Jetty Editions**: Fully support the Servlet 6.0 specification based on Jakarta EE 10, meaning existing servlet-based web applications can be stably operated in the Aspectow environment.
-- **Light Edition's Lightweight Strategy**: Optimized for high-performance REST API services, the Light Edition intentionally excludes the servlet specification to reduce unnecessary overhead, achieving faster response times and lower resource consumption.
+### 3.1. Bootstrapping
+1.  **Script Execution**: Scripts in the `bin` directory set JVM options and start the process.
+2.  **Service Initialization**: The `AspectranService` starts and loads configurations from the `config` directory.
+3.  **Web Server Startup**: The configured embedded web server (Undertow or Jetty) starts and listens on the HTTP port.
+4.  **Context Loading**: `ActivityContext`, Aspectran's core container, is initialized, and all defined Beans, Translets, and Aspects are loaded into memory.
 
-## 4. Technical Deep Dive into Core Competitiveness
+### 3.2. ClassLoader Strategy (SiblingClassLoader)
+Aspectow uses a proprietary **SiblingClassLoader** mechanism. This is a core technology that not only prevents conflicts between system libraries and applications but also enables **Hot Reloading**, allowing changed classes or resources to be reflected immediately without restarting the JVM.
 
-Aspectow's core competitive advantages are powerful built-in features provided on top of this architecture.
+### 3.2.1. Safe Reloading Mechanism
+Explains the principle of resource isolation via the `work` directory, illustrating why replacing files in `app/lib` does not cause errors during operation.
 
-- **Native High-Performance Redis Session Store**: Provides high-performance session clustering that maximizes the asynchronous I/O characteristics of Redis using the `Lettuce` client.
-- **AppMon (Built-in Application Monitoring)**: Monitors application logs, events, and performance metrics in real-time without any external tools.
-- **Fine-Grained Server Customization via XML**: Allows for much more powerful and systematic server-level customization of the WAS's core behavior, such as server lifecycle and handler chains, through `server.xml`, compared to Spring Boot's `application.properties` approach.
+```mermaid
+sequenceDiagram
+    participant User as "Operator/Deployer"
+    participant ClassLoader as "SiblingClassLoader"
+    participant ResourceManager as "LocalResourceManager"
+    participant AppLib as "app/lib/ (Original JAR)"
+    participant WorkDir as "work/_resource_*/ (Isolated)"
 
-## 5. Deployment and Operations Model
+    Note over User, AppLib: 1. Server Startup
+    User->>ClassLoader: 2. Initialize
+    ClassLoader->>ResourceManager: 3. Create ResourceManager
+    ResourceManager->>AppLib: 4. Check Original
+    ResourceManager->>WorkDir: 5. Copy JAR & Load
+    Note right of WorkDir: Physical isolation<br>(Unique directory creation)
+    Note right of ClassLoader: JVM occupies copied files in 'work'
 
-Aspectow's flexible architecture supports various deployment and operational environments.
+    Note over User, AppLib: 6. During Runtime
+    User->>AppLib: 7. Replace with new JAR (Patch)
+    Note right of AppLib: No File Lock!<br>Can be replaced freely
 
-### 5.1. Efficient Resource Management and Reloading
+    User->>ClassLoader: 8. Reload Command
+    ClassLoader->>ClassLoader: 9. Re-initialize
+    ClassLoader->>ResourceManager: 10. Re-create ResourceManager
+    ResourceManager->>WorkDir: 11. Create new isolation folder & Re-copy/Load
+```
 
-Aspectran manages JAR files from a specified resource directory by copying them to a `temp` directory, which allows for safe resource reloading without file locking issues. This enables flexible deployments that minimize downtime.
+## 4. Core Architecture: Translet and AOP
 
-### 5.2. Provision of Production Deployment Scripts
+The application logic within Aspectow is designed around the **AOP (Aspect-Oriented Programming)** philosophy.
 
-Through the `setup` directory, Aspectow provides various scripts for production deployment and management, including installation, service registration/unregistration, and start/stop scripts, significantly reducing operational overhead.
+### 4.1. Translet: The Unit of Request Processing
+Instead of the complex controllers of the traditional MVC pattern, Aspectow encapsulates the entire request processing flow (Input-Logic-Output) into a single independent 'Aspect' called a **Translet**. A Translet is a **complete blueprint of processing rules** mapped to a request URL.
 
-### 5.3. Daemon/Shell Environment Support
+### 4.2. Activity: The Execution Agent
+When a request comes in, Aspectow creates an execution agent called an **Activity** to process it. The Activity executes the following tasks according to the Translet specification:
+- **Action Execution**: Performs actual tasks such as business logic (Bean calls) and database queries.
+- **AOP Application**: Transparently applies cross-cutting concerns such as transactions, security, and logging before and after Translet execution.
 
-In addition to web environments, Aspectow can be operated as a background service, batch job, or CLI tool by leveraging Aspectran's powerful daemon and shell features.
+This structure clearly separates business logic from infrastructure logic, maximizing maintainability.
+
+## 5. WAS Features and Technical Characteristics
+
+Aspectow provides various built-in features optimized for enterprise environments.
+
+### 5.1. Integrated High-Performance Web Server
+- **Undertow/Jetty**: Provides immediate service through high-performance embedded web servers (JBoss Undertow or Eclipse Jetty) without separate web server installation.
+- **Light Edition**: Offers an ultra-lightweight/high-performance edition optimized for REST API processing by removing the Servlet specification.
+
+### 5.2. Scalable Session Architecture
+- **Redis Native Clustering**: The session manager, implemented based on the `Lettuce` client, utilizes Non-blocking I/O to ensure high-performance session sharing even in large-scale traffic environments.
+
+### 5.3. AppMon (Built-in Monitoring)
+- Provides accurate real-time application monitoring without overhead through metrics collected directly at the framework level, without external agents.
+
+### 5.4. Sophisticated Server Control
+- Allows for fine-grained control of core behaviors such as server listeners, thread pools, and handler chains through `server.xml`, enabling powerful customization beyond simple property configuration methods.
+
+## 6. Deployment and Operations
+
+Aspectow's architecture prioritizes operational convenience.
+
+- **Flexible Resource Replacement**: By copying and loading libraries into the `work` directory, original library files can be replaced without file locking even during operation, enabling flexible deployment and minimizing downtime.
+- **Operation Scripts**: Provides all necessary scripts for operation, such as service registration, startup, shutdown, and status check, through the `setup` and `bin` directories.
+- **Multi-Environment Support**: Supports not only web services but also Daemon or Shell applications with the same architecture, providing a consistent development experience.
