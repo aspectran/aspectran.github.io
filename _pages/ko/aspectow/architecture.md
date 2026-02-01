@@ -89,16 +89,15 @@ graph TD
 Aspectow가 WAS로서 구동되고 요청을 처리하는 과정은 다음과 같은 계층적 흐름을 따릅니다.
 
 ### 3.1. 부트스트래핑 (Bootstrapping)
-1.  **스크립트 실행**: `bin` 디렉토리의 스크립트를 통해 JVM 옵션을 설정하고 프로세스를 시작합니다.
-2.  **서비스 초기화**: `AspectranService`가 구동되며 `config` 디렉토리의 설정을 로드합니다.
-3.  **웹 서버 시작**: 설정된 내장 웹 서버(Undertow 또는 Jetty)가 시작되고, HTTP 포트를 리스닝합니다.
-4.  **컨텍스트 로드**: Aspectran의 핵심 컨테이너인 `ActivityContext`가 초기화되며, 정의된 모든 Bean, Translet, Aspect가 메모리에 로드됩니다.
+1.  **스크립트 실행**: `app/bin` 디렉토리의 스크립트를 통해 JVM 옵션을 설정하고 프로세스를 시작합니다.
+2.  **서비스 초기화**: 실행 환경에 맞는 `CoreService` 구현체(예: `DaemonService`, `ShellService`)가 구동되며 `config` 디렉토리의 설정을 로드합니다.
+3.  **컨텍스트 로드**: Aspectran의 핵심 컨테이너인 `ActivityContext`가 생성되고, 정의된 모든 빈(Bean), 트랜슬릿(Translet), 관점(Aspect) 등이 메모리에 로드됩니다. 이 과정에서 빈으로 정의된 내장 웹 서버(Undertow 또는 Jetty)가 초기화되고 시작됩니다.
 
 ### 3.2. 클래스로더 전략 (SiblingClassLoader)
 Aspectow는 독자적인 **SiblingClassLoader** 메커니즘을 사용합니다. 이는 시스템 라이브러리와 애플리케이션 간의 충돌을 방지할 뿐만 아니라, JVM 재시작 없이 변경된 클래스나 리소스를 즉시 반영하는 **핫 리로딩(Hot Reloading)**을 가능하게 하는 핵심 기술입니다.
 
 ### 3.2.1. 안전한 리로딩 메커니즘 (Safe Reloading Mechanism)
-왜 운영 중에 `app/lib`의 파일을 교체해도 에러가 발생하지 않는지, `work` 디렉토리를 통한 리소스 격리 원리를 설명합니다.
+운영 중 파일 교체 시 발생하는 오류를 방지하고, 리소스를 안전하게 격리하는 원리는 다음과 같습니다.
 
 ```mermaid
 sequenceDiagram
@@ -119,7 +118,7 @@ sequenceDiagram
     Note over User, AppLib: 6. 서버 운영 중 (Runtime)
     User->>AppLib: 7. 새로운 JAR로 교체 (Patch)
     Note right of AppLib: 파일 잠금(Lock) 없음!<br>자유롭게 교체 가능
-
+    
     User->>ClassLoader: 8. 리로드 명령 (Reload)
     ClassLoader->>ClassLoader: 9. 재초기화 (Re-init)
     ClassLoader->>ResourceManager: 10. 리소스 관리자 재생성
@@ -162,5 +161,5 @@ Aspectow는 엔터프라이즈 환경에 최적화된 다양한 내장 기능을
 Aspectow의 아키텍처는 운영 편의성을 최우선으로 고려합니다.
 
 - **유연한 리소스 교체**: `work` 디렉토리로의 라이브러리 복사 로딩 방식을 통해, 운영 중에도 파일 잠금 없이 원본 라이브러리를 교체할 수 있어 유연한 배포와 운영 중단 시간 최소화가 가능합니다.
-- **운영 스크립트**: `setup` 및 `bin` 디렉토리를 통해 서비스 등록, 시작, 종료, 상태 확인 등 운영에 필요한 모든 스크립트를 기본 제공합니다.
+- **운영 스크립트**: `app/bin` 디렉토리는 서버 시작/종료 등 런타임 제어를 담당하며, `setup` 디렉토리는 애플리케이션 초기 설치 및 시스템 서비스 등록(`install-app.sh`, `install-service.sh`)을 지원합니다.
 - **다양한 환경 지원**: 웹 서비스뿐만 아니라, 동일한 아키텍처로 데몬(Daemon)이나 쉘(Shell) 애플리케이션도 구동할 수 있어 일관된 개발 경험을 제공합니다.

@@ -89,16 +89,15 @@ graph TD
 The process by which Aspectow runs as a WAS and processes requests follows this hierarchical flow:
 
 ### 3.1. Bootstrapping
-1.  **Script Execution**: Scripts in the `bin` directory set JVM options and start the process.
-2.  **Service Initialization**: The `AspectranService` starts and loads configurations from the `config` directory.
-3.  **Web Server Startup**: The configured embedded web server (Undertow or Jetty) starts and listens on the HTTP port.
-4.  **Context Loading**: `ActivityContext`, Aspectran's core container, is initialized, and all defined Beans, Translets, and Aspects are loaded into memory.
+1.  **Script Execution**: Scripts in the `app/bin` directory set JVM options and start the process.
+2.  **Service Initialization**: A specific implementation of `CoreService` (e.g., `DaemonService`, `ShellService`) tailored to the execution environment starts and loads configurations from the `config` directory.
+3.  **Context Loading**: `ActivityContext`, Aspectran's core container, is created, and all defined Beans, Translets, and Aspects are loaded into memory. During this process, the embedded web server (Undertow or Jetty), defined as a Bean, is initialized and started.
 
 ### 3.2. ClassLoader Strategy (SiblingClassLoader)
 Aspectow uses a proprietary **SiblingClassLoader** mechanism. This is a core technology that not only prevents conflicts between system libraries and applications but also enables **Hot Reloading**, allowing changed classes or resources to be reflected immediately without restarting the JVM.
 
 ### 3.2.1. Safe Reloading Mechanism
-Explains the principle of resource isolation via the `work` directory, illustrating why replacing files in `app/lib` does not cause errors during operation.
+The following explains how the resource isolation mechanism utilizing the `work` directory prevents errors when replacing files during operation and ensures safe resource management.
 
 ```mermaid
 sequenceDiagram
@@ -119,7 +118,7 @@ sequenceDiagram
     Note over User, AppLib: 6. During Runtime
     User->>AppLib: 7. Replace with new JAR (Patch)
     Note right of AppLib: No File Lock!<br>Can be replaced freely
-
+    
     User->>ClassLoader: 8. Reload Command
     ClassLoader->>ClassLoader: 9. Re-initialize
     ClassLoader->>ResourceManager: 10. Re-create ResourceManager
@@ -162,5 +161,5 @@ Aspectow provides various built-in features optimized for enterprise environment
 Aspectow's architecture prioritizes operational convenience.
 
 - **Flexible Resource Replacement**: By copying and loading libraries into the `work` directory, original library files can be replaced without file locking even during operation, enabling flexible deployment and minimizing downtime.
-- **Operation Scripts**: Provides all necessary scripts for operation, such as service registration, startup, shutdown, and status check, through the `setup` and `bin` directories.
+- **Operation Scripts**: The `app/bin` directory handles runtime controls such as server startup/shutdown, while the `setup` directory supports initial application installation and system service registration (`install-app.sh`, `install-service.sh`).
 - **Multi-Environment Support**: Supports not only web services but also Daemon or Shell applications with the same architecture, providing a consistent development experience.
