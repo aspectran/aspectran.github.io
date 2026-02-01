@@ -36,12 +36,12 @@ An Aspectow application follows a standard directory structure to provide conven
 - **`/app`**: The home directory of the built application. In actual operation, the application runs based on this directory.
     - **`bin/`**: Contains shell scripts for running and controlling the application, such as `daemon.sh` and `shell.sh`.
     - **`cmd/`**: A directory structure for processing file-based asynchronous commands (composed of `incoming`, `queued`, `completed`, `failed`, etc.).
-    - **`config/`**: Manages all application and server settings, such as `aspectran-config.apon`, `root-context.xml`, and `server.xml`.
+    - **`app/config/`**: Manages all application and server settings, such as `aspectran-config.apon`, `root-context.xml`, and `server.xml`.
     - **`lib/`**: All external dependency libraries (.jar) copied by the `maven-dependency-plugin` are located here. The application's .jar file for the current project is located in `lib/ext/`.
-    - **`logs/`**: All log files generated during application execution are stored here.
-    - **`temp/`**: Temporary files used by the application during operation, such as for file uploads or resource reloading, are stored here.
+    - **`app/logs/`**: All log files generated during application execution are stored here.
+    - **`app/temp/`**: Temporary files used by the application during operation, such as for file uploads or resource reloading, are stored here.
     - **`webapps/`**: The root directory for web application contexts. `root` and `appmon` are provided by default, and each subdirectory becomes an independent web application.
-    - **`work/`**: Working files used internally by the WAS, such as session files and compiled JSP files, are stored here.
+    - **`app/work/`**: Working files used internally by the WAS, such as session files and compiled JSP files, are stored here.
 - **`/setup`**: Contains scripts and configuration files for deploying the application to a production environment and managing it as a system service, such as for .deb, .rpm packaging or Systemd/init.d service registration.
 - **`/src`**: The standard Maven directory where the application's Java source code and resource files are located. During the build process, it is compiled and generated as a JAR file in `app/lib/ext/`.
 - **`pom.xml`**: The Maven build script that manages the project's dependencies and defines the build lifecycle.

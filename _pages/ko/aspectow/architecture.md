@@ -51,10 +51,10 @@ Aspectow는 배포, 운영, 유지보수의 효율성을 극대화하기 위해 
 ### 2.2. 가변 영역 (Mutable Zone)
 런타임에 생성되는 데이터나, 환경에 따라 달라지는 설정 정보가 위치합니다.
 
-- **`config/`**: 애플리케이션 설정(`aspectran-config.apon`, `root-context.xml`)과 서버 환경 설정(`server.xml`, `logging`)이 위치합니다. 코드는 동일하더라도 `config`만 교체하여 개발, 테스트, 운영 환경에 유연하게 대응할 수 있습니다.
-- **`logs/`**: 서버 운영 로그 및 애플리케이션 로그가 적재됩니다.
-- **`work/`**: 서버 실행 중 생성되는 임시 데이터(세션 저장소, JSP 컴파일 결과 등)가 저장됩니다. 특히 **안전한 리로딩(Safe Reloading)**을 위해 `app/lib`의 JAR 파일들을 이곳으로 복사하여 로드함으로써, 파일 잠금(File Locking) 문제를 방지합니다. 덕분에 서버가 가동 중인 상태에서도 `app/lib` 내의 파일을 안전하게 교체할 수 있습니다.
-- **`temp/`**: 시스템 임시 디렉토리(`java.io.tmpdir`)로 사용됩니다.
+- **`app/config/`**: 애플리케이션 설정(`aspectran-config.apon`, `root-context.xml`)과 서버 환경 설정(`server.xml`, `logging`)이 위치합니다. 코드는 동일하더라도 `config`만 교체하여 개발, 테스트, 운영 환경에 유연하게 대응할 수 있습니다.
+- **`app/logs/`**: 서버 운영 로그 및 애플리케이션 로그가 적재됩니다.
+- **`app/work/`**: 서버 실행 중 생성되는 임시 데이터(세션 저장소, JSP 컴파일 결과 등)가 저장됩니다. 특히 **안전한 리로딩(Safe Reloading)**을 위해 `app/lib`의 JAR 파일들을 이곳으로 복사하여 로드함으로써, 파일 잠금(File Locking) 문제를 방지합니다. 덕분에 서버가 가동 중인 상태에서도 `app/lib` 내의 파일을 안전하게 교체할 수 있습니다.
+- **`app/temp/`**: 시스템 임시 디렉토리(`java.io.tmpdir`)로 사용됩니다.
 
 ### 2.3. 시스템 디렉토리 구조도 (System Directory Architecture)
 배포 시 변경되는 불변 영역과 운영 중 데이터가 변하는 가변 영역이 물리적으로 어떻게 상호작용하는지 보여줍니다.
@@ -71,9 +71,9 @@ graph TD
         end
         subgraph Mutable["Mutable Zone"]
             direction TB
-            CONF["config/<br>(설정: apon, xml)"]
-            LOGS["logs/<br>(운영 로그)"]
-            WORK["work/<br>(리소스 격리 및 임시 데이터)"]
+            CONF["app/config/<br>(설정: apon, xml)"]
+            LOGS["app/logs/<br>(운영 로그)"]
+            WORK["app/work/<br>(리소스 격리 및 임시 데이터)"]
         end
         Runtime(Aspectow Runtime Process)
         BIN -->|실행| Runtime
@@ -118,7 +118,7 @@ sequenceDiagram
     Note over User, AppLib: 6. 서버 운영 중 (Runtime)
     User->>AppLib: 7. 새로운 JAR로 교체 (Patch)
     Note right of AppLib: 파일 잠금(Lock) 없음!<br>자유롭게 교체 가능
-    
+
     User->>ClassLoader: 8. 리로드 명령 (Reload)
     ClassLoader->>ClassLoader: 9. 재초기화 (Re-init)
     ClassLoader->>ResourceManager: 10. 리소스 관리자 재생성

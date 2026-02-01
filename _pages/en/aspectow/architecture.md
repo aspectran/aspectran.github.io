@@ -51,10 +51,10 @@ This is where system binaries and application code are located. It is updated at
 ### 2.2. Mutable Zone
 This area contains data created at runtime or configuration information that varies by environment.
 
-- **`config/`**: Contains application configuration (`aspectran-config.apon`, `root-context.xml`) and server environment settings (`server.xml`, `logging`). Even if the code is the same, you can flexibly respond to development, testing, and production environments by simply swapping the `config`.
-- **`logs/`**: Stores server operation logs and application logs.
-- **`work/`**: Stores temporary data generated during server execution (session storage, JSP compilation results, etc.). Specifically, for **Safe Reloading**, JAR files from `app/lib` are copied here and loaded to prevent file locking issues. This allows files in `app/lib` to be safely replaced even while the server is running.
-- **`temp/`**: Used as the system temporary directory (`java.io.tmpdir`).
+- **`app/config/`**: Contains application configuration (`aspectran-config.apon`, `root-context.xml`) and server environment settings (`server.xml`, `logging`). Even if the code is the same, you can flexibly respond to development, testing, and production environments by simply swapping the `config`.
+- **`app/logs/`**: Stores server operation logs and application logs.
+- **`app/work/`**: Stores temporary data generated during server execution (session storage, JSP compilation results, etc.). Specifically, for **Safe Reloading**, JAR files from `app/lib` are copied here and loaded to prevent file locking issues. This allows files in `app/lib` to be safely replaced even while the server is running.
+- **`app/temp/`**: Used as the system temporary directory (`java.io.tmpdir`).
 
 ### 2.3. System Directory Architecture
 Shows the physical interaction between the Immutable Zone (updated at deployment) and the Mutable Zone (where data changes during operation).
@@ -71,9 +71,9 @@ graph TD
         end
         subgraph Mutable["Mutable Zone"]
             direction TB
-            CONF["config/<br>(Config: apon, xml)"]
-            LOGS["logs/<br>(Operation Logs)"]
-            WORK["work/<br>(Resource Isolation & Temp Data)"]
+            CONF["app/config/<br>(Config: apon, xml)"]
+            LOGS["app/logs/<br>(Operation Logs)"]
+            WORK["app/work/<br>(Resource Isolation & Temp Data)"]
         end
         Runtime(Aspectow Runtime Process)
         BIN -->|Executes| Runtime
@@ -118,7 +118,7 @@ sequenceDiagram
     Note over User, AppLib: 6. During Runtime
     User->>AppLib: 7. Replace with new JAR (Patch)
     Note right of AppLib: No File Lock!<br>Can be replaced freely
-    
+
     User->>ClassLoader: 8. Reload Command
     ClassLoader->>ClassLoader: 9. Re-initialize
     ClassLoader->>ResourceManager: 10. Re-create ResourceManager
