@@ -26,7 +26,7 @@ Learn how to use Aspectran and get the most out of its features.
 
 *   [Aspectran User Guide](/en/aspectran/user-guide/)
 *   [Aspectran Beans: The Official Guide](/en/docs/guides/aspectran-beans/)
-*   [Aspectran AOP Feature Analysis](/en/docs/guides/aspectran-aop/)
+*   [Aspectran AOP: Features & Architecture](/en/docs/guides/aspectran-aop/)
 *   [Understanding Translet: The Face of Aspectran](/en/docs/guides/aspectran-translet/)
 *   [Aspectran Scheduler: Powerful Task Automation with Translets](/en/docs/guides/aspectran-scheduler/)
 *   [Aspectran View Technologies](/en/docs/guides/aspectran-view-technologies/)

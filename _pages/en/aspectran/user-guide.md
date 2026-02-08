@@ -1038,7 +1038,7 @@ We hope this guide helps you in using Aspectran. For more detailed information o
 *   [Aspectran XML Configuration Guide](https://aspectran.com/en/docs/guides/aspectran-xml-configuration/)
 *   [Servlet-based Web Application Configuration](https://aspectran.com/en/docs/guides/aspectran-servlet-configuration/)
 *   [Aspectran Beans](https://aspectran.com/en/docs/guides/aspectran-beans/)
-*   [Aspectran AOP Feature Analysis](https://aspectran.com/en/docs/guides/aspectran-aop/)
+*   [Aspectran AOP: Features & Architecture](https://aspectran.com/en/docs/guides/aspectran-aop/)
 *   [Understanding Translet: The Face of Aspectran](https://aspectran.com/en/docs/guides/aspectran-translet/)
 *   [Aspectran Scheduler: Powerful Task Automation with Translets](https://aspectran.com/en/docs/guides/aspectran-scheduler/)
 *   [Aspectran View Technologies](https://aspectran.com/en/docs/guides/aspectran-view-technologies/)

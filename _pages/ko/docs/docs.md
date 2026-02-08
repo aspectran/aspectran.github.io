@@ -26,7 +26,7 @@ Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
 
 *   [Aspectran 사용자 가이드](/ko/aspectran/user-guide/)
 *   [Aspectran Beans: 공식 가이드](/ko/docs/guides/aspectran-beans/)
-*   [Aspectran AOP 특징 분석](/ko/docs/guides/aspectran-aop/)
+*   [Aspectran AOP: 기능과 아키텍처](/ko/docs/guides/aspectran-aop/)
 *   [Aspectran의 얼굴마담: Translet 이해하기](/ko/docs/guides/aspectran-translet/)
 *   [Aspectran Scheduler: Translet을 이용한 강력한 작업 자동화](/ko/docs/guides/aspectran-scheduler/)
 *   [Aspectran 뷰(View) 기술](/ko/docs/guides/aspectran-view-technologies/)
