@@ -1,6 +1,6 @@
 ---
 title: "In-Depth Analysis of the Aspectran Auto-Reloading Mechanism"
-subheadline: Architecture
+subheadline: "Architecture & Mechanisms"
 ---
 
 ## 1. Overview

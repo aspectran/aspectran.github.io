@@ -1,6 +1,6 @@
 ---
 title: In-Depth Analysis of Aspectran Execution Environments
-subheadline: Architecture
+subheadline: "Architecture & Mechanisms"
 ---
 
 Based on its core concepts of `CoreService` and `Activity`, Aspectran provides specialized modules that support various execution environments. This modularity allows developers to deploy Aspectran applications in a manner that best suits their specific use case, whether it be a long-running background process, an interactive command-line tool, an embedded library, or a high-performance web application.

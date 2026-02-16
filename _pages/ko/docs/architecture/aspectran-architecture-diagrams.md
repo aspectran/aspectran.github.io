@@ -2,7 +2,7 @@
 format: fluid article
 sidebar: toc
 title: Aspectran 아키텍처 다이어그램
-subheadline: 아키텍처
+subheadline: 아키텍처 및 메커니즘
 mermaid: true
 ---
 

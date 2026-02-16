@@ -1,6 +1,6 @@
 ---
 title: Introduction to APON (Aspectran Parameters Object Notation)
-subheadline: User Guides
+subheadline: Core Guides
 ---
 
 ## 1. What is APON?

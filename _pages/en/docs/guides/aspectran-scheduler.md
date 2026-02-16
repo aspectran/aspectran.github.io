@@ -1,6 +1,6 @@
 ---
 title: "Aspectran Scheduler: Powerful Task Automation with Translets"
-subheadline: User Guides
+subheadline: Core Guides
 ---
 
 Aspectran Scheduler is a powerful feature that allows specific tasks within an application to be executed at a set time or periodically. With this feature, developers can easily implement and manage various background tasks such as batch jobs, data synchronization, and report generation using Aspectran's core component, the **Translet**.

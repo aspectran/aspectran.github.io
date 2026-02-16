@@ -1,8 +1,6 @@
 ---
-format: plate solid article
 title: "APON.js 소개 및 사용법"
 teaser: APON.js는 Aspectran의 APON(Aspectran Parameters Object Notation) 포맷을 JavaScript 환경에서 네이티브하게 다룰 수 있게 해주는 경량 라이브러리입니다.
-sidebar: toc
 ---
 
 Aspectran 프레임워크에서 설정 파일 작성을 위해 탄생한 APON(Aspectran Parameters Object Notation)의 편리함과 가독성을 이제 JavaScript 세상에서도 만나보실 수 있습니다.

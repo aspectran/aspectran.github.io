@@ -1,6 +1,6 @@
 ---
 title: "Aspectran의 얼굴마담: Translet 이해하기"
-subheadline: 사용자 가이드
+subheadline: 핵심 가이드
 ---
 
 Aspectran 프레임워크에서 **트랜스렛(Translet)**은 그 이름만 보면 요청을 처리하는 주체처럼 보이지만, 실제로는 **"요청을 어떻게 처리할 것인가?"**에 대한 구체적인 **실행 계획서 또는 설계도**입니다. 실제 모든 실행은 `Activity`라는 엔진이 담당하며, Translet은 이 `Activity`와 사용자 코드(Action) 사이의 소통을 위한 **매개체** 역할을 합니다.

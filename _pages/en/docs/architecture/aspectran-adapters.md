@@ -1,6 +1,6 @@
 ---
 title: "Adapter Architecture: The Core of Environmental Independence"
-subheadline: Architecture
+subheadline: "Architecture & Mechanisms"
 ---
 #
 

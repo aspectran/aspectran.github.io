@@ -1,6 +1,6 @@
 ---
 title: Aspectran JSON Utilities Guide
-subheadline: User Guides
+subheadline: Core Guides
 ---
 
 Aspectran provides a set of lightweight, dependency-free utilities for handling JSON data. These tools allow you to parse, generate, and manipulate JSON content efficiently without needing external libraries like Jackson or Gson. This guide covers the core components and provides practical examples for their use.

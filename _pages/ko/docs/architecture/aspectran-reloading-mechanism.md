@@ -1,6 +1,6 @@
 ---
 title: "Aspectran 자동 리로딩 메커니즘 심층 분석"
-subheadline: 아키텍처
+subheadline: 아키텍처 및 메커니즘
 ---
 
 ## 1. 개요

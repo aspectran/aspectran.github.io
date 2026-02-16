@@ -1,6 +1,6 @@
 ---
 title: Aspectran의 빈 스코프(Bean Scopes) 심층 분석
-subheadline: 아키텍처
+subheadline: 아키텍처 및 메커니즘
 ---
 
 Aspectran의 IoC 컨테이너는 빈(Bean)의 생명주기를 관리하는 범위를 지정하는 **스코프(Scope)** 개념을 지원합니다. 스코프는 빈 인스턴스가 언제 생성되고, 얼마나 오래 유지되며, 어떻게 소멸되는지를 결정합니다. `com.aspectran.core.context.rule.type.ScopeType` enum 클래스에 정의된 4가지 표준 스코프를 제공합니다.

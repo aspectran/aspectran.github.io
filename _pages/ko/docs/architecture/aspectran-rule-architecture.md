@@ -1,6 +1,6 @@
 ---
 title: Aspectran 설정 규칙 아키텍처 심층 분석
-subheadline: 아키텍처
+subheadline: 아키텍처 및 메커니즘
 ---
 
 Aspectran의 `com.aspectran.core.context.rule` 패키지는 프레임워크의 모든 **설정 정보**를 자바 객체로 표현한 집합입니다. XML이나 APON 형식의 설정 파일은 파서(`NodeletParser`)에 의해 이 `Rule` 객체들로 변환되어 메모리에 로드됩니다. 즉, 이들은 애플리케이션의 **설계도(Blueprint)** 역할을 하는 순수한 데이터 객체(POJO)들입니다.

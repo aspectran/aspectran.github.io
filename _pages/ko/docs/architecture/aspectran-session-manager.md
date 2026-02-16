@@ -1,6 +1,6 @@
 ---
 title: "Aspectran Session Manager: Deep Dive"
-subheadline: 아키텍처
+subheadline: 아키텍처 및 메커니즘
 ---
 
 ## 1. 소개

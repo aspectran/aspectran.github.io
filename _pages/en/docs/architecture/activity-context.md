@@ -1,6 +1,6 @@
 ---
 title: "ActivityContext: The Heart of Aspectran"
-subheadline: Architecture
+subheadline: "Architecture & Mechanisms"
 ---
 
 ## 1. Core Concept: The Central Hub of the Application

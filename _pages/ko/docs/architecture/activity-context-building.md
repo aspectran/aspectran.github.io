@@ -1,6 +1,6 @@
 ---
 title: "ActivityContext 빌드 과정: 심층 분석"
-subheadline: 아키텍처
+subheadline: 아키텍처 및 메커니즘
 ---
 
 Aspectran 애플리케이션의 심장부인 `ActivityContext`는 `ActivityContextBuilder`에 의해 체계적인 단계를 거쳐 생성됩니다. 이 빌드 과정은 크게 **설정, 파싱, 생성, 초기화**의 4단계로 이루어지며, 전체 프로세스는 `com.aspectran.core.context.builder.HybridActivityContextBuilder` 클래스가 주도합니다.

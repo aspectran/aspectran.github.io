@@ -1,6 +1,6 @@
 ---
 title: Aspectran Basic Configuration Guide
-subheadline: User Guides
+subheadline: Core Guides
 ---
 
 The "Basic Configuration" provides the core settings required for the initial startup of an Aspectran application. Based on this, you can specify targets for annotation-based component scanning or instruct the application to load additional rule files in XML or APON format.

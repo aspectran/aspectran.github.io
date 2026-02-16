@@ -1,6 +1,6 @@
 ---
 title: "Aspectran Actions: Concepts, Types, and Processing Results"
-subheadline: Architecture
+subheadline: "Architecture & Mechanisms"
 ---
 
 In the Aspectran framework, an **Action** is the most basic unit of execution that performs a specific task within the execution flow of a Translet. Actions are responsible for the actual behavior of the application, such as invoking business logic, manipulating data, and controlling flow.

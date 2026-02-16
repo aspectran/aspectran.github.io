@@ -1,6 +1,6 @@
 ---
 title: APON(Aspectran Parameters Object Notation) 소개
-subheadline: 사용자 가이드
+subheadline: 핵심 가이드
 ---
 
 ## 1. APON 이란?

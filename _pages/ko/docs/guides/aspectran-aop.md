@@ -1,6 +1,6 @@
 ---
 title: "Aspectran AOP: 기능과 아키텍처"
-subheadline: 사용자 가이드
+subheadline: 핵심 가이드
 ---
 
 **AOP(Aspect-Oriented Programming)**는 로깅, 보안, 트랜잭션 등 애플리케이션 전반에 걸친 **공통 관심사(Cross-cutting Concerns)**를 비즈니스 로직과 분리하여 코드의 복잡성을 줄이는 핵심 기술입니다.

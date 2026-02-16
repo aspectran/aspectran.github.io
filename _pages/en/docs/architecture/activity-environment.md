@@ -1,6 +1,6 @@
 ---
 title: "Environment: Controlling Environments with Profiles and Properties"
-subheadline: Architecture
+subheadline: "Architecture & Mechanisms"
 ---
 
 The `com.aspectran.core.context.env` package plays a key role in managing the execution environment of an Aspectran application. It primarily supports flexible configuration and deployment for various environments (development, testing, production, etc.) through two main concepts: **Profiles** and **Properties**.

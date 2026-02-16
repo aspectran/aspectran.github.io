@@ -28,7 +28,6 @@ permalink: /en/docs/
 *   [A Practical Guide to Aspectran Translets](/en/docs/guides/practical-guide-to-translets/)
 *   [A Practical Guide to PBE Token-Based Authentication](/en/docs/guides/practical-guide-to-pbe-token-based-authentication/)
 *   [Guide to Applying Thymeleaf Layout in Aspectran](/en/docs/guides/practical-guide-to-thymeleaf-layout/)
-*   [Guide to Integrating Legacy Systems with Modern Aspectran Servers](/en/docs/guides/practical-guide-to-legacy-integration/)
 *   [Using CORS (Cross-Origin Resource Sharing) in Aspectran](/en/docs/guides/practical-guide-to-cors/)
 *   [Practical Guide to Custom Type Converters](/en/docs/guides/practical-guide-to-type-converter/)
 
@@ -96,4 +95,5 @@ Real-time monitoring tool for system resources and application activities.
 
 ## <i class="bi bi-box-seam"></i> Other Projects
 
-*   **APON.js**: [Introduction](/en/docs/guides/introducing-apon-js/) · [GitHub Repository](https://github.com/aspectran/apon.js)
+*   **aspectran-utils-legacy**: [Integrating Legacy Systems with Modern Aspectran Servers](/en/docs/guides/practical-guide-to-legacy-integration/)
+*   **APON.js**: [Introduction](/en/docs/guides/introducing-apon-js/)

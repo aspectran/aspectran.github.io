@@ -1,6 +1,6 @@
 ---
 title: In-Depth Analysis of Aspectran Service Architecture
-subheadline: Architecture
+subheadline: "Architecture & Mechanisms"
 ---
 
 Aspectran's `Service` is a core container that manages the framework's lifecycle and acts as an entry point for a specific execution environment. The appropriate service implementation is used depending on the environment (web, shell, daemon, etc.) in which the application will run. This service architecture provides high flexibility and extensibility through a hierarchical and modular structure.

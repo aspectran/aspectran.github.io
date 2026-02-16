@@ -1,6 +1,6 @@
 ---
 title: "Aspectran AOP 프록시 메커니즘: `AbstractBeanProxy`와 `ProxyActivity`"
-subheadline: 아키텍처
+subheadline: 아키텍처 및 메커니즘
 ---
 
 ## 1. 개요

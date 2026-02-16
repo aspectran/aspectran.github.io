@@ -1,6 +1,6 @@
 ---
 title: "ActivityContext: Aspectran의 심장부"
-subheadline: 아키텍처
+subheadline: 아키텍처 및 메커니즘
 ---
 
 ## 1. 핵심 개념: 애플리케이션의 중앙 허브

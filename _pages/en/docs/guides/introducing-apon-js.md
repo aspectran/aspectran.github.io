@@ -1,8 +1,6 @@
 ---
-format: plate solid article
 title: "Introduction to APON.js"
 teaser: APON.js is a lightweight, zero-dependency library that allows you to handle the APON(Aspectran Parameters Object Notation) format natively in a JavaScript environment.
-sidebar: toc
 ---
 
 APON.js brings the convenience and readability of APON (Aspectran Parameters Object Notation), originally created for the Aspectran framework, to the JavaScript world.

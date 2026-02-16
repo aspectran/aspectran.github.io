@@ -1,6 +1,6 @@
 ---
 title: In-Depth Analysis of the Aspectran Logging Mechanism
-subheadline: Architecture
+subheadline: "Architecture & Mechanisms"
 ---
 
 Aspectran uses a systematic approach to build a flexible and powerful logging system. This document analyzes and explains Aspectran's logging mechanism with examples.

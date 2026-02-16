@@ -1,6 +1,6 @@
 ---
 title: "Environment: 프로필과 속성을 이용한 환경 제어"
-subheadline: 아키텍처
+subheadline: 아키텍처 및 메커니즘
 ---
 
 `com.aspectran.core.context.env` 패키지는 Aspectran 애플리케이션의 실행 환경을 관리하는 핵심적인 역할을 합니다. 주로 **프로필(Profiles)**과 **속성(Properties)**이라는 두 가지 개념을 통해, 동일한 애플리케이션 코드를 다양한 환경(개발, 테스트, 운영 등)에 맞게 유연하게 설정하고 배포할 수 있도록 지원합니다.

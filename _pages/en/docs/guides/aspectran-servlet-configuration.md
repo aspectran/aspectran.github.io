@@ -1,6 +1,6 @@
 ---
 title: Servlet-based Web Application Configuration
-subheadline: User Guides
+subheadline: Core Guides
 ---
 
 {% capture info_message %}

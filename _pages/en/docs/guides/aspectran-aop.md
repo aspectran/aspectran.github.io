@@ -1,6 +1,6 @@
 ---
 title: "Aspectran AOP: Features & Architecture"
-subheadline: User Guides
+subheadline: Core Guides
 ---
 
 **Aspect-Oriented Programming (AOP)** is a key technique for reducing complexity by separating **Cross-cutting Concerns**—such as logging, security, and transactions—from core business logic.

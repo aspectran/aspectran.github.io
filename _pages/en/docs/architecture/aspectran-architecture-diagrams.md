@@ -2,7 +2,7 @@
 format: fluid article
 sidebar: toc
 title: Aspectran Architecture Diagrams
-subheadline: Architecture
+subheadline: "Architecture & Mechanisms"
 mermaid: true
 ---
 

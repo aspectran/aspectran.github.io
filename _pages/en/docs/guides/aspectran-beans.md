@@ -1,6 +1,6 @@
 ---
 title: "Aspectran Beans: The Official Guide"
-subheadline: User Guides
+subheadline: Core Guides
 ---
 
 {% capture info_message %}

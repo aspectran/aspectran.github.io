@@ -1,6 +1,6 @@
 ---
 title: Introduction to AsEL (Aspectran Expression Language)
-subheadline: User Guides
+subheadline: Core Guides
 ---
 
 AsEL (Aspectran Expression Language) is a powerful and lightweight expression language built into the Aspectran framework. The most significant feature of AsEL is its ability to dynamically evaluate the values of objects by combining Aspectran's own **Token Expressions** with the powerful **OGNL (Object-Graph Navigation Language) expressions**.

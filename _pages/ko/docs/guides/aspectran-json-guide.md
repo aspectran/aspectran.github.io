@@ -1,6 +1,6 @@
 ---
 title: Aspectran JSON 유틸리티 가이드
-subheadline: 사용자 가이드
+subheadline: 핵심 가이드
 ---
 
 Aspectran은 JSON 데이터를 처리하기 위한 경량의, 의존성 없는 유틸리티 세트를 제공합니다. 이 도구들을 사용하면 Jackson이나 Gson과 같은 외부 라이브러리 없이도 JSON 콘텐츠를 효율적으로 파싱, 생성 및 조작할 수 있습니다. 이 가이드에서는 핵심 구성 요소와 실제 사용 예제를 다룹니다.
