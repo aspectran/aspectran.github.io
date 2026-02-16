@@ -7,7 +7,7 @@
   <ol class="breadcrumb" itemprop="breadcrumb">
     <li class="breadcrumb-item"><a href="{% if page.lang != nil %}/{{ page.lang }}{% endif %}/">Home</a></li>
     {% if page.parent_path != nil %}
-      {% assign page_url = page.parent_path | append: '/' %}
+      {% assign page_url = page.parent_path | append: '/current' %}
     {% else %}
       {% assign url_prefix = '/' | append: page.lang | append: '/' %}
       {% assign page_url = page.url | replace: url_prefix, '/' %}
@@ -18,7 +18,7 @@
         <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
       {% else %}
         {% assign crumb_limit = forloop.index | plus: 1 %}
-        <li class="breadcrumb-item"><a href="{% if page.lang != nil %}/{{ page.lang }}{% endif %}{% for crumb2 in crumbs limit: crumb_limit %}{{ crumb2 | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' }}</a></li>
+        <li class="breadcrumb-item"><a href="{% if page.lang != nil %}/{{ page.lang }}{% endif %}{% for crumb2 in crumbs limit: crumb_limit %}{{ crumb2 | append: '/' }}{% endfor %}">{{ crumb | replace:'-',' ' | capitalize }}</a></li>
       {% endif %}
     {% endfor %}
   </ol>
