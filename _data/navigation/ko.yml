@@ -30,9 +30,6 @@
     url: "/ko/aspectow/configuration-guide/"
   - title: "배포 및 운영 가이드"
     url: "/ko/aspectow/deployment-and-operations/"
-    sub_items:
-    - title: "Nginx 리버스 프록시 및 클러스터링 가이드"
-      url: "/ko/aspectow/nginx-reverse-proxy-guide/"
   - title: "-"
   - title: "Aspectow AppMon"
     url: "/ko/aspectow/appmon/"

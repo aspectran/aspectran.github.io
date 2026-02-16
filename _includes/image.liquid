@@ -13,5 +13,5 @@
 *
 {% endcomment %}
 <p class="{{ include.p_class | default: 'text-center' }}">
-  <img src="{{ include.src }}" alt="{{ include.alt }}" class="{{ include.class | default: 'img-fluid' }}">
+  <img src="{{ include.src }}" alt="{{ include.alt }}" class="{{ include.class | default: 'img-fluid' }} zoomable" style="cursor: zoom-in;">
 </p>

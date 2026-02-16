@@ -1,30 +1,18 @@
 ---
 format: plate solid article
-title: Aspectran Docs
-teaser: Explore Aspectran documentation to learn, configure, and unlock its full potential.
+title: Documentation Index
+teaser: A comprehensive index to find all official documentation and technical specifications for the Aspectran ecosystem.
 sidebar: toc
 permalink: /en/docs/
 ---
 
-{% capture info_message %}
-Find all the resources you need to learn and use the Aspectran framework here.
-We've organized it for easy navigation and access, including configuration guides, user guides, practical guides, and architectural documents.
-{% endcapture %}
-{% include alert.liquid info=info_message %}
+## <i class="bi bi-gear-wide-connected"></i> Aspectran Framework
 
-## <i class="bi bi-gear-wide-connected"></i> Configuration Guides
-
-Configure Aspectran to fit your environment and needs.
-
+### Core Guides
+*   [Aspectran User Guide](/en/aspectran/user-guide/)
 *   [Aspectran Basic Configuration Guide](/en/docs/guides/aspectran-configuration/)
 *   [Aspectran XML Configuration Guide](/en/docs/guides/aspectran-xml-configuration/)
 *   [Servlet-based Web Application Configuration](/en/docs/guides/aspectran-servlet-configuration/)
-
-## <i class="bi bi-person-workspace"></i> User Guides
-
-Learn how to use Aspectran and get the most out of its features.
-
-*   [Aspectran User Guide](/en/aspectran/user-guide/)
 *   [Aspectran Beans: The Official Guide](/en/docs/guides/aspectran-beans/)
 *   [Aspectran AOP: Features & Architecture](/en/docs/guides/aspectran-aop/)
 *   [Understanding Translet: The Face of Aspectran](/en/docs/guides/aspectran-translet/)
@@ -32,71 +20,80 @@ Learn how to use Aspectran and get the most out of its features.
 *   [Aspectran View Technologies](/en/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](/en/docs/guides/aspectran-profiles/)
 *   [Introduction to AsEL (Aspectran Expression Language)](/en/docs/guides/introduce-asel/)
-*   [Introduction to APON (Aspectran Parameters Object Notation) 소개](/en/docs/guides/introduce-apon/)
+*   [Introduction to APON (Aspectran Parameters Object Notation)](/en/docs/guides/introduce-apon/)
 *   [Aspectran JSON Utilities Guide](/en/docs/guides/aspectran-json-guide/)
 
-## <i class="bi bi-braces-asterisk"></i> Practical Guides
-
-Access hands-on guides to apply Aspectran effectively in real scenarios.
-
+### Practical Guides
 *   [Aspectran Beans: A Practical Guide to IoC/DI](/en/docs/guides/practical-guide-to-beans/)
 *   [A Practical Guide to Aspectran Translets](/en/docs/guides/practical-guide-to-translets/)
 *   [A Practical Guide to PBE Token-Based Authentication](/en/docs/guides/practical-guide-to-pbe-token-based-authentication/)
 *   [Guide to Applying Thymeleaf Layout in Aspectran](/en/docs/guides/practical-guide-to-thymeleaf-layout/)
-*   [Guide to Integrating Legacy Systems with Modern Aspectran Application Servers](/en/docs/guides/practical-guide-to-legacy-integration/)
+*   [Guide to Integrating Legacy Systems with Modern Aspectran Servers](/en/docs/guides/practical-guide-to-legacy-integration/)
 *   [Using CORS (Cross-Origin Resource Sharing) in Aspectran](/en/docs/guides/practical-guide-to-cors/)
 *   [Practical Guide to Custom Type Converters](/en/docs/guides/practical-guide-to-type-converter/)
 
-## <i class="bi bi-cpu"></i> Architecture
-
-Understand the high-level architecture of Aspectran and its core components.
-
-*   [Designing for Sustainable Simplicity: The Aspectran Architectural Philosophy](/en/why-aspectran/)
-*   [Aspectran Architecture: An Integrated Deep Dive ](/en/aspectran/architecture/)
+### Architecture & Mechanisms
+*   [Designing for Sustainable Simplicity: Architectural Philosophy](/en/why-aspectran/)
+*   [Aspectran Architecture: An Integrated Deep Dive](/en/aspectran/architecture/)
 *   [Aspectran Architecture Diagrams](/en/docs/architecture/aspectran-architecture-diagrams/)
-
-Dive deeper into Aspectran’s architecture with detailed explanations.
-
 *   [ActivityContext Build Process: An In-Depth Analysis](/en/docs/architecture/activity-context-building/)
-*   [In-Depth Analysis of the Aspectran Auto-Reloading Mechanism](/en/docs/architecture/aspectran-reloading-mechanism/)
+*   [In-Depth Analysis of the Auto-Reloading Mechanism](/en/docs/architecture/aspectran-reloading-mechanism/)
 *   [ActivityContext: The Heart of Aspectran](/en/docs/architecture/activity-context/)
 *   [Environment: Controlling Environments with Profiles and Properties](/en/docs/architecture/activity-environment/)
-*   [Aspectran Actions: Concepts, Types, and Processing Results](/en/docs/architecture/aspectran-actions/)
-*   [Activity Architecture: The Execution Engine of Request Processing](/en/docs/architecture/aspectran-activities/)
+*   [Aspectran Actions: Concepts, Types, and Results](/en/docs/architecture/aspectran-actions/)
+*   [Activity Architecture: The Execution Engine](/en/docs/architecture/aspectran-activities/)
 *   [Adapter Architecture: The Core of Environmental Independence](/en/docs/architecture/aspectran-adapters/)
 *   [In-Depth Analysis of Bean Scopes in Aspectran](/en/docs/architecture/aspectran-bean-scopes/)
-*   [SiblingClassLoader: The Key to Dynamic and Flexible Class Loading](/en/docs/architecture/aspectran-classloader/)
-*   [In-Depth Analysis of Aspectran Execution Environments](/en/docs/architecture/aspectran-execution-environments/)
-*   [Aspectran Configuration Loading Mechanism: An In-Depth Analysis of the `nodelet` Engine](/en/docs/architecture/aspectran-loading-mechanism/)
-*   [In-Depth Analysis of the Aspectran Logging Mechanism](/en/docs/architecture/aspectran-logging-mechanism/)
+*   [SiblingClassLoader: Dynamic and Flexible Class Loading](/en/docs/architecture/aspectran-classloader/)
+*   [In-Depth Analysis of Execution Environments](/en/docs/architecture/aspectran-execution-environments/)
+*   [Aspectran Configuration Loading Mechanism](/en/docs/architecture/aspectran-loading-mechanism/)
+*   [In-Depth Analysis of the Logging Mechanism](/en/docs/architecture/aspectran-logging-mechanism/)
 *   [Request and Response Handling Mechanism](/en/docs/architecture/aspectran-request-response/)
-*   [In-Depth Analysis of Aspectran Configuration Rule Architecture](/en/docs/architecture/aspectran-rule-architecture/)
-*   [In-Depth Analysis of Aspectran Service Architecture](/en/docs/architecture/aspectran-services/)
+*   [In-Depth Analysis of Configuration Rule Architecture](/en/docs/architecture/aspectran-rule-architecture/)
+*   [In-Depth Analysis of Service Architecture](/en/docs/architecture/aspectran-services/)
 *   [Aspectran Session Manager: Deep Dive](/en/docs/architecture/aspectran-session-manager/)
-*   [Aspectran AOP Proxy Mechanism: `AbstractBeanProxy` and `ProxyActivity`](/en/docs/architecture/new-aop-proxy-mechanism/)
+*   [AOP Proxy Mechanism: `AbstractBeanProxy` and `ProxyActivity`](/en/docs/architecture/new-aop-proxy-mechanism/)
 
-### <i class="bi bi-crosshair"></i> Package Deep Dive
+### Package Specifications
+*   [Aspectran Core Service](/en/docs/architecture/packages/aspectran-core-service/)
+*   [Aspectran Scheduler Service](/en/docs/architecture/packages/aspectran-scheduler-service/)
+*   [Aspectran Core Activity](/en/docs/architecture/packages/aspectran-core-activity/)
+*   [Aspectran Daemon Service](/en/docs/architecture/packages/aspectran-daemon-service/)
+*   [Aspectran Daemon Activity](/en/docs/architecture/packages/aspectran-daemon-activity/)
+*   [Aspectran Embed Service](/en/docs/architecture/packages/aspectran-embed-service/)
+*   [Aspectran Embed Activity](/en/docs/architecture/packages/aspectran-embed-activity/)
+*   [Aspectran Shell Service](/en/docs/architecture/packages/aspectran-shell-service/)
+*   [Aspectran Shell Activity](/en/docs/architecture/packages/aspectran-shell-activity/)
+*   [Aspectran Undertow Service](/en/docs/architecture/packages/aspectran-undertow-service/)
+*   [Aspectran Undertow Activity](/en/docs/architecture/packages/aspectran-undertow-activity/)
+*   [Aspectran Web Service](/en/docs/architecture/packages/aspectran-web-service/)
+*   [Aspectran Config Parameters](/en/docs/architecture/packages/aspectran-config-parameters/)
 
-Explore Aspectran’s packages in detail and understand their functionalities.
+---
 
-*   Core Package
-    *   [Aspectran Core Service](/en/docs/architecture/packages/aspectran-core-service/)
-    *   [Aspectran Scheduler Service](/en/docs/architecture/packages/aspectran-scheduler-service/)
-    *   [Aspectran Core Activity](/en/docs/architecture/packages/aspectran-core-activity/)
-*   Daemon Package
-    *   [Aspectran Daemon Service](/en/docs/architecture/packages/aspectran-daemon-service/)
-    *   [Aspectran Daemon Activity](/en/docs/architecture/packages/aspectran-daemon-activity/)
-*   Embed Package
-    *   [Aspectran Embed Service](/en/docs/architecture/packages/aspectran-embed-service/)
-    *   [Aspectran Embed Activity](/en/docs/architecture/packages/aspectran-embed-activity/)
-*   Shell Package
-    *   [Aspectran Shell Service](/en/docs/architecture/packages/aspectran-shell-service/)
-    *   [Aspectran Shell Activity](/en/docs/architecture/packages/aspectran-shell-activity/)
-*   Undertow Package
-    *   [Aspectran Undertow Service](/en/docs/architecture/packages/aspectran-undertow-service/)
-    *   [Aspectran Undertow Activity](/en/docs/architecture/packages/aspectran-undertow-activity/)
-*   Web Package
-    *   [Aspectran Web Service](/en/docs/architecture/packages/aspectran-web-service/)
-    *   [Aspectran Web Activity](/en/docs/architecture/packages/aspectran-web-activity/)
-*   Other packages
-    *   [Aspectran Config Parameters](/en/docs/architecture/packages/aspectran-config-parameters/)
+## <i class="bi bi-layers-half"></i> Aspectow
+
+Next-generation enterprise application server built on Aspectran.
+
+*   [Why Aspectow](/en/why-aspectow/)
+*   [Aspectow Getting Started](/en/aspectow/getting-started/)
+*   [Aspectow Architecture](/en/aspectow/architecture/)
+*   [Aspectow Configuration Guide](/en/aspectow/configuration-guide/)
+*   [Deployment and Operations Guide](/en/aspectow/deployment-and-operations/)
+*   [Nginx Reverse Proxy and Clustering Guide](/en/en/aspectow/nginx-reverse-proxy-guide/)
+
+---
+
+## <i class="bi bi-graph-up"></i> Aspectow AppMon
+
+Real-time monitoring tool for system resources and application activities.
+
+*   [Aspectow AppMon Overview & Features](/en/aspectow/appmon/)
+*   [Aspectow AppMon Dashboard Guide](/en/aspectow/appmon/v3-dashboard-guide/)
+*   [AppMon Message Protocol Specification](/en/aspectow/appmon/message-protocol/)
+
+---
+
+## <i class="bi bi-box-seam"></i> Other Projects
+
+*   **APON.js**: [Introduction](/en/docs/guides/introducing-apon-js/) · [GitHub Repository](https://github.com/aspectran/apon.js)

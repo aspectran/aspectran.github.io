@@ -1,30 +1,18 @@
 ---
 format: plate solid article
-title: Aspectran 문서
-teaser: Aspectran 문서를 통해 배우고 설정하며, 강력한 기능을 마음껏 활용해 보세요.
+title: 공식 문서 색인
+teaser: Aspectran 에코시스템의 모든 공식 문서와 기술 명세를 한눈에 찾아볼 수 있는 통합 색인 페이지입니다.
 sidebar: toc
 permalink: /ko/docs/
 ---
 
-{% capture info_message %}
-이 페이지는 Aspectran 공식 문서의 색인입니다. Aspectran 프레임워크를 배우고 사용하는 데 도움이 되는 모든 문서를 여기에서 찾아볼 수 있습니다.
-구성 가이드, 사용자 가이드, 실용 가이드, 아키텍처 문서 등 필요한 정보를 쉽게 탐색하고 접근할 수 있도록 구성했습니다.
-{% endcapture %}
-{% include alert.liquid info=info_message %}
+## <i class="bi bi-gear-wide-connected"></i> Aspectran Framework
 
-## <i class="bi bi-gear-wide-connected"></i> 구성 가이드
-
-환경에 맞춘 설정과 최적화 방법을 제공합니다.
-
+### 핵심 가이드
+*   [Aspectran 사용자 가이드](/ko/aspectran/user-guide/)
 *   [Aspectran 기본 구성 가이드](/ko/docs/guides/aspectran-configuration/)
 *   [Aspectran XML 구성 가이드](/ko/docs/guides/aspectran-xml-configuration/)
 *   [서블릿 기반 웹 애플리케이션 구성](/ko/docs/guides/aspectran-servlet-configuration/)
-
-## <i class="bi bi-person-workspace"></i> 사용자 가이드
-
-Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
-
-*   [Aspectran 사용자 가이드](/ko/aspectran/user-guide/)
 *   [Aspectran Beans: 공식 가이드](/ko/docs/guides/aspectran-beans/)
 *   [Aspectran AOP: 기능과 아키텍처](/ko/docs/guides/aspectran-aop/)
 *   [Aspectran의 얼굴마담: Translet 이해하기](/ko/docs/guides/aspectran-translet/)
@@ -35,10 +23,7 @@ Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
 *   [APON (Aspectran Parameters Object Notation) 소개](/ko/docs/guides/introduce-apon/)
 *   [Aspectran JSON 유틸리티 가이드](/ko/docs/guides/aspectran-json-guide/)
 
-## <i class="bi bi-braces-asterisk"></i> 실용 가이드
-
-실제 시나리오에서 Aspectran을 효과적으로 적용하는 방법에 대한 실습 가이드를 살펴보세요.
-
+### 실용 가이드 (Practical Guides)
 *   [Aspectran Beans: IoC/DI 실용 가이드](/ko/docs/guides/practical-guide-to-beans/)
 *   [Aspectran Translet 실용 가이드](/ko/docs/guides/practical-guide-to-translets/)
 *   [PBE를 이용한 인증 토큰 활용 가이드](/ko/docs/guides/practical-guide-to-pbe-token-based-authentication/)
@@ -47,16 +32,10 @@ Aspectran의 사용법을 알아보고 기능을 최대한 활용하세요.
 *   [Aspectran에서 CORS(Cross-Origin Resource Sharing) 활용하기](/ko/docs/guides/practical-guide-to-cors/)
 *   [커스텀 TypeConverter 실용 가이드](/ko/docs/guides/practical-guide-to-type-converter/)
 
-## <i class="bi bi-cpu"></i> 아키텍처
-
-Aspectran의 고수준 아키텍처와 핵심 구성 요소를 이해합니다.
-
+### 아키텍처 및 메커니즘
 *   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)
 *   [Aspectran 아키텍처: 통합 심층 분석](/ko/aspectran/architecture/)
 *   [Aspectran 아키텍처 다이어그램](/ko/docs/architecture/aspectran-architecture-diagrams/)
-
-자세한 설명과 함께 Aspectran의 아키텍처를 더 자세히 알아보세요.
-
 *   [ActivityContext 빌드 과정: 심층 분석](/ko/docs/architecture/activity-context-building/)
 *   [Aspectran 자동 리로딩 메커니즘 심층 분석](/ko/docs/architecture/aspectran-reloading-mechanism/)
 *   [ActivityContext: Aspectran의 심장부](/ko/docs/architecture/activity-context/)
@@ -75,28 +54,46 @@ Aspectran의 고수준 아키텍처와 핵심 구성 요소를 이해합니다.
 *   [Aspectran Session Manager: Deep Dive](/ko/docs/architecture/aspectran-session-manager/)
 *   [Aspectran AOP 프록시 메커니즘: `AbstractBeanProxy`와 `ProxyActivity`](/ko/docs/architecture/new-aop-proxy-mechanism/)
 
-### <i class="bi bi-crosshair"></i> 패키지 심층 분석
+### 패키지별 상세 명세
+*   [Aspectran Core Service](/ko/docs/architecture/packages/aspectran-core-service/)
+*   [Aspectran Scheduler Service](/ko/docs/architecture/packages/aspectran-scheduler-service/)
+*   [Aspectran Core Activity](/ko/docs/architecture/packages/aspectran-core-activity/)
+*   [Aspectran Daemon Service](/ko/docs/architecture/packages/aspectran-daemon-service/)
+*   [Aspectran Daemon Activity](/ko/docs/architecture/packages/aspectran-daemon-activity/)
+*   [Aspectran Embed Service](/ko/docs/architecture/packages/aspectran-embed-service/)
+*   [Aspectran Embed Activity](/ko/docs/architecture/packages/aspectran-embed-activity/)
+*   [Aspectran Shell Service](/ko/docs/architecture/packages/aspectran-shell-service/)
+*   [Aspectran Shell Activity](/ko/docs/architecture/packages/aspectran-shell-activity/)
+*   [Aspectran Undertow Service](/ko/docs/architecture/packages/aspectran-undertow-service/)
+*   [Aspectran Undertow Activity](/ko/docs/architecture/packages/aspectran-undertow-activity/)
+*   [Aspectran Web Service](/ko/docs/architecture/packages/aspectran-web-activity/)
+*   [Aspectran Config Parameters](/ko/docs/architecture/packages/aspectran-config-parameters/)
 
-Aspectran의 패키지를 자세히 살펴보고 기능을 이해해 보세요.
+---
 
-*   Core Package
-    *   [Aspectran Core Service](/ko/docs/architecture/packages/aspectran-core-service/)
-    *   [Aspectran Scheduler Service](/ko/docs/architecture/packages/aspectran-scheduler-service/)
-    *   [Aspectran Core Activity](/ko/docs/architecture/packages/aspectran-core-activity/)
-*   Daemon Package
-    *   [Aspectran Daemon Service](/ko/docs/architecture/packages/aspectran-daemon-service/)
-    *   [Aspectran Daemon Activity](/ko/docs/architecture/packages/aspectran-daemon-activity/)
-*   Embed Package
-    *   [Aspectran Embed Service](/ko/docs/architecture/packages/aspectran-embed-service/)
-    *   [Aspectran Embed Activity](/ko/docs/architecture/packages/aspectran-embed-activity/)
-*   Shell Package
-    *   [Aspectran Shell Service](/ko/docs/architecture/packages/aspectran-shell-service/)
-    *   [Aspectran Shell Activity](/ko/docs/architecture/packages/aspectran-shell-activity/)
-*   Undertow Package
-    *   [Aspectran Undertow Service](/ko/docs/architecture/packages/aspectran-undertow-service/)
-    *   [Aspectran Undertow Activity](/ko/docs/architecture/packages/aspectran-undertow-activity/)
-*   Web Package
-    *   [Aspectran Web Service](/ko/docs/architecture/packages/aspectran-web-service/)
-    *   [Aspectran Web Activity](/ko/docs/architecture/packages/aspectran-web-activity/)
-*   Other packages
-    *   [Aspectran Config Parameters](architecture/packages/aspectran-config-parameters/)
+## <i class="bi bi-layers-half"></i> Aspectow
+
+Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니다.
+
+*   [Why Aspectow](/ko/why-aspectow/)
+*   [Aspectow 시작하기](/ko/aspectow/getting-started/)
+*   [Aspectow 아키텍처](/ko/aspectow/architecture/)
+*   [Aspectow 구성 가이드](/ko/aspectow/configuration-guide/)
+*   [배포 및 운영 가이드](/ko/aspectow/deployment-and-operations/)
+*   [Nginx 리버스 프록시 및 클러스터링 가이드](/ko/aspectow/nginx-reverse-proxy-guide/)
+
+---
+
+## <i class="bi bi-graph-up"></i> Aspectow AppMon
+
+시스템 리소스 및 애플리케이션 활동을 실시간으로 감시하는 강력한 도구입니다.
+
+*   [Aspectow AppMon 개요 및 특징](/ko/aspectow/appmon/)
+*   [Aspectow AppMon 대시보드 가이드](/ko/aspectow/appmon/v3-dashboard-guide/)
+*   [AppMon 메시지 프로토콜 명세](/ko/aspectow/appmon/message-protocol/)
+
+---
+
+## <i class="bi bi-box-seam"></i> 기타 프로젝트 및 라이브러리
+
+*   **APON.js**: [소개 및 사용법](/ko/docs/guides/introducing-apon-js/) · [GitHub Repository](https://github.com/aspectran/apon.js)

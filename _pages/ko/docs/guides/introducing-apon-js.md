@@ -1,20 +1,11 @@
 ---
-subheadline: Announcements
-title: "APON.js를 소개합니다: Aspectran의 APON을 JavaScript 세상으로"
-categories:
-  - news
-tags: [Announcement, Javascript, apon.js]
-published: true
+format: plate solid article
+title: "APON.js 소개 및 사용법"
+teaser: APON.js는 Aspectran의 APON(Aspectran Parameters Object Notation) 포맷을 JavaScript 환경에서 네이티브하게 다룰 수 있게 해주는 경량 라이브러리입니다.
+sidebar: toc
 ---
 
-Aspectran 프레임워크를 사용해 보신 분이라면, 설정 파일 작성을 위해 탄생한 APON(Aspectran Parameters Object Notation)의 편리함과 가독성에 익숙하실 겁니다. Java 애플리케이션에서는 강력한 도구가 되어 주었지만, 한 가지 아쉬운 점이 있었습니다.
-
-> "이렇게 편리한 APON을 웹 프론트엔드나 Node.js 환경에서도 똑같이 사용할 수 없을까?"
-
-이 질문에서 **APON.js** 프로젝트는 시작되었습니다.
-
-그리고 오늘, 저희는 그 첫 번째 결실인 **APON.js v1.0.0**을 자신있게 선보입니다!
-<!--more-->
+Aspectran 프레임워크에서 설정 파일 작성을 위해 탄생한 APON(Aspectran Parameters Object Notation)의 편리함과 가독성을 이제 JavaScript 세상에서도 만나보실 수 있습니다.
 
 ## APON.js란 무엇인가요?
 
@@ -80,10 +71,6 @@ database: {
 
 **[APON.js 인터랙티브 데모 바로가기](https://aspectran.github.io/apon.js/)**
 
-## 앞으로의 계획
-
-첫 번째 버전을 시작으로, 저희는 `apon.js`를 더욱 발전시켜 나갈 계획입니다. 성능 최적화와 함께, Java 구현체에 있는 더 다양한 고급 기능들을 JavaScript 환경에서도 완벽하게 지원하는 것을 목표로 하고 있습니다.
-
-Aspectran 커뮤니티와 JavaScript 개발자 여러분의 많은 관심과 피드백을 부탁드립니다. `apon.js`로 여러분의 프로젝트가 한결 더 깔끔해지기를 바랍니다.
+---
 
 * **GitHub 저장소**: [https://github.com/aspectran/apon.js](https://github.com/aspectran/apon.js)

@@ -1,20 +1,11 @@
 ---
-subheadline: Announcements
-title: "Introducing APON.js: Bringing APON to the JavaScript World"
-categories:
-  - news
-tags: [Announcement, Javascript, apon.js]
-published: true
+format: plate solid article
+title: "Introduction to APON.js"
+teaser: APON.js is a lightweight, zero-dependency library that allows you to handle the APON(Aspectran Parameters Object Notation) format natively in a JavaScript environment.
+sidebar: toc
 ---
 
-If you've used the Aspectran framework, you're likely familiar with the convenience and readability of APON (Aspectran Parameters Object Notation), created for writing configuration files. While it has been a powerful tool in Java applications, there was one thing missing.
-
-> "What if we could use the convenient APON format in our web front-end or Node.js environment?"
-
-This question was the starting point for the **APON.js** project.
-
-And today, we are proud to present its first fruit: **APON.js v1.0.0**!
-<!--more-->
+APON.js brings the convenience and readability of APON (Aspectran Parameters Object Notation), originally created for the Aspectran framework, to the JavaScript world.
 
 ## What is APON.js?
 
@@ -80,10 +71,6 @@ Seeing is believing. You can test out all the features of `apon.js` right now wi
 
 **[Try the APON.js Interactive Demo Now!](https://aspectran.github.io/apon.js/)**
 
-## What's Next?
-
-With this first version as our starting point, we plan to continue improving `apon.js`. Our goal is to optimize performance and fully support more of the advanced features found in the Java implementation within the JavaScript environment.
-
-We welcome interest and feedback from the Aspectran community and JavaScript developers everywhere. We hope `apon.js` helps make your projects just a little bit cleaner.
+---
 
 * **GitHub Repository**: [https://github.com/aspectran/apon.js](https://github.com/aspectran/apon.js)

@@ -85,4 +85,46 @@ $(function () {
   $('a:external').addClass('external');
   /* turn target into target=_blank for elements w external class */
   $(".external").attr('target', '_blank');
+
+  // Image zoom (lightbox) logic
+  $('img.zoomable').on('click', function() {
+    const src = $(this).attr('src');
+    const alt = $(this).attr('alt');
+    const $overlay = $('<div id="image-zoom-overlay">')
+      .css({
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'zoom-out'
+      })
+      .append($('<img>').attr('src', src).attr('alt', alt).css({
+        maxWidth: '95%',
+        maxHeight: '95%',
+        boxShadow: '0 0 20px rgba(0,0,0,0.5)',
+        userSelect: 'none'
+      }))
+      .appendTo('body')
+      .hide()
+      .fadeIn(200);
+
+    $overlay.on('click', function() {
+      $(this).fadeOut(200, function() {
+        $(this).remove();
+      });
+    });
+
+    // Close on Escape key
+    $(document).one('keydown', function(e) {
+      if (e.key === 'Escape') {
+        $overlay.click();
+      }
+    });
+  });
 });
