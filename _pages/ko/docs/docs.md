@@ -88,8 +88,9 @@ Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니
 시스템 리소스 및 애플리케이션 활동을 실시간으로 감시하는 강력한 도구입니다.
 
 *   [Aspectow AppMon 개요 및 특징](/ko/aspectow/appmon/)
-*   [Aspectow AppMon 대시보드 가이드](/ko/aspectow/appmon/v3-dashboard-guide/)
+*   [AppMon 대시보드 가이드](/ko/aspectow/appmon/v3-dashboard-guide/)
 *   [AppMon 메시지 프로토콜 명세](/ko/aspectow/appmon/message-protocol/)
+*   [AppMon 이벤트 카운트 데이터 구조 및 아키텍처](/ko/aspectow/appmon/event-count-data-structure/)
 
 ---
 

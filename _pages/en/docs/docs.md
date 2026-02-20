@@ -88,8 +88,9 @@ Next-generation enterprise application server built on Aspectran.
 Real-time monitoring tool for system resources and application activities.
 
 *   [Aspectow AppMon Overview & Features](/en/aspectow/appmon/)
-*   [Aspectow AppMon Dashboard Guide](/en/aspectow/appmon/v3-dashboard-guide/)
+*   [AppMon Dashboard Guide](/en/aspectow/appmon/v3-dashboard-guide/)
 *   [AppMon Message Protocol Specification](/en/aspectow/appmon/message-protocol/)
+*   [AppMon Event Count Data Structure and Architecture](/en/aspectow/appmon/event-count-data-structure/)
 
 ---
 

@@ -5,7 +5,10 @@ teaser: Defines the message format and communication rules for real-time data ex
 sidebar: toc
 ---
 
-This document defines the message format and communication rules for real-time data exchange between the AppMon server and clients. The protocol employs a highly readable text-based structure for ease of debugging while providing flexible extensibility through the use of sub-types.
+{% capture info_message %}
+The protocol employs a highly readable text-based structure for ease of debugging while providing flexible extensibility through the use of sub-types.
+{% endcapture %}
+{% include alert.liquid info=info_message %}
 
 ## 1. Server-to-Client Message Structure (Push/Broadcast)
 
