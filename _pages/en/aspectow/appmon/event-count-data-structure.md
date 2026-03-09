@@ -21,8 +21,6 @@ The event count tables use a composite primary key consisting of `domain`, `inst
 | **`event`** | `varchar(30)` | Specific metric or activity being tracked (e.g., `activity`, `session`). |
 | **`datetime`** | `datetime` | The UTC timestamp of the collection point. |
 
----
-
 ## 2. Metric Columns and Recording Principles
 
 AppMon records metrics using a combination of **Gauge** (state) and **Counter** (change) patterns.
@@ -46,8 +44,6 @@ Data is recorded in the database according to the following logic:
 *   **`total`** provides the overall scale and serves as a reference for data consistency in case of system restarts or data loss.
 *   **`delta`** is the core metric for visualizing real-time rates of change, such as TPS (Transactions Per Second), in charts.
 
----
-
 ## 3. Real-world Use Cases (Dashboard Charts)
 
 AppMon uses this data structure to provide two primary monitoring sections on the dashboard.
@@ -61,8 +57,6 @@ Tracks the execution of Aspectran Translets (requests).
 Tracks the lifecycle of user sessions.
 - **Event Name**: Named `session`.
 - **Purpose**: Visualizes active session counts and trends in session creation/expiration. The **Sessions** chart on the dashboard provides insights into user traffic and activity.
-
----
 
 ## 4. Pre-aggregation Architecture
 
@@ -96,8 +90,6 @@ AppMon manages both raw and summary data at the point of collection:
 
 ### Maintaining Data Integrity
 Every time a metric is collected, AppMon uses the `ON DUPLICATE KEY UPDATE` (or `MERGE`) statement to continuously accumulate `delta` and `error` values into the corresponding time/day slots in the summary tables. This ensures that the dashboard always displays up-to-date aggregated data without waiting for background batch jobs.
-
----
 
 ## 5. Database Schema Scripts
 

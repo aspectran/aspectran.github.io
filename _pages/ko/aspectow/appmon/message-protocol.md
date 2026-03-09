@@ -35,8 +35,6 @@ sidebar: toc
 3.  **식별자 생성 (exporterKey)**: `instanceName:pureType:exporterName` 조합으로 **exporterKey**를 생성합니다. 이 키는 클라이언트 UI 요소(콘솔 박스, 차트 등)를 식별하는 유일한 열쇠가 됩니다.
 4.  **데이터 처리**: `subType`에 따라 적절한 UI 처리 로직(예: 상단 추가, 하단 추가, 차트 갱신 등)을 수행합니다.
 
----
-
 ## 2. Exporter 타입별 명세
 
 ### 2.1 로그 (Log)
@@ -64,8 +62,6 @@ sidebar: toc
 단일 지표 값을 전송합니다. 본문은 JSON입니다.
 
 *   형식: `server1:metric:jvm.memory:{"format":"{used}/{max}", "data":{"used":"512MB", "max":"2GB"}}`
-
----
 
 ## 3. 클라이언트-서버 명령 구조 (Pull/Request)
 
@@ -99,8 +95,6 @@ command:{commandName};{optionKey1}:{value1};{optionKey2}:{value2}
 *   **모니터링 세션 참여**:
     `command:join;instancesToJoin:server1,server2;timeZone:Asia/Seoul`
     *(설명: 두 개 인스턴스의 모니터링 그룹에 조인하며 클라이언트의 타임존 정보를 전달함)*
-
----
 
 ## 4. 확장 가이드
 

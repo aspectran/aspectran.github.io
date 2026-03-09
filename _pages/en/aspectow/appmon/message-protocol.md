@@ -35,8 +35,6 @@ All data messages sent from the server to the client consist of four primary fie
 3.  **Identifier Generation (exporterKey)**: Combine the fields into `instanceName:pureType:exporterName` to create the **exporterKey**. This key serves as a unique identifier to map data to UI elements (console boxes, charts, etc.).
 4.  **Data Processing**: Perform appropriate UI logic (e.g., prepend, append, or update chart) based on the `subType`.
 
----
-
 ## 2. Specification by Exporter Type
 
 ### 2.1 Log (Log)
@@ -64,8 +62,6 @@ Transmits system status changes or user session events. Content is in JSON forma
 Transmits single-value performance indicators. Content is in JSON format.
 
 *   Format: `server1:metric:jvm.memory:{"format":"{used}/{max}", "data":{"used":"512MB", "max":"2GB"}}`
-
----
 
 ## 3. Client-to-Server Command Structure (Pull/Request)
 
@@ -99,8 +95,6 @@ command:{commandName};{optionKey1}:{value1};{optionKey2}:{value2}
 *   **Joining a Monitoring Session**:
     `command:join;instancesToJoin:server1,server2;timeZone:Asia/Seoul`
     *(Description: Join monitoring groups for two instances and provide client time zone info.)*
-
----
 
 ## 4. Extension Guide
 
