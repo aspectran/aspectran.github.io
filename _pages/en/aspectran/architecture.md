@@ -77,7 +77,7 @@ Here is an analysis of each environment:
 
 *   **Purpose:** To provide an interactive command-line interface (CLI) for an Aspectran application. It allows users to execute commands (translets) directly from a terminal and interact with the application.
 *   **Main Entry Point:**
-  *   `com.aspectran.shell.AspectranShell`: Contains the `main` method to bootstrap the interactive shell. It uses a `DefaultConsoleCommander` to manage the shell's lifecycle.
+  *   `com.aspectran.shell.AspectranShell`: Contains the `main` method to bootstrap the interactive shell. It uses a `DefaultShellCommander` to manage the shell's lifecycle.
 *   **Key Components:**
   *   `com.aspectran.shell.service.ShellService`: A `CoreService` specialized for the shell environment, providing access to the `ShellConsole` and a `translate()` method for command execution.
   *   `com.aspectran.shell.activity.ShellActivity`: An `Activity` implementation tailored for console I/O, handling features like procedural prompts and output redirection.

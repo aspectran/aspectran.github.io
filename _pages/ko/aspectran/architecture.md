@@ -77,7 +77,7 @@ Aspectran은 핵심 서비스 및 활동 개념을 기반으로 구축된 특수
 
 *   **목적:** Aspectran 애플리케이션을 위한 대화형 명령줄 인터페이스(CLI)를 제공합니다. 사용자가 터미널에서 직접 명령(트랜슬릿)을 실행하고 애플리케이션과 상호 작용할 수 있도록 합니다.
 *   **주요 진입점:**
-    *   `com.aspectran.shell.AspectranShell`: 대화형 셸을 부트스트랩하는 `main` 메서드를 포함합니다. `DefaultConsoleCommander`를 사용하여 셸의 생명주기를 관리합니다.
+    *   `com.aspectran.shell.AspectranShell`: 대화형 셸을 부트스트랩하는 `main` 메서드를 포함합니다. `DefaultShellCommander`를 사용하여 셸의 생명주기를 관리합니다.
 *   **주요 구성 요소:**
     *   `com.aspectran.shell.service.ShellService`: 셸 환경에 특화된 `CoreService`로, `ShellConsole`에 대한 접근 및 명령 실행을 위한 `translate()` 메서드를 제공합니다.
     *   `com.aspectran.shell.activity.ShellActivity`: 콘솔 입출력에 맞게 조정된 `Activity` 구현으로, 절차적 프롬프트 및 출력 리다이렉션과 같은 기능을 처리합니다.
