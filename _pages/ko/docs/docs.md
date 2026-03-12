@@ -12,6 +12,7 @@ permalink: /ko/docs/
 *   [Aspectran 사용자 가이드](/ko/aspectran/user-guide/)
 *   [Aspectran 기본 구성 가이드](/ko/docs/guides/aspectran-configuration/)
 *   [Aspectran XML 구성 가이드](/ko/docs/guides/aspectran-xml-configuration/)
+*   [Aspectran 규칙 파일 명명 규칙](/ko/docs/guides/aspectran-rule-file-naming/)
 *   [서블릿 기반 웹 애플리케이션 구성](/ko/docs/guides/aspectran-servlet-configuration/)
 *   [Aspectran Beans: 공식 가이드](/ko/docs/guides/aspectran-beans/)
 *   [Aspectran AOP: 기능과 아키텍처](/ko/docs/guides/aspectran-aop/)

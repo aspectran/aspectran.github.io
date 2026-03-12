@@ -12,6 +12,7 @@ permalink: /en/docs/
 *   [Aspectran User Guide](/en/aspectran/user-guide/)
 *   [Aspectran Basic Configuration Guide](/en/docs/guides/aspectran-configuration/)
 *   [Aspectran XML Configuration Guide](/en/docs/guides/aspectran-xml-configuration/)
+*   [Aspectran Rule File Naming Convention](/en/docs/guides/aspectran-rule-file-naming/)
 *   [Servlet-based Web Application Configuration](/en/docs/guides/aspectran-servlet-configuration/)
 *   [Aspectran Beans: The Official Guide](/en/docs/guides/aspectran-beans/)
 *   [Aspectran AOP: Features & Architecture](/en/docs/guides/aspectran-aop/)
