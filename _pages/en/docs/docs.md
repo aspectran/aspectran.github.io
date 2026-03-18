@@ -69,8 +69,6 @@ permalink: /en/docs/
 *   [Aspectran Web Service](/en/docs/architecture/packages/aspectran-web-service/)
 *   [Aspectran Config Parameters](/en/docs/architecture/packages/aspectran-config-parameters/)
 
----
-
 ## <i class="bi bi-layers-half"></i> Aspectow
 
 Next-generation enterprise application server built on Aspectran.
@@ -80,9 +78,8 @@ Next-generation enterprise application server built on Aspectran.
 *   [Aspectow Architecture](/en/aspectow/architecture/)
 *   [Aspectow Configuration Guide](/en/aspectow/configuration-guide/)
 *   [Deployment and Operations Guide](/en/aspectow/deployment-and-operations/)
-*   [Nginx Reverse Proxy and Clustering Guide](/en/en/aspectow/nginx-reverse-proxy-guide/)
-
----
+*   [Multi-context Session Configuration Strategy and Patterns](/en/aspectow/multi-context-session-strategy/)
+*   [Nginx Reverse Proxy and Clustering Guide](/en/aspectow/nginx-reverse-proxy-guide/)
 
 ## <i class="bi bi-graph-up"></i> Aspectow AppMon
 
@@ -92,8 +89,6 @@ Real-time monitoring tool for system resources and application activities.
 *   [AppMon Dashboard Guide](/en/aspectow/appmon/v3-dashboard-guide/)
 *   [AppMon Message Protocol Specification](/en/aspectow/appmon/message-protocol/)
 *   [AppMon Event Count Data Structure and Architecture](/en/aspectow/appmon/event-count-data-structure/)
-
----
 
 ## <i class="bi bi-box-seam"></i> Other Projects
 

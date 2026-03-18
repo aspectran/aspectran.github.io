@@ -69,8 +69,6 @@ permalink: /ko/docs/
 *   [Aspectran Web Service](/ko/docs/architecture/packages/aspectran-web-activity/)
 *   [Aspectran Config Parameters](/ko/docs/architecture/packages/aspectran-config-parameters/)
 
----
-
 ## <i class="bi bi-layers-half"></i> Aspectow
 
 Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니다.
@@ -80,9 +78,8 @@ Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니
 *   [Aspectow 아키텍처](/ko/aspectow/architecture/)
 *   [Aspectow 구성 가이드](/ko/aspectow/configuration-guide/)
 *   [배포 및 운영 가이드](/ko/aspectow/deployment-and-operations/)
+*   [멀티 컨텍스트 세션 구성 전략 및 패턴](/ko/aspectow/multi-context-session-strategy/)
 *   [Nginx 리버스 프록시 및 클러스터링 가이드](/ko/aspectow/nginx-reverse-proxy-guide/)
-
----
 
 ## <i class="bi bi-graph-up"></i> Aspectow AppMon
 
@@ -92,8 +89,6 @@ Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니
 *   [AppMon 대시보드 가이드](/ko/aspectow/appmon/v3-dashboard-guide/)
 *   [AppMon 메시지 프로토콜 명세](/ko/aspectow/appmon/message-protocol/)
 *   [AppMon 이벤트 카운트 데이터 구조 및 아키텍처](/ko/aspectow/appmon/event-count-data-structure/)
-
----
 
 ## <i class="bi bi-box-seam"></i> 기타 프로젝트 및 라이브러리
 
