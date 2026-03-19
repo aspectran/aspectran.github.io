@@ -22,7 +22,7 @@ subheadline: 실용 가이드
     <dependency>
         <groupId>nz.net.ultraq.thymeleaf</groupId>
         <artifactId>thymeleaf-layout-dialect</artifactId>
-        <version>3.4.0</version>
+        <version>4.0.0</version>
     </dependency>
 
     <!-- 기타 필요한 의존성 -->

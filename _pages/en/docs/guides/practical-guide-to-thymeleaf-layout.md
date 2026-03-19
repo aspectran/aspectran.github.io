@@ -22,7 +22,7 @@ First, you need to add dependencies for Thymeleaf and Layout Dialect to your pro
     <dependency>
         <groupId>nz.net.ultraq.thymeleaf</groupId>
         <artifactId>thymeleaf-layout-dialect</artifactId>
-        <version>3.4.0</version>
+        <version>4.0.0</version>
     </dependency>
 
     <!-- Other necessary dependencies -->
