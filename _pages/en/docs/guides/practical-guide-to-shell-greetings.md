@@ -3,6 +3,7 @@ title: Guide to Setting and Styling Shell Greetings in Aspectran
 subheadline: Practical Guides
 ---
 
+{% raw %}
 Greeting messages in Aspectran Shell are a key element for communicating your application's identity and status. This guide covers how to compose greetings, use text styling, and leverage dynamic tokens for a rich terminal experience.
 
 ## 1. Components of Greeting Messages
@@ -89,3 +90,4 @@ shell: {
 ### Writing Tips
 - **Visual Hierarchy:** Use bright colors (`CYAN`, `GREEN`) for essential info (URLs, Status) and `gray` for supplementary help text.
 - **Load Order:** Place your dedicated description file at the **very top** of the `rules` list in `aspectran-config.apon`.
+{% endraw %}
