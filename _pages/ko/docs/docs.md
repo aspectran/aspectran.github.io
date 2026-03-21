@@ -10,7 +10,8 @@ permalink: /ko/docs/
 
 ### 핵심 가이드
 {: #핵심-가이드}
-*   [Aspectran 사용자 가이드](/ko/aspectran/user-guide/)
+*   [Aspectran 개요](/ko/docs/guides/aspectran-overview/)
+*   [Aspectran 사용자 가이드](/ko/docs/guides/aspectran-user-guide/)
 *   [Aspectran 기본 구성 가이드](/ko/docs/guides/aspectran-configuration/)
 *   [Aspectran XML 구성 가이드](/ko/docs/guides/aspectran-xml-configuration/)
 *   [Aspectran 규칙 파일 명명 규칙](/ko/docs/guides/aspectran-rule-file-naming/)
@@ -38,7 +39,7 @@ permalink: /ko/docs/
 ### 아키텍처 및 메커니즘
 {: #아키텍처-및-메커니즘}
 *   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)
-*   [Aspectran 아키텍처: 통합 심층 분석](/ko/aspectran/architecture/)
+*   [Aspectran 아키텍처: 통합 심층 분석](/ko/docs/guides/aspectran-architecture/)
 *   [Aspectran 아키텍처 다이어그램](/ko/docs/architecture/aspectran-architecture-diagrams/)
 *   [ActivityContext 빌드 과정: 심층 분석](/ko/docs/architecture/activity-context-building/)
 *   [Aspectran 자동 리로딩 메커니즘 심층 분석](/ko/docs/architecture/aspectran-reloading-mechanism/)
@@ -79,22 +80,22 @@ permalink: /ko/docs/
 Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니다.
 
 *   [Why Aspectow](/ko/why-aspectow/)
-*   [Aspectow 시작하기](/ko/aspectow/getting-started/)
-*   [Aspectow 아키텍처](/ko/aspectow/architecture/)
-*   [Aspectow 구성 가이드](/ko/aspectow/configuration-guide/)
-*   [배포 및 운영 가이드](/ko/aspectow/deployment-and-operations/)
-*   [멀티 컨텍스트 세션 구성 전략 및 패턴](/ko/aspectow/multi-context-session-strategy/)
-*   [Nginx 리버스 프록시 및 클러스터링 가이드](/ko/aspectow/nginx-reverse-proxy-guide/)
+*   [Aspectow 시작하기](/ko/docs/aspectow/getting-started/)
+*   [Aspectow 아키텍처](/ko/docs/aspectow/architecture/)
+*   [Aspectow 구성 가이드](/ko/docs/aspectow/configuration-guide/)
+*   [배포 및 운영 가이드](/ko/docs/aspectow/deployment-and-operations/)
+*   [멀티 컨텍스트 세션 구성 전략 및 패턴](/ko/docs/aspectow/multi-context-session-strategy/)
+*   [Nginx 리버스 프록시 및 클러스터링 가이드](/ko/docs/aspectow/nginx-reverse-proxy-guide/)
 
 ## <i class="bi bi-graph-up"></i> Aspectow AppMon
 {: #aspectow-appmon}
 
 시스템 리소스 및 애플리케이션 활동을 실시간으로 감시하는 강력한 도구입니다.
 
-*   [Aspectow AppMon 개요 및 특징](/ko/aspectow/appmon/)
-*   [AppMon 대시보드 가이드](/ko/aspectow/appmon/v3-dashboard-guide/)
-*   [AppMon 메시지 프로토콜 명세](/ko/aspectow/appmon/message-protocol/)
-*   [AppMon 이벤트 카운트 데이터 구조 및 아키텍처](/ko/aspectow/appmon/event-count-data-structure/)
+*   [Aspectow AppMon 개요 및 특징](/ko/docs/aspectow/appmon/)
+*   [AppMon 대시보드 가이드](/ko/docs/aspectow/appmon/v3-dashboard-guide/)
+*   [AppMon 메시지 프로토콜 명세](/ko/docs/aspectow/appmon/message-protocol/)
+*   [AppMon 이벤트 카운트 데이터 구조 및 아키텍처](/ko/docs/aspectow/appmon/event-count-data-structure/)
 
 ## <i class="bi bi-box-seam"></i> 기타 프로젝트 및 라이브러리
 

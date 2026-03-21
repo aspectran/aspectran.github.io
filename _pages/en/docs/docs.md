@@ -10,7 +10,8 @@ permalink: /en/docs/
 
 ### Core Guides
 {: #core-guides}
-*   [Aspectran User Guide](/en/aspectran/user-guide/)
+*   [Aspectran Overview](/en/docs/guides/aspectran-overview/)
+*   [Aspectran User Guide](/en/docs/guides/aspectran-user-guide/)
 *   [Aspectran Basic Configuration Guide](/en/docs/guides/aspectran-configuration/)
 *   [Aspectran XML Configuration Guide](/en/docs/guides/aspectran-xml-configuration/)
 *   [Aspectran Rule File Naming Convention](/en/docs/guides/aspectran-rule-file-naming/)
@@ -38,7 +39,7 @@ permalink: /en/docs/
 ### Architecture & Mechanisms
 {: #architecture-mechanisms}
 *   [Designing for Sustainable Simplicity: Architectural Philosophy](/en/why-aspectran/)
-*   [Aspectran Architecture: An Integrated Deep Dive](/en/aspectran/architecture/)
+*   [Aspectran Architecture: An Integrated Deep Dive](/en/docs/guides/aspectran-architecture/)
 *   [Aspectran Architecture Diagrams](/en/docs/architecture/aspectran-architecture-diagrams/)
 *   [ActivityContext Build Process: An In-Depth Analysis](/en/docs/architecture/activity-context-building/)
 *   [In-Depth Analysis of the Auto-Reloading Mechanism](/en/docs/architecture/aspectran-reloading-mechanism/)
@@ -79,22 +80,22 @@ permalink: /en/docs/
 Next-generation enterprise application server built on Aspectran.
 
 *   [Why Aspectow](/en/why-aspectow/)
-*   [Aspectow Getting Started](/en/aspectow/getting-started/)
-*   [Aspectow Architecture](/en/aspectow/architecture/)
-*   [Aspectow Configuration Guide](/en/aspectow/configuration-guide/)
-*   [Deployment and Operations Guide](/en/aspectow/deployment-and-operations/)
-*   [Multi-context Session Configuration Strategy and Patterns](/en/aspectow/multi-context-session-strategy/)
-*   [Nginx Reverse Proxy and Clustering Guide](/en/aspectow/nginx-reverse-proxy-guide/)
+*   [Aspectow Getting Started](/en/docs/aspectow/getting-started/)
+*   [Aspectow Architecture](/en/docs/aspectow/architecture/)
+*   [Aspectow Configuration Guide](/en/docs/aspectow/configuration-guide/)
+*   [Deployment and Operations Guide](/en/docs/aspectow/deployment-and-operations/)
+*   [Multi-context Session Configuration Strategy and Patterns](/en/docs/aspectow/multi-context-session-strategy/)
+*   [Nginx Reverse Proxy and Clustering Guide](/en/docs/aspectow/nginx-reverse-proxy-guide/)
 
 ## <i class="bi bi-graph-up"></i> Aspectow AppMon
 {: #aspectow-appmon}
 
 Real-time monitoring tool for system resources and application activities.
 
-*   [Aspectow AppMon Overview & Features](/en/aspectow/appmon/)
-*   [AppMon Dashboard Guide](/en/aspectow/appmon/v3-dashboard-guide/)
-*   [AppMon Message Protocol Specification](/en/aspectow/appmon/message-protocol/)
-*   [AppMon Event Count Data Structure and Architecture](/en/aspectow/appmon/event-count-data-structure/)
+*   [Aspectow AppMon Overview & Features](/en/docs/aspectow/appmon/)
+*   [AppMon Dashboard Guide](/en/docs/aspectow/appmon/v3-dashboard-guide/)
+*   [AppMon Message Protocol Specification](/en/docs/aspectow/appmon/message-protocol/)
+*   [AppMon Event Count Data Structure and Architecture](/en/docs/aspectow/appmon/event-count-data-structure/)
 
 ## <i class="bi bi-box-seam"></i> Other Projects
 

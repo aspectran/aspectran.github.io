@@ -8,7 +8,7 @@ aspectran:
         url: /en/why-aspectran/
         class: btn-primary
       - title: Get Started
-        url: /en/aspectran/getting-started/
+        url: /en/docs/guides/aspectran-getting-started/
         class: btn-outline-secondary
         icon: bi-play-fill
 
@@ -17,10 +17,10 @@ aspectran:
       anchor: core-guides
       cards:
         - title: Official User Guide
-          url: /en/aspectran/user-guide/
+          url: /en/docs/guides/aspectran-user-guide/
           description: The definitive manual for all Aspectran features, component management, and advanced configuration.
         - title: Technical Overview
-          url: /en/aspectran/overview/
+          url: /en/docs/guides/aspectran-overview/
           description: Understand the core design patterns and how Aspectran achieves true environmental independence.
       tags:
         - title: Basic Config
@@ -71,9 +71,12 @@ aspectran:
       anchor: architecture-mechanisms
       cards:
         - title: Integrated Architecture
-          url: /en/aspectran/architecture/
+          url: /en/docs/guides/aspectran-architecture/
           description: Comprehensive analysis of Aspectran's internal structure and design philosophy.
           class: border-start border-4 border-primary
+        - title: Architecture Diagrams
+          url: /en/docs/architecture/aspectran-architecture-diagrams/
+          description: Shows the architecture of Aspectran from various perspectives.
 
 aspectow:
   hero:
@@ -85,7 +88,7 @@ aspectow:
         url: /en/why-aspectow/
         class: btn-primary
       - title: Get Started
-        url: /en/aspectow/getting-started/
+        url: /en/docs/aspectow/getting-started/
         class: btn-outline-secondary
         icon: bi-play-fill
 
@@ -94,23 +97,23 @@ aspectow:
       anchor: aspectow
       cards:
         - title: Configuration Guide
-          url: /en/aspectow/configuration-guide/
+          url: /en/docs/aspectow/configuration-guide/
           description: Systematic guide to the structure of Aspectow and core feature configurations for production.
         - title: Deployment & Operations
-          url: /en/aspectow/deployment-and-operations/
+          url: /en/docs/aspectow/deployment-and-operations/
           description: Learn how to deploy and manage applications as services across different operating systems.
       tags:
         - title: Aspectow Architecture
-          url: /en/aspectow/architecture/
+          url: /en/docs/aspectow/architecture/
         - title: Multi-context Sessions
-          url: /en/aspectow/multi-context-session-strategy/
+          url: /en/docs/aspectow/multi-context-session-strategy/
         - title: Nginx & Clustering
-          url: /en/aspectow/nginx-reverse-proxy-guide/
+          url: /en/docs/aspectow/nginx-reverse-proxy-guide/
 
     - title: Real-time Monitoring
       anchor: aspectow-appmon
       cards:
         - title: Aspectow AppMon
-          url: /en/aspectow/appmon/
+          url: /en/docs/aspectow/appmon/
           description: Lightweight monitoring solution for system resources and application activities based on the Aspectran framework.
           class: border-start border-4 border-info
