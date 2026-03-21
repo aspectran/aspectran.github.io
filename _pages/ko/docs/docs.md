@@ -31,6 +31,7 @@ permalink: /ko/docs/
 *   [Aspectran에서 Thymeleaf 레이아웃 적용 가이드](/ko/docs/guides/practical-guide-to-thymeleaf-layout/)
 *   [Aspectran에서 CORS(Cross-Origin Resource Sharing) 활용하기](/ko/docs/guides/practical-guide-to-cors/)
 *   [커스텀 TypeConverter 실용 가이드](/ko/docs/guides/practical-guide-to-type-converter/)
+*   [쉘 그리팅(Greetings) 설정 및 스타일링 가이드](/ko/docs/guides/practical-guide-to-shell-greetings/)
 
 ### 아키텍처 및 메커니즘
 *   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)

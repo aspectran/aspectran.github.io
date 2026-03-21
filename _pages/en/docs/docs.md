@@ -31,6 +31,7 @@ permalink: /en/docs/
 *   [Guide to Applying Thymeleaf Layout in Aspectran](/en/docs/guides/practical-guide-to-thymeleaf-layout/)
 *   [Using CORS (Cross-Origin Resource Sharing) in Aspectran](/en/docs/guides/practical-guide-to-cors/)
 *   [Practical Guide to Custom Type Converters](/en/docs/guides/practical-guide-to-type-converter/)
+*   [Guide to Setting and Styling Shell Greetings](/en/docs/guides/practical-guide-to-shell-greetings/)
 
 ### Architecture & Mechanisms
 *   [Designing for Sustainable Simplicity: Architectural Philosophy](/en/why-aspectran/)
