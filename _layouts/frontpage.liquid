@@ -7,14 +7,20 @@ layout: default
     border: 0;
     opacity: .8;
     padding: .5rem 1rem;
-    background: linear-gradient(180deg, rgb(77, 87, 91) 0%, rgb(68, 76, 82) 80%, rgb(66, 73, 78) 100%);
-    border-radius: 1rem;
+    @media screen and (max-width: 768px) {
+      background: none;
+      border-top: 1px solid #4a545b;
+    }
+    @media screen and (min-width: 768px) {
+      background: linear-gradient(180deg, rgb(56, 77, 89) 0%, rgb(62, 70, 75) 80%, rgb(62, 70, 75) 100%);
+      border-radius: 1rem;
+    }
   }
-  .card {
+  .panel5 .card {
     border-radius: 0.5rem;
     transition: transform 0.2s;
   }
-  .card:hover { transform: translateY(-3px); }
+  .panel5:hover, .card:hover { transform: translateY(-3px); }
 </style>
 
 <div id="masthead">
@@ -57,7 +63,7 @@ layout: default
 {% endif %}
 
 <div class="container">
-  <div class="row g-3 pt-3">
+  <div class="row g-3 pt-3 pt-lg-4 pt-xl-5">
     {% for project in site.data.projects[page.lang].sample_projects limit:4 %}
       <div class="col-lg-6">
         <div class="card h-100 shadow-sm">
