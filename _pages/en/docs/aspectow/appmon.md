@@ -185,9 +185,9 @@ AppMon uses Java system properties to specify which database to use for storing 
 
 #### Step 3: Configure UI Assets and JSP
 
-> **Related files: `appmon-assets.xml`, `webapps/appmon/WEB-INF/jsp/appmon/**`**
+> **Related files: `appmon-rules.xml`, `webapps/appmon/WEB-INF/jsp/appmon/**`**
 
--   **`appmon-assets.xml`**: Determines where to load the AppMon UI's static assets, like CSS and JavaScript, based on the profile (`dev`/`prod`). It can be set to load from a local source or a CDN.
+-   **`appmon-rules.xml`**: Determines where to load the AppMon UI's static assets, like CSS and JavaScript, based on the profile (`dev`/`prod`). It can be set to load from a local source or a CDN.
 -   **JSP Files**: The JSP files that make up the AppMon UI are not included in the library **to allow users to directly modify the UI for their own use**. Therefore, you must copy the contents of the original project's `/webapps/appmon/WEB-INF/jsp/appmon` directory to the same path within your own project.
 
 #### Step 4: Set the Domain Identifier (Production Environment)

@@ -50,7 +50,7 @@ This is where system binaries and application code are located. It is updated at
 ### 2.2. Mutable Zone
 This area contains data created at runtime or configuration information that varies by environment.
 
-- **`app/config/`**: Contains application configuration (`aspectran-config.apon`, `root-context.xml`) and server environment settings (`server.xml`, `logging`). Even if the code is the same, you can flexibly respond to development, testing, and production environments by simply swapping the `config`.
+- **`app/config/`**: Contains application configuration (`aspectran-config.apon`, `aspectran-rules.xml`) and server environment settings (`server.xml`, `logging`). Even if the code is the same, you can flexibly respond to development, testing, and production environments by simply swapping the `config`.
 - **`app/logs/`**: Stores server operation logs and application logs.
 - **`app/work/`**: Stores temporary data generated during server execution (session storage, JSP compilation results, etc.). Specifically, for **Safe Reloading**, JAR files from `app/lib` are copied here and loaded to prevent file locking issues. This allows files in `app/lib` to be safely replaced even while the server is running.
 - **`app/temp/`**: Used as the system temporary directory (`java.io.tmpdir`).

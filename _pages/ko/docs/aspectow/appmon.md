@@ -185,9 +185,9 @@ AppMon은 모니터링 데이터를 저장할 DB를 Java 시스템 속성을 통
 
 #### 3단계: UI 애셋 및 JSP 설정
 
-> **관련 파일: `appmon-assets.xml`, `webapps/appmon/WEB-INF/jsp/appmon/**`**
+> **관련 파일: `appmon-rules.xml`, `webapps/appmon/WEB-INF/jsp/appmon/**`**
 
--   **`appmon-assets.xml`**: 프로파일(`dev`/`prod`)에 따라 AppMon UI의 CSS, JavaScript 등 정적 애셋을 로컬에서 가져올지, CDN에서 가져올지 결정합니다.
+-   **`appmon-rules.xml`**: 프로파일(`dev`/`prod`)에 따라 AppMon UI의 CSS, JavaScript 등 정적 애셋을 로컬에서 가져올지, CDN에서 가져올지 결정합니다.
 -   **JSP 파일 복사**: AppMon UI를 구성하는 JSP 파일들은 **사용자가 직접 UI를 수정해서 사용할 수 있도록** 라이브러리에 포함되어 있지 않습니다. 따라서, 원본 프로젝트의 `/webapps/appmon/WEB-INF/jsp/appmon` 디렉토리 내용을 자신의 프로젝트 내 동일 경로로 복사해 와야 합니다.
 
 #### 4단계: 도메인 식별자 설정 (운영 환경)

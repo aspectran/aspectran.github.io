@@ -672,7 +672,7 @@ In addition to simple profile names, you can use logical operators to express co
 
 Here is a complete example of setting different database connection information according to `dev` and `prod` environments.
 
-**`config/root-context.xml`**
+**`config/aspectran-rules.xml`**
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <aspectran>

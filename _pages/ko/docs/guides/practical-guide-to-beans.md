@@ -444,7 +444,7 @@ Aspectran 구동시에 `@Component`, `@Bean` 어노테이션이 붙은 클래스
 context: {
     name: root
     rules: [
-        /config/root-context.xml
+        /config/aspectran-rules.xml
     ]
     resources: [
         /lib/ext

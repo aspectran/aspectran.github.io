@@ -42,7 +42,7 @@ system: {
 ```apon
 context: {
     name: root
-    rules: /config/root-context.xml
+    rules: /config/aspectran-rules.xml
     resources: [
         /lib/ext
     ]
@@ -193,7 +193,7 @@ Aspectran을 웹 애플리케이션으로 실행할 때의 환경을 정의합�
 }
 context: {
     name: root
-    rules: /config/root-context.xml
+    rules: /config/aspectran-rules.xml
     resources: [
         /lib/ext
     ]

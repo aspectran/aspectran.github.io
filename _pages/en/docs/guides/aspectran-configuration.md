@@ -42,7 +42,7 @@ Defines the settings required to create the `ActivityContext`, which constitutes
 ```apon
 context: {
     name: root
-    rules: /config/root-context.xml
+    rules: /config/aspectran-rules.xml
     resources: [
         /lib/ext
     ]
@@ -193,7 +193,7 @@ The following is a complete example of an `aspectran-config.apon` file that incl
 }
 context: {
     name: root
-    rules: /config/root-context.xml
+    rules: /config/aspectran-rules.xml
     resources: [
         /lib/ext
     ]

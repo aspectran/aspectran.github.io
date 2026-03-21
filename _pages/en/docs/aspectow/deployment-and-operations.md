@@ -288,4 +288,4 @@ Even if the `jsvc` stop command fails, the script ensures that the process is te
 
 After deploying the application, it is recommended to configure a reverse proxy like Nginx in a production environment. Learn more in the guide below.
 
-- [Nginx Reverse Proxy and Clustering Guide](/en/aspectow/nginx-reverse-proxy-guide/)
+- [Nginx Reverse Proxy and Clustering Guide](/en/docs/aspectow/nginx-reverse-proxy-guide/)

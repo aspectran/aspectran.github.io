@@ -288,4 +288,4 @@ Aspectow는 `context.singleton` 설정이 `true`(기본값)일 경우, 같은 `b
 
 애플리케이션 배포 후, 실제 운영 환경에서는 Nginx와 같은 리버스 프록시를 구성하는 것이 좋습니다. 아래 가이드에서 자세한 방법을 확인하세요.
 
-- [Nginx 리버스 프록시 및 클러스터링 가이드](/ko/aspectow/nginx-reverse-proxy-guide/)
+- [Nginx 리버스 프록시 및 클러스터링 가이드](/ko/docs/aspectow/nginx-reverse-proxy-guide/)

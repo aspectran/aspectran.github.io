@@ -443,7 +443,7 @@ It is recommended to add the path of the application's base package first.
 context: {
     name: root
     rules: [
-        /config/root-context.xml
+        /config/aspectran-rules.xml
     ]
     resources: [
         /lib/ext

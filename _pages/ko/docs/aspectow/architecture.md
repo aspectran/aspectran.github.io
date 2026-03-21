@@ -50,7 +50,7 @@ Aspectow는 배포, 운영, 유지보수의 효율성을 극대화하기 위해 
 ### 2.2. 가변 영역 (Mutable Zone)
 런타임에 생성되는 데이터나, 환경에 따라 달라지는 설정 정보가 위치합니다.
 
-- **`app/config/`**: 애플리케이션 설정(`aspectran-config.apon`, `root-context.xml`)과 서버 환경 설정(`server.xml`, `logging`)이 위치합니다. 코드는 동일하더라도 `config`만 교체하여 개발, 테스트, 운영 환경에 유연하게 대응할 수 있습니다.
+- **`app/config/`**: 애플리케이션 설정(`aspectran-config.apon`, `aspectran-rules.xml`)과 서버 환경 설정(`server.xml`, `logging`)이 위치합니다. 코드는 동일하더라도 `config`만 교체하여 개발, 테스트, 운영 환경에 유연하게 대응할 수 있습니다.
 - **`app/logs/`**: 서버 운영 로그 및 애플리케이션 로그가 적재됩니다.
 - **`app/work/`**: 서버 실행 중 생성되는 임시 데이터(세션 저장소, JSP 컴파일 결과 등)가 저장됩니다. 특히 **안전한 리로딩(Safe Reloading)**을 위해 `app/lib`의 JAR 파일들을 이곳으로 복사하여 로드함으로써, 파일 잠금(File Locking) 문제를 방지합니다. 덕분에 서버가 가동 중인 상태에서도 `app/lib` 내의 파일을 안전하게 교체할 수 있습니다.
 - **`app/temp/`**: 시스템 임시 디렉토리(`java.io.tmpdir`)로 사용됩니다.

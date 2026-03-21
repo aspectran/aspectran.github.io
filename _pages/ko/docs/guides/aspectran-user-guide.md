@@ -664,7 +664,7 @@ Aspectran의 설정 파일(XML 또는 APON) 내 대부분의 엘리먼트에서 
 
 `dev`와 `prod` 환경에 따라 다른 데이터베이스 연결 정보를 설정하는 완전한 예제는 다음과 같습니다.
 
-**`config/root-context.xml`**
+**`config/aspectran-rules.xml`**
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <aspectran>

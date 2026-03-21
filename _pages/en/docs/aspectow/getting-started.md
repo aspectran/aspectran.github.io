@@ -107,7 +107,7 @@ app
 │   ├── completed   # Directory where successfully completed command files are archived
 │   ├── failed      # Directory where failed command files are archived
 │   └── sample      # Sample command files
-├── config          # Application configuration files (aspectran-config.apon, root-context.xml, etc.)
+├── config          # Application configuration files (aspectran-config.apon, aspectran-rules.xml, etc.)
 │   ├── appmon      # AppMon related settings
 │   ├── logging     # Logging settings (logback.xml, etc.)
 │   ├── mail        # Mail related settings
@@ -127,7 +127,7 @@ app
 In the `aspectow-todo-webapp` project, the main configuration files that control the behavior of the Aspectran application are as follows:
 
 *   **`app/config/aspectran-config.apon`**: Defines the overall behavior of the Aspectran context, specifying component scan paths, etc.
-*   **`app/config/root-context.xml`**: Contains the core context settings for the application, handling Translet and Bean definitions, view settings, and more related to web request processing.
+*   **`app/config/aspectran-rules.xml`**: Contains the core context settings for the application, handling Translet and Bean definitions, view settings, and more related to web request processing.
 *   **`app/config/server/server.xml`**: Includes other XML files used to configure the Undertow web server's port, context path, servlet filters, etc.
 
 For more details on each configuration file, refer to the [Aspectran Configuration documentation](/en/docs/guides/aspectran-configuration/).
@@ -166,5 +166,5 @@ To effectively check the application's debug logs, you need to adjust the loggin
 ## 11. Next Steps
 
 *   **Explore the Code**: Look through the code of the cloned project to understand the structure and behavior of Aspectran.
-*   **Learn Core Concepts**: Read [Aspectow Architecture](/en/aspectow/archtecture/) to delve deeper into the main features of the Aspectran framework and Aspectow WAS.
+*   **Learn Core Concepts**: Read [Aspectow Architecture](/en/docs/aspectow/archtecture/) to delve deeper into the main features of the Aspectran framework and Aspectow WAS.
 *   **Develop Your Own Application**: Start developing your own application based on an Aspectow [starter project](/en/projects/).

@@ -35,7 +35,7 @@ An Aspectow application follows a standard directory structure to provide conven
 - **`/app`**: The home directory of the built application. In actual operation, the application runs based on this directory.
     - **`bin/`**: Contains shell scripts for running and controlling the application, such as `daemon.sh` and `shell.sh`.
     - **`cmd/`**: A directory structure for processing file-based asynchronous commands (composed of `incoming`, `queued`, `completed`, `failed`, etc.).
-    - **`app/config/`**: Manages all application and server settings, such as `aspectran-config.apon`, `root-context.xml`, and `server.xml`.
+    - **`app/config/`**: Manages all application and server settings, such as `aspectran-config.apon`, `aspectran-rules.xml`, and `server.xml`.
     - **`lib/`**: All external dependency libraries (.jar) copied by the `maven-dependency-plugin` are located here. The application's .jar file for the current project is located in `lib/ext/`.
     - **`app/logs/`**: All log files generated during application execution are stored here.
     - **`app/temp/`**: Temporary files used by the application during operation, such as for file uploads or resource reloading, are stored here.
@@ -106,8 +106,8 @@ The core plugins place the built artifacts into the standard structure within th
 
 The core behavior and business logic of the application are controlled through configuration files in the `/config` directory. The `aspectran-config.apon` file serves as the starting point for configuration, defining both context and web-related settings.
 
-- **`aspectran-config.apon`**: Specifies the framework's basic operational parameters and the location of context rule files like `root-context.xml`, where Beans and Translets are defined.
-- **`root-context.xml`**: Defines all elements that constitute the application's actual logic, such as database connections, service Beans, and common Aspects.
+- **`aspectran-config.apon`**: Specifies the framework's basic operational parameters and the location of context rule files like `aspectran-rules.xml`, where Beans and Translets are defined.
+- **`aspectran-rules.xml`**: Defines all elements that constitute the application's actual logic, such as database connections, service Beans, and common Aspects.
 
 For all the details about application context configuration and a description of each item, please refer to the main configuration guide document.
 
@@ -227,13 +227,13 @@ The built-in monitoring tool, AppMon, has its default configuration bundled with
 
 - **`/config/appmon/appmon-config.apon`**: The core configuration file that defines what to monitor (instances, events, metrics, logs).
 - **`/config/appmon/appmon.db-*.properties`**: A file to configure the database connection for storing monitoring data.
-- **`/config/appmon/appmon-assets.xml`**: A file to configure the loading method for AppMon UI's static assets (CSS, JS).
+- **`/config/appmon/appmon-rules.xml`**: A file to configure the loading method for AppMon UI's static assets (CSS, JS).
 - **`/config/server/undertow/tow-context-appmon.xml`**: A file to customize how AppMon is deployed as a web application.
 - **`/webapps/appmon/WEB-INF/jsp/`**: Contains the JSP files that constitute the AppMon UI. The `templates/default.jsp` is the template that handles the overall layout, and you can customize the UI by modifying the JSP files in the `appmon/` directory.
 
 For the complete architecture of AppMon configuration, detailed descriptions of each configuration item, and examples, please refer to the main AppMon introduction document.
 
-**Reference Document:** [Aspectow AppMon](/en/aspectow/appmon/)
+**Reference Document:** [Aspectow AppMon](/en/docs/aspectow/appmon/)
 
 ## 7. Key Feature Usage: AppMon Dashboard Access Control
 

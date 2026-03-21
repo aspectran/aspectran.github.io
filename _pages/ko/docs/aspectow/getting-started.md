@@ -107,7 +107,7 @@ app
 │   ├── completed   # 성공적으로 실행 완료된 명령 파일이 보관되는 디렉토리
 │   ├── failed      # 실행 중 오류가 발생한 명령 파일이 보관되는 디렉토리
 │   └── sample      # 샘플 명령 파일
-├── config          # 애플리케이션 설정 파일 (aspectran-config.apon, root-context.xml 등)
+├── config          # 애플리케이션 설정 파일 (aspectran-config.apon, aspectran-rules.xml 등)
 │   ├── appmon      # AppMon 관련 설정
 │   ├── logging     # 로깅 설정 (logback.xml 등)
 │   ├── mail        # 메일 관련 설정
@@ -127,7 +127,7 @@ app
 `aspectow-todo-webapp` 프로젝트에서 Aspectran 애플리케이션의 동작을 제어하는 주요 설정 파일들은 다음과 같습니다.
 
 *   **`app/config/aspectran-config.apon`**: Aspectran 컨텍스트의 전반적인 동작을 정의하며, 컴포넌트 스캔 경로 등을 지정합니다.
-*   **`app/config/root-context.xml`**: 애플리케이션의 핵심 컨텍스트 설정을 포함하며, 웹 요청 처리와 관련된 Translet, Bean 정의, 뷰 설정 등을 담당합니다.
+*   **`app/config/aspectran-rules.xml`**: 애플리케이션의 핵심 컨텍스트 설정을 포함하며, 웹 요청 처리와 관련된 Translet, Bean 정의, 뷰 설정 등을 담당합니다.
 *   **`app/config/server/server.xml`**: Undertow 웹 서버의 포트, 컨텍스트 경로, 서블릿 필터 등을 설정하는 데 사용되는 다른 XML 파일들을 포함합니다.
 
 각 설정 파일에 대한 더 자세한 내용은 [Aspectran 설정 문서](/ko/docs/guides/aspectran-configuration/)를 참조하세요.
@@ -166,5 +166,5 @@ IDE(예: IntelliJ IDEA, Eclipse)를 사용하는 경우, 특정 클래스(예: `
 ## 11. 다음 단계
 
 *   **코드 탐색**: 클론한 프로젝트의 코드를 살펴보며 Aspectran의 구조와 동작 방식을 이해해 보세요.
-*   **핵심 개념 학습**: [Aspectow 아키텍처](/ko/aspectow/architecture/)를 읽고 Aspectran 프레임워크와 Aspectow WAS의 주요 특징을 더 깊이 알아보세요.
+*   **핵심 개념 학습**: [Aspectow 아키텍처](/ko/docs/aspectow/architecture/)를 읽고 Aspectran 프레임워크와 Aspectow WAS의 주요 특징을 더 깊이 알아보세요.
 *   **나만의 애플리케이션 개발**: Aspectow [스타터 프로젝트](/ko/projects/)를 기반으로 자신만의 애플리케이션 개발을 시작해 보세요.

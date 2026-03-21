@@ -28,7 +28,7 @@ These files define the **Servlet Context** at the web server level (e.g., Undert
 These files contain the actual **content**, such as business logic (translet groups) or specific resource definitions (bean definitions). Since they are included as rules by the parent `*-rules.*` files, they use concise, meaning-oriented names without unnecessary suffixes.
 
 *   **Translet Groups**: `home.xml`, `monitoring.xml`, `user-api.apon`
-*   **Resource Definitions**: `appmon-assets.xml`, `server.xml`, `database.xml`
+*   **Resource Definitions**: `i18n`, `server.xml`, `database.xml`
 
 ## 2. Configuration Hierarchy Example
 
@@ -38,7 +38,7 @@ The following diagram illustrates how configuration files are composed to manage
 aspectran-config.apon (System Configuration)
 └── aspectran-rules.xml (Root Rules Entry Point)
     ├── server.xml (Server Resources)
-    ├── appmon-assets.xml (Resource Definitions)
+    ├── database.xml (Resource Definitions)
     └── web-rules.xml (Web Environment Rules Entry Point)
         ├── home.xml (Home Translet Group)
         └── monitoring.xml (Monitoring Translet Group)
