@@ -1,0 +1,116 @@
+aspectran:
+  hero:
+    title: Sustainable Simplicity
+    lead: Build flexible, environment-independent applications with a component-oriented framework designed for longevity.
+    icon: bi-gear-wide-connected
+    buttons:
+      - title: Why Aspectran?
+        url: /en/why-aspectran/
+        class: btn-primary
+      - title: Get Started
+        url: /en/aspectran/getting-started/
+        class: btn-outline-secondary
+        icon: bi-play-fill
+
+  sections:
+    - title: Core Framework Guides
+      anchor: core-guides
+      cards:
+        - title: Official User Guide
+          url: /en/aspectran/user-guide/
+          description: The definitive manual for all Aspectran features, component management, and advanced configuration.
+        - title: Technical Overview
+          url: /en/aspectran/overview/
+          description: Understand the core design patterns and how Aspectran achieves true environmental independence.
+      tags:
+        - title: Basic Config
+          url: /en/docs/guides/aspectran-configuration/
+        - title: XML Config
+          url: /en/docs/guides/aspectran-xml-configuration/
+        - title: Rule Naming
+          url: /en/docs/guides/aspectran-rule-file-naming/
+        - title: Official Beans Guide
+          url: /en/docs/guides/aspectran-beans/
+        - title: AOP Features
+          url: /en/docs/guides/aspectran-aop/
+        - title: Translets
+          url: /en/docs/guides/aspectran-translet/
+        - title: Scheduler
+          url: /en/docs/guides/aspectran-scheduler/
+        - title: View Tech
+          url: /en/docs/guides/aspectran-view-technologies/
+        - title: Profiles
+          url: /en/docs/guides/aspectran-profiles/
+        - title: AsEL
+          url: /en/docs/guides/introduce-asel/
+        - title: APON
+          url: /en/docs/guides/introduce-apon/
+
+    - title: Practical Implementation
+      anchor: practical-guides
+      cards:
+        - title: Translets in Practice
+          url: /en/docs/guides/practical-guide-to-translets/
+          description: Step-by-step instructions on effectively designing and implementing Translets for real-world scenarios.
+        - title: Shell Greeting & Styling
+          url: /en/docs/guides/practical-guide-to-shell-greetings/
+          description: Learn how to customize and style your CLI environment's greeting messages using ANSI markup and tokens.
+      tags:
+        - title: Beans IoC/DI
+          url: /en/docs/guides/practical-guide-to-beans/
+        - title: PBE Token Auth
+          url: /en/docs/guides/practical-guide-to-pbe-token-based-authentication/
+        - title: Thymeleaf Layout
+          url: /en/docs/guides/practical-guide-to-thymeleaf-layout/
+        - title: CORS Usage
+          url: /en/docs/guides/practical-guide-to-cors/
+        - title: Custom Type Converters
+          url: /en/docs/guides/practical-guide-to-type-converter/
+
+    - title: Architecture & Mechanisms
+      anchor: architecture-mechanisms
+      cards:
+        - title: Integrated Architecture
+          url: /en/aspectran/architecture/
+          description: Comprehensive analysis of Aspectran's internal structure and design philosophy.
+          class: border-start border-4 border-primary
+
+aspectow:
+  hero:
+    title: Enterprise Stability
+    lead: A high-performance Web Application Server designed for reliable enterprise operations and seamless manageability.
+    icon: bi-layers-half
+    buttons:
+      - title: Why Aspectow?
+        url: /en/why-aspectow/
+        class: btn-primary
+      - title: Get Started
+        url: /en/aspectow/getting-started/
+        class: btn-outline-secondary
+        icon: bi-play-fill
+
+  sections:
+    - title: Administration & Configuration
+      anchor: aspectow
+      cards:
+        - title: Configuration Guide
+          url: /en/aspectow/configuration-guide/
+          description: Systematic guide to the structure of Aspectow and core feature configurations for production.
+        - title: Deployment & Operations
+          url: /en/aspectow/deployment-and-operations/
+          description: Learn how to deploy and manage applications as services across different operating systems.
+      tags:
+        - title: Aspectow Architecture
+          url: /en/aspectow/architecture/
+        - title: Multi-context Sessions
+          url: /en/aspectow/multi-context-session-strategy/
+        - title: Nginx & Clustering
+          url: /en/aspectow/nginx-reverse-proxy-guide/
+
+    - title: Real-time Monitoring
+      anchor: aspectow-appmon
+      cards:
+        - title: Aspectow AppMon
+          url: /en/aspectow/appmon/
+          description: Lightweight monitoring solution for system resources and application activities based on the Aspectran framework.
+          class: border-start border-4 border-info

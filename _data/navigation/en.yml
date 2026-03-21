@@ -1,39 +1,10 @@
 - title: Aspectran
   url: "/en/aspectran/"
   side: left
-  dropdown:
-  - title: "Why Aspectran"
-    url: "/en/why-aspectran/"
-  - title: "Aspectran Overview"
-    url: "/en/aspectran/overview/"
-  - title: "Aspectran Getting Started"
-    url: "/en/aspectran/getting-started/"
-  - title: "Aspectran User Guide"
-    url: "/en/aspectran/user-guide/"
-  - title: "Aspectran Architecture"
-    url: "/en/aspectran/architecture/"
-    sub_items:
-      - title: "Aspectran Architecture Diagrams"
-        url: "/en/docs/architecture/aspectran-architecture-diagrams/"
 
 - title: Aspectow
   url: "/en/aspectow/"
   side: left
-  dropdown:
-  - title: "Why Aspectow"
-    url: "/en/why-aspectow/"
-  - title: "Aspectow Getting Started"
-    url: "/en/aspectow/getting-started/"
-  - title: "Aspectow Architecture"
-    url: "/en/aspectow/architecture/"
-  - title: "Aspectow Configuration Guide"
-    url: "/en/aspectow/configuration-guide/"
-  - title: "Deployment and Operations"
-    url: "/en/aspectow/deployment-and-operations/"
-  - title: "-"
-  - title: "Aspectow AppMon"
-    url: "/en/aspectow/appmon/"
-    class: "bi bi-graph-up"
 
 - title: Projects
   url: "/en/projects/"

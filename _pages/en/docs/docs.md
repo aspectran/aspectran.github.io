@@ -9,6 +9,7 @@ permalink: /en/docs/
 ## <i class="bi bi-gear-wide-connected"></i> Aspectran Framework
 
 ### Core Guides
+{: #core-guides}
 *   [Aspectran User Guide](/en/aspectran/user-guide/)
 *   [Aspectran Basic Configuration Guide](/en/docs/guides/aspectran-configuration/)
 *   [Aspectran XML Configuration Guide](/en/docs/guides/aspectran-xml-configuration/)
@@ -25,6 +26,7 @@ permalink: /en/docs/
 *   [Aspectran JSON Utilities Guide](/en/docs/guides/aspectran-json-guide/)
 
 ### Practical Guides
+{: #practical-guides}
 *   [Aspectran Beans: A Practical Guide to IoC/DI](/en/docs/guides/practical-guide-to-beans/)
 *   [A Practical Guide to Aspectran Translets](/en/docs/guides/practical-guide-to-translets/)
 *   [A Practical Guide to PBE Token-Based Authentication](/en/docs/guides/practical-guide-to-pbe-token-based-authentication/)
@@ -34,6 +36,7 @@ permalink: /en/docs/
 *   [Guide to Setting and Styling Shell Greetings](/en/docs/guides/practical-guide-to-shell-greetings/)
 
 ### Architecture & Mechanisms
+{: #architecture-mechanisms}
 *   [Designing for Sustainable Simplicity: Architectural Philosophy](/en/why-aspectran/)
 *   [Aspectran Architecture: An Integrated Deep Dive](/en/aspectran/architecture/)
 *   [Aspectran Architecture Diagrams](/en/docs/architecture/aspectran-architecture-diagrams/)
@@ -71,6 +74,7 @@ permalink: /en/docs/
 *   [Aspectran Config Parameters](/en/docs/architecture/packages/aspectran-config-parameters/)
 
 ## <i class="bi bi-layers-half"></i> Aspectow
+{: #aspectow}
 
 Next-generation enterprise application server built on Aspectran.
 
@@ -83,6 +87,7 @@ Next-generation enterprise application server built on Aspectran.
 *   [Nginx Reverse Proxy and Clustering Guide](/en/aspectow/nginx-reverse-proxy-guide/)
 
 ## <i class="bi bi-graph-up"></i> Aspectow AppMon
+{: #aspectow-appmon}
 
 Real-time monitoring tool for system resources and application activities.
 

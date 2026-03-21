@@ -9,6 +9,7 @@ permalink: /ko/docs/
 ## <i class="bi bi-gear-wide-connected"></i> Aspectran Framework
 
 ### 핵심 가이드
+{: #핵심-가이드}
 *   [Aspectran 사용자 가이드](/ko/aspectran/user-guide/)
 *   [Aspectran 기본 구성 가이드](/ko/docs/guides/aspectran-configuration/)
 *   [Aspectran XML 구성 가이드](/ko/docs/guides/aspectran-xml-configuration/)
@@ -24,7 +25,8 @@ permalink: /ko/docs/
 *   [APON (Aspectran Parameters Object Notation) 소개](/ko/docs/guides/introduce-apon/)
 *   [Aspectran JSON 유틸리티 가이드](/ko/docs/guides/aspectran-json-guide/)
 
-### 실용 가이드 (Practical Guides)
+### 실용 가이드
+{: #실용-가이드-practical-guides}
 *   [Aspectran Beans: IoC/DI 실용 가이드](/ko/docs/guides/practical-guide-to-beans/)
 *   [Aspectran Translet 실용 가이드](/ko/docs/guides/practical-guide-to-translets/)
 *   [PBE를 이용한 인증 토큰 활용 가이드](/ko/docs/guides/practical-guide-to-pbe-token-based-authentication/)
@@ -34,6 +36,7 @@ permalink: /ko/docs/
 *   [쉘 그리팅(Greetings) 설정 및 스타일링 가이드](/ko/docs/guides/practical-guide-to-shell-greetings/)
 
 ### 아키텍처 및 메커니즘
+{: #아키텍처-및-메커니즘}
 *   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)
 *   [Aspectran 아키텍처: 통합 심층 분석](/ko/aspectran/architecture/)
 *   [Aspectran 아키텍처 다이어그램](/ko/docs/architecture/aspectran-architecture-diagrams/)
@@ -71,6 +74,7 @@ permalink: /ko/docs/
 *   [Aspectran Config Parameters](/ko/docs/architecture/packages/aspectran-config-parameters/)
 
 ## <i class="bi bi-layers-half"></i> Aspectow
+{: #aspectow}
 
 Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니다.
 
@@ -83,6 +87,7 @@ Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니
 *   [Nginx 리버스 프록시 및 클러스터링 가이드](/ko/aspectow/nginx-reverse-proxy-guide/)
 
 ## <i class="bi bi-graph-up"></i> Aspectow AppMon
+{: #aspectow-appmon}
 
 시스템 리소스 및 애플리케이션 활동을 실시간으로 감시하는 강력한 도구입니다.
 

@@ -1,0 +1,98 @@
+---
+layout: page
+---
+
+{% assign submain_data = site.data.submain[page.lang][page.submain_id] %}
+
+<style>
+  .section-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  .doc-tag {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 2rem;
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .doc-tag:hover {
+    background-color: var(--bs-primary);
+    color: #fff !important;
+    border-color: var(--bs-primary);
+  }
+  .card { 
+    border-radius: 0.5rem; 
+    transition: transform 0.2s; 
+  }
+  .card:hover { transform: translateY(-3px); }
+</style>
+
+<!-- Hero Section (Subhead) -->
+<div class="row">
+  <div id="subhead" class="col-12 text-center text-md-start">
+    <div class="row align-items-center">
+      <div class="col-md-7">
+        <h1 class="headline mb-3">{{ submain_data.hero.title }}</h1>
+        <p class="lead mb-4">{{ submain_data.hero.lead }}</p>
+        <div class="d-grid d-md-flex gap-3">
+          {% for button in submain_data.hero.buttons %}
+            <a href="{{ button.url }}" class="btn {{ button.class }} btn-lg px-4">
+              {{ button.title }} {% if button.icon %}<i class="{{ button.icon }}"></i>{% endif %}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-md-5 d-none d-md-block text-center opacity-25">
+        <i class="{{ submain_data.hero.icon }}" style="font-size: 8rem;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dynamic Sections -->
+{% for section in submain_data.sections %}
+  <h2 class="mt-5 mb-3 underline">
+    {{ section.title }}
+    <a href="/{{ page.lang }}/docs/#{{ section.anchor }}" class="ms-2 fs-6 text-muted"><i class="bi bi-link-45deg"></i> {% if page.lang == 'ko' %}전체 보기{% else %}All Docs{% endif %}</a>
+  </h2>
+  
+  <div class="row g-4">
+    {% for card in section.cards %}
+      <div class="col-md-6">
+        <div class="card h-100 p-2 {% if card.class %}{{ card.class }}{% endif %}">
+          <div class="card-body">
+            <h4 class="card-title"><a href="{{ card.url }}" class="text-decoration-none">{{ card.title }}</a></h4>
+            <p class="text-muted small mb-0">{{ card.description }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    
+    {% if forloop.last %}
+      <div class="col-lg-6">
+        <div class="card h-100 text-center d-flex align-items-center justify-content-center">
+          <div class="card-body">
+            <h5 class="card-title mb-0">
+              <a href="/{{ page.lang }}/docs/" class="text-decoration-none">
+                {% if page.lang == 'ko' %}전체 문서 색인 둘러보기{% else %}Explore Full Documentation Index{% endif %} <i class="bi bi-arrow-right-circle"></i>
+              </a>
+            </h5>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if section.tags %}
+    <div class="section-tag-list mb-5">
+      {% for tag in section.tags %}
+        <a href="{{ tag.url }}" class="doc-tag">{{ tag.title }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endfor %}

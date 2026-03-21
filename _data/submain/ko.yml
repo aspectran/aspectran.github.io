@@ -1,0 +1,116 @@
+aspectran:
+  hero:
+    title: 지속 가능한 단순성
+    lead: 컴포넌트 기반 아키텍처와 환경 독립성을 통해 복잡한 애플리케이션 개발을 혁신하세요.
+    icon: bi-gear-wide-connected
+    buttons:
+      - title: Why Aspectran?
+        url: /ko/why-aspectran/
+        class: btn-primary
+      - title: 시작하기
+        url: /ko/aspectran/getting-started/
+        class: btn-outline-secondary
+        icon: bi-play-fill
+
+  sections:
+    - title: 핵심 가이드
+      anchor: 핵심-가이드
+      cards:
+        - title: 사용자 가이드
+          url: /ko/aspectran/user-guide/
+          description: Aspectran의 모든 기능과 상세 설정을 다루는 종합 매뉴얼입니다.
+        - title: 프레임워크 개요
+          url: /ko/aspectran/overview/
+          description: 핵심 설계 패턴과 컴포넌트 기반 관리 방식을 이해합니다.
+      tags:
+        - title: 기본 구성
+          url: /ko/docs/guides/aspectran-configuration/
+        - title: XML 설정
+          url: /ko/docs/guides/aspectran-xml-configuration/
+        - title: 규칙 명명
+          url: /ko/docs/guides/aspectran-rule-file-naming/
+        - title: Beans 공식 가이드
+          url: /ko/docs/guides/aspectran-beans/
+        - title: AOP 기능
+          url: /ko/docs/guides/aspectran-aop/
+        - title: Translets
+          url: /ko/docs/guides/aspectran-translet/
+        - title: 스케줄러
+          url: /ko/docs/guides/aspectran-scheduler/
+        - title: 뷰 기술
+          url: /ko/docs/guides/aspectran-view-technologies/
+        - title: 프로파일
+          url: /ko/docs/guides/aspectran-profiles/
+        - title: AsEL 소개
+          url: /ko/docs/guides/introduce-asel/
+        - title: APON 소개
+          url: /ko/docs/guides/introduce-apon/
+
+    - title: 실용 가이드
+      anchor: 실용-가이드-practical-guides
+      cards:
+        - title: Translet 실무 활용
+          url: /ko/docs/guides/practical-guide-to-translets/
+          description: 애플리케이션의 진입점인 Translet을 설계하고 구현하는 실무 지침입니다.
+        - title: 쉘 그리팅 및 스타일링
+          url: /ko/docs/guides/practical-guide-to-shell-greetings/
+          description: ANSI 마크업과 토큰을 사용하여 CLI 시작 메시지를 커스터마이징합니다.
+      tags:
+        - title: Beans IoC/DI
+          url: /ko/docs/guides/practical-guide-to-beans/
+        - title: PBE 인증 토큰
+          url: /ko/docs/guides/practical-guide-to-pbe-token-based-authentication/
+        - title: Thymeleaf 레이아웃
+          url: /ko/docs/guides/practical-guide-to-thymeleaf-layout/
+        - title: CORS 활용
+          url: /ko/docs/guides/practical-guide-to-cors/
+        - title: 커스텀 타입 변환
+          url: /ko/docs/guides/practical-guide-to-type-converter/
+
+    - title: 아키텍처 및 메커니즘
+      anchor: 아키텍처 및 메커니즘
+      cards:
+        - title: 통합 아키텍처
+          url: /ko/aspectran/architecture/
+          description: Aspectran의 내부 구조와 설계 철학에 대한 심층 분석 보고서입니다.
+          class: border-start border-4 border-primary
+
+aspectow:
+  hero:
+    title: 엔터프라이즈 안정성
+    lead: 신뢰할 수 있는 엔터프라이즈 운영과 원활한 관리 기능을 위해 설계된 고성능 웹 애플리케이션 서버입니다.
+    icon: bi-layers-half
+    buttons:
+      - title: Why Aspectow?
+        url: /ko/why-aspectow/
+        class: btn-primary
+      - title: 시작하기
+        url: /ko/aspectow/getting-started/
+        class: btn-outline-secondary
+        icon: bi-play-fill
+
+  sections:
+    - title: 운영 및 설정 가이드
+      anchor: aspectow
+      cards:
+        - title: 환경 설정 가이드
+          url: /ko/aspectow/configuration-guide/
+          description: Aspectow의 구조와 실운영 환경을 위한 핵심 기능 설정에 대한 체계적인 지침을 제공합니다.
+        - title: 배포 및 운영
+          url: /ko/aspectow/deployment-and-operations/
+          description: 애플리케이션을 배포하고 다양한 운영체제에서 서비스로 관리하는 방법을 배웁니다.
+      tags:
+        - title: Aspectow 아키텍처
+          url: /ko/aspectow/architecture/
+        - title: 멀티 컨텍스트 세션
+          url: /ko/aspectow/multi-context-session-strategy/
+        - title: Nginx 및 클러스터링
+          url: /ko/aspectow/nginx-reverse-proxy-guide/
+
+    - title: 실시간 모니터링
+      anchor: aspectow-appmon
+      cards:
+        - title: Aspectow AppMon
+          url: /ko/aspectow/appmon/
+          description: 시스템 리소스와 애플리케이션 활동을 실시간으로 감시하는 경량 솔루션입니다.
+          class: border-start border-4 border-info

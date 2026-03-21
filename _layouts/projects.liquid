@@ -1,6 +1,17 @@
 ---
 layout: page
 ---
+
+<style>
+  .card {
+    transition: all 0.2s ease-in-out;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+  }
+</style>
+
 <h2 class="mt-4 mb-3 underline">{{ site.data.projects[page.lang].title.sample_projects }}</h2>
 <div class="row g-3">
   {% for project in site.data.projects[page.lang].sample_projects %}
