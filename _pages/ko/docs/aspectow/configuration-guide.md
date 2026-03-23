@@ -111,7 +111,7 @@ Aspectow 프로젝트를 올바르게 빌드하기 위해 `pom.xml`의 `<propert
 
 애플리케이션 컨텍스트 설정에 대한 모든 상세한 내용과 각 항목에 대한 설명은 다음의 메인 설정 가이드 문서를 참고하십시오.
 
-**참고 문서:** `aspectran-configuration_ko.md`
+**참고 문서:** [Aspectran 기본 구성 가이드](/ko/docs/guides/aspectran-configuration/)
 
 ## 5. 내장 WAS 서버 설정
 

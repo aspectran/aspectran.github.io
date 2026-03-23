@@ -111,7 +111,7 @@ The core behavior and business logic of the application are controlled through c
 
 For all the details about application context configuration and a description of each item, please refer to the main configuration guide document.
 
-**Reference Document:** `aspectran-configuration_en.md`
+**Reference Document:** [Aspectran Basic Configuration Guide](/en/docs/guides/aspectran-configuration/)
 
 ## 5. Embedded WAS Server Configuration
 
