@@ -668,6 +668,8 @@ You can also enable component scanning in XML using `<bean scan="...">`.
 
 You can define an anonymous inner bean that will only be used as a property of another bean. Thanks to a flexible parsing architecture, there is no arbitrary limit on the nesting depth of inner beans, but it is recommended to keep the structure simple for readability.
 
+> **Note on AOP and Inner Beans:** Inner beans are generally not recommended for beans that require AOP proxying. Specifically, "self-registering" beans (like `SqlSessionAgent`) that register their own Aspects during initialization cannot be proxied when used as inner beans. This is because the Aspect registration occurs during the `initialize()` phase, which is after the instance has been created and passed to the outer bean. For such beans, always define them as top-level beans.
+
 ```xml
 <bean id="outerBean" class="com.example.OuterBean">
     <property name="inner">
@@ -704,6 +706,10 @@ After the container creates and injects dependencies into a `prototype` scope be
 ### Singleton Beans and State
 
 Since a singleton bean has only one instance throughout the application, it can be accessed by multiple threads simultaneously. If a singleton bean has a mutable state (e.g., member variables), concurrency issues can arise. It is best to design singleton beans to be stateless. If state is absolutely necessary, use `ThreadLocal` or carefully implement synchronization.
+
+### Avoid Using Inner Beans for AOP Proxy Targets
+
+Inner beans are instantiated and immediately injected into their parent bean. Because of this immediate injection, certain AOP features may not work as expected. In particular, "self-registering" beans that register their own Aspect rules during their lifecycle's initialization phase (like `SqlSessionAgent`) will not be proxied if defined as an inner bean. This is because the proxying decision happens at the moment of instantiation, before the bean has had a chance to run its initialization logic and register the necessary Aspect. Always define such beans as top-level beans and inject them by reference.
 
 ### Always Use `@Component` as the Entry Point
 
