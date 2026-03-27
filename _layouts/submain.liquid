@@ -25,9 +25,9 @@ layout: page
     color: #fff !important;
     border-color: var(--bs-primary);
   }
-  .card { 
-    border-radius: 0.5rem; 
-    transition: transform 0.2s; 
+  .card {
+    border-radius: 0.5rem;
+    transition: transform 0.2s;
   }
   .card:hover { transform: translateY(-3px); }
 </style>
@@ -60,7 +60,7 @@ layout: page
     {{ section.title }}
     <a href="/{{ page.lang }}/docs/#{{ section.anchor }}" class="ms-2 fs-6 text-muted"><i class="bi bi-link-45deg"></i> {% if page.lang == 'ko' %}전체 보기{% else %}All Docs{% endif %}</a>
   </h2>
-  
+
   <div class="row g-4">
     {% for card in section.cards %}
       <div class="col-md-6">
@@ -72,10 +72,10 @@ layout: page
         </div>
       </div>
     {% endfor %}
-    
+
     {% if forloop.last %}
       <div class="col-lg-6">
-        <div class="card h-100 text-center d-flex align-items-center justify-content-center">
+        <div class="card h-100 text-center d-flex align-items-center justify-content-center border-4 border-primary-subtle">
           <div class="card-body">
             <h5 class="card-title mb-0">
               <a href="/{{ page.lang }}/docs/" class="text-decoration-none">

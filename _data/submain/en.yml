@@ -9,7 +9,7 @@ aspectran:
         class: btn-primary
       - title: Get Started
         url: /en/docs/guides/aspectran-getting-started/
-        class: btn-outline-secondary
+        class: btn-outline-secondary text-warning-emphasis
         icon: bi-play-fill
 
   sections:
@@ -73,7 +73,6 @@ aspectran:
         - title: Integrated Architecture
           url: /en/docs/guides/aspectran-architecture/
           description: Comprehensive analysis of Aspectran's internal structure and design philosophy.
-          class: border-start border-4 border-primary
         - title: Architecture Diagrams
           url: /en/docs/architecture/aspectran-architecture-diagrams/
           description: Shows the architecture of Aspectran from various perspectives.
@@ -89,7 +88,7 @@ aspectow:
         class: btn-primary
       - title: Get Started
         url: /en/docs/aspectow/getting-started/
-        class: btn-outline-secondary
+        class: btn-outline-secondary text-warning-emphasis
         icon: bi-play-fill
 
   sections:
@@ -116,4 +115,3 @@ aspectow:
         - title: Aspectow AppMon
           url: /en/docs/aspectow/appmon/
           description: Lightweight monitoring solution for system resources and application activities based on the Aspectran framework.
-          class: border-start border-4 border-info

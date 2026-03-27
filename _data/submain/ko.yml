@@ -9,7 +9,7 @@ aspectran:
         class: btn-primary
       - title: 시작하기
         url: /ko/docs/guides/aspectran-getting-started/
-        class: btn-outline-secondary
+        class: btn-outline-secondary text-warning-emphasis
         icon: bi-play-fill
 
   sections:
@@ -73,7 +73,6 @@ aspectran:
         - title: 통합 아키텍처
           url: /ko/docs/guides/aspectran-architecture/
           description: Aspectran의 내부 구조와 설계 철학에 대한 심층 분석 보고서입니다.
-          class: border-start border-4 border-primary
         - title: 아키텍처 다이어그램
           url: /ko/docs/architecture/aspectran-architecture-diagrams/
           description: Aspectran의 아키텍처를 다양한 관점에서 표현한 다이어그램입니다.
@@ -89,7 +88,7 @@ aspectow:
         class: btn-primary
       - title: 시작하기
         url: /ko/docs/aspectow/getting-started/
-        class: btn-outline-secondary
+        class: btn-outline-secondary text-warning-emphasis
         icon: bi-play-fill
 
   sections:
@@ -116,4 +115,3 @@ aspectow:
         - title: Aspectow AppMon
           url: /ko/docs/aspectow/appmon/
           description: 시스템 리소스와 애플리케이션 활동을 실시간으로 감시하는 경량 솔루션입니다.
-          class: border-start border-4 border-info
