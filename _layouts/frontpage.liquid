@@ -4,26 +4,50 @@ layout: default
 
 <style>
   .panel5 {
-    border: 0;
-    opacity: .8;
-    padding: .5rem 1rem;
-    @media screen and (max-width: 768px) {
-      background: none;
-      border-top: 1px solid #4a545b;
-    }
-    @media screen and (min-width: 768px) {
-      background: linear-gradient(180deg, rgb(56, 77, 89) 0%, rgb(62, 70, 75) 80%, rgb(62, 70, 75) 100%);
-      border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    height: 100%;
+    border-radius: 1.25rem;
+    transition: all 0.3s ease;
+  }
+  @media screen and (min-width: 768px) {
+    .panel5:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+      border-color: rgba(255, 255, 255, 0.25) !important;
     }
   }
-  .card {
-    border-radius: 0.5rem;
-    transition: transform 0.2s;
+  .widget-title {
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 1.25rem;
   }
-  .card:hover { transform: translateY(-3px); }
+  .widget-icon-link .bi {
+    color: rgba(255, 255, 255, 0.6);
+    transition: all 0.3s ease;
+  }
+  .panel5:hover .widget-icon-link .bi {
+    color: #00d4ff; /* 호버 시 포인트 컬러 */
+    transform: rotate(15deg) scale(1.1);
+  }
+  .widget-text {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    display: block;
+  }
+  .transition-zoom img {
+    transition: transform 0.5s ease;
+  }
+  .panel5:hover .transition-zoom img {
+    transform: scale(1.05);
+  }
 </style>
 
-<div id="masthead">
+<div id="masthead" class="py-lg-3 py-xl-3">
   <div class="container py-4">
     <div class="d-flex align-items-center justify-content-center gap-1">
       <a href="https://github.com/aspectran/aspectran/actions?query=workflow%3A%22Java+CI%22" target="_blank" title="Build Status"><img src="https://github.com/aspectran/aspectran/workflows/Java%20CI/badge.svg" alt="Build Status"/></a>
@@ -32,8 +56,8 @@ layout: default
       <a class="d-none d-md-block" href="https://github.com/aspectran/aspectran/blob/master/LICENSE.txt" target="_blank" title="Apache License 2.0"><img src="https://img.shields.io/:license-apache-orange.svg" alt="License"/></a>
     </div>
   </div>
-  <div class="container g-0 g-md-4">
-    <div class="row g-0 g-md-2">
+  <div class="container g-4 pb-3">
+    <div class="row g-2">
       <div class="col-md-6 col-lg">
         {% include _frontpage-widget.liquid widget=page.widget1 %}
       </div>

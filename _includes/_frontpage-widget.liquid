@@ -1,20 +1,33 @@
-{% capture widget_url %}{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ include.widget.url }}{% endif %}{% endcapture %}
-<div class="panel panel5">
+<div class="panel panel5 py-2">
   {% if include.widget.image or include.widget.video %}
-  <a href="{{ widget_url }}">
-    {% if include.widget.image %}
-      <img class="card-img-top" src="{{ site.urlimg }}{{ include.widget.image }}" alt="{{ include.widget.title | escape_once }}" />
-    {% endif %}
-    {% if include.widget.video %}
-      <div class="ratio ratio-16x9">
-        {{ include.widget.video }}
-      </div>
-    {% endif %}
-  </a>
+    <div class="mb-3 overflow-hidden rounded-3 shadow-sm">
+      <a href="{{ include.widget.url }}" class="d-block transition-zoom">
+        {% if include.widget.image %}
+          <img class="img-fluid w-100"
+               src="{{ site.urlimg }}{{ include.widget.image }}"
+               alt="{{ include.widget.title | escape_once }}"
+               style="object-fit: cover; aspect-ratio: 16/9;" />
+        {% endif %}
+        {% if include.widget.video %}
+          <div class="ratio ratio-16x9">
+            {{ include.widget.video }}
+          </div>
+        {% endif %}
+      </a>
+    </div>
   {% endif %}
-  <div>
-    <h4><a href="{{ widget_url }}" class="text-decoration-none">{{ include.widget.title }}</a>
-        <a href="{{ widget_url }}" class="float-end text-decoration-none"><i class="bi {{ include.widget.icon }} text-decoration-none text-muted"></i></a></h4>
-    <p class="mb-2 d-none d-md-block"><a href="{{ widget_url }}" class="text-decoration-none text-muted">{{ include.widget.text }}</a></p>
+
+  <div class="d-flex flex-column h-100">
+    <div class="d-flex justify-content-between align-items-center">
+      <h4 class="m-0">
+        <a href="{{ include.widget.url }}" class="text-decoration-none widget-title">{{ include.widget.title }}</a>
+      </h4>
+      <a href="{{ widget_url }}" class="widget-icon-link">
+        <i class="bi {{ include.widget.icon }} fs-4"></i>
+      </a>
+    </div>
+    <p class="d-none d-md-block m-0 py-1">
+      <a href="{{ include.widget.url }}" class="text-decoration-none widget-text">{{ include.widget.text }}</a>
+    </p>
   </div>
 </div>
