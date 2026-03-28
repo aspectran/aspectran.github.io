@@ -1,5 +1,5 @@
 ---
-title: A Practical Guide to Aspectran Translets
+title: Practical Guide to Aspectran Translets
 subheadline: Practical Guides
 ---
 

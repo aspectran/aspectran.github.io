@@ -66,6 +66,10 @@ aspectran:
           url: /ko/docs/guides/practical-guide-to-cors/
         - title: 커스텀 타입 변환
           url: /ko/docs/guides/practical-guide-to-type-converter/
+        - title: JSP 태그 라이브러리
+          url: /ko/docs/guides/aspectran-jsp-tag-library/
+        - title: MyBatis 트랜잭션
+          url: /ko/docs/guides/aspectran-mybatis-transaction-management/
 
     - title: 아키텍처 및 메커니즘
       anchor: 아키텍처 및 메커니즘

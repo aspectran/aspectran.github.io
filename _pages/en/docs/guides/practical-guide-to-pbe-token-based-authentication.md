@@ -1,5 +1,5 @@
 ---
-title: A Practical Guide to PBE Token-Based Authentication
+title: Practical Guide to PBE Token-Based Authentication
 subheadline: Practical Guides
 ---
 

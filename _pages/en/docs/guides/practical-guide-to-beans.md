@@ -1,5 +1,5 @@
 ---
-title: "Aspectran Beans: A Practical Guide to IoC/DI"
+title: "Aspectran Beans: Practical Guide to IoC/DI"
 subheadline: Practical Guides
 ---
 

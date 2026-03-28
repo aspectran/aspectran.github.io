@@ -35,6 +35,8 @@ permalink: /ko/docs/
 *   [Aspectran에서 CORS(Cross-Origin Resource Sharing) 활용하기](/ko/docs/guides/practical-guide-to-cors/)
 *   [커스텀 TypeConverter 실용 가이드](/ko/docs/guides/practical-guide-to-type-converter/)
 *   [쉘 그리팅(Greetings) 설정 및 스타일링 가이드](/ko/docs/guides/practical-guide-to-shell-greetings/)
+*   [Aspectran JSP 태그 라이브러리 가이드](/ko/docs/guides/aspectran-jsp-tag-library/)
+*   [Aspectran에서의 MyBatis 트랜잭션 관리 가이드](/ko/docs/guides/aspectran-mybatis-transaction-management/)
 
 ### 아키텍처 및 메커니즘
 {: #아키텍처-및-메커니즘}

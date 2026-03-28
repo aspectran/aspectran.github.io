@@ -66,6 +66,10 @@ aspectran:
           url: /en/docs/guides/practical-guide-to-cors/
         - title: Custom Type Converters
           url: /en/docs/guides/practical-guide-to-type-converter/
+        - title: JSP Tag Library
+          url: /en/docs/guides/aspectran-jsp-tag-library/
+        - title: MyBatis Transactions
+          url: /en/docs/guides/aspectran-mybatis-transaction-management/
 
     - title: Architecture & Mechanisms
       anchor: architecture-mechanisms

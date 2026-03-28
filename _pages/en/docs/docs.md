@@ -28,13 +28,15 @@ permalink: /en/docs/
 
 ### Practical Guides
 {: #practical-guides}
-*   [Aspectran Beans: A Practical Guide to IoC/DI](/en/docs/guides/practical-guide-to-beans/)
-*   [A Practical Guide to Aspectran Translets](/en/docs/guides/practical-guide-to-translets/)
-*   [A Practical Guide to PBE Token-Based Authentication](/en/docs/guides/practical-guide-to-pbe-token-based-authentication/)
+*   [Aspectran Beans: Practical Guide to IoC/DI](/en/docs/guides/practical-guide-to-beans/)
+*   [Practical Guide to Aspectran Translets](/en/docs/guides/practical-guide-to-translets/)
+*   [Practical Guide to PBE Token-Based Authentication](/en/docs/guides/practical-guide-to-pbe-token-based-authentication/)
 *   [Guide to Applying Thymeleaf Layout in Aspectran](/en/docs/guides/practical-guide-to-thymeleaf-layout/)
 *   [Using CORS (Cross-Origin Resource Sharing) in Aspectran](/en/docs/guides/practical-guide-to-cors/)
 *   [Practical Guide to Custom Type Converters](/en/docs/guides/practical-guide-to-type-converter/)
 *   [Guide to Setting and Styling Shell Greetings](/en/docs/guides/practical-guide-to-shell-greetings/)
+*   [Aspectran JSP Tag Library Guide](/en/docs/guides/aspectran-jsp-tag-library/)
+*   [MyBatis Transaction Management in Aspectran](/en/docs/guides/aspectran-mybatis-transaction-management/)
 
 ### Architecture & Mechanisms
 {: #architecture-mechanisms}
