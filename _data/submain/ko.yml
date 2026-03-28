@@ -47,7 +47,7 @@ aspectran:
           url: /ko/docs/guides/introduce-apon/
 
     - title: 실용 가이드
-      anchor: 실용-가이드-practical-guides
+      anchor: 실용-가이드
       cards:
         - title: Translet 실무 활용
           url: /ko/docs/guides/practical-guide-to-translets/
