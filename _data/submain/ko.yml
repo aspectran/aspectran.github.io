@@ -72,7 +72,7 @@ aspectran:
           url: /ko/docs/guides/aspectran-mybatis-transaction-management/
 
     - title: 아키텍처 및 메커니즘
-      anchor: 아키텍처 및 메커니즘
+      anchor: 아키텍처-및-메커니즘
       cards:
         - title: 통합 아키텍처
           url: /ko/docs/guides/aspectran-architecture/
