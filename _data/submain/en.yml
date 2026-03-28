@@ -9,7 +9,7 @@ aspectran:
         class: btn-primary
       - title: Get Started
         url: /en/docs/guides/aspectran-getting-started/
-        class: btn-outline-secondary text-warning-emphasis
+        class: btn-outline-secondary
         icon: bi-play-fill
 
   sections:
@@ -88,7 +88,7 @@ aspectow:
         class: btn-primary
       - title: Get Started
         url: /en/docs/aspectow/getting-started/
-        class: btn-outline-secondary text-warning-emphasis
+        class: btn-outline-secondary
         icon: bi-play-fill
 
   sections:
