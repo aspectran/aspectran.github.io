@@ -35,7 +35,8 @@ public class AppSqlSession extends SqlSessionAgent {
 }
 ```
 *   **Intelligent Routing**: 쓰기용 세션(`txAspect`)이 이미 열려 있다면 읽기 전용 작업에서도 이를 우선적으로 재사용하여 불필요한 세션 생성을 방지합니다.
-*   **ReadOnly**: `select*` 패턴의 메서드 호출 시 작동합니다.*   **Writable**: 그 외의 모든 수정 메서드 호출 시 작동합니다.
+*   **ReadOnly**: `select*` 패턴의 메서드 호출 시 작동합니다.
+*   **Writable**: 그 외의 모든 수정 메서드 호출 시 작동합니다.
 *   **제외 패턴**: `getMapper`, `getConnection` 등 관리용 메서드들은 자동 세션 오픈 대상에서 제외되어 불필요한 연결을 방지합니다.
 
 ## 3. 명시적 Aspect 정의 (Explicit Definition)

@@ -35,7 +35,8 @@ public class AppSqlSession extends SqlSessionAgent {
 }
 ```
 *   **Intelligent Routing**: If a writable session (`txAspect`) is already open, it is prioritized even for read-only operations to prevent unnecessary session creation.
-*   **ReadOnly**: Triggered for method calls matching the `select*` pattern.*   **Writable**: Triggered for all other modification methods.
+*   **ReadOnly**: Triggered for method calls matching the `select*` pattern.
+*   **Writable**: Triggered for all other modification methods.
 *   **Exclusion**: Management methods (`getMapper`, `getConnection`, etc.) are excluded from automatic session opening to prevent redundant connections.
 
 ## 3. Explicit Aspect Definition
