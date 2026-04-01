@@ -41,6 +41,8 @@ aspectran:
           url: /ko/docs/guides/aspectran-view-technologies/
         - title: 프로파일
           url: /ko/docs/guides/aspectran-profiles/
+        - title: 프로퍼티
+          url: /ko/docs/guides/aspectran-properties/
         - title: AsEL 소개
           url: /ko/docs/guides/introduce-asel/
         - title: APON 소개

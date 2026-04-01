@@ -41,6 +41,8 @@ aspectran:
           url: /en/docs/guides/aspectran-view-technologies/
         - title: Profiles
           url: /en/docs/guides/aspectran-profiles/
+        - title: Properties
+          url: /en/docs/guides/aspectran-properties/
         - title: AsEL
           url: /en/docs/guides/introduce-asel/
         - title: APON
