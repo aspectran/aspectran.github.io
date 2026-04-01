@@ -22,6 +22,7 @@ permalink: /en/docs/
 *   [Aspectran Scheduler: Powerful Task Automation with Translets](/en/docs/guides/aspectran-scheduler/)
 *   [Aspectran View Technologies](/en/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](/en/docs/guides/aspectran-profiles/)
+*   [Aspectran Property Configuration and Utilization](/en/docs/guides/aspectran-properties/)
 *   [Introduction to AsEL (Aspectran Expression Language)](/en/docs/guides/introduce-asel/)
 *   [Introduction to APON (Aspectran Parameters Object Notation)](/en/docs/guides/introduce-apon/)
 *   [Aspectran JSON Utilities Guide](/en/docs/guides/aspectran-json-guide/)

@@ -12,11 +12,11 @@ APON은 특히 Aspectran 프레임워크의 설정 파일을 간결하게 작성
 
 ### 주요 특징
 
-*   **뛰어난 가독성**: 콤마(`,`) 대신 줄바꿈으로 항목을 구분하고, 값에 공백이나 특수문자가 없다면 따옴표를 생략할 수 있어 코드가 간결하고 명확합니다.
+*   **뛰어난 가독성**: 줄바꿈이나 쉼표(`,`)를 사용하여 항목을 유연하게 구분할 수 있습니다. 값에 특수문자가 없다면 따옴표를 생략할 수 있어 코드가 간결하고 명확합니다.
 *   **명시적 타입 지원**: 값(Value)에 대한 데이터 타입을 직접 명시할 수 있어, 설정 값의 정확성과 안정성을 보장합니다.
 *   **계층적 데이터 구조**: 중괄호(`{ }`)를 사용하여 데이터를 계층적으로 구성할 수 있어 복잡한 설정도 체계적으로 표현할 수 있습니다.
-*   **긴 문자열 지원**: 여러 줄로 이루어진 텍스트를 쉽게 작성할 수 있는 `text` 타입을 지원합니다.
-*   **주석 지원**: `#` 문자를 사용하여 코드에 대한 설명을 추가할 수 있습니다. 반드시 새로운 줄에 작성되어야 합니다.
+*   **긴 문자열 지원**: 여러 줄로 이루어진 텍스트를 작성할 수 있는 `text` 타입을 지원하며, 상황에 따라 이스케이프된 한 줄 문자열로 자동 변환될 수 있습니다.
+*   **인라인 주석 지원**: `#` 문자를 사용하여 새로운 라인은 물론 기존 라인의 끝에도 코드에 대한 설명을 추가할 수 있습니다.
 
 ### JSON, YAML과의 비교
 
@@ -26,57 +26,58 @@ APON은 JSON과 YAML의 특징을 조합하여 가독성과 편의성을 높인 
 | :--- | :--- | :--- | :--- |
 | **주요 목적** | 데이터 교환 (API) | 범용 설정 파일 | **Aspectran 전용 설정** |
 | **구조 정의** | 괄호 (`{ }`, `[ ]`) | **들여쓰기** | 괄호 (`{ }`, `[ ]`) |
-| **항목 구분** | 쉼표 (`,`) | 줄바꿈 + 들여쓰기 | **줄바꿈** |
+| **항목 구분** | 쉼표 (`,`) | 줄바꿈 + 들여쓰기 | **줄바꿈 또는 쉼표** |
 | **주석** | 미지원 | 지원 (`#`) | 지원 (`#`) |
 
-가장 큰 차이점은 **구조를 정의하는 방식**과 **항목을 구분하는 방식**입니다. APON은 JSON처럼 괄호로 명시적인 구조를 만들지만, 항목 구분자로는 줄바꿈을 사용하여 가독성을 극대화합니다. 이는 줄바꿈과 들여쓰기의 조합으로 구조 전체를 정의하는 YAML과는 구분되는 특징입니다. 또한 콤마(`,`)를 사용하지 않음으로써 항목을 추가하거나 삭제할 때 발생할 수 있는 문법 오류(Trailing Comma 문제 등)를 방지하고, 버전 관리 시스템(Git 등)에서의 변경 이력을 깔끔하게 유지할 수 있습니다.
+가장 큰 차이점은 **구조를 정의하는 방식**과 **항목을 구분하는 방식**입니다. APON은 JSON처럼 괄호로 명시적인 구조를 만들지만, 항목 구분자로는 줄바꿈을 주로 사용하여 가독성을 극대화합니다. 또한 쉼표(`,`)를 사용하여 한 줄에 여러 항목을 나열할 수 있어 더욱 유연한 작성이 가능합니다. 콤마(`,`) 사용 여부를 선택할 수 있게 함으로써 항목을 추가하거나 삭제할 때 발생할 수 있는 문법 오류를 방지하고, 버전 관리 시스템(Git 등)에서의 변경 이력을 깔끔하게 유지할 수 있습니다.
 
 ## 2. 기본 문법
 
 ### 주석 (Comments)
 
-APON에서 주석은 반드시 **새로운 줄(New Line)**에 `#` 문자로 시작해야 합니다.
-파라미터 값 뒤에 `#`을 붙여 설명을 적는 **인라인 주석(Inline Comment)은 지원하지 않습니다.**
-
-이는 데이터 값에 `#` 문자(예: CSS 색상 코드 `#FFFFFF`, 해시태그 등)가 포함될 때, 불필요하게 따옴표로 감싸야 하는 번거로움을 없애고 입력의 자유도를 높이기 위함입니다.
+APON에서 주석은 `#` 문자로 시작하며, 해당 라인의 끝까지를 주석으로 처리합니다.
+새로운 라인뿐만 아니라 파라미터 값 뒤에 붙는 **인라인 주석(Inline Comment)**도 지원합니다.
 
 ```apon
 # 올바른 주석 사용 예
 timeout: 30
 
-# 잘못된 주석 사용 예 (주석이 아닌 문자열 값으로 인식됨)
-# timeout의 값은 숫자 30이 아닌 문자열 "30 # 30 seconds"가 됩니다.
+# 인라인 주석 사용 예 (값 뒤에 바로 설명 추가 가능)
 timeout: 30 # 30 seconds
+
+# 주석 기호(#)가 값의 일부인 경우 반드시 따옴표를 사용해야 합니다.
+color: "#FF5733"
 ```
+
+**주의:** APON의 주석은 **Line-end 주석**입니다. `SINGLE_LINE` 스타일처럼 한 줄에 여러 항목을 나열할 때 중간에 `#`이 들어가면 그 뒤의 모든 내용은 주석으로 간주되어 무시됩니다.
 
 ### 단일 값 (Parameter)
 
 APON의 가장 기본적인 단위는 `이름: 값` 형식의 단일 값을 가질 수 있습니다.
-키와 값은 콜론(`:`)으로 구분되며, 콜론 이후부터 **행의 끝(End of Line)까지**가 모두 값으로 간주됩니다.
+키와 값은 콜론(`:`)으로 구분되며, 콜론 이후부터 주석 기호(#)나 **행의 끝(End of Line)** 전까지가 모두 값으로 간주됩니다.
 
 이러한 특징 덕분에 다음과 같은 장점이 있습니다.
 *   값 중간에 공백이 있어도 따옴표가 필요 없습니다.
-*   URL이나 파일 경로처럼 특수문자가 포함된 값도 이스케이프 처리 없이 그대로 쓸 수 있습니다.
-*   값의 끝을 알리기 위해 콤마(`,`)를 입력할 필요가 없습니다.
+*   값의 끝을 알리기 위해 콤마(`,`)를 입력할 필요가 없습니다. (단, 한 줄에 여러 항목 작성 시에는 필요)
 
-값(value)에 다음과 같은 특수 조건이 없는 한 따옴표(`"`)를 생략하는 것이 일반적입니다.
+값(Value)에 다음과 같은 조건이 포함된 경우 반드시 따옴표(`"`)로 감싸야 하며, 이 경우 표준 이스케이프 규칙이 적용됩니다.
 
-*   값의 앞이나 뒤에 공백이 있는 경우 (중간 공백은 괜찮음)
-*   값에 작은따옴표(`'`)나 큰따옴표(`"`)가 포함된 경우
-*   값에 줄바꿈 문자(`\n`)가 포함된 경우
+*   값의 **시작**이 공백, `{`, `[`, `(`, `#` 인 경우
+*   값의 **내부**에 `"`, `'`, `,`, `:`, `{`, `}`, `[`, `]`, `#`, `\n`, `\r` 등이 포함된 경우
+*   값의 **끝**이 공백인 경우
 *   값이 빈 문자열인 경우
 
 ```apon
-# 큰따옴표를 사용하지 않은 예 (행 끝까지 값으로 인식)
+# 따옴표를 사용하지 않은 예 (행 끝까지 값으로 인식)
 name: John Doe
 age: 30
 city: New York
-url: https://example.com/api?query=value
-color: #FF5733
 
-# 큰따옴표를 사용해야 하는 예
-message: "'Hello, World'"
-message: "First line\nNew line"
+# 따옴표를 사용해야 하는 예 (구조적 문자나 이스케이프가 필요한 경우)
+url: "https://example.com/api?query=value" # 콜론(:)이 포함된 경우
+color: "#FF5733" # 주석 기호(#)로 시작하는 경우
+message: "Hello, \"Aspectran\"" # 따옴표 포함 및 이스케이프 필요
+path: "C:\\Program Files\\Aspectran" # 백슬래시 이스케이프 필요
 indented: "  앞에 공백이 있음"
 indented: "뒤에 공백이 있음  "
 empty: ""
@@ -109,20 +110,28 @@ city: New York
 
 ### 배열 (Array)
 
-배열은 대괄호(`[ ]`) 안에 여러 값을 넣어 표현합니다. 각 요소는 줄바꿈으로 구분합니다.
+배열은 대괄호(`[ ]`) 안에 여러 값을 넣어 표현합니다.
+
+배열 요소의 구분자는 매우 유연합니다. 줄바꿈이나 쉼표(`,`) 중 하나를 사용하거나, 두 가지를 혼용하여 사용할 수도 있습니다. 이러한 유연성 덕분에 항목을 추가하거나 삭제할 때 구분자 처리에 대한 고민을 덜어주어 매우 편리합니다.
 
 APON은 또한 루트 레벨 배열을 지원하며, 이는 `ArrayParameters` 객체로 직접 파싱될 수 있습니다.
 
 ```apon
+# 줄바꿈으로만 구분
 users: [
   John
   Jane
   Peter
 ]
-numbers: [
-  1
-  2
-  3
+
+# 쉼표로만 구분
+numbers: [ 1, 2, 3 ]
+
+# 줄바꿈과 쉼표를 혼용한 유연한 표현
+features: [
+  HTTP2,
+  SSL,
+  Web Sockets
 ]
 ```
 
@@ -140,18 +149,20 @@ numbers: [
 APON은 다양한 데이터 타입을 지원하며, `이름(타입): 값`의 형태로 타입을 명시할 수 있습니다.
 타입을 생략하면 값의 형태에 따라 자동으로 타입이 결정됩니다. 숫자 값의 경우, 파서는 가장 적절한 유형을 추론하려고 시도합니다: 정수는 일반적으로 `java.lang.Integer`(더 큰 값의 경우 `java.lang.Long`)로 파싱되며, 소수점이 있는 숫자는 `java.lang.Double`로 파싱됩니다.
 
-**`float`에 대한 중요 참고 사항:** 소수점 숫자를 `java.lang.Float`로 파싱하려면 APON 텍스트에서 `float`로 명시적으로 타입을 지정하거나(예: `score(float): 95.5`) `ValueType.FLOAT`를 가진 `ParameterKey`를 정의해야 합니다. 그렇지 않으면 소수점 숫자는 기본적으로 `java.lang.Double`로 처리됩니다.
-
-| Value Type | Java Object Type | 예시                            |
-| :--- | :--- |:------------------------------|
+| Value Type | Java Object Type | 예시 |
+| :--- | :--- | :--- |
 | `string` | `java.lang.String` | `name(string): Hello, World.` |
-| `text` | `java.lang.String` | 아래 `text` 타입 예제 참조            |
-| `int` | `java.lang.Integer` | `age(int): 30`                |
-| `long` | `java.lang.Long` | `id(long): 12345`            |
-| `float` | `java.lang.Float` | `score(float): 95.5`         |
-| `double` | `java.lang.Double` | `pi(double): 3.14159`        |
-| `boolean` | `java.lang.Boolean` | `isAdmin(boolean): true`      |
-| `parameters` | `com.aspectran.utils.apon.Parameters` | 중첩된 Parameter 구조                   |
+| `text` | `java.lang.String` | 아래 `text` 타입 예제 참조 |
+| `int` | `java.lang.Integer` | `age(int): 30` |
+| `long` | `java.lang.Long` | `id(long): 12345` |
+| `float` | `java.lang.Float` | `score(float): 95.5` |
+| `double` | `java.lang.Double` | `pi(double): 3.14159` |
+| `boolean` | `java.lang.Boolean` | `isAdmin(boolean): true` |
+| `parameters` | `com.aspectran.utils.apon.Parameters` | 중첩된 Parameter 구조 |
+| `variable` | (런타임 결정) | 타입이 고정되지 않은 가변 파라미터 |
+| `object` | `java.lang.Object` | 특정 타입이 지정되지 않은 임의의 객체 |
+
+**`float`에 대한 중요 참고 사항:** 소수점 숫자를 `java.lang.Float`로 파싱하려면 APON 텍스트에서 `float`로 명시적으로 타입을 지정하거나(예: `score(float): 95.5`) `ValueType.FLOAT`를 가진 `ParameterKey`를 정의해야 합니다. 그렇지 않으면 소수점 숫자는 기본적으로 `java.lang.Double`로 처리됩니다.
 
 ### `text` 타입 사용 예제
 
@@ -165,6 +176,8 @@ description(text): (
   |특수문자를 자유롭게 사용할 수 있습니다.
 )
 ```
+
+**참고:** `text` 타입 데이터를 `SINGLE_LINE`이나 `COMPACT` 스타일로 출력하면, 자동으로 개행 문자가 포함된 이스케이프 문자열(`"line1\nline2"`)로 변환되어 한 줄로 작성됩니다.
 
 ## 4. APON 활용하기
 
@@ -250,102 +263,33 @@ public class ServerConfig extends DefaultParameters implements Parameters {
 }
 ```
 
-### APON 텍스트 읽기 (AponReader)
+### APON 데이터 읽기 (AponReader)
 
-`AponReader` 클래스를 사용하면 APON 형식의 텍스트 파일을 읽어 정의된 `Parameters` 자바 객체로 변환할 수 있습니다.
+APON 형식의 텍스트를 자바 객체로 변환하기 위해 `AponReader`를 사용합니다. 현재 APON의 모든 파싱은 문자 단위의 고성능 엔진인 `AponParser`가 담당하며, `AponReader`는 이를 편리하게 사용할 수 있도록 도와주는 래퍼 역할을 합니다. 특히 `AponReader`는 다차원 배열 및 중첩 구조를 자바의 `List` 또는 `Parameters` 객체로 매우 직관적으로 처리합니다.
 
-**예제: 루트 객체 및 루트 배열 읽기**
+**예제: 객체 및 다차원 배열 읽기**
 
 ```java
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.Parameters;
-import com.aspectran.utils.apon.RootConfig; // 1단계에서 정의된 RootConfig 가정
-import com.aspectran.utils.apon.ArrayParameters; // ArrayParameters 임포트
-import com.aspectran.utils.apon.DefaultParameters; // DefaultParameters 임포트
-
-public class AponReaderTest {
-    public static void main(String[] args) {
-        try {
-            // 예제 1: 루트 객체 읽기 (컴팩트 또는 비컴팩트 스타일 가능)
-            String apon1 = """
-                name: John Doe
-                age: 30
-                """;
-            Parameters params1 = AponReader.read(apon1, new RootConfig());
-            System.out.println("객체 이름: " + params1.getString("name"));
-
-            // 예제 2: 루트 배열 읽기
-            String apon2 = """
-                [
-                  apple
-                  banana
-                  cherry
-                ]
-                """;
-            // 루트 배열의 경우, 명시적으로 ArrayParameters 인스턴스를 제공해야 합니다.
-            ArrayParameters arrayParams = AponReader.read(apon2, new ArrayParameters());
-            System.out.println("배열 내용: " + arrayParams.getValueList());
-
-            // 루트 배열에 대해 ArrayParameters가 아닌 객체를 제공하면,
-            // AponReader는 배열을 "" (ArrayParameters.NONAME) 이름의 파라미터로 추가합니다.
-            Parameters defaultParams = AponReader.read(apon2, new DefaultParameters());
-            System.out.println("이름 있는 파라미터로서의 배열: " + defaultParams.getValueList(ArrayParameters.NONAME));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
-
-### 최신 파싱 방식 (AponParser)
-
-`AponParser`는 특히 다차원 배열을 처리하는 데 있어 `AponReader`보다 더 효율적이고 직관적인 대안을 제공합니다. `AponParser`는 중첩된 배열을 중첩된 `List` 객체로 직접 파싱합니다.
-
-**예제: AponParser로 다차원 배열 파싱**
-
-```java
-import com.aspectran.utils.apon.AponParser;
 import com.aspectran.utils.apon.ArrayParameters;
-import com.aspectran.utils.apon.Parameters;
 import java.util.List;
 
-public class AponParserTest {
+public class AponReadTest {
     public static void main(String[] args) {
         try {
-            String apon = """
-                [
-                  [
-                    a
-                    b
-                  ],
-                  [
-                    c
-                    d
-                    e
-                  ]
-                ]
-                """;
-            // AponParser를 사용하여 문자열을 ArrayParameters 객체로 파싱
-            ArrayParameters rootArrayParams = AponParser.parse(apon, ArrayParameters.class);
+            // 1. 문자열로부터 객체 읽기
+            String apon1 = "name: John Doe, age: 30";
+            Parameters params1 = AponReader.read(apon1, new RootConfig());
+            System.out.println("Name: " + params1.getString("name"));
 
-            // AponParser는 중첩된 배열을 List<List<Object>>로 올바르게 파싱합니다.
-            List<List<String>> matrix = (List<List<String>>)rootArrayParams.getValueList();
-
+            // 2. 다차원 배열 파싱 (ArrayParameters 활용)
+            String apon2 = "[[a, b], [c, d, e]]";
+            ArrayParameters rootArray = AponReader.read(apon2, new ArrayParameters());
+            List<List<String>> matrix = (List<List<String>>)rootArray.getValueList();
             System.out.println("Matrix: " + matrix);
             // 출력: Matrix: [[a, b], [c, d, e]]
 
-            // AponParser로 루트 객체도 파싱할 수 있습니다.
-            String objectApon = """
-                {
-                  name: John Doe
-                  age: 30
-                }
-                """;
-            Parameters rootObjectParams = AponParser.parse(objectApon);
-            System.out.println("Object Name: " + rootObjectParams.getString("name"));
-            // 출력: Object Name: John Doe
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -353,68 +297,44 @@ public class AponParserTest {
 }
 ```
 
-### APON 텍스트 작성하기 (AponWriter)
+### APON 데이터 작성하기 (AponWriter)
 
-`AponWriter` 클래스를 사용하면 `Parameters` 자바 객체를 APON 형식의 문자열로 쉽게 변환할 수 있습니다.
+`AponWriter` 클래스를 사용하면 `Parameters` 자바 객체를 APON 형식의 문자열로 변환할 수 있습니다. `AponWriter`는 값의 내용에 따라 따옴표 필요 여부를 자동으로 판단하고 적절한 이스케이프 처리를 수행합니다.
 
-`AponWriter`는 지능적으로 작동하여, 문자열 값에 따옴표가 필요한 경우(예: 값의 앞/뒤에 공백이 있거나, 내부에 따옴표나 줄바꿈 문자가 포함된 경우) 자동으로 값을 큰따옴표로 감싸고 필요한 이스케이프 처리를 수행합니다. 따라서 개발자는 따옴표 사용 규칙을 일일이 신경 쓰지 않고 `Parameters` 객체의 값을 설정하기만 하면 됩니다.
+특히 `AponRenderStyle`을 통해 출력 형식을 세밀하게 제어할 수 있습니다.
 
-기본적으로 `AponWriter`는 루트 레벨 파라미터를 "컴팩트 스타일"(바깥쪽 중괄호 없음)로 출력합니다. 루트 `Parameters` 객체의 `compactStyle` 속성을 `false`로 설정하여 비컴팩트 스타일(바깥쪽 중괄호 있음)을 활성화할 수 있지만, 기능적인 차이가 없으므로 거의 필요하지 않습니다.
+1.  **PRETTY (기본값)**: 사람이 읽기 좋게 들여쓰기와 줄바꿈을 적용합니다. `text` 타입은 멀티라인 블록(`|`)으로 출력됩니다.
+2.  **SINGLE_LINE**: 가독성을 유지하면서 모든 내용을 한 줄로 출력합니다. 항목은 `, `로 구분되며, `text` 타입은 이스케이프된 문자열(`"line1\nline2"`)로 자동 변환됩니다.
+3.  **COMPACT**: 전송 효율을 극대화하기 위해 공백을 최소화하여 한 줄로 압축 출력합니다.
+
+**예제: 출력 스타일 설정**
 
 ```java
 import com.aspectran.utils.apon.AponWriter;
+import com.aspectran.utils.apon.AponRenderStyle;
 import com.aspectran.utils.apon.Parameters;
-import java.io.StringWriter;
-import java.io.Writer;
 
 public class AponWriteTest {
     public static void main(String[] args) {
         try {
-            // 1. APON으로 변환할 Parameters 객체 생성 및 값 설정
             Parameters serverConfig = new ServerConfig();
             serverConfig.putValue("name", "NewServer");
             serverConfig.putValue("port", 9090);
             serverConfig.putValue("features", new String[] {"WebService", "Security"});
 
-            Parameters rootParams = new RootConfig(); // RootConfig는 server Parameter를 포함
-            rootParams.putValue("server", serverConfig);
+            AponWriter writer = new AponWriter();
 
-            // 예제: 기본 컴팩트 스타일 출력 (바깥쪽 중괄호 없음)
-            String apon = new AponWriter().write(rootParams).toString();
-            System.out.println("기본 컴팩트 스타일 출력:\n" + apon);
-            // 출력:
-            // server: {
-            //   name: NewServer
-            //   port: 9090
-            //   features: [
-            //     WebService
-            //     Security
-            //   ]
-            // }
+            // SINGLE_LINE 스타일로 출력 설정
+            serverConfig.setRenderStyle(AponRenderStyle.SINGLE_LINE);
+            String result = writer.write(serverConfig).toString();
+            System.out.println(result);
+            // 출력: name: NewServer, port: 9090, features: [ WebService, Security ]
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-```
-
-`AponWriter`는 또한 출력에 대한 고급 제어를 위한 몇 가지 구성 옵션을 제공합니다. 예를 들어, 압축된 출력을 위해 예쁘게 인쇄하는 기능을 비활성화하거나 `null` 값이 처리되는 방식을 구성할 수 있습니다.
-
-`prettyPrint(false)`를 사용하더라도 개행 문자가 완전히 제거되지 않는다는 점에 유의해야 합니다. 이는 콤마를 사용하는 다른 형식과 달리, APON에서는 개행 문자가 파라미터와 배열 요소의 기본적인 구분자 역할을 하기 때문입니다. 예쁘게 인쇄하는 기능을 비활성화하면 주로 들여쓰기가 제거됩니다.
-
-```java
-// 압축 출력 예제 (들여쓰기 없이, 하지만 구분자로서의 개행 문자는 유지)
-String compactApon = new AponWriter().prettyPrint(false).write(rootParams).toString();
-System.out.println(compactApon);
-// 출력: server:{
-// name:NewServer
-// port:9090
-// features:[
-// HTTP2
-// SSL
-// ]
-// }
 ```
 
 ### 프로그래밍 방식으로 APON 생성하기 (AponLines)
@@ -439,18 +359,6 @@ public class AponLinesTest {
         String apon = lines.toString();
         System.out.println(apon);
     }
-}
-```
-
-**출력:**
-```apon
-server: {
-  name: MyWebApp
-  port: 8080
-  features: [
-    HTTP2
-    SSL
-  ]
 }
 ```
 

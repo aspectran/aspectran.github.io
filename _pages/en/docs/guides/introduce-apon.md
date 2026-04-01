@@ -5,90 +5,88 @@ subheadline: Core Guides
 
 ## 1. What is APON?
 
-APON (Aspectran Parameters Object Notation) is a lightweight data-interchange format for representing structured data.
-While it has a structure similar to JSON, it is characterized by enhanced readability, making it easy for humans to read and write, much like YAML.
+APON (Aspectran Parameters Object Notation) is a lightweight data exchange format for representing structured data. It features a structure similar to JSON while enhancing readability to be as easy to read and write as YAML.
 
-APON is specifically designed to simplify the creation of configuration files for the Aspectran framework and to ensure that applications can accurately read configuration values.
+APON is specifically designed to allow concise configuration files for the Aspectran framework and to ensure that applications can accurately read configuration values.
 
 ### Key Features
 
-*   **Excellent Readability**: Items are separated by newlines instead of commas (`,`), and quotes can be omitted if the value contains no spaces or special characters, resulting in concise and clear code.
-*   **Explicit Type Support**: You can explicitly specify the data type for a value, ensuring the accuracy and stability of configuration values.
-*   **Hierarchical Data Structure**: Braces (`{ }`) can be used to structure data hierarchically, allowing for the systematic representation of complex configurations.
-*   **Long String Support**: Supports a `text` type that makes it easy to write multi-line text.
-*   **Comment Support**: The `#` character can be used to add comments to the code. It must be written on a new line.
+*   **Excellent Readability**: Items can be flexibly separated using line breaks or commas (`,`). If a value does not contain special characters, quotes can be omitted, making the code concise and clear.
+*   **Explicit Type Support**: Data types for values can be explicitly specified, ensuring the accuracy and stability of configuration values.
+*   **Hierarchical Data Structure**: Data can be organized hierarchically using curly braces (`{ }`), allowing complex settings to be expressed systematically.
+*   **Long String Support**: It supports the `text` type for writing multi-line text, which can be automatically converted into an escaped single-line string depending on the situation.
+*   **Inline Comment Support**: The `#` character can be used to add descriptions to code at the end of a line as well as on new lines.
 
 ### Comparison with JSON and YAML
 
-APON is a data format that combines features from both JSON and YAML to enhance readability and convenience. The main differences between each format are as follows.
+APON is a data format that combines the features of JSON and YAML to improve readability and convenience. Key differences from each format are as follows:
 
 | Category | JSON | YAML | APON |
 | :--- | :--- | :--- | :--- |
-| **Primary Purpose** | Data Interchange (API) | General-purpose Configuration | **Aspectran-specific Configuration** |
-| **Structure Definition** | Parentheses (`{ }`, `[ ]`) | **Indentation** | Parentheses (`{ }`, `[ ]`) |
-| **Item Separation** | Comma (`,`) | Newline + Indentation | **Newline** |
-| **Comments** | Not supported | Supported (`#`) | Supported (`#`) |
+| **Primary Purpose** | Data Exchange (API) | General Purpose Config | **Aspectran-specific Config** |
+| **Structure Definition** | Braces (`{ }`, `[ ]`) | **Indentation** | Braces (`{ }`, `[ ]`) |
+| **Item Separation** | Comma (`,`) | Line break + Indentation | **Line break or Comma** |
+| **Comments** | Not Supported | Supported (`#`) | Supported (`#`) |
 
-The biggest differences are in **how the structure is defined** and **how items are separated**. APON creates an explicit structure with parentheses like JSON, but uses newlines as item separators to maximize readability. This is a distinct feature from YAML, which defines the entire structure through the combination of newlines and indentation. Also, by not using commas (`,`), APON prevents syntax errors common in JSON (like trailing comma issues) when adding or removing items, and keeps change history in version control systems (like Git) clean.
+The biggest differences are the **way structures are defined** and the **way items are separated**. APON creates an explicit structure with braces like JSON, but primarily uses line breaks as item separators to maximize readability. Furthermore, using commas (`,`) allows multiple items to be listed on a single line, providing even more flexible writing. By making the use of commas optional, it prevents syntax errors that can occur when adding or deleting items and maintains a clean change history in version control systems like Git.
 
 ## 2. Basic Syntax
 
 ### Comments
 
-In APON, comments must start with the `#` character on a **new line**.
-**Inline comments** (adding a comment after a parameter value on the same line) are **not supported**.
-
-This design choice avoids forcing the use of quotes when the `#` character is part of the data value (e.g., CSS color codes like `#FFFFFF` or hashtags), thereby increasing input flexibility.
+In APON, a comment starts with the `#` character and continues to the end of that line. It supports **inline comments** placed immediately after a parameter value, as well as comments on new lines.
 
 ```apon
-# Correct usage of comments
+# Example of correct comment usage
 timeout: 30
 
-# Incorrect usage (treated as a string value, not a comment)
-# The value of timeout becomes the string "30 # 30 seconds", not the number 30.
+# Example of inline comment (description can be added immediately after the value)
 timeout: 30 # 30 seconds
+
+# If the comment symbol (#) is part of the value, quotes must be used.
+color: "#FF5733"
 ```
 
-### Single Value (Parameter)
+**Note:** APON comments are **line-end comments**. When listing multiple items on one line, such as in the `SINGLE_LINE` style, if a `#` is inserted, all content following it is considered a comment and ignored.
 
-The most basic unit in APON can have a single value in the format `name: value`.
-Keys and values are separated by a colon (`:`), and the value extends from the colon to the **end of the line**.
+### Parameter (Single Value)
 
-This characteristic offers several advantages:
-*   Quotes are not required even if the value contains spaces in the middle.
-*   Values containing special characters, like URLs or file paths, can be written as-is without escaping.
-*   There is no need to type a comma (`,`) to indicate the end of a value.
+The most basic unit in APON is a single value in the format `name: value`. The key and value are separated by a colon (`:`), and everything after the colon until a comment symbol (#) or the **End of Line (EOL)** is considered the value.
 
-It is common to omit quotes (`"`) unless the value has the following special conditions:
+This feature offers the following advantages:
+*   Quotes are not required even if there are spaces in the middle of the value.
+*   There is no need to enter a comma (`,`) to indicate the end of a value. (Except when writing multiple items on one line)
 
-*   If there are spaces at the beginning or end of the value (spaces in the middle are fine).
-*   If the value contains single (`'`) or double (`"`) quotes.
-*   If the value contains a newline character (`\n`).
-*   If the value is an empty string.
+If the value contains the following conditions, it must be enclosed in double quotes (`"`), in which case standard escape rules apply:
+
+*   The value **starts** with a space, `{`, `[`, `(`, or `#`.
+*   The **inside** of the value contains `"`, `'`, `,`, `:`, `{`, `}`, `[`, `]`, `#`, `\n`, or `\r`.
+*   The value **ends** with a space.
+*   The value is an empty string.
 
 ```apon
-# Example without double quotes (Value extends to the end of the line)
+# Example without quotes (recognized as a value until the end of the line)
 name: John Doe
 age: 30
 city: New York
-url: https://example.com/api?query=value
-color: #FF5733
 
-# Example requiring double quotes
-message: "'Hello, World'"
-message: "First line\nNew line"
+# Examples where quotes are required (due to structural characters or need for escaping)
+url: "https://example.com/api?query=value" # Contains a colon (:)
+color: "#FF5733" # Starts with a comment symbol (#)
+message: "Hello, \"Aspectran\"" # Includes quotes and needs escaping
+path: "C:\\Program Files\\Aspectran" # Backslash needs escaping
 indented: "  Leading spaces"
 indented: "Trailing spaces  "
 empty: ""
 ```
 
-### Set (Parameters)
+### Parameters (Set)
 
-A set of Parameters is represented by enclosing them in braces (`{ }`). It can have a hierarchical structure containing other sub-Parameters.
+A set of parameters is enclosed in curly braces (`{ }`). It can have a hierarchical structure containing other sub-parameters.
 
-APON's default and most common style for root-level parameters is the "compact style," where the outermost braces are omitted. A non-compact style, where root-level parameters are enclosed in braces, also exists for JSON-like appearance but offers no functional difference.
+The default and most common root-level parameter style in APON is the "compact style," where the outer curly braces are omitted. A non-compact style, where root-level parameters are enclosed in curly braces, also exists to look similar to JSON, but there is no functional difference.
 
-**Example of a nested Parameters set:**
+**Example of nested parameters set:**
 ```apon
 user: {
   name: John Doe
@@ -100,7 +98,7 @@ user: {
 }
 ```
 
-**Example of root-level parameters in compact style (without outermost braces):**
+**Root-level parameters in compact style (no outer braces):**
 ```apon
 name: John Doe
 age: 30
@@ -109,20 +107,28 @@ city: New York
 
 ### Array
 
-An array is represented by putting multiple values inside square brackets (`[ ]`). Each element is separated by a newline.
+An array is represented by putting multiple values inside square brackets (`[ ]`).
 
-APON also supports root-level arrays, which can be parsed directly into an `ArrayParameters` object.
+Separators for array elements are very flexible. You can use either line breaks or commas (`,`), or even a mix of both. This flexibility makes it very convenient by reducing concerns about separator handling when adding or deleting items.
+
+APON also supports root-level arrays, which can be parsed directly into `ArrayParameters` objects.
 
 ```apon
+# Separated by line breaks only
 users: [
   John
   Jane
   Peter
 ]
-numbers: [
-  1
-  2
-  3
+
+# Separated by commas only
+numbers: [ 1, 2, 3 ]
+
+# Flexible expression mixing line breaks and commas
+features: [
+  HTTP2,
+  SSL,
+  Web Sockets
 ]
 ```
 
@@ -137,13 +143,10 @@ numbers: [
 
 ## 3. Data Types
 
-APON supports various data types, and the type can be specified in the format `name(type): value`.
-If the type is omitted, it is automatically determined based on the value's format. For numeric values, the parser attempts to infer the most appropriate type: integers are typically parsed as `java.lang.Integer` (or `java.lang.Long` for larger values), and numbers with decimal points are parsed as `java.lang.Double`.
-
-**Important Note on `float`:** If you intend a decimal number to be parsed as a `java.lang.Float`, you must explicitly specify the type as `float` in the APON text (e.g., `score(float): 95.5`) or define a `ParameterKey` with `ValueType.FLOAT`. Otherwise, decimal numbers will default to `java.lang.Double`.
+APON supports various data types, and the type can be explicitly specified in the form `name(type): value`. If the type is omitted, it is automatically determined based on the format of the value. For numeric values, the parser attempts to infer the most appropriate type: integers are generally parsed as `java.lang.Integer` (or `java.lang.Long` for larger values), and numbers with a decimal point are parsed as `java.lang.Double`.
 
 | Value Type | Java Object Type | Example |
-| :--- | :--- |:------------------------------|
+| :--- | :--- | :--- |
 | `string` | `java.lang.String` | `name(string): Hello, World.` |
 | `text` | `java.lang.String` | See the `text` type example below |
 | `int` | `java.lang.Integer` | `age(int): 30` |
@@ -152,27 +155,33 @@ If the type is omitted, it is automatically determined based on the value's form
 | `double` | `java.lang.Double` | `pi(double): 3.14159` |
 | `boolean` | `java.lang.Boolean` | `isAdmin(boolean): true` |
 | `parameters` | `com.aspectran.utils.apon.Parameters` | Nested Parameter structure |
+| `variable` | (Determined at runtime) | Variable parameter with no fixed type |
+| `object` | `java.lang.Object` | Arbitrary object with no specific type specified |
 
-### `text` Type Usage Example
+**Important Note on `float`**: To parse a decimal number as `java.lang.Float`, you must explicitly specify the type as `float` in the APON text (e.g., `score(float): 95.5`) or define a `ParameterKey` with `ValueType.FLOAT`. Otherwise, decimal numbers are treated as `java.lang.Double` by default.
 
-For long strings that span multiple lines, using the `text` type is convenient. It is enclosed in parentheses (`( )`), and each line is prefixed with the `|` character.
+### Example Using `text` Type
+
+The `text` type is convenient for long strings consisting of multiple lines. It is enclosed in parentheses (`( )`) and each line starts with the `|` character.
 
 ```apon
 description(text): (
-  |This is a multi-line text.
+  |This is multi-line text.
   |Each line starts with a pipe character.
-  |Within this block, special characters like
-  |"double quotes" or 'single quotes' can be used freely.
+  |Inside this block, special characters like "double quotes"
+  |or 'single quotes' can be used freely.
 )
 ```
 
+**Note:** When `text` type data is output in `SINGLE_LINE` or `COMPACT` style, it is automatically converted into an escaped string containing newline characters (`"line1\nline2"`) and written on a single line.
+
 ## 4. Using APON
 
-Let's explore how to convert APON-formatted text into a Java object and vice versa.
+Learn how to convert APON-formatted text into Java objects and vice versa.
 
-### Defining a Schema with `Parameters` Classes
+### Defining a Schema with the `Parameters` Class
 
-You need to define classes in Java that implement the `Parameters` interface corresponding to the APON data structure. Each class corresponds to a hierarchical level in APON, and you define the name, type, and array status of each parameter using `ParameterKey`. For more flexible parsing, you can also define alternative names (aliases) for a parameter.
+To match the APON data structure, you must define a class in Java that implements the `Parameters` interface. Each class corresponds to the hierarchical structure of APON and defines the name, type, and whether it is an array for each parameter via `ParameterKey`. You can also define alternative names (aliases) for parameters for more flexible parsing.
 
 **Example APON:**
 ```apon
@@ -202,7 +211,7 @@ public class RootConfig extends DefaultParameters implements Parameters {
     private static final ParameterKey[] parameterKeys;
 
     static {
-        // Has a hierarchical structure containing other Parameters
+        // Has a hierarchical structure containing another Parameter
         server = new ParameterKey("server", ServerConfig.class);
 
         parameterKeys = new ParameterKey[] {
@@ -234,7 +243,7 @@ public class ServerConfig extends DefaultParameters implements Parameters {
     static {
         name = new ParameterKey("name", ValueType.STRING);
         port = new ParameterKey("port", ValueType.INT);
-        // The 'features' parameter is of string type and is an array that can hold multiple values (third argument is true)
+        // The features Parameter is of string type and is an array that can have multiple values (third argument true)
         features = new ParameterKey("features", ValueType.STRING, true);
 
         parameterKeys = new ParameterKey[] {
@@ -250,103 +259,33 @@ public class ServerConfig extends DefaultParameters implements Parameters {
 }
 ```
 
-### Reading APON Text (AponReader)
+### Reading APON Data (AponReader)
 
-The `AponReader` class allows you to read an APON-formatted text file and convert it into a defined `Parameters` Java object.
+Use `AponReader` to convert APON-formatted text into Java objects. Currently, all APON parsing is handled by `AponParser`, a high-performance engine that works character by character, and `AponReader` acts as a wrapper to make it easier to use. Specifically, `AponReader` handles multi-dimensional arrays and nested structures very intuitively as Java `List` or `Parameters` objects.
 
-**Example: Reading a root object and a root array**
+**Example: Reading objects and multi-dimensional arrays**
 
 ```java
 import com.aspectran.utils.apon.AponReader;
 import com.aspectran.utils.apon.Parameters;
-import com.aspectran.utils.apon.RootConfig; // Assuming RootConfig is defined as in Step 1
-import com.aspectran.utils.apon.ArrayParameters; // Import ArrayParameters
-import com.aspectran.utils.apon.DefaultParameters; // Import DefaultParameters
-
-public class AponReaderTest {
-    public static void main(String[] args) {
-        try {
-            // Example 1: Reading a root object (can be compact or non-compact style)
-            String apon1 = """
-                name: John Doe
-                age: 30
-                """;
-            Parameters params1 = AponReader.read(apon1, new RootConfig());
-            System.out.println("Object Name: " + params1.getString("name"));
-
-            // Example 2: Reading a root array
-            String apon2 = """
-                [
-                  apple
-                  banana
-                  cherry
-                ]
-                """;
-            // For root arrays, you should explicitly provide an ArrayParameters instance
-            ArrayParameters arrayParams = AponReader.read(apon2, new ArrayParameters());
-            System.out.println("Array Content: " + arrayParams.getValueList());
-
-            // If you provide a non-ArrayParameters object for a root array,
-            // AponReader will add the array as a parameter named "" (ArrayParameters.NONAME)
-            Parameters defaultParams = AponReader.read(apon2, new DefaultParameters());
-            System.out.println("Array as named parameter: " + defaultParams.getValueList(ArrayParameters.NONAME));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
-
-### Modern Parsing (AponParser)
-
-`AponParser` provides a more efficient and intuitive alternative to `AponReader`, especially for handling multi-dimensional arrays. `AponParser` parses nested arrays directly into nested `List` objects.
-
-**Example: Parsing a multi-dimensional array with AponParser**
-
-```java
-import com.aspectran.utils.apon.AponParser;
 import com.aspectran.utils.apon.ArrayParameters;
-import com.aspectran.utils.apon.Parameters;
 import java.util.List;
 
-public class AponParserTest {
+public class AponReadTest {
     public static void main(String[] args) {
         try {
-            String apon = """
-                [
-                  [
-                    a
-                    b
-                  ],
-                  [
-                    c
-                    d
-                    e
-                  ]
-                ]
-                """;
+            // 1. Reading an object from a string
+            String apon1 = "name: John Doe, age: 30";
+            Parameters params1 = AponReader.read(apon1, new RootConfig());
+            System.out.println("Name: " + params1.getString("name"));
 
-            // Use AponParser to parse the string into an ArrayParameters object
-            ArrayParameters rootArrayParams = AponParser.parse(apon, ArrayParameters.class);
-
-            // AponParser correctly parses nested arrays into List<List<Object>>
-            List<List<String>> matrix = (List<List<String>>)rootArrayParams.getValueList();
-
+            // 2. Parsing a multi-dimensional array (using ArrayParameters)
+            String apon2 = "[[a, b], [c, d, e]]";
+            ArrayParameters rootArray = AponReader.read(apon2, new ArrayParameters());
+            List<List<String>> matrix = (List<List<String>>)rootArray.getValueList();
             System.out.println("Matrix: " + matrix);
             // Output: Matrix: [[a, b], [c, d, e]]
 
-            // You can also parse a root object with AponParser
-            String objectApon = """
-                {
-                  name: John Doe
-                  age: 30
-                }
-                """;
-            Parameters rootObjectParams = AponParser.parse(objectApon);
-            System.out.println("Object Name: " + rootObjectParams.getString("name"));
-            // Output: Object Name: John Doe
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -354,44 +293,38 @@ public class AponParserTest {
 }
 ```
 
-### Writing APON Text (AponWriter)
+### Writing APON Data (AponWriter)
 
-The `AponWriter` class makes it easy to convert a `Parameters` Java object into an APON-formatted string.
+Using the `AponWriter` class, you can convert `Parameters` Java objects into APON-formatted strings. `AponWriter` automatically determines whether quotes are needed based on the content of the value and performs appropriate escaping.
 
-`AponWriter` works intelligently, automatically enclosing values in double quotes and performing necessary escaping when quotes are required (e.g., if the value has leading/trailing spaces, or contains quotes or newline characters). Therefore, developers only need to set the values of the `Parameters` object without worrying about the quoting rules.
+In particular, you can finely control the output format through `AponRenderStyle`.
 
-By default, `AponWriter` outputs root-level parameters in "compact style" (without outermost braces). While a non-compact style (with outermost braces) can be enabled by setting the `compactStyle` property on your root `Parameters` object to `false`, this is rarely needed as it offers no functional difference.
+1.  **PRETTY (Default)**: Applies indentation and line breaks for human readability. The `text` type is output as a multi-line block (`|`).
+2.  **SINGLE_LINE**: Outputs everything on one line while maintaining readability. Items are separated by `, `, and the `text` type is automatically converted into an escaped string (`"line1\nline2"`).
+3.  **COMPACT**: Compressed output on one line with minimal spaces to maximize transmission efficiency.
+
+**Example: Setting the output style**
 
 ```java
 import com.aspectran.utils.apon.AponWriter;
+import com.aspectran.utils.apon.AponRenderStyle;
 import com.aspectran.utils.apon.Parameters;
-import java.io.StringWriter;
-import java.io.Writer;
 
 public class AponWriteTest {
     public static void main(String[] args) {
         try {
-            // 1. Create and set values for the Parameters object to be converted to APON
             Parameters serverConfig = new ServerConfig();
             serverConfig.putValue("name", "NewServer");
             serverConfig.putValue("port", 9090);
             serverConfig.putValue("features", new String[] {"WebService", "Security"});
 
-            Parameters rootParams = new RootConfig(); // RootConfig contains the server parameter
-            rootParams.putValue("server", serverConfig);
+            AponWriter writer = new AponWriter();
 
-            // Example: Default compact style output (no outermost braces)
-            String apon = new AponWriter().write(rootParams).toString();
-            System.out.println("Default Compact Style Output:\n" + apon);
-            // Output:
-            // server: {
-            //   name: NewServer
-            //   port: 9090
-            //   features: [
-            //     WebService
-            //     Security
-            //   ]
-            // }
+            // Set output to SINGLE_LINE style
+            serverConfig.setRenderStyle(AponRenderStyle.SINGLE_LINE);
+            String result = writer.write(serverConfig).toString();
+            System.out.println(result);
+            // Output: name: NewServer, port: 9090, features: [ WebService, Security ]
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -400,27 +333,9 @@ public class AponWriteTest {
 }
 ```
 
-`AponWriter` also offers several configuration options for advanced control over the output. For example, you can disable pretty-printing for a compact output or configure how `null` values are handled.
+### Generating APON Programmatically (AponLines)
 
-It's important to note that even when `prettyPrint(false)` is used, newlines are not entirely removed. This is because newlines serve as fundamental delimiters for parameters and array elements in APON, unlike formats that use commas. Disabling pretty-printing primarily removes indentation.
-
-```java
-// Example of compact output (without indentation, but retaining newlines as delimiters)
-String compactApon = new AponWriter().prettyPrint(false).write(rootParams).toString();
-System.out.println(compactApon);
-// Output: server:{
-// name:NewServer
-// port:9090
-// features:[
-// HTTP2
-// SSL
-// ]
-// }
-```
-
-### Creating APON Programmatically (AponLines)
-
-For situations where you need to build an APON string dynamically in your code, the `AponLines` class provides a convenient fluent API. It simplifies the process of creating nested structures and arrays without manual string concatenation.
+If you need to dynamically generate APON strings in code, the `AponLines` class provides a convenient fluent API. This class helps create nested structures and arrays simply without manually concatenating strings.
 
 ```java
 import com.aspectran.utils.apon.AponLines;
@@ -443,23 +358,11 @@ public class AponLinesTest {
 }
 ```
 
-**Output:**
-```apon
-server: {
-  name: MyWebApp
-  port: 8080
-  features: [
-    HTTP2
-    SSL
-  ]
-}
-```
+## 5. Converting to APON from Other Formats
 
-## 5. Converting Other Formats to APON
+The `com.aspectran.utils.apon` package includes powerful utilities to directly convert data from other common formats such as JSON, XML, and Java objects into `Parameters` objects.
 
-The `com.aspectran.utils.apon` package includes powerful utilities to convert data from other common formats like JSON, XML, and Java objects directly into `Parameters` objects.
-
-### From JSON
+### Conversion from JSON
 
 Use `JsonToParameters` to parse a JSON string into a `Parameters` object.
 
@@ -474,7 +377,7 @@ System.out.println(params.getString("name")); // John
 System.out.println(params.getInt("age")); // 30
 ```
 
-### From XML
+### Conversion from XML
 
 Use `XmlToParameters` to convert an XML document into a `Parameters` object. XML elements become parameter names, and attributes are treated as nested parameters.
 
@@ -488,9 +391,9 @@ Parameters params = XmlToParameters.from(xml);
 System.out.println(params.getParameters("user").getString("name")); // John
 ```
 
-### From a Java Object
+### Conversion from Java Objects
 
-Use `ObjectToParameters` to convert a JavaBean-style object into a `Parameters` object by reflecting its properties.
+Use `ObjectToParameters` to read properties from a JavaBean-style object via reflection and convert it into a `Parameters` object.
 
 ```java
 import com.aspectran.utils.apon.ObjectToParameters;
@@ -510,17 +413,17 @@ System.out.println(params.getInt("age")); // 30
 
 ## 6. Using APON in JavaScript (apon.js)
 
-For web and Node.js environments, you can use the official `apon.js` library to parse and stringify APON-formatted strings.
+In web and Node.js environments, you can use the official `apon.js` library to parse APON-formatted strings or convert objects into APON strings.
 
 ### Installation (npm)
 
-You can install `apon.js` via npm:
+You can install `apon.js` via npm.
 
 ```bash
 npm install apon
 ```
 
-### Resources
+### Related Links
 
 *   **GitHub Repository**: [https://github.com/aspectran/apon.js](https://github.com/aspectran/apon.js)
 *   **Live Demo**: [https://aspectran.github.io/apon.js/](https://aspectran.github.io/apon.js/)
@@ -531,7 +434,7 @@ For detailed API usage, please refer to the `README.md` file in the GitHub repos
 
 APON-related classes are included in the common utility package of the Aspectran framework.
 
-*   **Package Path**: `com.aspectran.core.util.apon`
+*   **Package Path**: `com.aspectran.utils.apon`
 *   **Source Code**: [View on GitHub](https://github.com/aspectran/aspectran/tree/master/utils/src/main/java/com/aspectran/utils/apon)
 
 {% include label-link-box.liquid label="Source" href="https://github.com/aspectran/aspectran/tree/master/utils/src/main/java/com/aspectran/utils/apon" %}

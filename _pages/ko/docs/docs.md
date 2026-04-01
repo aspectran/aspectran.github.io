@@ -22,6 +22,7 @@ permalink: /ko/docs/
 *   [Aspectran Scheduler: Translet을 이용한 강력한 작업 자동화](/ko/docs/guides/aspectran-scheduler/)
 *   [Aspectran 뷰(View) 기술](/ko/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](/ko/docs/guides/aspectran-profiles/)
+*   [Aspectran 프로퍼티 구성 및 활용](/ko/docs/guides/aspectran-properties/)
 *   [AsEL (Aspectran Expression Language) 소개](/ko/docs/guides/introduce-asel/)
 *   [APON (Aspectran Parameters Object Notation) 소개](/ko/docs/guides/introduce-apon/)
 *   [Aspectran JSON 유틸리티 가이드](/ko/docs/guides/aspectran-json-guide/)
