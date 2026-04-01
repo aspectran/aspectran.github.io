@@ -438,7 +438,7 @@ npm install apon
 
 APON 관련 클래스들은 Aspectran 프레임워크의 공통 유틸리티 패키지에 포함되어 있습니다.
 
-*   **패키지 경로**: `com.aspectran.core.util.apon`
+*   **패키지 경로**: `com.aspectran.utils.apon`
 *   **소스 코드**: [GitHub에서 보기](https://github.com/aspectran/aspectran/tree/master/utils/src/main/java/com/aspectran/utils/apon)
 
 {% include label-link-box.liquid label="Source" href="https://github.com/aspectran/aspectran/tree/master/utils/src/main/java/com/aspectran/utils/apon" %}
