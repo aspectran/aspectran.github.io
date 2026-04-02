@@ -3,143 +3,195 @@ title: Aspectran Profiles
 subheadline: Core Guides
 ---
 
-Aspectran's Profiles feature is a powerful function that allows you to enable or disable all or part of an application's configuration only in a specific environment. For example, it can be usefully employed when you need to apply different database settings or load specific beans for 'development', 'test', and 'production' environments.
+Aspectran's Profiles feature is a powerful tool that allows you to enable or disable parts of an application's configuration only in specific environments. It is especially useful when you need to use different database connection information or bean configurations depending on the execution environment, such as development (dev), testing (test), or production (prod).
 
-## Activating Profiles
+This document provides a detailed guide, covering everything from profile activation and conditional configuration using XML and annotations to a practical real-world example.
 
-Profiles can be easily activated through JVM System Properties. The main properties used are as follows:
+## 1. Activating Profiles
 
-- `aspectran.profiles.active`: Specifies the currently active profiles. If specifying multiple profiles, separate them with a comma (`,`).
-- `aspectran.profiles.default`: Specifies the default profile to be activated if `aspectran.profiles.active` is not specified.
-- `aspectran.profiles.base`: Specifies the base profile that should always be active.
+You can specify which profiles to activate when running an application through JVM System Properties. Aspectran provides three main properties:
 
-**Examples:**
+### 1.1. Main Properties
 
-Here is a command-line example for running an application with the `dev` profile activated.
+*   **`aspectran.profiles.active`**: Specifies the name of the profiles to activate. To activate multiple profiles simultaneously, list them separated by a comma (`,`).
+*   **`aspectran.profiles.default`**: Specifies the default profile to be activated if `aspectran.profiles.active` is not set.
+*   **`aspectran.profiles.base`**: Specifies the base profile that should always be active regardless of the execution environment.
 
+### 1.2. Execution Examples
+
+**Activating a single profile:**
+Run the application with the `dev` profile active.
 ```bash
 java -Daspectran.profiles.active=dev -jar my-application.jar
 ```
 
-Here is an example of activating two profiles, `prod` and `metrics`, simultaneously.
-
+**Activating multiple profiles:**
+Run the application with both `prod` and `metrics` profiles active simultaneously.
 ```bash
 java -Daspectran.profiles.active=prod,metrics -jar my-application.jar
 ```
 
-## Conditional Configuration with Profiles
+## 2. Profile Expression Syntax
 
-In most elements within Aspectran's configuration file (XML-based), you can use the `profile` attribute to apply that setting only when a specific profile is active.
+In addition to simply writing a profile name, you can use logical operators to create complex activation conditions.
 
-- The `profile` attribute can be used in various configuration elements such as `<bean>`, `<arguments>`, `<properties>`, `<environment>`, and `<append>`.
-- If the profile expression specified in the `profile` attribute matches the currently active profile, the corresponding element is activated.
-- If it does not match, that element and all its child elements are ignored.
+### 2.1. Logical Operators
+
+*   **`!` (NOT)**: Indicates the condition is met when a specific profile is **not** active.
+    - Example: `profile="!dev"` (Active when dev is NOT active)
+*   **`()` (AND)**: Indicates that **all** listed profiles in the parentheses must be active.
+    - Example: `profile="(prod, metrics)"` (Active when both prod AND metrics are active)
+*   **`[]` (OR)**: Indicates that the condition is met if **at least one** of the listed profiles is active.
+    - Example: `profile="[dev, test]"` (Active when either dev OR test is active)
+*   **Default Operation (OR)**: Listing profiles separated by a comma without a symbol is treated as an OR operation.
+    - Example: `profile="dev, test"` (Active when either dev OR test is active)
+
+### 2.2. Syntax Summary Examples
+
+| Expression | Description |
+| :--- | :--- |
+| `dev` | When the `dev` profile is active |
+| `!dev` | When the `dev` profile is not active |
+| `dev, test` | When either `dev` or `test` profile is active (OR) |
+| `(prod, metrics)` | When both `prod` and `metrics` profiles are active (AND) |
+| `!(prod, metrics)` | When both `prod` and `metrics` are not active at the same time |
+| `[(dev, test), prod]` | When (both `dev` and `test` are active) **OR** `prod` is active |
+
+## 3. Conditional Configuration in XML
+
+In XML configuration files, you use the `profile` attribute on various elements to apply conditional settings. However, it is important to note that not all elements support the `profile` attribute directly.
+
+### 3.1. Supported Elements and Wrapper Elements
+
+The following elements in Aspectran's XML schema can have the `profile` attribute directly:
+*   `<arguments>`, `<properties>`, `<parameters>`, `<attributes>`, `<environment>`, `<append>`
+
+**CRITICAL NOTE:**
+Individual elements such as `<bean>`, `<property>`, `<parameter>`, `<attribute>`, and `<argument>` **do not directly support** the `profile` attribute. To apply a profile to these items, you must use their corresponding **wrapper elements**.
+
+Each wrapper element serves the following purpose:
+
+*   **`<arguments>`**: A group of constructor arguments for a bean.
+*   **`<properties>`**: A group of properties for a bean or an action.
+*   **`<parameters>`**: A group of request parameters.
+*   **`<attributes>`**: A group of request attributes.
+
+These wrapper elements can contain multiple `<item>` elements, and all items within them become valid only when the profile specified on the wrapper element is active.
+
+### 3.2. Grouping with Wrapper Elements Example
+
+If you want to activate multiple properties only in a specific profile, use the `<properties>` wrapper element and place `<item>` elements inside it. Note that a standalone `<property>` and an `<item>` inside a wrapper perform the same role; they simply have different names.
 
 ```xml
 <aspectran>
+    <!-- Property group active only in the 'dev' profile -->
+    <properties profile="dev">
+        <item name="service.url">http://dev.api.example.com</item>
+        <item name="debug.mode">true</item>
+    </properties>
 
-    <!-- Properties applied only when the 'dev' profile is active -->
-    <environment profile="dev">
-        <property name="db.driver">org.h2.Driver</property>
-        <property name="db.url">jdbc:h2:mem:testdb</property>
-        <property name="db.username">sa</property>
-        <property name="db.password"></property>
-    </environment>
-
-    <!-- Properties applied only when the 'prod' profile is active -->
-    <environment profile="prod">
-        <property name="db.driver">com.mysql.cj.jdbc.Driver</property>
-        <property name="db.url">jdbc:mysql://localhost:3306/prod_db</property>
-        <property name="db.username">prod_user</property>
-        <property name="db.password">prod_password</property>
-    </environment>
-
-    <!-- Include this configuration file only when the 'prod' profile is active -->
-    <append file="/config/metrics-context.xml" profile="prod"/>
-
+    <!-- Property group active only in the 'prod' profile -->
+    <properties profile="prod">
+        <item name="service.url">https://api.example.com</item>
+        <item name="debug.mode">false</item>
+    </properties>
 </aspectran>
 ```
 
-## Profile Expressions
+### 3.3. Registering Beans by Profile (`<append>`)
 
-In addition to simple profile names, you can use logical operators to express complex conditions.
+Since the `<bean>` element does not support the `profile` attribute, if you need to register completely different beans depending on the environment, you should separate the configuration files and use the `<append>` element.
 
-- **`!` (NOT)**: When a specific profile is not active
-  ```xml
-  <!-- Applied only when the 'demo' profile is not active -->
-  <bean id="someBean" class="com.example.SomeBean" profile="!demo"/>
-  ```
+```xml
+<aspectran>
+    <!-- Includes settings from dev-beans.xml only when the 'dev' profile is active -->
+    <append resource="config/dev-beans.xml" profile="dev"/>
 
-- **`()` (AND)**: When all profiles within the parentheses are active
-  ```xml
-  <!-- Applied only when both 'prod' and 'metrics' profiles are active -->
-  <bean id="metricsExporter" class="com.example.MetricsExporterBean" profile="(prod, metrics)"/>
-  ```
+    <!-- Includes settings from prod-beans.xml only when the 'prod' profile is active -->
+    <append resource="config/prod-beans.xml" profile="prod"/>
+</aspectran>
+```
 
-- **`[]` (OR)**: When at least one of the profiles within the square brackets is active (separating with a comma `,` also works as OR)
-  ```xml
-  <!-- Applied when either 'dev' or 'test' profile is active -->
-  <bean id="testHelper" class="com.example.TestHelperBean" profile="[dev, test]"/>
-  ```
+## 4. Conditional Configuration with Annotations
 
-- **Composite Expressions**: You can create complex conditions by combining multiple operators.
-  ```xml
-  <!-- Applied when none of the 'rss-lettuce', 'rss-lettuce-primaryreplica', 'rss-lettuce-cluster' profiles are active -->
-  <properties profile="(!rss-lettuce, !rss-lettuce-primaryreplica, !rss-lettuce-cluster)">
-      <!-- ... -->
-  </properties>
-  ```
+When defining beans in Java code, you can use the `@Profile` annotation to specify conditions very intuitively.
 
-## Usage Example: Environment-specific Database Configuration
+### 4.1. Class-level Configuration
 
-Here is a complete example of setting different database connection information according to `dev` and `prod` environments.
+Use `@Profile` alongside `@Component` to make an entire class be registered as a bean only in a specific profile.
 
-**`config/aspectran-rules.xml`**
+```java
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Profile;
+
+@Component
+@Profile("dev")
+public class DevDataService implements DataService {
+    // This class is registered in the bean container only when the 'dev' profile is active.
+}
+```
+
+### 4.2. Method-level Configuration (`@Bean`)
+
+You can also apply `@Profile` to factory methods within a configuration class.
+
+```java
+@Component
+public class AppConfig {
+
+    @Bean
+    @Profile("prod")
+    public DataSource dataSource() {
+        // MySqlDataSource is created as a bean only in the 'prod' profile.
+        return new MySqlDataSource();
+    }
+
+}
+```
+
+## 5. Practical Example: Environment-specific Database Configuration
+
+The recommended approach is to use `PropertiesFactoryBean` to load different `.properties` files for each profile and reference them in other beans.
+
+**`config/db.xml`**
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <aspectran>
+    <description>Configures database connection settings by environment.</description>
 
-    <description>Loads different DB settings depending on the environment.</description>
-
-    <!-- Development environment settings -->
-    <environment profile="dev">
-        <property name="db.driver">org.h2.Driver</property>
-        <property name="db.url">jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1</property>
-        <property name="db.username">sa</property>
-        <property name="db.password"></property>
-    </environment>
-
-    <!-- Production environment settings -->
-    <environment profile="prod">
-        <property name="db.driver">com.mysql.cj.jdbc.Driver</property>
-        <property name="db.url">jdbc:mysql://prod.db.server:3306/main_db</property>
-        <property name="db.username">prod_db_user</property>
-        <property name="db.password">!PROD_DB_PASSWORD!</property>
-    </environment>
-
-    <!-- Data source bean definition -->
-    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+    <!-- 1. Bean that loads the appropriate configuration file based on the profile -->
+    <bean id="dbProperties" class="com.aspectran.core.support.PropertiesFactoryBean">
         <properties>
-            <item name="driverClassName" value="${db.driver}"/>
-            <item name="jdbcUrl" value="${db.url}"/>
-            <item name="username" value="${db.username}"/>
-            <item name="password" value="${db.password}"/>
+            <!-- Set to ignore errors if the file is missing -->
+            <item name="ignoreInvalidResource" valueType="boolean">true</item>
         </properties>
+        
+        <!-- Configuration file location for 'h2' profile -->
+        <properties profile="h2">
+            <item name="locations" type="array">
+                <value>classpath:config/db/db-h2.properties</value>
+            </item>
+        </properties>
+        
+        <!-- Configuration file location for 'mysql' profile -->
+        <properties profile="mysql">
+            <item name="locations" type="array">
+                <value>classpath:config/db/db-mysql.properties</value>
+                <value>/config/external/db-prod.properties</value>
+            </item>
+        </properties>
+    </bean>
+
+    <!-- 2. Configure the actual Data Source using loaded properties -->
+    <!-- Use expressions in the form of #{dbProperties^key} to reference values. -->
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="driverClassName">#{dbProperties^driver}</property>
+        <property name="jdbcUrl">#{dbProperties^url}</property>
+        <property name="username">#{dbProperties^username}</property>
+        <property name="password">#{dbProperties^password}</property>
     </bean>
 
 </aspectran>
 ```
 
-**Running the Application:**
-
-- **Run in development environment:** Activating the `dev` profile uses the H2 in-memory database.
-  ```bash
-  java -Daspectran.profiles.active=dev -jar my-app.jar
-  ```
-
-- **Run in production environment:** Activating the `prod` profile uses the MySQL database.
-  ```bash
-  java -Daspectran.profiles.active=prod -jar my-app.jar
-  ```
-
-By using Aspectran's Profiles feature, you can easily respond to multiple environments just by changing the configuration without any code changes.
+By leveraging Aspectran's Profiles feature like this, you can build applications that flexibly adapt to various execution environments through configuration and execution options alone, without any code changes.
