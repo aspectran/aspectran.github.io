@@ -19,7 +19,7 @@ permalink: /en/docs/
 *   [Aspectran Beans: The Official Guide](/en/docs/guides/aspectran-beans/)
 *   [Aspectran AOP: Features & Architecture](/en/docs/guides/aspectran-aop/)
 *   [Understanding Translet: The Face of Aspectran](/en/docs/guides/aspectran-translet/)
-*   [Aspectran Scheduler: Powerful Task Automation with Translets](/en/docs/guides/aspectran-scheduler/)
+*   [Aspectran Scheduler: Task Automation with Translets](/en/docs/guides/aspectran-scheduler/)
 *   [Aspectran View Technologies](/en/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](/en/docs/guides/aspectran-profiles/)
 *   [Aspectran Property Configuration and Utilization](/en/docs/guides/aspectran-properties/)

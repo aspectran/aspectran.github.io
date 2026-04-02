@@ -19,7 +19,7 @@ permalink: /ko/docs/
 *   [Aspectran Beans: 공식 가이드](/ko/docs/guides/aspectran-beans/)
 *   [Aspectran AOP: 기능과 아키텍처](/ko/docs/guides/aspectran-aop/)
 *   [Aspectran의 얼굴마담: Translet 이해하기](/ko/docs/guides/aspectran-translet/)
-*   [Aspectran Scheduler: Translet을 이용한 강력한 작업 자동화](/ko/docs/guides/aspectran-scheduler/)
+*   [Aspectran Scheduler: Translet을 이용한 작업 자동화](/ko/docs/guides/aspectran-scheduler/)
 *   [Aspectran 뷰(View) 기술](/ko/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](/ko/docs/guides/aspectran-profiles/)
 *   [Aspectran 프로퍼티 구성 및 활용](/ko/docs/guides/aspectran-properties/)

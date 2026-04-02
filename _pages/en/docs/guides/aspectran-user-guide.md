@@ -1039,7 +1039,7 @@ We hope this guide helps you in using Aspectran. For more detailed information o
 *   [Aspectran Beans](https://aspectran.com/en/docs/guides/aspectran-beans/)
 *   [Aspectran AOP: Features & Architecture](https://aspectran.com/en/docs/guides/aspectran-aop/)
 *   [Understanding Translet: The Face of Aspectran](https://aspectran.com/en/docs/guides/aspectran-translet/)
-*   [Aspectran Scheduler: Powerful Task Automation with Translets](https://aspectran.com/en/docs/guides/aspectran-scheduler/)
+*   [Aspectran Scheduler: Task Automation with Translets](https://aspectran.com/en/docs/guides/aspectran-scheduler/)
 *   [Aspectran View Technologies](https://aspectran.com/en/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](https://aspectran.com/en/docs/guides/aspectran-profiles/)
 *   [Introduction to AsEL (Aspectran Expression Language)](https://aspectran.com/en/docs/guides/introduce-asel/)

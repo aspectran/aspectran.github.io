@@ -1,5 +1,5 @@
 ---
-title: "Aspectran Scheduler: Translet을 이용한 강력한 작업 자동화"
+title: "Aspectran Scheduler: Translet을 이용한 작업 자동화"
 subheadline: 핵심 가이드
 ---
 

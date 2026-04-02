@@ -1,5 +1,5 @@
 ---
-title: "Aspectran Scheduler: Powerful Task Automation with Translets"
+title: "Aspectran Scheduler: Task Automation with Translets"
 subheadline: Core Guides
 ---
 
