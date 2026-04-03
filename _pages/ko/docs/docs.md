@@ -25,6 +25,7 @@ permalink: /ko/docs/
 *   [Aspectran 프로퍼티 구성 및 활용](/ko/docs/guides/aspectran-properties/)
 *   [AsEL (Aspectran Expression Language) 소개](/ko/docs/guides/introduce-asel/)
 *   [APON (Aspectran Parameters Object Notation) 소개](/ko/docs/guides/introduce-apon/)
+*   [Aspectran 힌트 메커니즘 가이드](/ko/docs/guides/aspectran-hint-mechanism/)
 *   [Aspectran JSON 유틸리티 가이드](/ko/docs/guides/aspectran-json-guide/)
 
 ### 실용 가이드

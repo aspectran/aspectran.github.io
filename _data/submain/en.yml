@@ -47,6 +47,8 @@ aspectran:
           url: /en/docs/guides/introduce-asel/
         - title: APON
           url: /en/docs/guides/introduce-apon/
+        - title: Hints
+          url: /en/docs/guides/aspectran-hint-mechanism/
 
     - title: Practical Implementation
       anchor: practical-guides

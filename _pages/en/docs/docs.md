@@ -25,6 +25,7 @@ permalink: /en/docs/
 *   [Aspectran Property Configuration and Utilization](/en/docs/guides/aspectran-properties/)
 *   [Introduction to AsEL (Aspectran Expression Language)](/en/docs/guides/introduce-asel/)
 *   [Introduction to APON (Aspectran Parameters Object Notation)](/en/docs/guides/introduce-apon/)
+*   [Aspectran Hint Mechanism Guide](/en/docs/guides/aspectran-hint-mechanism/)
 *   [Aspectran JSON Utilities Guide](/en/docs/guides/aspectran-json-guide/)
 
 ### Practical Guides
