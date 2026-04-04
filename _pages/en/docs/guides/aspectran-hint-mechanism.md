@@ -48,10 +48,15 @@ Hints can be retrieved from anywhere using the `peekHint()` method of the `Trans
 
 ```java
 @Component
-@Aspect
+@Aspect(id = "cacheApplyAspect")
+@Joinpoint(
+    pointcut = {
+        "+: com.example.service.*Service.get*"
+    }
+)
 public class CacheAspect {
 
-    @Before("+: com.example.service.*Service.get*")
+    @Before
     public void applyCache(Translet translet) {
         // Check if there is a hint of type "cache".
         HintParameters hint = translet.peekHint("cache");
@@ -135,10 +140,19 @@ An aspect that checks authentication can decide on the appropriate response by l
 
 ```java
 @Component
-@Aspect
+@Aspect(
+    id = "userAuthAspect",
+    order = 1
+)
+@Joinpoint(
+    pointcut = {
+        "+: /app/**",
+        "-: /auth/**"
+    }
+)
 public class UserAuthAspect {
 
-    @Before("+: /app/**")
+    @Before
     public void checkLogin(Translet translet) {
         if (!isLoggedIn(translet)) {
             // Check the "layout" hint.

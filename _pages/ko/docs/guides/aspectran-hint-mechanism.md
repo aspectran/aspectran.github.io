@@ -48,10 +48,15 @@ public class ProductService {
 
 ```java
 @Component
-@Aspect
+@Aspect(id = "cacheApplyAspect")
+@Joinpoint(
+    pointcut = {
+        "+: com.example.service.*Service.get*"
+    }
+)
 public class CacheAspect {
 
-    @Before("+: com.example.service.*Service.get*")
+    @Before
     public void applyCache(Translet translet) {
         // "cache" 타입의 힌트가 있는지 확인합니다.
         HintParameters hint = translet.peekHint("cache");
@@ -135,10 +140,19 @@ public class DashboardActivity {
 
 ```java
 @Component
-@Aspect
+@Aspect(
+    id = "userAuthAspect",
+    order = 1
+)
+@Joinpoint(
+    pointcut = {
+        "+: /app/**",
+        "-: /auth/**"
+    }
+)
 public class UserAuthAspect {
 
-    @Before("+: /app/**")
+    @Before
     public void checkLogin(Translet translet) {
         if (!isLoggedIn(translet)) {
             // "layout" 힌트를 확인합니다.
