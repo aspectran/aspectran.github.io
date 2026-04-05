@@ -16,30 +16,52 @@ Aspectran's transactions are tightly bound to the lifecycle of an **`Activity`**
 5.  **Finally**: Safely closes the used `SqlSession` and resets connection states (e.g., read-only flag).
 
 ### Intelligent Routing & Session Reuse
-In a Master-Slave architecture, Aspectran provides an intelligent routing strategy:
-*   **Consistency First**: If a writable (Master) session is already open in the current activity, Aspectran will reuse it even for read-only operations. This ensures that uncommitted changes are visible and reduces connection overhead.
+In a Primary-Replica architecture, Aspectran provides an intelligent routing strategy:
+*   **Consistency First**: If a writable (Primary) session is already open in the current activity, Aspectran will reuse it even for read-only operations. This ensures that uncommitted changes are visible and reduces connection overhead.
 *   **Efficiency**: DB connections are only established when necessary. Management methods like `getMapper()` or `getConfiguration()` do not trigger a session open.
+*   **Explicit Safety with @Hint**: You can explicitly mark a method as read-only using the `@Hint` annotation. When this hint is present, Aspectran not only routes to a read-only session but also enforces a strict check at the agent level to prevent any data modification attempts (`insert`, `update`, `delete`), throwing an `IllegalStateException` if violated.
 
 ## 2. Dynamic Routing (Read-Write Splitting)
 
-Automatically separates Read-Only and Writable sessions based on method names, optimized for Master-Slave database architectures.
+Automatically separates Read-Only and Writable sessions based on method names, optimized for Primary-Replica database architectures.
 
 ```java
 @Component
 @Bean(id = "sqlSession")
-public class AppSqlSession extends SqlSessionAgent {
+public class AppSqlSession extends RoutingSqlSessionAgent {
     public AppSqlSession() {
-        // (Writable Aspect ID, Read-Only Aspect ID)
-        super("txAspect", "readOnlyAspect");
+        // (Primary Aspect ID, Replica Aspect ID)
+        super("primaryTxAspect", "replicaTxAspect");
     }
 }
 ```
-*   **Intelligent Routing**: If a writable session (`txAspect`) is already open, it is prioritized even for read-only operations to prevent unnecessary session creation.
+*   **Routing Logic**: If a primary session (`primaryTxAspect`) is already open, it is prioritized even for read-only operations to prevent unnecessary session creation.
 *   **ReadOnly**: Triggered for method calls matching the `select*` pattern.
 *   **Writable**: Triggered for all other modification methods.
-*   **Exclusion**: Management methods (`getMapper`, `getConnection`, etc.) are excluded from automatic session opening to prevent redundant connections.
 
-## 3. Explicit Aspect Definition
+## 3. Declarative Constraints with @Hint
+
+Aspectran's Hint mechanism allows you to define execution intentions directly on service or DAO methods, providing a more granular control than method name patterns alone.
+
+```java
+@Service
+public class MemberService {
+
+    @Autowired
+    private MemberMapper memberMapper;
+
+    @Hint(type = "transactional", value = "readOnly: true")
+    public List<Member> getMembers() {
+        // This will be routed to a read-only session.
+        // Any attempt to call memberMapper.insertMember() here will
+        // result in an IllegalStateException.
+        return memberMapper.selectMemberList();
+    }
+
+}
+```
+
+## 4. Explicit Aspect Definition
 
 The standard approach where developers create a dedicated Aspect class to gain fine-grained control over transaction behavior.
 
@@ -53,7 +75,6 @@ When defining an explicit aspect, you have the flexibility to choose the session
 ```java
 @Component
 @Bean(lazyDestroy = true)
-@Scope(ScopeType.PROTOTYPE)
 @Aspect(id = "txAspect")
 @Joinpoint(pointcut = "+: **@sqlSession")
 public class ConsoleTxAspect extends SqlSessionAdvice {
@@ -71,9 +92,20 @@ public class ConsoleTxAspect extends SqlSessionAdvice {
         // Option 2: Eager Opening (Call super.open())
     }
 
-    @After public void commit() { super.commit(); }
-    @ExceptionThrown public void rollback() { super.rollback(); }
-    @Finally public void close() { super.close(); }
+    @After
+    public void commit() {
+        super.commit();
+    }
+
+    @ExceptionThrown
+    public void rollback() {
+        super.rollback();
+    }
+
+    @Finally
+    public void close() {
+        super.close();
+    }
 }
 ```
 
@@ -164,9 +196,20 @@ public class AppSqlMapperProvider implements SqlMapperProvider {
         this.reuseSqlSession = reuseSqlSession;
     }
 
-    @Override public SqlSession getSimpleSqlSession() { return simpleSqlSession; }
-    @Override public SqlSession getBatchSqlSession() { return batchSqlSession; }
-    @Override public SqlSession getReuseSqlSession() { return reuseSqlSession; }
+    @Override
+    public SqlSession getSimpleSqlSession() {
+        return simpleSqlSession;
+    }
+
+    @Override
+    public SqlSession getBatchSqlSession() {
+        return batchSqlSession;
+    }
+
+    @Override
+    public SqlSession getReuseSqlSession() {
+        return reuseSqlSession;
+    }
 }
 ```
 
@@ -211,7 +254,7 @@ public interface MemberMapper {
 ```
 
 ### 2. Implementing the DAO Class
-Using `SqlMapperAccess` simplifies the implementation by automatically resolving the mapper type.
+Using `SqlMapperAccess` simplifies the implementation by automatically resolving the mapper interface type. When the injected session is a `RoutingSqlSessionAgent`, it seamlessly supports intelligent routing between primary and replica sessions.
 
 ```java
 @Component
@@ -225,8 +268,8 @@ public class MemberDao extends SqlMapperAccess<MemberMapper> implements MemberMa
 
     @Override
     public Member selectMember(Long id) {
-        // Reuses Master session if already in a write transaction,
-        // otherwise opens a Slave session.
+        // Reuses Primary session if already in a write transaction,
+        // otherwise opens a Replica session.
         return mapper().selectMember(id);
     }
 

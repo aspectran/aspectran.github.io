@@ -16,30 +16,52 @@ Aspectran의 트랜잭션은 **`Activity`**라는 요청 처리 단위의 생명
 5.  **Finally**: 사용된 `SqlSession`을 안전하게 닫고, 커넥션 상태(예: read-only 플래그)를 초기화합니다.
 
 ### 지능적 라우팅 및 세션 재사용
-Master-Slave 구조에서 Aspectran은 다음과 같은 지능적 라우팅 전략을 제공합니다:
-*   **일관성 우선**: 현재 Activity 내에서 이미 쓰기용(Master) 세션이 열려 있다면, 읽기 전용 작업이라도 해당 세션을 재사용합니다. 이를 통해 커밋되지 않은 변경 사항을 즉시 조회할 수 있으며 커넥션 오버헤드를 줄입니다.
+Primary-Replica 구조에서 Aspectran은 다음과 같은 지능적 라우팅 전략을 제공합니다:
+*   **일관성 우선**: 현재 Activity 내에서 이미 쓰기용(Primary) 세션이 열려 있다면, 읽기 전용 작업이라도 해당 세션을 재사용합니다. 이를 통해 커밋되지 않은 변경 사항을 즉시 조회할 수 있으며 커넥션 오버헤드를 줄입니다.
 *   **효율성**: DB 연결은 꼭 필요한 시점에만 맺어집니다. `getMapper()`나 `getConfiguration()` 같은 관리용 메서드 호출만으로는 세션이 오픈되지 않습니다.
+*   **@Hint를 이용한 명시적 안전성**: `@Hint` 어노테이션을 사용하여 메서드를 명시적으로 읽기 전용으로 설정할 수 있습니다. 이 힌트가 있으면 Aspectran은 읽기 전용 세션으로 라우팅할 뿐만 아니라, 에이전트 레벨에서 데이터 변경 시도(`insert`, `update`, `delete`)를 엄격하게 감지하여 `IllegalStateException`을 발생시킵니다.
 
 ## 2. 다이나믹 라우팅 (Read-Write Splitting)
 
-메서드 명에 따라 Read-Only와 Writable 세션을 자동으로 분리하여 Master-Slave 구조 등에 최적화된 트랜잭션을 제공합니다.
+메서드 명에 따라 Read-Only와 Writable 세션을 자동으로 분리하여 Primary-Replica 구조 등에 최적화된 트랜잭션을 제공합니다.
 
 ```java
 @Component
 @Bean(id = "sqlSession")
-public class AppSqlSession extends SqlSessionAgent {
+public class AppSqlSession extends RoutingSqlSessionAgent {
     public AppSqlSession() {
-        // (쓰기용 Aspect ID, 읽기용 Aspect ID)
-        super("txAspect", "readOnlyAspect");
+        // (프라이머리 Aspect ID, 레플리카 Aspect ID)
+        super("primaryTxAspect", "replicaTxAspect");
     }
 }
 ```
-*   **Intelligent Routing**: 쓰기용 세션(`txAspect`)이 이미 열려 있다면 읽기 전용 작업에서도 이를 우선적으로 재사용하여 불필요한 세션 생성을 방지합니다.
+*   **라우팅 로직**: 프라이머리 세션(`primaryTxAspect`)이 이미 열려 있다면 읽기 전용 작업에서도 이를 우선적으로 재사용하여 불필요한 세션 생성을 방지합니다.
 *   **ReadOnly**: `select*` 패턴의 메서드 호출 시 작동합니다.
 *   **Writable**: 그 외의 모든 수정 메서드 호출 시 작동합니다.
-*   **제외 패턴**: `getMapper`, `getConnection` 등 관리용 메서드들은 자동 세션 오픈 대상에서 제외되어 불필요한 연결을 방지합니다.
 
-## 3. 명시적 Aspect 정의 (Explicit Definition)
+## 3. @Hint를 통한 선언적 제약사항
+
+Aspectran의 힌트 메커니즘을 사용하면 서비스나 DAO 메서드에 직접 실행 의도를 정의할 수 있어, 메서드 명칭 패턴보다 더 세밀한 제어가 가능합니다.
+
+```java
+@Service
+public class MemberService {
+
+    @Autowired
+    private MemberMapper memberMapper;
+
+    @Hint(type = "transactional", value = "readOnly: true")
+    public List<Member> getMembers() {
+        // 이 메서드는 읽기 전용 세션으로 라우팅됩니다.
+        // 여기서 실수로 memberMapper.insertMember()를 호출하면
+        // IllegalStateException이 발생합니다.
+        return memberMapper.selectMemberList();
+    }
+
+}
+```
+
+## 4. 명시적 Aspect 정의 (Explicit Definition)
 
 개발자가 직접 Aspect 클래스를 작성하여 트랜잭션의 동작을 정교하게 제어하는 표준 방식입니다.
 
@@ -53,7 +75,6 @@ public class AppSqlSession extends SqlSessionAgent {
 ```java
 @Component
 @Bean(lazyDestroy = true)
-@Scope(ScopeType.PROTOTYPE)
 @Aspect(id = "txAspect")
 @Joinpoint(pointcut = "+: **@sqlSession")
 public class ConsoleTxAspect extends SqlSessionAdvice {
@@ -71,9 +92,20 @@ public class ConsoleTxAspect extends SqlSessionAdvice {
         // 옵션 2: 즉시 오픈 (super.open() 호출)
     }
 
-    @After public void commit() { super.commit(); }
-    @ExceptionThrown public void rollback() { super.rollback(); }
-    @Finally public void close() { super.close(); }
+    @After
+    public void commit() {
+        super.commit();
+    }
+
+    @ExceptionThrown
+    public void rollback() {
+        super.rollback();
+    }
+
+    @Finally
+    public void close() {
+        super.close();
+    }
 }
 ```
 
@@ -164,9 +196,20 @@ public class AppSqlMapperProvider implements SqlMapperProvider {
         this.reuseSqlSession = reuseSqlSession;
     }
 
-    @Override public SqlSession getSimpleSqlSession() { return simpleSqlSession; }
-    @Override public SqlSession getBatchSqlSession() { return batchSqlSession; }
-    @Override public SqlSession getReuseSqlSession() { return reuseSqlSession; }
+    @Override
+    public SqlSession getSimpleSqlSession() {
+        return simpleSqlSession;
+    }
+
+    @Override
+    public SqlSession getBatchSqlSession() {
+        return batchSqlSession;
+    }
+
+    @Override
+    public SqlSession getReuseSqlSession() {
+        return reuseSqlSession;
+    }
 }
 ```
 
@@ -211,7 +254,7 @@ public interface MemberMapper {
 ```
 
 ### 2. DAO 클래스 구현
-`SqlMapperAccess`를 상속받아 구현하면 마스터-슬레이브 라우팅이 자동으로 적용됩니다.
+`SqlMapperAccess`를 상속받으면 매퍼 인터페이스 타입을 자동으로 분석하여 코드를 간결하게 작성할 수 있습니다. 주입된 세션 에이전트가 `RoutingSqlSessionAgent`인 경우, `mapper()` 호출 시 프라이머리-레플리카 라우팅이 투명하게 적용됩니다.
 
 ```java
 @Component
@@ -225,8 +268,8 @@ public class MemberDao extends SqlMapperAccess<MemberMapper> implements MemberMa
 
     @Override
     public Member selectMember(Long id) {
-        // 쓰기 트랜잭션 중이면 Master 세션을 재사용하고,
-        // 그렇지 않으면 Slave 세션을 엽니다.
+        // 쓰기 트랜잭션 중이면 Primary 세션을 재사용하고,
+        // 그렇지 않으면 Replica 세션을 엽니다.
         return mapper().selectMember(id);
     }
 
