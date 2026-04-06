@@ -5,7 +5,7 @@ subheadline: Practical Guides
 
 Aspectran provides a powerful integration environment for processing complex database operations in an object-oriented manner by leveraging the **Jakarta Persistence API (JPA)**. In particular, it automatically manages the lifecycle of the `EntityManager` through **Aspect-Oriented Programming (AOP)** and supports both declarative and explicit transaction management.
 
-This guide explains the core components of JPA, such as the **EntityManager**, the type-safe query builder **Querydsl**, the supported implementations (**Hibernate** and **EclipseLink**), and the required **dependencies**.
+This guide explains the core components of JPA, such as the **EntityManager**, the type-safe query builder **QueryDSL**, the supported implementations (**Hibernate** and **EclipseLink**), and the required **dependencies**.
 
 ## 1. Understanding JPA and EntityManager
 
@@ -21,7 +21,7 @@ The `EntityManager` is the central interface for managing entity states and perf
 
 ## 2. Querydsl Integration and EntityQuery
 
-While the standard JPA `EntityManager` is powerful, it has limitations when writing complex dynamic queries, often requiring the use of string-based JPQL. Aspectran resolves this by integrating **Querydsl** at the engine level.
+While the standard JPA `EntityManager` is powerful, it has limitations when writing complex dynamic queries, often requiring the use of string-based JPQL. Aspectran resolves this by integrating **QueryDSL** at the engine level.
 
 ### Benefits of Adopting Querydsl
 1.  **Type-safety**: Queries are written in Java code rather than strings, allowing syntax errors to be caught immediately at compile time.
