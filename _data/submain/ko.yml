@@ -74,6 +74,8 @@ aspectran:
           url: /ko/docs/guides/aspectran-jsp-tag-library/
         - title: MyBatis 트랜잭션
           url: /ko/docs/guides/aspectran-mybatis-transaction-management/
+        - title: JPA 트랜잭션
+          url: /ko/docs/guides/aspectran-jpa-transaction-management/
 
     - title: 아키텍처 및 메커니즘
       anchor: 아키텍처-및-메커니즘

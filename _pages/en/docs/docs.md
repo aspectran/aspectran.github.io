@@ -39,6 +39,7 @@ permalink: /en/docs/
 *   [Guide to Setting and Styling Shell Greetings](/en/docs/guides/practical-guide-to-shell-greetings/)
 *   [Aspectran JSP Tag Library Guide](/en/docs/guides/aspectran-jsp-tag-library/)
 *   [MyBatis Transaction Management in Aspectran](/en/docs/guides/aspectran-mybatis-transaction-management/)
+*   [JPA Transaction Management in Aspectran](/en/docs/guides/aspectran-jpa-transaction-management/)
 
 ### Architecture & Mechanisms
 {: #architecture-mechanisms}

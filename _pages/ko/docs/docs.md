@@ -39,6 +39,7 @@ permalink: /ko/docs/
 *   [쉘 그리팅(Greetings) 설정 및 스타일링 가이드](/ko/docs/guides/practical-guide-to-shell-greetings/)
 *   [Aspectran JSP 태그 라이브러리 가이드](/ko/docs/guides/aspectran-jsp-tag-library/)
 *   [Aspectran에서의 MyBatis 트랜잭션 관리 가이드](/ko/docs/guides/aspectran-mybatis-transaction-management/)
+*   [Aspectran에서의 JPA 트랜잭션 관리 가이드](/ko/docs/guides/aspectran-jpa-transaction-management/)
 
 ### 아키텍처 및 메커니즘
 {: #아키텍처-및-메커니즘}

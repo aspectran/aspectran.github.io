@@ -74,6 +74,8 @@ aspectran:
           url: /en/docs/guides/aspectran-jsp-tag-library/
         - title: MyBatis Transactions
           url: /en/docs/guides/aspectran-mybatis-transaction-management/
+        - title: JPA Transactions
+          url: /en/docs/guides/aspectran-jpa-transaction-management/
 
     - title: Architecture & Mechanisms
       anchor: architecture-mechanisms
