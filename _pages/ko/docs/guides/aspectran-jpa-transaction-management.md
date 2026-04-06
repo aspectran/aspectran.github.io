@@ -232,6 +232,6 @@ Aspectran JPA 환경을 구축하기 위해 `pom.xml`에 포함해야 할 주요
 트랜잭션 어드바이스를 적용할 대상을 정교하게 필터링하는 방법입니다.
 *   **특정 빈 ID 기준**: `+: **@entityQuery`
 *   **특정 명칭 패턴을 가진 인터페이스/클래스 기준**: `+: **@class:com.example.repository.*Repository`
-*   **패키지 전체 기준**: `+: com.example.service.**.*`
+*   **패키지 전체 기준**: `+: com.example.service.**`
 
 Aspectran은 내부 트랜잭션 스택을 활용하여 중첩된 호출 구조에서도 데이터 무결성과 안전한 전파(Propagation)를 보장합니다.

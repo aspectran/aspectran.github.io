@@ -232,6 +232,6 @@ Choose one implementation that fits your project environment.
 Method for precisely filtering targets to which the transaction advice will be applied.
 *   **Based on specific Bean ID**: `+: **@entityQuery`
 *   **Based on interface/class with a specific name pattern**: `+: **@class:com.example.repository.*Repository`
-*   **Based on entire package**: `+: com.example.service.**.*`
+*   **Based on entire package**: `+: com.example.service.**`
 
 Aspectran leverages an internal transaction stack to ensure data integrity and safe propagation even in nested call structures.
