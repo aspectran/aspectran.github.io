@@ -19,17 +19,17 @@ The `EntityManager` is the central interface for managing entity states and perf
 
 **Integration with Aspectran**: Aspectran automates the lifecycle of the `EntityManager` and the start and completion of transactions through AOP. This allows developers to focus on implementing business logic without worrying about repetitive boilerplate code like connection management.
 
-## 2. Querydsl Integration and EntityQuery
+## 2. QueryDSL Integration and EntityQuery
 
-While the standard JPA `EntityManager` is powerful, it has limitations when writing complex dynamic queries, often requiring the use of string-based JPQL. Aspectran resolves this by integrating **QueryDSL** at the engine level.
+While the standard JPA `EntityManager` provides powerful features, it has limitations when writing complex dynamic queries because it requires the use of string-based JPQL. Aspectran overcomes these limitations and enhances developer productivity by integrating **QueryDSL** at the engine level.
 
-### Benefits of Adopting Querydsl
+### Benefits of Adopting QueryDSL
 1.  **Type-safety**: Queries are written in Java code rather than strings, allowing syntax errors to be caught immediately at compile time.
 2.  **Ease of Dynamic Queries**: Complex conditional query generation is handled intuitively through Java method calls.
 3.  **Increased Productivity**: IDE autocomplete features can be used to write queries, reducing typos and speeding up development.
 
 ### Aspectran's EntityQuery Interface
-Aspectran provides the **`EntityQuery`** interface, which combines the functionality of the `EntityManager` and Querydsl's `JPQLQueryFactory`. A single interface allows you to use both standard JPA methods and Querydsl's flexible API simultaneously.
+Aspectran provides the **`EntityQuery`** interface, which combines the functionality of the `EntityManager` and QueryDSL's `JPQLQueryFactory`. A single interface allows you to use both standard JPA methods and QueryDSL's flexible API simultaneously.
 
 #### Example Usage in a Data Access Object (DAO)
 ```java
@@ -49,7 +49,7 @@ public class MemberDao {
     }
 
     public List<Member> findAllActive(String name) {
-        // Write a type-safe dynamic query using the Querydsl API
+        // Write a type-safe dynamic query using the QueryDSL API
         QMember qMember = QMember.member;
         return entityQuery.selectFrom(qMember)
                 .where(qMember.status.eq(Status.ACTIVE)
@@ -126,7 +126,7 @@ public class MemberService {
 
 ## 7. Explicit Aspect Definition
 
-This method is used when you need fine-grained control over how transactions behave at the code level.
+If you need to control transaction behavior more precisely at the code level, you can directly define an Aspect class that inherits from `EntityManagerAdvice`. This allows you to configure transaction opening strategies (Lazy vs. Eager) to suit your specific needs.
 
 ```java
 @Component
@@ -142,8 +142,9 @@ public class ConsoleTxAspect extends EntityManagerAdvice {
 
     @Before
     public void before() {
-        // Essential method definition for transaction activation.
-        // You can decide between lazy or eager opening depending on whether you call super.open().
+        // Required: Method must be defined to activate the transaction.
+        // Option 1: Lazy Opening (Leave body empty)
+        // Option 2: Eager Opening (Call super.open())
     }
 
     @After
@@ -192,7 +193,7 @@ Key module information to include in your `pom.xml` to build an Aspectran JPA en
 </dependency>
 ```
 
-### JPA Specification and Querydsl Dependencies
+### JPA Specification and QueryDSL Dependencies
 ```xml
 <!-- Jakarta Persistence API Standard Interface -->
 <dependency>
@@ -201,7 +202,7 @@ Key module information to include in your `pom.xml` to build an Aspectran JPA en
     <version>3.2.0</version>
 </dependency>
 
-<!-- Querydsl JPA Support Library -->
+<!-- QueryDSL JPA Support Library -->
 <dependency>
     <groupId>io.github.openfeign.querydsl</groupId>
     <artifactId>querydsl-jpa</artifactId>
@@ -230,8 +231,9 @@ Choose one implementation that fits your project environment.
 ## Appendix: Pointcut Patterns
 
 Method for precisely filtering targets to which the transaction advice will be applied.
-*   **Based on specific Bean ID**: `+: **@entityQuery`
-*   **Based on interface/class with a specific name pattern**: `+: **@class:com.example.repository.*Repository`
-*   **Based on entire package**: `+: com.example.service.**`
+Aspectran pointcuts use `+:` (include) and `-:` (exclude) prefixes.
+*   **Targeting specific Bean ID**: `+: **@entityQuery`
+*   **Targeting specific Class/Interface**: `+: **@class:com.example.repository.*Repository`
+*   **Package scope**: `+: **@com.example.service.**`
 
 Aspectran leverages an internal transaction stack to ensure data integrity and safe propagation even in nested call structures.

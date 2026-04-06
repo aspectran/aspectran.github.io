@@ -139,7 +139,7 @@ public class SampleTxAspect extends SqlSessionAdvice {
 ### 포인트컷 패턴 예제 (Pointcut Patterns)
 Aspectran의 포인트컷은 `+:`(포함)와 `-:`(제외) 접두사를 사용합니다. 
 *   **특정 빈 ID 대상**: `+: **@sqlSession`
-*   **특정 클래스 대상**: `+: **@class:com.example.db.MemberDao`
+*   **특정 클래스/인터페이스 대상**: `+: **@class:com.example.db.*Dao`
 *   **패키지 범위 지정**: `+: **@com.example.service.**`
 
 ## 5. 다중 SqlSessionFactory 환경 구성
