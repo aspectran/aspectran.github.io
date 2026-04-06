@@ -95,7 +95,7 @@ public class SampleSqlSession extends DefaultSqlSessionAgent {
 ```
 
 ### Aspect 클래스 정의
-`SampleSqlSession`에서 자동으로 생성되지 않도록 "sampleTxAspect"라는 ID를 가진 Aspect를 직접 정의합니다.
+`SampleSqlSession`에서 "sampleTxAspect"라는 ID를 가진 Aspect가 자동으로 생성되지 않도록 해당 Aspect를 직접 정의합니다.
 ```java
 @Component
 @Bean(lazyDestroy = true)
@@ -164,7 +164,7 @@ public class AppMonSqlSession extends SqlSessionAgent {
 MyBatis는 세 가지 실행 모드(`SIMPLE`, `BATCH`, `REUSE`)를 지원합니다. Aspectran에서는 각 모드별로 별도의 `SqlSessionAgent`를 정의하고, `SqlMapperProvider`를 통해 이를 통합하여 사용할 수 있습니다.
 
 ### ExecutorType별 SqlSessionAgent 정의
-각 실행 모드(ExecutorType)에 맞는 `SqlSessionAgent` 클래스를 작성합니다.
+각 실행 모드(ExecutorType)의 특성에 맞춰 `SqlSessionAgent`를 상속받은 클래스를 정의합니다.
 ```java
 // SIMPLE 모드 (기본값)
 @Component

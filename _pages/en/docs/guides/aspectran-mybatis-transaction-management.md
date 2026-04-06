@@ -70,12 +70,12 @@ public class MemberService {
 
 ## 4. Explicit Aspect Definition
 
-If you need fine-grained control over transaction behavior at the code level, you must implement a separate Aspect class inheriting from `SqlSessionAdvice`.
+If you need to control transaction behavior more precisely at the code level, you can directly define an Aspect class that inherits from `SqlSessionAdvice`.
 
-### Flexible Session Opening Strategies
-When defining an explicit Aspect, you have the flexibility to choose a session opening strategy. **Note that the `@Before` method must always be defined to activate the transaction context, even when using lazy loading.**
+### Flexible Transaction Opening Strategies
+When defining an explicit Aspect, you can choose a transaction opening strategy that fits your needs. **Note that the `@Before` method must always be defined to activate the transaction context, even when using Lazy Opening.**
 
-*   **Lazy Opening (Recommended)**: Omit the `super.open()` call in the `@Before` method. This activates the transaction context but delays the physical DB connection until the query time.
+*   **Lazy Opening (Recommended)**: Omit the `super.open()` call in the `@Before` method. This activates the transaction context but delays the physical DB connection until the query execution.
 *   **Eager Opening**: You **must call `super.open()`** in the `@Before` method. Use this when you need to verify the DB connection status immediately (Fail-Fast) before executing business logic.
 
 ### Defining the SqlSession Class
@@ -93,7 +93,7 @@ public class SampleSqlSession extends DefaultSqlSessionAgent {
 ```
 
 ### Defining the Aspect Class
-Define the Aspect with the ID "sampleTxAspect" explicitly to prevent automatic creation by `SampleSqlSession`.
+Explicitly define the Aspect with the ID "sampleTxAspect" to prevent `SampleSqlSession` from creating it automatically.
 ```java
 @Component
 @Bean(lazyDestroy = true)
