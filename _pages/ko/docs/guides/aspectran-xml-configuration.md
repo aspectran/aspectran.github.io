@@ -308,7 +308,7 @@ public class MyService {
 <aspect id="serviceLayerExceptionAspect">
     <joinpoint>
         pointcut: {
-            +: **@*Service^**
+            +: **@*Service^*
         }
     </joinpoint>
     <advice bean="loggingAdviceBean"/> <!-- 다른 어드바이스를 가질 수 있음 -->
@@ -968,7 +968,7 @@ Aspectran은 오류가 발생할 수 있는 컨텍스트 내에서 핸들러를 
 <aspect id="serviceLayerExceptionLogger">
     <joinpoint>
         pointcut: {
-            +: **@*Service^**
+            +: **@*Service^*
         }
     </joinpoint>
     <exception>

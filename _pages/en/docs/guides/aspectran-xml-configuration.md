@@ -308,7 +308,7 @@ The `<exception>` block contains one or more `<thrown>` elements, each configure
 <aspect id="serviceLayerExceptionAspect">
     <joinpoint>
         pointcut: {
-            +: **@*Service^**
+            +: **@*Service^*
         }
     </joinpoint>
     <advice bean="loggingAdviceBean"/> <!-- Can have other advice -->
@@ -969,7 +969,7 @@ Exception handling can also be defined within an `<aspect>`. This allows you to 
 <aspect id="serviceLayerExceptionLogger">
     <joinpoint>
         pointcut: {
-            +: **@*Service^**
+            +: **@*Service^*
         }
     </joinpoint>
     <exception>
