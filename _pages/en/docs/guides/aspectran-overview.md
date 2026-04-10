@@ -159,8 +159,6 @@ The Aspectran project manages continuous integration (CI) and continuous deploym
 
 ## Community and Support
 
-Aspectran is continuously evolving through active development and a user community.
-
 *   **GitHub Issues**: Problems, bug reports, and feature suggestions during project use can be shared and discussed via GitHub Issues.
 *   **Official Documentation**: You can learn and utilize all features of the framework through the detailed documentation provided on the Aspectran official website.
 *   **Contribution**: The Aspectran project is open source, and anyone can participate in its development by contributing code, improving documentation, or fixing bugs.
