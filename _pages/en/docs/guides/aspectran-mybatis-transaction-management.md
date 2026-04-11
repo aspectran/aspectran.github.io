@@ -60,7 +60,7 @@ public class MemberService {
     @Hint(type = "transactional", value = "readOnly: true")
     public List<Member> getMembers() {
         // This method is routed to the read-only session.
-        // If memberMapper.insertMember() is accidentally called here, 
+        // If memberMapper.insertMember() is accidentally called here,
         // an IllegalStateException will occur.
         return memberMapper.selectMemberList();
     }
@@ -84,7 +84,7 @@ First, define a new `SampleSqlSession` class targeting "sampleTxAspect". If an A
 @Component
 @Bean(id = "sampleSqlSession", lazyDestroy = true)
 public class SampleSqlSession extends DefaultSqlSessionAgent {
-    
+
     public SampleSqlSession() {
         super("sampleTxAspect");
         setSqlSessionFactoryBeanId("sampleSqlSessionFactory");
@@ -121,12 +121,12 @@ public class SampleTxAspect extends SqlSessionAdvice {
     public void commit() {
         super.commit();
     }
-    
+
     @ExceptionThrown
     public void rollback() {
         super.rollback();
     }
-    
+
     @Finally
     public void close() {
         super.close();
@@ -279,7 +279,7 @@ public class MemberDao extends SqlMapperAccess<MemberMapper> implements MemberMa
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-with-mybatis</artifactId>
-    <version>9.4.5</version>
+    <version>9.5.0</version>
 </dependency>
 ```
 

@@ -60,7 +60,7 @@ public class MemberService {
     @Hint(type = "transactional", value = "readOnly: true")
     public List<Member> getMembers() {
         // 이 메서드는 읽기 전용 세션으로 라우팅됩니다.
-        // 여기서 실수로 memberMapper.insertMember()를 호출하면 
+        // 여기서 실수로 memberMapper.insertMember()를 호출하면
         // IllegalStateException이 발생합니다.
         return memberMapper.selectMemberList();
     }
@@ -86,7 +86,7 @@ public class MemberService {
 @Component
 @Bean(id = "sampleSqlSession", lazyDestroy = true)
 public class SampleSqlSession extends DefaultSqlSessionAgent {
-    
+
     public SampleSqlSession() {
         super("sampleTxAspect");
         setSqlSessionFactoryBeanId("sampleSqlSessionFactory");
@@ -123,12 +123,12 @@ public class SampleTxAspect extends SqlSessionAdvice {
     public void commit() {
         super.commit();
     }
-    
+
     @ExceptionThrown
     public void rollback() {
         super.rollback();
     }
-    
+
     @Finally
     public void close() {
         super.close();
@@ -137,7 +137,7 @@ public class SampleTxAspect extends SqlSessionAdvice {
 ```
 
 ### 포인트컷 패턴 예제 (Pointcut Patterns)
-Aspectran의 포인트컷은 `+:`(포함)와 `-:`(제외) 접두사를 사용합니다. 
+Aspectran의 포인트컷은 `+:`(포함)와 `-:`(제외) 접두사를 사용합니다.
 *   **특정 빈 ID 대상**: `+: **@sqlSession`
 *   **특정 클래스/인터페이스 대상**: `+: **@class:com.example.db.*Dao`
 *   **패키지 범위 지정**: `+: **@com.example.service.**`
@@ -287,7 +287,7 @@ public class MemberDao extends SqlMapperAccess<MemberMapper> implements MemberMa
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-with-mybatis</artifactId>
-    <version>9.4.5</version>
+    <version>9.5.0</version>
 </dependency>
 ```
 
