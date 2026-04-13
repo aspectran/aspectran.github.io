@@ -49,6 +49,8 @@ aspectran:
           url: /ko/docs/guides/introduce-apon/
         - title: 힌트 메커니즘
           url: /ko/docs/guides/aspectran-hint-mechanism/
+        - title: File Commander
+          url: /ko/docs/guides/aspectran-daemon-file-commander/
 
     - title: 실용 가이드
       anchor: 실용-가이드
