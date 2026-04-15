@@ -9,7 +9,9 @@
 host: "localhost"
 port: 4000
 
-url: 'http://localhost:4000'
+url: "http://localhost:4000"
+
+urlimg: "/images/"
 
 # sass:
 #   # http://sass-lang.com/documentation/file.SASS_REFERENCE.html#output_style

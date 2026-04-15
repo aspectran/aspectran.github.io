@@ -18,12 +18,12 @@ timezone: "Asia/Seoul"
 
 # This URL is the main address for absolute links. Don't include a slash at the end.
 #
-url: 'https://aspectran.com'
-official_url: 'https://aspectran.com'
+url: "https://aspectran.com"
+official_url: "https://aspectran.com"
 
 # This is for the editing function in _/includes/improve_content
 # Leave it empty if your site is not on GitHub/GitHub Pages
-improve_content: 'https://github.com/aspectran/aspectran.github.io/edit/master'
+improve_content: "https://github.com/aspectran/aspectran.github.io/edit/master"
 
 # This URL points directly to the images directory making
 # things easier to link to images in posts and templates. It needs a slash at the end.
@@ -31,7 +31,7 @@ improve_content: 'https://github.com/aspectran/aspectran.github.io/edit/master'
 # Example: <img src="{{ site.urlimg }}{{ post.image.title }}" />
 # Markdown-Example for posts ![Image Text]({{ site.urlimg }}image.jpg)
 #
-urlimg: '/images/'
+urlimg: "https://cdn.jsdelivr.net/gh/aspectran/aspectran.github.io/images/"
 
 # Logo Image
 logo_img: "aspectran-logo.png"
