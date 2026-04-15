@@ -279,7 +279,7 @@ public class MemberDao extends SqlMapperAccess<MemberMapper> implements MemberMa
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-with-mybatis</artifactId>
-    <version>9.5.0</version>
+    <version>9.5.1</version>
 </dependency>
 ```
 
