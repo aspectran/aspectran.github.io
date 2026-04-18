@@ -15,11 +15,11 @@ Aspectran의 토큰 기반 인증은 주로 다음 핵심 컴포넌트를 통해
 
 #### 2.1. `PBEncryptionUtils`
 
-- **역할**: 애플리케이션 전반의 암호화 및 복호화 기능을 담당하는 중앙 유틸리티 클래스입니다.
-- **설정**: JVM 시스템 속성을 통해 암호화 알고리즘과 패스워드를 설정합니다. 이 설정은 애플리케이션 시작 시 한 번만 로드됩니다.
+- **설정**: JVM 시스템 속성을 통해 암호화 알고리즘, 패스워드 및 솔트를 설정합니다. 이 설정은 애플리케이션 시작 시 한 번만 로드됩니다.
     - `aspectran.encryption.password`: 암호화에 사용할 패스워드
     - `aspectran.encryption.algorithm`: 암호화 알고리즘 (기본값: `PBEWITHHMACSHA256ANDAES_128`)
-- **특징**: 최신 AES 기반 알고리즘을 사용할 경우, 보안 강화를 위해 필요한 초기화 벡터(IV)를 자동으로 관리하여 개발자가 복잡한 암호화 로직을 신경 쓰지 않도록 돕습니다.
+    - `aspectran.encryption.salt`: (선택 사항) 암호화에 사용할 고정 솔트
+- **특징**: 최신 AES 기반 알고리즘을 사용할 경우, 보안 강화를 위해 필요한 초기화 벡터(IV)를 자동으로 관리합니다. 고정 솔트를 사용하면 레거시 알고리즘에서 결정론적 암호화 결과를 얻을 수 있습니다. (참고: AES 알고리즘은 고정 솔트를 사용하더라도 무작위 IV 때문에 암호화 결과가 매번 달라집니다.)
 
 #### 2.2. `PBTokenIssuer`
 
@@ -52,12 +52,13 @@ Aspectran의 토큰 기반 인증은 주로 다음 핵심 컴포넌트를 통해
 system: {
     properties: {
         aspectran.encryption.password: demo!
+        aspectran.encryption.salt: demo-salt
         # ... other properties
     }
 }
 ```
 
-애플리케이션이 시작되면 `PBEncryptionUtils`는 이 `demo!`라는 패스워드를 읽어 기본 암호화기를 초기화합니다.
+애플리케이션이 시작되면 `PBEncryptionUtils`는 이 패스워드와 솔트를 읽어 기본 암호화기를 초기화합니다.
 
 #### 3.2. 토큰 발급
 
@@ -158,13 +159,13 @@ system: {
 
 - **외부 설정 관리 도구**: HashiCorp Vault, AWS Secrets Manager 등과 같은 외부 시크릿 관리 도구와 연동하여 패스워드를 동적으로 주입받습니다.
 
-#### 4.3. 토큰별로 다른 패스워드 사용하기
+#### 4.3. 토큰별로 다른 패스워드 및 솔트 사용하기
 
-`PBEncryptionUtils`가 전역 기본 패스워드를 설정하지만, 특정 토큰에 대해 다른 패스워드를 사용해야 하는 경우가 있을 수 있습니다. `PBTokenIssuer`와 `TimeLimitedPBTokenIssuer`는 모두 `encryptionPassword`를 인자로 받는 메서드 오버로드를 제공합니다.
+`PBEncryptionUtils`가 전역 기본 설정을 가지지만, 특정 토큰에 대해 다른 패스워드나 솔트를 사용해야 하는 경우가 있을 수 있습니다. 모든 토큰 발급기 메소드는 `encryptionPassword`와 `salt`를 인자로 받는 오버로드를 제공합니다.
 
-이는 멀티테넌트 환경이나 자체 암호화 시크릿을 가진 외부 시스템과 통합할 때 유용합니다.
+이는 멀티테넌트 환경이나 자체 암호화 시크릿을 가진 외부 시스템과 통합할 때 유용하며, 고정 솔트를 활용한 결정론적 암호화(레거시 알고리즘 기준)가 필요한 경우에도 활용할 수 있습니다.
 
-**사용자 정의 패스워드로 토큰 발급하기:**
+**사용자 정의 패스워드와 솔트로 토큰 발급하기:**
 ```java
 import com.aspectran.utils.security.TimeLimitedPBTokenIssuer;
 import com.aspectran.utils.apon.Parameters;
@@ -173,16 +174,17 @@ import com.aspectran.utils.apon.VariableParameters;
 ...
 
 String customPassword = "a-very-secret-password-for-a-tenant";
+String customSalt = "fixed-salt-value";
 Parameters payload = new VariableParameters();
 payload.putValue("data", "confidential");
 
-String token = TimeLimitedPBTokenIssuer.createToken(payload, 3600 * 1000, customPassword);
+String token = TimeLimitedPBTokenIssuer.createToken(payload, 3600 * 1000, customPassword, customSalt);
 ```
 
-**사용자 정의 패스워드로 토큰 검증하기:**
+**사용자 정의 패스워드와 솔트로 토큰 검증하기:**
 ```java
 try {
-    Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token, customPassword);
+    Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token, customPassword, customSalt);
     // 토큰이 유효하고 페이로드가 추출되었습니다.
 } catch (InvalidPBTokenException e) {
     // 예외 처리

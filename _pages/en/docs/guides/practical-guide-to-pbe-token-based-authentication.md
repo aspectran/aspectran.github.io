@@ -15,11 +15,11 @@ Token-based authentication in Aspectran is primarily achieved through the follow
 
 #### 2.1. `PBEncryptionUtils`
 
-- **Role**: A central utility class responsible for application-wide encryption and decryption functions.
-- **Configuration**: The encryption algorithm and password are set via JVM system properties. This configuration is loaded only once at application startup.
+- **Configuration**: The encryption algorithm, password, and salt are set via JVM system properties. This configuration is loaded only once at application startup.
     - `aspectran.encryption.password`: The password to be used for encryption.
     - `aspectran.encryption.algorithm`: The encryption algorithm (default: `PBEWITHHMACSHA256ANDAES_128`).
-- **Features**: When using modern AES-based algorithms, it helps developers avoid worrying about complex encryption logic by automatically managing the necessary initialization vector (IV) for enhanced security.
+    - `aspectran.encryption.salt`: (Optional) A fixed salt to be used for encryption.
+- **Features**: When using modern AES-based algorithms, it automatically manages the necessary initialization vector (IV) for enhanced security. Using a fixed salt allows for deterministic encryption results with legacy algorithms. (Note: For AES algorithms, the output remains non-deterministic even with a fixed salt due to the random IV.)
 
 #### 2.2. `PBTokenIssuer`
 
@@ -52,12 +52,13 @@ First, set the password to be used for encryption through system properties in t
 system: {
     properties: {
         aspectran.encryption.password: demo!
+        aspectran.encryption.salt: demo-salt
         # ... other properties
     }
 }
 ```
 
-When the application starts, `PBEncryptionUtils` reads this `demo!` password and initializes the default encryptor.
+When the application starts, `PBEncryptionUtils` reads this password and salt and initializes the default encryptor.
 
 #### 3.2. Issuing a Token
 
@@ -158,13 +159,13 @@ Unlike in the demo, **you should never store passwords in plaintext in a configu
 
 - **External Configuration Management Tools**: Dynamically inject the password by integrating with external secret management tools like HashiCorp Vault or AWS Secrets Manager.
 
-#### 4.3. Using Different Passwords per Token
+#### 4.3. Using Different Passwords and Salts per Token
 
-While `PBEncryptionUtils` sets a global default password, there may be cases where you need to use a different password for a specific token. Both `PBTokenIssuer` and `TimeLimitedPBTokenIssuer` provide method overloads that accept an `encryptionPassword`.
+While `PBEncryptionUtils` sets a global default configuration, there may be cases where you need to use a different password or salt for a specific token. All token issuer methods provide overloads that accept an `encryptionPassword` and a `salt`.
 
-This is useful in multi-tenant environments or when integrating with external systems that have their own encryption secrets.
+This is useful in multi-tenant environments or when integrating with external systems that have their own encryption secrets, and can also be used when deterministic encryption (based on legacy algorithms) is needed via fixed salts.
 
-**Issuing a token with a custom password:**
+**Issuing a token with a custom password and salt:**
 ```java
 import com.aspectran.utils.security.TimeLimitedPBTokenIssuer;
 import com.aspectran.utils.apon.Parameters;
@@ -173,16 +174,17 @@ import com.aspectran.utils.apon.VariableParameters;
 ...
 
 String customPassword = "a-very-secret-password-for-a-tenant";
+String customSalt = "fixed-salt-value";
 Parameters payload = new VariableParameters();
 payload.putValue("data", "confidential");
 
-String token = TimeLimitedPBTokenIssuer.createToken(payload, 3600 * 1000, customPassword);
+String token = TimeLimitedPBTokenIssuer.createToken(payload, 3600 * 1000, customPassword, customSalt);
 ```
 
-**Validating a token with a custom password:**
+**Validating a token with a custom password and salt:**
 ```java
 try {
-    Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token, customPassword);
+    Parameters payload = TimeLimitedPBTokenIssuer.parseToken(token, customPassword, customSalt);
     // Token is valid and payload is extracted
 } catch (InvalidPBTokenException e) {
     // Handle exception
