@@ -207,6 +207,36 @@ public class MainService {
 
 ## 4. Advanced Features
 
+### Controlling Initialization Order (`dependsOn`)
+
+By default, Aspectran analyzes the dependency graph between beans to determine the appropriate creation order. However, there are cases where a certain bean must be initialized before another bean, even if there is no direct injection relationship, or where beans must be destroyed in a specific order during shutdown. The `dependsOn` setting is used for this purpose.
+
+-   **Guaranteed Initialization Order**: The beans specified in `dependsOn` are created and initialized before the current bean.
+-   **Guaranteed Destruction Order**: Aspectran's scope destroys beans in the reverse order of their creation. Therefore, if you use `dependsOn` to create a dependency bean first, that dependency bean will be destroyed only after the current bean has been destroyed. This is very useful for managing resources like database connection pools that must remain active until all other beans have finished their shutdown processes.
+
+**Using Annotations:**
+```java
+@Component
+@Bean(dependsOn = {"redisConnectionPool"})
+public class NodeManager { /* ... */ }
+```
+
+**Using XML Configuration:**
+```xml
+<bean id="nodeManager" class="..." dependsOn="redisConnectionPool"/>
+```
+
+**Using APON Configuration:**
+```apon
+bean: {
+    id: nodeManager
+    class: ...
+    dependsOn: [
+        redisConnectionPool
+    ]
+}
+```
+
 ### Environment-specific Configuration with `@Profile`
 
 The `@Profile` annotation allows you to register a bean only when a specific profile (e.g., `dev`, `prod`) is active. This annotation must be placed on a class that is also annotated with `@Component` to take effect.

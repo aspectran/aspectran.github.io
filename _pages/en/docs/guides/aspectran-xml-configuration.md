@@ -447,6 +447,7 @@ Defines a **bean**, which is a fundamental building block in Aspectran. A bean i
 -   `factoryMethod`: The name of the method to call to create the bean instance. This can be a static method (if `factoryBean` is not specified) or an instance method (if `factoryBean` is specified).
 -   `initMethod`: Specifies a method to be called on the bean instance immediately after it is created and all its properties have been set. This is useful for custom initialization logic.
 -   `destroyMethod`: Specifies a method to be called when the bean is being removed from the container (e.g., when the container is shutting down). Useful for releasing resources.
+-   `dependsOn`: Specifies the IDs of the beans that the current bean depends on. Multiple IDs can be specified, separated by commas. This ensures that the specified beans are initialized before the current bean and destroyed after it.
 -   `lazyInit`: If `true`, the bean will be created only when it is first requested, rather than at application startup. This applies only to `singleton` beans. The default is `false`.
 -   `important`: If `true`, this bean is marked as a primary candidate for dependency injection when multiple beans of the same type exist. The default is `false`.
 

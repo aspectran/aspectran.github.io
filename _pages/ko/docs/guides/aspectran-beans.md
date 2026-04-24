@@ -207,6 +207,36 @@ public class MainService {
 
 ## 4. 고급 기능
 
+### 초기화 순서 제어 (`dependsOn`)
+
+기본적으로 Aspectran은 빈들 간의 의존성 그래프를 분석하여 적절한 생성 순서를 결정합니다. 하지만 직접적인 주입 관계는 없더라도 특정 빈이 다른 빈보다 반드시 먼저 초기화되어야 하거나, 종료 시 특정 순서대로 파괴되어야 할 경우가 있습니다. 이때 `dependsOn` 설정을 사용합니다.
+
+-   **초기화 순서 보장**: `dependsOn`에 명시된 빈들이 현재 빈보다 먼저 생성되고 초기화됩니다.
+-   **파괴 순서 보장**: Aspectran의 스코프는 생성 순서의 역순으로 빈을 파괴합니다. 따라서 `dependsOn`으로 의존 빈을 먼저 생성하게 되면, 해당 의존 빈들은 현재 빈이 파괴된 이후에 파괴됩니다. 이는 데이터베이스 커넥션 풀과 같이 다른 빈들이 종료될 때까지 유지되어야 하는 리소스를 관리할 때 매우 유용합니다.
+
+**어노테이션 사용 시:**
+```java
+@Component
+@Bean(dependsOn = {"redisConnectionPool"})
+public class NodeManager { /* ... */ }
+```
+
+**XML 설정 사용 시:**
+```xml
+<bean id="nodeManager" class="..." dependsOn="redisConnectionPool"/>
+```
+
+**APON 설정 사용 시:**
+```apon
+bean: {
+    id: nodeManager
+    class: ...
+    dependsOn: [
+        redisConnectionPool
+    ]
+}
+```
+
 ### 프로파일(`@Profile`)을 이용한 환경별 설정
 
 `@Profile` 어노테이션을 사용하면 특정 프로파일(예: `dev`, `prod`)이 활성화되었을 때만 빈을 등록하도록 할 수 있습니다. 이 어노테이션은 `@Component` 어노테이션이 함께 붙은 클래스에 위치해야만 효력을 발휘합니다.
