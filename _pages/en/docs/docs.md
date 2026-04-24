@@ -27,6 +27,7 @@ permalink: /en/docs/
 *   [Introduction to APON (Aspectran Parameters Object Notation)](/en/docs/guides/introduce-apon/)
 *   [Aspectran JSON Utilities Guide](/en/docs/guides/aspectran-json-guide/)
 *   [Aspectran Hint Mechanism Guide](/en/docs/guides/aspectran-hint-mechanism/)
+*   [Aspectran Wildcard Matching Guide](/en/docs/guides/aspectran-wildcard-matching/)
 *   [Remote Command Injection and Control via File Commander](/en/docs/guides/aspectran-daemon-file-commander/)
 
 ### Practical Guides

@@ -27,6 +27,7 @@ permalink: /ko/docs/
 *   [APON (Aspectran Parameters Object Notation) 소개](/ko/docs/guides/introduce-apon/)
 *   [Aspectran JSON 유틸리티 가이드](/ko/docs/guides/aspectran-json-guide/)
 *   [Aspectran 힌트 메커니즘 가이드](/ko/docs/guides/aspectran-hint-mechanism/)
+*   [Aspectran 와일드카드 패턴 매칭 가이드](/ko/docs/guides/aspectran-wildcard-matching/)
 *   [File Commander를 통한 원격 명령 주입 및 제어](/ko/docs/guides/aspectran-daemon-file-commander/)
 
 ### 실용 가이드
