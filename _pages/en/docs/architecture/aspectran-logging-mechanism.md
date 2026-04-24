@@ -122,15 +122,12 @@ This logging mechanism is particularly powerful when serving multiple web applic
     <properties>
         <item name="pathPatternsByGroupName" type="map">
             <entry name="jpetstore">
-                +: /jpetstore
                 +: /jpetstore/**
             </entry>
             <entry name="petclinic">
-                +: /petclinic
                 +: /petclinic/**
             </entry>
             <entry name="demo">
-                +: /demo
                 +: /demo/**
                 -: /demo/examples/gs-rest-service/**
             </entry>

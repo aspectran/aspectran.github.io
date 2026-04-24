@@ -122,15 +122,12 @@ Aspectran 로깅의 가장 핵심적인 특징은 `com.aspectran.logging.logback
     <properties>
         <item name="pathPatternsByGroupName" type="map">
             <entry name="jpetstore">
-                +: /jpetstore
                 +: /jpetstore/**
             </entry>
             <entry name="petclinic">
-                +: /petclinic
                 +: /petclinic/**
             </entry>
             <entry name="demo">
-                +: /demo
                 +: /demo/**
                 -: /demo/examples/gs-rest-service/**
             </entry>
