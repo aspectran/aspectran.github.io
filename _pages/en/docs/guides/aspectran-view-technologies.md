@@ -122,12 +122,8 @@ Pebble is a lightweight yet powerful template engine inspired by Twig, known for
 
 <!-- 2. Pebble View Dispatcher Bean Configuration -->
 <bean id="pebbleViewDispatcher" class="com.aspectran.pebble.view.PebbleViewDispatcher">
-    <arguments>
-        <item>#{pebbleEngine}</item>
-    </arguments>
-    <properties>
-        <item name="suffix">.peb</item>
-    </properties>
+    <argument>#{pebbleEngine}</argument>
+    <property name="suffix">.peb</property>
 </bean>
 
 <!-- 3. Dispatch Rule Definition -->

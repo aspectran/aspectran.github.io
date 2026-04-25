@@ -154,9 +154,7 @@ Separates the Advice Bean and Aspect definition.
 ```xml
 <!-- 1. Advice Bean -->
 <bean id="sqlSessionTxAdvice" class="com.aspectran.mybatis.SqlSessionAdvice" scope="prototype">
-    <arguments>
-        <item>#{sqlSessionFactory}</item>
-    </arguments>
+    <argument>#{sqlSessionFactory}</argument>
 </bean>
 
 <!-- 2. Aspect Definition -->

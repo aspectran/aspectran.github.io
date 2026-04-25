@@ -122,12 +122,8 @@ Pebble은 Twig에서 영감을 받은 가볍지만 강력한 템플릿 엔진으
 
 <!-- 2. Pebble 뷰 디스패처 빈 설정 -->
 <bean id="pebbleViewDispatcher" class="com.aspectran.pebble.view.PebbleViewDispatcher">
-    <arguments>
-        <item>#{pebbleEngine}</item>
-    </arguments>
-    <properties>
-        <item name="suffix">.peb</item>
-    </properties>
+    <argument>#{pebbleEngine}</argument>
+    <property name="suffix">.peb</property>
 </bean>
 
 <!-- 3. Dispatch 규칙 정의 -->
