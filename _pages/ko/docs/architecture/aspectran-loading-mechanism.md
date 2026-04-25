@@ -135,10 +135,10 @@ AOP 규칙은 여러 컴포넌트가 복합적으로 관계를 맺기 때문에 
 ```xml
 <aspect id="myAspect" order="1">
     <joinpoint>
-      pointcut: {
-        type: "wildcard",
-        +: "/example/hello@helloAction^say*"
-      }
+        pointcut: {
+            type: wildcard
+            +: /example/hello@helloAction^say*
+        }
     </joinpoint>
     <advice bean="loggingAdvice">
         <before>
