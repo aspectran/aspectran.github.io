@@ -18,8 +18,6 @@ Aspectran provides two main ways to configure the scheduler.
 1.  **XML/APON-based Configuration**: A traditional and explicit method where all rules are defined in a configuration file.
 2.  **Annotation-based Configuration**: A modern method of defining scheduling rules directly in a Java class using annotations.
 
----
-
 ### Method 1: XML/APON-based Configuration
 
 This approach explicitly defines the scheduler bean and schedule rules (`<schedule>`) in an XML or APON file.
@@ -59,8 +57,6 @@ Using the defined scheduler bean, define a `<schedule>` rule group. This rule re
     <job translet="/batch/log-archive"/>
 </schedule>
 ```
-
----
 
 ### Method 2: Annotation-based Configuration
 
@@ -111,8 +107,6 @@ public class AnnotatedScheduledTasks {
 -   **`@Job`**: Specifies the Translet to be executed within the `jobs` attribute of `@Schedule`.
 -   **`@Request`**: Defines the actual method that handles the `translet` name specified in `@Job`. In other words, this method becomes the body of the scheduled task.
 -   **`@Bean` Method**: Creates and registers as a bean the Quartz `Scheduler` instance that will be referenced by the `scheduler` attribute of `@Schedule`.
-
----
 
 ### Trigger Type Detailed Description
 
@@ -225,12 +219,40 @@ If you include the above configuration in your main `logback.xml` file (`<includ
 
 After running the application, you can monitor the execution logs of the schedule jobs by checking the `root-scheduler.log` file in the `logs` directory under the configured `aspectran.basePath` (default `app`).
 
-## 4. Full Configuration Example and References
+## 4. Distributed Scheduling in a Clustered Environment
+
+In an environment where multiple nodes operate as a single cluster, it is crucial to prevent the same schedule from being executed multiple times. Aspectran ensures safe task execution across the cluster through its Redis-based **Distributed Lock** feature.
+
+### How Distributed Locking Works
+
+Just before a scheduled task is executed, Aspectran attempts to acquire a unique lock key for that schedule in Redis for a very short time (TTL).
+
+1.  **Acquire Lock**: The node attempting to perform the task tries to acquire the lock using Redis's `SET NX` feature.
+2.  **Execute Task**: Only the node that first reaches the execution time and acquires the lock performs the actual task.
+3.  **Skip Execution**: Other nodes that fail to acquire the lock automatically skip the task for that cycle.
+4.  **Safety Guarantee**: Even if a node terminates abnormally during a task, the lock is automatically released after the expiration time set on the lock, allowing another node to take over in the next cycle.
+
+### Execution Control via the `isolated` Attribute
+
+Scheduling rules have an `isolated` attribute that determines whether the task is a target for distribution or should always run independently on each node.
+
+-   **`isolated="false"` (Default)**: Only **one node** in the entire cluster performs the task. (Distributed lock applied)
+-   **`isolated="true"`**: **Every node** performs the task at its scheduled time, regardless of the cluster state. This is suitable for tasks like system log collection or refreshing local caches.
+
+### Real-time Control and Monitoring (Scheduler Manager)
+
+The Aspectran Console provides a **Scheduler Manager** screen that allows you to grasp and manipulate the schedulers of the entire cluster at a glance.
+
+-   **Unified View**: Real-time checking of scheduler status and active job lists for all nodes in the cluster.
+-   **Dynamic Switching**: Instantly enable or disable specific schedules or individual jobs without redeploying the application.
+-   **Status Visibility**: Visually shows whether the distributed lock feature is working normally and which node you are connected to.
+
+## 5. Full Configuration Example and References
 
 A complete example of how to actually configure and use the Aspectran Scheduler can be found in the following GitHub project. This project is a good reference that actually implements all the concepts described in this document.
 
 -   **Aspectran Scheduler Example Project**: [https://github.com/aspectran/gs-scheduler](https://github.com/aspectran/gs-scheduler)
 
-## 5. Conclusion
+## 6. Conclusion
 
-Aspectran Scheduler is a feature that well demonstrates the framework's core philosophy of **abstraction and modularization**. Developers do not need to worry about the complexity of the Quartz API; they can easily automate the tasks they want using the **Translet** they know best, and can choose between **explicit XML/APON-based configuration** and **convenient annotation-based configuration** that best suits their project to perfectly integrate and manage the scheduler as part of the application.
+Aspectran Scheduler is a feature that well demonstrates the framework's core philosophy of **abstraction and modularization**. Developers do not need to worry about the complexity of the Quartz API; they can easily automate the tasks they want using the **Translet** they know best, and can choose between **explicit XML/APON-based configuration** and **convenient annotation-based configuration** that best suits their project to perfectly integrate and manage the scheduler as part of the application. In particular, the Redis-based distributed lock feature perfectly guarantees data integrity and system stability even in large-scale clustered environments.
