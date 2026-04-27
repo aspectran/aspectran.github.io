@@ -64,6 +64,8 @@ aspectran:
           url: /ko/docs/guides/practical-guide-to-shell-greetings/
           description: ANSI 마크업과 토큰을 사용하여 CLI 시작 메시지를 커스터마이징합니다.
       tags:
+        - title: 표준 REST 응답 처리
+          url: /ko/docs/guides/practical-guide-to-rest-response/
         - title: Beans IoC/DI
           url: /ko/docs/guides/practical-guide-to-beans/
         - title: PBE 인증 토큰

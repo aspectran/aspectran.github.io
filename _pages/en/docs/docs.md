@@ -39,6 +39,7 @@ permalink: /en/docs/
 *   [Using CORS (Cross-Origin Resource Sharing) in Aspectran](/en/docs/guides/practical-guide-to-cors/)
 *   [Practical Guide to Custom Type Converters](/en/docs/guides/practical-guide-to-type-converter/)
 *   [Guide to Setting and Styling Shell Greetings](/en/docs/guides/practical-guide-to-shell-greetings/)
+*   [Standard REST Response Handling Guide](/en/docs/guides/practical-guide-to-rest-response/)
 *   [Aspectran JSP Tag Library Guide](/en/docs/guides/aspectran-jsp-tag-library/)
 *   [MyBatis Transaction Management in Aspectran](/en/docs/guides/aspectran-mybatis-transaction-management/)
 *   [JPA Transaction Management in Aspectran](/en/docs/guides/aspectran-jpa-transaction-management/)
