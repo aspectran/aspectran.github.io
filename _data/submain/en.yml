@@ -64,6 +64,8 @@ aspectran:
           url: /en/docs/guides/practical-guide-to-shell-greetings/
           description: Learn how to customize and style your CLI environment's greeting messages using ANSI markup and tokens.
       tags:
+        - title: Standard REST Response
+          url: /en/docs/guides/practical-guide-to-rest-response/
         - title: Beans IoC/DI
           url: /en/docs/guides/practical-guide-to-beans/
         - title: PBE Token Auth
