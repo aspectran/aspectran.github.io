@@ -79,7 +79,7 @@ command:{commandName};{optionKey1}:{value1};{optionKey2}:{value2}
 | :--- | :--- | :--- |
 | **refresh** | 차트나 메트릭 등의 최신 데이터를 명시적으로 요청 | `instance`, `dateUnit`, `dateOffset` |
 | **loadPrevious** | 로그 박스 상단에서 이전 로그 데이터를 요청 | `instance`, `logName`, `loadedLines` |
-| **join** | 실시간 모니터링 세션을 시작하고 인스턴스 그룹에 참여 | `instancesToJoin`, `timeZone` |
+| **join** | 실시간 모니터링 세션을 시작하고 인스턴스 그룹에 참여 | `appsToJoin`, `timeZone` |
 
 ### 3.3 명령 예시
 
@@ -92,7 +92,7 @@ command:{commandName};{optionKey1}:{value1};{optionKey2}:{value2}
     *(설명: server1 인스턴스의 데이터를 시간(hour) 단위로 다시 집계하여 요청함)*
 
 *   **모니터링 세션 참여**:
-    `command:join;instancesToJoin:server1,server2;timeZone:Asia/Seoul`
+    `command:join;appsToJoin:server1,server2;timeZone:Asia/Seoul`
     *(설명: 두 개 인스턴스의 모니터링 그룹에 조인하며 클라이언트의 타임존 정보를 전달함)*
 
 ## 4. 확장 가이드

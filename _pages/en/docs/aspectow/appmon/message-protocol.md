@@ -79,7 +79,7 @@ command:{commandName};{optionKey1}:{value1};{optionKey2}:{value2}
 | :--- | :--- | :--- |
 | **refresh** | Explicitly request the latest state for charts or metrics | `instance`, `dateUnit`, `dateOffset` |
 | **loadPrevious** | Request historical log data from the top of a console box | `instance`, `logName`, `loadedLines` |
-| **join** | Start a real-time monitoring session and join instance groups | `instancesToJoin`, `timeZone` |
+| **join** | Start a real-time monitoring session and join instance groups | `appsToJoin`, `timeZone` |
 
 ### 3.3 Command Examples
 
@@ -92,7 +92,7 @@ command:{commandName};{optionKey1}:{value1};{optionKey2}:{value2}
     *(Description: Request re-aggregated data for the server1 instance on an hourly basis.)*
 
 *   **Joining a Monitoring Session**:
-    `command:join;instancesToJoin:server1,server2;timeZone:Asia/Seoul`
+    `command:join;appsToJoin:server1,server2;timeZone:Asia/Seoul`
     *(Description: Join monitoring groups for two instances and provide client time zone info.)*
 
 ## 4. Extension Guide
