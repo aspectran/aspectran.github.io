@@ -82,10 +82,10 @@ Here is a configuration example from `logback-default.xml`.
         <sift>
             <!-- 2. Dynamically create an Appender based on the identified group name (${LOGGING_GROUP}) -->
             <appender name="FILE-${LOGGING_GROUP}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <!-- 3. The log file path is dynamically determined by the group name -->
-                <file>${aspectran.basePath:-app}/logs/${LOGGING_GROUP}.log</file>
+                <!-- 3. The log file path is dynamically determined by the group name and properties -->
+                <file>${aspectran.logsDir:-${aspectran.basePath:-app}/logs}/${LOGGING_GROUP}.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                    <fileNamePattern>${aspectran.basePath:-app}/logs/archived/${LOGGING_GROUP}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                    <fileNamePattern>${aspectran.archivedLogsDir:-${aspectran.logsDir:-${aspectran.basePath:-app}/logs}/archived}/${LOGGING_GROUP}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                     <maxFileSize>10MB</maxFileSize>
                     <maxHistory>30</maxHistory>
                     <totalSizeCap>1GB</totalSizeCap>
@@ -109,7 +109,27 @@ Here is a configuration example from `logback-default.xml`.
 </included>
 ```
 
-## 4. Web Application Integration Example
+## 4. Flexible Path Configuration
+
+Aspectran provides a flexible way to configure log file paths, allowing logs to be stored outside the application's base path if necessary. This is achieved using a nested fallback mechanism in the Logback configuration.
+
+### System Properties
+
+*   **`aspectran.logsDir`**: Specifies the directory where logs will be stored. It can be an absolute path or a relative path (resolved via `ApplicationAdapter.getRealPath()`).
+*   **`aspectran.archivedLogsDir`**: Specifies the directory where archived/rotated logs will be stored.
+
+### Nested Fallback Pattern
+
+The configuration uses the following pattern for path resolution:
+`${aspectran.logsDir:-${aspectran.basePath:-app}/logs}`
+
+1.  If the system property `aspectran.logsDir` is set, its value is used (allowing for an absolute path "escape" from the base path).
+2.  If not set, it falls back to the `/logs` directory under `${aspectran.basePath}`.
+3.  If `${aspectran.basePath}` is also not set, it defaults to the `app/logs` directory.
+
+This mechanism ensures that the logging system remains functional with sensible defaults while providing the ultimate flexibility for production environments where logs might need to be stored on dedicated storage volumes.
+
+## 5. Web Application Integration Example
 
 This logging mechanism is particularly powerful when serving multiple web applications from a single server instance. `com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper` is an Undertow handler that dynamically sets the logging group based on the request URI.
 

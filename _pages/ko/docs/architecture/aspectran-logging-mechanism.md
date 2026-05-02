@@ -82,10 +82,10 @@ Aspectran 로깅의 가장 핵심적인 특징은 `com.aspectran.logging.logback
         <sift>
             <!-- 2. 식별된 그룹명(${LOGGING_GROUP})에 따라 동적으로 Appender 생성 -->
             <appender name="FILE-${LOGGING_GROUP}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <!-- 3. 그룹명에 따라 로그 파일 경로가 동적으로 결정됨 -->
-                <file>${aspectran.basePath:-app}/logs/${LOGGING_GROUP}.log</file>
+                <!-- 3. 그룹명 및 프로퍼티에 따라 로그 파일 경로가 동적으로 결정됨 -->
+                <file>${aspectran.logsDir:-${aspectran.basePath:-app}/logs}/${LOGGING_GROUP}.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                    <fileNamePattern>${aspectran.basePath:-app}/logs/archived/${LOGGING_GROUP}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                    <fileNamePattern>${aspectran.archivedLogsDir:-${aspectran.logsDir:-${aspectran.basePath:-app}/logs}/archived}/${LOGGING_GROUP}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                     <maxFileSize>10MB</maxFileSize>
                     <maxHistory>30</maxHistory>
                     <totalSizeCap>1GB</totalSizeCap>
@@ -109,7 +109,27 @@ Aspectran 로깅의 가장 핵심적인 특징은 `com.aspectran.logging.logback
 </included>
 ```
 
-## 4. 웹 애플리케이션 연동 예제
+## 4. 유연한 경로 구성
+
+Aspectran은 로그 파일 경로를 유연하게 구성할 수 있는 방법을 제공하여, 필요한 경우 로그를 애플리케이션의 기본 경로(`basePath`) 외부에 저장할 수 있도록 합니다. 이는 Logback 설정에서 중첩된 Fallback 메커니즘을 사용하여 구현됩니다.
+
+### 시스템 프로퍼티
+
+*   **`aspectran.logsDir`**: 로그가 저장될 디렉토리를 지정합니다. 절대 경로 또는 상대 경로(`ApplicationAdapter.getRealPath()`를 통해 해소됨)를 사용할 수 있습니다.
+*   **`aspectran.archivedLogsDir`**: 보관 및 로테이션된 로그가 저장될 디렉토리를 지정합니다.
+
+### 중첩 Fallback 패턴
+
+설정 파일은 경로 해소를 위해 다음과 같은 패턴을 사용합니다:
+`${aspectran.logsDir:-${aspectran.basePath:-app}/logs}`
+
+1.  시스템 프로퍼티 `aspectran.logsDir`이 설정되어 있으면 해당 값을 사용합니다 (이때 절대 경로를 사용하면 기본 경로로부터의 "탈출"이 가능합니다).
+2.  설정되어 있지 않으면 `${aspectran.basePath}` 하위의 `/logs` 디렉토리를 사용합니다.
+3.  `${aspectran.basePath}`조차 설정되어 있지 않으면 `app/logs` 디렉토리를 기본값으로 사용합니다.
+
+이러한 메커니즘을 통해 로깅 시스템은 합리적인 기본값으로 작동하면서도, 로그를 별도의 스토리지 볼륨에 저장해야 하는 운영 환경 등에서 극대화된 유연성을 제공합니다.
+
+## 5. 웹 애플리케이션 연동 예제
 
 이 로깅 메커니즘은 특히 여러 웹 애플리케이션을 하나의 서버 인스턴스에서 서비스할 때 강력한 기능을 발휘합니다. `com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper`는 요청 URI에 따라 로깅 그룹을 동적으로 설정하는 Undertow 핸들러입니다.
 
