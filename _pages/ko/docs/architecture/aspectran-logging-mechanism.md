@@ -91,7 +91,7 @@ Aspectran 로깅의 가장 핵심적인 특징은 `com.aspectran.logging.logback
                     <totalSizeCap>1GB</totalSizeCap>
                 </rollingPolicy>
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                    <charset>UTF-8</charset>
+                    <charset>${aspectran.logCharset:-UTF-8}</charset>
                     <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %msg - %logger{30}.%M\(%line\)%n</pattern>
                 </encoder>
             </appender>
@@ -109,14 +109,15 @@ Aspectran 로깅의 가장 핵심적인 특징은 `com.aspectran.logging.logback
 </included>
 ```
 
-## 4. 유연한 경로 구성
+## 4. 유연한 경로 및 캐릭터셋 구성
 
-Aspectran은 로그 파일 경로를 유연하게 구성할 수 있는 방법을 제공하여, 필요한 경우 로그를 애플리케이션의 기본 경로(`basePath`) 외부에 저장할 수 있도록 합니다. 이는 Logback 설정에서 중첩된 Fallback 메커니즘을 사용하여 구현됩니다.
+Aspectran은 로그 파일 경로와 캐릭터셋을 유연하게 구성할 수 있는 방법을 제공하여, 필요한 경우 로그를 애플리케이션의 기본 경로(`basePath`) 외부에 저장할 수 있도록 합니다. 이는 Logback 설정에서 중첩된 Fallback 메커니즘을 사용하여 구현됩니다.
 
 ### 시스템 프로퍼티
 
 *   **`aspectran.logsDir`**: 로그가 저장될 디렉토리를 지정합니다. 절대 경로 또는 상대 경로(`ApplicationAdapter.getRealPath()`를 통해 해소됨)를 사용할 수 있습니다.
 *   **`aspectran.archivedLogsDir`**: 보관 및 로테이션된 로그가 저장될 디렉토리를 지정합니다.
+*   **`aspectran.logCharset`**: 로그 파일에 사용할 캐릭터셋을 지정합니다. (예: UTF-8)
 
 ### 중첩 Fallback 패턴
 

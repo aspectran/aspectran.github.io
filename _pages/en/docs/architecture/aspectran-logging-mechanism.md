@@ -91,7 +91,7 @@ Here is a configuration example from `logback-default.xml`.
                     <totalSizeCap>1GB</totalSizeCap>
                 </rollingPolicy>
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                    <charset>UTF-8</charset>
+                    <charset>${aspectran.logCharset:-UTF-8}</charset>
                     <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %msg - %logger{30}.%M\(%line\)%n</pattern>
                 </encoder>
             </appender>
@@ -109,14 +109,15 @@ Here is a configuration example from `logback-default.xml`.
 </included>
 ```
 
-## 4. Flexible Path Configuration
+## 4. Flexible Path and Charset Configuration
 
-Aspectran provides a flexible way to configure log file paths, allowing logs to be stored outside the application's base path if necessary. This is achieved using a nested fallback mechanism in the Logback configuration.
+Aspectran provides a flexible way to configure log file paths and character sets, allowing logs to be stored outside the application's base path if necessary. This is achieved using a nested fallback mechanism in the Logback configuration.
 
 ### System Properties
 
 *   **`aspectran.logsDir`**: Specifies the directory where logs will be stored. It can be an absolute path or a relative path (resolved via `ApplicationAdapter.getRealPath()`).
 *   **`aspectran.archivedLogsDir`**: Specifies the directory where archived/rotated logs will be stored.
+*   **`aspectran.logCharset`**: Specifies the character set to be used for log files. (e.g., UTF-8)
 
 ### Nested Fallback Pattern
 
