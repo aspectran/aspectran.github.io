@@ -144,6 +144,7 @@ These are the default commands provided by the Aspectran framework, and develope
 | `clear` | `com.aspectran.shell.command.builtins.ClearCommand`<br/>Clears the console screen. |
 | `echo` | `com.aspectran.shell.command.builtins.EchoCommand`<br/>Prints the input message as is. |
 | `verbose` | `com.aspectran.shell.command.builtins.VerboseCommand`<br/>Sets whether to print a detailed description of a Translet before its execution. |
+| `evaluate` | `com.aspectran.shell.command.builtins.EvaluateCommand`<br/>Evaluates an AsEL (Aspectran Expression Language) expression. |
 | `quit` | `com.aspectran.shell.command.builtins.QuitCommand`<br/>Exits the shell. |
 | `jetty` | `com.aspectran.jetty.shell.command.JettyCommand`<br/>Controls the embedded Jetty server (start/stop/restart/status). |
 | `undertow` | `com.aspectran.undertow.shell.command.UndertowCommand`<br/>Controls the embedded Undertow server (start/stop/restart/status). |
@@ -157,7 +158,6 @@ Defines the environment for running Aspectran as a background daemon process.
 - **`polling`**: Defines the polling behavior of the daemon.
     - **`pollingInterval`**: Specifies the polling interval in milliseconds.
     - **`requeuable`**: Sets whether a task can be re-queued on failure.
-    - **`incoming`**: Specifies the Translet path to handle requests coming in through polling.
 - **`commands`**: Registers the full class paths of command classes to be used in the daemon environment as an array. Only commands registered here can be used in that daemon.
 - **`session`**: Defines daemon session management settings. This setting has the same sub-items as the `shell`'s `session` setting.
 - **`acceptable`**: Defines Translet request patterns to be allowed or denied in the daemon.
@@ -290,7 +290,6 @@ daemon: {
     polling: {
         pollingInterval: 5000
         requeuable: true
-        incoming: /cmd/incoming
         enabled: true
     }
     commands: [

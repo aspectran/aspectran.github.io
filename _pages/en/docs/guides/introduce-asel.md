@@ -140,9 +140,26 @@ The `~{...}` token is used to render the template with the specified ID at the c
 
 ## 4. Caution: No Nesting
 
-One of the most important rules of AsEL is that **you cannot include another token expression inside a token expression**. In other words, nesting is not possible.
+A fundamental rule of AsEL is that **you cannot nest token expressions**.
 
-*   **Correct Example**: `#{bean1} + #{bean2}`
-*   **Incorrect Example**: `#{bean^~{anotherTemplate}}`
+*   **Correct**: `#{bean1} + #{bean2}`
+*   **Incorrect**: `#{bean^~{anotherTemplate}}`
 
-This is based on a design philosophy that ensures the simplicity and clarity of expressions, ultimately enhancing the readability and ease of use of the code.
+This ensures expressions remain simple, clear, and easy to read.
+
+## 5. Evaluating AsEL in Shell (evaluate command)
+
+In the Aspectran Shell environment, you can use the `evaluate` command to immediately evaluate AsEL expressions within the running application context and view the results. This is extremely useful for pre-validating complex expressions before using them in configurations or for real-time monitoring of the state of loaded Beans.
+
+*   **Basic Usage**: `evaluate "<expression>"`
+*   **Example**:
+    ```bash
+    default> evaluate "1 + 1"
+    2
+    default> evaluate "#{userService^getUserCount()}"
+    150
+    default> evaluate "T(java.lang.System)^getProperty('user.home')"
+    /Users/Aspectran
+    ```
+
+Experience and verify the powerful features of AsEL directly in your development and operation process through the `evaluate` command.

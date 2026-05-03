@@ -42,8 +42,17 @@ In a multi-context environment, you can specify a base profile to be applied onl
 *   **Syntax**: `-Daspectran.profiles.base.{contextName}={profileName}`
 *   **Example**: `-Daspectran.profiles.base.appmon=mariadb` (Fixes the default DB setting for the `appmon` context to mariadb)
 
-### 2.3. Framework Functional Settings
-*   `aspectran.encryption.algorithm`: The algorithm used to decrypt encrypted values in configuration files. (Default: `PBEWithMD5AndTripleDES`)
+### 2.3. Path and Logging Settings
+Control the application's working directories and log storage locations. If the specified path does not exist, Aspectran **automatically creates the directory (`mkdirs()`)**.
+*   `aspectran.basePath`: The root directory of the application.
+*   `aspectran.workPath`: The application's working directory. (Default: `basePath/work`)
+*   `aspectran.tempPath`: The directory for storing temporary files. (Default: `basePath/temp`)
+*   `aspectran.logsDir`: The directory for storing log files. (Default: `basePath/logs`)
+*   `aspectran.archivedLogsDir`: The directory for storing archived logs.
+*   `aspectran.logCharset`: The charset to be used when logging. (e.g., `UTF-8`)
+
+### 2.4. Framework Functional Settings
+*   `aspectran.encryption.algorithm`: The algorithm used to decrypt encrypted values in configuration files. (Default: `PBEWITHHMACSHA256ANDAES_128`)
 *   `aspectran.encryption.password`: The password used for encryption and decryption.
 *   `aspectran.properties.encoding`: The encoding used when loading property files. (Default: `UTF-8`)
 
