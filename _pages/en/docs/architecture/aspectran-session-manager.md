@@ -223,7 +223,7 @@ Dynamically switch the session store based on the production environment using p
     <properties profile="!prod">
         <item name="sessionStore">
             <bean class="com.aspectran.core.component.session.FileSessionStoreFactoryBean">
-                <property name="storeDir">/work/_sessions/jpetstore</property>
+                <property name="storeDir">%{system:aspectran.workPath:/work}/_sessions/jpetstore</property>
             </bean>
         </item>
     </properties>

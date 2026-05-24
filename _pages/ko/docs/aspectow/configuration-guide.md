@@ -209,7 +209,7 @@ Aspectow 프로젝트를 올바르게 빌드하기 위해 `pom.xml`의 `<propert
     <properties profile="!prod">
         <item name="sessionStore">
             <bean class="com.aspectran.core.component.session.FileSessionStoreFactoryBean">
-                <property name="storeDir">/work/_sessions/root</property>
+                <property name="storeDir">%{system:aspectran.workPath:/work}/_sessions/root</property>
             </bean>
         </item>
     </properties>
