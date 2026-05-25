@@ -188,7 +188,7 @@ Advice Bean과 Aspect 정의를 분리합니다.
 ```java
 @Component
 @Bean(id = "simpleSqlSession")
-public class SimpleSqlSession extends SqlSessionAgent {
+public class SimpleSqlSession extends DefaultSqlSessionAgent {
     public SimpleSqlSession() {
         super("simpleTxAspect"); // Aspect ID와 연결
     }

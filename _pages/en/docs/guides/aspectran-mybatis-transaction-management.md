@@ -147,7 +147,7 @@ When integrating multiple database systems, specify which factory each session a
 ```java
 @Component
 @Bean(id = "appmonSqlSession")
-public class AppMonSqlSession extends SqlSessionAgent {
+public class AppMonSqlSession extends DefaultSqlSessionAgent {
     public AppMonSqlSession() {
         super("appmonTxAspect");
         // Explicitly set the bean ID of the SqlSessionFactory to be linked
@@ -167,7 +167,7 @@ Create `SqlSessionAgent` classes for each execution mode.
 // SIMPLE mode (Default)
 @Component
 @Bean(id = "simpleSqlSession", lazyDestroy = true)
-public class SimpleSqlSession extends SqlSessionAgent {
+public class SimpleSqlSession extends DefaultSqlSessionAgent {
     public SimpleSqlSession() {
         super("simpleTxAspect");
     }
@@ -176,7 +176,7 @@ public class SimpleSqlSession extends SqlSessionAgent {
 // BATCH mode (Optimized for bulk data processing)
 @Component
 @Bean(id = "batchSqlSession", lazyDestroy = true)
-public class BatchSqlSession extends SqlSessionAgent {
+public class BatchSqlSession extends DefaultSqlSessionAgent {
     public BatchSqlSession() {
         super("batchTxAspect");
         setExecutorType(ExecutorType.BATCH);
@@ -186,7 +186,7 @@ public class BatchSqlSession extends SqlSessionAgent {
 // REUSE mode (Reuse PreparedStatements)
 @Component
 @Bean(id = "reuseSqlSession", lazyDestroy = true)
-public class ReuseSqlSession extends SqlSessionAgent {
+public class ReuseSqlSession extends DefaultSqlSessionAgent {
     public ReuseSqlSession() {
         super("reuseTxAspect");
         setExecutorType(ExecutorType.REUSE);

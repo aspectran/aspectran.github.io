@@ -186,7 +186,7 @@ The `SimpleSqlSession` bean connects to the Aspect via its constructor or ID mat
 ```java
 @Component
 @Bean(id = "simpleSqlSession")
-public class SimpleSqlSession extends SqlSessionAgent {
+public class SimpleSqlSession extends DefaultSqlSessionAgent {
     public SimpleSqlSession() {
         super("simpleTxAspect"); // Links to the Aspect ID
     }
