@@ -14,6 +14,7 @@ APON은 특히 Aspectran 프레임워크의 설정 파일을 간결하게 작성
 
 *   **뛰어난 가독성**: 줄바꿈이나 쉼표(`,`)를 사용하여 항목을 유연하게 구분할 수 있습니다. 값에 특수문자가 없다면 따옴표를 생략할 수 있어 코드가 간결하고 명확합니다.
 *   **명시적 타입 지원**: 값(Value)에 대한 데이터 타입을 직접 명시할 수 있어, 설정 값의 정확성과 안정성을 보장합니다.
+*   **대체 이름(별칭) 및 다형적 파싱**: 하나의 파라미터 정의에 여러 대체 이름(altNames)을 지정할 수 있습니다. 설정 파일 상에서는 용도에 맞는 다양한 키 이름들을 직관적으로 기술하지만, 파서 단계에서는 이들을 동일한 데이터 타입의 공통 리스트로 자동 매핑 및 수집하여 처리의 유연성을 극대화합니다.
 *   **계층적 데이터 구조**: 중괄호(`{ }`)를 사용하여 데이터를 계층적으로 구성할 수 있어 복잡한 설정도 체계적으로 표현할 수 있습니다.
 *   **긴 문자열 지원**: 여러 줄로 이루어진 텍스트를 작성할 수 있는 `text` 타입을 지원하며, 상황에 따라 이스케이프된 한 줄 문자열로 자동 변환될 수 있습니다.
 *   **인라인 주석 지원**: `#` 문자를 사용하여 새로운 라인은 물론 기존 라인의 끝에도 코드에 대한 설명을 추가할 수 있습니다.
@@ -110,7 +111,7 @@ city: New York
 
 ### 배열 (Array)
 
-배열은 대괄호(`[ ]`) 안에 여러 값을 넣어 표현합니다.
+배열은 대괄호(`[ ]`) 안에 여러 값을 넣어 표현합니다. 
 
 배열 요소의 구분자는 매우 유연합니다. 줄바꿈이나 쉼표(`,`) 중 하나를 사용하거나, 두 가지를 혼용하여 사용할 수도 있습니다. 이러한 유연성 덕분에 항목을 추가하거나 삭제할 때 구분자 처리에 대한 고민을 덜어주어 매우 편리합니다.
 
@@ -262,6 +263,57 @@ public class ServerConfig extends DefaultParameters implements Parameters {
     }
 }
 ```
+
+### 대체 이름(altNames)과 다형적 구조 처리 (다형적 파싱)
+
+APON은 데이터를 읽기 전에 `Parameters` 클래스를 통해 데이터의 구조를 미리 스키마 형태로 정의할 수 있는 강력한 특징을 가지고 있습니다. 이 과정에서 `ParameterKey` 생성 시 **대체 이름(altNames, 별칭)**을 지정할 수 있는 기능을 제공합니다.
+
+이를 통해 서로 다른 키 이름을 가진 데이터 블록들이 입력되더라도, 정의된 대체 이름을 통해 내부적으로는 하나의 공통된 파라미터 타입으로 통일하여 수집하고 처리하는 **다형적 파싱(Polymorphic Parsing)**이 가능해집니다.
+
+**대체 이름을 활용한 스키마 정의 예시:**
+
+```java
+import com.aspectran.utils.apon.DefaultParameters;
+import com.aspectran.utils.apon.ParameterKey;
+
+public class TransletParameters extends DefaultParameters {
+
+    public static final ParameterKey action;
+
+    static {
+        // 대표 키인 "action" 외에도 "echo", "headers", "include", "choose"를 대체 이름으로 지정
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
+                ActionParameters.class, true, true);
+    }
+    
+    // ...
+}
+```
+
+**위 스키마를 적용한 APON 설정 예시:**
+
+위와 같이 대체 이름을 지정하면, 설정 파일에서는 각 액션의 특성에 맞는 직관적인 키 이름을 사용하여 데이터를 기술할 수 있습니다.
+
+```apon
+# 서로 다른 이름(별칭)으로 액션을 기술하지만, 파싱 시에는 모두 'action' 파라미터 리스트로 수집됨
+echo: {
+  id: "echoAction"
+  item: [
+    { name: "message", value: "Hello" }
+  ]
+}
+include: {
+  translet: "targetTranslet"
+}
+```
+
+파서 엔진은 이 블록들을 모두 동일한 `ActionParameters` 구조로 분석하여 `action` 파라미터 배열에 담아줍니다. 이후 자바 코드에서는 다음과 같이 `actionParameters.getActualName()`을 호출하여 실제 사용자가 작성했던 키 이름(예: `"echo"`, `"include"`)을 파악하고 용도에 맞게 다형적으로 룰 객체로 변환하게 됩니다.
+
+```java
+String actualName = actionParameters.getActualName(); // "echo" 또는 "include" 등 반환
+```
+
+JSON이나 YAML과 같은 범용 데이터 포맷은 이러한 스키마 바인딩 정보가 데이터 파서 단계와 결합되어 있지 않기 때문에 동일한 유연성을 제공하기 어렵습니다. APON만의 스키마 정의 기능을 사용하면 구문 작성이 편리해지고 프로그램의 유연성을 동시에 확보할 수 있습니다.
 
 ### APON 데이터 읽기 (AponReader)
 

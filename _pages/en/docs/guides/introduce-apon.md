@@ -13,6 +13,7 @@ APON is specifically designed to allow concise configuration files for the Aspec
 
 *   **Excellent Readability**: Items can be flexibly separated using line breaks or commas (`,`). If a value does not contain special characters, quotes can be omitted, making the code concise and clear.
 *   **Explicit Type Support**: Data types for values can be explicitly specified, ensuring the accuracy and stability of configuration values.
+*   **Alternative Names (Aliases) and Polymorphic Parsing**: Multiple alternative names (altNames) can be assigned to a single parameter definition. This allows users to write various key names intuitively depending on the context in configuration files, while the parser automatically maps and collects them into a common list of the same data type, maximizing processing flexibility.
 *   **Hierarchical Data Structure**: Data can be organized hierarchically using curly braces (`{ }`), allowing complex settings to be expressed systematically.
 *   **Long String Support**: It supports the `text` type for writing multi-line text, which can be automatically converted into an escaped single-line string depending on the situation.
 *   **Inline Comment Support**: The `#` character can be used to add descriptions to code at the end of a line as well as on new lines.
@@ -258,6 +259,57 @@ public class ServerConfig extends DefaultParameters implements Parameters {
     }
 }
 ```
+
+### Alternative Names (altNames) and Polymorphic Parsing
+
+One of the powerful features of APON is the ability to define the structure of data beforehand as a schema using the `Parameters` class. During this process, you can specify **alternative names (altNames, aliases)** when creating a `ParameterKey`.
+
+This enables **polymorphic parsing**, where even if data blocks with different key names are input, they are internally unified and collected into a single common parameter type for processing.
+
+**Example of Schema Definition with Alternative Names:**
+
+```java
+import com.aspectran.utils.apon.DefaultParameters;
+import com.aspectran.utils.apon.ParameterKey;
+
+public class TransletParameters extends DefaultParameters {
+
+    public static final ParameterKey action;
+
+    static {
+        // Assign "echo", "headers", "include", and "choose" as alternative names for the primary key "action"
+        action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
+                ActionParameters.class, true, true);
+    }
+    
+    // ...
+}
+```
+
+**APON Configuration Example Applying the Above Schema:**
+
+By specifying alternative names like this, configuration files can describe data using intuitive key names that fit the characteristics of each action.
+
+```apon
+# Written with different names (aliases), but all collected into the 'action' parameter list during parsing
+echo: {
+  id: "echoAction"
+  item: [
+    { name: "message", value: "Hello" }
+  ]
+}
+include: {
+  translet: "targetTranslet"
+}
+```
+
+The parser engine analyzes all these blocks using the same `ActionParameters` structure and populates them into the `action` parameter array. In Java code, you can then call `actionParameters.getActualName()` to determine the actual key name written by the user (e.g., `"echo"`, `"include"`) and perform polymorphic conversion to rule objects accordingly.
+
+```java
+String actualName = actionParameters.getActualName(); // Returns "echo", "include", etc.
+```
+
+General data formats like JSON or YAML struggle to provide the same flexibility because their data parsing phase is not combined with schema binding information. With APON's schema definition capability, you can gain both convenience in syntax writing and flexibility in program logic.
 
 ### Reading APON Data (AponReader)
 
