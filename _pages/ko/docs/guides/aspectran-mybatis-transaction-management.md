@@ -60,11 +60,9 @@ public class MemberService {
     @Hint(type = "transactional", value = "readOnly: true")
     public List<Member> getMembers() {
         // 이 메서드는 읽기 전용 세션으로 라우팅됩니다.
-        // 여기서 실수로 memberMapper.insertMember()를 호출하면
-        // IllegalStateException이 발생합니다.
+        // 여기서 실수로 memberMapper.insertMember()를 호출하면 IllegalStateException이 발생합니다.
         return memberMapper.selectMemberList();
     }
-
 }
 ```
 
@@ -86,7 +84,6 @@ public class MemberService {
 @Component
 @Bean(id = "sampleSqlSession", lazyDestroy = true)
 public class SampleSqlSession extends DefaultSqlSessionAgent {
-
     public SampleSqlSession() {
         super("sampleTxAspect");
         setSqlSessionFactoryBeanId("sampleSqlSessionFactory");
@@ -301,6 +298,6 @@ public class MemberDao extends SqlMapperAccess<MemberMapper> implements MemberMa
 <dependency>
     <groupId>com.zaxxer</groupId>
     <artifactId>HikariCP</artifactId>
-    <version>6.2.1</version>
+    <version>7.0.2</version>
 </dependency>
 ```

@@ -60,8 +60,7 @@ public class MemberService {
     @Hint(type = "transactional", value = "readOnly: true")
     public List<Member> getMembers() {
         // This method is routed to the read-only session.
-        // If memberMapper.insertMember() is accidentally called here,
-        // an IllegalStateException will occur.
+        // If memberMapper.insertMember() is accidentally called here, an IllegalStateException will occur.
         return memberMapper.selectMemberList();
     }
 
@@ -293,6 +292,6 @@ public class MemberDao extends SqlMapperAccess<MemberMapper> implements MemberMa
 <dependency>
     <groupId>com.zaxxer</groupId>
     <artifactId>HikariCP</artifactId>
-    <version>6.2.1</version>
+    <version>7.0.2</version>
 </dependency>
 ```

@@ -167,6 +167,64 @@ The `cron` trigger is used to execute tasks according to a complex calendar-rela
     )
     ```
 
+### Misfire Policies: Handling Missed Executions
+
+A misfire occurs when a trigger "misses" its firing time because the scheduler was down or there were no available threads in the Quartz thread pool. You can define how the scheduler should handle such situations using the `misfirePolicy` attribute.
+
+#### How Misfires are Detected: `misfireThreshold`
+
+The decision of whether a trigger has "misfired" depends on the `org.quartz.jobStore.misfireThreshold` property (defined in milliseconds). This threshold represents the **"grace period"** that the scheduler allows before a trigger is officially considered to have misfired.
+
+- **Within Threshold:** If the delay is within the threshold of the scheduled firing time, the scheduler simply fires the trigger as soon as possible without applying any misfire policy.
+- **Exceeding Threshold:** If the delay exceeds the threshold, the trigger is marked as misfired, and the configured `misfirePolicy` is then applied.
+
+By default, Quartz sets this to 60,000 milliseconds (1 minute). You can adjust this value in the `quartzProperties` of your scheduler bean:
+
+```xml
+<bean id="scheduler1" class="com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean">
+    <property type="properties" name="quartzProperties">
+        <!-- Set misfire threshold to 30 seconds -->
+        <entry name="org.quartz.jobStore.misfireThreshold">30000</entry>
+        <!-- ... other properties ... -->
+    </property>
+</bean>
+```
+
+#### Available Policies for `cron` Trigger
+
+-   `ignoreMisfires`: Executes all missed firings immediately.
+-   `smartPolicy` (Default): Executes the first missed firing immediately and discards others. (Same as `fireOnceNow`)
+-   `fireOnceNow`: Executes the first missed firing immediately and discards others.
+-   `doNothing`: Discards all missed firings and waits for the next scheduled time.
+
+#### Available Policies for `simple` Trigger
+
+-   `ignoreMisfires`: Executes all missed firings as soon as possible.
+-   `smartPolicy` (Default):
+    -   Fixed Repeat: Same as `rescheduleNowWithExistingRepeatCount`.
+    -   Infinite Repeat: Same as `rescheduleNextWithRemainingCount`.
+-   `fireNow`: Executes the first missed firing immediately and discards others.
+-   `rescheduleNowWithExistingRepeatCount`: Reschedules to fire immediately, keeping the repeat count unchanged.
+-   `rescheduleNowWithRemainingRepeatCount`: Reschedules to fire immediately, but the first missed firing counts as one of the repeat counts.
+-   `rescheduleNextWithExistingCount`: Waits for the next scheduled time, keeping the repeat count unchanged.
+-   `rescheduleNextWithRemainingCount`: Waits for the next scheduled time, discarding all missed firings.
+
+#### Configuration Examples
+    ```xml
+    <trigger type="cron">
+        expression: 0 0 2 * * ?
+        misfirePolicy: doNothing
+    </trigger>
+    ```
+
+-   **Example (Annotation):**
+    ```java
+    @CronTrigger(
+        expression = "0 0 2 * * ?",
+        misfirePolicy = MisfirePolicy.DO_NOTHING
+    )
+    ```
+
 ## 3. Schedule Job Logging and Monitoring
 
 It is very important to check the execution status of scheduled tasks and to debug them. Aspectran supports detailed logging of schedule job execution events through Logback.
@@ -174,6 +232,27 @@ It is very important to check the execution status of scheduled tasks and to deb
 ### Logging Mechanism
 
 Aspectran Scheduler logs events such as the start, success, and failure of a job through the `com.aspectran.core.scheduler.activity.ActivityJobReporter` class. This reporter is linked with Quartz's `JobListener` to record key information that occurs during the job's lifecycle.
+
+### Logging Job Execution Results
+
+If you want to include the actual execution result of a task in the log message, you can specify a response method for the Translet that the job executes. When a Translet returns a value and has a transformation defined (e.g., `@Transform(FormatType.TEXT)`), Aspectran includes this response in the `SUCCESS` log entry.
+
+For example, if a job is configured as follows:
+
+```java
+@Request("test/schedule/count.job")
+@Transform(FormatType.TEXT)
+public String count() {
+    int count = counter.incrementAndGet();
+    return "Count: " + count;
+}
+```
+
+The success log will include the `response` field:
+`DEBUG ... SUCCESS {group=countSchedule, name=test/schedule/count.job, ..., response=Count: 1}`
+
+> **Tip for Log Readability**
+> While Translets support various response formats, using a concise format like **`FormatType.TEXT`** is highly recommended for log messages to ensure the logs remain readable and efficient.
 
 ### Logback Configuration Example
 

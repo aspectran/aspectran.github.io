@@ -117,7 +117,7 @@ public class MemberService {
 
     @Hint(type = "transactional", value = "readOnly: true")
     public List<Member> getMembers() {
-        // 읽기 전용 세션으로 강제 라우팅하며, 
+        // 읽기 전용 세션으로 강제 라우팅하며,
         // 해당 컨텍스트 내에서 데이터 변경 시도 시 예외를 발생시켜 안전성을 높입니다.
         return entityQuery.select(qMember).from(qMember).fetch();
     }

@@ -167,6 +167,64 @@ public class AnnotatedScheduledTasks {
     )
     ```
 
+### 오작동 정책(Misfire Policy): 누락된 실행 처리
+
+오작동(misfire)은 스케줄러가 중지되어 있었거나 Quartz 스레드 풀에 여유 스레드가 없어 트리거가 예정된 시간에 실행되지 못했을 때 발생합니다. `misfirePolicy` 속성을 통해 이러한 상황을 어떻게 처리할지 정의할 수 있습니다.
+
+#### 오작동 감지 기준: `misfireThreshold`
+
+트리거가 실제로 '오작동(misfire)'했는지 여부는 `org.quartz.jobStore.misfireThreshold` 속성(밀리초 단위)에 의해 결정됩니다. 이 임계값은 스케줄러가 트리거의 실행 지연을 허용하는 **'유예 기간'**을 의미합니다.
+
+-   **임계값 이내:** 현재 시간이 예정된 실행 시간으로부터 임계값 이내라면, 스케줄러는 오작동 정책을 적용하지 않고 가능한 한 빨리 트리거를 실행합니다.
+-   **임계값 초과:** 지연 시간이 임계값을 초과하면 트리거는 공식적으로 '오작동'으로 간주되며, 이때 설정된 `misfirePolicy`가 적용됩니다.
+
+Quartz의 기본값은 60,000밀리초(1분)입니다. 스케줄러 빈 설정의 `quartzProperties`에서 이 값을 조정할 수 있습니다:
+
+```xml
+<bean id="scheduler1" class="com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean">
+    <property type="properties" name="quartzProperties">
+        <!-- 오작동 임계값을 30초로 설정 -->
+        <entry name="org.quartz.jobStore.misfireThreshold">30000</entry>
+        <!-- ... 기타 속성 ... -->
+    </property>
+</bean>
+```
+
+#### `cron` 트리거에서 사용 가능한 정책
+
+-   `ignoreMisfires`: 누락된 모든 실행을 즉시 실행합니다.
+-   `smartPolicy` (기본값): 누락된 실행 중 첫 번째 것만 즉시 실행하고 나머지는 폐기합니다. (`fireOnceNow`와 동일)
+-   `fireOnceNow`: 누락된 실행 중 첫 번째 것만 즉시 실행하고 나머지는 폐기합니다.
+-   `doNothing`: 누락된 모든 실행을 폐기하고 다음 예정된 시간까지 대기합니다.
+
+#### `simple` 트리거에서 사용 가능한 정책
+
+-   `ignoreMisfires`: 누락된 모든 실행을 가능한 한 빨리 실행합니다.
+-   `smartPolicy` (기본값):
+    -   고정 반복(Fixed Repeat)인 경우: `rescheduleNowWithExistingRepeatCount`와 동일.
+    -   무한 반복(Infinite Repeat)인 경우: `rescheduleNextWithRemainingCount`와 동일.
+-   `fireNow`: 누락된 첫 번째 실행을 즉시 수행하고 나머지는 폐기합니다.
+-   `rescheduleNowWithExistingRepeatCount`: 즉시 재실행하며, 남은 반복 횟수는 유지됩니다.
+-   `rescheduleNowWithRemainingRepeatCount`: 즉시 재실행하지만, 첫 번째 누락분이 반복 횟수에 포함됩니다.
+-   `rescheduleNextWithExistingCount`: 다음 예정된 시간까지 대기하며, 남은 반복 횟수는 유지됩니다.
+-   `rescheduleNextWithRemainingCount`: 누락된 실행을 모두 폐기하고 다음 예정된 시간까지 대기합니다.
+
+#### 설정 예제
+    ```xml
+    <trigger type="cron">
+        expression: 0 0 2 * * ?
+        misfirePolicy: doNothing
+    </trigger>
+    ```
+
+-   **예제 (어노테이션):**
+    ```java
+    @CronTrigger(
+        expression = "0 0 2 * * ?",
+        misfirePolicy = MisfirePolicy.DO_NOTHING
+    )
+    ```
+
 ## 3. 스케줄 잡 로깅 및 모니터링
 
 스케줄링된 작업의 실행 상태를 확인하고 디버깅하는 것은 매우 중요합니다. Aspectran은 스케줄 잡의 실행 이벤트를 Logback을 통해 상세하게 기록할 수 있도록 지원합니다.
@@ -174,6 +232,27 @@ public class AnnotatedScheduledTasks {
 ### 로깅 메커니즘
 
 Aspectran 스케줄러는 `com.aspectran.core.scheduler.activity.ActivityJobReporter` 클래스를 통해 잡의 시작, 성공, 실패 등의 이벤트를 로깅합니다. 이 리포터는 Quartz의 `JobListener`와 연동되어 잡의 생명주기 동안 발생하는 주요 정보를 기록합니다.
+
+### 잡(Job) 실행 결과 로깅
+
+스케줄 작업의 실제 실행 결과를 로그 메시지에 포함하고 싶다면, 잡이 실행하는 Translet에 응답 방식을 지정하면 됩니다. 메소드가 값을 반환하고 해당 Translet에 변환 작업(예: `@Transform(FormatType.TEXT)`)이 정의되어 있으면, Aspectran은 이 응답 내용을 `SUCCESS` 로그 엔트리에 포함합니다.
+
+예를 들어, 잡이 다음과 같이 설정되어 있다면:
+
+```java
+@Request("test/schedule/count.job")
+@Transform(FormatType.TEXT)
+public String count() {
+    int count = counter.incrementAndGet();
+    return "Count: " + count;
+}
+```
+
+성공 로그에는 다음과 같이 `response` 필드가 포함됩니다:
+`DEBUG ... SUCCESS {group=countSchedule, name=test/schedule/count.job, ..., response=Count: 1}`
+
+> **로그 가독성을 위한 팁**
+> Translet은 다양한 응답 형식을 지원하지만, 로그 메시지의 가독성을 유지하고 효율적인 로그 관리를 위해 **`FormatType.TEXT`**와 같은 간결한 텍스트 형식을 사용하는 것이 좋습니다.
 
 ### Logback 설정 예제
 
@@ -225,7 +304,7 @@ Aspectran 스케줄러는 `com.aspectran.core.scheduler.activity.ActivityJobRepo
 
 ### 분산 락(Distributed Lock)의 작동 원리
 
-Aspectran은 스케줄 작업 실행 직전, Redis에 아주 짧은 시간(TTL) 동안 해당 스케줄 고유의 락 키(Lock Key)를 생성하여 선점권을 확인합니다.
+Aspectran은 스케줄 작업 실행 직전, Redis에 아주 짧은 시간(TTL) 동안 해당 스케줄 고유의 락 키(Lock Key)를 생성하여 선점권을 확인합니다. 
 
 1.  **락 획득 시도**: 작업을 수행하려는 노드는 Redis의 `SET NX` 기능을 사용하여 락 획득을 시도합니다.
 2.  **작업 실행**: 가장 먼저 실행 시점에 도달하여 락을 획득한 노드만 실제 작업을 수행합니다.
