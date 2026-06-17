@@ -6,8 +6,10 @@
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="lang-switcher-btn-{{ include.lang }}">
       {% for lang in site.lang_order %}
         {% assign url_prefix = '/' | append: include.lang | append: '/' %}
+        {% assign blog_page_url_prefix = '/' | append: lang | append: site.blog_page_url_prefix %}
         {% assign page_url = page.url | replace: url_prefix, '/' %}
         {% assign page_url = '/' | append: lang | append: page_url %}
+        {% assign page_url = page_url | replace: blog_page_url_prefix, site.blog_page_url_prefix %}
         <li>
           <a class="dropdown-item d-flex align-items-center{% if include.lang == lang %} active{% endif %}" href="{{ site.url }}{{ page_url }}" onclick="setPreferredLangCodeToLocalStorage('{{ lang }}')">
             {{ site.languages[lang] }}
