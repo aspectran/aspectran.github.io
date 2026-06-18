@@ -81,9 +81,12 @@ Aspectran의 가장 강력한 기능 중 하나는 **동적 Translet 생성**입
 ```java
 @Component // 이 클래스가 빈(Bean)임을 나타냅니다.
 public class UserApiController {
+    private UserDao userDao;
 
     @Autowired
-    private UserDao userDao;
+    public UserApiController(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     // GET /user/info/${userId} 요청에 대한 Translet 규칙을 생성합니다.
     // 이 메소드는 Activity에 의해 실행되는 Action이 됩니다.

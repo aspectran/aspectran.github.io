@@ -81,9 +81,12 @@ In addition to the rule-based XML/APON method, Aspectran provides a modern way t
 ```java
 @Component // Indicates that this class is a bean.
 public class UserApiController {
+    private UserDao userDao;
 
     @Autowired
-    private UserDao userDao;
+    public UserApiController(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     // Creates a Translet rule for a GET /user/info/${userId} request.
     // This method becomes an Action executed by the Activity.

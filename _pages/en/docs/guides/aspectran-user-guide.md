@@ -84,9 +84,12 @@ Aspectran provides two main ways to define a Translet.
         ```java
         @Component
         public class UserApiController {
+           private UserDao userDao;
 
-            @Autowired
-            private UserDao userDao;
+           @Autowired
+           public UserApiController(UserDao userDao) {
+               this.userDao = userDao;
+           }
 
             @RequestToGet("/user/info/${userId}") // Mapped to GET /user/info/${userId} request
             @Transform(format = FormatType.JSON) // Transform the result to JSON
@@ -101,8 +104,12 @@ Aspectran provides two main ways to define a Translet.
         ```java
         @Component
         public class ReportController {
-            @Autowired
             private ReportService reportService;
+
+            @Autowired
+            public ReportController(ReportService reportService) {
+                this.reportService = reportService;
+            }
 
             @RequestToPost(path = "/reports/generate", async = true, timeout = 30000L)
             @Transform(format = FormatType.TEXT)
