@@ -501,17 +501,34 @@ Aspectran에서는 트랜잭션의 실제 로직을 담은 **어드바이스 Bea
     @Joinpoint(pointcut = "+: **@simpleSqlSession") // simpleSqlSession 빈의 모든 public 메소드에 적용
     public class SimpleTxAspect extends SqlSessionAdvice {
         @Autowired
-        public SimpleTxAspect(SqlSessionFactory sqlSessionFactory) { super(sqlSessionFactory); }
-        @Before public void open() { super.open(); }
-        @After public void commit() { super.commit(); }
-        @Finally public void close() { super.close(); }
+        public SimpleTxAspect(SqlSessionFactory sqlSessionFactory) {
+            super(sqlSessionFactory);
+        }
+
+        @Before
+        public void open() {
+            super.open();
+        }
+
+        @After
+        public void commit() {
+            super.commit();
+        }
+
+        @Finally
+        public void close() {
+            super.close();
+        }
     }
 
     // OrderService.java (비즈니스 로직)
     @Component
     @Bean(id = "simpleSqlSession") // Aspect의 Pointcut 대상이 되도록 ID 지정
     public class OrderService extends SqlSessionAgent {
-        public OrderService() { super("simpleTxAspect"); }
+        public OrderService() {
+            super("simpleTxAspect");
+        }
+
         public void createOrder(Order order) {
             // 이 메소드 호출 시 'simpleTxAspect'가 동작하여 트랜잭션이 자동으로 관리됩니다.
             insert("app.demo.mapper.OrderMapper.insertOrder", order);
@@ -529,11 +546,21 @@ Aspectran에서는 트랜잭션의 실제 로직을 담은 **어드바이스 Bea
 
     <!-- 2. simpleTxAspect: ID가 'simpleSqlSession'인 Bean을 감지 -->
     <aspect id="simpleTxAspect" order="0">
-        <joinpoint pointcut="+: **@simpleSqlSession"/>
+        <joinpoint>
+            pointcut: {
+                +: **@simpleSqlSession
+            }
+        </joinpoint>
         <advice bean="sqlSessionTxAdvice">
-            <before><invoke method="open"/></before>
-            <after><invoke method="commit"/></after>
-            <finally><invoke method="close"/></finally>
+            <before>
+                <invoke method="open"/>
+            </before>
+            <after>
+                <invoke method="commit"/>
+            </after>
+            <finally>
+                <invoke method="close"/>
+            </finally>
         </advice>
     </aspect>
     ```
