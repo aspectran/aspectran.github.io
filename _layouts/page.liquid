@@ -93,7 +93,7 @@ layout: default
       </div>
 
       {% if page.sidebar == "right" or page.sidebar == "left" %}
-      <div class="mt-4 col-lg-4 {% if page.sidebar == "right" %}order-lg-2{% else %}order-lg-1{% endif %}">
+      <div class="mt-4 mt-xl-5 col-lg-4 {% if page.sidebar == "right" %}order-lg-2{% else %}order-lg-1{% endif %}">
         {% if page.lang == 'ko' %}
           {% include _sidebar_ko.liquid %}
         {% else %}
@@ -104,6 +104,6 @@ layout: default
 
     </div>
 
-</div>
+  </div>
 
 </section>

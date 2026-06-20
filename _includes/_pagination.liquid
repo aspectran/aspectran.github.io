@@ -8,7 +8,7 @@
 
 {% assign posts = paginator.posts | sort: 'date' | reverse %}
 
-<div class="pt-4">
+<div class="pt-4 pt-xl-5">
   {% for post in posts %}
   <div class="mb-3 auto-lang {{ post.lang }}">
     <p class="text-muted mb-0 text-uppercase">{% if post.categories %}{{ post.categories | join: ' &middot; ' }}{% endif %}{% if post.subheadline %} – {{ post.subheadline }}{% endif %}</p>
