@@ -105,7 +105,7 @@ public class AppEntityQuery extends RoutingEntityQuery {
 메서드 명칭 기반의 자동 라우팅 외에도, `@Hint` 어노테이션을 사용하여 메서드 단위의 트랜잭션 속성을 직접 정의할 수 있습니다.
 
 ```java
-@Service
+@Component
 public class MemberService {
 
     private final EntityQuery entityQuery;

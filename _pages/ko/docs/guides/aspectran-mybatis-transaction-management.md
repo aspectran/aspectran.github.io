@@ -51,7 +51,7 @@ public class AppSqlSession extends RoutingSqlSessionAgent {
 Aspectran의 힌트 메커니즘을 사용하면 서비스나 DAO 메서드에 직접 실행 의도를 정의할 수 있어, 메서드 명칭 패턴보다 더 세밀한 제어가 가능합니다.
 
 ```java
-@Service
+@Component
 public class MemberService {
 
     @Autowired

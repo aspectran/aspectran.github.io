@@ -30,7 +30,7 @@ Typically, such information would be scattered across complex configuration file
 Hints are declared on methods using the `@Hint` annotation. The metadata content uses Aspectran's concise data format, **APON**.
 
 ```java
-@Service
+@Component
 public class ProductService {
 
     // Leaves a hint of type "cache".
@@ -77,7 +77,7 @@ public class CacheAspect {
 You can provide multiple types of hints on a single method. Aspectran allows the `@Hint` annotation to be repeated.
 
 ```java
-@Service
+@Component
 public class UserService {
 
     @Hint(type = "logging", value = "level: verbose, target: 'file'")
@@ -99,7 +99,7 @@ By default, hints from a parent method remain active and visible during child me
 If you want to prevent a parent method's hint from affecting inner calls, use the `propagated = false` option.
 
 ```java
-@Service
+@Component
 public class OrderService {
 
     // This hint is 'isolated' and will not be passed to child methods.

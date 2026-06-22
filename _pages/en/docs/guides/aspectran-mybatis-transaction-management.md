@@ -51,7 +51,7 @@ public class AppSqlSession extends RoutingSqlSessionAgent {
 Aspectran's hint mechanism allows you to define execution intent directly on service or DAO methods, providing more granular control than method name patterns.
 
 ```java
-@Service
+@Component
 public class MemberService {
 
     @Autowired

@@ -105,7 +105,7 @@ public class AppEntityQuery extends RoutingEntityQuery {
 In addition to automatic routing based on method names, you can use the `@Hint` annotation to directly define transaction attributes for specific methods.
 
 ```java
-@Service
+@Component
 public class MemberService {
 
     private final EntityQuery entityQuery;
