@@ -59,6 +59,7 @@ Inherit from `AbstractCommand` and write the control logic in the `execute` meth
 
 ```java
 public class MaintenanceModeCommand extends AbstractCommand {
+
     @Override
     public CommandResult execute(CommandParameters parameters) {
         try {
@@ -74,7 +75,7 @@ public class MaintenanceModeCommand extends AbstractCommand {
             }
 
             boolean enable = "on".equalsIgnoreCase(mode);
-            
+
             // Get a specific service bean from the application and change its state
             MaintenanceService service = getDaemonService().getActivityContext().getBeanRegistry().getBean("maintenanceService");
             service.setMaintenanceMode(enable);
@@ -146,7 +147,7 @@ You can change the daemon's operational settings in real-time or query system in
     ```
 *   **Query System Information** (`11-sysinfo.apon`)
     ```apon
-    command: sysinfo 
+    command: sysinfo
     arguments: {
         item: {
             value: mem

@@ -59,6 +59,7 @@ File Commander는 단순히 파일을 읽는 것이 아니라, 다음과 같은 
 
 ```java
 public class MaintenanceModeCommand extends AbstractCommand {
+
     @Override
     public CommandResult execute(CommandParameters parameters) {
         try {
@@ -74,7 +75,7 @@ public class MaintenanceModeCommand extends AbstractCommand {
             }
 
             boolean enable = "on".equalsIgnoreCase(mode);
-            
+
             // 애플리케이션의 특정 서비스 빈을 가져와 상태 변경
             MaintenanceService service = getDaemonService().getActivityContext().getBeanRegistry().getBean("maintenanceService");
             service.setMaintenanceMode(enable);
@@ -146,7 +147,7 @@ daemon: {
     ```
 *   **시스템 정보 조회** (`11-sysinfo.apon`)
     ```apon
-    command: sysinfo 
+    command: sysinfo
     arguments: {
         item: {
             value: mem
