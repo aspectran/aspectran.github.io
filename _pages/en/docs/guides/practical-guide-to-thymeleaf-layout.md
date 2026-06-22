@@ -22,7 +22,7 @@ First, you need to add dependencies for Thymeleaf and Layout Dialect to your pro
     <dependency>
         <groupId>nz.net.ultraq.thymeleaf</groupId>
         <artifactId>thymeleaf-layout-dialect</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.1</version>
     </dependency>
 
     <!-- Other necessary dependencies -->
@@ -144,16 +144,16 @@ Finally, create the actual content page that inherits from the base layout creat
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{templates/default}">
 <body>
-  <div layout:fragment="content">
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h2>Welcome to Aspectran with Thymeleaf!</h2>
-                <p>This page is using the `default.html` layout.</p>
+    <div layout:fragment="content">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h2>Welcome to Aspectran with Thymeleaf!</h2>
+                    <p>This page is using the `default.html` layout.</p>
+                </div>
             </div>
         </div>
     </div>
-  </div>
 </body>
 </html>
 ```

@@ -22,7 +22,7 @@ subheadline: 실용 가이드
     <dependency>
         <groupId>nz.net.ultraq.thymeleaf</groupId>
         <artifactId>thymeleaf-layout-dialect</artifactId>
-        <version>4.0.0</version>
+        <version>4.0.1</version>
     </dependency>
 
     <!-- 기타 필요한 의존성 -->
@@ -144,16 +144,16 @@ subheadline: 실용 가이드
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{templates/default}">
 <body>
-  <div layout:fragment="content">
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h2>Welcome to Aspectran with Thymeleaf!</h2>
-                <p>이 페이지는 `default.html` 레이아웃을 사용하고 있습니다.</p>
+    <div layout:fragment="content">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h2>Welcome to Aspectran with Thymeleaf!</h2>
+                    <p>이 페이지는 `default.html` 레이아웃을 사용하고 있습니다.</p>
+                </div>
             </div>
         </div>
     </div>
-  </div>
 </body>
 </html>
 ```
