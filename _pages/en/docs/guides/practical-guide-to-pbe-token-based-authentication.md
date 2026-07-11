@@ -18,7 +18,7 @@ Token-based authentication in Aspectran is primarily achieved through the follow
 - **Configuration**: The encryption algorithm, password, and salt are set via JVM system properties. This configuration is loaded only once at application startup.
     - `aspectran.encryption.password`: The password to be used for encryption.
     - `aspectran.encryption.algorithm`: The encryption algorithm (default: `PBEWITHHMACSHA256ANDAES_128`).
-    - `aspectran.encryption.salt`: (Optional) A fixed salt to be used for encryption.
+    - `aspectran.encryption.salt`: (Optional) A fixed salt to be used for encryption. (Note: AES-based algorithms require a salt of at least 16 characters, while legacy algorithms require at least 8 characters.)
 - **Features**: When using modern AES-based algorithms, it automatically manages the necessary initialization vector (IV) for enhanced security. Using a fixed salt allows for deterministic encryption results with legacy algorithms. (Note: For AES algorithms, the output remains non-deterministic even with a fixed salt due to the random IV.)
 
 #### 2.2. `PBTokenIssuer`
