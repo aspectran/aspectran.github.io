@@ -38,11 +38,18 @@ Used to enable or disable configuration blocks based on the environment.
 *   `aspectran.profiles.base`: A base profile that is always active regardless of the environment.
 
 ### 2.2. Context-based Base Profiles
+In a multi-context environment, you can specify a base profile to be applied only to a specific context.
 
-> [!NOTE]
+> **NOTE**
+>
 > The profiles of the parent (Root) context are not automatically inherited or applied to child contexts; the environment of each context is completely isolated. The `base` profile concept exists to inject specific profiles into child contexts so they build with them active by default.
 
-In a multi-context environment, you can specify a base profile to be applied only to a specific context.
+> **WARNING: Overriding Profiles with System Properties**
+>
+> Even if certain profiles are pre-configured in the `profiles.base` section of `aspectran-config.apon`, providing a JVM system property (`-Daspectran.profiles.base.{contextName}`) will **completely override (overwrite and ignore)** the existing APON configuration instead of appending to it.
+>
+> For example, if `appmon.standalone` is defined in APON and you set `-Daspectran.profiles.base.appmon=mariadb`, the `appmon.standalone` profile is ignored and only `mariadb` becomes active as the base profile. To keep existing profiles, you must specify them together in the system property value. (e.g., `appmon.standalone,mariadb`)
+
 *   **Syntax**: `-Daspectran.profiles.base.{contextName}={profileName}`
 *   **Example**: `-Daspectran.profiles.base.appmon=mariadb` (Fixes the default DB setting for the `appmon` context to mariadb)
 

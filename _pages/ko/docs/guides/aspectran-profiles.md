@@ -31,6 +31,21 @@ java -Daspectran.profiles.active=dev -jar my-application.jar
 java -Daspectran.profiles.active=prod,metrics -jar my-application.jar
 ```
 
+### 1.3. 멀티 컨텍스트 환경에서의 프로필 격리와 베이스 프로필
+
+부모(`root`) 콘텍스트와 자식 콘텍스트가 공존하는 멀티 콘텍스트 환경에서 작업할 때 다음 사항을 반드시 주의해야 합니다.
+
+*   **프로필 독립성(미상속)**: 부모 콘텍스트에서 활성화된 프로필은 자식 콘텍스트에 자동으로 상속되거나 전파되지 않습니다. 각 콘텍스트의 환경(Environment)은 서로 완전히 격리되어 있습니다.
+*   **독립적 프로필 주입**: 자식 콘텍스트에도 특정 프로필을 활성화하고 싶다면 자식 콘텍스트용으로 별도의 프로필을 지정해야 합니다. 이를 위해 자식 콘텍스트의 설정 파일에 직접 프로필을 기재하거나, 다음과 같이 특정 콘텍스트 전용 시스템 프로퍼티를 지정해 주어야 합니다.
+    *   **구문**: `-Daspectran.profiles.base.{contextName}={profileName}`
+    *   **예시**: `-Daspectran.profiles.base.appmon=gateway` (`appmon` 콘텍스트의 베이스 프로필로 `gateway`를 활성화)
+
+> **경고: 시스템 속성에 의한 덮어쓰기 동작**
+>
+> 만약 `aspectran-config.apon` 등에 베이스 프로필이 미리 정의되어 있더라도, 시스템 속성(`-Daspectran.profiles.base.{contextName}`)을 통해 프로필이 주입되면 기존 APON에 설정되어 있던 베이스 프로필 정보는 추가(Union)되는 것이 아니라 **완전히 무시되고 시스템 속성값으로 덮어쓰기(Override)** 됩니다.
+>
+> 기존 설정과 시스템 속성에 의한 설정을 동시에 사용하려면 시스템 속성값 쪽에 활성화하고자 하는 모든 프로필명을 함께 기재해야 합니다. (예: `-Daspectran.profiles.base.appmon=appmon.standalone,mariadb`)
+
 ## 2. 프로필 표현식 문법 (Profile Expression Syntax)
 
 단순히 프로필 이름을 적는 것 외에도, 논리 연산자를 사용하여 복잡한 활성화 조건을 만들 수 있습니다.
@@ -165,14 +180,14 @@ public class AppConfig {
             <!-- 파일이 없어도 오류를 무시하도록 설정 -->
             <item name="ignoreInvalidResource" valueType="boolean">true</item>
         </properties>
-        
+
         <!-- 'dev' 프로필용 설정 파일 위치 -->
         <properties profile="h2">
             <item name="locations" type="array">
                 <value>classpath:config/db/db-h2.properties</value>
             </item>
         </properties>
-        
+
         <!-- 'prod' 프로필용 설정 파일 위치 -->
         <properties profile="mysql">
             <item name="locations" type="array">

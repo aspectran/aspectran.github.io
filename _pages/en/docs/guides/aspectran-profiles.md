@@ -31,6 +31,21 @@ Run the application with both `prod` and `metrics` profiles active simultaneousl
 java -Daspectran.profiles.active=prod,metrics -jar my-application.jar
 ```
 
+### 1.3. Profile Isolation and Base Profiles in Multi-Context Environments
+
+When working in a multi-context environment where parent (`root`) and child contexts coexist, you must be aware of the following:
+
+*   **Profile Independence (No Inheritance)**: Profiles active in the parent context are not automatically inherited or propagated to child contexts. The environment of each context is completely isolated.
+*   **Independent Profile Injection**: If you want to enable a specific profile in a child context, you must specify it separately for that child context. You can either write it directly in the child context's configuration file or specify a context-specific JVM system property:
+    *   **Syntax**: `-Daspectran.profiles.base.{contextName}={profileName}`
+    *   **Example**: `-Daspectran.profiles.base.appmon=gateway` (Activates `gateway` as the base profile for the `appmon` context)
+
+> **WARNING: Overriding Behavior via System Properties**
+>
+> Even if base profiles are pre-configured in your `aspectran-config.apon`, injecting profiles via JVM system properties (`-Daspectran.profiles.base.{contextName}`) will **completely override (ignore and overwrite)** the pre-configured APON base profiles instead of appending to them.
+>
+> To use both existing and system property settings, you must specify all target profile names in the system property value. (e.g., `-Daspectran.profiles.base.appmon=appmon.standalone,mariadb`)
+
 ## 2. Profile Expression Syntax
 
 In addition to simply writing a profile name, you can use logical operators to create complex activation conditions.
@@ -165,14 +180,14 @@ The recommended approach is to use `PropertiesFactoryBean` to load different `.p
             <!-- Set to ignore errors if the file is missing -->
             <item name="ignoreInvalidResource" valueType="boolean">true</item>
         </properties>
-        
+
         <!-- Configuration file location for 'h2' profile -->
         <properties profile="h2">
             <item name="locations" type="array">
                 <value>classpath:config/db/db-h2.properties</value>
             </item>
         </properties>
-        
+
         <!-- Configuration file location for 'mysql' profile -->
         <properties profile="mysql">
             <item name="locations" type="array">

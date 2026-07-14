@@ -40,8 +40,15 @@ Aspectran 프레임워크의 동작을 제어하거나 핵심 기능을 활성�
 ### 2.2. 컨텍스트별 베이스 프로필 지정
 멀티 컨텍스트 환경에서 특정 컨텍스트(Context)에만 적용될 베이스 프로필을 지정할 수 있습니다.
 
-> [!NOTE]
+> **참고**
+>
 > 부모(Root) 콘텍스트의 프로필은 자식 콘텍스트에 자동으로 상속되거나 적용되지 않으며, 각 콘텍스트의 환경(Environment)은 서로 완전히 격리되어 있습니다. 자식 콘텍스트에도 특정 프로필을 기본으로 적용하여 빌드되도록 하기 위해 이 `base` 프로필 개념이 사용됩니다.
+
+> **경고: 시스템 속성에 의한 설정 덮어쓰기(Override)**
+>
+> `aspectran-config.apon`의 `profiles.base`에 특정 프로필이 이미 선언되어 있더라도, 시스템 속성(`-Daspectran.profiles.base.{contextName}`)이 제공되면 기존 APON 설정은 추가(Append)되지 않고 **완전히 덮어쓰기(Overwrite/Ignore)** 처리됩니다.
+>
+> 예를 들어 APON에 `appmon.standalone`을 지정하고 시스템 속성으로 `mariadb`를 주면, `appmon.standalone`은 무시되고 오직 `mariadb`만 베이스 프로필로 활성화됩니다. 기존 프로필을 유지하려면 시스템 속성값에 함께 적어야 합니다. (예: `appmon.standalone,mariadb`)
 
 *   **구문**: `-Daspectran.profiles.base.{contextName}={profileName}`
 *   **예시**: `-Daspectran.profiles.base.appmon=mariadb` (`appmon` 컨텍스트의 기본 DB 설정을 mariadb로 고정)
