@@ -38,6 +38,10 @@ Used to enable or disable configuration blocks based on the environment.
 *   `aspectran.profiles.base`: A base profile that is always active regardless of the environment.
 
 ### 2.2. Context-based Base Profiles
+
+> [!NOTE]
+> The profiles of the parent (Root) context are not automatically inherited or applied to child contexts; the environment of each context is completely isolated. The `base` profile concept exists to inject specific profiles into child contexts so they build with them active by default.
+
 In a multi-context environment, you can specify a base profile to be applied only to a specific context.
 *   **Syntax**: `-Daspectran.profiles.base.{contextName}={profileName}`
 *   **Example**: `-Daspectran.profiles.base.appmon=mariadb` (Fixes the default DB setting for the `appmon` context to mariadb)

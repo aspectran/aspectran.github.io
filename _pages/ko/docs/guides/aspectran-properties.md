@@ -39,6 +39,10 @@ Aspectran 프레임워크의 동작을 제어하거나 핵심 기능을 활성�
 
 ### 2.2. 컨텍스트별 베이스 프로필 지정
 멀티 컨텍스트 환경에서 특정 컨텍스트(Context)에만 적용될 베이스 프로필을 지정할 수 있습니다.
+
+> [!NOTE]
+> 부모(Root) 콘텍스트의 프로필은 자식 콘텍스트에 자동으로 상속되거나 적용되지 않으며, 각 콘텍스트의 환경(Environment)은 서로 완전히 격리되어 있습니다. 자식 콘텍스트에도 특정 프로필을 기본으로 적용하여 빌드되도록 하기 위해 이 `base` 프로필 개념이 사용됩니다.
+
 *   **구문**: `-Daspectran.profiles.base.{contextName}={profileName}`
 *   **예시**: `-Daspectran.profiles.base.appmon=mariadb` (`appmon` 컨텍스트의 기본 DB 설정을 mariadb로 고정)
 
