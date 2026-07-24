@@ -200,30 +200,77 @@ BASE_DIR
 
 ### 2.6. 다중 인스턴스 실행 (Running Multiple Instances)
 
-하나의 서버 또는 하나의 배포 디렉토리에서 여러 개의 독립적인 애플리케이션 인스턴스를 실행해야 할 때가 있습니다. 예를 들어, 동일한 코드를 사용하지만 다른 포트나 프로파일을 사용하는 두 개의 서버를 띄우는 경우입니다.
+동일한 서버 또는 하나의 배포 디렉터리(`BASE_DIR`)에서 여러 개의 독립적인 애플리케이션 인스턴스(예: `node1`, `node2`)를 구동해야 하는 경우가 있습니다. 예를 들어, 동일한 소스 및 배포 라이브러리를 공유하면서 서로 다른 HTTP 포트, 로그 디렉터리, 활성 프로필을 가지는 다중 노드 클러스터를 구성할 때입니다.
 
-#### 다중 실행의 원리
-Aspectow는 `context.singleton` 설정이 `true`(기본값)일 경우, 같은 `basePath`에서 중복 실행되는 것을 방지하기 위해 `.lock` 파일을 사용합니다. 여러 인스턴스를 띄우려면 각 인스턴스가 서로 다른 **프로세스 이름(PROC_NAME)**과 **PID 파일**을 가져야 합니다.
+#### 다중 인스턴스 실행의 원리
+Aspectow는 `context.singleton` 설정이 `true`(기본값)일 경우, 같은 `basePath` 내에서 프로세스가 중복 구동되는 것을 방지하기 위해 단일 인스턴스 전용 `.lock` 파일과 PID 파일을 참조합니다. 동일한 `BASE_DIR`에서 여러 인스턴스를 격리 구동하기 위해서는 각 인스턴스가 독립된 **프로세스 이름(PROC_NAME)**과 **PID 파일**, 그리고 **런타임 격리 디렉터리 설정**을 가져야 합니다.
 
-#### 단계별 설정 방법 (두 번째 인스턴스 추가 예시)
-1.  **인스턴스별 설정 파일 생성**: `setup/app.conf`를 복사하여 `setup/app-inst2.conf`를 만듭니다. 내부에서 `PROC_NAME`을 고유하게 수정하고, 포트 충돌을 피하기 위해 `ASPECTRAN_OPTS`에서 포트 번호를 지정합니다.
-    ```bash
-    # setup/app-inst2.conf
-    APP_NAME="aspectow-demo"
-    PROC_NAME="aspectow-demo-inst2" # 고유한 이름 지정
-    export ASPECTRAN_OPTS="-Dtow.server.listener.http.port=8081 ..."
-    ```
-2.  **실행 스크립트 생성**: `setup/scripts/linux/daemon.sh`를 복사하여 `setup/scripts/linux/daemon-inst2.sh`를 만듭니다. 새로 만든 설정 파일을 참조하도록 수정합니다.
-    ```bash
-    # setup/scripts/linux/daemon-inst2.sh
-    . "$SCRIPT_DIR/app-inst2.conf" # 새 설정 파일 로드
-    "$DEPLOY_DIR/bin/jsvc-daemon.sh" --proc-name "$PROC_NAME" --pid-file "$DEPLOY_DIR/.$PROC_NAME.pid" --user "$DAEMON_USER" "$@"
-    ```
-3.  **인스턴스 실행**: 이제 각각의 스크립트를 통해 독립적으로 제어할 수 있습니다.
-    ```bash
-    ./daemon.sh start        # 기본 인스턴스 (8080 포트)
-    ./daemon-inst2.sh start  # 두 번째 인스턴스 (8081 포트)
-    ```
+1. **자동 PID 파일 경로 결정**: `jsvc-daemon.sh`는 `--proc-name`(`PROC_NAME`)이 기본값(`jsvc-daemon`)과 다르게 지정되면, 별도로 `--pid-file`을 넘기지 않더라도 자동으로 `$BASE_DIR/.$PROC_NAME.pid` 경로의 고유 PID 파일을 생성하고 관리합니다.
+2. **프로세스 정밀 중지(Stop Isolation)**: `jsvc-daemon.sh stop` 실행 시, 프로세스 명령줄의 `-pidfile` 인자를 기준으로 대상 인스턴스의 프로세스만 정밀하게 추적하여 종료하므로 다른 인스턴스에 영향을 주지 않습니다.
+3. **격리해야 하는 필수 시스템 프로퍼티**:
+   - `aspectran.basePath`: 공통 루트 경로 (`BASE_DIR`). 모든 인스턴스가 동일하게 공유 가능.
+   - `aspectran.logsDir`: 로그 파일 저장 경로 (`logs` vs `logs2`). 로그 뒤섞임 및 파일 락 충돌 방지를 위해 **반드시 인스턴스별로 분리**.
+   - `aspectran.workPath`: 런타임 클래스 컴파일 캐시 및 작업 공간 (`work` vs `work2`). **반드시 인스턴스별로 분리**.
+   - `aspectran.tempPath` / `java.io.tmpdir`: 임시 파일 저장소 (`temp` vs `temp2`). **반드시 인스턴스별로 분리**.
+   - `aspectran.commandsPath`: Shell/Daemon IPC 명령 파이프 소켓 경로 (`cmd` vs `cmd2`). **반드시 인스턴스별로 분리**.
+   - `tow.server.listener.http.port`: HTTP 수신 포트 (`8082` vs `8092` 등). **반드시 인스턴스별로 분리**.
+   - `aspectow.node.id`: 클러스터 내 노드 식별자 (`node1` vs `node2`). **반드시 인스턴스별로 분리**.
+
+#### 단계별 구동 및 관리 방법 (멀티 노드 구성 예시)
+
+##### 1단계: 공통 `app.conf` 유지
+기본 `setup/app.conf` 파일은 애플리케이션 이름, 배포 경로(`DEPLOY_DIR`), 기본 JVM 옵션 등 동일 서버 내 인스턴스들이 공통으로 사용하는 기본 설정으로 유지합니다.
+
+##### 2단계: 인스턴스별 구동 스크립트 생성 (`daemon-node1.sh`, `daemon-node2.sh`)
+공통 `setup/scripts/linux/daemon.sh`를 복사하여 각 인스턴스에 맞는 실행 스크립트를 작성합니다. 각 스크립트 내부에서 해당 인스턴스의 `PROC_NAME`과 격리 시스템 프로퍼티들을 오버라이드합니다.
+
+```bash
+#!/bin/sh
+# setup/scripts/linux/daemon-node2.sh
+set -e
+
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+. "$SCRIPT_DIR/app.conf"
+
+# 1. 인스턴스 전용 프로세스 이름 지정 (PID 파일 .$PROC_NAME.pid 자동 적용)
+PROC_NAME="${APP_NAME}-node2"
+
+# 2. node2 전용 격리 디렉터리 및 포트/노드 옵션 오버라이드
+NODE_OPTS="
+-Daspectow.node.id=node2
+-Daspectran.logsDir=$DEPLOY_DIR/logs2
+-Daspectran.workPath=$DEPLOY_DIR/work2
+-Daspectran.tempPath=$DEPLOY_DIR/temp2
+-Daspectran.commandsPath=$DEPLOY_DIR/cmd2
+-Djava.io.tmpdir=$DEPLOY_DIR/temp2
+-Dtow.server.listener.http.port=8092
+-Dtow.context.root.session.cookieName=JSESSIONID-8092
+-Dtow.context.console.session.cookieName=JSESSIONID-8092
+"
+
+export ASPECTRAN_OPTS="$ASPECTRAN_OPTS $NODE_OPTS"
+
+"$DEPLOY_DIR/bin/jsvc-daemon.sh" \
+  --proc-name "$PROC_NAME" \
+  --user "$DAEMON_USER" \
+  "$@"
+```
+
+##### 3단계: 인스턴스 독립 구동 및 제어
+각 인스턴스별 구동 스크립트를 사용하여 독자적으로 서비스 관리 작업을 수행합니다.
+
+```bash
+# node1 인스턴스 구동 및 상태 확인 (8082 포트 / node1)
+./daemon-node1.sh start
+./daemon-node1.sh status
+
+# node2 인스턴스 구동 및 상태 확인 (8092 포트 / node2)
+./daemon-node2.sh start
+./daemon-node2.sh status
+
+# 특정 인스턴스만 개별 종료
+./daemon-node2.sh stop
+```
 
 ## 3. 수동 실행 및 관리 (`app/bin` 스크립트 활용)
 

@@ -79,7 +79,6 @@ The initial installation using `install-app.sh` or `install-app.bat` is a proces
     # Windows
     5-pull_build_deploy.bat
     ```
-
 ### 2.3. Execution and Status Management by Operational Mode
 
 The methods for managing a deployed application are divided into **System Service Mode** and **Direct Execution Mode**. We provide unified scripts (`service.sh`, `daemon.sh`) optimized for each mode.
@@ -200,30 +199,77 @@ BASE_DIR
 
 ### 2.6. Running Multiple Instances
 
-Sometimes, you need to run multiple independent application instances on a single server or from a single deployment directory. For example, running two servers that use the same code but different ports or profiles.
+In some environments, you may need to run multiple independent application instances (e.g., `node1`, `node2`) on a single server or from a single deployment directory (`BASE_DIR`). For example, configuring a multi-node cluster where instances share the same binary and libraries but run on different HTTP ports, log directories, and active profiles.
 
 #### Principles of Multi-Instance Execution
-When `context.singleton` is set to `true` (the default) in Aspectran, it uses a `.lock` file to prevent multiple instances from running in the same `basePath`. To run multiple instances, each must have a unique **Process Name (PROC_NAME)** and **PID file**.
+Aspectow uses a single-instance `.lock` file and PID file within the same `basePath` to prevent duplicate execution when `context.singleton` is set to `true` (default). To run multiple instances in isolation within the same `BASE_DIR`, each instance must have an independent **Process Name (PROC_NAME)**, **PID File**, and **isolated runtime directory settings**.
 
-#### Step-by-Step Configuration (Example: adding a second instance 'inst2')
-1.  **Create Instance-Specific Configuration**: Copy `setup/app.conf` to `setup/app-inst2.conf`. Modify the `PROC_NAME` inside to be unique and specify the port number in `ASPECTRAN_OPTS` to avoid conflicts.
-    ```bash
-    # setup/app-inst2.conf
-    APP_NAME="aspectow-demo"
-    PROC_NAME="aspectow-demo-inst2" # Specify a unique name
-    export ASPECTRAN_OPTS="-Dtow.server.listener.http.port=8081 ..."
-    ```
-2.  **Create Execution Script**: Copy `setup/scripts/linux/daemon.sh` to `setup/scripts/linux/daemon-inst2.sh`. Modify it to reference the new configuration file.
-    ```bash
-    # setup/scripts/linux/daemon-inst2.sh
-    . "$SCRIPT_DIR/app-inst2.conf" # Load the new configuration file
-    "$DEPLOY_DIR/bin/jsvc-daemon.sh" --proc-name "$PROC_NAME" --pid-file "$DEPLOY_DIR/.$PROC_NAME.pid" --user "$DAEMON_USER" "$@"
-    ```
-3.  **Run Instances**: You can now control each instance independently using its respective script.
-    ```bash
-    ./daemon.sh start        # Primary instance (e.g., port 8080)
-    ./daemon-inst2.sh start  # Second instance (e.g., port 8081)
-    ```
+1. **Automatic PID File Mapping**: If `--proc-name` (`PROC_NAME`) is set to a value other than the default (`jsvc-daemon`), `jsvc-daemon.sh` automatically determines and manages the PID file path as `$BASE_DIR/.$PROC_NAME.pid` without needing an explicit `--pid-file` argument.
+2. **Stop Isolation**: When executing `jsvc-daemon.sh stop`, the script precisely matches and terminates only the process matching the `-pidfile` argument in the process command line, avoiding any impact on other instances running under the same `BASE_DIR`.
+3. **Required Isolated System Properties**:
+   - `aspectran.basePath`: Common root path (`BASE_DIR`). Can be shared across all instances.
+   - `aspectran.logsDir`: Log file output path (`logs` vs `logs2`). **Must be separated per instance** to prevent interleaved logs and file lock conflicts.
+   - `aspectran.workPath`: Runtime class compilation cache and workspace (`work` vs `work2`). **Must be separated per instance**.
+   - `aspectran.tempPath` / `java.io.tmpdir`: Temporary file storage (`temp` vs `temp2`). **Must be separated per instance**.
+   - `aspectran.commandsPath`: Shell/Daemon IPC command pipe socket path (`cmd` vs `cmd2`). **Must be separated per instance**.
+   - `tow.server.listener.http.port`: HTTP listening port (`8082` vs `8092`, etc.). **Must be separated per instance**.
+   - `aspectow.node.id`: Node identifier within a cluster (`node1` vs `node2`). **Must be separated per instance**.
+
+#### Step-by-Step Configuration Guide (Multi-Node Cluster Example)
+
+##### Step 1: Maintain Common `app.conf`
+Keep the default `setup/app.conf` file as the shared configuration containing application name, deployment directory (`DEPLOY_DIR`), and common JVM options used across all instances on the server.
+
+##### Step 2: Create Instance-Specific Execution Scripts (`daemon-node1.sh`, `daemon-node2.sh`)
+Copy the shared `setup/scripts/linux/daemon.sh` script to create dedicated scripts for each instance. Override `PROC_NAME` and the required isolated system properties inside each script.
+
+```bash
+#!/bin/sh
+# setup/scripts/linux/daemon-node2.sh
+set -e
+
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+. "$SCRIPT_DIR/app.conf"
+
+# 1. Specify unique process name (PID file .$PROC_NAME.pid will be applied automatically)
+PROC_NAME="${APP_NAME}-node2"
+
+# 2. Override node2-specific isolated directories, port, and node options
+NODE_OPTS="
+-Daspectow.node.id=node2
+-Daspectran.logsDir=$DEPLOY_DIR/logs2
+-Daspectran.workPath=$DEPLOY_DIR/work2
+-Daspectran.tempPath=$DEPLOY_DIR/temp2
+-Daspectran.commandsPath=$DEPLOY_DIR/cmd2
+-Djava.io.tmpdir=$DEPLOY_DIR/temp2
+-Dtow.server.listener.http.port=8092
+-Dtow.context.root.session.cookieName=JSESSIONID-8092
+-Dtow.context.console.session.cookieName=JSESSIONID-8092
+"
+
+export ASPECTRAN_OPTS="$ASPECTRAN_OPTS $NODE_OPTS"
+
+"$DEPLOY_DIR/bin/jsvc-daemon.sh" \
+  --proc-name "$PROC_NAME" \
+  --user "$DAEMON_USER" \
+  "$@"
+```
+
+##### Step 3: Run and Control Instances Independently
+Control each instance independently using its dedicated script.
+
+```bash
+# Start and check status of node1 (port 8082 / node1)
+./daemon-node1.sh start
+./daemon-node1.sh status
+
+# Start and check status of node2 (port 8092 / node2)
+./daemon-node2.sh start
+./daemon-node2.sh status
+
+# Stop only a specific instance
+./daemon-node2.sh stop
+```
 
 ## 3. Manual Execution and Management (Using `app/bin` Scripts)
 
