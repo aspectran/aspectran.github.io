@@ -50,7 +50,7 @@ permalink: /en/docs/
 *   [Aspectran Architecture: An Integrated Deep Dive](/en/docs/guides/aspectran-architecture/)
 *   [Aspectran Architecture Diagrams](/en/docs/architecture/aspectran-architecture-diagrams/)
 *   [ActivityContext Build Process: An In-Depth Analysis](/en/docs/architecture/activity-context-building/)
-*   [In-Depth Analysis of the Auto-Reloading Mechanism](/en/docs/architecture/aspectran-reloading-mechanism/)
+*   [Aspectran Auto-Reloading Mechanism: Deep Dive](/en/docs/architecture/aspectran-reloading-mechanism/)
 *   [ActivityContext: The Heart of Aspectran](/en/docs/architecture/activity-context/)
 *   [Environment: Controlling Environments with Profiles and Properties](/en/docs/architecture/activity-environment/)
 *   [Aspectran Actions: Concepts, Types, and Results](/en/docs/architecture/aspectran-actions/)
@@ -79,7 +79,7 @@ permalink: /en/docs/
 *   [Aspectran Shell Activity](/en/docs/architecture/packages/aspectran-shell-activity/)
 *   [Aspectran Undertow Service](/en/docs/architecture/packages/aspectran-undertow-service/)
 *   [Aspectran Undertow Activity](/en/docs/architecture/packages/aspectran-undertow-activity/)
-*   [Aspectran Web Service](/en/docs/architecture/packages/aspectran-web-service/)
+*   [Aspectran Web Service](/en/docs/architecture/packages/aspectran-web-activity/)
 *   [Aspectran Config Parameters](/en/docs/architecture/packages/aspectran-config-parameters/)
 
 ## <i class="bi bi-layers-half"></i> Aspectow
@@ -95,17 +95,26 @@ Next-generation enterprise application server built on Aspectran.
 *   [Multi-context Session Configuration Strategy and Patterns](/en/docs/aspectow/multi-context-session-strategy/)
 *   [Nginx Reverse Proxy and Clustering Guide](/en/docs/aspectow/nginx-reverse-proxy-guide/)
 
+## <i class="bi bi-sliders"></i> Aspectow Console
+{: #aspectow-console}
+
+Real-time web control console for centrally managing and observing Aspectran application server environments.
+
+*   [Aspectow Console Overview & Architecture](/en/docs/aspectow/console/)
+*   [Aspectow Console Feature & Screen Guide](/en/docs/aspectow/console/feature-guide/)
+*   [Aspectow Console Configuration Guide](/en/docs/aspectow/console/configuration-guide/)
+
 ## <i class="bi bi-graph-up"></i> Aspectow AppMon
 {: #aspectow-appmon}
 
-Real-time monitoring tool for system resources and application activities.
+Lightweight monitoring solution for real-time monitoring of system resources and application activities. Runs integrated within Aspectow Console or can be deployed independently.
 
 *   [Aspectow AppMon Overview & Features](/en/docs/aspectow/appmon/)
 *   [AppMon Dashboard Guide](/en/docs/aspectow/appmon/v3-dashboard-guide/)
 *   [AppMon Message Protocol Specification](/en/docs/aspectow/appmon/message-protocol/)
 *   [AppMon Event Count Data Structure and Architecture](/en/docs/aspectow/appmon/event-count-data-structure/)
 
-## <i class="bi bi-box-seam"></i> Other Projects
+## <i class="bi bi-box-seam"></i> Other Projects & Libraries
 
 *   **aspectran-utils-legacy**: [Integrating Legacy Systems with Modern Aspectran Servers](/en/docs/guides/practical-guide-to-legacy-integration/)
-*   **APON.js**: [Introduction](/en/docs/guides/introducing-apon-js/)
+*   **APON.js**: [Introduction and Usage](/en/docs/guides/introducing-apon-js/)

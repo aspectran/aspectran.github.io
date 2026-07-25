@@ -165,6 +165,6 @@ To effectively check the application's debug logs, you need to adjust the loggin
 
 ## 11. Next Steps
 
-*   **Explore the Code**: Look through the code of the cloned project to understand the structure and behavior of Aspectran.
-*   **Learn Core Concepts**: Read [Aspectow Architecture](/en/docs/aspectow/archtecture/) to delve deeper into the main features of the Aspectran framework and Aspectow WAS.
+*   **Experience Visual Management Console**: Open your browser at `http://localhost:8080/console` to explore the [Aspectow Console Overview & Architecture](/en/docs/aspectow/console/).
+*   **Learn Core Concepts**: Read [Aspectow Architecture](/en/docs/aspectow/architecture/) and [Aspectow Console Architecture](/en/docs/aspectow/console/) to understand the self-contained node control system.
 *   **Develop Your Own Application**: Start developing your own application based on an Aspectow [starter project](/en/projects/).

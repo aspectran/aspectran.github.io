@@ -165,6 +165,6 @@ IDE(예: IntelliJ IDEA, Eclipse)를 사용하는 경우, 특정 클래스(예: `
 
 ## 11. 다음 단계
 
-*   **코드 탐색**: 클론한 프로젝트의 코드를 살펴보며 Aspectran의 구조와 동작 방식을 이해해 보세요.
-*   **핵심 개념 학습**: [Aspectow 아키텍처](/ko/docs/aspectow/architecture/)를 읽고 Aspectran 프레임워크와 Aspectow WAS의 주요 특징을 더 깊이 알아보세요.
+*   **시각적 관제 콘솔 체험**: 웹 브라우저에서 `http://localhost:8080/console`에 접속하여 [Aspectow Console 주요 화면 및 기능 가이드](/ko/docs/aspectow/console/feature-guide/)를 체험해 보세요.
+*   **핵심 아키텍처 학습**: [Aspectow 아키텍처](/ko/docs/aspectow/architecture/) 및 [Aspectow Console 아키텍처](/ko/docs/aspectow/console/)를 읽고 노드 내장형 관제 시스템과 WAS 특징을 파악해 보세요.
 *   **나만의 애플리케이션 개발**: Aspectow [스타터 프로젝트](/ko/projects/)를 기반으로 자신만의 애플리케이션 개발을 시작해 보세요.
