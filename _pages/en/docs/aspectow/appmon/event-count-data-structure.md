@@ -1,99 +1,97 @@
 ---
-title: AppMon Event Count Data Structure and Architecture
-teaser: Aspectow AppMon is designed to monitor application metrics in real-time across large-scale distributed environments.
-subheadline: Aspectow AppMon
+title: "AppMon Event Count Data Structure and Architecture"
+teaser: "Detailed specification of Aspectow AppMon's 3-tier (Group - Node - App) data model and pre-aggregation architecture."
+subheadline: "Aspectow AppMon"
 ---
 
-{% capture info_message %}
-It efficiently aggregates and visualizes massive amounts of data. This document provides a technical overview of the AppMon data model and its **Pre-aggregation Architecture** for superior performance.
-{% endcapture %}
-{% include alert.liquid info=info_message %}
+Aspectow AppMon is designed to monitor application metrics occurring across large-scale distributed environments in real time, efficiently aggregating and visualizing vast amounts of telemetry data. This document details AppMon's core data model and pre-aggregation architecture optimized for high performance.
 
 ## 1. Core Metadata Columns
 
-The event count tables use a composite primary key consisting of `domain`, `instance`, `event`, and `datetime` to uniquely identify each data point.
+The event count table identifies data in an optimized format using a composite Primary Key (PK) consisting of `node_id`, `app_id`, `event_id`, and `datetime`, along with a `group_id` index for group-level aggregation.
 
 | Column | Data Type | Description |
 | :--- | :--- | :--- |
-| **`domain`** | `varchar(30)` | Identifier for the **server node**. In a clustered environment, it distinguishes each physical server (e.g., `backend1`, `backend2`, `localhost`). |
-| **`instance`** | `varchar(30)` | The name of the **application (context)** running on the server. Usually matches the context path (e.g., `jpetstore`, `petclinic`, `demo`). |
-| **`event`** | `varchar(30)` | Specific metric or activity being tracked (e.g., `activity`, `session`). |
-| **`datetime`** | `datetime` | The UTC timestamp of the collection point. |
+| **`node_id`** | `varchar(30)` | Identifier for the **Server Node**. Distinguishes physical or logical servers in clustered environments (e.g., `appmon-node1`, `node01`). |
+| **`group_id`** | `varchar(30)` | Identifier for the **Node Group**. Groups multiple server nodes logically for unified monitoring (e.g., `group1`, `backend-api`). |
+| **`app_id`** | `varchar(30)` | Identifier for the **Application** running on the server. Usually matches context paths (e.g., `jpetstore`, `petclinic`, `demo`). |
+| **`event_id`** | `varchar(30)` | Identifier for specific metrics or tracked activities (e.g., `activity`, `session`). |
+| **`datetime`** | `datetime` | Data collection timestamp (UTC). |
 
-## 2. Metric Columns and Recording Principles
+## 2. Metric Columns and Data Recording Principles
 
-AppMon records metrics using a combination of **Gauge** (state) and **Counter** (change) patterns.
+AppMon records metric data using a combination of **Gauge** (state representation) and **Counter** (delta tracking) modes.
 
 | Column | Metric Type | Description | Analogy |
 | :--- | :--- | :--- | :--- |
-| **`total`** | **Gauge** | The **cumulative total count** since the beginning of the event. | **Total Odometer** |
-| **`delta`** | **Counter** | The **number of new events** within the interval (e.g., 5 min). | **Trip Meter** |
-| **`error`** | **Counter** | The **number of error events** within the interval. | Fault occurrences during trip |
+| **`total`** | **Gauge** | Cumulative total count from event initiation to present. | Vehicle **Total Odometer** |
+| **`delta`** | **Counter** | Incremental new event occurrences during the last sampling interval (e.g., 5 minutes). | Vehicle **Trip Meter** |
+| **`error`** | **Counter** | Incremental error occurrences during the last sampling interval. | Defects occurring in trip |
 
-### Example Data Recording (5-minute Collection Interval)
+### Data Recording Example (5-Minute Sampling Interval)
 
-Data is recorded in the database according to the following logic:
+Data accumulates inside the database following this logic:
 
-| Time (datetime) | total (Cumulative) | delta (Incremental) | Remarks |
+| Timestamp (datetime) | total (Cumulative) | delta (Interval) | Remarks |
 | :--- | :--- | :--- | :--- |
-| 10:00:00 | 1,000 | 50 | 50 occurrences between 09:55–10:00 |
-| 10:05:00 | 1,080 | 80 | 80 occurrences between 10:00–10:05 |
-| 10:10:00 | 1,110 | 30 | 30 occurrences between 10:05–10:10 |
+| 10:00:00 | 1,000 | 50 | 50 occurrences between 09:55 and 10:00 |
+| 10:05:00 | 1,080 | 80 | 80 occurrences between 10:00 and 10:05 |
+| 10:10:00 | 1,110 | 30 | 30 occurrences between 10:05 and 10:10 |
 
-*   **`total`** provides the overall scale and serves as a reference for data consistency in case of system restarts or data loss.
-*   **`delta`** is the core metric for visualizing real-time rates of change, such as TPS (Transactions Per Second), in charts.
+*   **`total`** represents overall cumulative counts, serving as a baseline to maintain integrity across system restarts or data losses.
+*   **`delta`** represents real-time rate metrics (such as TPS or requests per minute) visualized on charts.
 
-## 3. Real-world Use Cases (Dashboard Charts)
+## 3. Practical Use Cases (Dashboard Charts)
 
-AppMon uses this data structure to provide two primary monitoring sections on the dashboard.
+AppMon utilizes this data structure to power two primary dashboard areas:
 
 ### A. Activities
-Tracks the execution of Aspectran Translets (requests).
-- **Event Name**: Typically named `activity`.
-- **Purpose**: Visualizes request throughput (TPS) and error rates. The **Activities** chart on the dashboard is powered by the `delta` and `error` values of these events.
+Traces execution of Aspectran translets (HTTP requests).
+- **Event ID**: Typically named `activity`.
+- **Purpose**: Visualizes request throughput (TPS) and error rates. The dashboard **Activities** chart is rendered based on `delta` and `error` values of this event.
 
 ### B. Sessions
-Tracks the lifecycle of user sessions.
-- **Event Name**: Named `session`.
-- **Purpose**: Visualizes active session counts and trends in session creation/expiration. The **Sessions** chart on the dashboard provides insights into user traffic and activity.
+Traces user session lifecycles.
+- **Event ID**: Named `session`.
+- **Purpose**: Visualizes active session counts and creation/expiration trends. The dashboard **Sessions** chart presents user traffic and engagement trends.
 
 ## 4. Pre-aggregation Architecture
 
-Pre-aggregation was introduced to maintain consistent dashboard query performance even with millions of raw records. Instead of performing expensive `GROUP BY` operations on-the-fly, the dashboard utilizes summarized data.
+A core optimization technology introduced to maintain consistent dashboard query performance even as millions of raw rows accumulate. Instead of running real-time `GROUP BY` operations over raw logs, pre-summarized data is queried.
 
-### Tiered Storage Strategy
+### Data Storage Hierarchy (Tiered Storage)
 
-AppMon manages both raw and summary data at the point of collection:
+AppMon manages raw and summarized data concurrently during ingestion:
 
-1.  **Raw Tier (`appmon_event_count`)**
-    *   Resolution: 5-minute intervals (default).
-    *   **Purpose**: Real-time fine-grained analysis (**5min View**) for the last 1–2 hours.
+1.  **Raw Layer (`appmon_event_count`)**
+    *   Resolution: 5-minute intervals (Default)
+    *   Purpose: High-precision real-time trend analysis over the last 1–2 hours (**5min View**).
+    *   Index: Composite index on `group_id`, `app_id`, `event_id`, and `datetime` accelerates group-level chart queries.
 
-2.  **Hourly Summary Tier (`appmon_event_count_hourly`)**
-    *   Resolution: 1-hour intervals (~1/12th the data volume of raw tier).
-    *   Aggregation: `total` is the last cumulative value (`MAX`) of the hour; `delta/error` is the total sum (`SUM`) of changes within the hour.
-    *   **Purpose**: Mid-term trend analysis (**Hour View**).
+2.  **Hourly Summary Layer (`appmon_event_count_hourly`)**
+    *   Resolution: 1-hour intervals (approx. 1/12th the data size of raw layer)
+    *   Aggregation Logic: `total` uses the last cumulative value of the hour; `delta/error` accumulates the sum (`SUM`) of all interval deltas within the hour.
+    *   Purpose: Hourly trend analysis over recent days (**Hour View**).
 
-3.  **Daily Summary Tier (`appmon_event_count_daily`)**
-    *   Resolution: 1-day intervals (~1/288th the data volume of raw tier).
-    *   **Purpose**: Long-term history analysis (**Day, Month, Year Views**).
+3.  **Last State Management (`appmon_event_count_last`)**
+    *   Purpose: Manages the most recent collected metric for each node/app/event to support incremental updates and fast state recovery.
 
-### Performance Impact and Dashboard Mapping
+### Performance Impact & Dashboard Mapping
 
-| Dashboard View | Reference Table | Query Strategy and Performance |
+| Dashboard View | Target Table | Query Pattern & Performance Benefit |
 | :--- | :--- | :--- |
-| **5min View** | `appmon_event_count` | Directly fetches recent 100–200 rows (Fast). |
-| **Hour View** | `appmon_event_count_hourly` | Fetches already summarized hourly rows (Eliminates on-the-fly grouping). |
-| **Day View** | `appmon_event_count_daily` | Fetches summarized daily rows (**Fastest response time**). |
-| **Month/Year View** | `appmon_event_count_daily` | Groups daily rows by month/year. Target rows **reduced to 0.3%** of raw data. |
+| **5min View** | `appmon_event_count` | Direct query over recent 100–200 rows (Extremely fast) |
+| **Hour View** | `appmon_event_count_hourly` | Queries pre-summarized hourly rows (Eliminates runtime aggregation overhead) |
+| **Day/Month/Year View** | `appmon_event_count_hourly` | Groups hourly data into Day/Month/Year. Rows scanned reduced to **8.3% of raw volume** |
 
-### Maintaining Data Integrity
-Every time a metric is collected, AppMon uses the `ON DUPLICATE KEY UPDATE` (or `MERGE`) statement to continuously accumulate `delta` and `error` values into the corresponding time/day slots in the summary tables. This ensures that the dashboard always displays up-to-date aggregated data without waiting for background batch jobs.
+### Data Consistency Maintenance
+During ingestion, `ON DUPLICATE KEY UPDATE` (or `MERGE`) statements continuously accumulate `delta` and `error` values into the corresponding hourly slot, ensuring real-time dashboard updates without waiting for batch processing.
 
 ## 5. Database Schema Scripts
 
-The official schema and migration scripts for supported database platforms are available here:
+Official database schema scripts for each supported database platform are available at:
 
-- [MySQL Schema Script](https://github.com/aspectran/aspectow-appmon/blob/master/appmon/src/main/resources/com/aspectran/appmon/persist/db/appmon-schema-mysql.sql)
-- [H2 Schema Script](https://github.com/aspectran/aspectow-appmon/blob/master/appmon/src/main/resources/com/aspectran/appmon/persist/db/appmon-schema-h2.sql)
-- [Oracle Schema Script](https://github.com/aspectran/aspectow-appmon/blob/master/appmon/src/main/resources/com/aspectran/appmon/persist/db/appmon-schema-oracle.sql)
+*   [H2 Schema Script](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/resources/com/aspectran/aspectow/appmon/config/db/appmon-schema-h2.sql)
+*   [MySQL Schema Script](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/resources/com/aspectran/aspectow/appmon/config/db/appmon-schema-mysql.sql)
+*   [PostgreSQL Schema Script](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/resources/com/aspectran/aspectow/appmon/config/db/appmon-schema-postgresql.sql)
+*   [Oracle Schema Script](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/resources/com/aspectran/aspectow/appmon/config/db/appmon-schema-oracle.sql)
