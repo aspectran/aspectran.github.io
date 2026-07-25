@@ -95,8 +95,8 @@ aspectran:
 
 aspectow:
   hero:
-    title: Enterprise Stability
-    lead: A high-performance Web Application Server designed for reliable enterprise operations and seamless manageability.
+    title: High-Performance WAS & Management Platform
+    lead: A web application platform offering reliable enterprise web server features integrated with cluster control, remote commands, distributed scheduling, and real-time monitoring.
     icon: bi-layers-half
     buttons:
       - title: Why Aspectow?
@@ -108,13 +108,34 @@ aspectow:
         icon: bi-play-fill
 
   sections:
-    - title: Administration & Configuration
-      anchor: aspectow
+    - title: Aspectow Console (Unified Control)
+      anchor: aspectow-console
       cards:
-        - title: Configuration Guide
+        - title: Console Overview & Architecture
+          url: /en/docs/aspectow/console/
+          description: Introduces the embedded console architecture, Direct & Gateway (Redis Pub/Sub) pipelines, and key configurations.
+        - title: Screen & Feature Guide
+          url: /en/docs/aspectow/feature-guide/
+          description: Screen-by-screen guide for node health monitoring, bulk control, remote command center, scheduler, Vault, and developer tools.
+      tags:
+        - title: Console Config Guide
+          url: /en/docs/aspectow/console/configuration-guide/
+        - title: Bulk Node Control
+          url: /en/docs/aspectow/feature-guide/#31-cluster-nodes
+        - title: Remote Command Center
+          url: /en/docs/aspectow/feature-guide/#32-remote-commands
+        - title: Distributed Scheduler
+          url: /en/docs/aspectow/feature-guide/#33-scheduler-manager
+        - title: Vault Security Tokens
+          url: /en/docs/aspectow/feature-guide/#51-vault-management
+
+    - title: Administration & Configuration
+      anchor: aspectow-config
+      cards:
+        - title: Server Configuration Guide
           url: /en/docs/aspectow/configuration-guide/
-          description: Systematic guide to the structure of Aspectow and core feature configurations for production.
-        - title: Deployment & Operations
+          description: Systematic guide to the server structure of Aspectow and core feature configurations for production.
+        - title: Deployment & Service Operations
           url: /en/docs/aspectow/deployment-and-operations/
           description: Learn how to deploy and manage applications as services across different operating systems.
       tags:
@@ -125,9 +146,16 @@ aspectow:
         - title: Nginx & Clustering
           url: /en/docs/aspectow/nginx-reverse-proxy-guide/
 
-    - title: Real-time Monitoring
+    - title: Real-time Monitoring (AppMon)
       anchor: aspectow-appmon
       cards:
         - title: Aspectow AppMon
           url: /en/docs/aspectow/appmon/
-          description: Lightweight monitoring solution for system resources and application activities based on the Aspectran framework.
+          description: Real-time monitoring solution providing Canvas traffic flow visualization, JVM resource metrics, and reverse log tailing.
+      tags:
+        - title: Dashboard Guide
+          url: /en/docs/aspectow/appmon/v3-dashboard-guide/
+        - title: Message Protocol
+          url: /en/docs/aspectow/appmon/message-protocol/
+        - title: Event Data Structure
+          url: /en/docs/aspectow/appmon/event-count-data-structure/
