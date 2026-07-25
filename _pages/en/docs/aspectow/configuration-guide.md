@@ -1,57 +1,57 @@
 ---
 title: Aspectow Configuration Guide
-teaser: It provides a systematic guide to the structure of an Aspectow application, how it is built, and how to configure its core features for production operation.
+teaser: A comprehensive guide systematically explaining the structure of Aspectow applications, how they are built, and how to configure core features for production operations.
 subheadline: Aspectow
 ---
 
 ## 1. Introduction
 
-This document is a technical guide for developers new to Aspectow or those who want a deep understanding of the standard project structure. It provides a systematic guide to the structure of an Aspectow application, how it is built, and how to configure its core features for production operation.
+This document is a technical guide for developers new to Aspectow or those seeking a deep understanding of its standard project structure. It systematically explains how Aspectow applications are structured, how they are built, and how to configure core features for actual operations.
 
-Aspectow follows a well-defined project structure to enhance maintainability and scalability, and to clearly separate the roles of configuration. Through this guide, developers will understand the entire process from the standard project structure to build and core configuration, and based on this, will gain the necessary knowledge to develop and operate stable and efficient applications.
+Aspectow follows a well-defined project structure to enhance maintainability and scalability while clearly separating configuration roles. Through this guide, developers will understand the entire process from Aspectow's standard project structure to building and core configurations, gaining the knowledge required to develop and operate stable and efficient applications.
 
 ## 2. Standard Project Structure
 
-An Aspectow application follows a standard directory structure to provide convenience and consistency throughout the development, build, deployment, and operation processes. All directories are pre-created when the project is generated, and the build process mainly serves to populate the `app/lib` and `app/lib/ext` directories.
+Aspectow applications follow a standard directory structure to provide convenience and consistency throughout development, build, deployment, and operational phases. All directories are pre-created during project initialization, and the build process primarily populates the `app/lib` and `app/lib/ext` directories.
 
 ```
 /
-├── app/                  # Application home directory
-│   ├── bin/              # Execution scripts
-│   ├── cmd/              # File-based command processing directory
-│   ├── config/           # Application configuration files
-│   ├── lib/              # External libraries (JARs)
-│   ├── logs/             # Log files
-│   ├── temp/             # Temporary file storage
-│   ├── webapps/          # Web application deployment directory
-│   └── work/             # Web application working directory
-├── setup/                # System service deployment/management scripts
-├── src/                  # Java source and resource files
-└── pom.xml               # Maven build script
+├── app/                  # Application Home Directory
+│   ├── bin/              # Execution Scripts
+│   ├── cmd/              # File-based Command Processing Directory
+│   ├── config/           # Application Configuration Files
+│   ├── lib/              # External Libraries (JARs)
+│   ├── logs/             # Log Files
+│   ├── temp/             # Temporary File Storage
+│   ├── webapps/          # Web Application Deployment Directory
+│   └── work/             # Web Application Work Directory
+├── setup/                # System Service Deployment/Management Scripts
+├── src/                  # Java Source and Resource Files
+└── pom.xml               # Maven Build Script
 ```
 
-### Detailed Description of Directories and Files
+### Detailed Directory & File Specification
 
-- **`/app`**: The home directory of the built application. In actual operation, the application runs based on this directory.
-    - **`bin/`**: Contains shell scripts for running and controlling the application, such as `daemon.sh` and `shell.sh`.
-    - **`cmd/`**: A directory structure for processing file-based asynchronous commands (composed of `incoming`, `queued`, `completed`, `failed`, etc.).
-    - **`app/config/`**: Manages all application and server settings, such as `aspectran-config.apon`, `aspectran-rules.xml`, and `server.xml`.
-    - **`lib/`**: All external dependency libraries (.jar) copied by the `maven-dependency-plugin` are located here. The application's .jar file for the current project is located in `lib/ext/`.
-    - **`app/logs/`**: All log files generated during application execution are stored here.
-    - **`app/temp/`**: Temporary files used by the application during operation, such as for file uploads or resource reloading, are stored here.
-    - **`webapps/`**: The root directory for web application contexts. `root` and `appmon` are provided by default, and each subdirectory becomes an independent web application.
-    - **`app/work/`**: Working files used internally by the WAS, such as session files and compiled JSP files, are stored here.
-- **`/setup`**: Contains scripts and configuration files for deploying the application to a production environment and managing it as a system service, such as for .deb, .rpm packaging or Systemd/init.d service registration.
-- **`/src`**: The standard Maven directory where the application's Java source code and resource files are located. During the build process, it is compiled and generated as a JAR file in `app/lib/ext/`.
-- **`pom.xml`**: The Maven build script that manages the project's dependencies and defines the build lifecycle.
+- **`/app`**: Home directory of the built application. In production operations, the application executes relative to this directory.
+    - **`bin/`**: Contains shell scripts (e.g., `daemon.sh`, `shell.sh`) that launch and control the application.
+    - **`cmd/`**: Directory structure for processing file-based asynchronous commands (composed of `incoming`, `queued`, `completed`, `failed`, etc.).
+    - **`app/config/`**: Manages all application and server configurations, including `aspectran-config.apon`, `aspectran-rules.xml`, and `server.xml`.
+    - **`lib/`**: Houses all external dependency libraries (.jar) copied by `maven-dependency-plugin`. `lib/ext/` holds the current project's application .jar file.
+    - **`app/logs/`**: Stores all log files generated during application execution.
+    - **`app/temp/`**: Stores temporary files used during operation, such as file uploads and resource reloading.
+    - **`webapps/`**: Root directory for web application contexts. `root` and `appmon` are provided by default, with each subdirectory acting as an independent web application.
+    - **`app/work/`**: Stores internal work files used by the WAS, such as session files and compiled JSP results.
+- **`/setup`**: Houses scripts and configuration files for deploying applications to production environments and managing them as system services (e.g., .deb, .rpm packaging, Systemd/init.d registration).
+- **`/src`**: Standard Maven directory containing Java source code and resource files. Compiled during build to generate JAR files under `app/lib/ext/`.
+- **`pom.xml`**: Maven build script that manages project dependencies and defines the build lifecycle.
 
 ## 3. Maven Build Configuration (`pom.xml`)
 
-The `pom.xml` file defines the entire process of compiling Java source code and packaging the executable artifacts according to the standard `app` directory structure described in section 2.
+The `pom.xml` file defines all processes for compiling Java source code and packaging executable artifacts matching the standard `app` directory structure described in Section 2.
 
 ### 3.1. Required Properties
 
-The following properties are essential in the `<properties>` section of `pom.xml` to build an Aspectow project correctly.
+To build Aspectow projects correctly, the following properties must be defined in the `<properties>` section of `pom.xml`.
 
 ```xml
 <properties>
@@ -62,14 +62,14 @@ The following properties are essential in the `<properties>` section of `pom.xml
 </properties>
 ```
 
-- `maven.compiler.parameters`: Must be set to `true` for Aspectran to dynamically recognize method argument names at runtime.
-- `maven.compiler.release`: Specifies the Java version to compile the project with.
+- `maven.compiler.parameters`: Must be set to `true` for Aspectran to dynamically recognize method parameter names at runtime.
+- `maven.compiler.release`: Specifies the Java version used to compile the project.
 
 ### 3.2. Core Build Plugins
 
-The core plugins place the built artifacts into the standard structure within the `/app` directory, clearly separating application code from external libraries. The following are the actual settings from the `aspectow-todo-webapp` example project.
+Core plugins position built artifacts into standard locations under `/app`, clearly separating application code from external libraries. The following shows the actual setup from the `aspectow-todo-webapp` sample project:
 
-- **`maven-jar-plugin`**: Compiles and packages the current project's source code to generate the application JAR file in the `app/lib/ext/` directory.
+- **`maven-jar-plugin`**: Compiles and packages source code to generate the application JAR file inside `app/lib/ext/`.
   ```xml
   <plugin>
       <artifactId>maven-jar-plugin</artifactId>
@@ -80,7 +80,7 @@ The core plugins place the built artifacts into the standard structure within th
   </plugin>
   ```
 
-- **`maven-dependency-plugin`**: Copies all dependency libraries defined in `pom.xml` to the `app/lib/` directory. It is configured to run the `copy-dependencies` goal during the `package` phase.
+- **`maven-dependency-plugin`**: Copies all dependency libraries defined in `pom.xml` into `app/lib/`. Configured to execute the `copy-dependencies` goal during the `package` phase.
   ```xml
   <plugin>
       <artifactId>maven-dependency-plugin</artifactId>
@@ -104,22 +104,22 @@ The core plugins place the built artifacts into the standard structure within th
 
 ## 4. Core Application Configuration
 
-The core behavior and business logic of the application are controlled through configuration files in the `/config` directory. The `aspectran-config.apon` file serves as the starting point for configuration, defining both context and web-related settings.
+Core application behaviors and business logic are controlled via configuration files under the `/config` directory. `aspectran-config.apon` serves as the entry point, defining both Context and Web settings.
 
-- **`aspectran-config.apon`**: Specifies the framework's basic operational parameters and the location of context rule files like `aspectran-rules.xml`, where Beans and Translets are defined.
-- **`aspectran-rules.xml`**: Defines all elements that constitute the application's actual logic, such as database connections, service Beans, and common Aspects.
+- **`aspectran-config.apon`**: Specifies framework operational parameters and the locations of context rule files (such as `aspectran-rules.xml`) where Beans and Translets are defined.
+- **`aspectran-rules.xml`**: Defines all elements constituting actual application logic, including database connections, service Beans, and common Aspects.
 
-For all the details about application context configuration and a description of each item, please refer to the main configuration guide document.
+For comprehensive details and itemized explanations regarding application context configuration, refer to the main configuration guide.
 
-**Reference Document:** [Aspectran Basic Configuration Guide](/en/docs/guides/aspectran-configuration/)
+**Reference Guide:** [Aspectran Basic Configuration Guide](/en/docs/guides/aspectran-configuration/)
 
 ## 5. Embedded WAS Server Configuration
 
-The behavior of the embedded web server (Undertow/Jetty) itself is controlled through XML files in the `/config/server/` directory. These settings directly affect the server's performance, security, and feature extensions.
+The behavior of the embedded web server (Undertow/Jetty) itself is controlled via XML files under `/config/server/`. These settings directly impact server performance, security, and feature extensions.
 
-### 5.1. Modular Server Configuration (`server.xml`)
+### 5.1. Modularized Server Setup (`server.xml`)
 
-The `server.xml` file is the main file for server configuration. It delegates detailed settings to other `tow-*.xml` files separated by function and includes them using the `<append>` tag. This modular structure enhances the readability and maintainability of the configuration.
+`server.xml` acts as the main entry file for server settings, delegating granular configurations to specialized `tow-*.xml` files and including them using `<append>` tags. This modular structure improves readability and maintainability.
 
 ```xml
 <aspectran>
@@ -130,57 +130,161 @@ The `server.xml` file is the main file for server configuration. It delegates de
 </aspectran>
 ```
 
-### 5.2. Core Engine Settings (`tow-server.xml`)
+### 5.2. Core Engine Configuration (`tow-server.xml`)
 
-`tow-server.xml` defines the most fundamental behavior of the WAS (threads, request processing handlers, etc.).
+`tow-server.xml` defines fundamental WAS operations (threads, request processing handlers, etc.).
 
-- **`tow.server`**: An instance of the `DefaultTowServer` class, this is the core Bean representing the Undertow server itself. Its properties, such as HTTP listeners, worker threads, and the request handler chain, configure the overall behavior of the server.
-- **`tow.server.handler.*`**: Defines each handler to be included in the request processing chain as a Bean, such as `encodingHandlerWrapper` and `accessLogHandlerWrapper`.
+```xml
+<bean id="tow.server" class="com.aspectran.undertow.server.DefaultTowServer">
+    <property name="workerOptions">
+        <bean class="com.aspectran.undertow.server.TowOptions">
+            <property name="workerIoThreads">%{tow.server.workerIoThreads}</property>
+            <property name="workerTaskMaxThreads">%{tow.server.workerTaskMaxThreads}</property>
+        </bean>
+    </property>
+    <property name="requestHandlerFactory">
+        <bean class="com.aspectran.undertow.server.handler.ServletRequestHandlerFactory">
+            <property name="handlerChainWrappers" type="array">
+                <value>#{tow.server.handler.encodingHandlerWrapper}</value>
+                <value>#{tow.server.handler.accessLogHandlerWrapper}</value>
+                <value>#{tow.server.handler.loggingGroupHandlerWrapper}</value>
+            </property>
+        </bean>
+    </property>
+</bean>
+```
 
-### 5.3. Support Feature Settings (`tow-support.xml`)
+- **`tow.server`**: An instance of `DefaultTowServer`, acting as the primary Bean representing the Undertow server itself.
+    - `workerOptions`: Configures I/O and worker task thread counts. Optimized values can be set per profile.
+    - `requestHandlerFactory`: Factory creating handlers to process requests. Chains handlers (Gzip compression, access logging, etc.) via `handlerChainWrappers` to function like middleware.
+- **`tow.server.handler.*`**: Defines each handler (such as `encodingHandlerWrapper`, `accessLogHandlerWrapper`) included in the request processing chain as a Bean.
 
-Configures additional support features beyond the server's main functions.
+### 5.3. Support Feature Setup (`tow-support.xml`)
 
-- **`sessionListenerRegistrationBean`**: An instance of the `SessionListenerRegistrationBean` class, it is responsible for registering a listener that detects session lifecycle events (creation, destruction) for a specific web context (`root`).
+Configures auxiliary support features beyond core server operations. For example, `SessionListenerRegistrationBean` can register listeners to observe session lifecycle events for a specific web context (`root`).
+
+```xml
+<bean id="sessionListenerRegistration"
+      class="com.aspectran.undertow.support.SessionListenerRegistrationBean" lazyInit="true">
+    <argument>tow.server</argument>
+    <argument>root</argument>
+</bean>
+```
 
 ### 5.4. Web Context Deployment (`tow-context-*.xml`)
 
-`tow-context-*.xml` files are responsible for deploying individual web applications to the server. Each file defines an independent servlet context.
+`tow-context-*.xml` files deploy individual web applications onto the server.
 
-#### `tow-context-root.xml` Detailed Description
+#### `tow-context-root.xml` Detailed Example
 
-Deploys the main web application to the server's root path (`/`) and has the following key Beans and properties:
+Deploys the default web application to the server root path (`/`), detailing servlets, JSPs, WebSockets, and session management behavior.
 
-- **`tow.context.root.servletContext`**: An instance of the `TowServletContext` class, this is the core Bean that defines the servlet context for the `root` web application.
-    - `servletSessionConfig`: Defines a `io.undertow.servlet.api.ServletSessionConfig` Bean to configure the behavior of session cookies in detail.
-    - `servlets`: Defines the servlets that will operate within the context, such as `DefaultJspServlet` for JSP processing and `WebActivityServlet` for handling Aspectran's requests.
-    - `servletContainerInitializers`: Defines components to be initialized along with the servlet container. `TowJasperInitializer` initializes the JSP engine (Jasper) and specifies the location of TLD (Tag Library Descriptor) files.
-- **`tow.context.root.sessionManager`**: An instance of the `TowSessionManager` class, it defines the session manager for the `root` context. It has the following key properties:
-    - `sessionManagerConfig`: Configures the detailed behavior of the session manager through a `SessionManagerConfig` Bean.
-    - `sessionStore`: Specifies the storage where actual session data will be saved. It supports high-availability clustering by allowing different session stores for different profiles, such as `FileSessionStoreFactoryBean` for development and `DefaultLettuceSessionStoreFactoryBean` (Redis) for production.
+```xml
+<bean id="tow.context.root.servletContext"
+      class="com.aspectran.undertow.server.servlet.TowServletContext"
+      scope="prototype">
+    <property name="contextPath">/</property>
+    <property name="servlets" type="array">
+        <bean class="com.aspectran.undertow.server.servlet.DefaultJspServlet"/>
+        <bean class="com.aspectran.undertow.server.servlet.TowServlet">
+            <argument>webActivityServlet</argument>
+            <argument>com.aspectran.web.servlet.WebActivityServlet</argument>
+            <property name="mappings" type="array">
+                <value>/</value>
+            </property>
+        </bean>
+    </property>
+    <property name="servletContainerInitializers" type="array">
+        <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
+            <property name="tldResources" type="array">
+                <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
+            </property>
+        </bean>
+    </property>
+</bean>
 
-    Key properties for `SessionManagerConfig` include:
-    - `workerName` (String): A unique name to identify each server instance in a cluster environment, which is included in the session ID.
-    - `maxActiveSessions` (int): Limits the maximum number of sessions that can be held in memory simultaneously.
-    - `maxIdleSeconds` (int): The maximum validity time (in seconds) for a regular session. If there are no requests during this time, the session 'expires' and can no longer be used.
-    - `maxIdleSecondsForNew` (int): A special idle time (in seconds) that applies only to the first request after session creation. When the second request begins, the session is promoted to a regular session and will then follow `maxIdleSeconds`. Used to quickly expire single-request sessions from bots, crawlers, etc.
-    - `scavengingIntervalSeconds` (int): The execution interval (in seconds) for the cleanup job (Scavenging) that finds sessions 'expired' by `maxIdleSeconds` and **permanently deletes** them.
-    - `evictionIdleSeconds` (int): For memory management, this is the **idle time (in seconds) to wait before evicting an inactive session from the memory cache**. The session is not permanently deleted and can be read again from the persistent store if needed.
-    - `evictionIdleSecondsForNew` (int): The same cache eviction policy as `evictionIdleSeconds`, but applies only to 'new' sessions (sessions in their first request).
-    - `saveOnCreate` (boolean): If `false`, the session is saved to persistent storage only when the last request using it completes. This optimizes performance by avoiding unnecessary I/O. If `clusterEnabled` is `true`, it is always saved on creation regardless of this value.
-    - `saveOnInactiveEviction` (boolean): If `true`, it prevents data loss by saving the session to persistent storage when it is evicted from memory due to inactivity. If `clusterEnabled` is `true`, it is always saved on eviction regardless of this value.
-    - `removeUnloadableSessions` (boolean): Determines whether to delete a session from the store if its data cannot be loaded (e.g., due to deserialization failure).
-    - `clusterEnabled` (boolean): If set to `true`, session data is aggressively saved to the central store at multiple points (creation, request completion, eviction) to ensure data consistency.
+<bean id="tow.context.root.sessionManager"
+      class="com.aspectran.undertow.server.session.TowSessionManager"
+      scope="prototype">
+    <properties profile="!prod">
+        <item name="sessionStore">
+            <bean class="com.aspectran.core.component.session.FileSessionStoreFactoryBean">
+                <property name="storeDir">%{system:aspectran.workPath:/work}/_sessions/root</property>
+            </bean>
+        </item>
+    </properties>
+    <properties profile="prod">
+        <item name="sessionStore">
+            <bean class="com.aspectran.core.component.session.redis.lettuce.DefaultLettuceSessionStoreFactoryBean">
+                <property name="poolConfig">
+                    <bean class="com.aspectran.core.component.session.redis.lettuce.RedisConnectionPoolConfig">
+                        <property name="uri">%{system:redis.uri}/10</property>
+                    </bean>
+                </property>
+            </bean>
+        </item>
+    </properties>
+</bean>
+```
+
+- **`tow.context.root.servletContext`**: Primary Bean defining the servlet context for the `root` web application.
+    - `servletSessionConfig`: Configures session cookie behavior via `io.undertow.servlet.api.ServletSessionConfig`.
+      ```xml
+      <property name="servletSessionConfig">
+          <bean class="io.undertow.servlet.api.ServletSessionConfig">
+              <property name="sessionTrackingModes" type="set">
+                  <value>#{class:jakarta.servlet.SessionTrackingMode^COOKIE}</value>
+              </property>
+              <property name="path" value="/"/>
+              <properties profile="prod">
+                  <item name="domain" value="%{tow.server.domain}"/>
+              </properties>
+          </bean>
+      </property>
+      ```
+      - `sessionTrackingModes`: Specifies session tracking methods. Using `COOKIE` prevents `jsessionid` from appending to URLs and tracks sessions strictly via cookies.
+      - `path`: Specifies the valid path for session cookies. Setting `/` enables site-wide validity.
+      - `domain`: Active only in production (`prod`) profiles, specifying valid domains for session cookies to enable session sharing across subdomains.
+    - `servlets`: Registers `DefaultJspServlet` for JSP processing and Aspectran's main `WebActivityServlet`.
+    - `servletContainerInitializers`: Initializes the JSP engine (Jasper) and registers custom tag libraries (.tld).
+- **`tow.context.root.sessionManager`**: An instance of `TowSessionManager` defining the session manager for the `root` context.
+    - `sessionManagerConfig`: Configures session manager behavior via `SessionManagerConfig` Bean using concise APON arguments.
+      ```xml
+      <bean class="com.aspectran.core.context.config.SessionManagerConfig">
+          <argument>
+              workerName: rn0
+              maxActiveSessions: 9999
+              maxIdleSeconds: 1800
+              evictionIdleSeconds: 900
+              maxIdleSecondsForNew: 60
+              evictionIdleSecondsForNew: 30
+              scavengingIntervalSeconds: 90
+              clusterEnabled: true
+          </argument>
+      </bean>
+      ```
+      - `workerName` (string): Unique worker name identifying each server instance in clustered environments, included in session IDs.
+      - `maxActiveSessions` (integer): Limits maximum concurrent active sessions held in memory.
+      - `maxIdleSeconds` (integer): Maximum idle time (seconds) for regular sessions. Sessions expire if inactive beyond this limit.
+      - `maxIdleSecondsForNew` (integer): Special idle time (seconds) applied strictly to the first request of new sessions. Promoted to regular sessions upon the second request to follow `maxIdleSeconds`. Used to rapidly expire single-request bot/crawler sessions.
+      - `scavengingIntervalSeconds` (integer): Execution interval (seconds) for scavenging operations that locate and **permanently delete** expired sessions.
+      - `evictionIdleSeconds` (integer): Idle wait time (seconds) before inactive sessions are **evicted from memory cache** to conserve RAM. Sessions are not deleted and can be reloaded from persistent storage if accessed again.
+      - `evictionIdleSecondsForNew` (integer): Cache eviction policy identical to `evictionIdleSeconds`, applied exclusively to new sessions.
+      - `saveOnCreate` (boolean): When `false`, sessions are saved to persistent storage upon completion of the last request using the session, reducing I/O. When `clusterEnabled` is `true`, sessions are always saved upon creation regardless of this setting.
+      - `saveOnInactiveEviction` (boolean): When `true`, inactive sessions are saved to persistent storage upon memory eviction to prevent data loss. When `clusterEnabled` is `true`, sessions are always saved upon eviction regardless of this setting.
+      - `removeUnloadableSessions` (boolean): Determines whether to purge session data from storage if loading fails (e.g., deserialization failure).
+      - `clusterEnabled` (boolean): When set to `true`, session data is aggressively saved to central storage across creation, request completion, and memory eviction for data consistency.
+    - `sessionStore`: Specifies persistent storage for session data. Configured per profile to use file-based sessions (`FileSessionStoreFactoryBean`) in development and Redis-based sessions (`DefaultLettuceSessionStoreFactoryBean`) in production to support high-availability clustering.
 
 #### `tow-context-appmon.xml`
 
-Deploys the built-in monitoring tool, AppMon, as a separate web application at the `/appmon` path. It has a structure similar to `tow-context-root.xml`.
+Deploys the embedded AppMon monitoring tool as a separate web application under the `/appmon` path, following a structure similar to `tow-context-root.xml`.
 
-### 5.5. Key Configuration Example: Changing the Server Port
+### 5.5. Common Configuration Example: Server Port Change
 
-The most common server configuration change is changing the HTTP listener's port. This can be configured in the `/config/server/undertow/tow-server.xml` file.
+The most common server configuration change is modifying HTTP listener ports, located in `/config/server/undertow/tow-server.xml`.
 
-You can change the `value` of the `tow.server.listener.http.port` property defined in the `<environment>` section at the top of the file to your desired port number.
+Simply edit the `value` of `tow.server.listener.http.port` inside the `<environment>` section at the top of the file:
 
 ```xml
 <environment>
@@ -190,26 +294,26 @@ You can change the `value` of the `tow.server.listener.http.port` property defin
 </environment>
 ```
 
-After changing `8081` to another number in the example above and restarting Aspectow, the server will start on the modified port.
+Changing `8081` to a different port and restarting Aspectow binds the server to the new port.
 
-## 6. Additional Feature Configuration
+## 6. Auxiliary Feature Configurations
 
-Major additional features of the application are configured in their respective subdirectories within the `/config` directory.
+Auxiliary application features are configured under dedicated subdirectories within `/config`.
 
 ### 6.1. Logging Configuration (`/config/logging/`)
 
-The application's logging policy is configured through the `logback`-related XML files in the `/config/logging/` directory. Aspectow uses a modular approach where `logback.xml` or `logback-debug.xml` includes functional configuration files from the `included/` directory.
+Logging policies are configured via Logback XML files under `/config/logging/`. Aspectow uses a modular structure where `logback.xml` or `logback-debug.xml` includes functional files from the `included/` directory.
 
-- **`logback.xml`**: The main configuration file for a typical production environment. It sets up file-based logging by including `logback-default.xml`, `logback-scheduler.xml`, and `logback-undertow.xml`.
-- **`logback-debug.xml`**: The configuration file for development and debugging environments. In addition to all the files included by `logback.xml`, it also includes `logback-console.xml` to output logs to the console.
+- **`logback.xml`**: Primary configuration for production environments. Includes `logback-default.xml`, `logback-scheduler.xml`, and `logback-undertow.xml` for file-based logging.
+- **`logback-debug.xml`**: Configuration for development and debugging. Includes all files from `logback.xml` plus `logback-console.xml` to output logs to the console.
 
-#### How to Switch Logging Configuration Files
+#### Switching Logging Files
 
-By default, `logback.xml` is used in a production environment. If you want to check detailed logs, including console output, during development, you can switch to using `logback-debug.xml` by adding a debug argument to the execution script.
+Production environments default to `logback.xml`. To enable console output and detailed logs during development, switch to `logback-debug.xml` by passing debug flags to execution scripts.
 
-The `shell.sh` and `shell.bat` scripts in the `app/bin` directory check for the `--debug` and `debug` arguments, respectively. If the argument is provided, they set the `logback.configurationFile` Java system property to the path of the `logback-debug.xml` file, thereby replacing the logging configuration.
+`shell.sh` and `shell.bat` scripts under `app/bin` check for `--debug` and `debug` arguments, setting the `logback.configurationFile` Java system property to `logback-debug.xml` when present.
 
-**Example of running in debug mode**
+**Executing in Debug Mode**
 
 Linux/macOS:
 ```bash
@@ -221,83 +325,36 @@ Windows:
 app\bin\shell.bat debug
 ```
 
-### 6.2. AppMon Configuration (`/config/appmon/`)
+### 6.2. Aspectow Console and Standalone AppMon Configurations (`/config/console/` & `/config/appmon/`)
 
-The built-in monitoring tool, AppMon, has its default configuration bundled within its library. Users can customize its behavior by placing or modifying files in the `/config/appmon/` directory to **override** these defaults.
+The Aspectow ecosystem supports **Aspectow Console** (an integrated management platform) and **Aspectow AppMon** (a real-time monitoring solution), with configuration directories clearly separated based on execution modes and editions.
 
-- **`/config/appmon/appmon-config.apon`**: The core configuration file that defines what to monitor (instances, events, metrics, logs).
-- **`/config/appmon/appmon.db-*.properties`**: A file to configure the database connection for storing monitoring data.
-- **`/config/appmon/appmon-rules.xml`**: A file to configure the loading method for AppMon UI's static assets (CSS, JS).
-- **`/config/server/undertow/tow-context-appmon.xml`**: A file to customize how AppMon is deployed as a web application.
-- **`/webapps/appmon/WEB-INF/jsp/`**: Contains the JSP files that constitute the AppMon UI. The `templates/default.jsp` is the template that handles the overall layout, and you can customize the UI by modifying the JSP files in the `appmon/` directory.
+- **Aspectow Console Configuration (`/config/console/`)**:
+  Aspectow Enterprise Edition comes with **Aspectow Console pre-integrated by default**. In the Console environment, node cluster configurations (`node-config.apon`), database properties (`aspectow-console.db-*.properties`), node and AppMon XML rule files (`node-rules.xml`, `appmon-rules.xml`), and embedded AppMon collection settings (`appmon-config.apon`) are centrally managed under the **`/config/console/`** directory.
+  *   **`node-rules.xml`**: Aspectran XML rule file registering node management components (`NodeConfigResolver`, `NodeManagerFactoryBean`, etc.).
+  *   **`appmon-rules.xml`**: Aspectran XML rule file dynamically loading `/config/console/appmon-config.apon` via `AppMonConfigResolver`.
+  *   **Detailed Guide:** [Aspectow Console Configuration Guide](/en/docs/aspectow/console/configuration-guide/)
 
-For the complete architecture of AppMon configuration, detailed descriptions of each configuration item, and examples, please refer to the main AppMon introduction document.
+- **Standalone AppMon Configuration (`/config/appmon/`)**:
+  When configuring **Standalone AppMon** on specific servers or applications without Console for lightweight monitoring, dedicated configuration files (`appmon-config.apon`, `node-config.apon`, `appmon-rules.xml`, `node-rules.xml`, `appmon.db-*.properties`) are placed in the project's **`/config/appmon/`** directory to override default behaviors.
+  *   **Detailed Guide:** [Aspectow AppMon Overview & Configuration Guide](/en/docs/aspectow/appmon/)
 
-**Reference Document:** [Aspectow AppMon](/en/docs/aspectow/appmon/)
+## 7. Major Feature Utilization: Integrated Dashboard Security & Access Control
 
-## 7. Key Feature Usage: AppMon Dashboard Access Control
+In the Aspectow ecosystem, server health and application metrics are observed in real time via the integrated management platform, **Aspectow Console**, and **AppMon Dashboard**. Access control mechanisms are enforced in production environments to prevent unauthorized access to dashboards and node controls.
 
-AppMon runs in a separate `appmon` web context, distinct from the `root` context. Therefore, a secure access control mechanism is needed to prevent unauthorized access when opening the AppMon dashboard. Aspectow solves this by issuing a temporary authentication cookie from the trusted `root` context, which is then validated by the `appmon` context.
+### 7.1. Aspectow Console Integrated Access Control (RBAC-Based)
 
-#### Step 1: Issue an Authentication Cookie (`root` Context)
+Aspectow Console provides fine-grained Role-Based Access Control (RBAC) to secure dashboard access and node control operations.
 
-First, define a 'gatekeeper' translet in the `root` context. This translet acts as a secure entry point to the AppMon dashboard. When a user accesses this translet, it issues a secure, time-limited, HttpOnly authentication cookie and then redirects the user to the AppMon dashboard.
+*   **Role-Based Governance**: Clear separation between read-only monitoring access and remote command/node control permissions via roles such as `SUPER_ADMIN`, `ADMIN`, and `DEMO`.
+*   **Security Token Authentication**: Protects monitoring contexts from unauthorized external traffic using PBE (Password-Based Encryption) tokens and secure sessions.
 
-**Example from `root-web-config.xml`**
-```xml
-<bean id="appMonCookieIssuer" class="com.aspectran.appmon.common.auth.AppMonCookieIssuer"/>
+### 7.2. Standalone AppMon Access Control
 
-<translet name="/monitoring/${instances}">
-    <action bean="appMonCookieIssuer" method="issueCookie">
-        <argument>/appmon</argument>
-        <argument valueType="int">3600</argument>
-    </action>
-    <redirect path="/appmon/dashboard/"/>
-</translet>
-```
-1. A user accesses the `/monitoring` path to open AppMon.
-2. The translet calls the `issueCookie` method on the `appMonCookieIssuer` bean. This method generates a time-limited PBE token and sets it in an `HttpOnly` cookie named `appmon-auth-token`. The cookie's path is set to `/appmon`, and its maximum age is 3600 seconds (1 hour).
-3. It then **redirects** the user's browser to the AppMon context's `/appmon/dashboard/` path. The browser automatically includes the newly issued cookie in the request.
+When running AppMon standalone without Console, security is maintained by issuing temporary authentication token cookies from the main application context and validating them within the AppMon context.
 
-#### Step 2: Validate the Authentication Cookie (`appmon` Context)
+1.  **Authentication Cookie Issuance**: The main web application issues a time-limited `HttpOnly` security cookie to authenticated users and redirects them to the AppMon dashboard path (`/appmon/dashboard/`).
+2.  **Authentication Cookie Validation**: The AppMon context intercepts incoming requests to validate token existence and expiration, ensuring only authorized users access dashboard metrics.
 
-In the `appmon` context, an aspect (`AppMonAuthCheckAspect`) is configured to intercept all incoming requests. This aspect checks for the presence and validity of the `appmon-auth-token` cookie.
-
-**Excerpt from `AppMonAuthCheckAspect.java`**
-```java
-@Component
-@Aspect("appMonAuthCheckAspect")
-@Joinpoint(pointcut = {
-        "+: /**",
-        "-: /auth-expired"
-})
-public class AppMonAuthCheckAspect {
-
-    // ...
-
-    @Before
-    public void before(@NonNull Translet translet) {
-        Cookie cookie = WebUtils.getCookie(translet, AUTH_TOKEN_NAME);
-        if (cookie == null) {
-            reject(translet);
-            return;
-        }
-
-        String token = cookie.getValue();
-        try {
-            // Validate the token and refresh the cookie's expiration time
-            appMonCookieIssuer.refreshCookie(translet, token);
-        } catch (Exception e) {
-            reject(translet);
-        }
-    }
-
-    // ...
-}
-```
-1. For every request to the `appmon` context, the `before` advice in `AppMonAuthCheckAspect` is executed.
-2. It retrieves the `appmon-auth-token` cookie. If the cookie is missing, the request is rejected.
-3. If the cookie exists, it calls `appMonCookieIssuer.refreshCookie()`. This method validates the token. If valid, it issues a new cookie with a refreshed expiration time, effectively extending the user's session.
-4. If the token is invalid (e.g., expired or tampered with), an exception is thrown, and the request is rejected, redirecting the user.
-
-This mechanism establishes a secure bridge between the two web contexts, where the `root` context acts as a trusted authority that vouches for the user's authenticity by issuing a secure cookie.
+For detailed security governance and permission configurations, refer to the [Aspectow Console Feature & Screen Guide](/en/docs/aspectow/console/feature-guide/).

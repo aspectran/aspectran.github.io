@@ -19,160 +19,183 @@ Console에 내장 통합되어 통합 관제 환경에서 구동될 수도 있�
     *   **이벤트(Events)**: HTTP 요청 처리, 세션 생성/소멸 등 애플리케이션의 주요 이벤트를 추적하고 카운팅합니다.
     *   **메트릭(Metrics)**: JVM 힙 메모리 사용량(`HeapMemoryUsageReader`), Undertow 스레드 풀 상태(`NioWorkerMetricsReader`), HikariCP 커넥션 풀 상태(`HikariPoolMBeanReader`) 등 다양한 시스템 메트릭을 수집합니다.
     *   **로그(Logs)**: 지정된 애플리케이션 및 액세스 로그 파일을 실시간으로 테일링(Tailing)하여 UI에 표시합니다.
-*   **데이터 영속성**: 주요 이벤트 카운트 데이터를 내장된 H2 데이터베이스 또는 RDBMS에 주기적으로 저장하여, 애플리케이션 재시작 시에도 통계 데이터가 유지될 수 있도록 합니다.
-*   **유연한 APON 설정**: APON(Aspectran Object Notation) 기반의 설정 파일을 통해 모니터링 대상 노드 그룹(`group`), 서버 노드(`node`), 애플리케이션(`app`), 이벤트, 메트릭, 로그 대상을 유연하게 정의합니다.
+*   **데이터 영속성**: 주요 이벤트 카운트 데이터를 내장된 H2 데이터베이스 또는 외부 RDBMS에 주기적으로 저장하여, 애플리케이션 재시작 시에도 통계 데이터가 유실되지 않고 유지됩니다.
+*   **유연한 APON 설정**: APON(Aspectran Parameter Object Notation) 기반의 설정 파일을 통해 노드 및 모니터링 대상 앱을 유연하게 정의할 수 있습니다.
 
 ## 3. 핵심 아키텍처 및 3계층 식별 체계
 
-Aspectow AppMon은 분산 모니터링을 위해 **`Group` (노드 그룹) - `Node` (서버 노드) - `App` (애플리케이션)**으로 이어지는 3계층 식별 체계를 사용합니다.
+Aspectow AppMon은 분산 모니터링을 위해 **`Group` (서버 그룹) - `Node` (서버 노드) - `App` (애플리케이션)**으로 이어지는 3계층 식별 체계를 사용합니다.
 
 ### 주요 엔진 컴포넌트
 
 *   **AppMonManager**: AppMon의 전체적인 생명주기와 설정을 관리하는 핵심 엔진입니다.
 *   **Exporter**: 특정 데이터 소스(로그, 메트릭, 이벤트)로부터 데이터를 수집하는 역할을 담당합니다.
-    *   **Reader**: `Exporter`가 데이터를 수집하는 구체적인 방법을 구현합니다 (예: `HeapMemoryUsageReader`, `NioWorkerMetricsReader` 등).
+    *   **Reader**: `Exporter`가 데이터를 수집하는 구체적인 방법을 구현합니다 (예: JMX를 통해 JVM 메트릭 조회, 파일 시스템에서 로그 파일 읽기 등).
 *   **PersistManager**: 수집된 카운터 데이터를 데이터베이스에 주기적으로 보관하는 영속성 처리를 담당합니다.
     *   **CounterPersistSchedule**: 스케줄러에 의해 주기적으로 실행되어 카운터 데이터를 DB에 저장합니다.
 *   **ExportService**: 클라이언트(웹 UI)와의 통신을 담당하며, 수집된 데이터를 WebSocket 또는 Polling 방식으로 전송합니다.
 *   **Activity (Front/Backend)**: 웹 UI 또는 외부 에이전트로부터의 HTTP 요청을 처리하는 컨트롤러 역할을 합니다.
 
-## 4. 데이터 영속성 구조
+## 4. 데이터 영속성 구조 개요
 
-Aspectow AppMon은 이벤트 카운팅 데이터를 데이터베이스에 저장하여 통계를 유지합니다. 기본적으로 내장된 H2 데이터베이스를 사용하며, 스키마는 다음과 같습니다.
+Aspectow AppMon은 이벤트 카운팅 데이터를 데이터베이스에 안정적으로 보관하여 통계를 유지합니다. 기본적으로 내장된 H2 데이터베이스를 사용하며 다음과 같은 주요 테이블을 제공합니다.
 
-*   **`appmon_event_count`**
-    *   분, 시간, 일, 월, 년 단위로 집계된 이벤트 카운트 데이터를 저장합니다. 이 테이블의 데이터는 통계 차트를 그리는 데 사용됩니다.
-    *   주요 컬럼: `group_id`, `node_id`, `app_id`, `event_id`, `datetime`, `total`(누적 합계), `delta`(구간 발생 횟수), `error`(오류 발생 횟수).
+*   **`appmon_event_count`**: 분, 시간, 일, 월, 년 단위로 집계된 카운트 데이터를 저장하며 대시보드 시각화 차트에 직접 활용됩니다.
+*   **`appmon_event_count_last`**: 각 이벤트의 직전 카운트 상태를 보관하여 애플리케이션 재시작 시 인메모리 카운터를 복원함으로써 통계 연속성을 제공합니다.
 
-*   **`appmon_event_count_last`**
-    *   각 이벤트의 마지막 카운트 상태를 저장합니다. 애플리케이션이 재시작될 때 이 테이블의 데이터를 읽어 카운터를 복원함으로써 통계 유실을 방지합니다.
+> 자세한 복합 PK 스키마 및 사전 집계(Pre-aggregation) 3계층 저장소 아키텍처에 대해서는 [AppMon 이벤트 카운트 데이터 구조 및 아키텍처](/ko/docs/aspectow/appmon/event-count-data-structure/) 문서를 참조하세요.
 
 ## 5. Console 없이 AppMon 단독(Standalone) 설치 및 설정 가이드
 
-Console 구축 없이 특정 애플리케이션 서버에 AppMon만 단독으로 가볍게 구동하고자 할 때는 프로젝트의 **`/config/appmon/`** 디렉토리에 설정 파일들을 구성합니다.
+Console 구축 없이 특정 애플리케이션 서버에 AppMon만 단독으로 구동하고자 할 때는 프로젝트의 **`/config/appmon/`** 디렉토리에 설정 파일들을 구성합니다.
 
 ### 5.1. 설정 디렉토리 구성 (`/config/appmon/`)
 
-*   **`appmon-config.apon`**: 모니터링 대상 애플리케이션, 이벤트, 메트릭 및 로그 테일링 대상을 정의하는 메인 APON 파일
-*   **`appmon-rules.xml`**: Aspectran XML 규칙 파일로, 노드 프로필에 따라 노드 연동 룰을 append 구성
+*   **`appmon-config.apon`**: 수집 대상 애플리케이션(`app`), 이벤트, 메트릭, 로그 및 카운터 저장 주기를 정의하는 메인 설정 파일
+*   **`node-config.apon`**: 서버 그룹(`group`) 및 노드(`node`) 정의 파일
+*   **`appmon-rules.xml` & `node-rules.xml`**: `AppMonConfigResolver` 및 `NodeConfigResolver`를 통해 설정 파일들을 로드하고 `NodeManagerFactoryBean`을 등록하는 Aspectran XML 규칙 파일
 *   **`appmon.db-h2.properties`**: 내장 H2 DB 보관 경로 설정 프로퍼티 파일
 
-### 5.2. APON 메인 설정 (`appmon-config.apon`) 상세 작성법
+### 5.2. APON 메인 설정 (`appmon-config.apon`) 예시
+
+`appmon-config.apon` 파일에는 모니터링할 애플리케이션(`app`), 수집 이벤트, 메트릭, 로그 및 저장 주기를 정의합니다.
 
 ```apon
-# WebSocket 미지원 환경을 위한 Long-Polling 설정
-pollingConfig: {
-    pollingInterval: 3000   # 클라이언트가 서버로 새 메시지를 폴링하는 주기(ms)
-    sessionTimeout: 30000   # 비활성 폴링 세션 만료 시간(ms)
-}
-
 # DB 카운터 저장 주기 (분 단위, 예: 1분)
 counterPersistInterval: 1
 
-# 모니터링 대상 애플리케이션 정의 1 (Root 앱)
+# Long-Polling 설정 (WebSocket 미지원 환경)
+pollingConfig: {
+    pollingInterval: 3000   # 폴링 주기(ms)
+    sessionTimeout: 30000   # 세션 만료 시간(ms)
+}
+
+# 모니터링 대상 애플리케이션 정의
 app: {
-    id: appmon-root
-    title: Root Application
+    id: jpetstore
+    title: JPetStore Webapp
     event: {
         id: activity
-        target: root
+        target: jpetstore
         parameters: {
             +: /**
         }
     }
     event: {
         id: session
-        target: tow.server/root
+        target: tow.server/jpetstore
     }
     metric: {
         id: heap
-        title: Heap
+        title: Heap Usage
         description: JVM Heap 메모리 사용량을 모니터링합니다.
         reader: com.aspectran.aspectow.appmon.engine.exporter.metric.jvm.HeapMemoryUsageReader
         sampleInterval: 500
-        heading: true
     }
     metric: {
         id: undertow-tp
         title: Undertow Thread Pool
-        description: Undertow NIO 워커 스레드 풀 자원을 모니터링합니다.
+        description: Undertow NIO 워커 스레드 풀을 모니터링합니다.
         reader: com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.NioWorkerMetricsReader
         target: tow.server
         sampleInterval: 500
-        heading: true
     }
     log: {
         id: app
-        file: /logs/root.log
-        sampleInterval: 300
-        lastLines: 300
-    }
-    log: {
-        id: access
-        file: /logs/root-access.log
-        sampleInterval: 300
-        lastLines: 100
-    }
-}
-
-# 모니터링 대상 애플리케이션 정의 2 (AppMon 단독 관리 콘솔 예시)
-app: {
-    id: appmon
-    title: AppMon Self
-    event: {
-        id: activity
-        target: appmon
-        parameters: {
-            +: /**
-            -: /nodes/**/polling/**  # 무의미한 폴링 요청 트래픽은 모니터링에서 제외
-        }
-    }
-    event: {
-        id: session
-        target: tow.server/appmon
-    }
-    log: {
-        id: app
-        file: /logs/appmon.log
+        file: /logs/jpetstore.log
         sampleInterval: 300
         lastLines: 300
     }
 }
 ```
 
-### 5.3. Aspectran XML 룰 및 DB 경로 설정
+### 5.3. 주요 APON 파라미터 명세
 
-#### `appmon-rules.xml` 구성
+*   **`counterPersistInterval`**: 이벤트 카운터의 집계 데이터를 DB에 저장하는 주기(분 단위, 기본값: 5분). `0` 설정 시 DB 저장 비활성화.
+*   **`pollingConfig`**: Long-Polling 접속 동작을 설정합니다 (`pollingInterval`, `sessionTimeout`).
+*   **`app`**: 모니터링할 개별 애플리케이션 단위.
+    *   **`event`**: `name` (`activity`, `session`), `target` (ActivityContext / 서블릿 경로), `parameters` (Pointcut `+`/`-` 경로 필터).
+    *   **`metric`**: `reader` (수집을 담당하는 `MetricReader` 구현 클래스 풀네임), `parameters` (추가 인자).
+    *   **`log`**: `file` (테일링 대상 로그 파일 경로), `lastLines` (UI 접속 시 초기 로드 라인 수).
 
-단독 구동 시 게이트웨이 프로필 선택 여부에 따라 룰 파일을 동적으로 포함하도록 설정합니다.
+> 서버 그룹(`group`) 및 노드(`node`) 정의는 `node-config.apon` 또는 `node-config-gateway.apon` 파일에 별도로 작성됩니다.
+
+### 5.4. 단계별 설치 및 구동 가이드
+
+#### 1단계: 수집 대상 애플리케이션 정의 (`/config/appmon/appmon-config.apon`)
+`appmon-config.apon` 파일에 모니터링할 `app`, `event`, `metric`, `log` 대상을 정의합니다.
+
+#### 2단계: 노드 클러스터 정의 (`/config/appmon/node-config.apon`)
+`node-config.apon` (또는 `node-config-gateway.apon`) 파일에 서버 그룹(`group`)과 서버 노드(`node`)를 정의합니다.
+
+```apon
+cluster: {
+    id: appmon-cluster1
+    mode: direct
+}
+group: {
+    id: group1
+    title: Group 1
+}
+node: {
+    id: appmon-node1
+    group: group1
+    title: Localhost
+    endpoint: {
+        mode: auto
+    }
+}
+```
+
+#### 3단계: XML 룰 구성 (`appmon-rules.xml` & `node-rules.xml`)
+`appmon-rules.xml`에서 `AppMonConfigResolver`를 통해 설정 파일을 지정하고, 적절한 노드 룰(`node-rules.xml`)을 append 합니다.
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
-        "https://aspectran.com/dtd/aspectran-9.dtd">
+<!-- appmon-rules.xml 예시 -->
 <aspectran>
+    <bean class="com.aspectran.aspectow.appmon.engine.config.AppMonConfigResolver">
+        <properties profile="!prod">
+            <item name="configLocation">/config/appmon/appmon-config.apon</item>
+        </properties>
+        <properties profile="prod">
+            <item name="configLocation">/config/appmon/appmon-config-prod.apon</item>
+        </properties>
+    </bean>
 
-    <append file="/config/appmon/node-rules.xml" profile="!gateway"/>
-    <append file="/config/appmon/node-rules-gateway.xml" profile="gateway"/>
-
+    <append file="/config/appmon/node-rules.xml"/>
 </aspectran>
 ```
 
-#### `appmon.db-h2.properties` 구성
+`node-rules.xml`에서는 `NodeConfigResolver`로 `node-config.apon` 경로를 로드하고 `NodeManagerFactoryBean`을 등록합니다.
 
-내장 H2 데이터베이스 경로를 지정합니다:
+```xml
+<!-- node-rules.xml 예시 -->
+<aspectran>
+    <bean class="com.aspectran.aspectow.node.config.NodeConfigResolver">
+        <properties>
+            <item name="configLocation">/config/appmon/node-config.apon</item>
+        </properties>
+    </bean>
 
-```properties
-aspectow.appmon.config.db.h2.path=~/aspectow-appmon-data
+    <bean id="nodeManager" class="com.aspectran.aspectow.node.manager.NodeManagerFactoryBean" lazyDestroy="true"/>
+</aspectran>
 ```
 
-RDBMS(MariaDB, MySQL, Oracle 등)를 연동하려는 경우 Java 실행 시 시스템 속성을 전달합니다:
+#### 4단계: 데이터베이스 접속 및 프로필 설정 (Database & Profile Configuration)
+
+독립형(Standalone) AppMon을 구동하려면 실행 프로필(Profiles) 및 데이터베이스 접속 정보를 바르게 설정해야 합니다.
+
+*   **독립형 필수 프로필 (`appmon.standalone`)**: Console 없이 AppMon을 독립 솔루션으로 구동하려면 **반드시 `appmon.standalone` 프로필 지정이 필수**입니다.
+*   **기본 프로필 및 H2 DB**: 기본 구성(`aspectran-config.apon`)에서는 `appmon.standalone`과 내장 `h2` 프로필이 디폴트로 활성화되어 별도 DB 설정 없이 즉시 개발 및 시연 환경을 구동할 수 있습니다.
+*   **RDBMS 변경 및 프로퍼티 파일 추가**: `h2` 대신 다른 데이터베이스(MariaDB, MySQL, PostgreSQL, Oracle 등)를 연동하려면, 해당 DB 프로필(예: `mariadb`)을 지정하고 프로젝트의 `/config/appmon/` 디렉토리에 맞는 프로퍼티 파일(**`appmon.db-mariadb.properties`**)을 추가로 작성해야 합니다.
+
+독립형 AppMon은 일반적으로 `appmon` 컨텍스트 이름으로 구동되므로, 다음과 같이 Java 시스템 속성(System Property)을 통해 실행 프로필과 접속 프로퍼티를 전달합니다.
 
 ```bash
-# MariaDB 연동 예시
--Daspectran.profiles.base.appmon=mariadb -Dappmon.db-mariadb.url=jdbc:mariadb://127.0.0.1:3306/appmon_db -Dappmon.db-mariadb.username=appmon -Dappmon.db-mariadb.password=your-password
+# 독립형(appmon.standalone) 모드에서 MariaDB 연동 구동 예시
+-Daspectran.profiles.base.appmon=appmon.standalone,mariadb -Dappmon.db-mariadb.url=jdbc:mariadb://127.0.0.1:3306/appmon_db -Dappmon.db-mariadb.username=appmon -Dappmon.db-mariadb.password=your-password
 ```
 
 ## 6. 결론
 
-Aspectow AppMon은 Aspectow Console의 통합 모니터링 엔진으로 구동될 수 있을 뿐만 아니라, 필요에 따라 프로젝트의 `/config/appmon/` 설정을 통해 독립된 모니터링 솔루션으로 손쉽게 배포할 수 있는 유연성을 제공합니다.
+Aspectow AppMon은 Aspectow Console의 내장 모니터링 엔진으로 구동될 수 있을 뿐만 아니라, 필요에 따라 프로젝트의 `/config/appmon/` 설정을 통해 독립된 모니터링 솔루션으로 손쉽게 배포하여 애플리케이션의 투명성과 관찰 가능성(Observability)을 크게 향상시킬 수 있습니다.

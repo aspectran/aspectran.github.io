@@ -226,10 +226,10 @@ Issues new security tokens and encrypts payload data using PBE algorithms:
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-tool.png" alt="Vault Interactive Tool Screen" %}
 
-Interactive laboratory tool allowing developers to encrypt/decrypt sensitive credentials (DB passwords, API keys) and generate Java `-Dproperty=PBE(Ciphertext)` system property flags.
+Interactive laboratory tool allowing developers to encrypt/decrypt sensitive credentials (DB passwords, API keys) and generate Java `-Dproperty=ENC(Ciphertext)` system property flags.
 
 *   **Encryption/Decryption Input Form**: Enter Plaintext, Password, and Salt values and execute by clicking the `Encrypt` or `Decrypt` button.
-*   **Java System Property Generator**: Automatically generates the syntax in the format `-Dproperty=PBE(Ciphertext)` for direct use in Java execution commands.
+*   **Java System Property Generator**: Automatically generates the syntax in the format `-Dproperty=ENC(Ciphertext)` for direct use in Java execution commands.
 
 ## 6. Framework Diagnostics & Developer Tools (Framework & Developer Tools)
 

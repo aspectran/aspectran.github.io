@@ -325,83 +325,36 @@ Windows:
 app\bin\shell.bat debug
 ```
 
-### 6.2. AppMon 설정 (`/config/appmon/`)
+### 6.2. Aspectow Console 및 독립형 AppMon 설정 (`/config/console/` & `/config/appmon/`)
 
-내장 모니터링 도구인 AppMon은 기본 설정이 라이브러리에 내장되어 있으며, 사용자는 다음의 파일들을 프로젝트에 배치하거나 수정하여 이 기본 설정을 **재정의(Override)**하는 방식으로 동작을 커스터마이징합니다.
+Aspectow 생태계는 통합 관제 플랫폼인 **Aspectow Console**과 실시간 모니터링 솔루션인 **Aspectow AppMon**을 지원하며, 구동 환경과 에디션에 따라 설정 디렉토리가 명확히 분리됩니다.
 
-- **`/config/appmon/appmon-config.apon`**: 모니터링할 대상(인스턴스, 이벤트, 메트릭, 로그)을 정의하는 핵심 설정 파일.
-- **`/config/appmon/appmon.db-*.properties`**: 모니터링 데이터를 저장할 데이터베이스의 접속 정보를 설정하는 파일.
-- **`/config/appmon/appmon-rules.xml`**: AppMon UI의 정적 애셋(CSS, JS) 로딩 방식을 설정하는 파일.
-- **`/config/server/undertow/tow-context-appmon.xml`**: AppMon을 웹 애플리케이션으로 배포하는 방식을 커스터마이징하는 파일.
-- **`/webapps/appmon/WEB-INF/jsp/`**: AppMon UI를 구성하는 JSP 파일들이 위치합니다. `templates/default.jsp`는 전체 레이아웃을 담당하는 템플릿이며, `appmon/` 디렉토리의 JSP 파일들을 수정하여 UI를 커스터마이징할 수 있습니다.
+- **Aspectow Console 설정 (`/config/console/`)**:
+  Aspectow Enterprise 에디션에는 통합 웹 관제 시스템인 **Aspectow Console이 기본 탑재**되어 있습니다. Console 환경에서는 노드 클러스터 제어 설정(`node-config.apon`), DB 접속 구성(`aspectow-console.db-*.properties`), 노드 및 AppMon XML 규칙 파일(`node-rules.xml`, `appmon-rules.xml`), 그리고 내장 탑재된 AppMon 수집 설정(`appmon-config.apon`)을 **`/config/console/`** 디렉토리에서 통합 관리합니다.
+  *   **`node-rules.xml`**: `NodeConfigResolver`, `NodeManagerFactoryBean` 등 노드 관리 컴포넌트를 등록하는 규칙 파일
+  *   **`appmon-rules.xml`**: `AppMonConfigResolver`를 통해 `/config/console/appmon-config.apon` 수집 설정을 동적으로 로드하는 규칙 파일
+  *   **상세 가이드:** [Aspectow Console 구성 가이드](/ko/docs/aspectow/console/configuration-guide/)
 
-AppMon 설정의 전체 아키텍처, 각 설정 항목에 대한 상세한 설명 및 예제는 다음의 AppMon 소개 문서를 참고하십시오.
+- **독립형 AppMon 설정 (`/config/appmon/`)**:
+  Console 설치 없이 특정 서버나 애플리케이션에 **독립형(Standalone) AppMon**만을 구성하여 경량 모니터링을 운용할 때는 프로젝트의 **`/config/appmon/`** 디렉토리에 전용 설정 파일들(`appmon-config.apon`, `node-config.apon`, `appmon-rules.xml`, `node-rules.xml`, `appmon.db-*.properties`)을 구성하여 기본 동작을 재정의(Override)합니다.
+  *   **상세 가이드:** [Aspectow AppMon 개요 및 설정 가이드](/ko/docs/aspectow/appmon/)
 
-**참고 문서:** [Aspectow AppMon](/ko/docs/aspectow/appmon/)
+## 7. 주요 기능 활용: 통합 대시보드 보안 및 접근 제어
 
-## 7. 주요 기능 활용: AppMon 대시보드 접근 제어
+Aspectow 생태계에서는 통합 관제 플랫폼인 **Aspectow Console** 및 **AppMon 대시보드**를 통해 서버 상태와 애플리케이션 지표를 실시간 관찰합니다. 운영 환경에서는 허가되지 않은 사용자의 대시보드 접속 및 노드 제어를 차단하기 위한 접근 제어 메커니즘을 적용합니다.
 
-AppMon은 `root` 컨텍스트와 분리된 별도의 `appmon` 웹 컨텍스트에서 동작합니다. 따라서 AppMon 대시보드를 열 때 허가되지 않은 접근을 막기 위한 안전한 접근 제어 메커니즘이 필요합니다. Aspectow는 신뢰할 수 있는 `root` 컨텍스트에서 임시 인증 쿠키를 발급하고, `appmon` 컨텍스트가 이를 검증하는 방식으로 이 문제를 해결합니다.
+### 7.1. Aspectow Console 통합 접근 제어 (RBAC 기반)
 
-#### 1단계: 인증 쿠키 발급 (`root` 컨텍스트)
+Aspectow Console 환경에서는 세분화된 RBAC(Role-Based Access Control) 권한 체계를 통해 대시보드 접근과 노드 제어를 보안 통제합니다.
 
-먼저, `root` 컨텍스트에 '게이트키퍼' 역할의 Translet을 정의합니다. 이 Translet은 AppMon 대시보드로의 안전한 진입점 역할을 합니다. 사용자가 이 Translet에 접근하면, 안전한 시간제한이 있는 HttpOnly 인증 쿠키를 발급한 후 사용자를 AppMon 대시보드로 리다이렉트합니다.
+*   **역할 기반 통제**: `SUPER_ADMIN`, `ADMIN`, `DEMO` 등의 역할을 통해 대시보드 조회 전용 접근과 원격 명령/노드 제어 권한을 명확히 분리합니다.
+*   **보안 토큰 인증**: PBE(Password-Based Encryption) 기반 암호화 토큰과 보안 세션을 활용하여 외부 트래픽으로부터 모니터링 컨텍스트를 보호합니다.
 
-**`root-web-config.xml` 예시**
-```xml
-<bean id="appMonCookieIssuer" class="com.aspectran.appmon.common.auth.AppMonCookieIssuer"/>
+### 7.2. 독립형(Standalone) AppMon 접근 제어
 
-<translet name="/monitoring/${instances}">
-    <action bean="appMonCookieIssuer" method="issueCookie">
-        <argument>/appmon</argument>
-        <argument valueType="int">3600</argument>
-    </action>
-    <redirect path="/appmon/dashboard/"/>
-</translet>
-```
-1. 사용자가 AppMon을 열기 위해 `/monitoring` 경로로 접근합니다.
-2. Translet은 `appMonCookieIssuer` 빈의 `issueCookie` 메소드를 호출합니다. 이 메소드는 시간제한이 있는 PBE 토큰을 생성하여 `appmon-auth-token`이라는 이름의 `HttpOnly` 쿠키에 설정합니다. 쿠키의 경로는 `/appmon`으로 설정되고, 최대 유효 시간은 3600초(1시간)입니다.
-3. 그 후 사용자의 브라우저를 AppMon 컨텍스트의 `/appmon/dashboard/` 경로로 **리다이렉트**합니다. 브라우저는 요청 시 새로 발급된 쿠키를 자동으로 포함하여 전송합니다.
+Console 없이 AppMon을 단독으로 구동할 경우, 메인 애플리케이션 컨텍스트에서 임시 인증 토큰 쿠키를 발급하고 AppMon 컨텍스트가 이를 검증하는 방식으로 보안을 유지합니다.
 
-#### 2단계: 인증 쿠키 검증 (`appmon` 컨텍스트)
+1.  **인증 쿠키 발급**: 메인 웹 애플리케이션에서 인증된 사용자에게 시간제한이 있는 `HttpOnly` 보안 인증 쿠키를 발급한 후 AppMon 대시보드 경로(`/appmon/dashboard/`)로 리다이렉트합니다.
+2.  **인증 쿠키 검증**: AppMon 컨텍스트에서는 들어오는 요청의 보안 토큰 쿠키 존재 여부와 유효 기간을 검증하여 허가된 사용자만 대시보드에 접근할 수 있도록 보안을 강화합니다.
 
-`appmon` 컨텍스트에서는 모든 들어오는 요청을 가로채도록 Aspect(`AppMonAuthCheckAspect`)가 설정되어 있습니다. 이 Aspect는 `appmon-auth-token` 쿠키의 존재 여부와 유효성을 검사합니다.
-
-**`AppMonAuthCheckAspect.java`의 일부**
-```java
-@Component
-@Aspect("appMonAuthCheckAspect")
-@Joinpoint(pointcut = {
-        "+: /**",
-        "-: /auth-expired"
-})
-public class AppMonAuthCheckAspect {
-
-    // ...
-
-    @Before
-    public void before(@NonNull Translet translet) {
-        Cookie cookie = WebUtils.getCookie(translet, AUTH_TOKEN_NAME);
-        if (cookie == null) {
-            reject(translet);
-            return;
-        }
-
-        String token = cookie.getValue();
-        try {
-            // 토큰을 검증하고 쿠키의 만료 시간을 갱신합니다.
-            appMonCookieIssuer.refreshCookie(translet, token);
-        } catch (Exception e) {
-            reject(translet);
-        }
-    }
-
-    // ...
-}
-```
-1. `appmon` 컨텍스트에 대한 모든 요청에 대해 `AppMonAuthCheckAspect`의 `before` 어드바이스가 실행됩니다.
-2. `appmon-auth-token` 쿠키를 가져옵니다. 쿠키가 없으면 요청이 거부됩니다.
-3. 쿠키가 존재하면 `appMonCookieIssuer.refreshCookie()`를 호출합니다. 이 메소드는 토큰을 검증합니다. 유효한 경우, 만료 시간이 갱신된 새 쿠키를 발급하여 사용자의 세션을 효과적으로 연장합니다.
-4. 토큰이 유효하지 않은 경우(예: 만료되었거나 변조된 경우), 예외가 발생하고 요청이 거부되어 사용자는 리다이렉트됩니다.
-
-이 메커니즘은 `root` 컨텍스트가 보안 쿠키를 발급하여 사용자의 신원을 보증하는 신뢰할 수 있는 기관 역할을 하는, 두 웹 컨텍스트 간의 안전한 다리를 구축합니다.
+자세한 보안 제어 및 권한 설정 방법은 [Aspectow Console 주요 화면 및 기능 가이드](/ko/docs/aspectow/console/feature-guide/)를 참조하십시오.

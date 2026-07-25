@@ -154,7 +154,7 @@ aspectow:
           description: Canvas 트래픽 시각화, JVM 리소스 메트릭 및 역방향 로그 테일링을 제공하는 실시간 관제 솔루션입니다.
       tags:
         - title: 대시보드 가이드
-          url: /ko/docs/aspectow/appmon/v3-dashboard-guide/
+          url: /ko/docs/aspectow/appmon/dashboard-guide/
         - title: 메시지 프로토콜
           url: /ko/docs/aspectow/appmon/message-protocol/
         - title: 이벤트 데이터 구조

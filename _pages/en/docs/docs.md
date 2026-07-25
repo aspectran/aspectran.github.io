@@ -110,7 +110,7 @@ Real-time web control console for centrally managing and observing Aspectran app
 Lightweight monitoring solution for real-time monitoring of system resources and application activities. Runs integrated within Aspectow Console or can be deployed independently.
 
 *   [Aspectow AppMon Overview & Features](/en/docs/aspectow/appmon/)
-*   [AppMon Dashboard Guide](/en/docs/aspectow/appmon/v3-dashboard-guide/)
+*   [AppMon Dashboard Guide](/en/docs/aspectow/appmon/dashboard-guide/)
 *   [AppMon Message Protocol Specification](/en/docs/aspectow/appmon/message-protocol/)
 *   [AppMon Event Count Data Structure and Architecture](/en/docs/aspectow/appmon/event-count-data-structure/)
 

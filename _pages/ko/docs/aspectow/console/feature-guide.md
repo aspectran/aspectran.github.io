@@ -229,7 +229,7 @@ Console 내에 통합된 AppMon 엔진을 통해 애플리케이션의 실시간
 개발자와 관리자가 민감한 데이터(DB 비밀번호, API 키 등)를 암호화하거나 복호화할 수 있는 대화형 실험실 도구입니다.
 
 *   **암/복호화 입력 폼**: Plaintext, Password, Salt 값을 입력하고 `Encrypt` 또는 `Decrypt` 버튼을 실행합니다.
-*   **Java System Property 생성 구문**: 암호화된 결과값을 Java 실행 명령에 바로 사용할 수 있도록 `-Dproperty=PBE(Ciphertext)` 형태로 자동 생성해 줍니다.
+*   **Java System Property 생성 구문**: 암호화된 결과값을 Java 실행 명령에 바로 사용할 수 있도록 `-Dproperty=ENC(Ciphertext)` 형태로 자동 생성해 줍니다.
 
 ## 6. 프레임워크 진단 및 개발자 유틸리티 (Framework & Developer Tools)
 

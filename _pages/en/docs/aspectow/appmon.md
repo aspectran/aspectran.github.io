@@ -1,206 +1,201 @@
 ---
-title: Aspectow AppMon
-teaser: Aspectow AppMon is a lightweight, real-time monitoring solution for applications based on the Aspectran framework.
-subheadline: Aspectow
+title: Aspectow AppMon Overview & Configuration Guide
+teaser: Aspectow AppMon is a lightweight monitoring solution for observing real-time events, system metrics, sessions, and log streams in Aspectran framework-based applications.
+subheadline: Aspectow AppMon
 ---
 
 ## 1. Overview
 
-Aspectow AppMon is a lightweight, real-time monitoring solution for applications based on the Aspectran framework. It is designed to minimize the impact on application performance while allowing real-time observation of various events, logs, and system metrics that occur during operation through a web UI.
+Aspectow AppMon is a lightweight real-time monitoring solution for applications built on the Aspectran framework. Designed to minimize impact on application performance, it allows operators and developers to visually observe various runtime events, logs, and system metrics in real time via a web UI.
 
-It can be easily integrated into Aspectran applications without complex setup, helping developers and operators to intuitively understand the internal workings of the application and quickly diagnose problems.
+It can run embedded within Aspectow Console in an integrated control environment, or **deployed as a standalone solution without Console** for lightweight monitoring operations.
 
 ## 2. Key Features
 
-- **Real-time Monitoring**: Streams data generated from the server in real-time to the UI using WebSocket or Long-Polling methods.
-- **Lightweight and Easy Integration**: Can be simply registered as an Aspectran bean in the target application, minimizing performance degradation by using minimal resources.
-- **Dynamic Monitoring**: Utilizes Aspectran's AOP features to dynamically track the execution of specific transactions (Activity) and measure performance without code changes.
-- **Support for Various Data Sources**:
-  - **Events**: Tracks and counts major application events such as HTTP request processing and session creation/destruction.
-  - **Metrics**: Collects various system metrics like JVM heap memory usage, Undertow thread pool status, and HikariCP connection pool status.
-  - **Logs**: Tails specified log files in real-time and displays them on the UI.
-- **Data Persistence**: Periodically saves key event count data to an embedded H2 database, ensuring that statistics are maintained even after an application restart.
-- **Flexible Configuration**: Allows flexible definition of which instances and what data to monitor through an APON (Aspectran Object Notation) based configuration file.
+*   **Real-time Monitoring**: Streams data generated on the server in real time via WebSocket or Long-Polling to display on the UI.
+*   **Lightweight & Easy Integration**: Easily registered as an Aspectran Bean in target applications, utilizing minimal resources to prevent performance degradation.
+*   **Dynamic Monitoring**: Leverages Aspectran's AOP capabilities to dynamically trace transaction (`Activity`) executions and measure performance without code modifications.
+*   **Diverse Data Sources**:
+    *   **Events**: Tracks and counts core application events such as HTTP request handling and session creation/destruction.
+    *   **Metrics**: Collects system metrics including JVM heap memory usage (`HeapMemoryUsageReader`), Undertow thread pool status (`NioWorkerMetricsReader`), and HikariCP connection pool metrics (`HikariPoolMBeanReader`).
+    *   **Logs**: Streams real-time tailing of specified application and access log files on the UI.
+*   **Data Persistence**: Periodically saves event counter metrics to an embedded H2 database or external RDBMS to preserve statistical data across application restarts.
+*   **Flexible APON Configuration**: Defines nodes and monitoring target applications flexibly using APON (Aspectran Parameter Object Notation) configuration files.
 
-## 3. Core Architecture
+## 3. Core Architecture & 3-Tier Hierarchy
 
-Aspectow AppMon consists of the following main components:
+Aspectow AppMon utilizes a 3-tier hierarchy—**`Group` (Server Group) - `Node` (Server Node) - `App` (Application)**—for distributed monitoring identification.
 
-- **AppMonManager**: The core engine that manages the overall lifecycle and configuration of AppMon.
-- **Exporter**: Responsible for collecting data from specific data sources (logs, metrics, events).
-  - **Reader**: Implements the specific method for how the `Exporter` collects data (e.g., querying JVM metrics via JMX, reading log files from the filesystem).
-- **PersistManager**: Handles the persistence of collected data (mainly event counts) to the database.
-  - **CounterPersistSchedule**: Periodically executed by a scheduler to save counter data to the DB.
-- **ExportService**: Responsible for communication with the client (web UI), transmitting collected data via WebSocket or Polling.
-- **Activity (Front/Backend)**: Acts as a controller that handles HTTP requests from the web UI or external agents.
+### Key Engine Components
 
-## 4. Getting Started (Quick Guide)
+*   **AppMonManager**: The core engine managing the overall lifecycle and configuration of AppMon.
+*   **Exporter**: Responsible for collecting data from specific data sources (logs, metrics, events).
+    *   **Reader**: Implements concrete data collection methods for `Exporter` (e.g., querying JVM metrics via JMX, reading log files from filesystem).
+*   **PersistManager**: Handles periodic persistence of collected counter metrics to the database.
+    *   **CounterPersistSchedule**: Scheduled task executing periodically to store counter data to the DB.
+*   **ExportService**: Manages communication with client web UIs, transmitting collected data via WebSocket or Polling.
+*   **Activity (Front/Backend)**: Acts as controllers handling HTTP requests from web UIs or external agents.
 
-1.  **Add Dependency**: Add the `aspectow-appmon` dependency to your `pom.xml`.
-2.  **Register Factory Bean**: Register `AppMonManagerFactoryBean` as a component in your Aspectran configuration file. This factory bean activates all of AppMon's features.
-3.  **Create Configuration File**: Create an `appmon-config.apon` file to define in detail the instances, events, metrics, and logs to be monitored.
-4.  **Run Application**: When you run your Aspectran application, AppMon will start up with it.
-5.  **Access Web UI**: Access the provided URL to start real-time monitoring.
+## 4. Data Persistence Architecture Overview
 
-## 5. Data Persistence Structure
+Aspectow AppMon persistently stores event count metrics in a database to maintain continuous statistics. By default, it uses an embedded H2 database and provides the following primary tables:
 
-Aspectow AppMon saves event counting data to a database to maintain statistics. By default, it uses an embedded H2 database, and the schema is as follows:
+*   **`appmon_event_count`**: Stores count metrics aggregated by minute, hour, day, month, and year, queried directly for real-time visualization charts.
+*   **`appmon_event_count_last`**: Stores the most recent count state for each event to restore in-memory counters upon application restarts, ensuring statistical continuity.
 
-- **`appmon_event_count`**
-  - Stores event count data aggregated by minute, hour, day, month, and year.
-  - The data in this table is used to draw statistical charts.
-  - Key Columns:
-    - `domain`, `instance`, `event`: Identifies which event is being counted.
-    - `datetime`: The aggregated time unit (e.g., `yyyyMMddHHmm`).
-    - `total`: The cumulative total count.
-    - `delta`: The count that occurred during that time unit.
-    - `error`: The error count that occurred during that time unit.
+> For detailed composite PK schemas and pre-aggregation 3-tier storage architecture, refer to the [AppMon Event Count Data Structure and Architecture](/en/docs/aspectow/appmon/event-count-data-structure/) documentation.
 
-- **`appmon_event_count_last`**
-  - Stores the last count state for each event.
-  - When the application restarts, it reads the data from this table to restore the counters, ensuring that statistics are not lost.
-  - It has a similar structure to the `appmon_event_count` table but has a `reg_dt` column indicating the last registration time instead of `datetime`.
+## 5. Standalone Installation & Configuration Guide (Without Console)
 
-## 6. How to Configure AppMon
+When deploying AppMon standalone on specific application servers without Console, configuration files are located under the project's **`/config/appmon/`** directory.
 
-All of AppMon's behavior is configured through the `appmon-config.apon` file. Furthermore, AppMon has a flexible architecture where default settings are built into the library, and users can override them in the project's `/config/appmon` directory.
+### 5.1. Configuration Directory Structure (`/config/appmon/`)
 
-### 6.1. `appmon-config.apon` File Details
+*   **`appmon-config.apon`**: Main configuration file defining target applications (`app`), events, metrics, logs, and counter persistence intervals.
+*   **`node-config.apon`**: Server group (`group`) and server node (`node`) definition file.
+*   **`appmon-rules.xml` & `node-rules.xml`**: Aspectran XML rule files loading configuration files via `AppMonConfigResolver` and `NodeConfigResolver` and registering `NodeManagerFactoryBean`.
+*   **`appmon.db-h2.properties`**: Property file configuring the embedded H2 DB storage path.
 
-This file consists of several sections that define what to monitor and how.
+### 5.2. APON Main Configuration (`appmon-config.apon`) Example
 
-#### Main Configuration Sections
-
-- **`counterPersistInterval`**: Sets the interval, in minutes, for saving aggregated event counter data to the database. If not set, it defaults to 5 minutes.
-- **`pollingConfig`**: Configures the behavior when a client connects via Long-Polling (`pollingInterval`, `sessionTimeout`, etc.).
-- **`domain`**: Defines and logically groups the server instances to be monitored. Each `domain` points to a single monitoring target server and contains the endpoint information for connecting to it.
-- **`instance`**: Defines the individual application or component unit to be monitored. Most of the detailed settings are located under this section.
-
-#### `instance` Detailed Settings
-
-Under the `instance` section, you can configure `event`, `metric`, and `log` to collect the desired data.
-
-- **`event` Settings**:
-  - `name`: Specifies a predefined event type, such as `activity` or `session`.
-  - `target`: Specifies the target to be monitored.
-    - For `activity`: The name of Aspectran's ActivityContext (e.g., `jpetstore`).
-    - For `session`: The servlet context path (e.g., `tow.server/jpetstore`).
-  - `parameters`: Sets a Pointcut for `activity` events to include or exclude specific request paths.
-
-- **`metric` Settings**:
-  - `reader`: Specifies the full class name of the `MetricReader` implementation that will collect the metrics. This allows for easy addition of custom metric collectors.
-    - Example: `com.aspectran.appmon.exporter.metric.jvm.HeapMemoryUsageReader`
-  - `parameters`: Sets parameters to be passed to the `reader` class (e.g., `poolName` for HikariCP).
-
-- **`log` Settings**:
-  - `file`: Specifies the path to the log file to be tailed.
-  - `lastLines`: Specifies the number of last lines of the log to display on initial UI access.
-
-#### Configuration Example (`appmon-config.apon`)
+`appmon-config.apon` defines target applications (`app`), collected events, metrics, logs, and persistence intervals.
 
 ```apon
-# DB persistence interval (in minutes), 0 to disable
-counterPersistInterval: 10
+# DB persistence interval (in minutes, e.g., 1 minute)
+counterPersistInterval: 1
 
-# Define monitored server targets
-domain: {
-    name: backend1
-    title: Server-1
-    endpoint: {
-        mode: auto
-        url: /appmon/backend1
-    }
-}
-domain: {
-    name: backend2
-    title: Server-2
-    endpoint: {
-        mode: auto
-        url: /appmon/backend2
-    }
+# Long-Polling configuration for non-WebSocket environments
+pollingConfig: {
+    pollingInterval: 3000   # Polling interval (ms)
+    sessionTimeout: 30000   # Session expiration (ms)
 }
 
-# Define monitoring instance details
-instance: {
-    name: jpetstore
-    title: JPetStore
+# Target application definition
+app: {
+    id: jpetstore
+    title: JPetStore Webapp
     event: {
-        name: activity
+        id: activity
         target: jpetstore
         parameters: {
             +: /**
         }
     }
     event: {
-        name: session
+        id: session
         target: tow.server/jpetstore
     }
     metric: {
-        name: cp-jpetstore
-        title: CP-jpetstore
-        description: Shows the JDBC connection pool usage status
-        reader: com.aspectran.appmon.exporter.metric.jdbc.HikariPoolMBeanReader
-        parameters: {
-            poolName: jpetstore
-        }
-        sampleInterval: 50
-        exportInterval: 900
+        id: heap
+        title: Heap Usage
+        description: Monitors JVM Heap memory usage.
+        reader: com.aspectran.aspectow.appmon.engine.exporter.metric.jvm.HeapMemoryUsageReader
+        sampleInterval: 500
+    }
+    metric: {
+        id: undertow-tp
+        title: Undertow Thread Pool
+        description: Monitors Undertow NIO worker thread pool resources.
+        reader: com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.NioWorkerMetricsReader
+        target: tow.server
+        sampleInterval: 500
     }
     log: {
-        name: app
-        title: JPetStore App
+        id: app
         file: /logs/jpetstore.log
-        lastLines: 1000
         sampleInterval: 300
+        lastLines: 300
     }
 }
 ```
 
-### 6.2. Step-by-Step Configuration Guide
+### 5.3. Key APON Parameter Specifications
 
-AppMon's configuration is based on the concept of 'override', and the typical configuration steps are as follows.
+*   **`counterPersistInterval`**: Interval in minutes for saving event counter data to DB (default: 5 minutes; setting to `0` disables DB persistence).
+*   **`pollingConfig`**: Long-Polling configuration (`pollingInterval`, `sessionTimeout`).
+*   **`app`**: Defines individual application monitoring units.
+    *   **`event`**: `name` (`activity`, `session`), `target` (ActivityContext / servlet path), `parameters` (Pointcut `+`/`-` path filters).
+    *   **`metric`**: `reader` (fully qualified class name of `MetricReader` implementation), `parameters` (additional arguments).
+    *   **`log`**: `file` (target log file path for tailing), `lastLines` (initial line count loaded upon UI access).
 
-#### Step 1: Define Monitoring Targets
+> Server group (`group`) and server node (`node`) definitions are specified separately in `node-config.apon` or `node-config-gateway.apon`.
 
-> **File to modify: `/config/appmon/appmon-config.apon`**
+### 5.4. Step-by-Step Installation & Operational Guide
 
-First and foremost, you need to create the `appmon-config.apon` file described above in the project's `/config/appmon/` directory and specify the `instance`, `event`, `metric`, `log`, etc., to be monitored.
+#### Step 1: Define Target Applications (`/config/appmon/appmon-config.apon`)
+Specify target `app`, `event`, `metric`, and `log` entries inside `appmon-config.apon`.
 
-#### Step 2: Select DB Type and Configure Connection
+#### Step 2: Define Node Cluster (`/config/appmon/node-config.apon`)
+Define server group (`group`) and server node (`node`) inside `node-config.apon` (or `node-config-gateway.apon`).
 
-> **Configuration method: Java System Properties**
-
-AppMon uses Java system properties to specify which database to use for storing monitoring data.
-
-1.  **Select DB Profile**: Use the `-Daspectran.profiles.base.appmon` property to select one of `h2`, `mariadb`, `mysql`, or `oracle`.
-2.  **Provide DB Connection Info**: Pass the connection details for the selected database as separate system properties.
-
-```bash
-# Example of passing system properties on Java startup (MariaDB)
--Daspectran.profiles.base.appmon=mariadb \
--Dappmon.db-mariadb.url=jdbc:mariadb://127.0.0.1:3306/appmon \
--Dappmon.db-mariadb.username=appmon \
--Dappmon.db-mariadb.password=your-password
+```apon
+cluster: {
+    id: appmon-cluster1
+    mode: direct
+}
+group: {
+    id: group1
+    title: Group 1
+}
+node: {
+    id: appmon-node1
+    group: group1
+    title: Localhost
+    endpoint: {
+        mode: auto
+    }
+}
 ```
 
-#### Step 3: Configure UI Assets and JSP
+#### Step 3: Configure XML Rules (`appmon-rules.xml` & `node-rules.xml`)
+Specify configuration files using `AppMonConfigResolver` inside `appmon-rules.xml` and append appropriate node rules (`node-rules.xml`):
 
-> **Related files: `appmon-rules.xml`, `webapps/appmon/WEB-INF/jsp/appmon/**`**
+```xml
+<!-- Example appmon-rules.xml -->
+<aspectran>
+    <bean class="com.aspectran.aspectow.appmon.engine.config.AppMonConfigResolver">
+        <properties profile="!prod">
+            <item name="configLocation">/config/appmon/appmon-config.apon</item>
+        </properties>
+        <properties profile="prod">
+            <item name="configLocation">/config/appmon/appmon-config-prod.apon</item>
+        </properties>
+    </bean>
 
--   **`appmon-rules.xml`**: Determines where to load the AppMon UI's static assets, like CSS and JavaScript, based on the profile (`dev`/`prod`). It can be set to load from a local source or a CDN.
--   **JSP Files**: The JSP files that make up the AppMon UI are not included in the library **to allow users to directly modify the UI for their own use**. Therefore, you must copy the contents of the original project's `/webapps/appmon/WEB-INF/jsp/appmon` directory to the same path within your own project.
-
-#### Step 4: Set the Domain Identifier (Production Environment)
-
-> **Configuration method: Java System Property**
-
-In a production environment where you might be monitoring multiple server groups, you need to tell the current instance which domain it belongs to using the `-Dappmon.domain` system property. This value must match one of the `domain` names defined in `appmon-config.apon`.
-
-```bash
-# Specify that the current instance belongs to the 'prod-cluster' domain
--Dappmon.domain=prod-cluster
+    <append file="/config/appmon/node-rules.xml"/>
+</aspectran>
 ```
 
-## 7. Conclusion
+In `node-rules.xml`, load `node-config.apon` via `NodeConfigResolver` and register `NodeManagerFactoryBean`:
 
-Aspectow AppMon is a powerful tool that greatly enhances the transparency and observability of Aspectran applications. It can be an optimal choice when a complex APM solution is burdensome, and you want to look into the internal state of your application in real-time with minimal setup to detect performance issues early.
+```xml
+<!-- Example node-rules.xml -->
+<aspectran>
+    <bean class="com.aspectran.aspectow.node.config.NodeConfigResolver">
+        <properties>
+            <item name="configLocation">/config/appmon/node-config.apon</item>
+        </properties>
+    </bean>
+
+    <bean id="nodeManager" class="com.aspectran.aspectow.node.manager.NodeManagerFactoryBean" lazyDestroy="true"/>
+</aspectran>
+```
+
+#### Step 4: Database Connection and Profile Configuration (Database & Profile Configuration)
+
+To run standalone AppMon, execution profiles and database connection details must be configured correctly.
+
+*   **Mandatory Standalone Profile (`appmon.standalone`)**: To run AppMon as an independent solution without Console, specifying the **`appmon.standalone` profile is mandatory**.
+*   **Default Profile & H2 Database**: In the default configuration (`aspectran-config.apon`), `appmon.standalone` and embedded `h2` profiles are activated by default, allowing instant development and demo execution without additional DB setups.
+*   **RDBMS Switching & Property File Addition**: To connect to a database other than `h2` (e.g., MariaDB, MySQL, PostgreSQL, Oracle), specify the corresponding DB profile (e.g., `mariadb`) and add the matching property file (**`appmon.db-mariadb.properties`**) under the project's `/config/appmon/` directory.
+
+Standalone AppMon typically runs under the `appmon` context name, so execution profiles and connection properties are passed via Java System Properties as follows:
+
+```bash
+# Example of running standalone (appmon.standalone) mode with MariaDB
+-Daspectran.profiles.base.appmon=appmon.standalone,mariadb -Dappmon.db-mariadb.url=jdbc:mariadb://127.0.0.1:3306/appmon_db -Dappmon.db-mariadb.username=appmon -Dappmon.db-mariadb.password=your-password
+```
+
+## 6. Conclusion
+
+Aspectow AppMon can run embedded as an integrated monitoring engine within Aspectow Console, or be easily deployed as a standalone monitoring solution via `/config/appmon/` settings as needed to enhance application transparency and observability.

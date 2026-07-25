@@ -154,7 +154,7 @@ aspectow:
           description: Real-time monitoring solution providing Canvas traffic flow visualization, JVM resource metrics, and reverse log tailing.
       tags:
         - title: Dashboard Guide
-          url: /en/docs/aspectow/appmon/v3-dashboard-guide/
+          url: /en/docs/aspectow/appmon/dashboard-guide/
         - title: Message Protocol
           url: /en/docs/aspectow/appmon/message-protocol/
         - title: Event Data Structure

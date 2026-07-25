@@ -110,7 +110,7 @@ Aspectran 애플리케이션 서버 환경을 중앙에서 통합 관리하고 �
 시스템 리소스 및 애플리케이션 활동을 실시간으로 감시하는 경량 모니터링 솔루션입니다. Aspectow Console에 통합되어 구동되거나 독립적으로 설치/운용될 수 있습니다.
 
 *   [Aspectow AppMon 개요 및 특징](/ko/docs/aspectow/appmon/)
-*   [AppMon 대시보드 가이드](/ko/docs/aspectow/appmon/v3-dashboard-guide/)
+*   [AppMon 대시보드 가이드](/ko/docs/aspectow/appmon/dashboard-guide/)
 *   [AppMon 메시지 프로토콜 명세](/ko/docs/aspectow/appmon/message-protocol/)
 *   [AppMon 이벤트 카운트 데이터 구조 및 아키텍처](/ko/docs/aspectow/appmon/event-count-data-structure/)
 
