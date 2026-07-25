@@ -1,31 +1,32 @@
 ---
-title: "Aspectow AppMon 3.0: 실시간 대시보드 가이드"
-teaser: Aspectow AppMon 3.0은 시스템 상태를 한눈에 파악하고 직관적으로 관리할 수 있는 강력한 실시간 대시보드를 제공합니다.
+title: "Aspectow AppMon: 실시간 대시보드 가이드"
+teaser: Aspectow AppMon은 노드 그룹, 서버 노드, 애플리케이션 인스턴스의 가동 상태를 한눈에 파악하고 직관적으로 관찰할 수 있는 강력한 실시간 대시보드를 제공합니다.
 subheadline: Aspectow AppMon
 ---
 
 {% capture info_message %}
-단순한 지표 나열을 넘어, 시스템 내부에서 발생하는 활동을 시각적이고 역동적으로 표현하는 AppMon 3.0의 주요 구성 요소와 활용 방법을 소개합니다.
+단순한 지표 나열을 넘어, 시스템 내부에서 발생하는 활동을 시각적이고 역동적으로 표현하는 AppMon 대시보드의 주요 구성 요소와 활용 방법을 소개합니다.
 {% endcapture %}
 {% include alert.liquid info=info_message %}
 
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v3-dashboard-dark.jpg" alt="AppMon 3.0 Dashboard Screenshot" %}
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v3-dashboard-dark.jpg" alt="AppMon Dashboard Screenshot" %}
 
 ## 대시보드 구성 요소 설명
 
-### 1. 지능형 탭 내비게이션
-*   **도메인 탭 (Domain Tabs)**: 서버 그룹이나 클러스터를 논리적으로 분리하여 관리합니다. 각 도메인의 연결 상태는 실시간 인디케이터를 통해 즉각 확인 가능합니다.
-*   **인스턴스 탭 (Instance Tabs)**: 도메인 내 개별 애플리케이션 인스턴스를 전환합니다. 탭 이동 시에도 데이터가 심리스(Seamless)하게 동기화되어 이전 인스턴스의 상태를 즉시 이어서 확인할 수 있습니다.
+### 1. 3계층 지능형 탭 내비게이션 (Group - Node - App)
+*   **노드 그룹 탭 (Group Tabs)**: 서버 그룹이나 클러스터를 논리적으로 분리하여 관리합니다. 각 그룹의 연결 상태는 실시간 번개 인디케이터를 통해 즉각 확인 가능합니다.
+*   **노드 탭 (Node Tabs)**: 특정 그룹 내의 물리/논리 서버 노드(`Node-1`, `Node-2` 등)를 전환합니다. 각 노드의 주요 게이지 지표와 생존 스태터스를 시각화합니다.
+*   **애플리케이션 탭 (App Tabs)**: 특정 노드 내에서 실행되는 개별 애플리케이션 컨텍스트(`App 1`, `App 2` 등)를 전환합니다. 탭 이동 시에도 모니터링 데이터가 심리스(Seamless)하게 동기화되어 이전 상태를 즉시 이어서 확인할 수 있습니다.
 
 ### 2. 서버 리소스 및 성능 모니터링
 *   **실시간 리소스 지표**:
-    *   **Heap Status**: JVM 힙 메모리의 현재 사용량과 최대치를 표시하여 GC 상태와 메모리 누수를 감지합니다.
-    *   **Undertow Thread Pool**: 활성 쓰레드와 전체 풀 크기를 비교하여 서버의 동시 처리 부하를 모니터링합니다.
-*   **Activity Status (실시간 활동 수치)**: 서버 인스턴스별로 Activity(요청) 처리 현황을 숫자로 제공합니다.
+    *   **Heap Status**: JVM 힙 메모리의 현재 사용량과 최대치를 표시하여 GC 상태와 메모리 누수를 감지합니다 (`HeapMemoryUsageReader`).
+    *   **Undertow Thread Pool**: 활성 스레드와 전체 워커 풀 크기를 비교하여 서버의 동시 처리 부하를 모니터링합니다 (`NioWorkerMetricsReader`).
+*   **Activity Status (실시간 활동 수치)**: 서버 애플리케이션별로 Activity(요청) 처리 현황을 숫자로 제공합니다.
     1.  **Active Activity**: 현재 서버에서 동시에 처리 중인 실시간 활동 수입니다.
     2.  **Current Period Count**: 현재 5분 주기의 집계 구간 동안 유입된 활동 수입니다. (예: `+14`와 같이 표시)
     3.  **Cumulative Total**: 서버 가동 이후 현재까지 누적된 전체 활동 수(`p.cumulative`)입니다.
-*   **5분 주기 집계 관리**: 수치 하단에 표시되는 타이머(예: `233/300`)는 5분(300초) 단위의 데이터 집계 진행 상태를 나타냅니다. `300/300`에 도달하면 해당 주기의 집계 데이터를 서버에 저장하고 분석 차트에 반영한 뒤, 주기를 초기화합니다.
+*   **5분 주기 집계 관리**: 수치 하단에 표시되는 타이머(예: `233/300`)는 5분(300초) 단위의 데이터 집계 진행 상태를 나타냅니다. `300/300`에 도달하면 해당 주기의 집계 데이터를 서버 DB에 저장하고 분석 차트에 반영한 뒤, 주기를 초기화합니다.
 *   **통계 요약**: 주기적으로 저장된 데이터는 서버에 영구 기록되어, 사용자가 과거 이력과 현재 상태를 시계열로 비교 분석할 수 있게 합니다.
 
 ### 3. Canvas 기반 트래픽 시각화 (Traffic Flow)

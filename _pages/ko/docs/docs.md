@@ -95,10 +95,19 @@ Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니
 *   [멀티 컨텍스트 세션 구성 전략 및 패턴](/ko/docs/aspectow/multi-context-session-strategy/)
 *   [Nginx 리버스 프록시 및 클러스터링 가이드](/ko/docs/aspectow/nginx-reverse-proxy-guide/)
 
+## <i class="bi bi-sliders"></i> Aspectow Console
+{: #aspectow-console}
+
+Aspectran 애플리케이션 서버 환경을 중앙에서 통합 관리하고 관찰하는 실시간 웹 콘솔입니다.
+
+*   [Aspectow Console 개요 및 아키텍처](/ko/docs/aspectow/console/)
+*   [Aspectow Console 주요 화면 및 기능 가이드](/ko/docs/aspectow/console/feature-guide/)
+*   [Aspectow Console 구성 가이드](/ko/docs/aspectow/console/configuration-guide/)
+
 ## <i class="bi bi-graph-up"></i> Aspectow AppMon
 {: #aspectow-appmon}
 
-시스템 리소스 및 애플리케이션 활동을 실시간으로 감시하는 강력한 도구입니다.
+시스템 리소스 및 애플리케이션 활동을 실시간으로 감시하는 경량 모니터링 솔루션입니다. Aspectow Console에 통합되어 구동되거나 독립적으로 설치/운용될 수 있습니다.
 
 *   [Aspectow AppMon 개요 및 특징](/ko/docs/aspectow/appmon/)
 *   [AppMon 대시보드 가이드](/ko/docs/aspectow/appmon/v3-dashboard-guide/)
