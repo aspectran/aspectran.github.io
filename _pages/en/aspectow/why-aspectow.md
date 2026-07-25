@@ -81,9 +81,19 @@ Beyond server execution, Aspectow includes **Aspectow Console**, a unified web i
 *   **Security & Vault Management**: Securely manages PBE (Password-Based Encryption) security tokens and system encryption configurations.
 *   **Runtime Diagnostic Tools**: Built-in developer utilities including Wildcard Pattern Tester, AsEL Expression Evaluator, and APON Data Converter.
 
-### 2. High-Performance Cluster Architecture (Direct vs. Gateway)
+### 2. High-Performance Cluster Architecture & Node Manager (Node Manager Control Plane)
 
-Aspectow supports both **Direct Mode (HTTP/REST)** for small/single cluster environments and **Gateway Mode (Redis Pub/Sub)** for large-scale dynamic clusters. Simply configure the Redis URI property (`aspectow.redis.uri`) to establish a high-performance distributed messaging bus.
+Aspectow embeds **`Aspectow Node Manager`**, a core Control Plane library that binds multiple distributed nodes into an organic, cohesive cluster. Developers can flexibly select between **Gateway Mode** and **Direct Mode** based on infrastructure environments and scaling plans.
+
+*   **Gateway Mode (Cloud-Native & Autoscaling Optimized)**:
+    *   **Dynamic Clustering**: Utilizes Redis as a central message broker and metadata repository. Nodes autonomously generate UUID-based unique identifiers upon startup and register dynamically, perfectly adapting to **Kubernetes (K8s) and AWS Auto Scaling** environments where instances are frequently added or removed.
+    *   **Infrastructure Flexibility & Private Network Traversal**: Operates seamlessly across L4/L7 load balancers. Nodes hidden behind firewalls or private IPs (NAT) can be securely controlled without opening external ports.
+    *   **Automatic Cleanup (GC)**: Automatically purges stale metadata (Group - Node - App) via Pulse survival signal monitoring when nodes detach.
+*   **Direct Mode (Static & Fixed Infrastructure)**:
+    *   A static operation mode performing direct P2P communication between nodes without Redis.
+    *   Optimized for small-scale private networks or L7 Nginx path-based routing environments with fixed node counts and IPs.
+
+With just a single-line configuration change (`mode: gateway`) inside `node-config.apon`, you can seamlessly evolve your cluster architecture as your infrastructure grows.
 
 ### 3. Native High-Performance Redis Session Store
 

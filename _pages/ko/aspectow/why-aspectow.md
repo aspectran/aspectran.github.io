@@ -81,9 +81,19 @@ Aspectow는 서버 구동을 넘어 전체 클러스터와 애플리케이션을
 *   **보안 및 Vault 관리**: PBE(Password-Based Encryption) 암호화 기반 보안 토큰 발급 및 시스템 암호화 구성을 안전하게 관리합니다.
 *   **런타임 진단 도구**: 와일드카드 패턴 검증기, AsEL 표현식 평가기, APON 데이터 변환기 등 개발자 유틸리티를 내장 제공합니다.
 
-### 2. 고성능 분산 클러스터링 아키텍처 (Direct vs Gateway)
+### 2. 고성능 분산 클러스터링 아키텍처 및 노드 관리자 (Node Manager Control Plane)
 
-Aspectow는 소규모 단일 클러스터 환경을 위한 **Direct 통신 모드(HTTP/REST)**와 대규모 동적 클러스터 환경을 위한 **Gateway 통신 모드(Redis Pub/Sub)**를 모두 지원합니다. Redis 연결 프로퍼티(`aspectow.redis.uri`) 설정만으로 손쉽게 고성능 분산 메시징 버스를 구축할 수 있습니다.
+Aspectow는 다중 노드를 하나의 유기적인 클러스터로 묶어주는 핵심 제어 평면(Control Plane) 라이브러리인 **`Aspectow Node Manager`**를 내장하고 있습니다. 개발자는 인프라 환경과 확장 계획에 따라 **Gateway 모드**와 **Direct 모드**를 자유롭게 선택할 수 있습니다.
+
+*   **Gateway 모드 (Cloud-Native & Autoscaling 최적화)**:
+    *   **동적 클러스터링**: Redis를 중앙 메시지 브로커 및 메타데이터 저장소로 활용합니다. 노드 기동 시 UUID 기반의 고유 식별자를 자율 생성하고 동적 등록하므로, 노드가 수시로 생성/소멸되는 **쿠버네티스(K8s) 및 AWS Auto Scaling** 환경에 완벽하게 대응합니다.
+    *   **인프라 유연성 및 사설망 통과**: L4/L7 로드밸런서 환경 구분 없이 동작하며, 방화벽이나 사설 IP(NAT) 뒤에 숨어 있는 노드들도 별도의 외장 포트 개방 없이 안전하게 통합 관제합니다.
+    *   **자동 정리 (GC)**: 노드 이탈 시 생존 신호(Pulse) 모니터링을 통해 묵은 메타데이터(Group - Node - App)를 깨끗하게 자율 삭제(Cleanup)합니다.
+*   **Direct 모드 (Static & Fixed Infrastructure)**:
+    *   Redis 없이 노드 간 직접 연결(P2P)을 수행하는 정적 운영 방식입니다.
+    *   노드의 개수와 IP가 고정되어 있는 소규모 전용망 또는 L7 Nginx 경로 기반 라우팅 환경에 최적화되어 있습니다.
+
+노드 설정 파일(`node-config.apon`)의 `mode: gateway` 단 한 줄의 변경만으로 인프라 성장에 맞춰 클러스터 아키텍처를 자유롭게 전환할 수 있습니다.
 
 ### 3. Redis 네이티브 고성능 세션 스토어
 
