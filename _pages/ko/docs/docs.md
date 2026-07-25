@@ -91,6 +91,7 @@ Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니
 *   [Aspectow 시작하기](/ko/docs/aspectow/getting-started/)
 *   [Aspectow 아키텍처](/ko/docs/aspectow/architecture/)
 *   [Aspectow 구성 가이드](/ko/docs/aspectow/configuration-guide/)
+*   [Aspectow Node Manager 가이드](/ko/docs/aspectow/node-manager/)
 *   [배포 및 운영 가이드](/ko/docs/aspectow/deployment-and-operations/)
 *   [멀티 컨텍스트 세션 구성 전략 및 패턴](/ko/docs/aspectow/multi-context-session-strategy/)
 *   [Nginx 리버스 프록시 및 클러스터링 가이드](/ko/docs/aspectow/nginx-reverse-proxy-guide/)

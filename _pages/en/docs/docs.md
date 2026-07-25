@@ -91,6 +91,7 @@ Next-generation enterprise application server built on Aspectran.
 *   [Aspectow Getting Started](/en/docs/aspectow/getting-started/)
 *   [Aspectow Architecture](/en/docs/aspectow/architecture/)
 *   [Aspectow Configuration Guide](/en/docs/aspectow/configuration-guide/)
+*   [Aspectow Node Manager Guide](/en/docs/aspectow/node-manager/)
 *   [Deployment and Operations Guide](/en/docs/aspectow/deployment-and-operations/)
 *   [Multi-context Session Configuration Strategy and Patterns](/en/docs/aspectow/multi-context-session-strategy/)
 *   [Nginx Reverse Proxy and Clustering Guide](/en/docs/aspectow/nginx-reverse-proxy-guide/)
