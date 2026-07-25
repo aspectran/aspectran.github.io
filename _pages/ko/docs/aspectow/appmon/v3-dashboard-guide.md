@@ -9,7 +9,7 @@ subheadline: Aspectow AppMon
 {% endcapture %}
 {% include alert.liquid info=info_message %}
 
-{% include image.liquid src="https://appmon-assets.aspectran.com/screenshots/appmon-v3-dashboard-dark.jpg" alt="AppMon 3.0 Dashboard Screenshot" %}
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v3-dashboard-dark.jpg" alt="AppMon 3.0 Dashboard Screenshot" %}
 
 ## 대시보드 구성 요소 설명
 

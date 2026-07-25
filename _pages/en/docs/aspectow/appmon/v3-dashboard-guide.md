@@ -9,7 +9,7 @@ Go beyond simple metrics with the AppMon 3.0 dashboard, which represents interna
 {% endcapture %}
 {% include alert.liquid info=info_message %}
 
-{% include image.liquid src="https://appmon-assets.aspectran.com/screenshots/appmon-v3-dashboard-dark.jpg" alt="AppMon 3.0 Dashboard Screenshot" %}
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v3-dashboard-dark.jpg" alt="AppMon 3.0 Dashboard Screenshot" %}
 
 ## Dashboard Components
 
