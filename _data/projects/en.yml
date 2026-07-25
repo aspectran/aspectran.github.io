@@ -17,6 +17,12 @@ sample_projects:
     url: https://public.aspectran.com/monitoring/
     repo: https://github.com/aspectran/aspectow-appmon
   - subheadline: Sample Project
+    title: Aspectow Demo
+    description: A comprehensive demo site showcasing the capabilities, operation, and integration of various web applications (JPetStore, PetClinic, Examples, AppMon) running on the Aspectow Web Application Server (WAS).
+    thumb_img: projects/demo.png
+    url: https://public.aspectran.com
+    repo: https://github.com/aspectran/aspectow-demo
+  - subheadline: Sample Project
     title: ToDo Webapp
     description: A simple ToDo example application based on the Aspectow Enterprise Edition.
     thumb_img: projects/todo.png
@@ -34,12 +40,6 @@ sample_projects:
     thumb_img: projects/petclinic.png
     url: https://petclinic.aspectran.com
     repo: https://github.com/aspectran/aspectran-petclinic
-  - subheadline: Sample Project
-    title: Aspectow Demo
-    description: This site is a collection of reference applications created to showcase examples of Aspectran applications following recommended best practices.
-    thumb_img: projects/demo.png
-    url: https://public.aspectran.com
-    repo: https://github.com/aspectran/demo-app
   - subheadline: Sample Project
     title: Demo Site for Servlet-Based Aspectran
     description: A web application to guide the traditional way of building web applications using the Servlet-based Aspectran framework.

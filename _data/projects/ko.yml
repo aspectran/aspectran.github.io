@@ -17,6 +17,12 @@ sample_projects:
     url: https://public.aspectran.com/monitoring/
     repo: https://github.com/aspectran/aspectow-appmon
   - subheadline: Sample Project
+    title: Aspectow Demo
+    description: 고성능 웹 애플리케이션 서버(WAS)인 Aspectow 상에서 구동되는 다양한 웹 애플리케이션(JPetStore, PetClinic, Examples, AppMon 등)의 기능과 운영 형태를 선보이는 종합 데모 사이트입니다.
+    thumb_img: projects/demo.png
+    url: https://public.aspectran.com
+    repo: https://github.com/aspectran/aspectow-demo
+  - subheadline: Sample Project
     title: ToDo 웹앱
     description: Aspectow Enterprise 에디션 기반의 간단한 ToDo 예제 애플리케이션입니다.
     thumb_img: projects/todo.png
@@ -34,12 +40,6 @@ sample_projects:
     thumb_img: projects/petclinic.png
     url: https://petclinic.aspectran.com
     repo: https://github.com/aspectran/aspectran-petclinic
-  - subheadline: Sample Project
-    title: Aspectow Demo
-    description: 이 사이트는 권장되는 모범 사례를 따르는 Aspectran 애플리케이션의 예를 보여주기 위해 만들어진 참조 애플리케이션 모음입니다.
-    thumb_img: projects/demo.png
-    url: https://public.aspectran.com
-    repo: https://github.com/aspectran/aspectow-demo
   - subheadline: Sample Project
     title: 서블릿 기반 Aspectran 데모 사이트
     description: 서블릿으로 구동되는 Aspectran을 사용하여 웹 애플리케이션을 구축하는 전통적인 방식을 안내하기 위해 만들어진 웹 애플리케이션입니다.
