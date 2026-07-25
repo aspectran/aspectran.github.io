@@ -1,7 +1,7 @@
 ---
 format: plate solid article
 title: Why Aspectow
-teaser: '"The Most Practical Enterprise WAS for Microservices Architecture (MSA)"'
+teaser: '"The Most Practical Enterprise WAS & Control Platform for Microservices Architecture (MSA) and Cluster Environments"'
 header:
   image_fullwidth: header_aspectow.png
   caption: Aspectow
@@ -12,23 +12,24 @@ permalink: /en/why-aspectow/
 
 ## Are You Facing These Challenges?
 
-*   Do you feel that **traditional WAS (like JBoss)** is too heavy and complex for an MSA environment?
-*   Do you experience the hassle of "Assembly Hell" with **lightweight containers (like Tomcat)**, where you have to manually combine DI, DB integration, and more?
+*   Do you feel that **traditional WAS (like JBoss)** is too heavy and complex for modern cluster and MSA environments?
+*   Do you experience the hassle of "Assembly Hell" with **lightweight containers (like Tomcat)**, where you have to manually combine DI, DB integration, scheduling, and monitoring?
 *   Is it difficult to understand or control the internal workings of **modern platforms (like Spring Boot)** because of excessive auto-configuration (Magic), despite their convenience?
+*   Do you want to manage node survival monitoring, remote command execution, scheduler control, and real-time traffic monitoring in a **distributed cluster environment** through a single unified web console without installing complex external APM tools?
 
 ## That's Why Aspectow Was Born.
 
-**Aspectow** is an **enterprise WAS product** based on the powerful open-source project `Aspectran`, optimized and stabilized for specific purposes. (Think of the relationship between `JBoss EAP` and `WildFly`.)
+**Aspectow** is an **enterprise WAS and control platform** based on the powerful open-source framework `Aspectran`, optimized and stabilized for modern enterprise environments.
 
-Aspectow complements the shortcomings of existing solutions, focusing particularly on solving the problems developers face in an MSA environment.
+Aspectow complements the shortcomings of existing solutions by providing high-performance servlet/non-servlet web server features along with cluster management, remote command center, distributed scheduling, PBE security Vault, and real-time AppMon monitoring—all seamlessly integrated into a single unified web console (**Aspectow Console**).
 
 ## Why Should You Develop with Aspectran?
 
-The true value of Aspectow begins with its foundation, the `Aspectran` framework. Aspectran offers developers the following clear advantages.
+The true value of Aspectow begins with its foundation, the `Aspectran` framework. Aspectran offers developers the following clear advantages:
 
 ### 1. A Controllable and Explicit Structure
 
-You don't need to waste time tracing hidden behaviors behind Spring Boot's complex auto-configuration (Magic). In Aspectran, all configurations and flows are explicitly defined, allowing anyone to easily understand and control the application's behavior. **This directly leads to ease of maintenance.**
+You don't need to waste time tracing hidden behaviors behind Spring Boot's complex auto-configuration (Magic). In Aspectran, all configurations and execution flows are explicitly defined, allowing anyone to easily understand and control the application's behavior. This directly leads to exceptional maintainability.
 
 ### 2. An All-in-One Framework with Integrated Core Features
 
@@ -36,7 +37,7 @@ Core features that form the backbone of an application, such as DI, AOP, and MVC
 
 ### 3. Intuitive Rule-Based Development
 
-In Aspectran, all requests are processed in simple, clear rule units called `Translets`. You can freely generate not only simple text responses but also dynamic content using templates, as shown below.
+In Aspectran, all requests are processed in simple, clear rule units called `Translets`. You can freely generate not only simple text responses but also dynamic content using templates:
 
 ```xml
 <translet name="hello">
@@ -50,68 +51,67 @@ In Aspectran, all requests are processed in simple, clear rule units called `Tra
 
 This intuitive structure helps developers quickly adapt and increase productivity without needing a deep understanding of the framework.
 
----
-
-**Aspectow is the server built to run these powerful and easy-to-maintain applications, created with Aspectran, at peak performance and stability.**
+Aspectow is the platform built to run these powerful and easy-to-maintain applications with peak performance, stability, and comprehensive visual control.
 
 ## Aspectow Editions
 
-Aspectow offers the following editions based on the intended use:
+Aspectow offers modular editions tailored to specific usage purposes and deployment environments:
 
 *   **Aspectow Enterprise Edition**
-    > Fully supports the Servlet specification and is suitable for building enterprise web applications. It includes JBoss's [Undertow](https://undertow.io) web server and [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp), the JSP engine used by Apache Tomcat.
+    > Fully supports the Servlet specification and is suitable for building enterprise web applications. It **includes the visual management platform, Aspectow Console, by default**, alongside JBoss's [Undertow](https://undertow.io) web server and [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp), the JSP engine used by Apache Tomcat.
 
 *   **Aspectow Light Edition**
-    > A lightweight version with the Servlet specification removed, suitable for building high-performance REST API services. It includes JBoss's [Undertow](https://undertow.io) web server.
+    > A lightweight, non-servlet version optimized for building high-performance REST API services with a minimal memory footprint. It includes JBoss's [Undertow](https://undertow.io) web server.
 
 *   **Aspectow Jetty Edition**
-    > A version with the Jetty web server built-in, capable of running Servlet-based web applications.
+    > A version with the Jetty web server built-in, providing flexibility for specific infrastructure requirements while running Servlet-based web applications.
 
 ## Aspectow's Differentiated Core Competencies
 
-Aspectow provides five practical and powerful core competencies that differentiate it from other WAS.
+Aspectow provides practical and powerful core competencies that differentiate it from traditional WAS and platforms:
 
-### 1. Native High-Performance Redis Session Store
+### 1. Unified Management Web Console (Aspectow Console)
 
-Through the `aspectran-rss-lettuce` module, session data is managed directly using `Lettuce`, a high-performance Redis client. This is significantly faster and more efficient than traditional methods that go through generic JDBC and is a key technology for accelerating the horizontal scaling of stateful services in an MSA environment.
+Beyond server execution, Aspectow includes **Aspectow Console**, a unified web interface to visually control the entire cluster and applications:
+*   **Cluster Node Management**: Real-time monitoring of node statuses (Live, Paused, Dead) and bulk action controls (Pause, Resume, Restart).
+*   **Interactive Remote Command Center**: Dispatch interactive CLI/Shell commands to specific nodes or all nodes in real time with live console streaming.
+*   **Distributed Scheduler Manager**: Offers a Dashboard view for cluster-wide schedule overview and a Detail View for node-specific job dynamic control (Pause, Resume, Details).
+*   **Security & Vault Management**: Securely manages PBE (Password-Based Encryption) security tokens and system encryption configurations.
+*   **Runtime Diagnostic Tools**: Built-in developer utilities including Wildcard Pattern Tester, AsEL Expression Evaluator, and APON Data Converter.
 
-### 2. Purpose-Driven Modular Editions
+### 2. High-Performance Cluster Architecture (Direct vs. Gateway)
 
-Aspectow abandons the heavy, 'one-size-fits-all' approach.
-*   **Enterprise Edition:** Fully supports Servlets and JSP, making it suitable for traditional web applications.
-*   **Light Edition:** Lightweight by excluding Servlet features, optimized for building high-performance REST API servers.
-*   **Jetty Edition:** Uses the Jetty web server instead of Undertow, providing a flexible option for specific environments.
+Aspectow supports both **Direct Mode (HTTP/REST)** for small/single cluster environments and **Gateway Mode (Redis Pub/Sub)** for large-scale dynamic clusters. Simply configure the Redis URI property (`aspectow.redis.uri`) to establish a high-performance distributed messaging bus.
 
-This modularity helps users achieve maximum efficiency with minimal resources tailored to their specific needs.
+### 3. Native High-Performance Redis Session Store
 
-### 3. Proven Enterprise Stack and Stability
+Through the `aspectran-rss-lettuce` module, session data is managed directly using `Lettuce`, a high-performance Redis client. This is significantly faster and more efficient than traditional JDBC-based methods, accelerating the horizontal scaling of stateful services in MSA and cluster environments.
 
-The term 'Battle-Tested' is not just a slogan. The `aspectow-demo` project features a practical enterprise stack composed of industry-leading libraries like `HikariCP` (high-performance DB connection pool) and `Querydsl` (type-safe queries). Because we have verified its stability by running complex applications on this stack, users can start developing on a reliable foundation without complex tuning.
+### 4. Built-in Real-Time AppMon Monitoring (Group - Node - App)
 
-### 4. Built-in Real-Time Application Monitoring
+Includes the `Aspectow AppMon` monitoring engine by default. Without complex external APM setups, observe Canvas-based traffic flow, JVM heap/thread metrics, active session tracking, and real-time/historical reverse log tailing via a 3-tier navigation (Group - Node - App).
 
-It provides a built-in monitoring solution called `Aspectow AppMon` by default. You can observe application logs and events in real-time without the complex process of installing and configuring separate monitoring tools. This goes beyond development convenience and is a powerful enterprise feature that significantly enhances operational stability and rapid problem-solving capabilities.
+### 5. Battle-Tested Enterprise Stack and Samples
 
-### 5. Flexible XML-Based Server Customization
-
-Through configuration files like `app/config/server/server.xml`, you can finely control internal operations such as the server lifecycle and web server handler chain. This enables far more powerful and systematic server-level customization than Spring Boot's `application.properties` approach, allowing for flexible responses to the requirements of complex enterprise environments.
+Through the `aspectow-demo` project, Aspectow provides a practical enterprise stack combining battle-tested libraries such as `HikariCP` (high-performance DB connection pool), `Querydsl` (type-safe queries), `JPetStore`, and `PetClinic`, allowing users to start development on a proven foundation.
 
 ## Project Templates and Samples
 
-Instead of providing an installable package like Apache Tomcat, Aspectow offers **starter projects** to kickstart new development and **sample projects** that demonstrate how to use specific technologies, all available via GitHub. You can develop your applications based on these projects.
+Aspectow offers starter projects to kickstart new development and sample/demo projects that demonstrate how to use specific technologies, all available via GitHub. You can develop your applications based on these projects.
 
 ### Starter Projects
 
 These projects provide only the basic environment and are intended to be used as a skeleton for starting a new project.
 
-*   [Aspectow](https://github.com/aspectran/aspectow): The default starter for the Aspectow Enterprise Edition.
+*   [Aspectow Enterprise](https://github.com/aspectran/aspectow-enterprise): The default starter for the Aspectow Enterprise Edition.
 *   [Aspectow Light](https://github.com/aspectran/aspectow-light): The default starter for the Aspectow Light Edition.
 *   [Aspectow Jetty](https://github.com/aspectran/aspectow-jetty): The default starter for the Aspectow Jetty Edition.
 
-### Sample Projects
+### Demo and Sample Projects
 
 These are complete, runnable projects that demonstrate how to use specific features or libraries.
 
+*   [Aspectow Demo Site](https://github.com/aspectran/aspectow-demo): A comprehensive demo site showcasing JPetStore, PetClinic, Examples, and AppMon running together on the Aspectow WAS.
 *   [ToDo Webapp](https://github.com/aspectran/aspectow-todo-webapp): A simple ToDo example application based on the Aspectow Enterprise Edition.
 *   [JPetStore Webapp](https://github.com/aspectran/aspectran-jpetstore): A database integration example application using MyBatis.
 *   [Petclinic Webapp](https://github.com/aspectran/aspectran-petclinic): A web application example using JPA and Thymeleaf.

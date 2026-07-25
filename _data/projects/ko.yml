@@ -50,7 +50,7 @@ sample_projects:
 starter_projects:
   - subheadline: Starter Projects
     title: Aspectow Enterprise Edition
-    description: 엔터프라이즈 웹 애플리케이션을 구축하기 위한 올인원(all-in-one) 스타터입니다. JSP를 지원하는 임베디드 Undertow 서버와 함께, 모든 기능이 포함된 서블릿(servlet) 호환 환경을 제공합니다.
+    description: 엔터프라이즈 웹 애플리케이션을 구축하기 위한 올인원 스타터입니다. 시각적 관제 플랫폼인 Aspectow Console이 기본 내장되어 있으며, JSP를 지원하는 임베디드 Undertow 서버와 함께 서블릿 호환 환경을 제공합니다.
     caption: Aspectow\nEnterprise
     url: https://github.com/aspectran/aspectow-enterprise
     repo: https://github.com/aspectran/aspectow-enterprise
