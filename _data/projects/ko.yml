@@ -7,8 +7,8 @@ sample_projects:
   - subheadline: Management & Monitoring
     title: Aspectow Console
     description: Aspectow Console은 Aspectran 기반 애플리케이션 서버의 노드 클러스터, 스케줄러, 실시간 모니터링, 로그 테일링 및 보안 비밀을 중앙에서 관찰하고 제어하는 통합 웹 콘솔입니다.
-    thumb_img: projects/appmon.png
-    url: https://public.aspectran.com/console/
+    thumb_img: projects/console.png
+    url: https://public.aspectran.com/console-demo
     repo: https://github.com/aspectran/aspectow
   - subheadline: Monitoring Solution
     title: Aspectow AppMon
@@ -19,7 +19,7 @@ sample_projects:
   - subheadline: Sample Project
     title: Aspectow Demo
     description: 고성능 웹 애플리케이션 서버(WAS)인 Aspectow 상에서 구동되는 다양한 웹 애플리케이션(JPetStore, PetClinic, Examples, AppMon 등)의 기능과 운영 형태를 선보이는 종합 데모 사이트입니다.
-    thumb_img: projects/demo.png
+    thumb_img: projects/aspectow-demo.png
     url: https://public.aspectran.com
     repo: https://github.com/aspectran/aspectow-demo
   - subheadline: Sample Project
@@ -43,7 +43,7 @@ sample_projects:
   - subheadline: Sample Project
     title: 서블릿 기반 Aspectran 데모 사이트
     description: 서블릿으로 구동되는 Aspectran을 사용하여 웹 애플리케이션을 구축하는 전통적인 방식을 안내하기 위해 만들어진 웹 애플리케이션입니다.
-    thumb_img: projects/demo.png
+    thumb_img: projects/aspectran-demo.png
     url: https://demo.aspectran.com
     repo: https://github.com/aspectran/demo-site
 

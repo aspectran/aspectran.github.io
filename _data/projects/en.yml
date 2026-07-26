@@ -7,8 +7,8 @@ sample_projects:
   - subheadline: Management & Monitoring
     title: Aspectow Console
     description: Aspectow Console is an integrated web console for centrally monitoring and controlling node clusters, schedulers, real-time monitoring, log tailing, and vault security secrets of Aspectran-based application servers.
-    thumb_img: projects/appmon.png
-    url: https://public.aspectran.com/console/
+    thumb_img: projects/console.png
+    url: https://public.aspectran.com/console-demo
     repo: https://github.com/aspectran/aspectow
   - subheadline: Monitoring Solution
     title: Aspectow AppMon
@@ -19,7 +19,7 @@ sample_projects:
   - subheadline: Sample Project
     title: Aspectow Demo
     description: A comprehensive demo site showcasing the capabilities, operation, and integration of various web applications (JPetStore, PetClinic, Examples, AppMon) running on the Aspectow Web Application Server (WAS).
-    thumb_img: projects/demo.png
+    thumb_img: projects/aspectow-demo.png
     url: https://public.aspectran.com
     repo: https://github.com/aspectran/aspectow-demo
   - subheadline: Sample Project
@@ -43,7 +43,7 @@ sample_projects:
   - subheadline: Sample Project
     title: Demo Site for Servlet-Based Aspectran
     description: A web application to guide the traditional way of building web applications using the Servlet-based Aspectran framework.
-    thumb_img: projects/demo.png
+    thumb_img: projects/aspectran-demo.png
     url: https://demo.aspectran.com
     repo: https://github.com/aspectran/demo-site
 
