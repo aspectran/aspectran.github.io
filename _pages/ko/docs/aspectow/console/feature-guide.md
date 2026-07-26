@@ -129,7 +129,7 @@ Console에 로그인하면 처음 나타나는 중앙 제어판으로, 전체 �
 *   **Isolated Mode (격리 모드) 안내**: 해당 스케줄러 잡이 특정 노드에 전속되어 실행 중인지, 클러스터 공유 분산 락(Distributed Lock) 기반으로 구동 중인지를 황색 경고 아이콘으로 안내합니다.
 *   **스케줄 잡 상세 테이블 (Job Table)**: 각 배치 잡의 이름, Trigger Type(Cron vs Simple Interval), Cron 표현식(예: `0 0/5 * * * ?` - 5분 주기로 실행), 다음 실행 예정 시각, 직전 실행 시각 및 수동 실행 상태 뱃지를 제공합니다.
 *   **잡 동적 제어 버튼**:
-        *   `Pause` / `Resume`: 특정 잡의 자동 실행을 일시 정지하거나 다시 재개합니다.
+    *   `Pause` / `Resume`: 특정 잡의 자동 실행을 일시 정지하거나 다시 재개합니다.
     *   `Job Details`: 잡에 정의된 세부 파라미터 및 실행 히스토리 모달을 불러옵니다.
 *   **선택 노드 전용 스케줄러 로그 콘솔**: 선택한 특정 노드에서 발생하는 스케줄러 실행 로그만 필터링하여 실시간 테일링으로 관찰할 수 있습니다.
 
@@ -228,8 +228,8 @@ Console 내에 통합된 AppMon 엔진을 통해 애플리케이션의 실시간
 
 개발자와 관리자가 민감한 데이터(DB 비밀번호, API 키 등)를 암호화하거나 복호화할 수 있는 대화형 실험실 도구입니다.
 
-*   **암/복호화 입력 폼**: Plaintext, Password, Salt 값을 입력하고 `Encrypt` 또는 `Decrypt` 버튼을 실행합니다.
-*   **Java System Property 생성 구문**: 암호화된 결과값을 Java 실행 명령에 바로 사용할 수 있도록 `-Dproperty=ENC(Ciphertext)` 형태로 자동 생성해 줍니다.
+*   **암/복호화 실행 폼**: 알고리즘(Algorithm), 비밀번호(Password), Salt 값 및 모드(Encrypt/Decrypt)를 설정하고 텍스트 암/복호화를 실행합니다.
+*   **실행 결과 및 히스토리**: 연산된 결과 텍스트 복사 기능 및 과거 암/복호화 실행 이력(시간, 모드, 알고리즘)을 확인하고 손쉽게 재실행(Restore)할 수 있는 히스토리 목록을 제공합니다.
 
 ## 6. 프레임워크 진단 및 개발자 유틸리티 (Framework & Developer Tools)
 
@@ -272,9 +272,10 @@ Aspectran Expression Language (AsEL) 문법을 대화형으로 실행하고 평�
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-apon-converter.png" alt="APON Data Converter Tool" %}
 
-APON(Aspectran Parameter Object Notation) 데이터와 JSON, YAML 형식 간의 양방향 구조 변환기입니다. 상단의 **APON Guide** 버튼을 통해 [APON(Aspectran Parameters Object Notation) 소개](https://aspectran.com/ko/docs/guides/introduce-apon/) 공식 문서로 바로 이동하여 APON 데이터 명세와 구문 규칙을 탐색할 수 있습니다.
-*   **Source Text Area**: 소스 데이터 입력 및 형식(APON, JSON, YAML) 선택.
-*   **Convert Execution**: 클릭 한 번으로 상호 변환된 텍스트와 구문 강조(Syntax Highlighting) 결과를 제공합니다.
+APON(Aspectran Parameter Object Notation) 데이터와 JSON 형식 간의 양방향 구조 변환기입니다. 상단의 **APON Guide** 버튼을 통해 [APON(Aspectran Parameters Object Notation) 소개](https://aspectran.com/ko/docs/guides/introduce-apon/) 공식 문서로 바로 이동하여 APON 데이터 명세와 구문 규칙을 탐색할 수 있습니다.
+*   **APON 패널 (좌측)**: APON 데이터를 입력하고 `Parse to JSON` 버튼을 통해 JSON으로 변환합니다.
+*   **JSON 패널 (우측)**: JSON 데이터를 입력하고 APON 출력 스타일(`PRETTY`, `SINGLE_LINE`, `COMPACT`)을 선택한 뒤 `APON` 버튼을 통해 APON으로 변환합니다.
+*   **Quick Tools**: 데이터 초기화(`Clear All`) 및 샘플 데이터 로드(`Load Sample`) 유틸리티를 제공합니다.
 
 ## 7. 계정 관리 및 감사 (Governance & Accounts)
 

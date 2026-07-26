@@ -226,10 +226,10 @@ Issues new security tokens and encrypts payload data using PBE algorithms:
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-tool.png" alt="Vault Interactive Tool Screen" %}
 
-Interactive laboratory tool allowing developers to encrypt/decrypt sensitive credentials (DB passwords, API keys) and generate Java `-Dproperty=ENC(Ciphertext)` system property flags.
+Interactive laboratory tool allowing developers to encrypt or decrypt sensitive credentials (DB passwords, API keys, etc.).
 
-*   **Encryption/Decryption Input Form**: Enter Plaintext, Password, and Salt values and execute by clicking the `Encrypt` or `Decrypt` button.
-*   **Java System Property Generator**: Automatically generates the syntax in the format `-Dproperty=ENC(Ciphertext)` for direct use in Java execution commands.
+*   **Encryption/Decryption Execution Form**: Configure Algorithm, Password, Salt (optional), and Operation Mode (Encrypt/Decrypt) to execute text encryption or decryption.
+*   **Execution Result & History**: Provides result text clipboard copying and an execution history panel to inspect past runs (Timestamp, Mode, Algorithm) and easily restore them for re-execution.
 
 ## 6. Framework Diagnostics & Developer Tools (Framework & Developer Tools)
 
@@ -272,9 +272,10 @@ Evaluates Aspectran Expression Language (AsEL) expressions interactively. Clicki
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-apon-converter.png" alt="APON Data Converter Tool" %}
 
-Bi-directional converter between APON, JSON, and YAML formats. Clicking the **APON Guide** button links directly to the official [Introduction to APON (Aspectran Parameters Object Notation)](https://aspectran.com/en/docs/guides/introduce-apon/) documentation.
-*   **Source Text Area**: Input source data and select format (APON, JSON, YAML).
-*   **Convert Execution**: Provides instant converted text output with syntax highlighting.
+Bi-directional converter between APON and JSON formats. Clicking the **APON Guide** button links directly to the official [Introduction to APON (Aspectran Parameters Object Notation)](https://aspectran.com/en/docs/guides/introduce-apon/) documentation.
+*   **APON Panel (Left)**: Input APON text and click `Parse to JSON` to convert it into JSON format.
+*   **JSON Panel (Right)**: Input JSON text, choose an APON output style (`PRETTY`, `SINGLE_LINE`, `COMPACT`), and click `APON` to convert it back to APON format.
+*   **Quick Tools**: Provides `Clear All` for resetting input text and `Load Sample` for loading sample APON data.
 
 ## 7. Governance & Accounts (Governance & Accounts)
 
