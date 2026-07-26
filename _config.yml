@@ -31,7 +31,7 @@ improve_content: "https://github.com/aspectran/aspectran.github.io/edit/master"
 # Example: <img src="{{ site.urlimg }}{{ post.image.title }}" />
 # Markdown-Example for posts ![Image Text]({{ site.urlimg }}image.jpg)
 #
-urlimg: "https://cdn.jsdelivr.net/gh/aspectran/aspectran.github.io/images/"
+urlimg: "https://cdn.jsdelivr.net/gh/aspectran/aspectran.github.io@main/images/"
 
 # Logo Image
 logo_img: "aspectran-logo.png"
