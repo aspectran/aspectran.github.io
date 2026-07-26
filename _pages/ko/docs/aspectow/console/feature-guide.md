@@ -149,7 +149,7 @@ Console에 로그인하면 처음 나타나는 중앙 제어판으로, 전체 �
 
 Console 내에 통합된 AppMon 엔진을 통해 애플리케이션의 실시간 활동, JVM 리소스, 세션 및 로그 스트리밍을 감시합니다.
 
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v3-dashboard-dark.jpg" alt="AppMon Live Monitoring Dashboard" %}
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v4-dashboard-dark.png" alt="AppMon Live Monitoring Dashboard" %}
 
 ### 4.1. 노드 그룹 & 애플리케이션 탭 내비게이션 (Group & App Tabs)
 

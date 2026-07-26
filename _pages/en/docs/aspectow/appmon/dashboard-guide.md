@@ -9,7 +9,7 @@ Beyond a simple listing of metrics, this guide introduces the key components and
 {% endcapture %}
 {% include alert.liquid info=info_message %}
 
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v3-dashboard-dark.jpg" alt="AppMon Dashboard Screenshot" %}
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v4-dashboard-dark.png" alt="AppMon Dashboard Screenshot" %}
 
 ## Dashboard Component Specifications
 

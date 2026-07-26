@@ -149,7 +149,7 @@ Dispatches bulk control commands for specific schedules or jobs across multiple 
 
 Monitors real-time application activities, JVM resources, active sessions, and log streaming via the integrated AppMon engine inside the Console.
 
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v3-dashboard-dark.jpg" alt="AppMon Live Monitoring Dashboard" %}
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v4-dashboard-dark.png" alt="AppMon Live Monitoring Dashboard" %}
 
 ### 4.1. Group & App Tabs Navigation (Group & App Tabs)
 
