@@ -7,13 +7,13 @@ sample_projects:
   - subheadline: Management & Monitoring
     title: Aspectow Console
     description: Aspectow Console은 Aspectran 기반 애플리케이션 서버의 노드 클러스터, 스케줄러, 실시간 모니터링, 로그 테일링 및 보안 비밀을 중앙에서 관찰하고 제어하는 통합 웹 콘솔입니다.
-    thumb_img: projects/console.png
+    thumb_img: projects/aspectow-console.png
     url: https://public.aspectran.com/console-demo
     repo: https://github.com/aspectran/aspectow
   - subheadline: Monitoring Solution
     title: Aspectow AppMon
     description: Aspectow AppMon은 Aspectran 기반 애플리케이션 서버의 로그와 이벤트를 실시간으로 관찰할 수 있는 경량 모니터링 엔진입니다. Console에 통합되어 구동되거나 독립적으로 설치될 수 있습니다.
-    thumb_img: projects/appmon.png
+    thumb_img: projects/aspectow-appmon.png
     url: https://public.aspectran.com/monitoring/
     repo: https://github.com/aspectran/aspectow-appmon
   - subheadline: Sample Project

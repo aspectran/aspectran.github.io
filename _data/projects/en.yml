@@ -7,13 +7,13 @@ sample_projects:
   - subheadline: Management & Monitoring
     title: Aspectow Console
     description: Aspectow Console is an integrated web console for centrally monitoring and controlling node clusters, schedulers, real-time monitoring, log tailing, and vault security secrets of Aspectran-based application servers.
-    thumb_img: projects/console.png
+    thumb_img: projects/aspectow-console.png
     url: https://public.aspectran.com/console-demo
     repo: https://github.com/aspectran/aspectow
   - subheadline: Monitoring Solution
     title: Aspectow AppMon
     description: Aspectow AppMon is a lightweight monitoring engine for observing logs and events of Aspectran-based application servers in real time. It can be integrated into Aspectow Console or deployed standalone.
-    thumb_img: projects/appmon.png
+    thumb_img: projects/aspectow-appmon.png
     url: https://public.aspectran.com/monitoring/
     repo: https://github.com/aspectran/aspectow-appmon
   - subheadline: Sample Project
