@@ -11,6 +11,11 @@ aspectran:
         url: /ko/docs/guides/aspectran-getting-started/
         class: btn-outline-secondary
         icon: bi-play-fill
+      - title: GitHub
+        url: https://github.com/aspectran/aspectran
+        target: _blank
+        class: btn-outline-secondary
+        icon: bi-github
 
   sections:
     - title: 핵심 가이드
