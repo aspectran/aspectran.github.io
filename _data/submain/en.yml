@@ -130,7 +130,7 @@ aspectow:
           url: /en/docs/aspectow/feature-guide/#51-vault-management
 
     - title: Administration & Configuration
-      anchor: aspectow-config
+      anchor: aspectow
       cards:
         - title: Server Configuration Guide
           url: /en/docs/aspectow/configuration-guide/
