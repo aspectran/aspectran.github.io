@@ -106,6 +106,11 @@ aspectow:
         url: /ko/docs/aspectow/getting-started/
         class: btn-outline-secondary
         icon: bi-play-fill
+      - title: 콘솔 데모
+        url: https://public.aspectran.com/console-demo
+        target: _blank
+        class: btn-outline-secondary
+        icon: bi-box-arrow-up-right
 
   sections:
     - title: Aspectow Console (통합 관제)
