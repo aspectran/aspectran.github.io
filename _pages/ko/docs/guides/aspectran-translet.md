@@ -1,5 +1,5 @@
 ---
-title: "Aspectran의 얼굴마담: Translet 이해하기"
+title: "Aspectran의 대표 얼굴: Translet 이해하기"
 subheadline: 핵심 가이드
 ---
 
@@ -125,7 +125,7 @@ public String generateReport(Translet translet) {
 
 ## 5. 결론: Translet의 진정한 역할 - '인터페이스'
 
-Translet을 한마디로 정의하면 **'얼굴마담(Figurehead)' 또는 '퍼사드(Facade)'**라고 할 수 있습니다. 사용자가 보는 관점과 프레임워크 내부에서의 실제 역할이 구분되기 때문입니다.
+Translet을 한마디로 정의하면 **`Activity` 실행 엔진의 '퍼사드(Facade)'**이자 사용자를 위한 **'대표 인터페이스'**라고 할 수 있습니다. 사용자가 보는 관점과 프레임워크 내부에서의 실제 역할이 구분되기 때문입니다.
 
 **사용자의 관점**에서 Translet은 명확한 요청 처리 단위입니다. 개발자는 특정 요청 경로(`path`)에 Translet을 매핑하고, 그 안에 실행할 액션과 응답 방식을 정의합니다. 이처럼 사용자는 Translet을 통해 애플리케이션의 동작을 설계하고 제어하는 것처럼 보입니다.
 

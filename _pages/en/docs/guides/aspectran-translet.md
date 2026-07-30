@@ -15,7 +15,7 @@ A Translet is defined as a **collection of declarative rules** in XML or APON (A
 
 ```xml
 <translet name="/user/info">
-  <!-- Rules that define how to handle the request -->
+    <!-- Rules that define how to handle the request -->
     <action bean="userDao" method="getUserInfo"/>
     <transform format="json"/>
 </translet>
@@ -125,7 +125,7 @@ public String generateReport(Translet translet) {
 
 ## 5. Conclusion: The True Role of Translet - an 'Interface'
 
-If we were to define a Translet in one word, it would be a **'Figurehead' or 'Facade'**. This is because its role from the user's perspective is different from its actual role within the framework.
+If we were to define a Translet in one word, it would be a **'Facade' for the `Activity` execution engine** and the **'primary interface'** for users. This is because its role from the user's perspective is distinct from its actual role within the framework.
 
 From the **user's perspective**, a Translet is a clear unit of request processing. A developer maps a Translet to a specific request path and defines the actions to be executed and the response method within it. As such, it seems as though the user designs and controls the application's behavior through the Translet.
 
