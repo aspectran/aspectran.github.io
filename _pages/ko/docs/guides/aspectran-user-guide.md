@@ -1064,7 +1064,7 @@ Aspectran은 SLF4J와 Logback을 기반으로 유연하고 강력한 로깅 시�
 *   [서블릿 기반 웹 애플리케이션 구성](https://aspectran.com/ko/docs/guides/aspectran-servlet-configuration/)
 *   [Aspectran Beans](https://aspectran.com/ko/docs/guides/aspectran-beans/)
 *   [Aspectran AOP: 기능과 아키텍처](https://aspectran.com/ko/docs/guides/aspectran-aop/)
-*   [Aspectran의 얼굴마담: Translet 이해하기](https://aspectran.com/ko/docs/guides/aspectran-translet/)
+*   [Aspectran의 대표 얼굴: Translet 이해하기](https://aspectran.com/ko/docs/guides/aspectran-translet/)
 *   [Aspectran Scheduler: Translet을 이용한 작업 자동화](https://aspectran.com/ko/docs/guides/aspectran-scheduler/)
 *   [Aspectran 뷰(View) 기술](https://aspectran.com/ko/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](https://aspectran.com/ko/docs/guides/aspectran-profiles/)

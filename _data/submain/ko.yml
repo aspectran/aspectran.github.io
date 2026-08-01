@@ -11,6 +11,11 @@ aspectran:
         url: /ko/docs/guides/aspectran-getting-started/
         class: btn-outline-secondary
         icon: bi-play-fill
+      - title: GitHub
+        url: https://github.com/aspectran/aspectran
+        target: _blank
+        class: btn-outline-secondary
+        icon: bi-github
 
   sections:
     - title: 핵심 가이드
@@ -106,6 +111,11 @@ aspectow:
         url: /ko/docs/aspectow/getting-started/
         class: btn-outline-secondary
         icon: bi-play-fill
+      - title: 콘솔 데모
+        url: https://public.aspectran.com/console-demo
+        target: _blank
+        class: btn-outline-secondary
+        icon: bi-box-arrow-up-right
 
   sections:
     - title: Aspectow Console (통합 관제)
@@ -135,7 +145,7 @@ aspectow:
           url: /ko/docs/aspectow/console/feature-guide/#51-vault-토큰-관리-vault-management
 
     - title: 운영 및 환경 설정 가이드
-      anchor: aspectow-config
+      anchor: aspectow
       cards:
         - title: 서버 환경 설정 가이드
           url: /ko/docs/aspectow/configuration-guide/

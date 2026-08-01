@@ -11,6 +11,11 @@ aspectran:
         url: /en/docs/guides/aspectran-getting-started/
         class: btn-outline-secondary
         icon: bi-play-fill
+      - title: GitHub
+        url: https://github.com/aspectran/aspectran
+        target: _blank
+        class: btn-outline-secondary
+        icon: bi-github
 
   sections:
     - title: Core Framework Guides
@@ -106,6 +111,11 @@ aspectow:
         url: /en/docs/aspectow/getting-started/
         class: btn-outline-secondary
         icon: bi-play-fill
+      - title: Console Demo
+        url: https://public.aspectran.com/console-demo
+        target: _blank
+        class: btn-outline-secondary
+        icon: bi-box-arrow-up-right
 
   sections:
     - title: Aspectow Console (Unified Control)
@@ -135,7 +145,7 @@ aspectow:
           url: /en/docs/aspectow/console/feature-guide/#51-vault-management
 
     - title: Administration & Configuration
-      anchor: aspectow-config
+      anchor: aspectow
       cards:
         - title: Server Configuration Guide
           url: /en/docs/aspectow/configuration-guide/

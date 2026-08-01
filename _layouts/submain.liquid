@@ -41,7 +41,7 @@ layout: page
         <p class="lead mb-4">{{ submain_data.hero.lead }}</p>
         <div class="d-grid d-md-flex gap-3">
           {% for button in submain_data.hero.buttons %}
-            <a href="{{ button.url }}" class="btn {{ button.class }} btn-lg px-4">
+            <a href="{{ button.url }}" class="btn {{ button.class }} btn-lg px-4"{% if button.target %} target="{{ button.target }}" rel="noopener"{% endif %}>
               {{ button.title }} {% if button.icon %}<i class="{{ button.icon }}"></i>{% endif %}
             </a>
           {% endfor %}
