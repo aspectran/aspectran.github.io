@@ -115,19 +115,24 @@ aspectow:
           url: /en/docs/aspectow/console/
           description: Introduces the embedded console architecture, Direct & Gateway (Redis Pub/Sub) pipelines, and key configurations.
         - title: Screen & Feature Guide
-          url: /en/docs/aspectow/feature-guide/
+          url: /en/docs/aspectow/console/feature-guide/
           description: Screen-by-screen guide for node health monitoring, bulk control, remote command center, scheduler, Vault, and developer tools.
+        - title: Operational Security Guide
+          url: /en/docs/aspectow/console/security-architecture/
+          description: Operational security guide covering dedicated management node architecture, IP restrictions, built-in security mechanisms, and checklists.
       tags:
         - title: Console Config Guide
           url: /en/docs/aspectow/console/configuration-guide/
+        - title: Operational Security Guide
+          url: /en/docs/aspectow/console/security-architecture/
         - title: Bulk Node Control
-          url: /en/docs/aspectow/feature-guide/#31-cluster-nodes
+          url: /en/docs/aspectow/console/feature-guide/#31-cluster-nodes
         - title: Remote Command Center
-          url: /en/docs/aspectow/feature-guide/#32-remote-commands
+          url: /en/docs/aspectow/console/feature-guide/#32-remote-commands
         - title: Distributed Scheduler
-          url: /en/docs/aspectow/feature-guide/#33-scheduler-manager
+          url: /en/docs/aspectow/console/feature-guide/#33-scheduler-manager
         - title: Vault Security Tokens
-          url: /en/docs/aspectow/feature-guide/#51-vault-management
+          url: /en/docs/aspectow/console/feature-guide/#51-vault-management
 
     - title: Administration & Configuration
       anchor: aspectow-config

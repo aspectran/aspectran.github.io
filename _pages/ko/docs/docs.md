@@ -104,6 +104,7 @@ Aspectran 애플리케이션 서버 환경을 중앙에서 통합 관리하고 �
 *   [Aspectow Console 개요 및 아키텍처](/ko/docs/aspectow/console/)
 *   [Aspectow Console 주요 화면 및 기능 가이드](/ko/docs/aspectow/console/feature-guide/)
 *   [Aspectow Console 구성 가이드](/ko/docs/aspectow/console/configuration-guide/)
+*   [Aspectow Console 운영 보안 아키텍처 및 보안 강화 가이드](/ko/docs/aspectow/console/security-architecture/)
 
 ## <i class="bi bi-graph-up"></i> Aspectow AppMon
 {: #aspectow-appmon}

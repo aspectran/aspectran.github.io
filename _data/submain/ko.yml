@@ -117,9 +117,14 @@ aspectow:
         - title: 주요 화면 및 기능 가이드
           url: /ko/docs/aspectow/console/feature-guide/
           description: 노드 생존 감시, 일괄 제어, 원격 명령 센터, 분산 스케줄러, Vault 및 개발자 도구의 화면별 세부 안내서입니다.
+        - title: 운영 보안 아키텍처 가이드
+          url: /ko/docs/aspectow/console/security-architecture/
+          description: 엔터프라이즈 전용 관리 노드 분리 아키텍처, IP 통제 방안, 내장 보안 메커니즘 및 체크리스트 가이드입니다.
       tags:
         - title: Console 구성 가이드
           url: /ko/docs/aspectow/console/configuration-guide/
+        - title: 운영 보안 가이드
+          url: /ko/docs/aspectow/console/security-architecture/
         - title: 노드 일괄 제어
           url: /ko/docs/aspectow/console/feature-guide/#31-클러스터-노드-관리-cluster-nodes
         - title: 원격 명령 센터
