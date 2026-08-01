@@ -65,6 +65,15 @@ Pointcut은 Advice를 적용할 대상을 정밀하게 정의하는 표현식입
     *   `+` 접두사는 대상을 **포함**하고, `-` 접두사는 대상을 **제외**합니다.
     *   규칙은 순서대로 적용되므로, 정교한 제어가 가능합니다 (예: 패키지 내 모든 Bean을 포함한 후, 특정 Bean만 제외).
 
+*   **요청 메서드 및 요청 헤더 조건 필터링**:
+    `<joinpoint>` 내에서 요청의 요청 메서드(`methods`) 및 요청 헤더(`headers`) 조건에 따라 Advice 적용 여부를 선언적으로 제어할 수 있습니다.
+    *   **요청 메서드 (`methods`)**: 허용할 요청 메서드 목록을 지정합니다 (예: `GET`, `POST`, `PUT`, `DELETE`).
+    *   **요청 헤더 (`headers`)**: 특정 요청 헤더의 조건에 따라 Aspect 실행 여부를 가려냅니다. 단순 헤더 존재 여부, 값 비교(`Name=Value`), 부정 비교(`Name!=Value`), 그리고 웹 환경에서의 `Accept`와 같은 복합 미디어 타입 매칭을 지원합니다.
+        *   **단순 존재 여부**: `"Origin"` (지정한 헤더가 존재할 때 매칭)
+        *   **값/패턴 비교**: `"X-Requested-With=XMLHttpRequest"` (헤더에 해당 값이 포함된 경우 매칭)
+        *   **부정 비교**: `"Accept!=application/json"` (헤더에 `application/json`이 포함되지 않은 경우에만 매칭)
+        *   **복합 미디어 타입 매칭 (웹 환경)**: `"Accept=text/html"` (웹 환경의 경우 `text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8`과 같이 품질 계수(q-factor)가 포함된 실제 브라우저의 복합 `Accept` 헤더를 `WebUtils.isAcceptContentTypes`를 통해 정교하게 식별하여 매칭)
+
 ### 3. Advice: 수행 로직 (Action Logic)
 
 *   **종류**: 5가지 표준 Advice 유형(`com.aspectran.core.context.rule.type.AdviceType`)을 지원합니다.

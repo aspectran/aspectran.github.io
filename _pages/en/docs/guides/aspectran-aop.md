@@ -65,6 +65,15 @@ A Pointcut is an expression that precisely defines where Advice should be applie
     *   Use the `+` prefix to **include** targets and the `-` prefix to **exclude** them.
     *   Rules are applied in order, allowing for precise control (e.g., include all beans in a package, then exclude specific ones).
 
+*   **Request Methods & Request Headers Filtering**:
+    Within a `<joinpoint>`, you can restrict Advice execution based on request methods (`methods`) and request headers (`headers`).
+    *   **Request Methods (`methods`)**: Specifies allowed request methods (e.g., `GET`, `POST`, `PUT`, `DELETE`).
+    *   **Request Headers (`headers`)**: Restricts Advice execution based on request header conditions. Supports header existence, value matching (`Name=Value`), negative matching (`Name!=Value`), and composite media type matching (such as `Accept` in web environments).
+        *   **Header Existence**: `"Origin"` (matches if the specified header is present).
+        *   **Exact / Pattern Value**: `"X-Requested-With=XMLHttpRequest"` (matches if the header contains the specified value).
+        *   **Negative Matching**: `"Accept!=application/json"` (matches if the header does NOT contain `application/json`).
+        *   **Composite Media Type Matching (Web Environment)**: `"Accept=text/html"` (in web environments, intelligently parses complex `Accept` headers containing q-factors such as `text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8` via `WebUtils.isAcceptContentTypes`).
+
 ### 3. Advice: Action Logic
 
 *   **Types**: Supports 5 standard advice types (`com.aspectran.core.context.rule.type.AdviceType`):
