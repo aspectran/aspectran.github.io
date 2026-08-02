@@ -283,14 +283,41 @@ This section manages Console user accounts and security audit logs.
 
 ### 7.1. User Management (User Management)
 
+#### User Accounts List
+
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-user-management.png" alt="User Management Screen" %}
 
-*   **User List & Search**: Manages registered console accounts (Username, Nickname, Email, Status, Roles).
+*   **User List & Search**: Manages registered console user accounts (Username, Nickname, Email, Status, Roles).
 *   **Role Permissions Modal**: Views detailed permission mappings for `SUPER_ADMIN`, `ADMIN`, and `DEMO` roles.
-*   **New User Modal**: Registers new user accounts and assigns roles and pinpoint permissions.
+
+#### New & Edit User Modal
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-user-management-modal.png" alt="User Management Modal Screen" %}
+
+*   **Basic Account Profile**: Configures Username, Nickname, Email Address, and Account Status (`NORMAL`, `LOCKED`, `DISABLED`).
+*   **Account Lockout Unlock**: Accounts locked automatically after 5 consecutive failed login attempts (`LOCKED`) can be easily unlocked by changing status back to `NORMAL` in this modal.
+*   **Roles & Pinpoint Permissions**: Assigns base roles (`SUPER_ADMIN`, `ADMIN`, `DEMO`) along with fine-grained pinpoint permissions (`USER_MANAGE`, `NODE_MANAGE`, `VAULT_MANAGE`, etc.) via checkboxes.
+*   **Allowed IP Restrictions (`Allowed IPs`) Configuration**:
+    *   Specifies allowed IP patterns (`allowedIps`) for individual operator accounts to block unauthorized access strictly.
+    *   Supports exact single IPs (`192.168.1.50`, `10.0.0.100`), IP subnet wildcards (`192.168.1.*`, `10.0.*.*`), and comma/space-separated multiple patterns. (If `null` or unconfigured, access is allowed without IP restrictions.)
+    *   If an access attempt is made from an unallowed IP pattern, login is denied immediately even with correct password credentials and recorded in the audit log.
 
 ### 7.2. Login History Audit (Login History Audit)
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-login-history.png" alt="Login History Audit Screen" %}
 
-Audits login timestamps, client IP addresses, IP Geo Location flag icons, success/failure statuses, error reasons, and User-Agent strings.
+Audits login timestamps, client IP addresses, IP Geo Location flag icons, success/failure statuses, error reasons, and User-Agent strings to verify system access security thoroughly.
+
+### 7.3. Security Audit Log (Security Audit Log)
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-audit-log.png" alt="Security Audit Log Screen" %}
+
+A security monitoring screen tracking and auditing high-risk administrative operations, account modifications, and Vault security token management in real time.
+
+*   **Real-time Audited Security Events**:
+    *   User account creation, modification, deletion, and lockout/unlock events.
+    *   Role and pinpoint permission updates.
+    *   Vault security token issuance, editing, revocation, and System Encryption queries.
+    *   Denied login attempts from unauthorized IPs (`[LOGIN_FAILED_UNALLOWED_IP]`).
+*   **Search & Filtering**: Filters audit logs by executor username, action keyword, execution status (Success/Failed), and date range.
+*   **Audit Details Modal**: Clicking an entry opens a detail modal rendering executor ID, client IP address, target resource, pre/post-change data payloads, and detailed reasons in a JSON/text viewer for security incident investigations.

@@ -283,14 +283,41 @@ Console 사용자 계정과 보안 감사 로그를 관장하는 섹션입니다
 
 ### 7.1. 사용자 계정 관리 (User Management)
 
+#### 사용자 계정 목록 (User Accounts List)
+
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-user-management.png" alt="User Management Screen" %}
 
 *   **사용자 목록 & 검색**: 콘솔에 등록된 사용자 계정(Username, Nickname, Email, Status, Roles)을 관리합니다.
 *   **Role Permissions 모달**: `SUPER_ADMIN`, `ADMIN`, `DEMO` 역할에 매핑된 세부 권한 현황표를 조회합니다.
-*   **New User 모달**: 신규 계정을 등록하고 기본 Role과 핀포인트 Permission 체크박스를 세분화하여 부여합니다.
+
+#### 사용자 생성 및 수정 모달 (New / Edit User Modal)
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-user-management-modal.png" alt="User Management Modal Screen" %}
+
+*   **기본 계정 프로필**: 사용자 식별 ID(`Username`), 닉네임(`Nickname`), 이메일 주소(`Email`), 계정 상태(`Status`: `NORMAL`, `LOCKED`, `DISABLED`)를 설정합니다.
+*   **계정 잠금(Lockout) 해제**: 비밀번호 5회 연속 오류로 자동 잠긴(`LOCKED`) 계정은 모달에서 상태를 `NORMAL`로 변경하여 즉시 잠금을 해제할 수 있습니다.
+*   **역할 및 핀포인트 권한 (Roles & Direct Permissions)**: `SUPER_ADMIN`, `ADMIN`, `DEMO` 등 기본 역할 외에 기능별 세부 권한(`USER_MANAGE`, `NODE_MANAGE`, `VAULT_MANAGE` 등)을 체크박스로 정교하게 개별 부여합니다.
+*   **접속 허용 IP 제한 (`Allowed IPs`) 설정**:
+    *   개별 운영자 계정별로 콘솔 접속이 허용되는 IP 패턴(`allowedIps`)을 지정하여 무단 접속을 엄격히 방어합니다.
+    *   단일 IP(`192.168.1.50`, `10.0.0.100`), IP 대역 와일드카드(`192.168.1.*`, `10.0.*.*`), 쉼표/공백으로 구분된 다중 패턴 입력을 지원합니다. (`null` 또는 미입력 시 IP 제약 없이 접속 허용)
+    *   지정된 IP 패턴과 일치하지 않는 환경에서 접속 시도 시 비밀번호가 맞더라도 로그인이 즉시 거부되며 감사 로그에 기록됩니다.
 
 ### 7.2. 로그인 이력 탐색 (Login History Audit)
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-login-history.png" alt="Login History Audit Screen" %}
 
 콘솔에 로그인했던 사용자들의 접속 일시, 클라이언트 IP 주소, IP 기반 Geo Location(국가 국기 아이콘), 로그인 성공/실패 여부, 실패 사유 및 User-Agent 정보를 감사(Audit) 로그로 제공하여 시스템 접근 보안을 철저히 검증합니다.
+
+### 7.3. 보안 감사 로그 (Security Audit Log)
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-audit-log.png" alt="Security Audit Log Screen" %}
+
+콘솔 제어 권한 행사, 계정 설정 변경, Vault 보안 토큰 관리 등 시스템 전반의 고위험 작업 내역을 실시간으로 추적하고 감사하는 보안 모니터링 화면입니다.
+
+*   **실시간 감사 대상 이벤트**:
+    *   사용자 계정 생성, 수정, 삭제 및 계정 잠금/해제 처리
+    *   역할(Role) 및 핀포인트 권한(Permission) 변경
+    *   Vault 보안 토큰 발급, 수정, 폐기 및 System Encryption 설정 조회
+    *   비허용 IP 접속 시도 차단 (`[LOGIN_FAILED_UNALLOWED_IP]`)
+*   **검색 및 필터링**: 실행자 계정(Username), 작업 유형 키워드(Action), 처리 결과(Success/Failed) 및 기간 조건으로 감사 로그를 정밀 조회합니다.
+*   **감사 상세 정보 모달**: 감사 항목 클릭 시 실행자 ID, 접속자 IP 주소, 대상 자원(Target Resource), 작업 수행 전/후 데이터 패킷 및 상세 사유를 JSON/텍스트 뷰어로 확인하여 보안 인시던트 조사를 지원합니다.

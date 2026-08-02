@@ -118,6 +118,28 @@ aspectow:
         icon: bi-box-arrow-up-right
 
   sections:
+    - title: 운영 및 환경 설정 가이드
+      anchor: aspectow
+      cards:
+        - title: 서버 환경 설정 가이드
+          url: /ko/docs/aspectow/configuration-guide/
+          description: Aspectow의 서버 구조와 실운영 환경을 위한 핵심 기능 설정에 대한 체계적인 지침을 제공합니다.
+        - title: Node Manager 가이드
+          url: /ko/docs/aspectow/node-manager/
+          description: 분산 멀티 노드 클러스터를 유기적으로 결합하고 라우팅 및 릴레이 패킷을 통제하는 핵심 제어 평면 라이브러리 가이드입니다.
+        - title: 배포 및 서비스 운영
+          url: /ko/docs/aspectow/deployment-and-operations/
+          description: 애플리케이션을 배포하고 다양한 운영체제에서 데몬/서비스로 관리하는 방법을 배웁니다.
+      tags:
+        - title: Aspectow 아키텍처
+          url: /ko/docs/aspectow/architecture/
+        - title: Node Manager 가이드
+          url: /ko/docs/aspectow/node-manager/
+        - title: 멀티 컨텍스트 세션
+          url: /ko/docs/aspectow/multi-context-session-strategy/
+        - title: Nginx 및 클러스터링
+          url: /ko/docs/aspectow/nginx-reverse-proxy-guide/
+
     - title: Aspectow Console (통합 관제)
       anchor: aspectow-console
       cards:
@@ -143,28 +165,6 @@ aspectow:
           url: /ko/docs/aspectow/console/feature-guide/#33-스케줄러-관리자-scheduler-manager
         - title: Vault 보안 토큰
           url: /ko/docs/aspectow/console/feature-guide/#51-vault-토큰-관리-vault-management
-
-    - title: 운영 및 환경 설정 가이드
-      anchor: aspectow
-      cards:
-        - title: 서버 환경 설정 가이드
-          url: /ko/docs/aspectow/configuration-guide/
-          description: Aspectow의 서버 구조와 실운영 환경을 위한 핵심 기능 설정에 대한 체계적인 지침을 제공합니다.
-        - title: Node Manager 가이드
-          url: /ko/docs/aspectow/node-manager/
-          description: 분산 멀티 노드 클러스터를 유기적으로 결합하고 라우팅 및 릴레이 패킷을 통제하는 핵심 제어 평면 라이브러리 가이드입니다.
-        - title: 배포 및 서비스 운영
-          url: /ko/docs/aspectow/deployment-and-operations/
-          description: 애플리케이션을 배포하고 다양한 운영체제에서 데몬/서비스로 관리하는 방법을 배웁니다.
-      tags:
-        - title: Aspectow 아키텍처
-          url: /ko/docs/aspectow/architecture/
-        - title: Node Manager 가이드
-          url: /ko/docs/aspectow/node-manager/
-        - title: 멀티 컨텍스트 세션
-          url: /ko/docs/aspectow/multi-context-session-strategy/
-        - title: Nginx 및 클러스터링
-          url: /ko/docs/aspectow/nginx-reverse-proxy-guide/
 
     - title: 실시간 모니터링 (AppMon)
       anchor: aspectow-appmon

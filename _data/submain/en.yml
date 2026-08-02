@@ -118,6 +118,28 @@ aspectow:
         icon: bi-box-arrow-up-right
 
   sections:
+    - title: Administration & Configuration
+      anchor: aspectow
+      cards:
+        - title: Server Configuration Guide
+          url: /en/docs/aspectow/configuration-guide/
+          description: Systematic guide to the server structure of Aspectow and core feature configurations for production.
+        - title: Node Manager Guide
+          url: /en/docs/aspectow/node-manager/
+          description: Detailed guide to the core Control Plane library that organically binds distributed multi-node clusters and controls routing.
+        - title: Deployment & Service Operations
+          url: /en/docs/aspectow/deployment-and-operations/
+          description: Learn how to deploy and manage applications as services across different operating systems.
+      tags:
+        - title: Aspectow Architecture
+          url: /en/docs/aspectow/architecture/
+        - title: Node Manager Guide
+          url: /en/docs/aspectow/node-manager/
+        - title: Multi-context Sessions
+          url: /en/docs/aspectow/multi-context-session-strategy/
+        - title: Nginx & Clustering
+          url: /en/docs/aspectow/nginx-reverse-proxy-guide/
+
     - title: Aspectow Console (Unified Control)
       anchor: aspectow-console
       cards:
@@ -143,28 +165,6 @@ aspectow:
           url: /en/docs/aspectow/console/feature-guide/#33-scheduler-manager
         - title: Vault Security Tokens
           url: /en/docs/aspectow/console/feature-guide/#51-vault-management
-
-    - title: Administration & Configuration
-      anchor: aspectow
-      cards:
-        - title: Server Configuration Guide
-          url: /en/docs/aspectow/configuration-guide/
-          description: Systematic guide to the server structure of Aspectow and core feature configurations for production.
-        - title: Node Manager Guide
-          url: /en/docs/aspectow/node-manager/
-          description: Detailed guide to the core Control Plane library that organically binds distributed multi-node clusters and controls routing.
-        - title: Deployment & Service Operations
-          url: /en/docs/aspectow/deployment-and-operations/
-          description: Learn how to deploy and manage applications as services across different operating systems.
-      tags:
-        - title: Aspectow Architecture
-          url: /en/docs/aspectow/architecture/
-        - title: Node Manager Guide
-          url: /en/docs/aspectow/node-manager/
-        - title: Multi-context Sessions
-          url: /en/docs/aspectow/multi-context-session-strategy/
-        - title: Nginx & Clustering
-          url: /en/docs/aspectow/nginx-reverse-proxy-guide/
 
     - title: Real-time Monitoring (AppMon)
       anchor: aspectow-appmon
