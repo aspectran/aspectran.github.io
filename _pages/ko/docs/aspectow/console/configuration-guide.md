@@ -12,9 +12,11 @@ Console의 환경 구성 파일은 크게 노드 및 클러스터 제어 설정(
 
 ### 주요 구성 파일 위치 (`/config/console/`)
 
+*   **`console-rules.xml`**: 노드 관리 규칙(`node-rules.xml`) 및 AppMon 모니터링 규칙(`appmon-rules.xml`)을 통합 포함하며, Console 전용 환경 프로퍼티를 구성하는 최상위 Aspectran XML 정의 파일
 *   **`node-config.apon`**: 클러스터 식별자, 통신 모드(`direct` / `gateway`), 암호화 보안 키, 핑 주기를 정의하는 노드 관리자 핵심 설정 파일
 *   **`node-rules.xml`**: `NodeConfigResolver`, `NodeManagerFactoryBean`, `RemoteNodeManager`, `RemoteCommandManager`, `RemoteSchedulerManager` 등의 핵심 컴포넌트를 등록하는 Aspectran XML 정의 파일
 *   **`appmon-config.apon`**: Console에 내장 탑재된 AppMon 모니터링 엔진의 데이터 수집기(`app`), 이벤트, 메트릭, 로그 및 집계 주기 설정 파일
+*   **`appmon-rules.xml`**: AppMon 모니터링 수집 엔진 및 DB 영속성 스케줄러를 초기화하는 Aspectran XML 정의 파일
 *   **`aspectow-console.db-*.properties`**: Console 데이터베이스(H2, MariaDB, MySQL, Oracle, Supabase 지원) 접속 정보 프로퍼티 파일
 *   **`redis-*.properties`**: Gateway 클러스터 모드 구동 시 Pub/Sub 메시지 브릿지로 활용되는 Redis 연결 풀 설정 파일
 
@@ -242,11 +244,32 @@ Java 실행 시 시스템 속성을 전달하여 Console DB 프로필을 활성�
 -Daspectran.profiles.base.console=mariadb -Daspectow-console.db-mariadb.url=jdbc:mariadb://127.0.0.1:3306/aspectow_console -Daspectow-console.db-mariadb.username=console_user -Daspectow-console.db-mariadb.password=your-password
 ```
 
-## 7. Aspectran XML 룰 및 빈 구성 (`node-rules.xml` & `appmon-rules.xml`)
+## 7. Aspectran XML 룰 및 빈 구성 (`console-rules.xml`, `node-rules.xml`, `appmon-rules.xml`)
 
-Aspectow Console 환경에서는 노드 제어 컴포넌트와 내장 AppMon 모니터링 엔진을 활성화하기 위해 Aspectran XML 규칙 파일들을 사용합니다.
+Aspectow Console 환경에서는 모듈화된 규칙 구성을 위해 최상위 콘솔 규칙 파일(`console-rules.xml`)을 중심으로 노드 제어 규칙(`node-rules.xml`)과 AppMon 모니터링 규칙(`appmon-rules.xml`)을 조화롭게 캡슐화합니다.
 
-### 7.1. 노드 관리 및 제어 룰 (`node-rules.xml`)
+### 7.1. 최상위 콘솔 통합 룰 (`console-rules.xml`)
+
+`console-rules.xml`은 Console 환경의 제어 룰들을 하나로 묶어 제공하는 대표 규칙 파일입니다. `node-rules.xml`과 `appmon-rules.xml`을 하위로 어펜드(`<append>`)하여 포함합니다.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <!-- 노드 관리 및 제어 룰 포함 -->
+    <append file="/config/console/node-rules.xml"/>
+
+    <!-- 내장 AppMon 모니터링 룰 포함 -->
+    <append file="/config/console/appmon-rules.xml"/>
+
+</aspectran>
+```
+
+`aspectran-config.apon`에는 `/config/console/console-rules.xml` 하나만 명시하면 노드 관리와 AppMon 모니터링 컴포넌트가 함께 일괄 로드됩니다.
+
+### 7.2. 노드 관리 및 제어 룰 (`node-rules.xml`)
 
 노드 관리자와 원격 제어 매니저들은 `node-rules.xml`을 통해 Aspectran 빈(Bean)으로 활성화됩니다.
 
@@ -305,7 +328,7 @@ Aspectow Console 환경에서는 노드 제어 컴포넌트와 내장 AppMon 모
 
 이 빈 구성을 통해 `RemoteNodeManager`, `RemoteCommandManager`, `RemoteSchedulerManager`가 활성화되어 콘솔 웹 화면의 요청을 노드 메시지 버스 및 비동기 처리 파이프라인으로 매끄럽게 연결합니다.
 
-### 7.2. 내장 AppMon 모니터링 룰 (`appmon-rules.xml`)
+### 7.3. 내장 AppMon 모니터링 룰 (`appmon-rules.xml`) 및 독립 구동
 
 Console에 내장 탑재된 AppMon 모니터링 엔진은 `appmon-rules.xml`을 통해 실행 프로필(`!prod`/`prod`)에 맞춰 적절한 APON 수집 설정 경로를 동적으로 로드합니다.
 
@@ -327,4 +350,6 @@ Console에 내장 탑재된 AppMon 모니터링 엔진은 `appmon-rules.xml`을 
 </aspectran>
 ```
 
-`AppMonConfigResolver` 빈은 지정된 환경에 맞는 `appmon-config.apon` (또는 `appmon-config-prod.apon`) 파일을 해석하여 AppMon 모니터링 수집 엔진과 DB 영속성 스케줄러를 자동 초기화합니다.
+#### 독립형 AppMon (Standalone AppMon) 구동 방식과의 차이점
+* **Aspectow Console 환경**: `console-rules.xml`을 사용하여 노드 제어 기능(`node-rules.xml`)과 AppMon 모니터링 기능(`appmon-rules.xml`)을 동시에 활성화합니다.
+* **Console 없는 독립형 AppMon 환경**: Console UI 컨텍스트 없이 순수 모니터링 수집 노드로 구동할 경우 `console-rules.xml` 없이 **`appmon-rules.xml`만 단독으로 지정하여 실행**함으로써 자원 소모를 최소화하고 가볍게 구동할 수 있습니다.

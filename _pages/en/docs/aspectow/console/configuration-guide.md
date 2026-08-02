@@ -12,9 +12,11 @@ Console configuration files are divided into node and cluster control settings (
 
 ### Major Configuration File Locations (`/config/console/`)
 
+*   **`console-rules.xml`**: Top-level Aspectran XML definition file encapsulating both node management rules (`node-rules.xml`) and AppMon monitoring rules (`appmon-rules.xml`).
 *   **`node-config.apon`**: Core Node Manager configuration defining cluster identifiers, communication modes (`direct` / `gateway`), encryption keys, and pulse intervals.
 *   **`node-rules.xml`**: Aspectran XML definition file registering core components such as `NodeConfigResolver`, `NodeManagerFactoryBean`, `RemoteNodeManager`, `RemoteCommandManager`, and `RemoteSchedulerManager`.
 *   **`appmon-config.apon`**: Configuration file defining target applications (`app`), events, metrics, logs, and aggregation intervals for the embedded AppMon monitoring engine.
+*   **`appmon-rules.xml`**: Aspectran XML definition file initializing the AppMon monitoring collection engine and DB persistence scheduler.
 *   **`aspectow-console.db-*.properties`**: Property files for Console database connections (supporting H2, MariaDB, MySQL, Oracle, and Supabase).
 *   **`redis-*.properties`**: Redis connection pool configuration used as a Pub/Sub message bridge when running in Gateway cluster mode.
 
@@ -242,11 +244,32 @@ Pass Java system properties at application startup to activate the target Consol
 -Daspectran.profiles.base.console=mariadb -Daspectow-console.db-mariadb.url=jdbc:mariadb://127.0.0.1:3306/aspectow_console -Daspectow-console.db-mariadb.username=console_user -Daspectow-console.db-mariadb.password=your-password
 ```
 
-## 7. Aspectran XML Rule & Bean Definitions (`node-rules.xml` & `appmon-rules.xml`)
+## 7. Aspectran XML Rule & Bean Definitions (`console-rules.xml`, `node-rules.xml`, `appmon-rules.xml`)
 
-In the Aspectow Console environment, Aspectran XML rule files are used to activate node control components and the embedded AppMon monitoring engine.
+In the Aspectow Console environment, Aspectran XML rule files are modularized around the top-level console rule file (`console-rules.xml`), encapsulating both node control rules (`node-rules.xml`) and AppMon monitoring rules (`appmon-rules.xml`).
 
-### 7.1. Node Management & Control Rules (`node-rules.xml`)
+### 7.1. Top-level Console Master Rules (`console-rules.xml`)
+
+`console-rules.xml` is the primary master rule file providing unified control rules for the Console environment. It encapsulates `node-rules.xml` and `appmon-rules.xml` via sub-appends (`<append>`).
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <!-- Include Node Management & Control Rules -->
+    <append file="/config/console/node-rules.xml"/>
+
+    <!-- Include Embedded AppMon Monitoring Rules -->
+    <append file="/config/console/appmon-rules.xml"/>
+
+</aspectran>
+```
+
+By declaring only `/config/console/console-rules.xml` inside `aspectran-config.apon`, both node management and AppMon monitoring components are loaded automatically.
+
+### 7.2. Node Management & Control Rules (`node-rules.xml`)
 
 Node managers and remote control managers are activated as Aspectran Beans via `node-rules.xml`.
 
@@ -305,7 +328,7 @@ Node managers and remote control managers are activated as Aspectran Beans via `
 
 This Bean configuration activates `RemoteNodeManager`, `RemoteCommandManager`, and `RemoteSchedulerManager`, seamlessly connecting web UI requests to the node message bus and asynchronous processing pipeline.
 
-### 7.2. Embedded AppMon Monitoring Rules (`appmon-rules.xml`)
+### 7.3. Embedded AppMon Monitoring Rules (`appmon-rules.xml`) & Standalone Execution
 
 The embedded AppMon monitoring engine inside Console dynamically loads target APON collection configuration paths via `appmon-rules.xml` according to active execution profiles (`!prod`/`prod`).
 
@@ -327,4 +350,6 @@ The embedded AppMon monitoring engine inside Console dynamically loads target AP
 </aspectran>
 ```
 
-The `AppMonConfigResolver` Bean resolves `appmon-config.apon` (or `appmon-config-prod.apon`) matching the target profile to automatically initialize the AppMon collection engine and DB persistence scheduler.
+#### Comparison with Standalone AppMon Execution Mode
+* **Aspectow Console Environment**: Uses `console-rules.xml` to activate both node control features (`node-rules.xml`) and AppMon monitoring features (`appmon-rules.xml`).
+* **Standalone AppMon Environment (No Console UI)**: When running as a pure monitoring collection node without Console UI, execute **`appmon-rules.xml` standalone** without `console-rules.xml`, minimizing resource footprint and ensuring lightweight execution.
