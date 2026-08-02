@@ -70,6 +70,8 @@ java -Daspectran.profiles.active=prod,metrics -jar my-application.jar
 | `dev, test` | `dev` 또는 `test` 프로필이 활성화된 경우 (OR) |
 | `(prod, metrics)` | `prod`와 `metrics` 프로필이 모두 활성화된 경우 (AND) |
 | `!(prod, metrics)` | `prod`와 `metrics`가 동시에 활성화된 상태가 아닌 경우 |
+| `![a, b]` | `a`도 활성화되지 않고 `b`도 활성화되지 않은 경우 (`!a` AND `!b`) |
+| `([a, b], c)` | (`a` 또는 `b` 중 하나)와 `c`가 동시에 활성화된 경우 |
 | `[(dev, test), prod]` | (`dev`와 `test`가 모두 활성화됨) **또는** `prod`가 활성화된 경우 |
 
 ## 3. XML에서의 조건부 설정

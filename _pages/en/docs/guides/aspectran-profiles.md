@@ -70,6 +70,8 @@ In addition to simply writing a profile name, you can use logical operators to c
 | `dev, test` | When either `dev` or `test` profile is active (OR) |
 | `(prod, metrics)` | When both `prod` and `metrics` profiles are active (AND) |
 | `!(prod, metrics)` | When both `prod` and `metrics` are not active at the same time |
+| `![a, b]` | When neither `a` nor `b` is active (`!a` AND `!b`) |
+| `([a, b], c)` | When (either `a` or `b` is active) AND `c` is active |
 | `[(dev, test), prod]` | When (both `dev` and `test` are active) **OR** `prod` is active |
 
 ## 3. Conditional Configuration in XML
