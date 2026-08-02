@@ -8,7 +8,6 @@ This document serves as the **Aspectow Console Operational Security Guide** for 
 
 It provides a systematic overview of architectural threat factors in Aspectow Console, dedicated management node group deployment architectures, IP control measures in single-node integrated environments, and **how to operate the built-in security mechanisms**.
 
-
 ## 1. Overview and Necessity of Security Management
 
 Aspectow Console is a centralized web management console that monitors and controls individual Aspectran nodes (server instances) and clusters.
@@ -23,7 +22,6 @@ The console integrates core infrastructure control privileges that directly impa
 
 Because these powerful control privileges are integrated into the console, any unrestricted exposure of the console web interface to the public internet or inadequate access control can put the entire infrastructure at risk. Therefore, customers must isolate the deployment architecture according to this guide and actively utilize the built-in security mechanisms.
 
-
 ## 2. Major Security Threats and Defense Strategies
 
 ### 2.1 Brute Force / Credential Stuffing
@@ -37,7 +35,6 @@ If an administrator session is hijacked or privileges are abused, arbitrary comm
 ### 2.3 Secondary Damage from Cryptographic Asset Leakage
 The Vault and System Encryption areas store critical assets such as database credentials, external API keys, and encryption keys.
 * **Defense Strategy**: Strictly restrict access permissions for encryption keys to the top administrator (`SUPER_ADMIN`), and apply password hash clearing and sensitive data masking when rendering UI screens.
-
 
 ## 3. Recommended Deployment Architecture & Environment Configuration Guide
 
@@ -65,9 +62,12 @@ In such integrated environments, because console access paths may be exposed to 
 * **Console IP Whitelist Specification**: Enable IP filtering so that only internal corporate static IPs or administrator-dedicated IP ranges (e.g., `192.168.1.0/24`) can access the Console.
 * **Firewall Port Separation Control**: Assign different ports for business services (e.g., 8080) and Console management (e.g., 9090), and apply inbound firewall (Security Group) IP restriction rules strictly to the management port.
 
-### 3.3 Standalone Package Deployment Strategy
-To clearly separate business applications from management consoles, customers can build dedicated management servers independently using standalone deployment packages (Distribution ZIP, Executable JAR, Docker Image, etc.).
+### 3.3 Profile-based Single Project Deployment Strategy
 
+Aspectow eliminates the need for separate console-only distribution packages. Instead, using a single starter project (`aspectow-enterprise`), administrators can control execution profiles (`console.ui`) to deploy dedicated console servers, headless worker nodes, or all-in-one integrated servers flexibly.
+
+* **Dedicated Console Server Deployment**: Deploy the `aspectow-enterprise` artifact to a dedicated management server and enable the `console.ui` profile (e.g., `mariadb,console.ui`) to run the web management console.
+* **Headless Worker Node Deployment**: Deploy the same artifact to business service nodes while omitting the `console.ui` profile (e.g., `mariadb`). Web UI endpoints are blocked with `404 Not Found`, minimizing attack surface and ensuring a safe and lightweight execution environment running only pure node and scheduler engines.
 
 ## 4. Console Built-in Core Security Mechanisms & Operating Guide
 
@@ -109,7 +109,6 @@ Aspectow Console comes equipped with core security mechanisms at the codebase le
 ### 4.6 Sensitive Data Response Masking
 * **Password Hash Clearing**: Clears (`null`s) the `password` hash field of `User` objects during user list queries at the server response stage, blocking DOM and JSON data exposure at the source.
 * **Data Masking Utilities**: Protects sensitive information on UI screens using masking helpers for email (`maskEmail`), IP addresses (`maskIpAddress`), and secret keys (`maskSecret`) in `ConsoleWebUtils`.
-
 
 ## 5. Customer Operational Security Checklist
 

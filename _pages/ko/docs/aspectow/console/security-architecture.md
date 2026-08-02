@@ -4,10 +4,9 @@ teaser: 엔터프라이즈 및 소규모 서버 환경에서 Aspectow Console을
 subheadline: Aspectow Console
 ---
 
-본 문서는 엔터프라이즈 환경 및 소규모 서버 환경에서 Aspectow WAS(Web Application Server)를 도입하여 운용하는 고객사를 위한 **Aspectow Console 운영 보안 가이드**입니다. 
+본 문서는 엔터프라이즈 환경 및 소규모 서버 환경에서 Aspectow WAS(Web Application Server)를 도입하여 운용하는 고객사를 위한 **Aspectow Console 운영 보안 가이드**입니다.
 
 Aspectow Console의 아키텍처적 위협 요소를 파악하고, 전용 관리 노드 그룹 배포 아키텍처, 단일 노드 통합 환경에서의 IP 통제 방안, 그리고 **내장 보안 메커니즘의 운용 방법**을 체계적으로 안내합니다.
-
 
 ## 1. 개요 및 보안 관리의 필요성
 
@@ -23,7 +22,6 @@ Aspectow Console은 각각의 Aspectran 노드(서버 인스턴스) 및 클러�
 
 이처럼 강력한 제어 권한이 통합되어 있으므로, 콘솔 웹 인터페이스가 공개 인터넷 망에 무분별하게 노출되거나 권한 관리가 미흡할 경우 전체 인프라가 위험에 노출될 수 있습니다. 따라서 고객사는 본 가이드에 따라 배포 아키텍처를 격리하고 내장 보안 메커니즘을 적극 활용해야 합니다.
 
-
 ## 2. 주요 보안 위협 및 방어 전략
 
 ### 2.1 무차별 대입 공격 (Brute Force / Credential Stuffing)
@@ -37,7 +35,6 @@ Aspectow Console은 각각의 Aspectran 노드(서버 인스턴스) 및 클러�
 ### 2.3 암호화 자산 유출로 인한 2차 피해
 Vault 및 System Encryption 영역에는 DB 접속 자격증명, 외부 API 키, 암호화 키 등 핵심 자산이 저장되어 있습니다.
 * **방어 전략**: 암호화 키 접근 권한을 최상위 관리자(`SUPER_ADMIN`)로 엄격히 제한하고, 화면 표출 시 비밀번호 해시 소거 및 민감 데이터 마스킹 조치를 적용합니다.
-
 
 ## 3. 권장 배포 아키텍처 및 환경별 구성 가이드
 
@@ -65,9 +62,12 @@ Vault 및 System Encryption 영역에는 DB 접속 자격증명, 외부 API 키,
 * **Console 접속 허용 IP 목록(IP Whitelist) 지정**: 사내 고정 IP, 관리자 전용 IP 대역(예: `192.168.1.0/24`)만 Console에 접속할 수 있도록 IP 필터링을 활성화합니다.
 * **방화벽 Port 분리 통제**: 비즈니스 서비스 포트(예: 8080)와 Console 관리 포트(예: 9090)를 다르게 지정하고, 관리 포트에 대해서만 인바운드 방화벽(Security Group) IP 제한 규칙을 적용합니다.
 
-### 3.3 독립 실행형 패키지 배포 전략
-고객사는 비즈니스 애플리케이션과 관리 콘솔을 명확히 분리하기 위해, 독립 실행형 배포 패키지(Distribution ZIP, Executable JAR, Docker Image 등)를 활용하여 전용 관리 서버를 독립 구축할 수 있습니다.
+### 3.3 단일 프로젝트 기반 프로필 제어 배포 전략 (Profile-based Deployment Strategy)
 
+Aspectow는 별도의 콘솔 전용 배포 패키지를 유지 관리할 필요 없이, 단일 스타터 프로젝트(`aspectow-enterprise`)를 기반으로 실행 프로필(`console.ui`)을 제어하여 독립 전용 콘솔 서버, Headless 워커 노드, 올인원 통합 서버를 자유롭게 구축할 수 있습니다.
+
+* **독립 전용 콘솔 서버 구축**: `aspectow-enterprise` 배포 아티팩트를 전용 관리 서버에 배치하고 `console.ui` 프로필(예: `mariadb,console.ui`)을 활성화하여 웹 콘솔 서비스를 구동합니다.
+* **Headless 워커 노드 구축**: 동일한 아티팩트를 비즈니스 서비스 노드에 배치하되 `console.ui` 프로필을 제외(예: `mariadb`)하여 구동합니다. 웹 UI 엔드포인트는 `404 Not Found`로 원천 차단되며 순수 노드 및 스케줄러 엔진만 동작하여 공격 표면을 최소화하고 가볍고 안전한 구동 환경을 보장합니다.
 
 ## 4. Console 내장 핵심 보안 메커니즘 및 활용 가이드
 
@@ -82,7 +82,7 @@ Aspectow Console에는 고객사의 안전한 운용을 위해 핵심 보안 메
 
 ### 4.2 계정 무차별 대입 방지 및 계정 잠금 (Account Lockout)
 * **자동 잠금 메커니즘**: 동일 계정으로 비밀번호 5회 연속 오류 발생 시 해당 계정은 자동으로 **`LOCKED`** 상태로 전환되어 배정된 모든 접근 권한이 차단됩니다.
-* **운영자 관리 방안**: 
+* **운영자 관리 방안**:
   * 계정이 잠긴 경우 로그인 화면에 잠금 안내 메시지가 표시됩니다.
   * 운영자는 웹 콘솔 **Accounts > Users** 메뉴에서 해당 계정의 상태를 `NORMAL`로 변경하여 잠금을 해제할 수 있습니다.
 
@@ -109,7 +109,6 @@ Aspectow Console에는 고객사의 안전한 운용을 위해 핵심 보안 메
 ### 4.6 민감 데이터 응답 마스킹 (Sensitive Data Masking)
 * **비밀번호 해시 소거**: 사용자 목록 조회 시 `User` 객체의 `password` 해시 필드를 서버 응답 단계에서 소거(`null` 처리)하여 DOM 및 JSON 데이터 노출을 원천 차단합니다.
 * **데이터 마스킹 유틸리티**: `ConsoleWebUtils` 내 이메일(`maskEmail`), IP 주소(`maskIpAddress`), 시크릿 키(`maskSecret`) 마스킹 헬퍼를 활용하여 UI 화면 상에 민감 정보가 안전하게 표출되도록 보호합니다.
-
 
 ## 5. 고객사 운영 보안 체크리스트
 
