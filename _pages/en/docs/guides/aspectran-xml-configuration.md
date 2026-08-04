@@ -109,7 +109,9 @@ Defines properties that will only be applied when a specific profile is active. 
 
 ### 1.6. `<append>`
 
-Includes other XML or APON configuration files into the current configuration. This element is fundamental for modularizing settings and is the primary mechanism for managing environment-specific bean definitions in XML.
+Includes other XML or APON configuration files into the current configuration. This element is fundamental for modularizing settings, managing environment-specific bean definitions, and including external module configurations in XML.
+
+When an `<append>` element is encountered during XML or APON parsing, the framework does not immediately parse the target resource inline at that point. Instead, it registers the resource in a **pending list**. After the rules of the current document are fully parsed, the pending `<append>` target documents are sequentially read and **appended** to the existing configuration rules—a process known as Deferred Parsing. The name `<append>` derives from this core behavior of being parsed and combined last, after the current document parsing is completed.
 
 By using the `profile` attribute, you can conditionally include entire configuration files, which is the idiomatic way to control which beans are registered based on the active environment (e.g., development, production).
 
@@ -121,20 +123,65 @@ By using the `profile` attribute, you can conditionally include entire configura
 -   `format`: Specifies the format of the file to be included (`xml` or `apon`). If omitted, it is auto-detected based on the file extension. If there is no extension, `xml` is the default.
 -   `profile`: A powerful attribute that includes the file only when a specific profile is active.
 
-**Example: Managing Database Beans by Profile**
+#### Scoped Overriding via Child Blocks of `<append>`
 
-A common use case is to define different database connection beans for each environment.
+To prevent maintainability issues caused by indiscriminate global overriding and to strictly scope rule overrides for target modules, Aspectran provides a **Scoped Overriding** mechanism using child blocks within the `<append>` element.
+
+Child elements declared inside an `<append>` block (e.g., `<bean>`, `<translet>`) must be used **strictly for overriding existing elements already present in the target appended document**.
+
+##### 1) Syntax and Strict Overriding Policy
+
+Elements declared in `<append>` child blocks undergo strict overriding and scope isolation checks when the target document is parsed and applied:
+
+-   **Target Match (Normal Override)**: If a bean or translet with the same ID or name already exists in the target appended document (`module-a.xml`), it is safely **overridden (replaced)** with the new definition specified in the child block.
+-   **Target Unmatched (Strict Validation Error)**: If an element with an identifier (ID or name) not present in the target appended document is declared in the child block (whether it is a new element or an element belonging to another module), it is treated as an invalid overriding attempt. An `IllegalRuleException` is thrown, and parsing fails immediately (Early Failure).
+-   **Rule for New Elements**: Truly new elements that do not exist in the target document must be declared at the top level of the parent (main) document, rather than inside an `<append>` child block.
+
+```xml
+<aspectran>
+    <!-- 1. Scoped Overriding Example -->
+    <append resource="config/module-a.xml">
+        <!-- Valid override: aBean exists in module-a.xml -->
+        <bean id="aBean" class="com.example.OverrideABean"/>
+        <translet name="/example/action"/>
+        
+        <!-- Invalid override: nonExistentBean does not exist in module-a.xml -> throws IllegalRuleException -->
+        <!-- <bean id="nonExistentBean" class="com.example.NewBean"/> -->
+    </append>
+
+    <!-- 2. Declare new independent elements directly in the top-level block -->
+    <bean id="independentBean" class="com.example.IndependentBean"/>
+</aspectran>
+```
+
+##### 2) Architectural Advantages of Scoped Overriding
+
+1.  **Encapsulation & Traceability**:
+    The relationship that "this override applies strictly when importing `module-a.xml`" is explicitly encapsulated within the `<append>` block. Developers do not need to search through global configuration files; reviewing the `<append>` block immediately reveals what was overridden for that module.
+2.  **Cross-Scope Leakage Prevention**:
+    Child overrides inside `<append resource="module-a.xml">` are isolated strictly to the element scope of `module-a.xml`. This prevents unintended side effects where definitions in other modules (`module-b.xml`) are accidentally invaded and overwritten.
+3.  **Strict Contract & Early Failure**:
+    Typographical errors or invalid override attempts (such as referencing a non-existent bean ID or translet name in the target module) are caught immediately at parse time with an exception, preventing runtime surprises.
+4.  **Seamless Integration with Deferred Parsing**:
+    When the target resource is placed on the pending list, child override rules are encapsulated within a `RuleParsingScope`. When deferred parsing executes, these override rules are verified against the target document's scope and applied transparently.
+
+#### Example: Managing Profiles and Scoped Overriding
+
+A common use case is to define different database connection beans for each environment or to override specific beans while importing a module.
 
 1.  **Create profile-specific XML files:**
     -   `config/db/dev-db.xml`: Defines the `dataSource` bean for the development environment (e.g., an in-memory H2 database).
     -   `config/db/prod-db.xml`: Defines the `dataSource` bean for the production environment (e.g., a pooled connection to MySQL).
 
-2.  **Conditionally include them in your main configuration:**
+2.  **Conditionally include them and apply scoped overriding in main configuration:**
     ```xml
     <aspectran>
         ...
-        <!-- Include common configurations -->
-        <append resource="config/common-context.xml"/>
+        <!-- Include common configuration with scoped overriding -->
+        <append resource="config/common-context.xml">
+            <!-- Override only the existing mailService bean defined in common-context.xml -->
+            <bean id="mailService" class="com.example.CustomMailService"/>
+        </append>
 
         <!-- Include the appropriate database configuration based on the active profile -->
         <append resource="config/db/dev-db.xml" profile="dev"/>
@@ -142,7 +189,7 @@ A common use case is to define different database connection beans for each envi
         ...
     </aspectran>
     ```
-In this setup, if the `dev` profile is active, only `dev-db.xml` is loaded, registering the H2 `dataSource`. If the `prod` profile is active, `prod-db.xml` is loaded, registering the MySQL `dataSource`. This provides a clean and robust way to manage environment-specific configurations.
+In this setup, if the `dev` profile is active, only `dev-db.xml` is loaded, registering the H2 `dataSource`. If the `prod` profile is active, `prod-db.xml` is loaded, registering the MySQL `dataSource`. Additionally, while loading `common-context.xml`, only the `mailService` bean defined within it can be safely overridden and replaced via scoped overriding. This provides a clean and robust way to manage environment-specific configurations and module-level overrides.
 
 ## 2. Common Parameters and Properties
 
@@ -510,7 +557,7 @@ Aspectran will scan the given package (and its sub-packages, thanks to `**`) and
 To give scanned beans a predictable ID, you can use the `mask` attribute. For example, if you scan `com.example.app.services.UserService`, and you want the bean ID to be `userService`:
 
 ```xml
-<!--
+<!-- 
   Scans classes like 'com.example.app.services.UserService'
   and registers it with the ID 'userService'.
 -->
@@ -850,7 +897,7 @@ The following is a complete example that defines a scheduler bean and uses it to
 <!-- 2. Define a schedule rule -->
 <schedule id="daily-batch">
     <description>Performs daily report generation and log archiving at midnight every day.</description>
-
+    
     <!-- Execution cycle: every day at midnight -->
     <scheduler bean="mainScheduler">
         <trigger type="cron">
@@ -958,7 +1005,6 @@ Inside a `<thrown>` block, you can define a response using elements like `<trans
     </exception>
 </translet>
 ```
-> **Note on HTTP Status Codes**: In a web context (using `aspectran-web`), you can typically use a `<status>` element inside a `<response>` block to set the HTTP status code, as shown in the `IllegalArgumentException` handler. This feature is specific to the web environment and is not part of the core XML definition. The more general approach is to `<forward>` to a dedicated error-handling translet.
 
 ### 8.2. Exception Handling in Aspects
 

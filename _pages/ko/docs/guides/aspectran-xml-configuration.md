@@ -109,7 +109,9 @@ Aspectran 프레임워크의 전역적인 동작을 제어하는 설정을 정�
 
 ### 1.6. `<append>`
 
-다른 XML 또는 APON 설정 파일을 현재 설정에 포함시킵니다. 이 요소는 설정을 모듈화하는 기본이며, 특히 XML에서 환경별 빈(Bean) 정의를 관리하는 핵심적인 메커니즘입니다.
+다른 XML 또는 APON 설정 파일을 현재 설정에 포함시킵니다. 이 요소는 설정을 모듈화하는 기본이며, 특히 XML에서 환경별 빈(Bean) 정의를 관리하고 외부 모듈 구성을 포함하는 핵심적인 메커니즘입니다.
+
+XML 또는 APON 설정 문서에서 `<append>` 요소를 발견하면, 프레임워크는 해당 리소스를 그 지점에서 즉시 인라인으로 파싱하지 않고 **보류(Pending)** 상태 목록에 등록해 둡니다. 현재 문서 전체의 규칙 파싱이 끝난 후 비로소 대기 중이던 `<append>` 대상 문서들을 순차적으로 읽어 기존 구성 규칙에 **추가(Append)**하는 지연 파싱(Deferred Parsing) 방식으로 동작합니다. `<append>`라는 명칭은 이처럼 '현재 문서 파싱이 완결된 후 제일 나중에 추가로 파싱되어 결합된다'는 핵심 동작 특징에서 유래되었습니다.
 
 `profile` 속성을 사용하면 전체 설정 파일을 조건부로 포함시킬 수 있는데, 이것이 활성화된 환경(예: 개발, 운영)에 따라 어떤 빈을 등록할지 제어하는 가장 관용적인 방법입니다.
 
@@ -121,20 +123,65 @@ Aspectran 프레임워크의 전역적인 동작을 제어하는 설정을 정�
 -   `format`: 포함할 파일의 형식 (`xml` 또는 `apon`)을 지정합니다. 생략 시 파일 확장자에 따라 자동 감지되며, 확장자가 없으면 `xml`이 기본값입니다.
 -   `profile`: 특정 프로파일이 활성화되었을 때만 해당 파일을 포함하는 강력한 속성입니다.
 
-**예시: 프로파일별로 데이터베이스 빈 관리하기**
+#### `<append>` 자식 블록을 활용한 스코프 오버라이딩 (Scoped Overriding)
 
-가장 흔한 사용 사례는 각 환경에 맞는 데이터베이스 커넥션 빈을 다르게 정의하는 것입니다.
+Aspectran은 무분별한 전역 오버라이딩으로 인한 유지보수의 난해함을 방지하고, 특정 모듈 설정의 재정의 범위를 명확히 제한하기 위해 **`<append>` 자식 블록 기반의 스코프 오버라이딩(Scoped Overriding)** 메커니즘을 제공합니다.
+
+`<append>` 요소 내부의 자식 요소(예: `<bean>`, `<translet>` 등)는 **오직 append 대상 문서 내에 이미 존재하는 기존 요소를 재정의(Override)하는 용도**로 한정하여 사용해야 합니다.
+
+##### 1) 구문 및 엄격한 재정의 정책 (Strict Overriding Policy)
+
+`<append>` 자식 블록에 선언된 요소들은 대상 문서를 파싱/적용하는 시점에 다음과 같은 엄격한 오버라이딩 및 격리(Scope Isolation) 정책을 거칩니다:
+
+-   **기존 요소 존재 시 (Target Match - 정상 재정의)**: append 대상 문서(`module-a.xml`) 내에 동일한 ID나 이름을 가진 빈/트랜슬릿이 이미 존재하는 경우, `<append>` 자식 블록에 정의된 새로운 설정으로 안전하게 **덮어쓰기(Override/Replace)**합니다.
+-   **기존 요소 미존재 시 (Target Unmatched - 엄격한 검증 오류)**: append 대상 문서 내에 존재하지 않는 식별자(ID 또는 이름)를 자식 요소로 선언한 경우(신규 요소이거나 타 모듈에만 존재하는 요소인 경우), 잘못된 오버라이딩 시도로 간주하여 `IllegalRuleException` 예외를 발생시키고 파싱을 즉시 중단합니다 (Early Failure).
+-   **신규 요소 선언 규칙**: 대상 문서에 존재하지 않는 순수 신규 요소는 `<append>` 자식 블록이 아니라 상위(본) 문서의 최상위 레벨에 선언해야 합니다.
+
+```xml
+<aspectran>
+    <!-- 1. 스코프 오버라이딩 예시 -->
+    <append resource="config/module-a.xml">
+        <!-- module-a.xml 내 기존 정의가 존재하는 경우: 정상 재정의 (Override) -->
+        <bean id="aBean" class="com.example.OverrideABean"/>
+        <translet name="/example/action"/>
+        
+        <!-- module-a.xml 내 기존 정의가 존재하지 않는 경우: IllegalRuleException 예외 발생 -->
+        <!-- <bean id="nonExistentBean" class="com.example.NewBean"/> -->
+    </append>
+
+    <!-- 2. 신규 요소는 상위 문서 최상위 블록에 직접 추가 -->
+    <bean id="independentBean" class="com.example.IndependentBean"/>
+</aspectran>
+```
+
+##### 2) 스코프 오버라이딩의 아키텍처적 장점
+
+1.  **명확한 캡슐화와 추적성 (Encapsulation & Traceability)**:
+    "이 오버라이드 설정은 오직 `module-a.xml` 모듈을 가져올 때 적용된다"는 관계가 `<append>` 블록 내에 명확히 캡슐화됩니다. 전체 설정 파일을 뒤질 필요 없이 해당 `<append>` 블록만 확인하면 어떤 모듈의 무엇을 재정의했는지 한눈에 파악할 수 있습니다.
+2.  **타 모듈 오염 방지 (Cross-Scope Leakage Prevention)**:
+    `<append resource="module-a.xml">` 내의 자식 오버라이드는 오직 `module-a.xml` 내부 요소 스코프에만 한정 적용되므로, 다른 모듈(`module-b.xml`)의 요소를 의도치 않게 침범하여 덮어쓰는 부작용을 원천 차단합니다.
+3.  **오타 및 유효하지 않은 재정의 사전 차단 (Strict Contract & Early Failure)**:
+    대상 문서에 존재하지 않는 빈 ID나 트랜슬릿 이름을 잘못 기재한 경우, 파싱 타임에 즉시 예외가 발생하여 구성상의 오타 및 오류를 사전에 검증할 수 있습니다.
+4.  **지연 파싱 메커니즘과의 완벽한 통합**:
+    대상 리소스가 보류(Pending) 목록에 등록될 때 자식 오버라이드 규칙도 `RuleParsingScope` 내부에 함께 보관되며, 추후 지연 파싱 시점에 대상 문서의 규칙이 해석된 직후 스코프 검증을 거쳐 투명하게 적용됩니다.
+
+#### 예시: 프로파일별 및 스코프 오버라이딩 활용
+
+가장 흔한 사용 사례는 각 환경에 맞는 데이터베이스 커넥션 빈을 다르게 정의하거나, 모듈을 가져오면서 특정 빈만 재정의하는 것입니다.
 
 1.  **프로파일별 XML 파일 생성:**
     -   `config/db/dev-db.xml`: 개발 환경을 위한 `dataSource` 빈을 정의합니다. (예: 인메모리 H2 데이터베이스)
     -   `config/db/prod-db.xml`: 운영 환경을 위한 `dataSource` 빈을 정의합니다. (예: 커넥션 풀이 적용된 MySQL)
 
-2.  **메인 설정에서 조건부로 포함:**
+2.  **메인 설정에서 조건부 포함 및 스코프 오버라이딩 적용:**
     ```xml
     <aspectran>
         ...
-        <!-- 공통 설정 포함 -->
-        <append resource="config/common-context.xml"/>
+        <!-- 공통 설정 및 스코프 오버라이딩 -->
+        <append resource="config/common-context.xml">
+            <!-- common-context.xml 내 기존 mailService 빈만 재정의 -->
+            <bean id="mailService" class="com.example.CustomMailService"/>
+        </append>
 
         <!-- 활성화된 프로파일에 따라 적절한 데이터베이스 설정 포함 -->
         <append resource="config/db/dev-db.xml" profile="dev"/>
@@ -142,7 +189,7 @@ Aspectran 프레임워크의 전역적인 동작을 제어하는 설정을 정�
         ...
     </aspectran>
     ```
-이 설정에서 `dev` 프로파일이 활성화되면 `dev-db.xml`만 로드되어 H2 `dataSource`가 등록되고, `prod` 프로파일이 활성화되면 `prod-db.xml`이 로드되어 MySQL `dataSource`가 등록됩니다. 이를 통해 환경별 구성을 깔끔하고 견고하게 관리할 수 있습니다.
+이 설정에서 `dev` 프로파일이 활성화되면 `dev-db.xml`만 로드되어 H2 `dataSource`가 등록되고, `prod` 프로파일이 활성화되면 `prod-db.xml`이 로드되어 MySQL `dataSource`가 등록됩니다. 또한 `common-context.xml` 모듈을 로드하는 과정에서 그 내부에 이미 정의된 `mailService` 빈만을 안전하게 스코프 오버라이딩하여 교체할 수 있습니다. 이를 통해 환경별 구성과 모듈별 재정의를 깔끔하고 견고하게 관리할 수 있습니다.
 
 ## 2. 공통 파라미터 및 속성
 
