@@ -163,7 +163,7 @@ Elements declared in `<append>` child blocks undergo strict overriding and scope
 3.  **Strict Contract & Early Failure**:
     Typographical errors or invalid override attempts (such as referencing a non-existent bean ID or translet name in the target module) are caught immediately at parse time with an exception, preventing runtime surprises.
 4.  **Seamless Integration with Deferred Parsing**:
-    When the target resource is placed on the pending list, child override rules are encapsulated within a `RuleParsingScope`. When deferred parsing executes, these override rules are verified against the target document's scope and applied transparently.
+    When the target resource is placed on the pending list, its inner child override rules are safely preserved together with the `<append>` definition. When deferred parsing executes, these override rules are strictly verified against the target module's parsed scope and applied transparently.
 
 #### Example: Managing Profiles and Scoped Overriding
 
