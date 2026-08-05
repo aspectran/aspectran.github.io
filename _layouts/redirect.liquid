@@ -17,7 +17,7 @@
 {% if page.lang_detect %}
   {% include lang-detect.liquid permalink=page.permalink %}
 {% else %}
-  <link rel="canonical" href="{{ page.redirect_to }}"/>
+  <link rel="canonical" href="{{ site.url }}{{ page.redirect_to }}"/>
   <meta http-equiv="refresh" content="0;url={{ page.redirect_to }}" />
 {% endif %}
 <style>

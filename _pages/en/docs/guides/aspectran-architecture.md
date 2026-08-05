@@ -1,7 +1,7 @@
 ---
 title: Aspectran Architecture
 teaser: An Integrated Deep Dive (Full-Text Version)
-subheadline: Core Guides
+subheadline: Architecture
 ---
 
 {% include image.liquid src="/images/docs/architecture_en.svg" alt="Integration of Aspectran Architecture" %}
@@ -281,19 +281,19 @@ Through this architectural blueprint, framework developers can gain a deep under
 
 This document was created by consolidating the following individual architecture documents. For more detailed information on each topic, please refer to the documents below.
 
-*   [ActivityContext Build Process: An In-Depth Analysis](/en/docs/architecture/activity-context-building/)
-*   [ActivityContext: The Heart of Aspectran](/en/docs/architecture/activity-context/)
-*   [Environment: Controlling Environments with Profiles and Properties](/en/docs/architecture/activity-environment/)
-*   [Aspectran Actions: Concepts, Types, and Processing Results](/en/docs/architecture/aspectran-actions/)
-*   [Activity Architecture: The Execution Engine of Request Processing](/en/docs/architecture/aspectran-activities/)
-*   [Adapter Architecture: The Core of Environmental Independence](/en/docs/architecture/aspectran-adapters/)
-*   [In-Depth Analysis of Bean Scopes in Aspectran](/en/docs/architecture/aspectran-bean-scopes/)
-*   [SiblingClassLoader: The Key to Dynamic and Flexible Class Loading](/en/docs/architecture/aspectran-classloader/)
-*   [In-Depth Analysis of Aspectran Execution Environments](/en/docs/architecture/aspectran-execution-environments/)
-*   [Aspectran Configuration Loading Mechanism](/en/docs/architecture/aspectran-loading-mechanism/)
-*   [Aspectran Logging Mechanism](/en/docs/architecture/aspectran-logging-mechanism/)
-*   [Request and Response Handling Mechanism](/en/docs/architecture/aspectran-request-response/)
-*   [In-Depth Analysis of Aspectran Configuration Rule Architecture](/en/docs/architecture/aspectran-rule-architecture/)
-*   [In-Depth Analysis of Aspectran Service Architecture](/en/docs/architecture/aspectran-services/)
-*   [Aspectran Session Manager](/en/docs/architecture/aspectran-session-manager/)
-*   [Aspectran AOP Proxy Mechanism](/en/docs/architecture/new-aop-proxy-mechanism/)
+*   [ActivityContext Build Process: An In-Depth Analysis](/en/docs/mechanisms/activity-context-building/)
+*   [ActivityContext: The Heart of Aspectran](/en/docs/mechanisms/activity-context/)
+*   [Environment: Controlling Environments with Profiles and Properties](/en/docs/mechanisms/activity-environment/)
+*   [Aspectran Actions: Concepts, Types, and Processing Results](/en/docs/mechanisms/aspectran-actions/)
+*   [Activity Architecture: The Execution Engine of Request Processing](/en/docs/mechanisms/aspectran-activities/)
+*   [Adapter Architecture: The Core of Environmental Independence](/en/docs/mechanisms/aspectran-adapters/)
+*   [In-Depth Analysis of Bean Scopes in Aspectran](/en/docs/mechanisms/aspectran-bean-scopes/)
+*   [SiblingClassLoader: The Key to Dynamic and Flexible Class Loading](/en/docs/mechanisms/aspectran-classloader/)
+*   [In-Depth Analysis of Aspectran Execution Environments](/en/docs/mechanisms/aspectran-execution-environments/)
+*   [Aspectran Configuration Loading Mechanism](/en/docs/mechanisms/aspectran-loading-mechanism/)
+*   [Aspectran Logging Mechanism](/en/docs/mechanisms/aspectran-logging-mechanism/)
+*   [Request and Response Handling Mechanism](/en/docs/mechanisms/aspectran-request-response/)
+*   [In-Depth Analysis of Aspectran Configuration Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/)
+*   [In-Depth Analysis of Aspectran Service Architecture](/en/docs/mechanisms/aspectran-services/)
+*   [Aspectran Session Manager](/en/docs/mechanisms/aspectran-session-manager/)
+*   [Aspectran AOP Proxy Mechanism](/en/docs/mechanisms/new-aop-proxy-mechanism/)

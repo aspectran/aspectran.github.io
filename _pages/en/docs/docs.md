@@ -44,43 +44,12 @@ permalink: /en/docs/
 *   [MyBatis Transaction Management in Aspectran](/en/docs/guides/aspectran-mybatis-transaction-management/)
 *   [JPA Transaction Management in Aspectran](/en/docs/guides/aspectran-jpa-transaction-management/)
 
-### Architecture & Mechanisms
-{: #architecture-mechanisms}
+### Architecture
+{: #architecture}
 *   [Designing for Sustainable Simplicity: Architectural Philosophy](/en/why-aspectran/)
 *   [Aspectran Architecture: An Integrated Deep Dive](/en/docs/guides/aspectran-architecture/)
-*   [Aspectran Architecture Diagrams](/en/docs/architecture/aspectran-architecture-diagrams/)
-*   [ActivityContext Build Process: An In-Depth Analysis](/en/docs/architecture/activity-context-building/)
-*   [Aspectran Auto-Reloading Mechanism: Deep Dive](/en/docs/architecture/aspectran-reloading-mechanism/)
-*   [ActivityContext: The Heart of Aspectran](/en/docs/architecture/activity-context/)
-*   [Environment: Controlling Environments with Profiles and Properties](/en/docs/architecture/activity-environment/)
-*   [Aspectran Actions: Concepts, Types, and Results](/en/docs/architecture/aspectran-actions/)
-*   [Activity Architecture: The Execution Engine](/en/docs/architecture/aspectran-activities/)
-*   [Adapter Architecture: The Core of Environmental Independence](/en/docs/architecture/aspectran-adapters/)
-*   [In-Depth Analysis of Bean Scopes in Aspectran](/en/docs/architecture/aspectran-bean-scopes/)
-*   [SiblingClassLoader: Dynamic and Flexible Class Loading](/en/docs/architecture/aspectran-classloader/)
-*   [In-Depth Analysis of Execution Environments](/en/docs/architecture/aspectran-execution-environments/)
-*   [Aspectran Configuration Loading Mechanism](/en/docs/architecture/aspectran-loading-mechanism/)
-*   [In-Depth Analysis of the Logging Mechanism](/en/docs/architecture/aspectran-logging-mechanism/)
-*   [Request and Response Handling Mechanism](/en/docs/architecture/aspectran-request-response/)
-*   [In-Depth Analysis of Configuration Rule Architecture](/en/docs/architecture/aspectran-rule-architecture/)
-*   [In-Depth Analysis of Service Architecture](/en/docs/architecture/aspectran-services/)
-*   [Aspectran Session Manager: Deep Dive](/en/docs/architecture/aspectran-session-manager/)
-*   [AOP Proxy Mechanism: `AbstractBeanProxy` and `ProxyActivity`](/en/docs/architecture/new-aop-proxy-mechanism/)
-
-### Package Specifications
-*   [Aspectran Core Service](/en/docs/architecture/packages/aspectran-core-service/)
-*   [Aspectran Scheduler Service](/en/docs/architecture/packages/aspectran-scheduler-service/)
-*   [Aspectran Core Activity](/en/docs/architecture/packages/aspectran-core-activity/)
-*   [Aspectran Daemon Service](/en/docs/architecture/packages/aspectran-daemon-service/)
-*   [Aspectran Daemon Activity](/en/docs/architecture/packages/aspectran-daemon-activity/)
-*   [Aspectran Embed Service](/en/docs/architecture/packages/aspectran-embed-service/)
-*   [Aspectran Embed Activity](/en/docs/architecture/packages/aspectran-embed-activity/)
-*   [Aspectran Shell Service](/en/docs/architecture/packages/aspectran-shell-service/)
-*   [Aspectran Shell Activity](/en/docs/architecture/packages/aspectran-shell-activity/)
-*   [Aspectran Undertow Service](/en/docs/architecture/packages/aspectran-undertow-service/)
-*   [Aspectran Undertow Activity](/en/docs/architecture/packages/aspectran-undertow-activity/)
-*   [Aspectran Web Service](/en/docs/architecture/packages/aspectran-web-activity/)
-*   [Aspectran Config Parameters](/en/docs/architecture/packages/aspectran-config-parameters/)
+*   [Aspectran Architecture Diagrams](/en/docs/guides/aspectran-architecture-diagrams/)
+*   **[View All Aspectran Internal Mechanisms & Package Specifications →](/en/docs/mechanisms/)**
 
 ## <i class="bi bi-layers-half"></i> Aspectow
 {: #aspectow}

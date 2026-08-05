@@ -8,7 +8,7 @@ Aspectow는 Undertow 엔진을 기반으로 여러 웹 컨텍스트를 동시에
 
 본 문서는 세 가지 핵심 컴포넌트(`SessionManager`, `SessionConfig`, `SessionStore`)의 조합을 통해 구현할 수 있는 세션 관리 패턴과 설정 시 주의사항을 설명합니다.
 
-Aspectran 세션 매니저에 대한 보다 상세한 아키텍처와 핵심 컴포넌트 설명은 [Aspectran Session Manager: Deep Dive](https://aspectran.com/ko/docs/architecture/aspectran-session-manager/) 문서를 참조하십시오.
+Aspectran 세션 매니저에 대한 보다 상세한 아키텍처와 핵심 컴포넌트 설명은 [Aspectran Session Manager: Deep Dive](https://aspectran.com/ko/docs/mechanisms/aspectran-session-manager/) 문서를 참조하십시오.
 
 ## 1. 세션 관리의 3가지 패턴
 

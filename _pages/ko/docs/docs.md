@@ -44,43 +44,12 @@ permalink: /ko/docs/
 *   [Aspectran에서의 MyBatis 트랜잭션 관리 가이드](/ko/docs/guides/aspectran-mybatis-transaction-management/)
 *   [Aspectran에서의 JPA 트랜잭션 관리 가이드](/ko/docs/guides/aspectran-jpa-transaction-management/)
 
-### 아키텍처 및 메커니즘
-{: #아키텍처-및-메커니즘}
+### 아키텍처
+{: #아키텍처-architecture}
 *   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)
 *   [Aspectran 아키텍처: 통합 심층 분석](/ko/docs/guides/aspectran-architecture/)
-*   [Aspectran 아키텍처 다이어그램](/ko/docs/architecture/aspectran-architecture-diagrams/)
-*   [ActivityContext 빌드 과정: 심층 분석](/ko/docs/architecture/activity-context-building/)
-*   [Aspectran 자동 리로딩 메커니즘 심층 분석](/ko/docs/architecture/aspectran-reloading-mechanism/)
-*   [ActivityContext: Aspectran의 심장부](/ko/docs/architecture/activity-context/)
-*   [Environment: 프로필과 속성을 이용한 환경 제어](/ko/docs/architecture/activity-environment/)
-*   [Aspectran Actions: 개념, 종류 및 처리 결과](/ko/docs/architecture/aspectran-actions/)
-*   [Activity 아키텍처: 요청 처리의 실행 엔진](/ko/docs/architecture/aspectran-activities/)
-*   [Adapter 아키텍처: 환경 독립성의 핵심](/ko/docs/architecture/aspectran-adapters/)
-*   [Aspectran의 빈 스코프(Bean Scopes) 심층 분석](/ko/docs/architecture/aspectran-bean-scopes/)
-*   [SiblingClassLoader: 동적이고 유연한 클래스 로딩의 핵심](/ko/docs/architecture/aspectran-classloader/)
-*   [Aspectran 실행 환경 심층 분석](/ko/docs/architecture/aspectran-execution-environments/)
-*   [Aspectran 구성 로딩 메커니즘](/ko/docs/architecture/aspectran-loading-mechanism/)
-*   [Aspectran 로깅 메커니즘](/ko/docs/architecture/aspectran-logging-mechanism/)
-*   [요청(Request) 및 응답(Response) 처리 메커니즘](/ko/docs/architecture/aspectran-request-response/)
-*   [Aspectran 설정 규칙 아키텍처 심층 분석](/ko/docs/architecture/aspectran-rule-architecture/)
-*   [Aspectran 서비스 아키텍처 심층 분석](/ko/docs/architecture/aspectran-services/)
-*   [Aspectran Session Manager: Deep Dive](/ko/docs/architecture/aspectran-session-manager/)
-*   [Aspectran AOP 프록시 메커니즘: `AbstractBeanProxy`와 `ProxyActivity`](/ko/docs/architecture/new-aop-proxy-mechanism/)
-
-### 패키지별 상세 명세
-*   [Aspectran Core Service](/ko/docs/architecture/packages/aspectran-core-service/)
-*   [Aspectran Scheduler Service](/ko/docs/architecture/packages/aspectran-scheduler-service/)
-*   [Aspectran Core Activity](/ko/docs/architecture/packages/aspectran-core-activity/)
-*   [Aspectran Daemon Service](/ko/docs/architecture/packages/aspectran-daemon-service/)
-*   [Aspectran Daemon Activity](/ko/docs/architecture/packages/aspectran-daemon-activity/)
-*   [Aspectran Embed Service](/ko/docs/architecture/packages/aspectran-embed-service/)
-*   [Aspectran Embed Activity](/ko/docs/architecture/packages/aspectran-embed-activity/)
-*   [Aspectran Shell Service](/ko/docs/architecture/packages/aspectran-shell-service/)
-*   [Aspectran Shell Activity](/ko/docs/architecture/packages/aspectran-shell-activity/)
-*   [Aspectran Undertow Service](/ko/docs/architecture/packages/aspectran-undertow-service/)
-*   [Aspectran Undertow Activity](/ko/docs/architecture/packages/aspectran-undertow-activity/)
-*   [Aspectran Web Service](/ko/docs/architecture/packages/aspectran-web-activity/)
-*   [Aspectran Config Parameters](/ko/docs/architecture/packages/aspectran-config-parameters/)
+*   [Aspectran 아키텍처 다이어그램](/ko/docs/guides/aspectran-architecture-diagrams/)
+*   **[Aspectran 세부 메커니즘 및 패키지 명세 전체 보기 →](/ko/docs/mechanisms/)**
 
 ## <i class="bi bi-layers-half"></i> Aspectow
 {: #aspectow}

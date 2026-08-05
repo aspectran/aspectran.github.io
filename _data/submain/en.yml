@@ -95,8 +95,11 @@ aspectran:
           url: /en/docs/guides/aspectran-architecture/
           description: Comprehensive analysis of Aspectran's internal structure and design philosophy.
         - title: Architecture Diagrams
-          url: /en/docs/architecture/aspectran-architecture-diagrams/
+          url: /en/docs/guides/aspectran-architecture-diagrams/
           description: Shows the architecture of Aspectran from various perspectives.
+        - title: Internal Mechanisms & Package Specifications
+          url: /en/docs/mechanisms/
+          description: Technical specifications covering execution engines, context building, sessions, and packages.
 
 aspectow:
   hero:

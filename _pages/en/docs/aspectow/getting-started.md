@@ -142,7 +142,7 @@ Translet, Activity, and Action, the core concepts of Aspectran, are the main com
 
 In short, when a web request comes in, the Translet accepts it and starts an Activity. The Activity then uses Actions to perform the necessary tasks and returns the result to the user.
 
-For more details on each concept, please refer to the [Translet documentation](/en/docs/guides/aspectran-translet/) and the [Action documentation](/en/docs/architecture/aspectran-actions/).
+For more details on each concept, please refer to the [Translet documentation](/en/docs/guides/aspectran-translet/) and the [Action documentation](/en/docs/mechanisms/aspectran-actions/).
 
 ## 9. Direct Execution and Debugging in a Development Environment
 

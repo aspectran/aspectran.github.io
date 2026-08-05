@@ -8,7 +8,7 @@ Aspectow, based on the Undertow engine, provides a multi-context environment whe
 
 This document describes the session management patterns that can be implemented through combinations of three core components (`SessionManager`, `SessionConfig`, `SessionStore`) and outlines important precautions during configuration.
 
-For a more detailed explanation of the architecture and core components of the Aspectran Session Manager, please refer to the [Aspectran Session Manager: Deep Dive](https://aspectran.com/en/docs/architecture/aspectran-session-manager/) document.
+For a more detailed explanation of the architecture and core components of the Aspectran Session Manager, please refer to the [Aspectran Session Manager: Deep Dive](https://aspectran.com/en/docs/mechanisms/aspectran-session-manager/) document.
 
 ## 1. Three Patterns of Session Management
 

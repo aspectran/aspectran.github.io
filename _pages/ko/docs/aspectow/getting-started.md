@@ -142,7 +142,7 @@ Aspectran의 핵심 개념인 Translet, Activity, Action은 웹 요청이 들어
 
 간단히 말해, 웹 요청이 들어오면 Translet이 해당 요청을 받아 Activity를 실행하고, Activity는 Action을 통해 필요한 작업을 처리한 후 결과를 사용자에게 응답합니다.
 
-각 개념에 대한 더 자세한 내용은 [Translet 문서](/ko/docs/guides/aspectran-translet/) 및 [Action 문서](/ko/docs/architecture/aspectran-actions/)를 참조하시기 바랍니다.
+각 개념에 대한 더 자세한 내용은 [Translet 문서](/ko/docs/guides/aspectran-translet/) 및 [Action 문서](/ko/docs/mechanisms/aspectran-actions/)를 참조하시기 바랍니다.
 
 ## 9. 개발 환경에서 직접 실행 및 디버깅
 
