@@ -1,5 +1,5 @@
 {% assign navigation = site.data.navigation[include.lang] | default: site.data.navigation[site.default_lang] %}
-<ul class="navbar-nav{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+<ul class="navbar-nav{% if include.auto_lang == true %} auto-lang {{ include.lang }}{% endif %}">
   {% for item in navigation %}
     {% if item.side == 'left' %}
 

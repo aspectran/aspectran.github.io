@@ -1,4 +1,4 @@
-<div class="container{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+<div class="container{% if include.auto_lang == true %} auto-lang {{ include.lang }}{% endif %}">
   <div class="row">
     <div class="col-sm-8 col-md-7 col-lg-6 col-xl-5 d-flex">
       {% if site.logo_footer %}

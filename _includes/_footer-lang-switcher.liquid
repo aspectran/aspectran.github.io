@@ -1,4 +1,4 @@
-<ul class="lang-switcher{% if include.auto_lang %} auto-lang {{ include.lang }}{% endif %}">
+<ul class="lang-switcher{% if include.auto_lang == true %} auto-lang {{ include.lang }}{% endif %}">
   {% for lang in site.lang_order %}
     {% assign url_prefix = '/' | append: include.lang | append: '/' %}
     {% assign blog_page_url_prefix = '/' | append: lang | append: site.blog_page_url_prefix %}
