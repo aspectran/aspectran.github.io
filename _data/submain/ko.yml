@@ -116,6 +116,11 @@ aspectow:
         target: _blank
         class: btn-outline-secondary
         icon: bi-box-arrow-up-right
+      - title: GitHub
+        url: https://github.com/aspectran/aspectow
+        target: _blank
+        class: btn-outline-secondary
+        icon: bi-github
 
   sections:
     - title: 운영 및 환경 설정 가이드
