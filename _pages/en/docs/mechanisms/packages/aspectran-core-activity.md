@@ -1,6 +1,6 @@
 ---
 title:
-subheadline: Architecture - Package Deep Dive
+subheadline: Package Specifications
 permalink: /en/docs/mechanisms/packages/aspectran-core-activity/
 ---
 

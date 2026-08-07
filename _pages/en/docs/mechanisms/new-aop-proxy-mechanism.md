@@ -1,6 +1,6 @@
 ---
 title: "Aspectran AOP Proxy Mechanism: `AbstractBeanProxy` and `ProxyActivity`"
-subheadline: "Architecture & Mechanisms"
+subheadline: Mechanisms
 ---
 
 ## 1. Overview

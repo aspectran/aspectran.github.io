@@ -1,6 +1,6 @@
 ---
 title: "`com.aspectran.web.service` 패키지 상세 분석"
-subheadline: 아키텍처 - 패키지 심층 분석
+subheadline: 패키지 명세
 ---
 
 ## 1. 설계 목표 및 주요 역할

@@ -1,6 +1,6 @@
 ---
 title: In-Depth Analysis of the `com.aspectran.embed.activity` Package
-subheadline: Architecture - Package Deep Dive
+subheadline: Package Specifications
 ---
 
 ## 1. Design Goals and Key Roles

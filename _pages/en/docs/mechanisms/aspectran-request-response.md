@@ -1,6 +1,6 @@
 ---
 title: Request and Response Handling Mechanism
-subheadline: "Architecture & Mechanisms"
+subheadline: Mechanisms
 ---
 
 The Aspectran framework provides a powerful and flexible mechanism for processing incoming requests and generating appropriate responses during the lifecycle of an `Activity`. This mechanism consists of core abstractions and specific extensions tailored to each execution environment.
