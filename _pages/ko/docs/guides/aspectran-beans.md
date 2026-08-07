@@ -17,8 +17,6 @@ Aspectran Beans의 핵심은 애플리케이션의 객체("빈"이라 불림)를
 
 -   **DI (Dependency Injection, 의존성 주입)**: IoC를 구현하는 주요 메커니즘입니다. 객체가 자신의 의존성을 직접 생성하는 대신(`new MyService()`), 외부 소스(IoC 컨테이너)로부터 의존성을 "주입"받습니다. 이를 통해 컴포넌트 간의 결합도를 낮추어 관리, 테스트, 재사용이 더 쉬워집니다.
 
----
-
 ## 2. 기본: 빈(Bean) 정의와 스코프
 
 ### `@Component`를 사용한 자동 탐지
@@ -87,8 +85,6 @@ import com.aspectran.core.context.rule.type.ScopeType;
 @Scope(ScopeType.PROTOTYPE)
 public class MyPrototypeBean { /* ... */ }
 ```
-
----
 
 ## 3. 핵심: 의존성 주입 (Dependency Injection)
 
@@ -202,8 +198,6 @@ public class MainService {
     }
 }
 ```
-
----
 
 ## 4. 고급 기능
 
@@ -555,8 +549,6 @@ public void doSomethingWithCustomExecutor() {
 }
 ```
 
----
-
 ## 5. 빈 생명주기(Lifecycle) 관리
 
 ### 전체 생명주기 순서
@@ -604,8 +596,6 @@ public class LifecycleBean implements InitializableBean, DisposableBean {
     public void destroy() throws Exception { /* ... */ }
 }
 ```
-
----
 
 ## 6. 구성 설정 (Configuration)
 
@@ -714,8 +704,6 @@ XML에서도 `<bean scan="...">`을 사용하여 컴포넌트 스캔을 활성�
 ### 어노테이션과 XML 설정의 조합
 
 어노테이션 기반의 컴포넌트 스캔과 XML 기반의 명시적 빈 정의를 함께 사용할 수 있습니다. 일반적으로 컴포넌트 스캔을 기본으로 사용하고, 특정 빈을 재정의하거나 외부 라이브러리를 등록할 때 XML을 사용합니다. 동일한 ID의 빈이 둘 다에 정의된 경우, 나중에 로드되는 설정이 우선권을 가질 수 있으며, `<bean important="true">` 속성으로 덮어쓰기를 강제할 수 있습니다.
-
----
 
 ## 7. Best Practices 및 흔한 실수 (Pitfalls)
 

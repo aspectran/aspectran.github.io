@@ -17,8 +17,6 @@ The core of Aspectran Beans is to help you write cleaner, more modular, and easi
 
 -   **DI (Dependency Injection)**: This is the primary mechanism for implementing IoC. Instead of an object creating its own dependencies (`new MyService()`), it receives them from an external source (the IoC container). This reduces the coupling between components, making them easier to manage, test, and reuse.
 
----
-
 ## 2. Basics: Bean Definition and Scopes
 
 ### Automatic Detection with `@Component`
@@ -87,8 +85,6 @@ import com.aspectran.core.context.rule.type.ScopeType;
 @Scope(ScopeType.PROTOTYPE)
 public class MyPrototypeBean { /* ... */ }
 ```
-
----
 
 ## 3. Core: Dependency Injection
 
@@ -202,8 +198,6 @@ public class MainService {
     }
 }
 ```
-
----
 
 ## 4. Advanced Features
 
@@ -555,8 +549,6 @@ public void doSomethingWithCustomExecutor() {
 }
 ```
 
----
-
 ## 5. Bean Lifecycle Management
 
 ### Complete Lifecycle Sequence
@@ -604,8 +596,6 @@ public class LifecycleBean implements InitializableBean, DisposableBean {
     public void destroy() throws Exception { /* ... */ }
 }
 ```
-
----
 
 ## 6. Configuration
 
@@ -714,8 +704,6 @@ You can define an anonymous inner bean that will only be used as a property of a
 ### Combining Annotations and XML Configuration
 
 You can use annotation-based component scanning and explicit XML-based bean definitions together. It is common to use component scanning as the default and use XML to override specific beans or register external libraries. If a bean with the same ID is defined in both, the configuration that is loaded later may take precedence, and you can force an override with the `<bean important="true">` attribute.
-
----
 
 ## 7. Best Practices and Pitfalls
 

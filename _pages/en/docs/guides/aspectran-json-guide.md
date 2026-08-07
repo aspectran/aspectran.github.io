@@ -16,8 +16,6 @@ Aspectran's JSON module is built around a few key classes:
 - **`JsonString`**: A wrapper to embed raw, pre-formatted JSON into a `JsonWriter` stream without re-escaping.
 - **`JsonToParameters`**: A utility to convert JSON text directly into Aspectran's `Parameters` objects, which is particularly useful in API development.
 
----
-
 ## Usage and Examples
 
 ### 1. Simple Parsing with `JsonParser`

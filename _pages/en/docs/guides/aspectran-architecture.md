@@ -19,8 +19,6 @@ Aspectran's architecture is based on the following core design principles:
 *   **Environment Abstraction**: Abstracts the differences of various execution environments (web, shell, daemon, etc.) through the Adapter pattern, allowing the same business logic to run independently of the environment.
 *   **Modularity and Extensibility**: Supports flexible extension and customization through fine-grained modules and a layered architecture.
 
----
-
 ## 2. Top-Level Architecture: Services and Execution Environments
 
 ### 2.1. Aspectran Service Architecture
@@ -99,8 +97,6 @@ Aspectran supports web environments through two primary modules: one for generic
   *   **Key Components:** `TowService`, `TowActivity`
   *   **Characteristics:** Servlet-less web, direct Undertow API interaction, high performance, reusable web configuration (`WebConfig`), ideal for building lightweight microservices with an embedded web server.
 
----
-
 ## 3. Environment Abstraction: The Adapter Architecture
 
 One of the most powerful architectural features of the Aspectran framework is the **Adapter**. Adapters play a key role in abstracting the differences of the runtime environment (web, console, daemon, etc.), allowing the same business logic to run without modification in any environment.
@@ -136,8 +132,6 @@ The packages below contain classes that specifically implement the abstract inte
 2.  **Highest Level of Code Reusability**: Code containing the same business logic can be reused in web, CLI, and background services without a single line of modification.
 3.  **Testability**: Business logic can be tested quickly and simply using `com.aspectran.embed.adapter` without having to run a web server or a complex environment.
 4.  **Extensibility**: Even if a new execution environment (e.g., gRPC, WebSocket, etc.) emerges, all existing Aspectran assets can be utilized as is, just by implementing an adapter for that environment.
-
----
 
 ## 4. Core Container and Processing Flow
 
@@ -177,8 +171,6 @@ The `com.aspectran.core.activity.process` package plays a key role in defining a
   *   **`ProcessResult`**: The top-level container for all execution results within a single `Activity` lifecycle.
 *   **Utilization of Result Values**: This structured result value plays a crucial role in various key functions such as **view rendering**, **response generation (e.g., REST API)**, **inter-translet communication**, **conditional logic and flow control**, and **debugging and logging**.
 
----
-
 ## 5. Request and Response Handling Mechanism
 
 Aspectran provides a robust and flexible mechanism for processing incoming requests and generating appropriate responses during the lifecycle of an `Activity`.
@@ -203,8 +195,6 @@ Supports various response strategies centered around the `com.aspectran.core.act
 
 *   **Web-specific Response Handling (`com.aspectran.web.activity.response`)**: Finely controls HTTP responses (status code, headers, data format) specialized for RESTful services through the `RestResponse` interface.
 
----
-
 ## 6. Settings and Configuration
 
 ### 6.1. Configuration Rule Architecture (`com.aspectran.core.context.rule`)
@@ -228,8 +218,6 @@ This package is a collection of data container (POJO) classes that define the va
 
 *   **Hierarchical/Modular Configuration**: `AspectranConfig` is the top-level configuration object, and it contains detailed configuration objects for each execution environment, such as `ContextConfig`, `WebConfig`, `DaemonConfig`, `ShellConfig`, and `EmbedConfig`, allowing you to configure only the necessary environment's settings.
 *   **Main Feature Configuration**: The activation and detailed behavior of features such as environment profiles, auto-reloading, session management, and task scheduling are managed through the configuration classes here.
-
----
 
 ## 7. Advanced Features like AOP, Session, and ClassLoader
 
@@ -268,8 +256,6 @@ Aspectran goes beyond Java's standard class loading mechanism by implementing it
 Aspectran uses **SLF4J** as its logging abstraction library and **Logback** as its default implementation.
 *   **Core Feature (`LoggingGroupDiscriminator`)**: Identifies the logical "group" where a log occurs through a custom Logback `Discriminator`. The group name is determined by the priority of SLF4J MDC, `ActivityContext` name, etc.
 *   **Dynamic Log Separation**: When used with `SiftingAppender`, in the case of a web application, it can dynamically separate and record logs into separate files (e.g., `jpetstore.log`, `petclinic.log`) based on the request URI through `PathBasedLoggingGroupHandlerWrapper`.
-
----
 
 ## 8. Conclusion
 
