@@ -40,7 +40,51 @@ Redis를 메시지 버스 및 분산 저장소로 활용하는 현대적인 Clou
 Redis 없이 노드 간 직접 HTTP/WebSocket 연결을 수행하는 정적 인프라 방식입니다.
 
 *   **적합한 환경**: IP와 노드 수량이 고정되어 있고 오토스케일링이 발생하지 않는 소규모 전용망 환경에 적합합니다.
-*   **인프라 요구사항**: Nginx 등의 L7 로드밸런서가 필수적이며, URL 경로(예: `/nodes/node1`)를 해석하여 타겟 노드로 전달하는 경로 기반 라우팅 설정이 필요합니다.
+*   **인프라 요구사항**: Nginx 등의 L7 역방향 프록시(Reverse Proxy) 또는 로드밸런서가 필수적입니다. 각 노드의 개별 접근 경로(예: `/console/nodes/node1/`, `/console/nodes/node2/`)를 해당 백엔드 서버의 고정 IP/포트로 정확히 전달하는 경로 기반 라우팅(Path-based Routing) 설정이 필요합니다.
+
+**실제 Nginx 라우팅 설정 예시:**
+
+```nginx
+location /console/nodes/node1/ {
+    proxy_pass          http://10.0.0.2:8080/console/nodes/node1/;
+    proxy_http_version  1.1;
+    proxy_buffering     off;
+    proxy_cache_bypass  $http_upgrade;
+
+    proxy_set_header    Upgrade             $http_upgrade;
+    proxy_set_header    Connection          $http_connection;
+    proxy_set_header    Host                $host;
+    proxy_set_header    X-Real-IP           $remote_addr;
+    proxy_set_header    X-Forwarded-For     $http_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto   $scheme;
+    proxy_set_header    X-Forwarded-Host    $host;
+    proxy_set_header    X-Forwarded-Port    $server_port;
+    proxy_set_header    X-NginX-Proxy       true;
+
+    # This is necessary to pass the correct IP to be hashed
+    real_ip_header X-Real-IP;
+}
+
+location /console/nodes/node2/ {
+    proxy_pass          http://10.0.0.3:8080/console/nodes/node2/;
+    proxy_http_version  1.1;
+    proxy_buffering     off;
+    proxy_cache_bypass  $http_upgrade;
+
+    proxy_set_header    Upgrade             $http_upgrade;
+    proxy_set_header    Connection          $http_connection;
+    proxy_set_header    Host                $host;
+    proxy_set_header    X-Real-IP           $remote_addr;
+    proxy_set_header    X-Forwarded-For     $http_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto   $scheme;
+    proxy_set_header    X-Forwarded-Host    $host;
+    proxy_set_header    X-Forwarded-Port    $server_port;
+    proxy_set_header    X-NginX-Proxy       true;
+
+    # This is necessary to pass the correct IP to be hashed
+    real_ip_header X-Real-IP;
+}
+```
 
 ## 4. 노드 정체성 결정 메커니즘 (Node Identity Resolution)
 
@@ -58,10 +102,11 @@ Redis 없이 노드 간 직접 HTTP/WebSocket 연결을 수행하는 정적 인�
 
 ## 5. Redis 기반 동적 메타데이터 관리 및 자율 삭제 (GC)
 
-Gateway 모드에서는 노드가 수시로 변하더라도 관제 대시보드가 항상 최신 상태를 유지할 수 있도록 동적 메타데이터 시스템을 운용합니다.
+Gateway 모드에서는 노드가 수시로 생성되거나 소멸하더라도 관제 콘솔 대시보드가 항상 최신 클러스터 토폴로지를 유지할 수 있도록 Redis 기반의 동적 메타데이터 관리 및 자율 정리(Garbage Collection) 시스템을 운용합니다.
 
-*   **자동 등록**: 노드 기동 시 수집 가능한 애플리케이션 및 지표 구성(그룹 $ightarrow$ 노드 $ightarrow$ 앱)을 중앙 Redis에 즉시 등록합니다.
-*   **자동 정리 (GC)**: 노드가 비정상 종료되거나 스케일 인(Scale-in)으로 제거되면, 생존 신호(Pulse) 모니터링이 이를 감지하여 일정 시간 후 묵은 메타데이터를 Redis에서 깨끗하게 자율 삭제(Cleanup)합니다.
+*   **자동 메타데이터 등록 (Automatic Registration)**: 노드가 기동되면 자신이 속한 클러스터 및 그룹 정보, 노드 상세 사양, 구동 중인 애플리케이션 계층 구조(`그룹` $\rightarrow$ `노드` $\rightarrow$ `애플리케이션`)와 텔레메트리 지표 구성을 중앙 Redis 저장소에 즉시 등록합니다.
+*   **실시간 계층 구조 구성 (Topology Construction)**: 관제 콘솔(Console)은 Redis에 수집된 동적 메타데이터를 기반으로 전체 클러스터의 계층 구조와 활성 노드 목록을 실시간으로 구성하고 대시보드에 시각화합니다.
+*   **자율 데이터 정리 (Automatic Cleanup / GC)**: 노드가 정상 종료되거나, 비정상 종료(Crash) 또는 오토스케일인(Scale-in)으로 인해 동적으로 제거되는 경우, 생존 신호(Pulse) 모니터링 메커니즘이 신호 만료를 감지합니다. 일정 대기 시간 후 더 이상 유효하지 않은 묵은(Stale) 노드 메타데이터를 Redis에서 자동으로 깨끗하게 자율 정리(Cleanup)하여 메모리 누수와 오탐을 방지합니다.
 
 ## 6. 실전 APON 설정 및 XML 룰 구성
 
@@ -100,9 +145,7 @@ node: {
 ```xml
 <aspectran>
     <bean class="com.aspectran.aspectow.node.config.NodeConfigResolver">
-        <properties>
-            <item name="configLocation">/config/console/node-config.apon</item>
-        </properties>
+        <property name="configLocation">/config/console/node-config.apon</property>
     </bean>
 
     <bean id="nodeManager" class="com.aspectran.aspectow.node.manager.NodeManagerFactoryBean" lazyDestroy="true"/>

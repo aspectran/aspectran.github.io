@@ -40,7 +40,51 @@ A modern Cloud-Native architecture utilizing Redis as a message bus and distribu
 A static architecture establishing direct P2P HTTP/WebSocket connections between nodes without Redis.
 
 *   **Target Environment**: Suited for small-scale private networks with fixed node counts and IPs where autoscaling does not occur.
-*   **Infrastructure Requirements**: Requires L7 load balancers (e.g., Nginx) configured with path-based routing (e.g., `/nodes/node1`).
+*   **Infrastructure Requirements**: Requires an L7 reverse proxy or load balancer (e.g., Nginx). Path-based routing must be explicitly configured to map unique node endpoints (e.g., `/console/nodes/node1/`, `/console/nodes/node2/`) directly to each backend server's fixed IP and port.
+
+**Example Nginx Routing Configuration:**
+
+```nginx
+location /console/nodes/node1/ {
+    proxy_pass          http://10.0.0.2:8080/console/nodes/node1/;
+    proxy_http_version  1.1;
+    proxy_buffering     off;
+    proxy_cache_bypass  $http_upgrade;
+
+    proxy_set_header    Upgrade             $http_upgrade;
+    proxy_set_header    Connection          $http_connection;
+    proxy_set_header    Host                $host;
+    proxy_set_header    X-Real-IP           $remote_addr;
+    proxy_set_header    X-Forwarded-For     $http_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto   $scheme;
+    proxy_set_header    X-Forwarded-Host    $host;
+    proxy_set_header    X-Forwarded-Port    $server_port;
+    proxy_set_header    X-NginX-Proxy       true;
+
+    # This is necessary to pass the correct IP to be hashed
+    real_ip_header X-Real-IP;
+}
+
+location /console/nodes/node2/ {
+    proxy_pass          http://10.0.0.3:8080/console/nodes/node2/;
+    proxy_http_version  1.1;
+    proxy_buffering     off;
+    proxy_cache_bypass  $http_upgrade;
+
+    proxy_set_header    Upgrade             $http_upgrade;
+    proxy_set_header    Connection          $http_connection;
+    proxy_set_header    Host                $host;
+    proxy_set_header    X-Real-IP           $remote_addr;
+    proxy_set_header    X-Forwarded-For     $http_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Proto   $scheme;
+    proxy_set_header    X-Forwarded-Host    $host;
+    proxy_set_header    X-Forwarded-Port    $server_port;
+    proxy_set_header    X-NginX-Proxy       true;
+
+    # This is necessary to pass the correct IP to be hashed
+    real_ip_header X-Real-IP;
+}
+```
 
 ## 4. Node Identity Resolution Mechanism
 
@@ -58,10 +102,11 @@ Nodes follow autonomous resolution rules to establish identity upon startup with
 
 ## 5. Redis Dynamic Metadata Management & Automatic Cleanup (GC)
 
-In Gateway mode, a dynamic metadata management system keeps management dashboards updated even as nodes change continuously:
+In Gateway mode, a dynamic metadata management and Garbage Collection (GC) system powered by Redis ensures that management dashboards always reflect the latest cluster topology, even as nodes dynamically launch or terminate:
 
-*   **Automatic Registration**: Nodes register telemetry definitions (Group $ightarrow$ Node $ightarrow$ App) in central Redis upon startup.
-*   **Automatic Cleanup (GC)**: When nodes terminate or scale down, Pulse monitoring detects missing signals and automatically purges stale metadata from Redis.
+*   **Automatic Metadata Registration**: Upon startup, each node immediately registers its cluster and group info, detailed specifications, application hierarchy (`Group` $\rightarrow$ `Node` $\rightarrow$ `App`), and telemetry metric definitions in the central Redis store.
+*   **Real-time Topology Construction**: The management Console dynamically builds and visualizes the complete cluster hierarchy and active node list on the dashboard using the metadata aggregated in Redis.
+*   **Automatic Cleanup (GC)**: When a node terminates gracefully, crashes, or is removed during a scale-in event, the Pulse monitoring mechanism detects signal expiration. After a designated timeout, stale node metadata is automatically purged from Redis to prevent memory leaks and false alerts.
 
 ## 6. Configuration Examples & XML Rules
 
@@ -100,9 +145,7 @@ node: {
 ```xml
 <aspectran>
     <bean class="com.aspectran.aspectow.node.config.NodeConfigResolver">
-        <properties>
-            <item name="configLocation">/config/console/node-config.apon</item>
-        </properties>
+        <property name="configLocation">/config/console/node-config.apon</property>
     </bean>
 
     <bean id="nodeManager" class="com.aspectran.aspectow.node.manager.NodeManagerFactoryBean" lazyDestroy="true"/>
