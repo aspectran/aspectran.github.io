@@ -100,6 +100,13 @@ Nodes follow autonomous resolution rules to establish identity upon startup with
 2.  **Dynamic Generation (Gateway Mode)**: Generates a **UUID-based unique ID** dynamically to prevent collisions during autoscaling.
 3.  **Default (Direct Mode)**: Defaults to fixed `node1`.
 
+### 4.3. Group Concept and Service Consistency Principle
+In Aspectow Node Manager, a **Group** represents a **logical scale-out set** of node instances performing identical roles.
+
+*   **Consistency of Service Configuration**: Nodes sharing the same `Group ID` are treated as replicas providing identical service and application specifications.
+*   **Independent Service Separation**: If nodes host differing services or internal application setups, they must not be placed in the same group but instead separated into **distinct `Group ID`s** to manage them as independent service pools.
+*   **Operational Principles for Configuration Changes**: When service configurations (e.g., AppMon metadata) within a group change, a **rolling restart of the group** or a **blue/green group transition** is recommended to preserve consistency across the entire group.
+
 ## 5. Redis Dynamic Metadata Management, Self-Healing & Automatic Cleanup (GC)
 
 In Gateway mode, a dynamic metadata management and Garbage Collection (GC) system powered by Redis ensures that management dashboards always reflect the latest cluster topology, even as nodes dynamically launch or terminate:
