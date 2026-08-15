@@ -15,7 +15,7 @@ subheadline: Aspectow
 Aspectow Node Manager는 안정적인 클러스터 운영을 위해 다음과 같은 핵심 기능을 제공합니다.
 
 ### 2.1. 노드 생명주기 및 생존 모니터링 (Node Status & Pulse)
-클러스터에 참여하는 모든 노드의 생명주기를 관장합니다. 노드는 기동 시 자신의 상세 메타데이터(`NodeInfo`)를 등록하고, 주기적인 생존 신호(Pulse)를 발송합니다. 관제 콘솔(Aspectow Console)은 이 펄스 신호를 감지하여 활성 노드의 실시간 상태(Live, Paused, Dead)를 직관적으로 추적합니다.
+클러스터에 참여하는 모든 노드의 생명주기를 관장합니다. 노드는 기동 시 자신의 상세 메타데이터(`NodeInfo`)를 등록하고, 주기적인 생존 신호(Pulse, 기본 10초 간격)를 발송합니다. 관제 콘솔(Aspectow Console)은 이 펄스 신호를 감지하여 활성 노드의 실시간 상태(Live, Paused, Dead)를 직관적으로 추적하며, 지정된 타임아웃(기본 60초) 동안 펄스가 수신되지 않는 좀비 노드는 자동으로 감지 및 정리됩니다.
 
 ### 2.2. 투명한 메시지 릴레이 (Transparent Relay)
 Console과 노드 간, 또는 노드와 노드 간의 제어 명령 및 모니터링 데이터 패킷을 중계합니다. Redis Pub/Sub 기반의 **투명한 릴레이(Transparent Relay)** 방식을 채택하여 중계 주체가 패킷 본문을 파싱하지 않고 고속 전송하므로, 높은 트래픽 환경에서도 처리 지연이 거의 발생하지 않습니다.
@@ -100,13 +100,13 @@ location /console/nodes/node2/ {
 2.  **동적 생성 (Gateway 모드)**: 지정된 ID가 없을 경우 **UUID 기반 고유 ID가 동적 생성**되어 오토스케일링 시 ID 충돌을 방지합니다.
 3.  **기본값 (Direct 모드)**: Direct 모드에서는 고정된 `node1`을 기본값으로 사용합니다.
 
-## 5. Redis 기반 동적 메타데이터 관리 및 자율 삭제 (GC)
+## 5. Redis 기반 동적 메타데이터 관리, 자가 치유(Self-Healing) 및 자율 삭제 (GC)
 
 Gateway 모드에서는 노드가 수시로 생성되거나 소멸하더라도 관제 콘솔 대시보드가 항상 최신 클러스터 토폴로지를 유지할 수 있도록 Redis 기반의 동적 메타데이터 관리 및 자율 정리(Garbage Collection) 시스템을 운용합니다.
 
-*   **자동 메타데이터 등록 (Automatic Registration)**: 노드가 기동되면 자신이 속한 클러스터 및 그룹 정보, 노드 상세 사양, 구동 중인 애플리케이션 계층 구조(`그룹` $\rightarrow$ `노드` $\rightarrow$ `애플리케이션`)와 텔레메트리 지표 구성을 중앙 Redis 저장소에 즉시 등록합니다.
+*   **자동 메타데이터 등록 및 자가 치유 (Automatic Registration & Self-Healing)**: 노드가 기동되면 자신이 속한 클러스터 및 그룹 정보, 노드 상세 사양, 구동 중인 애플리케이션 계층 구조(`그룹` $\rightarrow$ `노드` $\rightarrow$ `애플리케이션`)와 텔레메트리 지표 구성을 중앙 Redis 저장소에 즉시 등록합니다. 만약 일시적인 GC Pause나 네트워크 지연으로 노드가 일시 추방되었다가 재연결되더라도, `NodeRegistryListener`를 통해 애플리케이션 및 노드 메타데이터가 Redis에 자동으로 재등록되는 자가 치유(Self-Healing)를 지원합니다.
 *   **실시간 계층 구조 구성 (Topology Construction)**: 관제 콘솔(Console)은 Redis에 수집된 동적 메타데이터를 기반으로 전체 클러스터의 계층 구조와 활성 노드 목록을 실시간으로 구성하고 대시보드에 시각화합니다.
-*   **자율 데이터 정리 (Automatic Cleanup / GC)**: 노드가 정상 종료되거나, 비정상 종료(Crash) 또는 오토스케일인(Scale-in)으로 인해 동적으로 제거되는 경우, 생존 신호(Pulse) 모니터링 메커니즘이 신호 만료를 감지합니다. 일정 대기 시간 후 더 이상 유효하지 않은 묵은(Stale) 노드 메타데이터를 Redis에서 자동으로 깨끗하게 자율 정리(Cleanup)하여 메모리 누수와 오탐을 방지합니다.
+*   **역할 분리 및 자율 데이터 정리 (Separation of Concerns & Cleanup)**: `NodeRegistry`는 순수하게 노드와 그룹 레지스트리 관리를 전담하며, 노드가 정상 종료되거나 좀비 타임아웃(기본 60초) 만료로 추방될 때 활성 노드가 없는 고아 그룹(Orphaned Group)을 Redis에서 자동으로 정리합니다. 애플리케이션 등 각 도메인 메타데이터의 등록과 정리는 `NodeRegistryListener`를 구독하는 해당 컴포넌트(예: AppMon)가 안전하게 자율 처리합니다.
 
 ## 6. 실전 APON 설정 및 XML 룰 구성
 
@@ -116,6 +116,8 @@ Gateway 모드에서는 노드가 수시로 생성되거나 소멸하더라도 �
 cluster: {
     id: cloud-cluster1
     mode: gateway
+    pulseInterval: 10000    # 펄스 전송 주기 (밀리초 단위, 기본값: 10000ms = 10초)
+    pulseTimeout: 60000     # 좀비 판정 타임아웃 (밀리초 단위, 기본값: 60000ms = 60초)
     secret: {
         password: "your-cluster-secret-password"
     }
@@ -125,6 +127,10 @@ group: {
     title: Backend API Group
 }
 ```
+
+> **설정 가이드:**
+> * `pulseInterval`: 노드가 자신의 생존 타임스탬프를 Redis에 갱신하는 주기입니다. 10초 설정을 통해 Redis 트래픽 부하를 최소화하면서 안정적인 상태 갱신을 유지합니다.
+> * `pulseTimeout`: 노드 펄스가 수신되지 않을 때 좀비 노드로 판정하는 만료 기준 시간입니다. 기본값 60초는 일시적인 GC 지연이나 네트워크 순단 상황에서 오탐(Flapping)을 방지할 수 있는 충분한 유예 시간을 제공합니다.
 
 ### 6.2. Direct 모드 설정 (`/config/console/node-config.apon`)
 

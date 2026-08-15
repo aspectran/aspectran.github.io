@@ -15,7 +15,7 @@ Moving beyond traditional single-server WAS management, Aspectow Node Manager ad
 Aspectow Node Manager performs three essential roles to ensure cluster stability:
 
 ### 2.1. Node Lifecycle and Pulse Monitoring
-Manages the lifecycle of all participating nodes. Nodes register detailed metadata (`NodeInfo`) upon startup and periodically send a pulse (survival signal). Aspectow Console observes these signals to track real-time active node states (Live, Paused, Dead).
+Manages the lifecycle of all participating nodes. Nodes register detailed metadata (`NodeInfo`) upon startup and periodically send a pulse (survival signal, default 10 seconds). Aspectow Console observes these signals to track real-time active node states (Live, Paused, Dead), and zombie nodes that have not sent a pulse within the specified timeout (default 60 seconds) are automatically detected and evicted.
 
 ### 2.2. Transparent Message Relay
 Relays control commands and telemetry data packets between Console and nodes or between nodes. Adopting a **Transparent Relay** model based on Redis Pub/Sub, the relaying agent forwards messages as text without parsing payloads, eliminating latency even in high-throughput environments.
@@ -100,13 +100,13 @@ Nodes follow autonomous resolution rules to establish identity upon startup with
 2.  **Dynamic Generation (Gateway Mode)**: Generates a **UUID-based unique ID** dynamically to prevent collisions during autoscaling.
 3.  **Default (Direct Mode)**: Defaults to fixed `node1`.
 
-## 5. Redis Dynamic Metadata Management & Automatic Cleanup (GC)
+## 5. Redis Dynamic Metadata Management, Self-Healing & Automatic Cleanup (GC)
 
 In Gateway mode, a dynamic metadata management and Garbage Collection (GC) system powered by Redis ensures that management dashboards always reflect the latest cluster topology, even as nodes dynamically launch or terminate:
 
-*   **Automatic Metadata Registration**: Upon startup, each node immediately registers its cluster and group info, detailed specifications, application hierarchy (`Group` $\rightarrow$ `Node` $\rightarrow$ `App`), and telemetry metric definitions in the central Redis store.
+*   **Automatic Metadata Registration & Self-Healing**: Upon startup, each node immediately registers its cluster and group info, detailed specifications, application hierarchy (`Group` $\rightarrow$ `Node` $\rightarrow$ `App`), and telemetry metric definitions in the central Redis store. If a node is temporarily evicted due to GC pauses or network jitter and subsequently reconnects, `NodeRegistryListener` guarantees seamless self-healing by re-registering application and node metadata automatically in Redis.
 *   **Real-time Topology Construction**: The management Console dynamically builds and visualizes the complete cluster hierarchy and active node list on the dashboard using the metadata aggregated in Redis.
-*   **Automatic Cleanup (GC)**: When a node terminates gracefully, crashes, or is removed during a scale-in event, the Pulse monitoring mechanism detects signal expiration. After a designated timeout, stale node metadata is automatically purged from Redis to prevent memory leaks and false alerts.
+*   **Separation of Concerns & Automatic Cleanup**: `NodeRegistry` exclusively governs node and group membership. When a node terminates gracefully or is evicted after the zombie timeout (default 60 seconds) expires, orphaned groups with no remaining active nodes are automatically purged from Redis. Application and domain metadata lifecycles are autonomously handled by their respective subscribing components (such as AppMon) via `NodeRegistryListener`.
 
 ## 6. Configuration Examples & XML Rules
 
@@ -116,6 +116,8 @@ In Gateway mode, a dynamic metadata management and Garbage Collection (GC) syste
 cluster: {
     id: cloud-cluster1
     mode: gateway
+    pulseInterval: 10000    # Heartbeat pulse interval in milliseconds (default: 10000ms = 10s)
+    pulseTimeout: 60000     # Zombie eviction timeout in milliseconds (default: 60000ms = 60s)
     secret: {
         password: "your-cluster-secret-password"
     }
@@ -125,6 +127,10 @@ group: {
     title: Backend API Group
 }
 ```
+
+> **Configuration Guide:**
+> * `pulseInterval`: The interval at which a node refreshes its heartbeat timestamp in Redis. The 10-second default minimizes Redis I/O overhead while ensuring responsive state updates.
+> * `pulseTimeout`: The timeout threshold before an unresponsive node is declared a zombie. The 60-second default provides ample tolerance against transient GC pauses and network jitter to prevent flapping.
 
 ### 6.2. Direct Mode Setup (`/config/console/node-config.apon`)
 
