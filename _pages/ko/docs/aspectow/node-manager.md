@@ -111,7 +111,7 @@ Aspectow Node Manager에서 **그룹(Group)**은 동일한 역할을 수행하�
 
 Gateway 모드에서는 노드가 수시로 생성되거나 소멸하더라도 관제 콘솔 대시보드가 항상 최신 클러스터 토폴로지를 유지할 수 있도록 Redis 기반의 동적 메타데이터 관리 및 자율 정리(Garbage Collection) 시스템을 운용합니다.
 
-*   **자동 메타데이터 등록 및 자가 치유 (Automatic Registration & Self-Healing)**: 노드가 기동되면 자신이 속한 클러스터 및 그룹 정보, 노드 상세 사양, 구동 중인 애플리케이션 계층 구조(`그룹` $\rightarrow$ `노드` $\rightarrow$ `애플리케이션`)와 텔레메트리 지표 구성을 중앙 Redis 저장소에 즉시 등록합니다. 만약 일시적인 GC Pause나 네트워크 지연으로 노드가 일시 추방되었다가 재연결되더라도, `NodeRegistryListener`를 통해 애플리케이션 및 노드 메타데이터가 Redis에 자동으로 재등록되는 자가 치유(Self-Healing)를 지원합니다.
+*   **자동 메타데이터 등록 및 자가 치유 (Automatic Registration & Self-Healing)**: 노드가 기동되면 자신이 속한 클러스터 및 그룹 정보, 노드 상세 사양, 구동 중인 애플리케이션 계층 구조(`그룹` &rarr; `노드` &rarr; `애플리케이션`)와 텔레메트리 지표 구성을 중앙 Redis 저장소에 즉시 등록합니다. 만약 일시적인 GC Pause나 네트워크 지연으로 노드가 일시 추방되었다가 재연결되더라도, `NodeRegistryListener`를 통해 애플리케이션 및 노드 메타데이터가 Redis에 자동으로 재등록되는 자가 치유(Self-Healing)를 지원합니다.
 *   **실시간 계층 구조 구성 (Topology Construction)**: 관제 콘솔(Console)은 Redis에 수집된 동적 메타데이터를 기반으로 전체 클러스터의 계층 구조와 활성 노드 목록을 실시간으로 구성하고 대시보드에 시각화합니다.
 *   **역할 분리 및 자율 데이터 정리 (Separation of Concerns & Cleanup)**: `NodeRegistry`는 순수하게 노드와 그룹 레지스트리 관리를 전담하며, 노드가 정상 종료되거나 좀비 타임아웃(기본 60초) 만료로 추방될 때 활성 노드가 없는 고아 그룹(Orphaned Group)을 Redis에서 자동으로 정리합니다. 애플리케이션 등 각 도메인 메타데이터의 등록과 정리는 `NodeRegistryListener`를 구독하는 해당 컴포넌트(예: AppMon)가 안전하게 자율 처리합니다.
 
