@@ -127,6 +127,10 @@ app: {
     event: {
         id: session
         target: tow.server/jpetstore
+        parameters: {
+            # 코드 수정 없이 세션 객체에서 사용자명을 선언적으로 추출
+            usernameAttribute: user.account.username
+        }
     }
     metric: {
         id: heap
@@ -157,9 +161,25 @@ app: {
 *   **`counterPersistInterval`**: 이벤트 카운터 집계 데이터를 Console DB에 저장하는 주기 (분 단위, 기본값: `5`분). `0` 설정 시 DB 저장 비활성화.
 *   **`pollingConfig`**: Long-Polling 클라이언트 접속 동작을 설정합니다 (`pollingInterval`, `sessionTimeout`).
 *   **`app`**: 모니터링할 개별 애플리케이션 단위.
-    *   **`event`**: `id` (`activity`, `session`), `target` (ActivityContext / 서블릿 경로), `parameters` (Pointcut `+`/`-` 경로 필터).
+    *   **`event`**:
+        *   `id`: 이벤트 종류 (`activity`, `session`).
+        *   `target`: 대상 컨텍스트 식별자 또는 서버 배포 경로 (`tow.server/<deploymentName>`).
+        *   `parameters`:
+            *   `activity`인 경우: Pointcut `+`/`-` 경로 필터.
+            *   `session`인 경우: `usernameAttribute` (프로퍼티 경로, 예: `user.account.username`), `userResolver` (커스텀 `SessionUserResolver` 구현 클래스명 또는 빈 ID).
     *   **`metric`**: `reader` (수집 담당 `MetricReader` 구현 클래스 풀네임), `parameters` (추가 인자).
     *   **`log`**: `file` (테일링 대상 로그 파일 경로), `lastLines` (UI 접속 시 초기 로드 라인 수).
+
+### 3.1. 세션 사용자 추적 및 위치(국가 코드) 변환 설정
+
+AppMon은 세션 이벤트에 대한 강력한 내장 추적 기능을 제공합니다:
+
+*   **원격 IP 자동 추출**: WAS 전용 API에 종속되지 않고 Aspectran의 `WebUtils`를 활용하여 세션 생성 시 클라이언트 IP 주소를 안전하게 자동 추출합니다.
+*   **국가 코드 변환 (`IPCountryResolver`)**: Console 활성 세션 대시보드에 클라이언트 접속 국가(ISO 2자리 코드)를 표시하려면, `appmon-rules.xml`에 `IPCountryResolver` 구현 빈(예: KISA WHOIS OpenAPI 연동 빈 등)을 등록합니다:
+    ```xml
+    <bean id="ipCountryResolver" class="com.aspectran.aspectow.demo.root.common.WhoisIPCountryResolver"/>
+    ```
+*   **비침투적 사용자명 추출**: `appmon-config.apon`에 `usernameAttribute: user.account.username`과 같이 선언하면, 애플리케이션 코드를 전혀 수정하지 않고도 세션 내 복합 객체로부터 로그인 계정명을 자동 추출하여 실시간 모니터링 화면에 표시합니다.
 
 ## 4. 클러스터 통신 모드 선택 가이드 (Direct vs Gateway)
 
@@ -346,6 +366,9 @@ Console에 내장 탑재된 AppMon 모니터링 엔진은 `appmon-rules.xml`을 
             <item name="configLocation">/config/console/appmon-config-prod.apon</item>
         </properties>
     </bean>
+
+    <!-- 국가 코드 해석기 빈 등록 (선택 사항) -->
+    <bean id="ipCountryResolver" class="com.aspectran.aspectow.demo.root.common.WhoisIPCountryResolver"/>
 
 </aspectran>
 ```

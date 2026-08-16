@@ -15,6 +15,8 @@ It can run embedded within Aspectow Console in an integrated control environment
 *   **Real-time Monitoring**: Streams data generated on the server in real time via WebSocket or Long-Polling to display on the UI.
 *   **Lightweight & Easy Integration**: Easily registered as an Aspectran Bean in target applications, utilizing minimal resources to prevent performance degradation.
 *   **Dynamic Monitoring**: Leverages Aspectran's AOP capabilities to dynamically trace transaction (`Activity`) executions and measure performance without code modifications.
+*   **Always-On User Tracking & Geolocation**: Automatically captures client IP addresses and resolves country codes upon session creation without business code modification.
+*   **Non-intrusive Username Resolution**: Flexibly extracts usernames from complex session objects via declarative property expressions (`usernameAttribute`) or custom `SessionUserResolver` extensions.
 *   **Diverse Data Sources**:
     *   **Events**: Tracks and counts core application events such as HTTP request handling and session creation/destruction.
     *   **Metrics**: Collects system metrics including JVM heap memory usage (`HeapMemoryUsageReader`), Undertow thread pool status (`NioWorkerMetricsReader`), and HikariCP connection pool metrics (`HikariPoolMBeanReader`).
@@ -31,12 +33,68 @@ Aspectow AppMon utilizes a 3-tier hierarchy—**`Group` (Server Group) - `Node` 
 *   **AppMonManager**: The core engine managing the overall lifecycle and configuration of AppMon.
 *   **Exporter**: Responsible for collecting data from specific data sources (logs, metrics, events).
     *   **Reader**: Implements concrete data collection methods for `Exporter` (e.g., querying JVM metrics via JMX, reading log files from filesystem).
+*   **UserTrackingListener**: An always-on session listener that injects client IP addresses (`user.ipAddress`) and resolved country codes (`user.countryCode`) into session attributes upon creation.
 *   **PersistManager**: Handles periodic persistence of collected counter metrics to the database.
     *   **CounterPersistSchedule**: Scheduled task executing periodically to store counter data to the DB.
 *   **ExportService**: Manages communication with client web UIs, transmitting collected data via WebSocket or Polling.
 *   **Activity (Front/Backend)**: Acts as controllers handling HTTP requests from web UIs or external agents.
 
-## 4. Data Persistence Architecture Overview
+## 4. Session Monitoring & User Tracking Architecture
+
+AppMon provides an advanced session monitoring mechanism combining **always-on user tracking** and **on-demand live event broadcasting**.
+
+### 4.1. Lifecycle Separation: Always-On vs. On-Demand
+
+*   **Always-On User Tracking (`UserTrackingListener`)**:
+    *   Registered permanently to the target `SessionManager` during `SessionEventReader.init()` at server startup.
+    *   Operates 24/7 regardless of whether an administrator is connected to the AppMon UI, ensuring that all created sessions have client IP addresses and country codes populated.
+    *   Guarantees that full active session inquiries (`getAllActiveSessions`) always display complete client location details.
+    *   Built-in duplicate registration guard (`registeredTrackingTargets`) ensures that even if multiple apps reference the same deployment target (e.g., `tow.server/demo`), the listener is registered only once.
+*   **On-Demand Live Broadcasting (`SessionEventReadingListener`)**:
+    *   Registered only when a dashboard client subscribes to the app's channel and unregistered when the subscriber count drops to zero (`SessionEventReader.start()` / `stop()`), minimizing runtime resource overhead.
+
+### 4.2. Geolocation Resolution (`IPCountryResolver`)
+
+AppMon resolves ISO 2-letter country codes (e.g., `KR`, `US`, `JP`) from client IP addresses using the pluggable `IPCountryResolver` interface:
+
+```java
+package com.aspectran.aspectow.appmon.common.support;
+
+public interface IPCountryResolver {
+    String resolveCountryCode(String ipAddress, Locale locale);
+    default String resolveCountryCode(String ipAddress) { ... }
+}
+```
+
+Implementations can query external APIs (e.g., KISA WHOIS OpenAPI) or local databases (e.g., MaxMind GeoIP). Registering an `IPCountryResolver` Bean in `appmon-rules.xml` activates automatic country code resolution across all monitored sessions.
+
+### 4.3. Non-intrusive Username Extraction (`usernameAttribute` & `SessionUserResolver`)
+
+Applications often store user information inside custom session objects (e.g., `UserSession`, `Account`, Spring Security Context) rather than a plain string attribute. AppMon extracts usernames non-intrusively using three priority levels:
+
+1.  **Custom Resolver (`userResolver`)**: A dedicated `SessionUserResolver` Bean or class defined in `event.parameters.userResolver` or in the context:
+    ```java
+    public interface SessionUserResolver {
+        String resolveUsername(String deploymentName, Session session);
+    }
+    ```
+2.  **Declarative Property Path (`usernameAttribute`)**: Automatically navigates nested JavaBean properties (e.g., `user.account.username` resolves `session.getAttribute("user").getAccount().getUsername()`):
+    ```apon
+    event: {
+        id: session
+        target: tow.server/jpetstore
+        parameters: {
+            usernameAttribute: user.account.username
+        }
+    }
+    ```
+3.  **Default Fallback**: Reads the default `user.name` session attribute if present.
+
+### 4.4. Real-time Authentication State Detection
+
+When a user logs in and the session attribute (e.g., `"user"`) is added or updated, `SessionEventReader` intercepts `attributeAdded` / `attributeUpdated` events and immediately broadcasts a refreshed session event to the AppMon UI in real time.
+
+## 5. Data Persistence Architecture Overview
 
 Aspectow AppMon persistently stores event count metrics in a database to maintain continuous statistics. By default, it uses an embedded H2 database and provides the following primary tables:
 
@@ -45,18 +103,18 @@ Aspectow AppMon persistently stores event count metrics in a database to maintai
 
 > For detailed composite PK schemas and pre-aggregation 3-tier storage architecture, refer to the [AppMon Event Count Data Structure and Architecture](/en/docs/aspectow/appmon/event-count-data-structure/) documentation.
 
-## 5. Standalone Installation & Configuration Guide (Without Console)
+## 6. Standalone Installation & Configuration Guide (Without Console)
 
 When deploying AppMon standalone on specific application servers without Console, configuration files are located under the project's **`/config/appmon/`** directory.
 
-### 5.1. Configuration Directory Structure (`/config/appmon/`)
+### 6.1. Configuration Directory Structure (`/config/appmon/`)
 
 *   **`appmon-config.apon`**: Main configuration file defining target applications (`app`), events, metrics, logs, and counter persistence intervals.
 *   **`node-config.apon`**: Server group (`group`) and server node (`node`) definition file.
 *   **`appmon-rules.xml` & `node-rules.xml`**: Aspectran XML rule files loading configuration files via `AppMonConfigResolver` and `NodeConfigResolver` and registering `NodeManagerFactoryBean`.
 *   **`appmon.db-h2.properties`**: Property file configuring the embedded H2 DB storage path.
 
-### 5.2. APON Main Configuration (`appmon-config.apon`) Example
+### 6.2. APON Main Configuration (`appmon-config.apon`) Example
 
 `appmon-config.apon` defines target applications (`app`), collected events, metrics, logs, and persistence intervals.
 
@@ -84,6 +142,10 @@ app: {
     event: {
         id: session
         target: tow.server/jpetstore
+        parameters: {
+            # Declaratively extract username from session object without code changes
+            usernameAttribute: user.account.username
+        }
     }
     metric: {
         id: heap
@@ -109,18 +171,23 @@ app: {
 }
 ```
 
-### 5.3. Key APON Parameter Specifications
+### 6.3. Key APON Parameter Specifications
 
 *   **`counterPersistInterval`**: Interval in minutes for saving event counter data to DB (default: 5 minutes; setting to `0` disables DB persistence).
 *   **`pollingConfig`**: Long-Polling configuration (`pollingInterval`, `sessionTimeout`).
 *   **`app`**: Defines individual application monitoring units.
-    *   **`event`**: `name` (`activity`, `session`), `target` (ActivityContext / servlet path), `parameters` (Pointcut `+`/`-` path filters).
+    *   **`event`**:
+        *   `id`: Event type (`activity`, `session`).
+        *   `target`: Target context name or server deployment path (`tow.server/<deploymentName>`).
+        *   `parameters`:
+            *   For `activity`: Pointcut `+`/`-` path filters.
+            *   For `session`: `usernameAttribute` (property path such as `user.account.username`), `userResolver` (custom `SessionUserResolver` class or Bean ID).
     *   **`metric`**: `reader` (fully qualified class name of `MetricReader` implementation), `parameters` (additional arguments).
     *   **`log`**: `file` (target log file path for tailing), `lastLines` (initial line count loaded upon UI access).
 
 > Server group (`group`) and server node (`node`) definitions are specified separately in `node-config.apon` or `node-config-gateway.apon`.
 
-### 5.4. Step-by-Step Installation & Operational Guide
+### 6.4. Step-by-Step Installation & Operational Guide
 
 #### Step 1: Define Target Applications (`/config/appmon/appmon-config.apon`)
 Specify target `app`, `event`, `metric`, and `log` entries inside `appmon-config.apon`.
@@ -162,6 +229,9 @@ Specify configuration files using `AppMonConfigResolver` inside `appmon-rules.xm
         </properties>
     </bean>
 
+    <!-- Optional: Register IP Country Resolver for Geolocation -->
+    <!-- <bean id="ipCountryResolver" class="com.aspectran.aspectow.demo.root.common.WhoisIPCountryResolver"/> -->
+
     <append file="/config/appmon/node-rules.xml"/>
 </aspectran>
 ```
@@ -196,6 +266,6 @@ Standalone AppMon typically runs under the `appmon` context name, so execution p
 -Daspectran.profiles.base.appmon=appmon.standalone,mariadb -Dappmon.db-mariadb.url=jdbc:mariadb://127.0.0.1:3306/appmon_db -Dappmon.db-mariadb.username=appmon -Dappmon.db-mariadb.password=your-password
 ```
 
-## 6. Conclusion
+## 7. Conclusion
 
 Aspectow AppMon can run embedded as an integrated monitoring engine within Aspectow Console, or be easily deployed as a standalone monitoring solution via `/config/appmon/` settings as needed to enhance application transparency and observability.

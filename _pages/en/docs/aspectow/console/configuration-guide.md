@@ -127,6 +127,10 @@ app: {
     event: {
         id: session
         target: tow.server/jpetstore
+        parameters: {
+            # Extract username non-intrusively from session object via property expression
+            usernameAttribute: user.account.username
+        }
     }
     metric: {
         id: heap
@@ -157,9 +161,25 @@ app: {
 *   **`counterPersistInterval`**: Interval in minutes for saving aggregated event counter metrics to the Console DB (default: `5` minutes; setting `0` disables persistence).
 *   **`pollingConfig`**: Configures Long-Polling client connection behavior (`pollingInterval`, `sessionTimeout`).
 *   **`app`**: Defines individual application monitoring units.
-    *   **`event`**: `id` (`activity`, `session`), `target` (ActivityContext / servlet path), `parameters` (Pointcut `+`/`-` path filters).
+    *   **`event`**:
+        *   `id`: Event type (`activity`, `session`).
+        *   `target`: Target context name or server deployment path (`tow.server/<deploymentName>`).
+        *   `parameters`:
+            *   For `activity`: Pointcut `+`/`-` path filters.
+            *   For `session`: `usernameAttribute` (declarative property path, e.g., `user.account.username`), `userResolver` (custom `SessionUserResolver` class or Bean ID).
     *   **`metric`**: `reader` (fully qualified class name of `MetricReader` implementation), `parameters` (additional arguments).
     *   **`log`**: `file` (target log file path for tailing), `lastLines` (initial line count loaded upon UI access).
+
+### 3.1. Session User Tracking & Geolocation Setup
+
+AppMon provides built-in, always-on user tracking for session events:
+
+*   **Automatic IP Extraction**: Automatically captures client remote addresses upon session creation using Aspectran's `WebUtils` without requiring WAS-specific dependencies.
+*   **Country Code Resolution (`IPCountryResolver`)**: To display country codes on the Console active session dashboard, register an `IPCountryResolver` Bean (e.g., KISA WHOIS OpenAPI or MaxMind GeoIP client) in `appmon-rules.xml`:
+    ```xml
+    <bean id="ipCountryResolver" class="com.aspectran.aspectow.demo.root.common.WhoisIPCountryResolver"/>
+    ```
+*   **Non-intrusive Username Resolution**: By setting `usernameAttribute` in `appmon-config.apon`, usernames are automatically extracted from nested session objects (e.g., `user.account.username`) without modifying the application's login management code.
 
 ## 4. Cluster Communication Mode Selection Guide (Direct vs Gateway)
 
@@ -346,6 +366,9 @@ The embedded AppMon monitoring engine inside Console dynamically loads target AP
             <item name="configLocation">/config/console/appmon-config-prod.apon</item>
         </properties>
     </bean>
+
+    <!-- Geolocation country resolution bean (optional) -->
+    <bean id="ipCountryResolver" class="com.aspectran.aspectow.demo.root.common.WhoisIPCountryResolver"/>
 
 </aspectran>
 ```
