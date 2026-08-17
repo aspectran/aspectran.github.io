@@ -318,6 +318,14 @@ Scheduling rules have an `isolated` attribute that determines whether the task i
 -   **`isolated="false"` (Default)**: Only **one node** in the entire cluster performs the task. (Distributed lock applied)
 -   **`isolated="true"`**: **Every node** performs the task at its scheduled time, regardless of the cluster state. This is suitable for tasks like system log collection or refreshing local caches.
 
+> **Trigger Type Constraints with Distributed Locking (Important)**
+>
+> In a clustered environment, distributed locking (`isolated="false"`) works reliably only with **`cron` triggers**, where all nodes fire tasks at identical absolute timestamps based on the calendar (e.g., exactly at 00 seconds). This allows all nodes to share the exact same scheduled fire time (`scheduledFireTime`) to compete for the same distributed lock key.
+>
+> In contrast, **`simple` triggers** (interval-based repetition) compute scheduled fire times relative to node startup times and are susceptible to potential time drift across nodes. Because different nodes will produce different fire times, they cannot form a unified lock key for reliable distributed locking.
+>
+> For this reason, when cluster-wide distributed locking (`RedisScheduledJobLockProvider`) is enabled, **all schedules configured with a `simple` trigger are automatically forced into isolated mode (`isolated="true"`) by the framework** and executed independently on each node. Therefore, tasks that must run on only a single node across the cluster must be configured using **`cron` triggers**.
+
 ### Real-time Control and Monitoring (Scheduler Manager)
 
 The Aspectran Console provides a **Scheduler Manager** screen that allows you to grasp and manipulate the schedulers of the entire cluster at a glance.
