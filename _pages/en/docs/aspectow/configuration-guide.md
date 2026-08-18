@@ -73,7 +73,7 @@ Core plugins position built artifacts into standard locations under `/app`, clea
   ```xml
   <plugin>
       <artifactId>maven-jar-plugin</artifactId>
-      <version>3.4.2</version>
+      <version>3.5.1</version>
       <configuration>
           <outputDirectory>app/lib/ext</outputDirectory>
       </configuration>

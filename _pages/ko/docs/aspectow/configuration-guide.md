@@ -73,7 +73,7 @@ Aspectow 프로젝트를 올바르게 빌드하기 위해 `pom.xml`의 `<propert
   ```xml
   <plugin>
       <artifactId>maven-jar-plugin</artifactId>
-      <version>3.4.2</version>
+      <version>3.5.1</version>
       <configuration>
           <outputDirectory>app/lib/ext</outputDirectory>
       </configuration>
