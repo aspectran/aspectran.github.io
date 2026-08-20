@@ -179,10 +179,21 @@ subheadline: Aspectow
 배포 스크립트들은 `app.conf`를 통해 현재 실행 위치가 소스 모듈(개발 환경)인지 운영 서버 배포 환경인지를 자동으로 감지합니다 (`pom.xml` 파일 존재 여부 및 Git 작업 트리 감지).
 
 *   **개발 환경(`DEV_MODE=true`)에서의 동작**:
+    *   `1-pull.sh`: 작업 중인 로컬 소스 및 커밋 상태를 안전하게 보호하기 위해 `git pull`을 건너뜁니다.
+    *   `2-build.sh`: `.build` 디렉터리로 이동하지 않고 현재 모듈 디렉터리에서 `mvn clean package`를 직접 실행하여 `app/lib`에 라이브러리를 빌드 및 배치합니다. (스냅샷 반복 다운로드를 방지하여 빠른 빌드를 지원합니다.)
     *   `3-deploy_config.sh` 및 `4-deploy_webapps.sh`: 버전 관리 중인 로컬 소스(`app/config`, `app/webapps`)를 보존하기 위해 디렉터리 삭제(`rm -rf`) 및 덮어쓰기 복사를 건너뜁니다.
-    *   `1-pull.sh`: `.build` 디렉터리 대신 현재 Git 작업 디렉터리의 최신 변경 사항을 가져옵니다.
-    *   `2-build.sh`: `.build` 디렉터리로 이동하지 않고 현재 모듈 디렉터리에서 `mvn clean package`를 직접 실행하여 `app/lib`에 라이브러리를 빌드 및 배치합니다.
-    *   이를 통해 개발 환경에서도 소스 유실 위험 없이 `./5-pull_build_deploy.sh` 등의 통합 배포 스크립트를 안심하고 테스트할 수 있습니다.
+    *   이를 통해 개발 환경에서도 소스 유실 및 충돌 위험 없이 `./5-pull_build_deploy.sh` 등의 통합 배포 스크립트를 안심하고 테스트할 수 있습니다.
+
+#### 다중 노드 동시 빌드 경합 방지 (Build Lock & Concurrency Control)
+
+단일 머신 또는 동일한 작업 디렉터리를 공유하는 로컬 클러스터 환경에서 전체 노드(`All Nodes in Cluster`)를 대상으로 동시 풀빌드 명령이 실행될 때 발생할 수 있는 파일 락 충돌(`Failed to delete target`, `index.lock` 등)을 완벽하게 방지합니다.
+
+*   **원자적 빌드 락 (`.build.lock`, `.pull.lock`)**:
+    *   가장 먼저 진입한 노드가 작업 디렉터리에 원자적 락을 획득하고 Maven 빌드 또는 Git Pull을 주도적으로 실행합니다.
+*   **안전한 대기 및 중복 빌드 자동 스킵 (Lock Wait & Build Reuse)**:
+    *   동시에 진입한 다른 노드들은 `[BUILD LOCK] Another node is currently building... Waiting for completion...` 메시지를 출력하며 안전하게 대기합니다.
+    *   선행 노드가 빌드를 정상 완료(`BUILD SUCCESS`)하면, 대기 중이던 노드들은 **중복 Maven 컴파일을 건너뛰고(`Skipping redundant Maven compilation.`) 직전 빌드 산출물을 그대로 재사용하여 즉시 성공 처리**합니다.
+    *   이를 통해 파일 경합 에러가 100% 방지되며, 클러스터 전체 풀빌드 소요 시간이 1/N로 단축됩니다.
 
 ### 2.5. 배포 디렉터리 구조 및 빌드 공간
 
@@ -248,6 +259,8 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 NODE_ID="node2"
 PORT="8092"
+
+[ -d "$DEPLOY_DIR" ] && DEPLOY_DIR="$(cd "$DEPLOY_DIR" && pwd)"
 
 PROC_NAME="${APP_NAME}-${NODE_ID}"
 WORK_DIR="$DEPLOY_DIR/work2"

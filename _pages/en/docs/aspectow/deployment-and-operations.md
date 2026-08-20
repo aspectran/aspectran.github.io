@@ -179,10 +179,21 @@ The `setup/scripts` directory is divided by platform (`linux`/`windows`) and con
 Deployment scripts automatically detect whether they are running in a source module (development environment) or a production deployment environment via `app.conf` (by checking for the existence of `pom.xml` and a Git working tree).
 
 *   **Behavior in Development Mode (`DEV_MODE=true`)**:
+    *   `1-pull.sh`: Skips `git pull` to preserve uncommitted local changes and working tree state.
+    *   `2-build.sh`: Runs `mvn clean package` directly in the current module directory without navigating to `.build`, copying libraries into `app/lib`. (Avoids repeated snapshot downloads for fast local builds.)
     *   `3-deploy_config.sh` and `4-deploy_webapps.sh`: Skip directory wiping (`rm -rf`) and overwrite copying to preserve version-controlled local source files (`app/config`, `app/webapps`).
-    *   `1-pull.sh`: Pulls changes in the current Git working directory instead of the `.build` directory.
-    *   `2-build.sh`: Runs `mvn clean package` directly in the current module directory without navigating to `.build`, copying libraries into `app/lib`.
     *   This allows developers to safely test full deployment scripts such as `./5-pull_build_deploy.sh` locally without risking loss of uncommitted work or modifying version-controlled directories.
+
+#### Multi-Node Build Lock & Concurrency Control
+
+In single-machine or shared-directory cluster environments, concurrent full-build commands on all nodes (`All Nodes in Cluster`) could cause file lock and directory cleanup conflicts (such as `Failed to delete target` or `index.lock`).
+
+*   **Atomic Build Lock (`.build.lock`, `.pull.lock`)**:
+    *   The first node entering the build step acquires an atomic filesystem lock in the target directory and leads the Maven compile or Git pull operation.
+*   **Lock Waiting & Build Reuse (Redundant Compilation Skipping)**:
+    *   Other nodes that enter concurrently detect the active build and output `[BUILD LOCK] Another node is currently building... Waiting for completion...`.
+    *   Once the lead node finishes with `BUILD SUCCESS`, waiting nodes **skip redundant Maven compilation (`Skipping redundant Maven compilation.`) and immediately complete with success by reusing the fresh build artifacts**.
+    *   This completely eliminates race conditions and reduces total cluster build time to 1/N.
 
 ### 2.5. Deployment Directory Structure and Build Workspace
 
@@ -248,6 +259,8 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 NODE_ID="node2"
 PORT="8092"
+
+[ -d "$DEPLOY_DIR" ] && DEPLOY_DIR="$(cd "$DEPLOY_DIR" && pwd)"
 
 PROC_NAME="${APP_NAME}-${NODE_ID}"
 WORK_DIR="$DEPLOY_DIR/work2"
