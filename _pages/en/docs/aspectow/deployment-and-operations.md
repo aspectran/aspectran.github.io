@@ -79,6 +79,7 @@ The initial installation using `install-app.sh` or `install-app.bat` is a proces
     # Windows
     5-pull_build_deploy.bat
     ```
+
 ### 2.3. Execution and Status Management by Operational Mode
 
 The methods for managing a deployed application are divided into **System Service Mode** and **Direct Execution Mode**. We provide unified scripts (`service.sh`, `daemon.sh`) optimized for each mode.
@@ -173,6 +174,16 @@ The `setup/scripts` directory is divided by platform (`linux`/`windows`) and con
 *   `8-pull_deploy_webapps_only.sh|bat`: After pulling the latest source, deploys only the web application files.
 *   `9-pull_deploy_config_webapps_only.sh|bat`: After pulling the latest source, deploys both configuration and web application files.
 
+#### Development Environment Auto-Detection (Development Mode Support)
+
+Deployment scripts automatically detect whether they are running in a source module (development environment) or a production deployment environment via `app.conf` (by checking for the existence of `pom.xml` and a Git working tree).
+
+*   **Behavior in Development Mode (`DEV_MODE=true`)**:
+    *   `3-deploy_config.sh` and `4-deploy_webapps.sh`: Skip directory wiping (`rm -rf`) and overwrite copying to preserve version-controlled local source files (`app/config`, `app/webapps`).
+    *   `1-pull.sh`: Pulls changes in the current Git working directory instead of the `.build` directory.
+    *   `2-build.sh`: Runs `mvn clean package` directly in the current module directory without navigating to `.build`, copying libraries into `app/lib`.
+    *   This allows developers to safely test full deployment scripts such as `./5-pull_build_deploy.sh` locally without risking loss of uncommitted work or modifying version-controlled directories.
+
 ### 2.5. Deployment Directory Structure and Build Workspace
 
 The installed `BASE_DIR` has the following structure. In particular, the `.build` directory plays an important role when troubleshooting build problems or manually checking source code during operations.
@@ -197,6 +208,10 @@ BASE_DIR
     *   **Automatic Restore After Deployment**: When deployment scripts (e.g., #3, #4) run, they overwrite the files in the newly deployed `app/` directory with the contents of this directory. This eliminates the need to manually re-configure settings after every deployment.
     *   **Structure**: Place files in `app-restore/config/` or `app-restore/webapps/` using the same directory structure as the `app/` directory.
 
+*   **Automatic Runtime Directory Creation (Zero Dummy Files)**:
+    *   Runtime directories such as `app/lib`, `app/logs`, `app/temp`, `app/work`, and `app/cmd/*` are kept in Git without `.gitignore` or dummy placeholder files.
+    *   Build tools (`mvn package`) and the Aspectran framework/scripts create missing directories on-demand (`mkdirs`) during build and startup, keeping production runtime directories 100% clean and free of unnecessary auxiliary files.
+
 ### 2.6. Running Multiple Instances
 
 In some environments, you may need to run multiple independent application instances (e.g., `node1`, `node2`) on a single server or from a single deployment directory (`BASE_DIR`). For example, configuring a multi-node cluster where instances share the same binary and libraries but run on different HTTP ports, log directories, and active profiles.
@@ -206,11 +221,11 @@ Aspectow uses a single-instance `.lock` file and PID file within the same `baseP
 
 1. **Automatic PID File Mapping**: If `--proc-name` (`PROC_NAME`) is set to a value other than the default (`jsvc-daemon`), `jsvc-daemon.sh` automatically determines and manages the PID file path as `$BASE_DIR/.$PROC_NAME.pid` without needing an explicit `--pid-file` argument.
 2. **Stop Isolation**: When executing `jsvc-daemon.sh stop`, the script precisely matches and terminates only the process matching the `-pidfile` argument in the process command line, avoiding any impact on other instances running under the same `BASE_DIR`.
-3. **Required Isolated System Properties**:
+3. **Required Isolated System Properties and Shell Options**:
    - `aspectran.basePath`: Common root path (`BASE_DIR`). Can be shared across all instances.
-   - `aspectran.logsDir`: Log file output path (`logs` vs `logs2`). **Must be separated per instance** to prevent interleaved logs and file lock conflicts.
+   - `aspectran.logsDir` and `--logs-dir`: Log file output path (`logs` vs `logs2`) and daemon stdout/stderr log paths (`daemon-stdout.log`, `daemon-stderr.log`). **Must be separated per instance** to prevent interleaved logs and file lock conflicts.
    - `aspectran.workPath`: Runtime class compilation cache and workspace (`work` vs `work2`). **Must be separated per instance**.
-   - `aspectran.tempPath` / `java.io.tmpdir`: Temporary file storage (`temp` vs `temp2`). **Must be separated per instance**.
+   - `aspectran.tempPath` / `java.io.tmpdir` and `--temp-dir`: Temporary file storage (`temp` vs `temp2`). **Must be separated per instance**.
    - `aspectran.commandsPath`: Shell/Daemon IPC command pipe socket path (`cmd` vs `cmd2`). **Must be separated per instance**.
    - `tow.server.listener.http.port`: HTTP listening port (`8082` vs `8092`, etc.). **Must be separated per instance**.
    - `aspectow.node.id`: Node identifier within a cluster (`node1` vs `node2`). **Must be separated per instance**.
@@ -221,7 +236,7 @@ Aspectow uses a single-instance `.lock` file and PID file within the same `baseP
 Keep the default `setup/app.conf` file as the shared configuration containing application name, deployment directory (`DEPLOY_DIR`), and common JVM options used across all instances on the server.
 
 ##### Step 2: Create Instance-Specific Execution Scripts (`daemon-node1.sh`, `daemon-node2.sh`)
-Copy the shared `setup/scripts/linux/daemon.sh` script to create dedicated scripts for each instance. Override `PROC_NAME` and the required isolated system properties inside each script.
+Copy the shared `setup/scripts/linux/daemon.sh` script to create dedicated scripts for each instance. Declare `NODE_ID`, `PORT`, and directory variables at the top of each script, and pass them via `ASPECTRAN_OPTS` and shell options (`--logs-dir`, `--temp-dir`).
 
 ```bash
 #!/bin/sh
@@ -231,26 +246,35 @@ set -e
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 . "$SCRIPT_DIR/app.conf"
 
-# 1. Specify unique process name (PID file .$PROC_NAME.pid will be applied automatically)
-PROC_NAME="${APP_NAME}-node2"
+NODE_ID="node2"
+PORT="8092"
 
-# 2. Override node2-specific isolated directories, port, and node options
-NODE_OPTS="
--Daspectow.node.id=node2
--Daspectran.logsDir=$DEPLOY_DIR/logs2
--Daspectran.workPath=$DEPLOY_DIR/work2
--Daspectran.tempPath=$DEPLOY_DIR/temp2
--Daspectran.commandsPath=$DEPLOY_DIR/cmd2
--Djava.io.tmpdir=$DEPLOY_DIR/temp2
--Dtow.server.listener.http.port=8092
--Dtow.context.root.session.cookieName=JSESSIONID-8092
--Dtow.context.console.session.cookieName=JSESSIONID-8092
+PROC_NAME="${APP_NAME}-${NODE_ID}"
+WORK_DIR="$DEPLOY_DIR/work2"
+TEMP_DIR="$DEPLOY_DIR/temp2"
+COMMANDS_DIR="$DEPLOY_DIR/cmd2"
+LOGS_DIR="$DEPLOY_DIR/logs2"
+
+ASPECTRAN_OPTS="
+-Duser.timezone=UTC
+-Daspectran.profiles.active=dev,gateway
+-Daspectran.profiles.base.console=dev,h2
+-Daspectran.workPath=$WORK_DIR
+-Daspectran.tempPath=$TEMP_DIR
+-Daspectran.commandsPath=$COMMANDS_DIR
+-Daspectran.logsDir=$LOGS_DIR
+-Daspectow.node.id=$NODE_ID
+-Djava.io.tmpdir=$TEMP_DIR
+-Dtow.server.listener.http.port=$PORT
+-Dtow.context.root.session.cookieName=JSESSIONID-$PORT
+-Dtow.context.console.session.cookieName=JSESSIONID-$PORT
+-Daspectow.console.config.db.h2.path_explicit=~/aspectow-console-demo-${NODE_ID}
 "
-
-export ASPECTRAN_OPTS="$ASPECTRAN_OPTS $NODE_OPTS"
 
 "$DEPLOY_DIR/bin/jsvc-daemon.sh" \
   --proc-name "$PROC_NAME" \
+  --logs-dir "$LOGS_DIR" \
+  --temp-dir "$TEMP_DIR" \
   --user "$DAEMON_USER" \
   "$@"
 ```

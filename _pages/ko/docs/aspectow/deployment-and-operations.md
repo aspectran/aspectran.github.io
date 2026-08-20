@@ -174,6 +174,16 @@ subheadline: Aspectow
 *   `8-pull_deploy_webapps_only.sh|bat`: 최신 소스를 받은 후, 웹 애플리케이션 파일만 배포합니다.
 *   `9-pull_deploy_config_webapps_only.sh|bat`: 최신 소스를 받은 후, 설정 파일과 웹 애플리케이션 파일을 함께 배포합니다.
 
+#### 개발 환경 자동 감지 및 소스 보호 (Development Mode Support)
+
+배포 스크립트들은 `app.conf`를 통해 현재 실행 위치가 소스 모듈(개발 환경)인지 운영 서버 배포 환경인지를 자동으로 감지합니다 (`pom.xml` 파일 존재 여부 및 Git 작업 트리 감지).
+
+*   **개발 환경(`DEV_MODE=true`)에서의 동작**:
+    *   `3-deploy_config.sh` 및 `4-deploy_webapps.sh`: 버전 관리 중인 로컬 소스(`app/config`, `app/webapps`)를 보존하기 위해 디렉터리 삭제(`rm -rf`) 및 덮어쓰기 복사를 건너뜁니다.
+    *   `1-pull.sh`: `.build` 디렉터리 대신 현재 Git 작업 디렉터리의 최신 변경 사항을 가져옵니다.
+    *   `2-build.sh`: `.build` 디렉터리로 이동하지 않고 현재 모듈 디렉터리에서 `mvn clean package`를 직접 실행하여 `app/lib`에 라이브러리를 빌드 및 배치합니다.
+    *   이를 통해 개발 환경에서도 소스 유실 위험 없이 `./5-pull_build_deploy.sh` 등의 통합 배포 스크립트를 안심하고 테스트할 수 있습니다.
+
 ### 2.5. 배포 디렉터리 구조 및 빌드 공간
 
 설치가 완료된 `BASE_DIR`는 다음과 같은 구조를 가집니다. 특히 `.build` 디렉터리는 운영 중 빌드 문제를 해결하거나 소스 코드를 직접 확인해야 할 때 중요한 역할을 합니다.
@@ -198,6 +208,10 @@ BASE_DIR
     *   **배포 후 자동 복구**: 배포 스크립트(3번, 4번 등)가 실행될 때, Git 소스 기반으로 새롭게 구성된 `app/` 디렉터리 위에 이 디렉터리의 내용을 덮어씁니다. 이를 통해 매번 배포할 때마다 설정을 수동으로 수정할 필요가 없습니다.
     *   **구조**: `app-restore/config/` 또는 `app-restore/webapps/` 하위에 `app/` 디렉터리와 동일한 경로로 파일을 배치하면 됩니다.
 
+*   **런타임 디렉터리 자동 생성 (Zero Dummy Files)**:
+    *   `app/lib`, `app/logs`, `app/temp`, `app/work`, `app/cmd/*` 등의 런타임 디렉터리는 Git에 `.gitignore`나 더미 파일 없이 관리됩니다.
+    *   빌드 도구(`mvn package`)와 Aspectran 프레임워크(코어/데몬/셸 스크립트)가 기동 시점에 필요한 디렉터리를 스스로 생성(`mkdirs`)하므로, 실제 운영 환경에서는 불필요한 더미 파일이 전혀 존재하지 않는 100% 순수한 런타임 디렉토리 상태가 유지됩니다.
+
 ### 2.6. 다중 인스턴스 실행 (Running Multiple Instances)
 
 동일한 서버 또는 하나의 배포 디렉터리(`BASE_DIR`)에서 여러 개의 독립적인 애플리케이션 인스턴스(예: `node1`, `node2`)를 구동해야 하는 경우가 있습니다. 예를 들어, 동일한 소스 및 배포 라이브러리를 공유하면서 서로 다른 HTTP 포트, 로그 디렉터리, 활성 프로필을 가지는 다중 노드 클러스터를 구성할 때입니다.
@@ -207,11 +221,11 @@ Aspectow는 `context.singleton` 설정이 `true`(기본값)일 경우, 같은 `b
 
 1. **자동 PID 파일 경로 결정**: `jsvc-daemon.sh`는 `--proc-name`(`PROC_NAME`)이 기본값(`jsvc-daemon`)과 다르게 지정되면, 별도로 `--pid-file`을 넘기지 않더라도 자동으로 `$BASE_DIR/.$PROC_NAME.pid` 경로의 고유 PID 파일을 생성하고 관리합니다.
 2. **프로세스 정밀 중지(Stop Isolation)**: `jsvc-daemon.sh stop` 실행 시, 프로세스 명령줄의 `-pidfile` 인자를 기준으로 대상 인스턴스의 프로세스만 정밀하게 추적하여 종료하므로 다른 인스턴스에 영향을 주지 않습니다.
-3. **격리해야 하는 필수 시스템 프로퍼티**:
+3. **격리해야 하는 필수 시스템 프로퍼티 및 셸 옵션**:
    - `aspectran.basePath`: 공통 루트 경로 (`BASE_DIR`). 모든 인스턴스가 동일하게 공유 가능.
-   - `aspectran.logsDir`: 로그 파일 저장 경로 (`logs` vs `logs2`). 로그 뒤섞임 및 파일 락 충돌 방지를 위해 **반드시 인스턴스별로 분리**.
+   - `aspectran.logsDir` 및 `--logs-dir`: 로그 파일 저장 경로 (`logs` vs `logs2`) 및 데몬 표준 출력/에러 로그(`daemon-stdout.log`, `daemon-stderr.log`) 경로. 로그 뒤섞임 및 파일 락 충돌 방지를 위해 **반드시 인스턴스별로 분리**.
    - `aspectran.workPath`: 런타임 클래스 컴파일 캐시 및 작업 공간 (`work` vs `work2`). **반드시 인스턴스별로 분리**.
-   - `aspectran.tempPath` / `java.io.tmpdir`: 임시 파일 저장소 (`temp` vs `temp2`). **반드시 인스턴스별로 분리**.
+   - `aspectran.tempPath` / `java.io.tmpdir` 및 `--temp-dir`: 임시 파일 저장소 (`temp` vs `temp2`). **반드시 인스턴스별로 분리**.
    - `aspectran.commandsPath`: Shell/Daemon IPC 명령 파이프 소켓 경로 (`cmd` vs `cmd2`). **반드시 인스턴스별로 분리**.
    - `tow.server.listener.http.port`: HTTP 수신 포트 (`8082` vs `8092` 등). **반드시 인스턴스별로 분리**.
    - `aspectow.node.id`: 클러스터 내 노드 식별자 (`node1` vs `node2`). **반드시 인스턴스별로 분리**.
@@ -222,7 +236,7 @@ Aspectow는 `context.singleton` 설정이 `true`(기본값)일 경우, 같은 `b
 기본 `setup/app.conf` 파일은 애플리케이션 이름, 배포 경로(`DEPLOY_DIR`), 기본 JVM 옵션 등 동일 서버 내 인스턴스들이 공통으로 사용하는 기본 설정으로 유지합니다.
 
 ##### 2단계: 인스턴스별 구동 스크립트 생성 (`daemon-node1.sh`, `daemon-node2.sh`)
-공통 `setup/scripts/linux/daemon.sh`를 복사하여 각 인스턴스에 맞는 실행 스크립트를 작성합니다. 각 스크립트 내부에서 해당 인스턴스의 `PROC_NAME`과 격리 시스템 프로퍼티들을 오버라이드합니다.
+공통 `setup/scripts/linux/daemon.sh`를 복사하여 각 인스턴스에 맞는 실행 스크립트를 작성합니다. 각 스크립트 상단에 `NODE_ID`, `PORT` 및 격리 디렉터리 변수를 선언하고 `ASPECTRAN_OPTS`와 셸 옵션(`--logs-dir`, `--temp-dir`)으로 전달합니다.
 
 ```bash
 #!/bin/sh
@@ -232,26 +246,35 @@ set -e
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 . "$SCRIPT_DIR/app.conf"
 
-# 1. 인스턴스 전용 프로세스 이름 지정 (PID 파일 .$PROC_NAME.pid 자동 적용)
-PROC_NAME="${APP_NAME}-node2"
+NODE_ID="node2"
+PORT="8092"
 
-# 2. node2 전용 격리 디렉터리 및 포트/노드 옵션 오버라이드
-NODE_OPTS="
--Daspectow.node.id=node2
--Daspectran.logsDir=$DEPLOY_DIR/logs2
--Daspectran.workPath=$DEPLOY_DIR/work2
--Daspectran.tempPath=$DEPLOY_DIR/temp2
--Daspectran.commandsPath=$DEPLOY_DIR/cmd2
--Djava.io.tmpdir=$DEPLOY_DIR/temp2
--Dtow.server.listener.http.port=8092
--Dtow.context.root.session.cookieName=JSESSIONID-8092
--Dtow.context.console.session.cookieName=JSESSIONID-8092
+PROC_NAME="${APP_NAME}-${NODE_ID}"
+WORK_DIR="$DEPLOY_DIR/work2"
+TEMP_DIR="$DEPLOY_DIR/temp2"
+COMMANDS_DIR="$DEPLOY_DIR/cmd2"
+LOGS_DIR="$DEPLOY_DIR/logs2"
+
+ASPECTRAN_OPTS="
+-Duser.timezone=UTC
+-Daspectran.profiles.active=dev,gateway
+-Daspectran.profiles.base.console=dev,h2
+-Daspectran.workPath=$WORK_DIR
+-Daspectran.tempPath=$TEMP_DIR
+-Daspectran.commandsPath=$COMMANDS_DIR
+-Daspectran.logsDir=$LOGS_DIR
+-Daspectow.node.id=$NODE_ID
+-Djava.io.tmpdir=$TEMP_DIR
+-Dtow.server.listener.http.port=$PORT
+-Dtow.context.root.session.cookieName=JSESSIONID-$PORT
+-Dtow.context.console.session.cookieName=JSESSIONID-$PORT
+-Daspectow.console.config.db.h2.path_explicit=~/aspectow-console-demo-${NODE_ID}
 "
-
-export ASPECTRAN_OPTS="$ASPECTRAN_OPTS $NODE_OPTS"
 
 "$DEPLOY_DIR/bin/jsvc-daemon.sh" \
   --proc-name "$PROC_NAME" \
+  --logs-dir "$LOGS_DIR" \
+  --temp-dir "$TEMP_DIR" \
   --user "$DAEMON_USER" \
   "$@"
 ```
