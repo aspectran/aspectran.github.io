@@ -223,15 +223,33 @@ Console 및 워커 노드는 `RedisConnectionPoolConfig`를 통해 이 URI를 �
 
 ## 6. Console 데이터베이스 접속 및 프로필 설정 (`aspectow-console.db-*.properties`)
 
-Aspectow Console은 관리자 계정, RBAC 권한, Vault 보안 토큰, 감사 로그, 그리고 내장 AppMon의 5분/시간/일/월/년 사전 집계(Pre-aggregation) 통계를 데이터베이스에 보관합니다.
+Aspectow Console은 관리자 계정, RBAC 권한, Vault 보안 토큰, 클러스터 감사 이력(Audit Trail), 빌드 및 배포 실행 이력, 그리고 내장 AppMon의 5분/시간/일/월/년 사전 집계(Pre-aggregation) 통계를 데이터베이스에 보관합니다.
 
-### 6.1. 기본 프로필 및 H2 DB
+### 6.1. 클러스터 환경에서의 데이터베이스 아키텍처 원칙 (Shared Database Architecture)
+
+Aspectow Console이 관리하는 메타데이터(계정, 권한, 감사 이력, 분산 빌드 로그 등)는 **클러스터 전체의 단일 상태(Cluster-wide State)**를 나타냅니다. 따라서 Aspectow Console은 **클러스터 내 모든 노드가 단일한 "공유 데이터베이스(Shared Database)"를 바라보는 환경을 표준 아키텍처(Standard Architecture)**로 전제합니다.
+
+*   **분산 자율 영속화 (Decentralized Persistence)**: 공유 DB 환경에서는 각 노드가 자신이 실행한 빌드/배포 작업의 시작과 종료, 콘솔 로그, SHA-256 무결성 해시를 자신의 로컬 트랜잭션으로 직접 공유 DB에 기록(`startAudit` / `completeAudit`)합니다.
+*   **단일 진실 공급원 (Single Source of Truth)**: 관리자가 로드밸런서를 통해 임의의 노드에 접속하거나 특정 노드가 재기동되더라도, 모든 화면과 REST/WebSocket 엔드포인트는 항상 공유 DB로부터 최신 클러스터 상태와 이력을 일관되게 조회합니다.
+
+### 6.2. 기본 프로필 및 H2 내장 DB 설정
 
 기본 구성(`aspectran-config.apon`)에서는 내장 `h2` 프로필이 디폴트로 활성화되어 있어, 별도의 RDBMS 설치 없이도 즉시 개발 및 시연 환경을 구동할 수 있습니다.
 
-### 6.2. RDBMS 변경 및 접속 프로퍼티 구성
+#### 단일 머신 다중 노드 개발 환경에서의 H2 공유 DB 구성 (`AUTO_SERVER=TRUE`)
 
-`h2` 대신 외부 데이터베이스(MariaDB, MySQL, PostgreSQL, Oracle, Supabase)를 연동하려면, 해당 DB 프로필(예: `mariadb`)을 지정하고 프로젝트의 `/config/console/` 디렉토리에 맞는 프로퍼티 파일(**`aspectow-console.db-mariadb.properties`**)을 추가로 작성해야 합니다.
+단일 개발 머신에서 여러 개의 Aspectran 노드를 동시에 구동할 때, 별도의 독립 H2 Server 데몬을 설치하지 않고도 모든 노드가 동일한 H2 데이터베이스 파일을 공유할 수 있도록 H2의 **`AUTO_SERVER=TRUE`** 모드를 지원합니다.
+
+H2의 임베디드 파일 모드는 단일 JVM의 독점 파일 락(Lock)을 요구하지만, `AUTO_SERVER=TRUE`를 활성화하면 가장 먼저 기동된 노드가 내장 TCP 통신 채널을 자동으로 개방하여 이후 기동되는 다른 노드들이 동일한 H2 DB 파일에 동시 접속하여 읽기/쓰기를 수행할 수 있습니다.
+
+```properties
+# H2 공유 DB 접속 설정 예시
+aspectow.console.config.db.h2.path_explicit=~/aspectow-console-demo;AUTO_SERVER=TRUE
+```
+
+### 6.3. RDBMS 변경 및 접속 프로퍼티 구성
+
+`h2` 대신 외부 엔터프라이즈 데이터베이스(MariaDB, MySQL, PostgreSQL, Oracle, Supabase)를 연동하려면, 해당 DB 프로필(예: `mariadb`)을 지정하고 프로젝트의 `/config/console/` 디렉토리에 맞는 프로퍼티 파일(**`aspectow-console.db-mariadb.properties`**)을 추가로 작성해야 합니다.
 
 `db.xml`의 `consoleDBProperties` 빈은 지정된 프로필에 맞춰 해당 위치의 프로퍼티 파일을 자동으로 읽어들입니다.
 

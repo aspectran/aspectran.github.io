@@ -223,15 +223,33 @@ Console and worker nodes parse this URI via `RedisConnectionPoolConfig` to dynam
 
 ## 6. Console Database Connection & Profile Configuration (`aspectow-console.db-*.properties`)
 
-Aspectow Console stores administrator accounts, RBAC permissions, Vault security tokens, audit logs, and embedded AppMon pre-aggregated statistics (minute, hour, day, month, year) in the database.
+Aspectow Console stores administrator accounts, RBAC permissions, Vault security tokens, cluster audit logs (Audit Trail), distributed build/deployment execution histories, and embedded AppMon pre-aggregated statistics (minute, hour, day, month, year) in the database.
 
-### 6.1. Default Profile & H2 Database
+### 6.1. Database Architectural Principles in Cluster Environments (Shared Database Architecture)
+
+All metadata managed by Aspectow Console (accounts, permissions, audit trails, distributed build logs, etc.) represents **cluster-wide single state**. Therefore, Aspectow Console establishes **an environment where all nodes in the cluster connect to a single "Shared Database" as its standard architecture baseline**.
+
+*   **Decentralized Persistence**: In a shared DB environment, each node directly records the lifecycle, console logs, and SHA-256 integrity verification hash of its executed build/deployment tasks into the shared DB using its own local transaction (`startAudit` / `completeAudit`).
+*   **Single Source of Truth**: Whether an administrator connects to an arbitrary node through a load balancer or a specific node restarts, all UI views and REST/WebSocket endpoints consistently query the latest cluster status and logs from the shared DB.
+
+### 6.2. Default Profile & Embedded H2 Database Configuration
 
 In the default configuration (`aspectran-config.apon`), the embedded `h2` profile is active by default, allowing instant development and demo execution without external RDBMS setups.
 
-### 6.2. RDBMS Switching & Connection Property Setup
+#### Multi-Node H2 Shared Database Setup on a Single Machine (`AUTO_SERVER=TRUE`)
 
-To connect to external databases (MariaDB, MySQL, PostgreSQL, Oracle, Supabase) instead of `h2`, specify the corresponding DB profile (e.g., `mariadb`) and add the matching property file (**`aspectow-console.db-mariadb.properties`**) under the project's `/config/console/` directory.
+When running multiple Aspectran nodes concurrently on a single development machine, H2's **`AUTO_SERVER=TRUE`** mode allows all nodes to share the same H2 database file without requiring a standalone H2 Server daemon.
+
+While standard embedded H2 file mode requires an exclusive single-JVM file lock, enabling `AUTO_SERVER=TRUE` allows the first running node to automatically open an internal TCP communication channel so subsequent nodes can connect concurrently and perform read/write operations on the same database file.
+
+```properties
+# Example H2 shared database connection property
+aspectow.console.config.db.h2.path_explicit=~/aspectow-console-demo;AUTO_SERVER=TRUE
+```
+
+### 6.3. RDBMS Switching & Connection Property Setup
+
+To connect to external enterprise databases (MariaDB, MySQL, PostgreSQL, Oracle, Supabase) instead of `h2`, specify the corresponding DB profile (e.g., `mariadb`) and add the matching property file (**`aspectow-console.db-mariadb.properties`**) under the project's `/config/console/` directory.
 
 The `consoleDBProperties` Bean inside `db.xml` automatically resolves and loads the property file corresponding to the active profile.
 
