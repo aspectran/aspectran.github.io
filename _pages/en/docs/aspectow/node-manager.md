@@ -100,7 +100,18 @@ Nodes follow autonomous resolution rules to establish identity upon startup with
 2.  **Dynamic Generation (Gateway Mode)**: Generates a **UUID-based unique ID** dynamically to prevent collisions during autoscaling.
 3.  **Default (Direct Mode)**: Defaults to fixed `node1`.
 
-### 4.3. Group Concept and Service Consistency Principle
+### 4.3. Console-Dedicated Node (`console`) Flag and Role Separation
+You can explicitly separate the roles of management console nodes (hosting Aspectow Console) and service nodes (running business applications) within the cluster.
+
+1.  **System Property**: `-Daspectow.node.console=true` (or `false`) takes highest precedence.
+2.  **APON Config**: Can be explicitly declared in the `node` block of `node-config.apon` using `console: true`.
+3.  **Default**: Defaults to `false` (standard service node) if omitted.
+4.  **Role Separation & Operational Safety**:
+    *   **Safe Build & Deployment**: When a node is marked with `console: true`, selecting the `All Service Nodes` target in Aspectow Console's build interface automatically excludes the console node, preventing self-overwrites or accidental restarts that would disrupt live monitoring sessions.
+    *   **Cluster Bulk Control**: The `Exclude Console` option in the bulk control modal easily safeguards console instances, and unsupported commands like `PAUSE`/`RESUME` are strictly blocked from being dispatched to console nodes.
+    *   **Enhanced Visual Identification**: Console nodes are visually badged with `[Console]` across Cluster Nodes and Scheduler views, allowing operators to instantly distinguish node roles.
+
+### 4.4. Group Concept and Service Consistency Principle
 In Aspectow Node Manager, a **Group** represents a **logical scale-out set** of node instances performing identical roles.
 
 *   **Consistency of Service Configuration**: Nodes sharing the same `Group ID` are treated as replicas providing identical service and application specifications.
@@ -133,11 +144,18 @@ group: {
     id: backend-api
     title: Backend API Group
 }
+# Optional: Explicit definition for a dedicated console node
+node: {
+    id: admin-console-node1
+    title: Admin Console Node
+    console: true
+}
 ```
 
 > **Configuration Guide:**
 > * `pulseInterval`: The interval at which a node refreshes its heartbeat timestamp in Redis. The 10-second default minimizes Redis I/O overhead while ensuring responsive state updates.
 > * `pulseTimeout`: The timeout threshold before an unresponsive node is declared a zombie. The 60-second default provides ample tolerance against transient GC pauses and network jitter to prevent flapping.
+> * `console`: Set to `true` or pass `-Daspectow.node.console=true` for dedicated management console instances.
 
 ### 6.2. Direct Mode Setup (`/config/console/node-config.apon`)
 
@@ -146,10 +164,33 @@ cluster: {
     id: static-cluster1
     mode: direct
 }
+# Dedicated Console Node
 node: {
-    id: node01
-    group: group1
-    title: Primary Server 01
+    id: console-node1
+    title: Aspectow Console Node
+    console: true
+    port: 8082
+    endpoint: {
+        mode: auto
+    }
+}
+# Service Node 1
+node: {
+    id: node1
+    title: Service Node 01
+    port: 8091
+    endpoint: {
+        mode: auto
+    }
+}
+# Service Node 2
+node: {
+    id: node2
+    title: Service Node 02
+    port: 8092
+    endpoint: {
+        mode: auto
+    }
 }
 ```
 

@@ -100,7 +100,18 @@ location /console/nodes/node2/ {
 2.  **동적 생성 (Gateway 모드)**: 지정된 ID가 없을 경우 **UUID 기반 고유 ID가 동적 생성**되어 오토스케일링 시 ID 충돌을 방지합니다.
 3.  **기본값 (Direct 모드)**: Direct 모드에서는 고정된 `node1`을 기본값으로 사용합니다.
 
-### 4.3. 그룹(Group)의 개념과 서비스 일관성 원칙
+### 4.3. 콘솔 전용 노드 (`console`) 여부 결정 및 역할 분리
+클러스터 내에서 관리 콘솔(Aspectow Console)을 호스팅하는 관리 전용 노드와 비즈니스 애플리케이션을 구동하는 서비스 노드의 역할을 분리할 수 있습니다.
+
+1.  **System Property**: 자바 실행 속성 `-Daspectow.node.console=true` (또는 `false`) 값이 최우선 적용됩니다.
+2.  **APON 설정**: `node-config.apon` 파일 내 `node` 블록에 `console: true`를 명시적으로 선언할 수 있습니다.
+3.  **기본값**: 지정되지 않은 경우 기본값은 `false`(일반 서비스 노드)입니다.
+4.  **역할 분리 및 안전한 클러스터 제어 (Role Separation & Safety)**:
+    *   **안전한 빌드 및 배포 (Build & Deployment)**: 콘솔 노드에 `console: true`를 지정하면, Aspectow Console의 빌드 화면에서 `All Service Nodes` 타겟 선택 시 콘솔 노드가 자동으로 제외되어 자기 자신을 덮어쓰거나 재시작하여 관제 세션이 끊어지는 위험을 사전에 방지합니다.
+    *   **클러스터 일괄 제어 (Cluster Bulk Control)**: 일괄 제어 모달에서 `Exclude Console` 옵션을 통해 콘솔 노드를 손쉽게 보호할 수 있으며, 콘솔 컨텍스트에 지원되지 않는 `PAUSE`/`RESUME` 명령이 콘솔 노드로 전송되지 않도록 원천 차단합니다.
+    *   **시각적 식별성 강화**: Cluster Nodes 및 Scheduler 화면에서 콘솔 노드에 `[Console]` 뱃지가 부여되어 운영자가 역할을 한눈에 식별할 수 있습니다.
+
+### 4.4. 그룹(Group)의 개념과 서비스 일관성 원칙
 Aspectow Node Manager에서 **그룹(Group)**은 동일한 역할을 수행하는 노드 인스턴스들의 **논리적 스케일아웃(Scale-out) 집합**을 의미합니다.
 
 *   **서비스 구성의 일관성**: 동일한 `Group ID`를 공유하는 노드들은 동일한 서비스 및 애플리케이션 명세를 제공하는 복제본(Replica)으로 간주됩니다.
@@ -133,11 +144,18 @@ group: {
     id: backend-api
     title: Backend API Group
 }
+# 콘솔 전용 노드인 경우 (선택 사항)
+node: {
+    id: admin-console-node1
+    title: Admin Console Node
+    console: true
+}
 ```
 
 > **설정 가이드:**
 > * `pulseInterval`: 노드가 자신의 생존 타임스탬프를 Redis에 갱신하는 주기입니다. 10초 설정을 통해 Redis 트래픽 부하를 최소화하면서 안정적인 상태 갱신을 유지합니다.
 > * `pulseTimeout`: 노드 펄스가 수신되지 않을 때 좀비 노드로 판정하는 만료 기준 시간입니다. 기본값 60초는 일시적인 GC 지연이나 네트워크 순단 상황에서 오탐(Flapping)을 방지할 수 있는 충분한 유예 시간을 제공합니다.
+> * `console`: 관리 콘솔 전용 인스턴스인 경우 `console: true`를 지정하거나 `-Daspectow.node.console=true`를 부여합니다.
 
 ### 6.2. Direct 모드 설정 (`/config/console/node-config.apon`)
 
@@ -146,10 +164,33 @@ cluster: {
     id: static-cluster1
     mode: direct
 }
+# 관리 콘솔 전용 노드
 node: {
-    id: node01
-    group: group1
-    title: Primary Server 01
+    id: console-node1
+    title: Aspectow Console Node
+    console: true
+    port: 8082
+    endpoint: {
+        mode: auto
+    }
+}
+# 서비스 노드 1
+node: {
+    id: node1
+    title: Service Node 01
+    port: 8091
+    endpoint: {
+        mode: auto
+    }
+}
+# 서비스 노드 2
+node: {
+    id: node2
+    title: Service Node 02
+    port: 8092
+    endpoint: {
+        mode: auto
+    }
 }
 ```
 
