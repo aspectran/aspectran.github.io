@@ -195,6 +195,31 @@ subheadline: Aspectow
     *   선행 노드가 빌드를 정상 완료(`BUILD SUCCESS`)하면, 대기 중이던 노드들은 **중복 Maven 컴파일을 건너뛰고(`Skipping redundant Maven compilation.`) 직전 빌드 산출물을 그대로 재사용하여 즉시 성공 처리**합니다.
     *   이를 통해 파일 경합 에러가 100% 방지되며, 클러스터 전체 풀빌드 소요 시간이 1/N로 단축됩니다.
 
+#### Git Branch 및 Tag 지정 배포 지원 (Target Branch / Tag Deployment)
+
+운영 환경에서는 불변(Immutable) 상태인 정기 릴리즈 버전 태그(예: `v1.2.0`)를 배포하거나, 긴급 결함 조치를 위한 핫픽스 브랜치(예: `hotfix/xxx`)를 신속하게 배포해야 하는 상황이 빈번하게 발생합니다. Aspectow 배포 스크립트와 Aspectow Console은 이러한 상황을 위해 특정 Branch, Tag, Commit SHA를 지정하여 배포할 수 있는 기능을 완벽하게 지원합니다.
+
+*   **명령줄 인자 및 환경 변수 전달**:
+    *   `1-pull.sh|bat` 및 모든 복합 배포 스크립트(`5-pull_build_deploy.sh|bat` ~ `9-pull_deploy_config_webapps_only.sh|bat`) 실행 시 첫 번째 인자로 브랜치 또는 태그명을 전달할 수 있습니다.
+        ```bash
+        # 릴리즈 태그 지정 배포 (불변 배포 권장 방식)
+        ./5-pull_build_deploy.sh v1.2.0
+
+        # 긴급 핫픽스 브랜치 배포
+        ./5-pull_build_deploy.sh hotfix/auth-patch
+
+        # 웹 애플리케이션만 특정 브랜치 기준으로 업데이트
+        ./8-pull_deploy_webapps_only.sh release/v1.1
+        ```
+    *   인자를 지정하지 않을 경우 기존과 동일하게 현재 체크아웃된 브랜치 또는 기본 브랜치(`main`)의 최신 커밋을 가져옵니다.
+    *   환경 변수 `PARAM_BRANCH`를 설정하여 전달할 수도 있습니다.
+*   **Aspectow Console 웹 UI 연동**:
+    *   Aspectow Console의 **Build & Deployment** 화면에서 `Git Branch / Tag (Optional)` 입력란에 브랜치나 태그명을 입력하고 실행하면, 원격 클러스터의 단일 노드, 노드 그룹 또는 전체 노드에 지정된 브랜치/태그가 즉시 빌드 및 배포됩니다.
+*   **안전한 Ref 사전 검증 및 작업 트리 보존 (Safe Ref Validation)**:
+    *   브랜치나 태그명을 전환하기 전에 원격 저장소의 최신 메타데이터를 갱신(`git fetch --all --tags --prune`)하고, 로컬 태그(`refs/tags/*`), 로컬 브랜치(`refs/heads/*`), 원격 트래킹 브랜치(`origin/*`), 커밋 해시 여부를 사전 검증(`git rev-parse --verify`)합니다.
+    *   사용자가 오타 등으로 존재하지 않는 브랜치/태그명을 입력한 경우, 기존 로컬 작업 트리를 전혀 변경하지 않고 즉시 스크립트를 중단(`exit 1`)하며 명확한 에러 로그(`[ERROR] Branch, tag, or commit '...' not found in repository.`)를 출력합니다.
+    *   Aspectow Console 웹 화면에도 즉시 `FAILED` 상태와 에러 요약이 표시되어 잘못된 배포 시도로 인한 시스템 불안정을 사전에 방지합니다.
+
 ### 2.5. 배포 디렉터리 구조 및 빌드 공간
 
 설치가 완료된 `BASE_DIR`는 다음과 같은 구조를 가집니다. 특히 `.build` 디렉터리는 운영 중 빌드 문제를 해결하거나 소스 코드를 직접 확인해야 할 때 중요한 역할을 합니다.

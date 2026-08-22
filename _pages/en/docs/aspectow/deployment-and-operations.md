@@ -195,6 +195,31 @@ In single-machine or shared-directory cluster environments, concurrent full-buil
     *   Once the lead node finishes with `BUILD SUCCESS`, waiting nodes **skip redundant Maven compilation (`Skipping redundant Maven compilation.`) and immediately complete with success by reusing the fresh build artifacts**.
     *   This completely eliminates race conditions and reduces total cluster build time to 1/N.
 
+#### Git Branch and Tag Targeted Deployment Support (Target Branch / Tag Deployment)
+
+In production operations, you often need to deploy an immutable release version tag (e.g., `v1.2.0`) or quickly roll out a hotfix branch (e.g., `hotfix/xxx`) to address critical defects. Aspectow deployment scripts and Aspectow Console fully support deploying targeted Branches, Tags, or Commit SHAs.
+
+*   **Command-Line Arguments & Environment Variables**:
+    *   You can pass the branch or tag name as the first argument when executing `1-pull.sh|bat` or any compound deployment script (`5-pull_build_deploy.sh|bat` through `9-pull_deploy_config_webapps_only.sh|bat`):
+        ```bash
+        # Deploy a specific release tag (Recommended for immutable releases)
+        ./5-pull_build_deploy.sh v1.2.0
+
+        # Deploy an urgent hotfix branch
+        ./5-pull_build_deploy.sh hotfix/auth-patch
+
+        # Update only web application files from a specific branch
+        ./8-pull_deploy_webapps_only.sh release/v1.1
+        ```
+    *   If no argument is specified, the script pulls the latest commit from the currently checked out branch or the default branch (`main`), maintaining backward compatibility.
+    *   You can also pass the parameter via the `PARAM_BRANCH` environment variable.
+*   **Aspectow Console Web UI Integration**:
+    *   In the Aspectow Console **Build & Deployment** interface, you can enter the branch or tag name in the `Git Branch / Tag (Optional)` field. The target will be pulled, built, and deployed across single nodes, node groups, or the entire cluster remotely.
+*   **Safe Ref Pre-Validation & Working Tree Preservation (Safe Ref Validation)**:
+    *   Before switching branches or tags, the script fetches the latest remote metadata (`git fetch --all --tags --prune`) and validates the ref across local tags (`refs/tags/*`), local branches (`refs/heads/*`), remote tracking branches (`origin/*`), and commit SHAs using `git rev-parse --verify`.
+    *   If a nonexistent branch or tag name is provided (such as a typo), the script aborts immediately with exit code `1` (`[ERROR] Branch, tag, or commit '...' not found in repository.`) without touching or corrupting the existing working tree.
+    *   The failure status and detailed error message are instantly reported to the Aspectow Console web interface, preventing accidental downtime due to invalid deployment requests.
+
 ### 2.5. Deployment Directory Structure and Build Workspace
 
 The installed `BASE_DIR` has the following structure. In particular, the `.build` directory plays an important role when troubleshooting build problems or manually checking source code during operations.
