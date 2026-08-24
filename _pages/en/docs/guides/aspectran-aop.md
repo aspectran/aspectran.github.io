@@ -1,173 +1,371 @@
 ---
-title: "Aspectran AOP: Features & Architecture"
+title: "Aspectran AOP: Features and Architecture"
 subheadline: Core Guides
 ---
 
-**Aspect-Oriented Programming (AOP)** is a key technique for reducing complexity by separating **Cross-cutting Concerns**—such as logging, security, and transactions—from core business logic.
+**Aspect-Oriented Programming (AOP)** is a foundational technique that reduces code complexity by modularizing **cross-cutting concerns**—such as logging, security, transactions, response header injection, and global exception handling—away from core business logic.
 
-**Spring AOP** offers powerful and granular control by combining bean method interception with AspectJ's extensive expression language. However, this flexibility can sometimes lead to complex configurations and a steeper learning curve.
+While Spring AOP primarily focuses on proxying bean method invocations, **Aspectran** provides a highly optimized, **pragmatic AOP architecture** built upon two distinct pillars: the **`Activity` Lifecycle** and **Selective Bean Proxying**.
 
-**Aspectran** takes a more **pragmatic approach**, focusing on structural efficiency rather than exhaustive control. It centers its AOP model around the **lifecycle of the `Activity`**, the core unit of request processing. This allows developers to intuitively manage the flow from request to response, while still providing essential bean method-level interception. Aspectran aims to simplify AOP by optimizing it for the framework's execution flow, offering a lightweight yet effective solution for most enterprise needs.
+## 1. The Two Architectural Pillars of Aspectran AOP
 
-## Key Features
+Aspectran AOP offers two dimensions of join points and interception mechanisms tailored to their respective architectural purposes.
 
-### 1. Join Point: Execution Timing
+| Architectural Pillar | Target | Mechanism | Primary Use Cases |
+| :--- | :--- | :--- | :--- |
+| **Activity Lifecycle AOP**<br/>*(Translet Lifecycle)* | `Activity` (The entire request-processing flow) | Zero proxy overhead; the `CoreActivity` engine directly executes aspects according to lifecycle stages (Non-Proxy Core Interception) | Web security response headers, global character encoding and view dispatcher injection, pre/post-processing, authentication/authorization, global exception handling |
+| **Bean Proxy AOP**<br/>*(Method Interception)* | Bean method invocations (`JoinpointTargetType.METHOD`) | Runtime dynamic proxy (`AbstractBeanProxy`, Javassist/JDK) intercepts methods annotated with `@Advisable` | Declarative database transactions, business method profiling, audit logging |
 
-Aspectran AOP provides two main categories of Join Points:
+### 1.1. Activity Lifecycle AOP (Non-Proxy Core Interception)
 
-*   **Activity Execution (Translet Lifecycle)**: This is Aspectran's most distinct and powerful Join Point. It allows intervention throughout the lifecycle of an `Activity` (which processes requests based on **Translet** rules)—such as before/after execution or on exception. This is ideal for modularizing cross-cutting concerns like logging, transactions, and authentication at the request level.
-*   **Bean Method Execution**: Similar to other AOP frameworks, specific Bean method executions can serve as Join Points.
+In Aspectran, incoming client requests (Web, Daemon, Shell) are executed by an `Activity` instance. The `Activity` engine traverses predefined lifecycle stages from initiation to completion, directly invoking matched aspects without intermediate proxy overhead.
 
-### 2. Pointcut: Target Selection
+| Stage | Lifecycle Stage | Primary Tasks & Responsibilities |
+| :---: | :--- | :--- |
+| **Stage 1** | **Before Advice** | Executes pre-processing logic, injects `<settings>` (encoding, view dispatcher) and security `<headers>`, validates authentication |
+| **Stage 2** | **Translet Action Execution** | Executes core business actions and process routines, generating response data |
+| **Stage 3** | **After Advice** | Performs post-processing on results, records audit logs |
+| **Stage 4** | **Exception Handling (`<exception>`)** | Catches exceptions and maps them to error view pages (`<dispatch>`) or RESTful JSON (`<transform>`) error responses |
+| **Stage 5** | **Finally Advice** | Always runs at the end regardless of success or failure to clean up resources and session states |
 
-A Pointcut is an expression that precisely defines where Advice should be applied. In Aspectran, Pointcuts are declaratively defined via the `<joinpoint>` element within an `<aspect>` rule.
+* **Zero Overhead**: Directly executed within the framework core flow without proxy creation or reflective overhead, ensuring maximum throughput.
+* **Structural Flow Control**: Beyond simple method interception, it declaratively injects and manages request context (`Activity`) attributes such as encoding, view dispatchers, security headers, and global exception screens.
 
-*   **APON Format Definition**: The `<joinpoint>` element uses APON (Aspectran Parameter Object Notation) for detailed rule configuration, supporting wildcards (`*`) and regular expressions.
+### 1.2. Bean Proxy AOP (Selective Dynamic Proxying)
 
-*   **Expression Structure**:
-    ```
-    transletNamePattern[@beanOrClassPattern][^methodNamePattern]
-    ```
-    *   **Translet Pattern** (Pre-`@`): Specifies the target Translet name pattern.
-    *   **Bean/Class Pattern** (Post-`@`): Specifies the target Bean ID or class name pattern.
-    *   **Method Pattern** (Post-`^`): Specifies the target method name pattern.
+When applying AOP at the level of individual service methods, Aspectran employs dynamic proxies based on bytecode generation with **Javassist** (`JavassistProxyBean`) or standard **JDK Dynamic Proxies** (`JdkDynamicProxyBean`).
 
-*   **Examples**:
-    *   **Specific Bean in ALL Translets**: Omit Translet pattern, start with `@`.
-        ```xml
-        <joinpoint>
-            pointcut: {
-                type: wildcard
-                +: @someService^execute*
-            }
-        </joinpoint>
-        ```
-    *   **Specific Bean in Specific Translet**:
-        ```xml
-        <joinpoint>
-            pointcut: {
-                type: wildcard
-                +: /user/list@userService^get*
-            }
-        </joinpoint>
-        ```
-    *   **Translet Itself**: Omit Bean/Method patterns to target the Activity execution.
-        ```xml
-        <joinpoint>
-            pointcut: {
-                type: wildcard
-                +: /user/*
-            }
-        </joinpoint>
-        ```
+* **`@Advisable` Selective Proxying (Performance Optimization)**:
+  * Dynamic proxies do not indiscriminately intercept every method invocation.
+  * Pointcut evaluation and advice chains are triggered **only for methods annotated with `@Advisable`**.
+  * Unannotated regular methods bypass the proxy chain entirely, immediately delegating to the target method with **zero proxy overhead**.
 
-*   **Inclusion & Exclusion Rules**:
-    *   Use the `+` prefix to **include** targets and the `-` prefix to **exclude** them.
-    *   Rules are applied in order, allowing for precise control (e.g., include all beans in a package, then exclude specific ones).
+## 2. Core Components of the `<aspect>` Rule
 
-*   **Request Methods & Request Headers Filtering**:
-    Within a `<joinpoint>`, you can restrict Advice execution based on request methods (`methods`) and request headers (`headers`).
-    *   **Request Methods (`methods`)**: Specifies allowed request methods (e.g., `GET`, `POST`, `PUT`, `DELETE`).
-    *   **Request Headers (`headers`)**: Restricts Advice execution based on request header conditions. Supports header existence, value matching (`Name=Value`), negative matching (`Name!=Value`), and composite media type matching (such as `Accept` in web environments).
-        *   **Header Existence**: `"Origin"` (matches if the specified header is present).
-        *   **Exact / Pattern Value**: `"X-Requested-With=XMLHttpRequest"` (matches if the header contains the specified value).
-        *   **Negative Matching**: `"Accept!=application/json"` (matches if the header does NOT contain `application/json`).
-        *   **Composite Media Type Matching (Web Environment)**: `"Accept=text/html"` (in web environments, intelligently parses complex `Accept` headers containing q-factors such as `text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8` via `WebUtils.isAcceptContentTypes`).
+In Aspectran, aspects can be configured declaratively via `<aspect>` XML rules or Java annotations.
 
-### 3. Advice: Action Logic
+### 2.1. Fundamental Aspect Attributes
 
-*   **Types**: Supports 5 standard advice types (`com.aspectran.core.context.rule.type.AdviceType`):
-    *   `BEFORE`: Prior to Join Point execution.
-    *   `AFTER`: After successful execution.
-    *   `AROUND`: Wraps execution (defines both `BEFORE` and `AFTER`).
-    *   `THROWN`: On exception.
-    *   `FINALLY`: Always executed (regardless of success/failure).
+```xml
+<aspect id="sampleAspect" order="0" isolated="true" disabled="false">
+    ...
+</aspect>
+```
 
-*   **Execution Mechanism**: Advice logic is implemented as a method within a Bean. The invoker depends on the target:
-    1.  **Bean Method Advice**: Handled by `com.aspectran.core.component.bean.proxy.AbstractBeanProxy`. It intercepts the call, runs Advice, then invokes the original method.
-    2.  **Activity Advice**: Handled by `com.aspectran.core.activity.CoreActivity`. It invokes Advice at specific lifecycle moments (start, end, etc.).
+| Attribute | Description |
+| :--- | :--- |
+| **`id`** | Unique identifier of the Aspect. |
+| **`order`** | Defines the execution precedence among multiple aspects. Lower integer values denote higher priority (default: `Integer.MAX_VALUE`). If two aspects have identical order values, the one declared first takes precedence. |
+| **`isolated`** | Configures **Exception Isolation Mode (`true`/`false`)**. When `isolated="true"`, any unhandled exception occurring inside the aspect's advice will not halt the main request flow; an error log is recorded and the request proceeds normally. Ideal for non-critical cross-cutting concerns like statistics, monitoring, or external telemetry. |
+| **`disabled`** | When set to `true`, disables the aspect at runtime. |
 
-### 4. Aspect: Modularization
+### 2.2. Precision Joinpoint and Pointcut Control (`<joinpoint>`)
 
-*   **`<aspect>` Rule**: Defines the combination of Advice (Bean method) and Pointcut. This encapsulates cross-cutting concerns into a single reusable module.
+The `<joinpoint>` element precisely specifies where and when advice should be triggered.
 
-### 5. Weaving: Selective Dynamic Proxying
+```xml
+<joinpoint>
+    methods: [
+        GET
+        POST
+    ]
+    headers: [
+        "Accept=text/html"
+        "Origin"
+    ]
+    pointcut: {
+        type: wildcard
+        +: /user/**@userService^get*
+        +: /order/**
+        -: /order/temp-*
+    }
+</joinpoint>
+```
 
-Aspectran uses a **runtime Dynamic Proxy** mechanism based on `AbstractBeanProxy`, optimized for performance.
+#### a. Pointcut Expression Structure
+Pointcuts are defined in APON format and follow this pattern:
 
-*   **Zero Overhead for Non-Targeted Methods**:
-    *   The proxy performs AOP logic **only if the method is annotated with `@Advisable`**.
-    *   Methods without this annotation bypass all AOP processing (including Pointcut matching) and immediately invoke the original method, **eliminating unnecessary proxy overhead**.
+$$\text{transletPattern}[\text{@beanOrClassPattern}][\text{^methodNamePattern}]$$
 
-*   **Proxy Generation**:
-    *   **Javassist (Default)**: Flexible proxy creation for classes and interfaces (`JavassistProxyBean`).
-    *   **JDK Dynamic Proxy**: Available for Beans implementing interfaces (`JdkDynamicProxyBean`).
+* **Translet Pattern** (Pre-`@`): Matches target Translet URI/name patterns (e.g., `/user/**`, `/api/*`).
+* **Bean/Class Pattern** (Post-`@`): Matches target Bean IDs or fully-qualified class names (e.g., `@userService`, `@com.mycompany.service.*`).
+* **Method Pattern** (Post-`^`): Matches target method names (e.g., `^get*`, `^execute`).
 
-### 6. Annotation Support
+*Pattern Examples:*
+* **Specific Bean method in a specific Translet**: `+: /user/list@userService^get*`
+* **Specific Bean method across all Translets**: `+: @orderService^process*` (Translet pattern omitted)
+* **Specific Translet itself (Activity Lifecycle Target)**: `+: /order/**` (Bean/Method patterns omitted)
 
-The `com.aspectran.core.component.bean.annotation` package allows full AOP configuration without XML.
+#### b. Include (`+:`) and Exclude (`-:`) Rules with Top-Down Evaluation
 
-*   `@Component`: Registers the class as a Bean via component scanning. An Aspect class must also have `@Component` (along with `@Aspect`) to be detected.
-    *   If used alone on an Aspect, it registers as an implicit Advice Bean without a specific ID.
-*   `@Bean`: Used with `@Component` to assign an explicit ID to the Advice Bean (e.g., `@Bean("myAdvice")`).
-*   `@Aspect`: Marks a Bean as an Aspect. Attributes: `id`, `order`.
-*   `@Joinpoint`: Defines the Pointcut.
-*   `@Before`, `@After`, `@Around`, `@Finally`, `@ExceptionThrown`: Maps methods to Advice types.
-*   `@Advisable`: Explicitly marks a method for AOP interception.
-*   `@Settings`: Injects values into the current `Activity` context.
+Aspectran evaluates pointcut rules sequentially in **top-down declaration order**:
 
-### 7. Practical Example: Declarative Transactions
+* **`+:` (Include)**: Includes matched targets into the AOP execution scope.
+* **`-:` (Exclude)**: Excludes matched targets from the AOP execution scope.
 
-AOP is essential for separating transaction logic (begin, commit, rollback) from business logic. Below is a comparison of Annotation vs. XML configuration for MyBatis transactions.
+> **💡 Note (Order-based Granular Control):**
+> You can easily define complex filtering by including a broad range at the top (`+:`) and excluding specific exceptions underneath (`-:`).
 
-#### 1. Annotation-based Configuration
+**Wildcard Pointcut Example (`type: wildcard`):**
+```xml
+<joinpoint>
+    pointcut: {
+        type: wildcard
+        +: /api/**                     # 1. Include all endpoints under /api/
+        -: /api/auth/login             # 2. Exclude login endpoint from auth check
+        -: /api/health-check           # 3. Exclude health check endpoint
+        +: /admin/**@adminService^*    # 4. Include adminService methods under /admin/
+        -: /admin/**@adminService^get* # 5. Exclude read-only methods starting with 'get'
+    }
+</joinpoint>
+```
 
-Define an Aspect extending `SqlSessionAdvice`.
+**Regular Expression Pointcut Example (`type: regexp`):**
+When using regular expressions, separate `include` and `exclude` blocks allow strict regex matching.
+```xml
+<joinpoint>
+    pointcut: {
+        type: regexp
+        include: {
+            translet: "^/api/v[1-9]/.*"
+            bean: "^(user|order)Service$"
+            method: "^(create|update|delete).*"
+        }
+        exclude: {
+            translet: "^/api/v.*/temp-.*"
+            bean: "^.*TestBean$"
+        }
+    }
+</joinpoint>
+```
 
-**`SimpleTxAspect.java`**:
+#### c. Request Method (`methods`) Filtering
+Restricts aspect execution to specific HTTP request methods such as `GET`, `POST`, `PUT`, `DELETE`, or `PATCH`.
+
+#### d. Request Header (`headers`) Filtering
+Controls aspect execution based on client request headers:
+* **Header Presence**: `"Origin"` (Matches if the header exists)
+* **Exact Value Matching**: `"X-Requested-With=XMLHttpRequest"` (Matches if the header equals the value)
+* **Negative Comparison**: `"Accept!=application/json"` (Matches if the header does not contain the value)
+* **Complex Media Type Matching (Web Environment)**: Analyzes complex browser `Accept` headers (e.g., `text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8`) with quality factors (q-values) to accurately determine if it is an HTML page request (`"Accept=text/html"`).
+
+### 2.3. Settings Context Injection (`<settings>`)
+
+The `<settings>` element injects configuration parameters directly into the matched Translet's `Activity` context, avoiding redundant per-Translet declarations.
+
+```xml
+<aspect id="webTransletSettings">
+    <joinpoint>
+        pointcut: {
+            +: /**
+        }
+    </joinpoint>
+    <settings>
+        <setting name="characterEncoding" value="utf-8"/>
+        <setting name="viewDispatcher" value="thymeleafViewDispatcher"/>
+        <setting name="proxyProtocolAware" value="true"/>
+    </settings>
+</aspect>
+```
+
+* **`characterEncoding`**: Sets the default request/response character encoding.
+* **`viewDispatcher`**: Assigns the default `ViewDispatcher` bean for the matching scope.
+* **`proxyProtocolAware`**: Enables parsing client IPs/ports behind reverse proxies (Nginx/HAProxy).
+
+### 2.4. Advice Types and Composition (`<advice>`)
+
+Advice defines the concrete logic executed at a join point. Aspectran supports 5 standard advice types:
+
+| Advice Type | Execution Timing | Primary Use Cases |
+| :--- | :--- | :--- |
+| **`before`** | Prior to join point execution | Input validation, security verification, response header injection |
+| **`after`** | After successful join point execution | Result data enrichment, audit logging |
+| **`around`** | Surrounds join point execution | Execution profiling, transaction boundaries (begin & commit) |
+| **`thrown`** | Upon exception | Error logging, transaction rollback, alerting |
+| **`finally`** | Always executed at the end | Resource cleanup, session cleanup, ThreadLocal clearing |
+
+Inside `<advice>`, you can configure bean method invocations (`<invoke>`), action routines (`<action>`), and **declarative response header injection (`<headers>`)**:
+
+```xml
+<advice bean="securityAdvice">
+    <before>
+        <!-- Declarative response header injection -->
+        <headers>
+            <item name="X-Frame-Options">SAMEORIGIN</item>
+            <item name="X-Content-Type-Options">nosniff</item>
+            <item name="X-XSS-Protection">1; mode=block</item>
+        </headers>
+        <!-- Advice bean method execution -->
+        <invoke method="checkAuthentication"/>
+    </before>
+</advice>
+```
+
+### 2.5. Global Exception Handling (`<exception>`)
+
+Defining an `<exception>` element within an aspect allows catching specific exceptions globally and mapping them to error view pages or structured RESTful JSON responses.
+
+```xml
+<aspect id="globalExceptionAspect">
+    <joinpoint>
+        pointcut: {
+            +: /**
+        }
+    </joinpoint>
+    <exception>
+        <!-- Maps specific exception to a dedicated error page -->
+        <thrown type="com.mycompany.common.exception.UserNotFoundException">
+            <dispatch name="error/user-not-found" contentType="text/html" encoding="UTF-8"/>
+        </thrown>
+        <!-- Generic fallback for unhandled exceptions -->
+        <thrown type="java.lang.Throwable">
+            <action bean="errorLogger" method="logError"/>
+            <dispatch name="error/500" contentType="text/html" encoding="UTF-8"/>
+        </thrown>
+    </exception>
+</aspect>
+```
+
+## 3. Annotation-Based AOP Configuration
+
+Aspectran allows full AOP configuration using pure Java classes and annotations without XML.
+
+### 3.1. Core AOP Annotations
+
+| Annotation | Description | Key Attributes |
+| :--- | :--- | :--- |
+| **`@Aspect`** | Declares a class as an Aspect (used alongside `@Component`). | `id`, `order`, `isolated`, `disabled` |
+| **`@Joinpoint`** | Configures pointcut matching criteria. | `pointcut`, `target`, `methods`, `headers` |
+| **`@Before`** | Designates a Before advice method. | - |
+| **`@After`** | Designates an After advice method. | - |
+| **`@Around`** | Designates an Around advice method. | - |
+| **`@Finally`** | Designates a Finally advice method. | - |
+| **`@ExceptionThrown`** | Designates an Exception advice method. | `value` (Target exception class) |
+| **`@Settings`** | Injects settings into the Activity context. | `name`, `value` |
+| **`@Advisable`** | Marks a bean method as a target for Bean Proxy AOP. | - |
+
+### 3.2. Annotation-Based Aspect Implementation Example
+
 ```java
-import com.aspectran.core.component.bean.annotation.*;
-import com.aspectran.core.context.rule.type.ScopeType;
-import com.aspectran.mybatis.SqlSessionAdvice;
-import org.apache.ibatis.session.SqlSessionFactory;
+package com.aspectran.demo.aspect;
+
+import com.aspectran.core.activity.Activity;
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.After;
+import com.aspectran.core.component.bean.annotation.Aspect;
+import com.aspectran.core.component.bean.annotation.Before;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.ExceptionThrown;
+import com.aspectran.core.component.bean.annotation.Finally;
+import com.aspectran.core.component.bean.annotation.Joinpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
-@Bean(id = "simpleTxAspect", lazyDestroy = true)
-@Scope(ScopeType.PROTOTYPE)
-@Aspect(order = 0)
-@Joinpoint(pointcut = "+: **@simpleSqlSession")
-public class SimpleTxAspect extends SqlSessionAdvice {
-
-    @Autowired
-    public SimpleTxAspect(SqlSessionFactory sqlSessionFactory) {
-        super(sqlSessionFactory);
+@Aspect(id = "loggingAspect", order = 1, isolated = true)
+@Joinpoint(
+    pointcut = {
+        "+: /api/**",
+        "-: /api/health-check"
     }
+)
+public class LoggingAspect {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
     @Before
-    public void open() { super.open(); }
+    public void beforeRequest(Translet translet) {
+        logger.info("[Request Start] {} {}", translet.getRequestMethod(), translet.getRequestName());
+    }
 
     @After
-    public void commit() { super.commit(); }
+    public void afterRequest(Translet translet) {
+        logger.info("[Request Success] {}", translet.getRequestName());
+    }
+
+    @ExceptionThrown(Exception.class)
+    public void onError(Translet translet, Exception e) {
+        logger.error("[Request Error] {} - {}", translet.getRequestName(), e.getMessage(), e);
+    }
 
     @Finally
-    public void close() { super.close(); }
+    public void onFinally(Activity activity) {
+        // Resource cleanup logic
+    }
 }
 ```
-*   **Target**: Applies to all public methods of the bean with ID `simpleSqlSession`.
 
-#### 2. XML-based Configuration
+## 4. Production Best Practice Patterns
 
-Separates the Advice Bean and Aspect definition.
+### Pattern 1: Global Web Security and Environment Auto-Injection
 
-**`mybatis-context.xml`**:
+Automatically injects security response headers (CSP, X-Frame-Options) and default `ViewDispatcher` settings for all browser HTML requests.
+
 ```xml
-<!-- 1. Advice Bean -->
+<aspectran>
+    <!-- 1. Register View Dispatcher Bean -->
+    <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
+        <argument>#{thymeleafEngine}</argument>
+    </bean>
+
+    <!-- 2. Global Web Translet Settings Aspect -->
+    <aspect id="webTransletSettings">
+        <joinpoint>
+            pointcut: {
+                +: /**
+            }
+        </joinpoint>
+        <settings>
+            <setting name="characterEncoding" value="utf-8"/>
+            <setting name="viewDispatcher" value="thymeleafViewDispatcher"/>
+        </settings>
+        <advice>
+            <before>
+                <headers>
+                    <item name="X-Frame-Options">SAMEORIGIN</item>
+                    <item name="X-Content-Type-Options">nosniff</item>
+                    <item name="X-XSS-Protection">1; mode=block</item>
+                    <item name="Referrer-Policy">strict-origin-when-cross-origin</item>
+                </headers>
+            </before>
+        </advice>
+    </aspect>
+
+    <!-- 3. HTML Browser Request Security Aspect -->
+    <aspect id="htmlWebSecuritySettings">
+        <joinpoint>
+            headers: [
+                "Accept=text/html"
+            ]
+            pointcut: {
+                +: /**
+            }
+        </joinpoint>
+        <advice>
+            <before>
+                <headers>
+                    <item name="Content-Type">text/html; charset=utf-8</item>
+                    <item name="Content-Security-Policy">default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com;</item>
+                </headers>
+            </before>
+        </advice>
+    </aspect>
+</aspectran>
+```
+
+### Pattern 2: Declarative Transaction Management (`SqlSessionAdvice` + `@Advisable`)
+
+Completely decouples MyBatis `SqlSession` lifecycle management (open, commit, rollback, close) from business logic.
+
+**1. Transaction Aspect Configuration (`mybatis-context.xml`):**
+```xml
+<!-- 1. SqlSessionAdvice Bean Definition -->
 <bean id="sqlSessionTxAdvice" class="com.aspectran.mybatis.SqlSessionAdvice" scope="prototype">
     <argument>#{sqlSessionFactory}</argument>
 </bean>
 
-<!-- 2. Aspect Definition -->
-<aspect id="simpleTxAspect" order="0">
+<!-- 2. Transaction Aspect Definition -->
+<aspect id="txAspect" order="0">
     <joinpoint>
         pointcut: {
             +: **@simpleSqlSession
@@ -187,24 +385,7 @@ Separates the Advice Bean and Aspect definition.
 </aspect>
 ```
 
-#### 3. Service Layer Usage
-
-**1. Define the Transactional Resource**
-The `SimpleSqlSession` bean connects to the Aspect via its constructor or ID matching.
-
-```java
-@Component
-@Bean(id = "simpleSqlSession")
-public class SimpleSqlSession extends DefaultSqlSessionAgent {
-    public SimpleSqlSession() {
-        super("simpleTxAspect"); // Links to the Aspect ID
-    }
-}
-```
-
-**2. Apply in Business Logic**
-Inject `SimpleSqlSession` into your service.
-
+**2. Transaction Usage in the Service Layer:**
 ```java
 @Component
 public class OrderService {
@@ -216,25 +397,57 @@ public class OrderService {
         this.sqlSession = sqlSession;
     }
 
-    public void createOrder(Order order) {
-        // Direct database operation.
-        // The 'simpleTxAspect' automatically handles the transaction lifecycle around this call.
+    public void processOrder(Order order) {
+        // Calling sqlSession methods automatically triggers txAspect to handle the transaction
         sqlSession.insert("app.demo.mapper.OrderMapper.insertOrder", order);
+        sqlSession.update("app.demo.mapper.ItemMapper.updateStock", order.getItemId());
     }
 }
 ```
 
-*   **How it works**:
-    1.  When `OrderService` calls `sqlSession.insert(...)`, it invokes the method on the injected `SimpleSqlSession` bean.
-    2.  This triggers the `simpleTxAspect` because the bean ID (`simpleSqlSession`) matches the Pointcut (`**: @simpleSqlSession`).
-    3.  The `@Before` advice opens the transaction.
-    4.  The database operation executes.
-    5.  Finally, `@After` commits the transaction, and `@Finally` closes the session.
+### Pattern 3: RESTful API Performance Profiling (Around Advice)
 
-By leveraging AOP, business logic is perfectly separated from transaction management code, greatly improving maintainability.
+Monitors slow API requests using an Around advice with exception isolation.
 
-### Summary
+```java
+package com.aspectran.demo.aspect;
 
-1.  **Lifecycle Integration**: Uniquely utilizes **Translet/Activity** lifecycles as Join Points.
-2.  **High Performance**: Selective proxying via `@Advisable` minimizes overhead.
-3.  **Flexibility**: Supports both XML and Annotation styles for diverse architectural needs.
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.Around;
+import com.aspectran.core.component.bean.annotation.Aspect;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Joinpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Component
+@Aspect(id = "profilingAspect", isolated = true)
+@Joinpoint(pointcut = "+: /api/**")
+public class ProfilingAspect {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProfilingAspect.class);
+
+    @Around
+    public Object profile(Translet translet) throws Throwable {
+        long startTime = System.currentTimeMillis();
+        try {
+            // Proceed with the request flow
+            return null;
+        } finally {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            if (elapsedTime > 500) {
+                logger.warn("[SLOW QUERY/API] {} took {} ms", translet.getRequestName(), elapsedTime);
+            }
+        }
+    }
+}
+```
+
+## 5. Conclusion
+
+Aspectran AOP replaces bulky proxy configurations with two finely-tuned mechanisms: **Framework Core Lifecycle Interception (`Activity`)** and **Selective Bean Proxying (`@Advisable`)**.
+
+1. **Activity Lifecycle AOP**: Provides zero-overhead declarative control over global environment settings, security headers, authentication, and exception routing.
+2. **Bean Proxy AOP**: Selectively applies dynamic proxies only where necessary, efficiently managing transactions and business method profiling.
+
+This dual-pillar architecture empowers developers to build clean, maintainable, and high-performance enterprise applications with minimal configuration overhead.
