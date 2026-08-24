@@ -74,7 +74,7 @@ Aspectran에서 CORS를 설정하려면 일반적으로 다음 세 가지 요소
   </advice>
   <exception>
     <thrown type="com.aspectran.web.support.cors.CorsException">
-      <transform format="transform/text">
+      <transform format="text">
         <template>
           @{CORS.HTTP_STATUS_CODE}: @{CORS.HTTP_STATUS_TEXT}
         </template>
@@ -100,7 +100,7 @@ Aspectran에서 CORS를 설정하려면 일반적으로 다음 세 가지 요소
   <action bean="corsProcessor" method="processPreflightRequest"/>
   <exception>
     <thrown type="com.aspectran.web.support.cors.CorsException">
-      <transform format="transform/text">
+      <transform format="text">
         <template>
           @{CORS.HTTP_STATUS_CODE}: @{CORS.HTTP_STATUS_TEXT}
         </template>

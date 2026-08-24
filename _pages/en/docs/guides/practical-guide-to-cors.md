@@ -74,7 +74,7 @@ Next, configure an aspect to check the CORS policy when an actual resource reque
   </advice>
   <exception>
     <thrown type="com.aspectran.web.support.cors.CorsException">
-      <transform format="transform/text">
+      <transform format="text">
         <template>
           @{CORS.HTTP_STATUS_CODE}: @{CORS.HTTP_STATUS_TEXT}
         </template>
@@ -100,7 +100,7 @@ For complex requests (e.g., using `PUT` or `DELETE` methods), the browser sends 
   <action bean="corsProcessor" method="processPreflightRequest"/>
   <exception>
     <thrown type="com.aspectran.web.support.cors.CorsException">
-      <transform format="transform/text">
+      <transform format="text">
         <template>
           @{CORS.HTTP_STATUS_CODE}: @{CORS.HTTP_STATUS_TEXT}
         </template>
