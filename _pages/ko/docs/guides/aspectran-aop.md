@@ -15,6 +15,7 @@ Aspectran AOP는 목적과 적용 대상에 따라 두 가지 차원의 Join Poi
 | :--- | :--- | :--- | :--- |
 | **Activity 생명주기 AOP**<br/>*(Translet Lifecycle)* | `Activity` (Translet 요청 처리 전체 흐름) | 프록시가 전혀 개입하지 않으며, `CoreActivity` 엔진이 생명주기 단계에 따라 Aspect를 직접 실행 (Non-Proxy Core Interception) | 웹 보안 응답 헤더 주입, 전역 인코딩/뷰 디스패처 설정 주입, 요청 전/후 처리, 인증/인가, 글로벌 예외 처리 |
 | **Bean 프록시 AOP**<br/>*(Method Interception)* | Bean의 메서드 실행 (`JoinpointTargetType.METHOD`) | 런타임 동적 프록시(`AbstractBeanProxy`, Javassist/JDK)가 `@Advisable` 어노테이션이 선언된 메서드 호출을 가로채 Advice 실행 | 선언적 데이터베이스 트랜잭션, 비즈니스 메서드 실행 시간 측정, 메서드 파라미터 감사(Audit) 로깅 |
+{: .text-nowrap}
 
 ### 1.1. Activity 생명주기 AOP (Non-Proxy Core Interception)
 
@@ -27,6 +28,7 @@ Aspectran에서 클라이언트의 요청(Web, Daemon, Shell)은 하나의 `Acti
 | **3단계** | **After Advice** | 정상 실행 완료 후 결과 데이터 후가공, 감사(Audit) 로그 기록 |
 | **4단계** | **Exception Handling (`<exception>`)** | 예외 발생 시 에러 화면(`<dispatch>`) 또는 JSON(`<transform>`) 에러 응답 매핑 |
 | **5단계** | **Finally Advice** | 성공/실패 여부와 무관하게 항상 마지막에 실행되어 리소스 및 ThreadLocal 정리 |
+{: .text-nowrap}
 
 * **오버헤드 제로**: 프록시 객체 생성이나 리플렉션 호출 없이 프레임워크 코어 흐름 내에서 직접 실행되므로 극도로 빠릅니다.
 * **구조적 흐름 제어**: 단순한 메서드 가로채기를 넘어, 현재 요청 컨텍스트(`Activity`)의 인코딩, 뷰 디스패처, 보안 헤더, 전역 예외 처리 화면을 선언적으로 주입하고 제어할 수 있습니다.
@@ -58,6 +60,7 @@ Aspectran의 AOP는 XML 설정 파일의 `<aspect>` 요소 또는 자바 어노�
 | **`order`** | 다중 Aspect 간의 실행 우선순위를 지정합니다. 정수 값이 작을수록 높은 우선순위를 가지며(기본값: `Integer.MAX_VALUE`), 동일한 `order`일 경우 먼저 정의된 Aspect가 우선 실행됩니다. |
 | **`isolated`** | **예외 격리 모드(`true`/`false`)**를 설정합니다. `isolated="true"`로 지정하면 해당 Aspect의 Advice 실행 중 예외가 발생하더라도 전체 요청 처리 흐름이 중단되지 않고 오류 로그만 기록한 후 정상 진행됩니다. 비즈니스 로직에 영향을 주지 않아야 하는 통계, 모니터링, 외부 알림 Aspect에 매우 유용합니다. |
 | **`disabled`** | `true`로 설정하면 해당 Aspect를 런타임에 비활성화합니다. |
+{: .text-nowrap}
 
 ### 2.2. Joinpoint 및 Pointcut 정밀 제어 (`<joinpoint>`)
 

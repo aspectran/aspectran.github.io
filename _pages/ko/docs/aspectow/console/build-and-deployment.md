@@ -18,7 +18,7 @@ Aspectow Console의 **Build & Deployment** 모듈은 분산/클러스터 환경�
 ```mermaid
 graph TD
     User["운영자 (Browser UI)"] -->|WebSocket / HTTP| Gateway["Console Gateway Node"]
-    
+
     subgraph "Console Control Plane"
         Gateway --> RBC["RemoteBuildDeployManager"]
         RBC --> BAS["BuildAuditService (RDBMS 이력 기록)"]
@@ -29,10 +29,10 @@ graph TD
         RBB -->|Redis Channel Broadcast| Node1["Service Node 1<br/>(LocalScriptRunner)"]
         RBB -->|Redis Channel Broadcast| Node2["Service Node 2<br/>(LocalScriptRunner)"]
         RBB -->|Redis Channel Broadcast| Node3["Service Node 3<br/>(LocalScriptRunner)"]
-        
+
         Node1 --> LSR1["LocalScriptRunner<br/>(5-pull_build_deploy.sh)"]
         LSR1 --> DRR1["DetachedRestartRunner<br/>(nohup daemon.sh restart)"]
-        
+
         Node2 --> LSR2["LocalScriptRunner<br/>(5-pull_build_deploy.sh)"]
         LSR2 --> DRR2["DetachedRestartRunner<br/>(nohup daemon.sh restart)"]
     end
@@ -50,8 +50,6 @@ graph TD
 *   **`BuildDeployBridge` (`WebsocketBuildDeployBridge` & `BuildMessageBridgeHandler`)**: Redis Pub/Sub 채널과 가상 웹소켓 중계를 활용하여 다중 노드에서 동시 다발적으로 쏟아지는 터미널 로그를 단일 콘솔 화면으로 지연 없이 실시간 브로드캐스팅합니다.
 *   **`BuildAuditService`**: 모든 빌드/배포 실행 이력, 실행자 계정, 타겟 노드, Git 브랜치, 변경 전/후 Git 커밋 해시(Commit SHA), 실행 시간, 종료 코드(Exit Code) 및 전체 터미널 로그를 데이터베이스에 영구 보존합니다.
 
----
-
 ## 2. 배포 대상(Target Scope) 선택 전략
 
 Aspectow Console의 배포 화면 상단 **Target Node** 선택기를 통해 배포가 적용될 범위를 정밀하게 지정할 수 있습니다.
@@ -62,8 +60,6 @@ Aspectow Console의 배포 화면 상단 **Target Node** 선택기를 통해 배
 | **All Nodes in Cluster** | 콘솔 노드를 포함한 클러스터 전체 노드 | 프레임워크 코어 버전 업그레이드, 전사 공통 설정 전파 등 클러스터 전면 배포 |
 | **Specific Group** | 지정된 논리적 그룹(`groupId`)에 속한 노드군 (예: `api-group`, `batch-group`) | 특정 서비스 역할을 수행하는 서버군만 선별하여 배포할 때 |
 | **Individual Node** | 클러스터 내 지정된 단일 서버 노드 | 카나리(Canary) 릴리즈, 신규 기능 단일 노드 사전 검증, 특정 장애 노드 복구 |
-
----
 
 ## 3. 표준 배포 파이프라인 및 스크립트 구성
 
@@ -93,12 +89,11 @@ Aspectow는 소스 코드 동기화부터 컴파일, 설정 배포, 웹 애플�
 | **`7-pull_deploy_config_only.sh`** | 🛠️ Selective Deploy | **Pull & Deploy Config**: 최신 Git 변경 사항을 가져온 후 설정 파일(`app/config`)만 선별 배포합니다. |
 | **`8-pull_deploy_webapps_only.sh`** | 🛠️ Selective Deploy | **Pull & Deploy Webapps**: 최신 Git 변경 사항을 가져온 후 웹 애플리케이션(`app/webapps`)만 선별 배포합니다. |
 | **`9-pull_deploy_config_webapps_only.sh`** | 🛠️ Selective Deploy | **Pull & Deploy Config + Webapps**: 컴파일 없이 최신 소스 동기화 후 설정과 웹앱 파일만 함께 배포합니다. |
+{: .text-nowrap}
 
 > **Tip (Pipeline Flow Preview)**: Console 화면에서 스크립트를 선택하면 하단에 **Pipeline Flow** 카드가 활성화되어 해당 스크립트가 내부적으로 거치는 단계(예: `1. Git Pull` → `2. Maven Build` → `3. Config Deploy` → `4. Webapps Deploy`)를 시각적 배지로 미리 확인할 수 있습니다.
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-build-pipeline-preview.png" alt="Script Selection & Pipeline Flow Preview" %}
-
----
 
 ## 4. Git Branch 및 Release Tag 지정 배포 전략
 
@@ -128,8 +123,6 @@ Aspectow의 배포 스크립트는 작업 트리의 손상을 방지하기 위�
 3.  **오류 사전 차단**: 사용자가 오타 등으로 존재하지 않는 브랜치나 태그명을 입력한 경우, 기존 로컬 작업 트리를 전혀 변경하지 않고 즉시 스크립트를 중단(`exit 1`)하며 `[ERROR] Branch, tag, or commit '...' not found in repository.` 메시지를 출력합니다.
 4.  **UI 즉시 피드백**: Console 웹 화면에도 즉시 `FAILED` 상태와 에러 요약이 빨간색 뱃지로 표시되어 잘못된 배포 시도로 인한 시스템 장애를 사전에 방지합니다.
 
----
-
 ## 5. 실시간 인터랙티브 웹 터미널 활용
 
 Aspectow Console은 원격 노드에서 실행되는 쉘 스크립트의 표준 출력(StdOut)과 표준 에러(StdErr)를 웹소켓을 통해 실시간으로 스트리밍하는 인터랙티브 다크 터미널을 제공합니다.
@@ -158,8 +151,6 @@ Aspectow Console은 원격 노드에서 실행되는 쉘 스크립트의 표준 
 *   **Clear Terminal**: 현재 탭의 화면 출력 내용을 깨끗하게 비웁니다.
 *   **Download Logs**: 현재 탭에 출력된 전체 터미널 텍스트 로그를 `build-{nodeId}-{execId}.log` 파일로 로컬 PC에 즉시 다운로드합니다.
 *   **Abort / Cancel (실행 취소)**: 실행 중인 배포 작업을 강제로 중단해야 할 경우 `Abort / Cancel` 버튼을 클릭하여 원격 노드의 실행 프로세스에 안전한 취소 시그널을 전송합니다.
-
----
 
 ## 6. 프로세스 독립적 안전 재시작 메커니즘 (Detached Server Restart)
 
@@ -197,8 +188,6 @@ Aspectow Console은 이를 완벽히 해결하기 위해 **[`DetachedRestartRunn
 3.  **I/O 디스크립터 정리 (Null Device Isolation)**:
     - 자식 프로세스의 표준 입력, 표준 출력, 표준 에러를 `/dev/null`(Windows의 경우 `NUL`)로 리다이렉션하여, 부모 프로세스의 입출력 파이프가 닫혀 자식 프로세스가 `SIGPIPE`나 입출력 블로킹으로 중단되는 현상을 방지합니다.
 
----
-
 ## 7. 다중 노드 빌드 락 및 동시성 제어 (Build Concurrency Control)
 
 단일 머신에서 여러 인스턴스(멀티 노드)를 구동 중이거나 공유 파일 시스템을 사용하는 환경에서, 클러스터 전체 노드(`All Nodes`)를 대상으로 동시에 풀빌드(`5-pull_build_deploy.sh`) 명령을 내리면 동일한 `.build` 작업 디렉터리에 여러 프로세스가 동시에 접근하여 `index.lock` 충돌이나 Maven 파일 삭제 실패 에러가 발생할 수 있습니다.
@@ -212,8 +201,6 @@ Aspectow는 이를 방지하기 위해 **원자적 빌드 락 및 빌드 결과�
 3.  **중복 빌드 자동 스킵 및 산출물 재사용 (Build Reuse)**:
     - 선행 노드가 Maven 패키징을 성공(`BUILD SUCCESS`)하면, 대기 중이던 노드들은 불필요한 중복 컴파일을 건너뛰고(`Skipping redundant Maven compilation.`) 직전 빌드 산출물을 그대로 가져와 즉시 배포 단계로 진입합니다.
     - 이를 통해 파일 경합 에러가 원천 방지되며, 클러스터 전체 배포 소요 시간이 획기적으로 단축됩니다.
-
----
 
 ## 8. 장애 진단 및 실시간 데몬 로그 뷰어 (Troubleshooting)
 
@@ -232,8 +219,7 @@ Aspectow는 이를 방지하기 위해 **원자적 빌드 락 및 빌드 결과�
 | `[ERROR] Maven build failed with exit code 1` | 소스 코드 컴파일 오류, 단위 테스트 실패 또는 의존성 다운로드 실패 | Console 터미널의 에러 로그를 확인하거나, 해당 노드의 `.build/[APP_NAME]` 경로에서 `mvn clean package`를 직접 실행하여 상세 원인을 파악합니다. |
 | `[BUILD TIMEOUT] Script execution timed out` | 대용량 의존성 다운로드 지연 등으로 설정된 타임아웃 초과 | 네트워크 상태를 점검하고, 스크립트를 재실행하거나 `LocalScriptRunner`의 타임아웃 설정을 조정합니다. |
 | 배포 후 서버 응답 없음 (`DEAD` 상태) | 포트 충돌, DB 연결 실패, 잘못된 프로퍼티 설정으로 인한 기동 실패 | 터미널 상단의 **Daemon Logs → daemon-stderr.log**를 조회하여 JVM 부팅 에러 스택트레이스를 분석합니다. |
-
----
+{: .text-nowrap}
 
 ## 9. 규정 준수 빌드 감사 이력 (Build Audit Trail & Compliance)
 
@@ -291,8 +277,6 @@ Aspectow Console은 엔터프라이즈 보안 및 규정 준수(Compliance) 요�
     *   데이터베이스에 영구 보존된 압축 로그 스트림을 실시간 복원하여 가독성 높은 다크 테마 터미널 화면으로 출력합니다.
 *   **전체 로그 다운로드 (Download Full Log)**:
     *   하단의 `Download Full Log` 버튼을 클릭하여 당시의 전체 콘솔 텍스트 로그를 로컬 PC로 즉시 내려받아 상세 장애 분석 및 아카이빙에 활용할 수 있습니다.
-
----
 
 ## 10. 보안 및 역할 기반 권한 제어 (RBAC)
 

@@ -18,7 +18,7 @@ In traditional enterprise environments, deploying source updates or modifying co
 ```mermaid
 graph TD
     User["Operator (Browser UI)"] -->|WebSocket / HTTP| Gateway["Console Gateway Node"]
-    
+
     subgraph "Console Control Plane"
         Gateway --> RBC["RemoteBuildDeployManager"]
         RBC --> BAS["BuildAuditService (RDBMS Audit Trail)"]
@@ -29,10 +29,10 @@ graph TD
         RBB -->|Redis Channel Broadcast| Node1["Service Node 1<br/>(LocalScriptRunner)"]
         RBB -->|Redis Channel Broadcast| Node2["Service Node 2<br/>(LocalScriptRunner)"]
         RBB -->|Redis Channel Broadcast| Node3["Service Node 3<br/>(LocalScriptRunner)"]
-        
+
         Node1 --> LSR1["LocalScriptRunner<br/>(5-pull_build_deploy.sh)"]
         LSR1 --> DRR1["DetachedRestartRunner<br/>(nohup daemon.sh restart)"]
-        
+
         Node2 --> LSR2["LocalScriptRunner<br/>(5-pull_build_deploy.sh)"]
         LSR2 --> DRR2["DetachedRestartRunner<br/>(nohup daemon.sh restart)"]
     end
@@ -50,8 +50,6 @@ graph TD
 *   **`BuildDeployBridge` (`WebsocketBuildDeployBridge` & `BuildMessageBridgeHandler`)**: Leverages Redis Pub/Sub channels and virtualized WebSocket relays to stream concurrent terminal outputs from multiple nodes directly to a single browser console without network latency.
 *   **`BuildAuditService`**: Permanently records all execution metadata—including operator account, target nodes, Git branch, before/after commit hashes, duration, exit codes, and full terminal log transcripts—into RDBMS storage.
 
----
-
 ## 2. Target Scope Selection Strategy
 
 The **Target Node** selector at the top of the Build & Deployment console allows administrators to precisely designate the deployment scope.
@@ -62,8 +60,7 @@ The **Target Node** selector at the top of the Build & Deployment console allows
 | **All Nodes in Cluster** | All active nodes including console nodes | Full-cluster upgrades (e.g., framework version updates, global configuration propagation) |
 | **Specific Group** | Nodes belonging to a designated logical group (`groupId`, e.g., `api-group`, `batch-group`) | Targeted deployments to specific functional server groups |
 | **Individual Node** | A single specified cluster node | Canary releases, single-node pre-release verification, or recovering a faulty node |
-
----
+{: .text-nowrap}
 
 ## 3. Standard Deployment Pipelines & Script Specifications
 
@@ -128,8 +125,6 @@ Aspectow deployment scripts incorporate robust reference verification logic to p
 3.  **Proactive Failure Guard**: If an operator enters an invalid branch or tag name (e.g., due to a typo), the script immediately aborts (`exit 1`) with an error message (`[ERROR] Branch, tag, or commit '...' not found in repository.`) without altering the local working tree.
 4.  **Instant UI Feedback**: The Console UI displays a `FAILED` badge and error summary immediately, protecting system stability from erroneous deployment attempts.
 
----
-
 ## 5. Interactive Real-Time Web Terminal
 
 Aspectow Console provides an interactive dark-themed terminal that streams standard output (StdOut) and standard error (StdErr) in real time over WebSockets.
@@ -158,8 +153,6 @@ The **Current Execution** card on the left panel dynamically computes and displa
 *   **Clear Terminal**: Clears all current log text from the active tab.
 *   **Download Logs**: Exports the complete log text of the current tab into a `build-{nodeId}-{execId}.log` text file.
 *   **Abort / Cancel**: Sends an immediate abort signal to the running script process on target nodes to safely cancel in-flight deployments.
-
----
 
 ## 6. Process-Independent Safe Server Restart (Detached Restart)
 
@@ -197,8 +190,6 @@ Aspectow Console resolves this via **[`DetachedRestartRunner`](file:///home/aspe
 3.  **I/O Null Device Redirection**:
     - Standard input, output, and error streams of the child process are redirected to `/dev/null` (or `NUL` on Windows), preventing `SIGPIPE` crashes when the parent JVM closes its pipe descriptors.
 
----
-
 ## 7. Multi-Node Build Lock & Concurrency Control
 
 When deploying to multiple instances hosted on the same machine or sharing a common filesystem, executing simultaneous full builds (`5-pull_build_deploy.sh`) could cause concurrent access collisions on the `.build` directory (such as Git `index.lock` errors or Maven target deletion failures).
@@ -212,8 +203,6 @@ Aspectow prevents this using **atomic file locking and build artifact reuse**:
 3.  **Automatic Build Skip & Artifact Reuse (Build Reuse)**:
     - Once the leading node completes packaging (`BUILD SUCCESS`), waiting nodes **skip redundant Maven compilation (`Skipping redundant Maven compilation.`) and directly deploy the freshly compiled artifacts**.
     - This eliminates file lock collisions and drastically cuts total cluster deployment time.
-
----
 
 ## 8. Troubleshooting & Live Daemon Logs Viewer
 
@@ -232,8 +221,7 @@ If a build fails or a server does not recover after a restart, administrators ca
 | `[ERROR] Maven build failed with exit code 1` | Source compilation error, failed unit test, or dependency resolution failure | Check error logs in the terminal, or run `mvn clean package` directly inside `.build/[APP_NAME]` on the target node. |
 | `[BUILD TIMEOUT] Script execution timed out` | Execution exceeded timeout threshold (e.g., slow dependency downloads) | Check network connectivity or adjust the timeout settings in `LocalScriptRunner`. |
 | Node unresponsive / `DEAD` after deployment | Port collision, database connection failure, or invalid configuration | Select **Daemon Logs → daemon-stderr.log** from the terminal header to analyze the JVM startup stack trace. |
-
----
+{: .text-nowrap}
 
 ## 9. Compliance Build Audit Trail
 
@@ -291,8 +279,6 @@ Clicking the **Logs** button opens the full terminal log modal.
     *   Decompresses and reconstructs the full console output stream from database storage in a dark-themed terminal viewer.
 *   **Download Full Log**:
     *   Exports the raw terminal log text to a local file for offline debugging and long-term archiving.
-
----
 
 ## 10. Role-Based Access Control (RBAC) & Governance
 
