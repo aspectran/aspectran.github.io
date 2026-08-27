@@ -27,6 +27,7 @@ In Aspectran, incoming client requests (Web, Daemon, Shell) are executed by an `
 | **Stage 3** | **After Advice** | Performs post-processing on results, records audit logs |
 | **Stage 4** | **Exception Handling (`<exception>`)** | Catches exceptions and maps them to error view pages (`<dispatch>`) or RESTful JSON (`<transform>`) error responses |
 | **Stage 5** | **Finally Advice** | Always runs at the end regardless of success or failure to clean up resources and session states |
+{: .table-nowrap-1}
 
 * **Zero Overhead**: Directly executed within the framework core flow without proxy creation or reflective overhead, ensuring maximum throughput.
 * **Structural Flow Control**: Beyond simple method interception, it declaratively injects and manages request context (`Activity`) attributes such as encoding, view dispatchers, security headers, and global exception screens.
