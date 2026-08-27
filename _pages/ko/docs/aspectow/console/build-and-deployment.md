@@ -2,6 +2,7 @@
 title: Aspectow Console 빌드 및 배포 가이드
 teaser: Aspectow Console을 통해 분산 클러스터 전역에 걸쳐 Git 소스 동기화, Maven 빌드, 설정/웹앱 배포 및 프로세스 독립적 안전 재시작(Detached Restart)을 원격으로 오케스트레이션하고 감사 추적하는 포괄적인 가이드입니다.
 subheadline: Aspectow Console
+mermaid: true
 ---
 
 ## 1. 개요 및 원격 빌드·배포 아키텍처
