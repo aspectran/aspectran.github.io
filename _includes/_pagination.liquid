@@ -21,7 +21,7 @@
       {% endif %}
       <div class="flex-grow-1">
         <p>
-          {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% elsif post.teaser %}{{ post.teaser | strip_html | escape }}{% elsif post.excerpt %}{{ post.excerpt | strip_html | escape }}{% endif %}
+          {% if post.meta_description %}{{ post.meta_description | strip_html }}{% elsif post.teaser %}{{ post.teaser | strip_html }}{% elsif post.excerpt %}{{ post.excerpt | strip_html }}{% endif %}
           <a href="{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.messages[page.lang].read_more }}</small></a>
         </p>
       </div>
