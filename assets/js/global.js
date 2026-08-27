@@ -13,7 +13,13 @@ $(function () {
   }
 
   /* To apply Bootstrap table styles to tables created using Markdown in Jekyll */
-  $("article table").addClass("table table-striped table-bordered");
+  $("article table").each(function () {
+    const $table = $(this);
+    $table.addClass("table table-striped table-bordered");
+    if (!$table.parent().hasClass("table-responsive")) {
+      $table.wrap('<div class="table-responsive"></div>');
+    }
+  });
 
   // Theme logic
   const getStoredTheme = () => localStorage.getItem('theme');
