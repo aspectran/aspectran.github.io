@@ -72,6 +72,7 @@ Real-time web control console for centrally managing and observing Aspectran app
 
 *   [Aspectow Console Overview & Architecture](/en/docs/aspectow/console/)
 *   [Aspectow Console Feature & Screen Guide](/en/docs/aspectow/console/feature-guide/)
+*   [Aspectow Console Build & Deployment Guide](/en/docs/aspectow/console/build-and-deployment/)
 *   [Aspectow Console Configuration Guide](/en/docs/aspectow/console/configuration-guide/)
 *   [Aspectow Console Operational Security Architecture & Hardening Guide](/en/docs/aspectow/console/security-architecture/)
 

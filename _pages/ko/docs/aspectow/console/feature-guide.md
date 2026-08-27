@@ -57,27 +57,101 @@ Console에 로그인하면 처음 나타나는 중앙 제어판으로, 전체 �
 각 노드는 독립된 카드로 렌더링되며 다음 상세 정보들과 개별 액션 버튼을 제공합니다.
 *   **Node Title & ID Badge**: 노드의 이름과 고정폭 폰트로 표시된 고유 노드 ID.
 *   **Status Dot & Status Text**: 노드의 가동 상태를 색상 LED 점과 텍스트로 명확히 표시합니다. (초록색 `LIVE`: 정상 가동 중, 주황색 `PAUSED`/`STOPPING`: 일시 정지 또는 정지 중, 빨간색 `DEAD`: 연결 해제/다운)
+*   **Console 뱃지**: 해당 노드가 관리 콘솔 제어 평면(Control Plane) 역할을 수행 중인 경우 하늘색 `Console` 뱃지가 함께 표시됩니다.
 *   **Host Address & Service Port**: 노드의 호스트 IP 주소 및 서비스 포트 번호.
 *   **Node Group**: Gateway 클러스터 모드일 경우 해당 노드가 속한 노드 그룹명.
-*   **Commands 버튼**: 클릭 시 원격 명령 센터로 즉시 이동하며, 해당 노드가 타겟으로 자동 선택됩니다.
 *   **Metrics 버튼**: 클릭 시 해당 노드의 실시간 AppMon 모니터링 팝업 창이 새로 호출됩니다.
+*   **Commands 버튼**: 클릭 시 원격 명령 센터로 즉시 이동하며, 해당 노드가 타겟으로 자동 선택됩니다.
 *   **Actions 드롭다운 메뉴**:
     *   **Pause Node** (노드가 `LIVE` 상태일 때 표시): 노드의 트랜잭션 수신 및 실행을 잠시 일시 정지시킵니다.
     *   **Resume Node** (노드가 `PAUSED` 상태일 때 표시): 일시 정지되었던 노드를 다시 정상 가동 상태로 복원합니다.
-    *   **Restart Node**: 대상 노드 프로세스를 재시작합니다.
+    *   **Restart Service (Hot)**: JVM 프로세스를 중단하지 않고 `ActivityContext`를 부드럽게 재생성하여 애플리케이션 빈 규칙과 클래스를 핫 리로드(Hot Reload)합니다.
+    *   **Restart Server (Cold)**: OS 데몬/서비스 프로세스를 완전히 종료하고 JVM을 콜드 재기동(Cold Reboot)합니다. 재기동 명령 발송 후 백그라운드에서 `/cluster/build/health/{nodeId}`를 주기적으로 폴링하여 노드가 정상 복구(`LIVE`)될 때까지 상태를 자동으로 추적합니다.
+    *   **Audit Trail**: 빌드/배포 권한을 보유한 경우, 해당 노드의 빌드 및 배포 감사 이력 팝업 창(`cluster/build/audit/?nodeId=...`)을 즉시 호출합니다.
 
 #### Bulk Control (일괄 제어) 모달
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-cluster-nodes-bulk-control.png" alt="Cluster Nodes Bulk Control Modal" %}
 
 여러 노드를 다중 선택한 뒤 한 번의 클릭으로 일괄 제어 명령을 내릴 수 있습니다.
-*   **1. Select Target Nodes**: `Select All` / `Deselect All` 버튼을 통해 클러스터 내 모든 노드 또는 특정 그룹/노드 체크박스를 손쉽게 다중 선택 및 해제할 수 있습니다.
-*   **2. Action (제어 액션 선택)**:
-    *   **PAUSE (일시 정지)**: 선택된 노드들의 상태를 일괄적으로 PAUSE(일시 정지) 상태로 전환합니다.
-    *   **RESUME (재개)**: 일시 정지되어 있던 선택 노드들을 일괄적으로 RESUME(정상 가동) 상태로 복원합니다.
-    *   **RESTART (재시작)**: 선택된 노드들을 일괄적으로 재시작합니다.
+*   **1. Select Target Nodes**:
+    *   `Select All` / `Deselect All` 버튼을 통해 클러스터 내 모든 노드 또는 특정 그룹 체크박스를 손쉽게 다중 선택 및 해제할 수 있습니다.
+    *   **Exclude Console 체크박스**: 일괄 제어 명령 실행 시 관제 콘솔 노드가 함께 중단되어 관제가 불가능해지는 위험을 막기 위해, 콘솔 노드를 일괄 대상에서 안전하게 제외하는 옵션입니다.
+    *   **그룹별 계층 선택**: 그룹 폴더 체크박스를 통해 해당 그룹에 속한 워커 노드들을 한 번에 선택할 수 있습니다.
+*   **2. Action (4대 제어 액션 카드)**:
+    *   **PAUSE (일시 정지)**: 선택된 노드들의 유입 트래픽 수신을 일시 중단하고 백그라운드 활동을 멈춥니다. (콘솔 노드는 안전을 위해 자동으로 대상에서 제외됨)
+    *   **RESUME (재개)**: 일시 정지되어 있던 선택 노드들을 정상 가동 상태로 복귀시켜 트래픽을 재수신합니다.
+    *   **RESTART SERVICE (Hot)**: JVM을 끄지 않고 `ActivityContext`를 안전하게 재생성하여 변경된 설정을 핫 반영합니다.
+    *   **RESTART SERVER (Cold)**: 선택 노드들의 OS 데몬 프로세스를 전면 재기동하며, 재시작 완료 후 헬스체크를 통해 노드 복구를 자동 감지합니다.
 
-### 3.2. 원격 명령 센터 (Remote Commands)
+### 3.2. 빌드 및 배포 관리 (Build & Deployment)
+
+클러스터 내의 노드들을 대상으로 원격 Git 소스 패치, Maven 빌드, 설정 및 웹 애플리케이션 배포 스크립트를 비동기로 실행하고, 실시간 웹 터미널을 통해 진행 상태를 모니터링하는 화면입니다.
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-build-deploy-main.png" alt="Build & Deployment Screen" %}
+
+#### 상단 제어 바 (Target Selector & Quick Actions)
+
+*   **Target Selector (대상 선택기)**:
+    *   `All Service Nodes` (기본값): 콘솔 노드를 제외한 모든 비즈니스 서비스 노드 대상 일괄 배포.
+    *   `All Nodes in Cluster`: 콘솔 노드를 포함한 클러스터 전체 노드 대상 배포.
+    *   `Specific Group`: 지정된 서버 그룹(예: `api-group`, `batch-group`) 대상 배포.
+    *   `Individual Node`: 특정 단일 노드 대상 배포.
+*   **Manage Nodes 버튼**: 클러스터 노드 현황 관리 전용 팝업 창(`cluster/nodes/popup/`)을 호출합니다.
+*   **Audit Trail 버튼**: 과거 모든 빌드/배포 이력과 상세 로그를 조회 및 다운로드할 수 있는 빌드 감사 이력 팝업 창(`cluster/build/audit/`)을 호출합니다.
+*   **Quick Action Bar (빠른 실행 바)**:
+    *   자주 사용하는 핵심 배포 스크립트(`Full Build & Deploy`, `1. Pull`, `2. Maven Build`, `3. Config Deploy`, `4. Webapps Deploy`)를 원클릭으로 즉시 실행할 수 있는 단축 버튼 모음입니다.
+
+#### 좌측 제어 및 메타데이터 패널 (Control & Metadata Panel)
+
+*   **Script Execution (스크립트 선택)**:
+    *   **Standard Deploy**: 전체 풀 빌드&배포(`5-pull_build_deploy.sh`), 빌드 생략 고속 배포(`6-pull_deploy.sh`).
+    *   **Single Step**: Git Pull(`1-pull.sh`), Maven 빌드(`2-build.sh`), 설정 배포(`3-deploy_config.sh`), 웹앱 배포(`4-deploy_webapps.sh`).
+    *   **Selective Deploy**: 설정 전용(`7-pull_deploy_config_only.sh`), 웹앱 전용(`8-pull_deploy_webapps_only.sh`), 설정+웹앱(`9-pull_deploy_config_webapps_only.sh`).
+*   **Pipeline Flow Preview**: 선택된 스크립트가 내부적으로 수행하는 파이프라인 단계(예: `Git Pull` → `Maven Build` → `Config Deploy` → `Webapps Deploy`)를 시각적 배지로 미리 안내합니다.
+*   **Git Branch / Tag (Optional)**: 배포할 특정 Git 브랜치(예: `main`, `release/v2.0`), 릴리즈 태그(예: `v1.2.0`), 또는 커밋 해시를 지정합니다. 미입력 시 기본 브랜치의 최신 커밋이 적용됩니다.
+*   **실행 및 중단 버튼**: `Execute Script` 버튼으로 비동기 배포를 시작하며, 실행 중에는 `Abort / Cancel` 버튼이 활성화되어 원격 노드에 안전한 취소 시그널을 전달할 수 있습니다.
+*   **Current Execution (실행 메타데이터 요약)**:
+    *   개별 노드 탭 선택 시: Execution ID, Target Node, Git Branch, Before/After Commit Hash, Started At, 실시간 Duration 소요 시간, 프로세스 종료 코드(Exit Code)를 정밀 출력합니다.
+    *   All Nodes 탭 선택 시: 클러스터 전체 노드들의 실행 상태와 소요 시간을 한눈에 비교하는 카드 요약 목록을 표시합니다.
+
+#### 우측 실시간 터미널 패널 (Real-time Terminal Panel)
+
+*   **Dynamic Node Tabs Bar (동적 노드 탭 바)**:
+    *   다중 노드 배포 시 상단에 `All Nodes` 통합 탭 및 각 노드별(`node1`, `node2` 등) 탭이 자동 생성됩니다. 탭마다 실시간 실행 상태 뱃지(`RUNNING`, `SUCCESS`, `FAILED`)가 동적으로 업데이트됩니다.
+*   **Terminal Header (터미널 제어 도구)**:
+    *   **Daemon Logs 드롭다운**: 배포 또는 재시작 시 발생할 수 있는 이상 현상을 즉각 진단할 수 있도록, 대상 노드의 `daemon-stderr.log` 및 `daemon-stdout.log`의 최근 로그(200줄)를 터미널로 직접 불러옵니다.
+    *   **Auto-scroll 토글 스위치**: 로그 출력 시 최하단으로 자동 스크롤 여부를 제어합니다.
+    *   **Clear Terminal 버튼**: 현재 선택된 탭의 터미널 출력을 깨끗이 비웁니다.
+    *   **Download Logs 버튼**: 현재 탭의 전체 터미널 텍스트 로그를 로컬 파일(`.log`)로 즉시 다운로드합니다.
+*   **ANSI 컬러 터미널**: 스크립트에서 출력되는 ANSI 색상 코드를 실시간 파싱하여 성공(초록), 에러(빨강), 경고(노랑), 정보(파랑) 등 가독성 높은 라이브 스트림 콘솔을 렌더링합니다.
+
+#### 빌드 및 배포 감사 이력 (Build & Deployment Audit Trail) 모달/팝업
+
+화면 상단의 `Audit Trail` 버튼을 클릭하면 배포 작업의 이력과 암호학적 무결성을 검증할 수 있는 전용 감사 팝업 창(`cluster/build/audit/`)이 호출됩니다.
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-build-audit-trail.png" alt="Build & Deployment Audit Trail Screen" %}
+
+*   **상단 도구 모음 (Header Toolbar)**:
+    *   **Go to Build Console**: 특정 이력의 실행 컨텍스트(Execution ID)를 유지한 채 실시간 빌드 콘솔 화면으로 즉시 전환합니다.
+    *   **Print Report**: 브라우저의 인쇄 대화상자를 호출하며, 헤더와 필터 패널이 자동으로 숨겨지고 인쇄용 고대비 레이아웃으로 최적화된 감사 보고서를 출력합니다.
+    *   **Export CSV Report**: 현재 설정된 검색 필터(노드, 상태, 검색어) 조건이 반영된 전체 감사 이력 데이터를 스프레드시트 호환 CSV 파일로 즉시 다운로드합니다.
+*   **검색 및 필터 패널 (Filter Panel)**:
+    *   **Target Node**: 특정 노드 또는 전체 노드로 필터링합니다.
+    *   **Status**: 실행 결과 상태(`SUCCESS`, `FAILED`, `RUNNING`, `CANCELLED`)별로 조회합니다.
+    *   **Keyword Search**: Execution ID, 스크립트명, 커밋 해시, 실행자(Requester) 계정명 등 통합 키워드 검색을 지원합니다.
+*   **감사 이력 테이블 (Audit Table)**:
+    *   각 행마다 Execution ID, 대상 노드, 스크립트명, 실행자, 실행 상태 뱃지, Git 커밋 변경 내역(Before 커밋 → After 커밋 및 브랜치명), 시작 시각, 소요 시간(Duration), SHA-256 무결성 검증 뱃지가 표시됩니다.
+*   **Audit Verification Report 모달 (상세 검증 리포트 - `Detail` 버튼)**:
+    *   **Integrity Check 배너**: SHA-256 암호학적 해시 검증을 통해 저장된 실행 기록과 로그가 위변조되지 않았음을 증명하는 `Cryptographically Valid & Untampered` 녹색 뱃지를 출력합니다.
+    *   **상세 검증 속성**: Execution ID(빌드 콘솔 바로가기 링크 포함), 타겟 노드, 실행 스크립트, 실행자, 실행 상태 및 종료 코드(Exit Code), 시작/종료 시각, 정확한 소요 시간(초 단위), Git 브랜치, Before/After 커밋 해시, Git 커밋 메시지, SHA-256 Digest 해시 전문, 및 실행 실패 시 상세 에러 요약(Error Summary)을 제공합니다.
+*   **Console Output Stream 모달 (터미널 로그 뷰어 - `Logs` 버튼)**:
+    *   데이터베이스에 영구 보존된 당시의 전체 콘솔 출력 스트림을 실시간 복원하여 ANSI 컬러 터미널 창으로 렌더링합니다.
+    *   **Download Full Log 버튼**: 당시 출력된 전체 텍스트 로그를 로컬 PC로 즉시 다운로드합니다.
+
+> **심화 가이드**: 원격 배포 파이프라인의 내부 아키텍처, 프로세스 독립적 안전 재시작(`DetachedRestartRunner`), 다중 노드 빌드 락 메커니즘 및 릴리즈 운영 정책에 대한 상세한 내용은 [Aspectow Console 빌드 및 배포 가이드](/ko/docs/aspectow/console/build-and-deployment/) 문서를 참조하십시오.
+
+### 3.3. 원격 명령 센터 (Remote Commands)
 
 클러스터 내의 원하는 대상 노드로 대화형 원격 명령(CLI/Shell Command)을 발송하고 결과를 확인하는 Command Center입니다.
 
@@ -105,7 +179,7 @@ Console에 로그인하면 처음 나타나는 중앙 제어판으로, 전체 �
 
 과거 실행했던 명령들의 기록이 타임스탬프, 타겟 노드, 성공/실패 뱃지, 명령 텍스트 미니 프리뷰 형태로 저장됩니다. 히스토리 항목을 클릭하면 작성 중이던 에디터에 해당 명령과 타겟 설정이 즉시 복원되어 손쉽게 재실행할 수 있습니다.
 
-### 3.3. 스케줄러 관리자 (Scheduler Manager)
+### 3.4. 스케줄러 관리자 (Scheduler Manager)
 
 클러스터 환경에 등록된 Aspectran Scheduler 서비스 및 분산 잡(Job)을 모니터링하고 통제하는 화면입니다. 상단 뷰 전환 컨트롤을 통해 전체 노드를 한눈에 관찰하는 **Dashboard 뷰**와 특정 노드를 집중 제어하는 **Detail View**의 두 가지 뷰 모드를 지원합니다.
 

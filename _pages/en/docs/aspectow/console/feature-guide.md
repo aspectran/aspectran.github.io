@@ -57,27 +57,99 @@ In Gateway cluster mode, tabs are automatically generated for each server group.
 Each node is rendered as an independent card providing the following metrics and action triggers:
 *   **Node Title & ID Badge**: Node title and unique node ID rendered in monospace font.
 *   **Status Dot & Status Text**: Clearly indicates node operational health with color-coded LED dots and text (Green `LIVE`: normal running, Yellow `PAUSED`/`STOPPING`: paused or shutting down, Red `DEAD`: disconnected/down).
+*   **Console Badge**: A light blue `Console` badge indicates that the node is running the administrative control plane.
 *   **Host Address & Service Port**: Host IP address and service port number of the node.
 *   **Node Group**: Group name to which the node belongs (in Gateway cluster mode).
-*   **Commands Button**: Navigates directly to the Remote Command Center with the target node automatically pre-selected.
 *   **Metrics Button**: Opens a new popup window displaying real-time AppMon metrics for the selected node.
+*   **Commands Button**: Navigates directly to the Remote Command Center with the target node automatically pre-selected.
 *   **Actions Dropdown Menu**:
     *   **Pause Node** (Visible when `LIVE`): Temporarily pauses transaction reception and execution on the node.
     *   **Resume Node** (Visible when `PAUSED`): Restores a paused node back to normal operational state.
-    *   **Restart Node**: Restarts the target node process.
+    *   **Restart Service (Hot)**: Gracefully recreates the `ActivityContext` and reloads application bean rules and classes without stopping the JVM process.
+    *   **Restart Server (Cold)**: Completely terminates the OS daemon/service process and reboots the JVM instance. Automatically tracks recovery via background health check polling (`/cluster/build/health/{nodeId}`) until the node returns to `LIVE` status.
+    *   **Audit Trail**: Directly opens the build and deployment audit trail popup window (`cluster/build/audit/?nodeId=...`) for the selected node (requires build permissions).
 
 #### Bulk Control Modal
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-cluster-nodes-bulk-control.png" alt="Cluster Nodes Bulk Control Modal" %}
 
 Allows administrators to select multiple nodes and dispatch bulk control commands with a single click:
-*   **1. Select Target Nodes**: Easily multi-select or deselect all cluster nodes or specific group/node checkboxes via `Select All` / `Deselect All` buttons.
-*   **2. Action Selection**:
-    *   **PAUSE (Pause)**: Transitions selected nodes to `PAUSED` (paused) status simultaneously.
-    *   **RESUME (Resume)**: Restores paused nodes back to `LIVE` (normal running) status simultaneously.
-    *   **RESTART (Restart)**: Restarts selected nodes simultaneously.
+*   **1. Select Target Nodes**:
+    *   Easily multi-select or deselect all cluster nodes or specific group checkboxes via `Select All` / `Deselect All` buttons.
+    *   **Exclude Console Checkbox**: Automatically excludes console gateway nodes from bulk operations to prevent administrative disruption.
+    *   **Hierarchical Group Checkboxes**: Quickly select all worker nodes within a specific server group.
+*   **2. Action Selection (4 Core Action Cards)**:
+    *   **PAUSE (Pause)**: Temporarily stops incoming traffic and pauses background activity on selected nodes (console node automatically excluded).
+    *   **RESUME (Resume)**: Restores paused nodes back to normal active state to resume traffic reception.
+    *   **RESTART SERVICE (Hot)**: Recreates `ActivityContext` without shutting down the JVM to hot-apply configuration updates.
+    *   **RESTART SERVER (Cold)**: Completely reboots OS daemon processes across target nodes, tracking node recovery via automated health checks.
 
-### 3.2. Remote Commands (Remote Commands)
+### 3.2. Build & Deployment (Build & Deployment)
+
+An interactive module for orchestrating asynchronous remote Git source updates, Maven compilation, configuration/web application deployment, and real-time live terminal streaming across cluster nodes.
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-build-deploy-main.png" alt="Build & Deployment Screen" %}
+
+#### Top Control Bar (Target Selector & Quick Actions)
+
+*   **Target Selector**:
+    *   `All Service Nodes` (Default): Targets all business service nodes in the cluster, excluding console nodes.
+    *   `All Nodes in Cluster`: Targets all active cluster nodes including console nodes.
+    *   `Specific Group`: Targets a specified server group (e.g., `api-group`, `batch-group`).
+    *   `Individual Node`: Targets a single specified node.
+*   **Manage Nodes Button**: Opens the cluster nodes management popup window (`cluster/nodes/popup/`).
+*   **Audit Trail Button**: Opens the Build & Deployment Audit Trail popup window (`cluster/build/audit/`) to inspect and export historical execution records.
+*   **Quick Action Bar**:
+    *   One-click shortcut buttons to instantly trigger common deployment scripts (`Full Build & Deploy`, `1. Pull`, `2. Maven Build`, `3. Config Deploy`, `4. Webapps Deploy`).
+
+#### Left Control & Metadata Panel
+
+*   **Script Execution (Script Selector)**:
+    *   **Standard Deploy**: Full Build & Deploy (`5-pull_build_deploy.sh`), Fast Deploy without rebuild (`6-pull_deploy.sh`).
+    *   **Single Step**: Git Pull Only (`1-pull.sh`), Maven Build Only (`2-build.sh`), Config Deploy Only (`3-deploy_config.sh`), Webapps Deploy Only (`4-deploy_webapps.sh`).
+    *   **Selective Deploy**: Pull & Deploy Config Only (`7-pull_deploy_config_only.sh`), Pull & Deploy Webapps Only (`8-pull_deploy_webapps_only.sh`), Pull & Deploy Config + Webapps (`9-pull_deploy_config_webapps_only.sh`).
+*   **Pipeline Flow Preview**: Displays a visual badge workflow of the selected script's stages (e.g., `Git Pull` → `Maven Build` → `Config Deploy` → `Webapps Deploy`).
+*   **Git Branch / Tag (Optional)**: Specifies a target Git branch (e.g., `main`, `release/v2.0`), release tag (e.g., `v1.2.0`), or commit SHA. Defaults to the latest commit on the active branch if omitted.
+*   **Execution & Abort Buttons**: `Execute Script` starts asynchronous execution, while `Abort / Cancel` sends an immediate cancellation signal to target nodes.
+*   **Current Execution (Execution Metadata)**:
+    *   Individual Node View: Displays Execution ID, Target Node, Git Branch, Before/After Commit Hashes, Start Timestamp, Real-time Duration ticker, and Exit Code.
+    *   All Nodes View: Displays a compact summary card list comparing execution statuses and durations across all participating nodes.
+
+#### Right Real-Time Terminal Panel
+
+*   **Dynamic Node Tabs Bar**:
+    *   Constructs an `All Nodes` consolidated tab alongside dedicated tabs for each target node (`node1`, `node2`, etc.), displaying live execution status badges (`RUNNING`, `SUCCESS`, `FAILED`).
+*   **Terminal Header Tools**:
+    *   **Daemon Logs Dropdown**: Fetches the latest 200 lines of `daemon-stderr.log` or `daemon-stdout.log` from target nodes directly into the terminal to diagnose startup issues.
+    *   **Auto-scroll Toggle**: Controls automatic downward scrolling as new log lines stream in.
+    *   **Clear Terminal**: Clears current terminal output.
+    *   **Download Logs**: Exports verbatim terminal output text to a `.log` file on the local machine.
+*   **ANSI Color Terminal**: Real-time ANSI escape code parser rendering success (green), errors (red), warnings (yellow), and information (blue) in a dark-themed live stream console.
+
+#### Build & Deployment Audit Trail Modal/Popup
+
+Clicking the `Audit Trail` button opens a dedicated compliance audit popup window (`cluster/build/audit/`).
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-build-audit-trail.png" alt="Build & Deployment Audit Trail Screen" %}
+
+*   **Header Toolbar**:
+    *   **Go to Build Console**: Transitions directly into the live Build Console with the execution context restored.
+    *   **Print Report**: Optimizes the audit report for high-contrast paper printing, hiding navigation elements automatically.
+    *   **Export CSV Report**: Exports filtered audit records into a spreadsheet-compatible CSV file for compliance reporting.
+*   **Filter Panel**:
+    *   Filters records by **Target Node**, **Status** (`SUCCESS`, `FAILED`, `RUNNING`, `CANCELLED`), and full-text **Keyword Search** (Execution ID, script name, commit hash, requester username).
+*   **Audit Table**:
+    *   Displays Execution ID, target node, script name, requester, status badge, Git commit changes (Before → After commit hashes and branch), start time, duration, and SHA-256 integrity verification badge.
+*   **Audit Verification Report Modal (`Detail` Button)**:
+    *   **Integrity Check Banner**: Validates the cryptographic SHA-256 digest against stored logs, displaying a green **`Cryptographically Valid & Untampered`** badge.
+    *   **Detailed Attributes**: Presents Execution ID, target node, script, requester, status, exit code, start/finish timestamps, duration, Git branch, commit changes, commit message, SHA-256 digest, and full error summary if failed.
+*   **Console Output Stream Modal (`Logs` Button)**:
+    *   Reconstructs the full verbatim terminal output from RDBMS storage with ANSI color rendering.
+    *   **Download Full Log Button**: Exports raw log text for offline debugging and long-term archiving.
+
+> **In-Depth Guide**: For detailed remote deployment architecture, process-independent safe restarts (`DetachedRestartRunner`), multi-node build locking, and operational best practices, refer to the [Aspectow Console Build & Deployment Guide](/en/docs/aspectow/console/build-and-deployment/).
+
+### 3.3. Remote Commands (Remote Commands)
 
 An interactive Command Center for dispatching interactive CLI/Shell commands to target cluster nodes and inspecting results in real time.
 
@@ -105,7 +177,7 @@ Streams execution results in real time separated by node tabs.
 
 Stores past command executions with timestamps, target node names, success/failure badges, and command previews. Clicking an entry restores the command and target settings into the editor for instant re-execution.
 
-### 3.3. Scheduler Manager (Scheduler Manager)
+### 3.4. Scheduler Manager (Scheduler Manager)
 
 Monitors and controls Aspectran Scheduler services and distributed jobs registered in a cluster environment. Supports two view modes via top view controls: **Dashboard View** for a cluster-wide overview and **Detail View** for node-specific job management.
 
