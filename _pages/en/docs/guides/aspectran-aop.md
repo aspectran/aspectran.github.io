@@ -15,7 +15,6 @@ Aspectran AOP offers two dimensions of join points and interception mechanisms t
 | :--- | :--- | :--- | :--- |
 | **Activity Lifecycle AOP**<br/>*(Translet Lifecycle)* | `Activity` (The entire request-processing flow) | Zero proxy overhead; the `CoreActivity` engine directly executes aspects according to lifecycle stages (Non-Proxy Core Interception) | Web security response headers, global character encoding and view dispatcher injection, pre/post-processing, authentication/authorization, global exception handling |
 | **Bean Proxy AOP**<br/>*(Method Interception)* | Bean method invocations (`JoinpointTargetType.METHOD`) | Runtime dynamic proxy (`AbstractBeanProxy`, Javassist/JDK) intercepts methods annotated with `@Advisable` | Declarative database transactions, business method profiling, audit logging |
-{: .text-nowrap}
 
 ### 1.1. Activity Lifecycle AOP (Non-Proxy Core Interception)
 
@@ -28,7 +27,6 @@ In Aspectran, incoming client requests (Web, Daemon, Shell) are executed by an `
 | **Stage 3** | **After Advice** | Performs post-processing on results, records audit logs |
 | **Stage 4** | **Exception Handling (`<exception>`)** | Catches exceptions and maps them to error view pages (`<dispatch>`) or RESTful JSON (`<transform>`) error responses |
 | **Stage 5** | **Finally Advice** | Always runs at the end regardless of success or failure to clean up resources and session states |
-{: .text-nowrap}
 
 * **Zero Overhead**: Directly executed within the framework core flow without proxy creation or reflective overhead, ensuring maximum throughput.
 * **Structural Flow Control**: Beyond simple method interception, it declaratively injects and manages request context (`Activity`) attributes such as encoding, view dispatchers, security headers, and global exception screens.
@@ -60,7 +58,6 @@ In Aspectran, aspects can be configured declaratively via `<aspect>` XML rules o
 | **`order`** | Defines the execution precedence among multiple aspects. Lower integer values denote higher priority (default: `Integer.MAX_VALUE`). If two aspects have identical order values, the one declared first takes precedence. |
 | **`isolated`** | Configures **Exception Isolation Mode (`true`/`false`)**. When `isolated="true"`, any unhandled exception occurring inside the aspect's advice will not halt the main request flow; an error log is recorded and the request proceeds normally. Ideal for non-critical cross-cutting concerns like statistics, monitoring, or external telemetry. |
 | **`disabled`** | When set to `true`, disables the aspect at runtime. |
-{: .text-nowrap}
 
 ### 2.2. Precision Joinpoint and Pointcut Control (`<joinpoint>`)
 

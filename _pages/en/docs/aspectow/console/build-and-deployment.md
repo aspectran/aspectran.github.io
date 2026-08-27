@@ -60,7 +60,6 @@ The **Target Node** selector at the top of the Build & Deployment console allows
 | **All Nodes in Cluster** | All active nodes including console nodes | Full-cluster upgrades (e.g., framework version updates, global configuration propagation) |
 | **Specific Group** | Nodes belonging to a designated logical group (`groupId`, e.g., `api-group`, `batch-group`) | Targeted deployments to specific functional server groups |
 | **Individual Node** | A single specified cluster node | Canary releases, single-node pre-release verification, or recovering a faulty node |
-{: .text-nowrap}
 
 ## 3. Standard Deployment Pipelines & Script Specifications
 
@@ -94,8 +93,6 @@ Aspectow provides a modularized suite of 9 standardized deployment scripts cover
 > **Tip (Pipeline Flow Preview)**: Selecting any script dynamically displays a **Pipeline Flow** card below the selector, visually previewing the step-by-step pipeline stages (e.g., `1. Git Pull` → `2. Maven Build` → `3. Config Deploy` → `4. Webapps Deploy`) with color-coded badges.
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-build-pipeline-preview.png" alt="Script Selection & Pipeline Flow Preview" %}
-
----
 
 ## 4. Git Branch & Release Tag Deployment Strategy
 
@@ -221,7 +218,6 @@ If a build fails or a server does not recover after a restart, administrators ca
 | `[ERROR] Maven build failed with exit code 1` | Source compilation error, failed unit test, or dependency resolution failure | Check error logs in the terminal, or run `mvn clean package` directly inside `.build/[APP_NAME]` on the target node. |
 | `[BUILD TIMEOUT] Script execution timed out` | Execution exceeded timeout threshold (e.g., slow dependency downloads) | Check network connectivity or adjust the timeout settings in `LocalScriptRunner`. |
 | Node unresponsive / `DEAD` after deployment | Port collision, database connection failure, or invalid configuration | Select **Daemon Logs → daemon-stderr.log** from the terminal header to analyze the JVM startup stack trace. |
-{: .text-nowrap}
 
 ## 9. Compliance Build Audit Trail
 

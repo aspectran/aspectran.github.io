@@ -89,7 +89,6 @@ Aspectow는 소스 코드 동기화부터 컴파일, 설정 배포, 웹 애플�
 | **`7-pull_deploy_config_only.sh`** | 🛠️ Selective Deploy | **Pull & Deploy Config**: 최신 Git 변경 사항을 가져온 후 설정 파일(`app/config`)만 선별 배포합니다. |
 | **`8-pull_deploy_webapps_only.sh`** | 🛠️ Selective Deploy | **Pull & Deploy Webapps**: 최신 Git 변경 사항을 가져온 후 웹 애플리케이션(`app/webapps`)만 선별 배포합니다. |
 | **`9-pull_deploy_config_webapps_only.sh`** | 🛠️ Selective Deploy | **Pull & Deploy Config + Webapps**: 컴파일 없이 최신 소스 동기화 후 설정과 웹앱 파일만 함께 배포합니다. |
-{: .text-nowrap}
 
 > **Tip (Pipeline Flow Preview)**: Console 화면에서 스크립트를 선택하면 하단에 **Pipeline Flow** 카드가 활성화되어 해당 스크립트가 내부적으로 거치는 단계(예: `1. Git Pull` → `2. Maven Build` → `3. Config Deploy` → `4. Webapps Deploy`)를 시각적 배지로 미리 확인할 수 있습니다.
 
@@ -219,7 +218,6 @@ Aspectow는 이를 방지하기 위해 **원자적 빌드 락 및 빌드 결과�
 | `[ERROR] Maven build failed with exit code 1` | 소스 코드 컴파일 오류, 단위 테스트 실패 또는 의존성 다운로드 실패 | Console 터미널의 에러 로그를 확인하거나, 해당 노드의 `.build/[APP_NAME]` 경로에서 `mvn clean package`를 직접 실행하여 상세 원인을 파악합니다. |
 | `[BUILD TIMEOUT] Script execution timed out` | 대용량 의존성 다운로드 지연 등으로 설정된 타임아웃 초과 | 네트워크 상태를 점검하고, 스크립트를 재실행하거나 `LocalScriptRunner`의 타임아웃 설정을 조정합니다. |
 | 배포 후 서버 응답 없음 (`DEAD` 상태) | 포트 충돌, DB 연결 실패, 잘못된 프로퍼티 설정으로 인한 기동 실패 | 터미널 상단의 **Daemon Logs → daemon-stderr.log**를 조회하여 JVM 부팅 에러 스택트레이스를 분석합니다. |
-{: .text-nowrap}
 
 ## 9. 규정 준수 빌드 감사 이력 (Build Audit Trail & Compliance)
 
