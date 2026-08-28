@@ -76,7 +76,7 @@ Aspectow Console comes equipped with core security mechanisms at the codebase le
 ### 4.1 User/Role-based IP Restriction
 * **Fine-Grained Operator-Level IP Limits**: Aligned with web console characteristics where access is limited to a small team of dedicated system administrators, allowed IP patterns (`allowedIps`) can be specified for each individual user (`User`).
 * **Wildcards & Multiple IP Patterns**: Supports exact single IPs (`192.168.1.50`, `10.0.0.100`), octet-level wildcards (`192.168.1.*`, `10.0.*.*`), and comma/space-separated multiple patterns. (If `null` or unconfigured, access is allowed without IP restrictions.)
-* **Login-Time Denial & Audit Logging**: Validates client IP immediately upon successful password verification. If the IP does not match the allowed pattern, login is denied immediately, and a security audit log (`asc_audit_log`) is recorded in real time with the reason **[LOGIN_FAILED_UNALLOWED_IP]** and the remote attempt IP.
+* **Login-Time Denial & Audit Logging**: Validates client IP immediately upon successful password verification. If the IP does not match the allowed pattern, login is denied immediately, and a security audit log (`asc_audit_log`) is recorded in real time with the denial reason and remote attempt IP.
 * **Session IP Binding Interlocking**: Once logged in, dual security is maintained via session IP binding. If the IP address changes during an active session (session hijacking attempt), the session is invalidated immediately.
 * **User Management UI**: Operating teams can easily register and manage allowed IPs for each user account via the creation/edit modal in **Accounts > Users** on the web console.
 

@@ -376,7 +376,7 @@ This section manages Console user accounts and security audit logs.
 *   **Allowed IP Restrictions (`Allowed IPs`) Configuration**:
     *   Specifies allowed IP patterns (`allowedIps`) for individual operator accounts to prevent unauthorized access strictly.
     *   Supports exact single IPs (`192.168.1.50`, `10.0.0.100`), subnet wildcards (`192.168.1.*`, `10.0.*.*`), and comma/space-separated multiple patterns. (Leave blank to permit access from any IP without restriction.)
-    *   If an access attempt is made from an unauthorized IP, login is rejected immediately even with correct password credentials and recorded in the security audit log (`[LOGIN_FAILED_UNALLOWED_IP]`).
+    *   If an access attempt is made from an unauthorized IP, login is rejected immediately even with correct password credentials and recorded in the security audit log.
 *   **Roles Assignment**:
     *   Assigns user roles via inline checkboxes (multiple roles can be granted).
     *   `SUPER_ADMIN`: Super administrator with full system-wide access and complete control privileges.
@@ -421,6 +421,6 @@ A security monitoring screen tracking and auditing high-risk administrative oper
     *   User account creation, modification, deletion, and lockout/unlock events.
     *   Role and pinpoint permission updates.
     *   Vault security token issuance, editing, revocation, and System Encryption queries.
-    *   Denied login attempts from unauthorized IPs (`[LOGIN_FAILED_UNALLOWED_IP]`).
+    *   Blocked login attempts from unauthorized IP addresses and failed attempt tracking.
 *   **Search & Filtering**: Filters audit logs by executor username, action keyword, execution status (Success/Failed), and date range.
 *   **Audit Details Modal**: Clicking an entry opens a detail modal rendering executor ID, client IP address, target resource, pre/post-change data payloads, and detailed reasons in a JSON/text viewer for security incident investigations.
