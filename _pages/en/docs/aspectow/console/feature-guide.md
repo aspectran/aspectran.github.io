@@ -359,20 +359,51 @@ This section manages Console user accounts and security audit logs.
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-user-management.png" alt="User Management Screen" %}
 
-*   **User List & Search**: Manages registered console user accounts (Username, Nickname, Email, Status, Roles).
-*   **Role Permissions Modal**: Views detailed permission mappings for `SUPER_ADMIN`, `ADMIN`, and `DEMO` roles.
+*   **User List & Search**: Manages and filters registered console user accounts (Username, Nickname, Email, Status, Roles) in real time.
+*   **Role Permissions Button**: Visible to administrators with `USER_MANAGE` permission or the `SUPER_ADMIN` role to configure fine-grained role-to-permission mappings.
+*   **New User Button**: Opens the user creation modal to register new user accounts.
 
 #### New & Edit User Modal
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-user-management-modal.png" alt="User Management Modal Screen" %}
 
-*   **Basic Account Profile**: Configures Username, Nickname, Email Address, and Account Status (`NORMAL`, `LOCKED`, `DISABLED`).
-*   **Account Lockout Unlock**: Accounts locked automatically after 5 consecutive failed login attempts (`LOCKED`) can be easily unlocked by changing status back to `NORMAL` in this modal.
-*   **Roles & Pinpoint Permissions**: Assigns base roles (`SUPER_ADMIN`, `ADMIN`, `DEMO`) along with fine-grained pinpoint permissions (`USER_MANAGE`, `NODE_MANAGE`, `VAULT_MANAGE`, etc.) via checkboxes.
+*   **Basic Account Profile**:
+    *   `Username`: Unique account identifier (Protected as Read-only in edit mode).
+    *   `Password`: Account password (Required when creating a new user; leave blank during edit mode to preserve existing password. Includes a password visibility toggle icon).
+    *   `Nickname`: Display name shown in the console header and profile.
+    *   `Email`: Email address for notifications and account identification.
+    *   `Status`: Account status (`NORMAL`, `LOCKED`, `EXPIRED`). Accounts locked automatically after consecutive failed login attempts (`LOCKED`) can be immediately unlocked by setting status to `NORMAL`, which resets the `failedAttempts` counter back to 0.
 *   **Allowed IP Restrictions (`Allowed IPs`) Configuration**:
-    *   Specifies allowed IP patterns (`allowedIps`) for individual operator accounts to block unauthorized access strictly.
-    *   Supports exact single IPs (`192.168.1.50`, `10.0.0.100`), IP subnet wildcards (`192.168.1.*`, `10.0.*.*`), and comma/space-separated multiple patterns. (If `null` or unconfigured, access is allowed without IP restrictions.)
-    *   If an access attempt is made from an unallowed IP pattern, login is denied immediately even with correct password credentials and recorded in the audit log.
+    *   Specifies allowed IP patterns (`allowedIps`) for individual operator accounts to prevent unauthorized access strictly.
+    *   Supports exact single IPs (`192.168.1.50`, `10.0.0.100`), subnet wildcards (`192.168.1.*`, `10.0.*.*`), and comma/space-separated multiple patterns. (Leave blank to permit access from any IP without restriction.)
+    *   If an access attempt is made from an unauthorized IP, login is rejected immediately even with correct password credentials and recorded in the security audit log (`[LOGIN_FAILED_UNALLOWED_IP]`).
+*   **Roles Assignment**:
+    *   Assigns user roles via inline checkboxes (multiple roles can be granted).
+    *   `SUPER_ADMIN`: Super administrator with full system-wide access and complete control privileges.
+    *   `ADMIN`: Administrator with operational management access (cluster nodes, remote commands, build/deployment).
+    *   `VIEWER`: Read-only access to monitoring dashboards and build status.
+    *   `DEMO`: Simulation access for demo environments (data modification and deletion restricted).
+    *   `BUILDER`: Build and deployment engineer dedicated to CI/CD pipeline executions and audit trail reviews.
+
+#### Role Permissions Modal
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-role-permissions-modal.png" alt="Role Permissions Modal Screen" %}
+
+Opened by clicking the **Role Permissions** button on the top toolbar. It allows administrators with `USER_MANAGE` permission or `SUPER_ADMIN` role to dynamically configure and manage fine-grained Role-Based Access Control (RBAC) mappings.
+
+*   **Select Role (Role Selector Dropdown)**:
+    *   Choose a target role to view or modify (`SUPER_ADMIN`, `ADMIN`, `BUILDER`, `VIEWER`, `DEMO`, etc.).
+    *   Selecting a role automatically updates and checks the assigned permission checkboxes in real time.
+*   **Permissions (Fine-Grained Permissions List)**:
+    *   `MONITOR_VIEW`: Access to AppMon live monitoring dashboards, server resource metrics, and live log viewers.
+    *   `MONITOR_CONTROL`: Permission to modify monitoring settings and manage active user sessions.
+    *   `USER_MANAGE`: Permission to create, edit, delete user accounts and manage role-to-permission mappings.
+    *   `NODE_MANAGE`: Permission to monitor cluster nodes and execute Pause, Resume, and Hot Reload / Cold Reboot (Restart) commands.
+    *   `COMMAND_EXECUTE`: Permission to execute interactive CLI/Shell scripts via the Remote Command Center.
+    *   `BUILD_VIEW`: Permission to inspect build/deployment dashboards, real-time terminal log streams, and audit trails.
+    *   `BUILD_EXECUTE`: Permission to checkout Git branches, trigger Maven builds, and execute/abort full or staged deployment scripts.
+*   **Save Changes (Dynamic Permission Persistence)**:
+    *   After adjusting permission checkboxes, clicking **Save Changes** immediately updates the `asc_role_permission` database mappings, applying changes to active sessions at runtime without restarting the server.
 
 ### 7.2. Login History Audit (Login History Audit)
 

@@ -361,20 +361,51 @@ Console 사용자 계정과 보안 감사 로그를 관장하는 섹션입니다
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-user-management.png" alt="User Management Screen" %}
 
-*   **사용자 목록 & 검색**: 콘솔에 등록된 사용자 계정(Username, Nickname, Email, Status, Roles)을 관리합니다.
-*   **Role Permissions 모달**: `SUPER_ADMIN`, `ADMIN`, `DEMO` 역할에 매핑된 세부 권한 현황표를 조회합니다.
+*   **사용자 목록 & 검색**: 콘솔에 등록된 사용자 계정(Username, Nickname, Email, Status, Roles)을 실시간으로 관리하고 필터링합니다.
+*   **Role Permissions 버튼**: `USER_MANAGE` 권한 또는 `SUPER_ADMIN` 역할을 가진 관리자에게 노출되며, 역할별 세부 권한 매핑을 설정하는 모달을 호출합니다.
+*   **New User 버튼**: 신규 사용자 계정을 등록하는 생성 모달을 호출합니다.
 
 #### 사용자 생성 및 수정 모달 (New / Edit User Modal)
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-user-management-modal.png" alt="User Management Modal Screen" %}
 
-*   **기본 계정 프로필**: 사용자 식별 ID(`Username`), 닉네임(`Nickname`), 이메일 주소(`Email`), 계정 상태(`Status`: `NORMAL`, `LOCKED`, `DISABLED`)를 설정합니다.
-*   **계정 잠금(Lockout) 해제**: 비밀번호 5회 연속 오류로 자동 잠긴(`LOCKED`) 계정은 모달에서 상태를 `NORMAL`로 변경하여 즉시 잠금을 해제할 수 있습니다.
-*   **역할 및 핀포인트 권한 (Roles & Direct Permissions)**: `SUPER_ADMIN`, `ADMIN`, `DEMO` 등 기본 역할 외에 기능별 세부 권한(`USER_MANAGE`, `NODE_MANAGE`, `VAULT_MANAGE` 등)을 체크박스로 정교하게 개별 부여합니다.
+*   **기본 계정 프로필**:
+    *   `Username`: 사용자 식별 계정명 (수정 모드에서는 Read-only로 안전하게 보호).
+    *   `Password`: 계정 비밀번호 (신규 등록 시 필수이며, 수정 모드에서는 빈칸으로 둘 경우 기존 비밀번호를 유지합니다. 우측 눈 모양 아이콘으로 비밀번호 표시/숨김을 토글할 수 있습니다).
+    *   `Nickname`: 콘솔 상단 및 프로필에 표시될 사용자 별칭.
+    *   `Email`: 알림 수신 및 계정 식별용 이메일 주소.
+    *   `Status`: 계정 상태(`NORMAL`, `LOCKED`, `EXPIRED`). 비밀번호 5회 연속 오류 등으로 자동 잠긴(`LOCKED`) 계정은 모달에서 상태를 `NORMAL`로 변경하면 실패 횟수(`failedAttempts`)가 즉시 0으로 초기화되며 잠금이 해제됩니다.
 *   **접속 허용 IP 제한 (`Allowed IPs`) 설정**:
     *   개별 운영자 계정별로 콘솔 접속이 허용되는 IP 패턴(`allowedIps`)을 지정하여 무단 접속을 엄격히 방어합니다.
-    *   단일 IP(`192.168.1.50`, `10.0.0.100`), IP 대역 와일드카드(`192.168.1.*`, `10.0.*.*`), 쉼표/공백으로 구분된 다중 패턴 입력을 지원합니다. (`null` 또는 미입력 시 IP 제약 없이 접속 허용)
-    *   지정된 IP 패턴과 일치하지 않는 환경에서 접속 시도 시 비밀번호가 맞더라도 로그인이 즉시 거부되며 감사 로그에 기록됩니다.
+    *   단일 IP(`192.168.1.50`, `10.0.0.100`), IP 대역 와일드카드(`192.168.1.*`, `10.0.*.*`), 쉼표 또는 공백으로 구분된 다중 패턴 입력을 지원합니다. (비워둘 경우 IP 제약 없이 어디서나 접속 허용)
+    *   지정된 IP 패턴과 일치하지 않는 환경에서 접속 시도 시 비밀번호가 맞더라도 로그인이 즉시 거부되며 보안 감사 로그(`[LOGIN_FAILED_UNALLOWED_IP]`)에 기록됩니다.
+*   **역할 (Roles) 부여**:
+    *   사용자에게 적용할 역할(Role)을 체크박스로 다중 선택하여 부여합니다.
+    *   `SUPER_ADMIN`: 시스템 전체에 대한 최고 관리자 권한 (모든 관리 및 제어 기능에 완전한 접근 가능).
+    *   `ADMIN`: 클러스터 노드 관리, 원격 명령 실행, 빌드 및 배포 등 실무 관리자 권한.
+    *   `VIEWER`: 모니터링 대시보드 및 빌드 현황 조회 전용 읽기 권한.
+    *   `DEMO`: 데모 및 기능 체험용 시뮬레이션 권한 (데이터 수정 및 삭제 차단).
+    *   `BUILDER`: CI/CD 빌드 및 배포 파이프라인 스크립트 실행 및 이력 관리 전용 엔지니어 권한.
+
+#### 역할별 권한 관리 모달 (Role Permissions Modal)
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-role-permissions-modal.png" alt="Role Permissions Modal Screen" %}
+
+상단 툴바의 **Role Permissions** 버튼을 클릭하여 호출하며, `USER_MANAGE` 권한 또는 `SUPER_ADMIN` 역할을 보유한 관리자가 시스템 역할별 세부 기능 권한(RBAC)을 동적으로 구성하고 관리하는 화면입니다.
+
+*   **Select Role (역할 선택 드롭다운)**:
+    *   권한을 조회하거나 수정할 대상 역할(`SUPER_ADMIN`, `ADMIN`, `BUILDER`, `VIEWER`, `DEMO` 등)을 선택합니다.
+    *   드롭다운에서 역할을 선택하면 해당 역할에 현재 할당되어 있는 세부 권한 체크박스가 실시간으로 자동 체크되어 표시됩니다.
+*   **Permissions (세부 기능 권한 목록)**:
+    *   `MONITOR_VIEW`: AppMon 실시간 모니터링 대시보드, 서버 리소스 지표 및 실시간 로그 뷰어 조회 권한.
+    *   `MONITOR_CONTROL`: 실시간 모니터링 설정 변경 및 활성 세션 제어 권한.
+    *   `USER_MANAGE`: 사용자 계정 생성, 수정, 삭제 및 역할별 세부 권한 매핑 관리 권한.
+    *   `NODE_MANAGE`: 클러스터 노드 생존 감시 및 일시 정지(Pause), 재개(Resume), 핫 리로드/콜드 리부트(Restart) 제어 권한.
+    *   `COMMAND_EXECUTE`: 원격 명령 센터(Remote Commands)를 통한 대화형 CLI/Shell 스크립트 실행 권한.
+    *   `BUILD_VIEW`: 빌드 및 배포 현황 대시보드, 실시간 터미널 로그 스트림 및 빌드 감사 이력(Audit Trail) 조회 권한.
+    *   `BUILD_EXECUTE`: 원격 Git 브랜치 체크아웃, Maven 빌드 및 단계별/전체 배포 스크립트 실행 및 중단(Abort) 권한.
+*   **Save Changes (동적 권한 저장)**:
+    *   역할별 권한 체크박스를 조정한 후 `Save Changes` 버튼을 클릭하면 `asc_role_permission` 매핑 정보가 데이터베이스에 즉시 업데이트되며, 서버 재기동 없이 런타임에 즉각 반영됩니다.
 
 ### 7.2. 로그인 이력 탐색 (Login History Audit)
 
