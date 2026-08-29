@@ -23,10 +23,10 @@ Beyond a simple listing of metrics, this guide introduces the key components and
     *   **Heap Status**: Displays current JVM heap memory usage against maximum limits to detect GC states and memory leaks (`HeapMemoryUsageReader`).
     *   **Undertow Thread Pool**: Compares active threads against total worker pool capacity to monitor concurrent server load (`NioWorkerMetricsReader`).
 *   **Activity Status (Real-time Activity Counts)**: Provides numerical request processing status for each server application.
-    1.  **Active Activity**: Number of real-time activities currently being processed concurrently on the server.
-    2.  **Current Period Count**: Number of activities ingested during the current 5-minute aggregation period (displayed as `+14`, for example).
-    3.  **Cumulative Total**: Total cumulative activities processed since server startup (`p.cumulative`).
-*   **5-Minute Period Aggregation Management**: The timer displayed at the bottom of the numbers (e.g., `233/300`) indicates the progress of the 5-minute (300-second) data aggregation interval. Upon reaching `300/300`, aggregated period data is saved to the server DB, reflected in analysis charts, and the period resets.
+    1.  **Active Activity**: Number of real-time activities currently being processed concurrently on the server (e.g., `11`).
+    2.  **Current Period Count**: Number of activities ingested during the current 5-minute aggregation period (e.g., `+94`).
+    3.  **Cumulative Total**: Total cumulative activities recorded to date (e.g., `12883893`).
+*   **5-Minute Period Aggregation Management**: The timer displayed at the bottom of the numbers (e.g., `280/300`) indicates the progress of the 5-minute (300-second) data aggregation interval. Upon reaching `300/300`, aggregated period data is saved to the server DB, reflected in analysis charts, and the period resets.
 *   **Statistical Summary**: Periodically saved data is permanently recorded on the server, allowing users to analyze historical trends and current status side-by-side in time series.
 
 ### 3. Canvas Traffic Flow Visualization (Traffic Flow)

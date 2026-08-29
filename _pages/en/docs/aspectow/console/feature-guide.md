@@ -232,8 +232,8 @@ Monitors real-time application activities, JVM resources, active sessions, and l
 
 *   **Heap Status**: Compares JVM heap memory usage with maximum limits to detect GC state and memory leaks.
 *   **Undertow Thread Pool**: Compares active threads against worker pool capacity to monitor concurrent load.
-*   **Activity Status**: Displays Active Activity count (real-time requests currently processing), Current Period Count (new entries in current 5-minute period, e.g., `+14`), and Cumulative Total (`p.cumulative` since server start).
-*   **5-Minute Aggregation Timer**: Displays 300-second timer progress (e.g., `233/300`). Upon reaching `300/300`, data is persisted to the database and chart metrics roll over.
+*   **Activity Status**: Displays Active Activity count (real-time requests currently processing, e.g., `11`), Current Period Count (new entries in current 5-minute period, e.g., `+94`), and Cumulative Total (total cumulative activities recorded to date, e.g., `12883893`).
+*   **5-Minute Aggregation Timer**: Displays 300-second timer progress (e.g., `280/300`). Upon reaching `300/300`, data is persisted to the database and chart metrics roll over.
 
 ### 4.3. Canvas Traffic Flow Visualization (Traffic Flow)
 

@@ -234,8 +234,8 @@ Console 내에 통합된 AppMon 엔진을 통해 애플리케이션의 실시간
 
 *   **Heap Status**: JVM 힙 메모리의 현재 사용량과 최대 한도를 비교하여 GC 상태와 메모리 누수를 감지합니다.
 *   **Undertow Thread Pool**: 활성 쓰레드와 전체 풀 크기를 비교하여 서버의 동시 처리 부하를 체크합니다.
-*   **Activity Status**: Active Activity(현재 동시 처리 중인 실시간 요청 수), Current Period Count(현재 5분 주기의 신규 유입 수, 예: `+14`), Cumulative Total(서버 가동 후 누적 전체 활동 수 `p.cumulative`).
-*   **5분 주기 집계 타이머**: 하단의 타이머(예: `233/300`)가 300초(5분) 집계 구간의 진행 상태를 나타냅니다. `300/300` 도달 시 집계 데이터를 DB에 저장하고 차트에 반영합니다.
+*   **Activity Status**: Active Activity(현재 동시 처리 중인 실시간 요청 수, 예: `11`), Current Period Count(현재 5분 주기의 신규 유입 수, 예: `+94`), Cumulative Total(서버 가동 후 누적 전체 활동 수, 예: `12883893`).
+*   **5분 주기 집계 타이머**: 하단의 타이머(예: `280/300`)가 300초(5분) 집계 구간의 진행 상태를 나타냅니다. `300/300` 도달 시 집계 데이터를 DB에 저장하고 차트에 반영합니다.
 
 ### 4.3. Canvas 기반 트래픽 시각화 (Traffic Flow)
 
