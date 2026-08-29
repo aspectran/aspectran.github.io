@@ -33,13 +33,13 @@ Beyond a simple listing of metrics, this guide introduces the key components and
 All user requests (Request/Activity) are visualized as **'bullets'** flying from left to right across the screen. Powered by a high-performance delta-time engine, it maintains smooth animations even under heavy loads of thousands of concurrent requests.
 
 *   **Dynamic Visualization Logic**:
-    *   **Speed vs. Response Time**: As response time (`elapsedTime`) increases, bullet speed decelerates up to 60%. This is an essential mechanism for visually experiencing system congestion.
-    *   **Persistence**: The duration a bullet remains stuck to the right wall before disappearing is proportional to the actual server response time (`elapsedTime + 200ms`). In other words, requests that took longer remain on screen longer, drawing the operator's attention.
+    *   **Speed vs. Response Time**: As response time increases, bullet speed decelerates up to 60%. This is an essential mechanism for visually experiencing system congestion.
+    *   **Persistence**: The duration a bullet remains stuck to the right wall before disappearing is proportional to the actual server response time. In other words, requests that took longer remain on screen longer, drawing the operator's attention.
     *   **Hotspot & Hot Core**: Requests from heavy users with an Activity Intensity exceeding 0.3 generate a **Hot Core** center inside the bullet for immediate identification.
 *   **Status Color Coding**:
     *   **Green**: Normal requests processed at standard speeds.
     *   **Yellow**: Warning requests where response time starts to lengthen (500ms or higher).
-    *   **Red**: Requests where an error (`error`) occurred during processing.
+    *   **Red**: Requests where an error occurred during processing.
 *   **Data Synchronization**: All activity data is aggregated in 5-minute intervals, stored on the server, and immediately reflected in dashboard analysis charts.
 
 ### 4. Session Status & User Activity Management
