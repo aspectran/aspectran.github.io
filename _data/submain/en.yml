@@ -165,7 +165,7 @@ aspectow:
           url: /en/docs/aspectow/console/configuration-guide/
         - title: Operational Security Guide
           url: /en/docs/aspectow/console/security-architecture/
-        - title: Bulk Node Control
+        - title: Cluster Nodes
           url: /en/docs/aspectow/console/feature-guide/#31-cluster-nodes
         - title: Build & Deployment
           url: /en/docs/aspectow/console/feature-guide/#32-build--deployment

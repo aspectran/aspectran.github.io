@@ -90,7 +90,7 @@ An interactive module for orchestrating asynchronous remote Git source updates, 
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-build-deploy-main.png" alt="Build & Deployment Screen" %}
 
-#### Top Control Bar (Target Selector & Quick Actions)
+#### Top Control Bar
 
 *   **Target Selector**:
     *   `All Service Nodes` (Default): Targets all business service nodes in the cluster, excluding console nodes.
@@ -104,14 +104,14 @@ An interactive module for orchestrating asynchronous remote Git source updates, 
 
 #### Left Control & Metadata Panel
 
-*   **Script Execution (Script Selector)**:
+*   **Script Selector**:
     *   **Standard Deploy**: Full Build & Deploy (`5-pull_build_deploy.sh`), Fast Deploy without rebuild (`6-pull_deploy.sh`).
     *   **Single Step**: Git Pull Only (`1-pull.sh`), Maven Build Only (`2-build.sh`), Config Deploy Only (`3-deploy_config.sh`), Webapps Deploy Only (`4-deploy_webapps.sh`).
     *   **Selective Deploy**: Pull & Deploy Config Only (`7-pull_deploy_config_only.sh`), Pull & Deploy Webapps Only (`8-pull_deploy_webapps_only.sh`), Pull & Deploy Config + Webapps (`9-pull_deploy_config_webapps_only.sh`).
 *   **Pipeline Flow Preview**: Displays a visual badge workflow of the selected script's stages (e.g., `Git Pull` → `Maven Build` → `Config Deploy` → `Webapps Deploy`).
 *   **Git Branch / Tag (Optional)**: Specifies a target Git branch (e.g., `main`, `release/v2.0`), release tag (e.g., `v1.2.0`), or commit SHA. Defaults to the latest commit on the active branch if omitted.
 *   **Execution & Abort Buttons**: `Execute Script` starts asynchronous execution, while `Abort / Cancel` sends an immediate cancellation signal to target nodes.
-*   **Current Execution (Execution Metadata)**:
+*   **Current Execution**:
     *   Individual Node View: Displays Execution ID, Target Node, Git Branch, Before/After Commit Hashes, Start Timestamp, Real-time Duration ticker, and Exit Code.
     *   All Nodes View: Displays a compact summary card list comparing execution statuses and durations across all participating nodes.
 
@@ -126,7 +126,7 @@ An interactive module for orchestrating asynchronous remote Git source updates, 
     *   **Download Logs**: Exports verbatim terminal output text to a `.log` file on the local machine.
 *   **ANSI Color Terminal**: Real-time ANSI escape code parser rendering success (green), errors (red), warnings (yellow), and information (blue) in a dark-themed live stream console.
 
-#### Build & Deployment Audit Trail Modal/Popup
+#### Build & Deployment Audit Trail Modal
 
 Clicking the `Audit Trail` button opens a dedicated compliance audit popup window (`cluster/build/audit/`).
 
@@ -155,7 +155,7 @@ An interactive Command Center for dispatching interactive CLI/Shell commands to 
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-remote-commands.png" alt="Remote Commands Center Screen" %}
 
-#### Screen Layout (Grid System)
+#### Screen Layout
 
 Divided into a 350px left **History Panel** and a right panel containing the **Target Selector, Command Editor, and Console Output**.
 
@@ -217,7 +217,7 @@ Dispatches bulk control commands for specific schedules or jobs across multiple 
     *   **ENABLE (Bulk Enable)**: Enables the target schedule/job across selected nodes simultaneously.
     *   **DISABLE (Bulk Disable)**: Disables (pauses) the target schedule/job across selected nodes simultaneously.
 
-## 4. Real-time Monitoring (AppMon Integration)
+## 4. Live Monitoring (Aspectow AppMon)
 
 Monitors real-time application activities, JVM resources, active sessions, and log streaming via the integrated AppMon engine inside the Console.
 
@@ -225,8 +225,8 @@ Monitors real-time application activities, JVM resources, active sessions, and l
 
 ### 4.1. Group & App Tabs Navigation
 
-*   **Group Tabs (Group Tabs)**: Switch between logical server groups or cluster nodes.
-*   **Application Tabs (App Tabs)**: Switch between individual application instances (`app`) within the domain with seamless data synchronization across tab switches.
+*   **Group Tabs**: Switch between logical server groups or cluster nodes.
+*   **Application Tabs**: Switch between individual application instances (`app`) within the domain with seamless data synchronization across tab switches.
 
 ### 4.2. Server Resources & Performance Metrics
 
@@ -235,7 +235,7 @@ Monitors real-time application activities, JVM resources, active sessions, and l
 *   **Activity Status**: Displays Active Activity count (real-time requests currently processing, e.g., `11`), Current Period Count (new entries in current 5-minute period, e.g., `+94`), and Cumulative Total (total cumulative activities recorded to date, e.g., `12883893`).
 *   **5-Minute Aggregation Timer**: Displays 300-second timer progress (e.g., `280/300`). Upon reaching `300/300`, data is persisted to the database and chart metrics roll over.
 
-### 4.3. Canvas Traffic Flow Visualization (Traffic Flow)
+### 4.3. Canvas Traffic Flow Visualization
 
 Visualizes incoming user requests (Activity) as animated 'bullets' moving from left to right across the canvas.
 *   **Response Time Deceleration**: Bullet speed decelerates up to 60% based on response time, providing visual feedback on system latency.
@@ -251,13 +251,15 @@ Visualizes incoming user requests (Activity) as animated 'bullets' moving from l
 
 *   **TimeSeries Charts**: Analyzes activity and session trends across 5-minute, hour, day, month, and year units.
 *   **Real-time Log Tailing**: Socket-based log streaming with Pause, Clear, and Full-screen options.
-*   **Reverse Log Scrolling (Previous Logs)**: Scrolling to the top activates 'Load Previous Logs' to fetch historical logs contextually.
+*   **Reverse Log Scrolling**: Scrolling to the top activates 'Load Previous Logs' to fetch historical logs contextually.
 
-## 5. Security & Vault Management (Security & Vault)
+## 5. Security & Vault Management
 
-Centralized management for system passwords and Password-Based Encryption (PBE) security tokens.
+Centralized management for system encryption configurations and security tokens built upon Aspectran's built-in Password-Based Encryption (PBE) engine.
 
 ### 5.1. Vault Management
+
+A dedicated vault management screen designed to securely store and govern Aspectran PBE-based security tokens. Rather than integrating an external third-party vault system, it provides a built-in cryptographic vault that encrypts and isolates sensitive assets (e.g., database credentials, API keys) into structured PBE tokens, completely eliminating plaintext exposure in configuration files.
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-management.png" alt="Vault Management Screen" %}
 
@@ -275,11 +277,11 @@ Header card validating current application system encryption configuration:
 *   **PBE Algorithm**: Applied encryption algorithm (e.g., `PBEWithHmacSHA256AndAES_256`).
 *   **Key Parameters**: Key Length, Iteration Count, and Salt Generator parameters.
 
-#### Vault Table (Token Details List)
+#### Token Details List
 
 Lists token Label, encrypted key/value preview, creation date, expiration date, and status badges (`Active`/`Expired`), with Copy Key, View Details, and Revoke actions.
 
-#### New Token (New Security Token Issuance) Modal
+#### New Security Token Issuance Modal
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-new-token.png" alt="Vault Management New Token Modal" %}
 
@@ -294,7 +296,7 @@ Issues new security tokens and encrypts payload data using PBE algorithms:
 *   **Expiration (Minutes)**: Validity period in minutes (`0` for non-expiring permanent tokens).
 *   **Security Restrictions**: Upon clicking `Save & Encrypt`, plaintext values are encrypted. For security integrity, token type, validity period, and plaintext values become **read-only** post-issuance.
 
-### 5.2. Vault Tool (Security Utility)
+### 5.2. Vault Tool
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-tool.png" alt="Vault Interactive Tool Screen" %}
 
@@ -307,13 +309,13 @@ Interactive laboratory tool allowing developers to encrypt or decrypt sensitive 
 
 A suite of tools for Aspectran framework runtime diagnostics and developer productivity.
 
-### 6.1. Configuration (Framework Configuration Viewer)
+### 6.1. Framework Configuration Viewer
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-config.png" alt="Framework Configuration Viewer" %}
 
 Inspects runtime framework configurations, rule file hierarchy, and active profiles (`dev`, `prod`, `test`).
 
-### 6.2. Anatomy (Framework Anatomy Viewer)
+### 6.2. Framework Anatomy Viewer
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-anatomy.png" alt="Framework Anatomy Viewer" %}
 
@@ -322,7 +324,7 @@ Inspects internal `ActivityContext` registries:
 *   **Translet Registry**: Translet mappings, HTTP method bindings, Action execution pipelines, and View forwarding.
 *   **Aspect Registry**: AOP Pointcut patterns and Advice (Before/After/Around) definitions.
 
-### 6.3. Wildcard Tester (Pattern Validator)
+### 6.3. Wildcard Tester
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-wildcard-tester.png" alt="Wildcard Pattern Tester Tool" %}
 
@@ -331,7 +333,7 @@ Tests Aspectran wildcard pattern matcher rules in real time. Clicking the **Wild
 *   **Test Paths**: Inject sample test paths.
 *   **Match Results**: Displays match success/mismatch status and extracted variable bindings in real time.
 
-### 6.4. AsEL Tester (Expression Evaluator)
+### 6.4. AsEL Tester
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-asel-tester.png" alt="AsEL Expression Tester Tool" %}
 
@@ -340,13 +342,13 @@ Evaluates Aspectran Expression Language (AsEL) expressions interactively. Clicki
 *   **Context Variables**: Sample context variable inputs.
 *   **Evaluation Result**: Displays evaluated result, return object data type, and execution duration (ms).
 
-### 6.5. APON Converter (Data Converter)
+### 6.5. APON Converter
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-apon-converter.png" alt="APON Data Converter Tool" %}
 
 Bi-directional converter between APON and JSON formats. Clicking the **APON Guide** button links directly to the official [Introduction to APON (Aspectran Parameters Object Notation)](https://aspectran.com/en/docs/guides/introduce-apon/) documentation.
-*   **APON Panel (Left)**: Input APON text and click `Parse to JSON` to convert it into JSON format.
-*   **JSON Panel (Right)**: Input JSON text, choose an APON output style (`PRETTY`, `SINGLE_LINE`, `COMPACT`), and click `APON` to convert it back to APON format.
+*   **APON Panel**: Input APON text and click `Parse to JSON` to convert it into JSON format.
+*   **JSON Panel**: Input JSON text, choose an APON output style (`PRETTY`, `SINGLE_LINE`, `COMPACT`), and click `APON` to convert it back to APON format.
 *   **Quick Tools**: Provides `Clear All` for resetting input text and `Load Sample` for loading sample APON data.
 
 ## 7. Governance & Accounts
@@ -391,10 +393,10 @@ This section manages Console user accounts and security audit logs.
 
 Opened by clicking the **Role Permissions** button on the top toolbar. It allows administrators with `USER_MANAGE` permission or `SUPER_ADMIN` role to dynamically configure and manage fine-grained Role-Based Access Control (RBAC) mappings.
 
-*   **Select Role (Role Selector Dropdown)**:
+*   **Role Selector Dropdown**:
     *   Choose a target role to view or modify (`SUPER_ADMIN`, `ADMIN`, `BUILDER`, `VIEWER`, `DEMO`, etc.).
     *   Selecting a role automatically updates and checks the assigned permission checkboxes in real time.
-*   **Permissions (Fine-Grained Permissions List)**:
+*   **Fine-Grained Permissions List**:
     *   `MONITOR_VIEW`: Access to AppMon live monitoring dashboards, server resource metrics, and live log viewers.
     *   `MONITOR_CONTROL`: Permission to modify monitoring settings and manage active user sessions.
     *   `USER_MANAGE`: Permission to create, edit, delete user accounts and manage role-to-permission mappings.
@@ -402,7 +404,7 @@ Opened by clicking the **Role Permissions** button on the top toolbar. It allows
     *   `COMMAND_EXECUTE`: Permission to execute interactive CLI/Shell scripts via the Remote Command Center.
     *   `BUILD_VIEW`: Permission to inspect build/deployment dashboards, real-time terminal log streams, and audit trails.
     *   `BUILD_EXECUTE`: Permission to checkout Git branches, trigger Maven builds, and execute/abort full or staged deployment scripts.
-*   **Save Changes (Dynamic Permission Persistence)**:
+*   **Dynamic Permission Persistence (`Save Changes`)**:
     *   After adjusting permission checkboxes, clicking **Save Changes** immediately updates the `asc_role_permission` database mappings, applying changes to active sessions at runtime without restarting the server.
 
 ### 7.2. Login History Audit
