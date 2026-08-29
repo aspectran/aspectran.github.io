@@ -167,10 +167,12 @@ aspectow:
           url: /en/docs/aspectow/console/security-architecture/
         - title: Bulk Node Control
           url: /en/docs/aspectow/console/feature-guide/#31-cluster-nodes
+        - title: Build & Deployment
+          url: /en/docs/aspectow/console/feature-guide/#32-build--deployment
         - title: Remote Command Center
-          url: /en/docs/aspectow/console/feature-guide/#32-remote-commands
+          url: /en/docs/aspectow/console/feature-guide/#33-remote-commands
         - title: Distributed Scheduler
-          url: /en/docs/aspectow/console/feature-guide/#33-scheduler-manager
+          url: /en/docs/aspectow/console/feature-guide/#34-scheduler-manager
         - title: Vault Security Tokens
           url: /en/docs/aspectow/console/feature-guide/#51-vault-management
 

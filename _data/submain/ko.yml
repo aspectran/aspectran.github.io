@@ -167,12 +167,14 @@ aspectow:
           url: /ko/docs/aspectow/console/security-architecture/
         - title: 노드 일괄 제어
           url: /ko/docs/aspectow/console/feature-guide/#31-클러스터-노드-관리-cluster-nodes
+        - title: 빌드 및 배포
+          url: /ko/docs/aspectow/console/feature-guide/#32-빌드-및-배포-관리-build--deployment
         - title: 원격 명령 센터
-          url: /ko/docs/aspectow/console/feature-guide/#32-원격-명령-센터-remote-commands
+          url: /ko/docs/aspectow/console/feature-guide/#33-원격-명령-센터-remote-commands
         - title: 분산 스케줄러 관리자
-          url: /ko/docs/aspectow/console/feature-guide/#33-스케줄러-관리자-scheduler-manager
+          url: /ko/docs/aspectow/console/feature-guide/#34-스케줄러-관리자-scheduler-manager
         - title: Vault 보안 토큰
-          url: /ko/docs/aspectow/console/feature-guide/#51-vault-토큰-관리-vault-management
+          url: /ko/docs/aspectow/console/feature-guide/#51-vault-관리-vault-management
 
     - title: 실시간 모니터링 (AppMon)
       anchor: aspectow-appmon

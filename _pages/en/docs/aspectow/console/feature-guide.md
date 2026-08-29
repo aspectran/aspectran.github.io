@@ -14,7 +14,7 @@ Aspectow Console is a comprehensive visual management system integrating applica
 *   **Top Header (Top Bar)**: Displays the current page breadcrumb path, global search, and system environment profile information.
 *   **Bottom Right Profile & Logout**: Displays the logged-in user's nickname, account name, avatar, and logout button.
 
-## 2. Home Dashboard (Home Dashboard)
+## 2. Home Dashboard
 
 The central control panel rendered upon logging into the Console, helping users grasp overall system health at a glance and quickly navigate to core modules.
 
@@ -24,18 +24,18 @@ The central control panel rendered upon logging into the Console, helping users 
 
 The top section displays the `Aspectow Management Console` title alongside a welcome message for the running system, visually conveying overall operational health status.
 
-### Core Module Shortcut Cards (Stat Cards)
+### Core Module Shortcut Cards
 
 *   **Live Monitoring Card**: Navigates directly to real-time traffic, JVM memory heap, thread pool, and activity monitoring (`Aspectow AppMon`).
 *   **Cluster Operations Card**: Navigates to cluster node status inspection, remote command execution, and scheduler management.
 *   **Security & Vault Card**: Navigates to PBE encryption token management and system encryption configuration.
 *   **Developer Tools Card**: Navigates to runtime developer utilities (AsEL Tester, Wildcard Validator, APON Converter).
 
-## 3. Cluster Operations (Cluster Operations)
+## 3. Cluster Operations
 
 A suite of screens for central control of server instances and distributed scheduling tasks operating in a cluster environment.
 
-### 3.1. Cluster Nodes (Cluster Nodes)
+### 3.1. Cluster Nodes
 
 Monitors the real-time health of all active nodes in the cluster and dispatches bulk control commands.
 
@@ -84,7 +84,7 @@ Allows administrators to select multiple nodes and dispatch bulk control command
     *   **RESTART SERVICE (Hot)**: Recreates `ActivityContext` without shutting down the JVM to hot-apply configuration updates.
     *   **RESTART SERVER (Cold)**: Completely reboots OS daemon processes across target nodes, tracking node recovery via automated health checks.
 
-### 3.2. Build & Deployment (Build & Deployment)
+### 3.2. Build & Deployment
 
 An interactive module for orchestrating asynchronous remote Git source updates, Maven compilation, configuration/web application deployment, and real-time live terminal streaming across cluster nodes.
 
@@ -149,7 +149,7 @@ Clicking the `Audit Trail` button opens a dedicated compliance audit popup windo
 
 > **In-Depth Guide**: For detailed remote deployment architecture, process-independent safe restarts (`DetachedRestartRunner`), multi-node build locking, and operational best practices, refer to the [Aspectow Console Build & Deployment Guide](/en/docs/aspectow/console/build-and-deployment/).
 
-### 3.3. Remote Commands (Remote Commands)
+### 3.3. Remote Commands
 
 An interactive Command Center for dispatching interactive CLI/Shell commands to target cluster nodes and inspecting results in real time.
 
@@ -177,7 +177,7 @@ Streams execution results in real time separated by node tabs.
 
 Stores past command executions with timestamps, target node names, success/failure badges, and command previews. Clicking an entry restores the command and target settings into the editor for instant re-execution.
 
-### 3.4. Scheduler Manager (Scheduler Manager)
+### 3.4. Scheduler Manager
 
 Monitors and controls Aspectran Scheduler services and distributed jobs registered in a cluster environment. Supports two view modes via top view controls: **Dashboard View** for a cluster-wide overview and **Detail View** for node-specific job management.
 
@@ -223,7 +223,7 @@ Monitors real-time application activities, JVM resources, active sessions, and l
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v4-dashboard-dark.png" alt="AppMon Live Monitoring Dashboard" %}
 
-### 4.1. Group & App Tabs Navigation (Group & App Tabs)
+### 4.1. Group & App Tabs Navigation
 
 *   **Group Tabs (Group Tabs)**: Switch between logical server groups or cluster nodes.
 *   **Application Tabs (App Tabs)**: Switch between individual application instances (`app`) within the domain with seamless data synchronization across tab switches.
@@ -257,7 +257,7 @@ Visualizes incoming user requests (Activity) as animated 'bullets' moving from l
 
 Centralized management for system passwords and Password-Based Encryption (PBE) security tokens.
 
-### 5.1. Vault Management (Vault Management)
+### 5.1. Vault Management
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-management.png" alt="Vault Management Screen" %}
 
@@ -303,7 +303,7 @@ Interactive laboratory tool allowing developers to encrypt or decrypt sensitive 
 *   **Encryption/Decryption Execution Form**: Configure Algorithm, Password, Salt (optional), and Operation Mode (Encrypt/Decrypt) to execute text encryption or decryption.
 *   **Execution Result & History**: Provides result text clipboard copying and an execution history panel to inspect past runs (Timestamp, Mode, Algorithm) and easily restore them for re-execution.
 
-## 6. Framework Diagnostics & Developer Tools (Framework & Developer Tools)
+## 6. Framework Diagnostics & Developer Tools
 
 A suite of tools for Aspectran framework runtime diagnostics and developer productivity.
 
@@ -349,11 +349,11 @@ Bi-directional converter between APON and JSON formats. Clicking the **APON Guid
 *   **JSON Panel (Right)**: Input JSON text, choose an APON output style (`PRETTY`, `SINGLE_LINE`, `COMPACT`), and click `APON` to convert it back to APON format.
 *   **Quick Tools**: Provides `Clear All` for resetting input text and `Load Sample` for loading sample APON data.
 
-## 7. Governance & Accounts (Governance & Accounts)
+## 7. Governance & Accounts
 
 This section manages Console user accounts and security audit logs.
 
-### 7.1. User Management (User Management)
+### 7.1. User Management
 
 #### User Accounts List
 
@@ -405,13 +405,13 @@ Opened by clicking the **Role Permissions** button on the top toolbar. It allows
 *   **Save Changes (Dynamic Permission Persistence)**:
     *   After adjusting permission checkboxes, clicking **Save Changes** immediately updates the `asc_role_permission` database mappings, applying changes to active sessions at runtime without restarting the server.
 
-### 7.2. Login History Audit (Login History Audit)
+### 7.2. Login History Audit
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-login-history.png" alt="Login History Audit Screen" %}
 
 Audits login timestamps, client IP addresses, IP Geo Location flag icons, success/failure statuses, error reasons, and User-Agent strings to verify system access security thoroughly.
 
-### 7.3. Security Audit Log (Security Audit Log)
+### 7.3. Security Audit Log
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-audit-log.png" alt="Security Audit Log Screen" %}
 

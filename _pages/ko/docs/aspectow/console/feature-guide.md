@@ -24,7 +24,7 @@ Console에 로그인하면 처음 나타나는 중앙 제어판으로, 전체 �
 
 화면 상단에는 `Aspectow Management Console` 타이틀과 함께 현재 가동 중인 시스템을 환영하는 메세지가 위치하며, 시스템 전체의 가동 헬스 스태터스를 시각적으로 전달합니다.
 
-### 핵심 모듈 바로가기 카드 (Stat Cards)
+### 핵심 모듈 바로가기 카드
 
 *   **Live Monitoring 카드**: 실시간 트래픽, JVM 메모리 힙, 쓰레드 풀 및 액티비티 모니터링 화면(`Aspectow AppMon`)으로 즉시 이동합니다.
 *   **Cluster Operations 카드**: 클러스터 노드 상태 조회, 원격 명령 실행, 스케줄러 관리 화면으로 이동합니다.
@@ -259,7 +259,7 @@ Console 내에 통합된 AppMon 엔진을 통해 애플리케이션의 실시간
 
 시스템 보안 비밀번호 및 PBE(Password-Based Encryption) 암호화 토큰을 중앙 관리하는 섹션입니다.
 
-### 5.1. Vault 토큰 관리 (Vault Management)
+### 5.1. Vault 관리 (Vault Management)
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-management.png" alt="Vault Management Screen" %}
 
