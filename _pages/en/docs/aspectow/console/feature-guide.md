@@ -238,8 +238,8 @@ Monitors real-time application activities, JVM resources, active sessions, and l
 ### 4.3. Canvas Traffic Flow Visualization (Traffic Flow)
 
 Visualizes incoming user requests (Activity) as animated 'bullets' moving from left to right across the canvas.
-*   **Response Time Deceleration**: Bullet speed decelerates up to 60% based on response time (`elapsedTime`), providing visual feedback on system latency.
-*   **Persistence & Hot Core**: Heavy requests stick longer on the right wall (`elapsedTime + 200ms`), and high-intensity requests from heavy users render a **Hot Core** center for immediate identification.
+*   **Response Time Deceleration**: Bullet speed decelerates up to 60% based on response time, providing visual feedback on system latency.
+*   **Persistence & Hot Core**: Heavy requests stick longer on the right wall, and high-intensity requests from heavy users render a **Hot Core** center for immediate identification.
 *   **Status Color Coding**: Green (Normal), Yellow (Warning > 500ms), Red (Error).
 
 ### 4.4. Session Management & Geo Location
