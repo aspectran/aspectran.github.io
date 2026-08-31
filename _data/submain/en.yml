@@ -165,10 +165,10 @@ aspectow:
           url: /en/docs/aspectow/console/configuration-guide/
         - title: Operational Security Guide
           url: /en/docs/aspectow/console/security-architecture/
+        - title: Build & Deployment
+          url: /en/docs/aspectow/console/build-and-deployment/
         - title: Cluster Nodes
           url: /en/docs/aspectow/console/feature-guide/#31-cluster-nodes
-        - title: Build & Deployment
-          url: /en/docs/aspectow/console/feature-guide/#32-build--deployment
         - title: Remote Command Center
           url: /en/docs/aspectow/console/feature-guide/#33-remote-commands
         - title: Distributed Scheduler
