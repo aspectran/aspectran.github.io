@@ -51,7 +51,6 @@ The simplest and most modern configuration is as follows.
         <servlet-name>web-activity-servlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-
 </web-app>
 ```
 

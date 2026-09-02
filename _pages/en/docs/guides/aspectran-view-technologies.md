@@ -47,7 +47,7 @@ JSP is a classic view technology executed directly by the servlet container. Asp
 **Production Configuration Example (Single JSP View & Aspect Global Injection):**
 ```xml
 <!-- 1. JSP View Dispatcher Bean Configuration -->
-<bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
+<bean id="jspViewDispatcher" class="com.aspectran.web.servlet.support.view.JspViewDispatcher">
     <property name="prefix" value="/WEB-INF/jsp/"/>
     <property name="suffix" value=".jsp"/>
 </bean>
@@ -75,7 +75,7 @@ JSP is a classic view technology executed directly by the servlet container. Asp
 **Composite Layout Example (`JspTemplateViewDispatcher`):**
 ```xml
 <!-- Forwards to main-layout.jsp and injects the view name under the 'includePage' attribute -->
-<bean id="jspTemplateViewDispatcher" class="com.aspectran.web.support.view.JspTemplateViewDispatcher">
+<bean id="jspTemplateViewDispatcher" class="com.aspectran.web.servlet.support.view.JspTemplateViewDispatcher">
     <property name="template" value="/WEB-INF/jsp/layout/main-layout.jsp"/>
     <property name="includePageKey" value="includePage"/>
     <property name="prefix" value="/WEB-INF/jsp/"/>

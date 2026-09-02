@@ -26,9 +26,9 @@ subheadline: 패키지 명세
 -   `ServletContext`에 접근할 수 있는 `getServletContext()` 메서드를 제공합니다.
 -   다른 웹 컴포넌트(JSP, 서블릿 필터 등)가 `ServletContext`를 통해 `WebService` 인스턴스에 쉽게 접근할 수 있도록, 속성 이름으로 사용될 상수를 정의합니다.
 
-### `DefaultWebService` (구현 클래스)
+### `DefaultServletWebService` (구현 클래스)
 
-`WebService`의 최종 구현체로, HTTP 요청을 받아 `WebActivity`를 생성하고 실행하는 모든 과정을 담당합니다.
+`WebService`의 최종 구현체로, HTTP 요청을 받아 `ServletWebActivity`를 생성하고 실행하는 모든 과정을 담당합니다.
 
 **주요 책임 (Key Responsibilities):**
 -   `DefaultCoreService`를 상속하여 완전한 기능을 갖춘 핵심 서비스의 역할을 합니다.
@@ -40,14 +40,14 @@ subheadline: 패키지 명세
     1.  서비스가 일시 정지 상태인지 확인합니다.
     2.  요청 URI를 파싱하여 실행할 트랜슬릿의 이름(`requestName`)을 결정합니다.
     3.  `RequestAcceptor`를 통해 해당 요청을 Aspectran이 처리해야 하는지 확인합니다. 만약 처리 대상이 아니라면, 정적 리소스일 가능성을 염두에 두고 `DefaultServletHttpRequestHandler`로 처리를 위임합니다.
-    4.  처리 대상인 경우, `WebActivity` 인스턴스를 생성합니다. 이 `WebActivity`는 `request`와 `response` 객체를 감싸는 어댑터 역할을 합니다.
+    4.  처리 대상인 경우, `ServletWebActivity` 인스턴스를 생성합니다. 이 `ServletWebActivity`는 `request`와 `response` 객체를 감싸는 어댑터 역할을 합니다.
     5.  `activity.prepare()`를 호출하여 `requestName`에 해당하는 트랜슬릿 규칙을 찾습니다.
     6.  `activity.perform()`을 호출하여 Aspectran의 표준 요청 처리 파이프라인(어드바이스, 액션 실행 등)을 구동합니다.
     7.  실행 중 예외가 발생하면 404, 500 등 적절한 HTTP 오류 코드를 전송하는 예외 처리 로직을 수행합니다.
 
-### `DefaultWebServiceBuilder` (빌더 클래스)
+### `DefaultServletWebServiceBuilder` (빌더 클래스)
 
-`DefaultWebService` 인스턴스를 생성하고 설정하는 팩토리 클래스입니다.
+`DefaultServletWebService` 인스턴스를 생성하고 설정하는 팩토리 클래스입니다.
 
 **주요 책임 (Key Responsibilities):**
 -   `ServletContextListener`의 `contextInitialized()` 메서드나, `WebActivityServlet`의 `init()` 메서드와 같이 서블릿 컨테이너의 시작 시점에 호출되도록 설계되었습니다.
@@ -57,13 +57,13 @@ subheadline: 패키지 명세
 ## 3. 다른 패키지와의 상호작용
 
 -   **`com.aspectran.core.service`**: `DefaultCoreService`를 직접 상속하여 Aspectran의 모든 핵심 기능(생명주기, `ActivityContext` 관리 등)을 재사용합니다.
--   **`com.aspectran.web.activity`**: `DefaultWebService`는 모든 유효한 요청에 대해 `WebActivity`를 생성합니다. `WebActivity`는 서블릿 API와 코어 엔진 사이의 어댑터 역할을 수행하는 가장 중요한 협력 객체입니다.
--   **`javax.servlet`**: 이 패키지는 서블릿 API와의 직접적인 연동을 담당합니다. `HttpServletRequest`를 받아 `WebActivity`를 생성하고, 그 결과를 `HttpServletResponse`로 출력합니다.
+-   **`com.aspectran.web.activity`**: `DefaultServletWebService`는 모든 유효한 요청에 대해 `ServletWebActivity`를 생성합니다. `ServletWebActivity`는 서블릿 API와 코어 엔진 사이의 어댑터 역할을 수행하는 가장 중요한 협력 객체입니다.
+-   **`javax.servlet`**: 이 패키지는 서블릿 API와의 직접적인 연동을 담당합니다. `HttpServletRequest`를 받아 `ServletWebActivity`를 생성하고, 그 결과를 `HttpServletResponse`로 출력합니다.
 
 ## 4. 패키지 요약 및 아키텍처적 의미
 
 `com.aspectran.web.service` 패키지는 Aspectran을 위한 **서블릿 API 어댑터 계층**이라 할 수 있습니다. 이 패키지 덕분에 프로토콜에 독립적으로 설계된 Aspectran의 코어 엔진이, 특정 기술(서블릿)과 환경(웹 컨테이너)에 종속적인 HTTP 프로토콜과 통신할 수 있게 됩니다.
 
-가장 중요한 아키텍처적 특징은 **`WebActivity`를 통한 추상화**입니다. `WebActivity`가 서블릿의 `request`, `response` 객체를 감싸서 Aspectran 코어가 이해하는 표준 `Activity` 모델로 변환해줍니다. 이로 인해 `CoreActivity`의 실행 파이프라인은 자신이 처리하는 요청이 서블릿으로부터 온 것인지, 셸로부터 온 것인지 전혀 알 필요 없이 동일한 로직을 수행할 수 있습니다. 이는 **환경에 대한 의존성을 완벽하게 분리**하는, 매우 잘 설계된 어댑터 패턴의 예시입니다.
+가장 중요한 아키텍처적 특징은 **`ServletWebActivity`를 통한 추상화**입니다. `ServletWebActivity`가 서블릿의 `request`, `response` 객체를 감싸서 Aspectran 코어가 이해하는 표준 `Activity` 모델로 변환해줍니다. 이로 인해 `CoreActivity`의 실행 파이프라인은 자신이 처리하는 요청이 서블릿으로부터 온 것인지, 셸로부터 온 것인지 전혀 알 필요 없이 동일한 로직을 수행할 수 있습니다. 이는 **환경에 대한 의존성을 완벽하게 분리**하는, 매우 잘 설계된 어댑터 패턴의 예시입니다.
 
 결론적으로, 이 패키지는 Aspectran이 Tomcat, Jetty 등 모든 표준 서블릿 컨테이너 위에서 완전한 기능을 갖춘 엔터프라이즈 웹 프레임워크로 동작할 수 있도록 하는 필수적인 기반을 제공합니다.

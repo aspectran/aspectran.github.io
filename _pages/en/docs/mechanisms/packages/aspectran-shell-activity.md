@@ -40,6 +40,6 @@ The final implementation of `Activity` for the interactive shell environment. A 
 
 The `com.aspectran.shell.activity` package is another important example demonstrating the flexibility of Aspectran's architecture. The core architectural significance of this package lies in **extending beyond simple adaptation to include environment-specific logic**.
 
-While `WebActivity` and `DaemonActivity` primarily focus on the 'adapter' role of converting input/output targets, `ShellActivity` integrates a new feature, **interactive interaction**, into the `Activity`'s lifecycle through its unique `preProcedure()` stage. This shows that Aspectran's `Activity` model is designed not just to execute a fixed pipeline, but to extend the execution flow itself to meet the unique requirements of each environment.
+While `ServletWebActivity` and `DaemonActivity` primarily focus on the 'adapter' role of converting input/output targets, `ShellActivity` integrates a new feature, **interactive interaction**, into the `Activity`'s lifecycle through its unique `preProcedure()` stage. This shows that Aspectran's `Activity` model is designed not just to execute a fixed pipeline, but to extend the execution flow itself to meet the unique requirements of each environment.
 
 Thanks to this design, developers can easily build command-line applications that provide rich interaction, as if using a dedicated CLI library, while still leveraging Aspectran's core functionalities.

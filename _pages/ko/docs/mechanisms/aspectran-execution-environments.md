@@ -47,7 +47,7 @@ Aspectran은 두 가지 주요 모듈을 통해 웹 환경을 지원합니다.
 -   **주요 진입점**: `web.xml`에 등록된 `com.aspectran.web.servlet.listener.WebServiceListener`가 `WebService`를 초기화하고, `com.aspectran.web.servlet.WebActivityServlet`이 프론트 컨트롤러(Front Controller)로서 모든 HTTP 요청을 받아 `WebService`에 위임합니다.
 -   **핵심 컴포넌트**:
     -   `WebService`: 웹 환경에 특화된 `CoreService`로, `service(HttpServletRequest, HttpServletResponse)` 메서드가 핵심 진입점입니다.
-    -   `WebActivity`: `HttpServletRequest`와 `HttpServletResponse`를 래핑하여 Aspectran의 처리 파이프라인에 맞게 조정하는 `Activity` 구현체입니다.
+    -   `ServletWebActivity`: `HttpServletRequest`와 `HttpServletResponse`를 래핑하여 Aspectran의 처리 파이프라인에 맞게 조정하는 `Activity` 구현체입니다.
 -   **동작 모델**: **반응형(Reactive)**. 외부 HTTP 요청에 응답하여 동작하며, 서블릿 API 기반의 모든 웹 기능(세션, 인코딩, 멀티파트, 비동기 처리)을 지원합니다.
 
 ### 4.2. Undertow 환경 (`com.aspectran.undertow`)

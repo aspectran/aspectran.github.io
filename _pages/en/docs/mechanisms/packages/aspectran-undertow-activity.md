@@ -31,7 +31,7 @@ The final implementation of `Activity` for the Undertow web server environment. 
     -   `TowResponseAdapter`: Similarly wraps `HttpServerExchange` to act as a `ResponseAdapter`. It provides a standardized way to send response data to `HttpServerExchange`'s response channel or set headers.
     -   `TowSessionAdapter`: Wraps Undertow's session management functionality to act as a `SessionAdapter`.
     -   *Design Note*: In a servlet environment, `request` and `response` are separate objects, but in Undertow, `HttpServerExchange` manages both request and response states. Therefore, all adapters essentially refer to the same `HttpServerExchange` object.
--   `parseRequest()`: Similar to `WebActivity`, it performs the logic for parsing the HTTP request body. If the `Content-Type` is `multipart/form-data`, it uses Undertow's built-in parser to handle file uploads.
+-   `parseRequest()`: Similar to `ServletWebActivity`, it performs the logic for parsing the HTTP request body. If the `Content-Type` is `multipart/form-data`, it uses Undertow's built-in parser to handle file uploads.
 
 **Interaction with Other Classes:**
 -   `TowService`: Creates a `TowActivity` for every valid request within its `service()` method and calls `prepare()` and `perform()`.
@@ -40,7 +40,7 @@ The final implementation of `Activity` for the Undertow web server environment. 
 
 ## 3. Package Summary and Architectural Significance
 
-The `com.aspectran.undertow.activity` package and its core, the `TowActivity` class, are representative examples of **Aspectran's environment-adaptive architecture** alongside `WebActivity`.
+The `com.aspectran.undertow.activity` package and its core, the `TowActivity` class, are representative examples of **Aspectran's environment-adaptive architecture** alongside `ServletWebActivity`.
 
 The greatest architectural significance of this package is that it once again proves the **perfect separation of core logic from specific environment technology**. `CoreActivity` does not need to know whether the request it is processing came via the Servlet API or via Undertow's `HttpServerExchange`. This is because `TowActivity` acts as an adapter that absorbs all technical differences and provides a standardized interface.
 

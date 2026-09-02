@@ -88,7 +88,7 @@ Aspectran은 두 가지 주요 모듈을 통해 웹 환경을 지원합니다. �
 *   **일반 서블릿 환경 (`com.aspectran.web`)**
     *   **목적:** 모든 표준 Java 서블릿 컨테이너(예: Tomcat, Jetty, WildFly) 내에서 Aspectran 애플리케이션을 실행합니다. Aspectran의 코어와 서블릿 API 간의 가교 역할을 합니다.
     *   **주요 진입점:** `com.aspectran.web.servlet.listener.WebServiceListener`, `com.aspectran.web.servlet.WebActivityServlet`
-    *   **주요 구성 요소:** `WebService`, `WebActivity`, `DefaultServletHttpRequestHandler`
+    *   **주요 구성 요소:** `WebService`, `ServletWebActivity`, `DefaultServletHttpRequestHandler`
     *   **특징:** 반응형(HTTP 요청에 응답), 서블릿 API 기반, 모든 웹 기능 지원(세션, 인코딩, 멀티파트, 비동기), 전통적인 WAR 배포.
 
 *   **Undertow 환경 (`com.aspectran.undertow`)**

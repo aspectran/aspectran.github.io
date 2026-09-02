@@ -7,7 +7,7 @@ subheadline: Package Specifications
 
 This package acts as an **adapter that adjusts Aspectran's core execution engine (`CoreActivity`) to the standard Java Servlet environment**. The design goals of this package are as follows:
 
--   **Concretizing the Execution Environment**: Inherits from the protocol-independent `CoreActivity` to provide `WebActivity`, which integrates with specific technologies like the Servlet API (`HttpServletRequest`, `HttpServletResponse`).
+-   **Concretizing the Execution Environment**: Inherits from the protocol-independent `CoreActivity` to provide `ServletWebActivity`, which integrates with specific technologies like the Servlet API (`HttpServletRequest`, `HttpServletResponse`).
 -   **Encapsulation of the Servlet API**: Instead of directly handling servlet request/response objects, it encapsulates them behind Aspectran's standard adapter interfaces (`RequestAdapter`, `ResponseAdapter`). This ensures that the `CoreActivity` execution pipeline does not have a direct dependency on the Servlet API.
 -   **Handling Web-Specific Features**: It is responsible for handling features required only in a web environment, such as multipart request (file upload) parsing, request encoding processing, and asynchronous request processing (Servlet 3.0+ `AsyncContext`).
 
@@ -15,7 +15,7 @@ In conclusion, this package aims to provide a **specialized executor** that perf
 
 ## 2. Detailed Class Analysis
 
-### `WebActivity` (Implementation Class)
+### `ServletWebActivity` (Implementation Class)
 
 The final implementation of `Activity` for the servlet-based web environment. A new instance is created for each incoming `HttpServletRequest` by `WebService`.
 
@@ -33,14 +33,14 @@ The final implementation of `Activity` for the servlet-based web environment. A 
 -   `isAsync()` / `getAsyncContext()`: Methods to support Servlet 3.0's asynchronous processing (`AsyncContext`). If a translet is configured with `async="true"`, these methods are used to switch to asynchronous mode and manage the `AsyncContext`.
 
 **Interaction with Other Classes:**
--   `WebService`: Within its `service()` method, it creates a `WebActivity` for every valid request and calls `prepare()` and `perform()`.
--   `CoreActivity`: `WebActivity` inherits `CoreActivity` and uses its execution pipeline as is. The role of `WebActivity` is to 'connect' the input/output to the Servlet API so that this pipeline can run in a web environment.
+-   `WebService`: Within its `service()` method, it creates a `ServletWebActivity` for every valid request and calls `prepare()` and `perform()`.
+-   `CoreActivity`: `ServletWebActivity` inherits `CoreActivity` and uses its execution pipeline as is. The role of `ServletWebActivity` is to 'connect' the input/output to the Servlet API so that this pipeline can run in a web environment.
 -   Classes in `com.aspectran.web.adapter` package: `HttpServletRequestAdapter`, `HttpServletResponseAdapter`, etc., included in this package are directly created and used within the `adapt()` method.
 
 ## 3. Package Summary and Architectural Significance
 
-The `com.aspectran.web.activity` package and its core, the `WebActivity` class, are the **clearest examples of the Adapter Pattern** in Aspectran's architecture.
+The `com.aspectran.web.activity` package and its core, the `ServletWebActivity` class, are the **clearest examples of the Adapter Pattern** in Aspectran's architecture.
 
-The greatest architectural significance of this package is the **separation of core logic from specific environment technology**. `CoreActivity` only defines an abstract pipeline of 'how to process a request', while `WebActivity` handles the concrete role of 'how to fit the request and response from a servlet environment into that pipeline'. Thanks to this separation, Aspectran's core engine can remain stable and unaffected by changes or limitations of the Servlet API.
+The greatest architectural significance of this package is the **separation of core logic from specific environment technology**. `CoreActivity` only defines an abstract pipeline of 'how to process a request', while `ServletWebActivity` handles the concrete role of 'how to fit the request and response from a servlet environment into that pipeline'. Thanks to this separation, Aspectran's core engine can remain stable and unaffected by changes or limitations of the Servlet API.
 
-Furthermore, other `Activity` implementations for different environments, such as `DaemonActivity` and `ShellActivity`, also inherit `CoreActivity` and implement their own adapters in the same way as `WebActivity`. This is good evidence of how Aspectran supports various execution environments based on consistent and highly reusable design principles.
+Furthermore, other `Activity` implementations for different environments, such as `DaemonActivity` and `ShellActivity`, also inherit `CoreActivity` and implement their own adapters in the same way as `ServletWebActivity`. This is good evidence of how Aspectran supports various execution environments based on consistent and highly reusable design principles.

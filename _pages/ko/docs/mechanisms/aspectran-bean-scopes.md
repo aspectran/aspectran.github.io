@@ -28,7 +28,7 @@ Aspectran의 IoC 컨테이너는 빈(Bean)의 생명주기를 관리하는 범�
 -   **정의**: **단일 요청(Request)의 생명주기 동안에만 유효한 단일 인스턴스를 생성합니다.** 동일한 요청 내에서는 항상 같은 인스턴스가 반환되지만, 다른 요청에서는 새로운 인스턴스가 생성됩니다.
 -   **생명주기**: 요청이 시작될 때 생성되고, 해당 요청이 종료될 때 소멸됩니다.
 -   **내부 동작**: 이 스코프는 `RequestAdapter`를 지원하는 환경에서만 유효합니다. `Activity`가 시작될 때, `RequestAdapter`의 내부 저장소(일반적으로 `Map`)에 스코프 빈을 저장합니다. 동일 요청 내에서 빈을 다시 요청하면 이 저장소에서 찾아 반환합니다. 요청 처리가 끝나고 `Activity`가 소멸될 때, `RequestAdapter`에 저장된 모든 request-scoped 빈의 소멸 콜백이 호출됩니다.
--   **환경 제약**: `WebActivity`나 `TowActivity`와 같이 `RequestAdapter`가 존재하는 웹 환경에서만 의미가 있습니다. `ShellActivity`나 `DaemonActivity` 같은 환경에서 이 스코프를 사용하려고 하면 `UnsupportedBeanScopeException`이 발생합니다.
+-   **환경 제약**: `ServletWebActivity`나 `TowActivity`와 같이 `RequestAdapter`가 존재하는 웹 환경에서만 의미가 있습니다. `ShellActivity`나 `DaemonActivity` 같은 환경에서 이 스코프를 사용하려고 하면 `UnsupportedBeanScopeException`이 발생합니다.
 -   **주요 용도**: HTTP 요청과 관련된 데이터(예: 요청 파라미터, 사용자 인증 정보)를 처리하는 객체에 적합합니다.
 -   **설정 별칭**: `request`
 
@@ -37,7 +37,7 @@ Aspectran의 IoC 컨테이너는 빈(Bean)의 생명주기를 관리하는 범�
 -   **정의**: **단일 사용자 세션(Session) 내에서 유효한 단일 인스턴스를 생성합니다.** 동일한 세션 내에서는 항상 같은 인스턴스가 반환되지만, 다른 세션에서는 새로운 인스턴스가 생성됩니다.
 -   **생명주기**: 세션이 처음 시작될 때 생성되고, 해당 세션이 만료(invalidate)될 때 소멸됩니다.
 -   **내부 동작**: 이 스코프는 `SessionAdapter`를 지원하는 환경에서만 유효합니다. `SessionAdapter`는 내부적으로 `HttpSession`이나 Aspectran의 자체 `SessionManager`를 감싸고 있으며, session-scoped 빈은 이 세션의 속성(attribute)으로 저장됩니다. 세션이 소멸될 때, 세션에 저장된 모든 session-scoped 빈의 소멸 콜백이 호출됩니다.
--   **환경 제약**: `WebActivity`나 `ShellService`에서 세션 기능을 활성화한 경우처럼 `SessionAdapter`가 존재하는 환경에서만 의미가 있습니다. 세션 기능이 없는 환경에서 사용 시 `UnsupportedBeanScopeException`이 발생합니다.
+-   **환경 제약**: `ServletWebActivity`나 `ShellService`에서 세션 기능을 활성화한 경우처럼 `SessionAdapter`가 존재하는 환경에서만 의미가 있습니다. 세션 기능이 없는 환경에서 사용 시 `UnsupportedBeanScopeException`이 발생합니다.
 -   **주요 용도**: 사용자별로 유지되어야 하는 데이터(예: 로그인 정보, 장바구니)를 관리하는 객체에 적합합니다.
 -   **설정 별칭**: `session`
 

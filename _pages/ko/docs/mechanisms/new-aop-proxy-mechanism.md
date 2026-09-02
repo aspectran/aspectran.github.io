@@ -21,7 +21,7 @@ Aspectran 프레임워크의 AOP(Aspect-Oriented Programming) 프록시 메커�
 
 ### 2.2. `ProxyActivity`: 어드바이스 실행을 위한 경량 컨텍스트
 
-`ProxyActivity`는 AOP 어드바이스 실행이라는 특정 목적을 위해 설계된 경량 `Activity`입니다. 일반적인 요청-응답 사이클을 처리하는 `WebActivity`나 `ShellActivity`와 달리, 어드바이스 실행에 필요한 최소한의 기능만을 제공하여 매우 가볍게 동작합니다.
+`ProxyActivity`는 AOP 어드바이스 실행이라는 특정 목적을 위해 설계된 경량 `Activity`입니다. 일반적인 요청-응답 사이클을 처리하는 `ServletWebActivity`나 `ShellActivity`와 달리, 어드바이스 실행에 필요한 최소한의 기능만을 제공하여 매우 가볍게 동작합니다.
 
 -   **두 가지 생성 모드**:
     1.  **독립 모드 (`new ProxyActivity(context)`)**: 현재 스레드에 실행 중인 `Activity`가 없을 때(예: `@Async` 메서드가 처음 호출될 때) 생성됩니다. 이 `ProxyActivity`는 자신만의 독립적인 `ActivityData`를 가지며, 완전히 격리된 컨텍스트에서 어드바이스를 실행합니다.

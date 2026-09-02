@@ -28,7 +28,7 @@ Aspectran's IoC container supports the concept of **Scope**, which specifies the
 -   **Definition**: **Creates a single instance that is valid only for the lifecycle of a single request.** The same instance is always returned within the same request, but a new instance is created for a different request.
 -   **Lifecycle**: It is created when a request starts and destroyed when that request ends.
 -   **Internal Behavior**: This scope is only valid in an environment that supports `RequestAdapter`. When an `Activity` starts, it stores the scoped bean in the internal storage of the `RequestAdapter` (usually a `Map`). If the bean is requested again within the same request, it is retrieved from this storage and returned. When the request processing is finished and the `Activity` is destroyed, the destruction callbacks of all request-scoped beans stored in the `RequestAdapter` are called.
--   **Environmental Constraint**: It is only meaningful in a web environment where a `RequestAdapter` exists, such as `WebActivity` or `TowActivity`. Attempting to use this scope in an environment like `ShellActivity` or `DaemonActivity` will result in an `UnsupportedBeanScopeException`.
+-   **Environmental Constraint**: It is only meaningful in a web environment where a `RequestAdapter` exists, such as `ServletWebActivity` or `TowActivity`. Attempting to use this scope in an environment like `ShellActivity` or `DaemonActivity` will result in an `UnsupportedBeanScopeException`.
 -   **Primary Use Case**: Suitable for objects that handle data related to an HTTP request (e.g., request parameters, user authentication information).
 -   **Configuration Alias**: `request`
 
@@ -37,7 +37,7 @@ Aspectran's IoC container supports the concept of **Scope**, which specifies the
 -   **Definition**: **Creates a single instance that is valid within a single user session.** The same instance is always returned within the same session, but a new instance is created for a different session.
 -   **Lifecycle**: It is created when a session first starts and destroyed when that session is invalidated.
 -   **Internal Behavior**: This scope is only valid in an environment that supports `SessionAdapter`. `SessionAdapter` internally wraps `HttpSession` or Aspectran's own `SessionManager`, and session-scoped beans are stored as attributes of this session. When the session is destroyed, the destruction callbacks of all session-scoped beans stored in the session are called.
--   **Environmental Constraint**: It is only meaningful in an environment where a `SessionAdapter` exists, such as when the session feature is enabled in `WebActivity` or `ShellService`. Using it in an environment without session functionality will result in an `UnsupportedBeanScopeException`.
+-   **Environmental Constraint**: It is only meaningful in an environment where a `SessionAdapter` exists, such as when the session feature is enabled in `ServletWebActivity` or `ShellService`. Using it in an environment without session functionality will result in an `UnsupportedBeanScopeException`.
 -   **Primary Use Case**: Suitable for objects that manage data that needs to be maintained per user (e.g., login information, shopping cart).
 -   **Configuration Alias**: `session`
 

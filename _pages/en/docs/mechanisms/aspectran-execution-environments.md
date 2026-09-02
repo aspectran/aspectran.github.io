@@ -47,7 +47,7 @@ Aspectran supports web environments through two main modules.
 -   **Main Entry Point**: The `com.aspectran.web.servlet.listener.WebServiceListener` registered in `web.xml` initializes the `WebService`, and `com.aspectran.web.servlet.WebActivityServlet` acts as a Front Controller, receiving all HTTP requests and delegating them to the `WebService`.
 -   **Core Components**:
     -   `WebService`: A `CoreService` specialized for the web environment, with the `service(HttpServletRequest, HttpServletResponse)` method as its core entry point.
-    -   `WebActivity`: An `Activity` implementation that wraps `HttpServletRequest` and `HttpServletResponse` to adapt them to Aspectran's processing pipeline.
+    -   `ServletWebActivity`: An `Activity` implementation that wraps `HttpServletRequest` and `HttpServletResponse` to adapt them to Aspectran's processing pipeline.
 -   **Operational Model**: **Reactive**. It operates in response to external HTTP requests and supports all web features based on the Servlet API (sessions, encoding, multipart, asynchronous processing).
 
 ### 4.2. Undertow Environment (`com.aspectran.undertow`)

@@ -180,6 +180,7 @@ Configures auxiliary support features beyond core server operations. For example
 Deploys the default web application to the server root path (`/`), detailing servlets, JSPs, WebSockets, and session management behavior.
 
 ```xml
+
 <bean id="tow.context.root.servletContext"
       class="com.aspectran.undertow.server.servlet.TowServletContext"
       scope="prototype">

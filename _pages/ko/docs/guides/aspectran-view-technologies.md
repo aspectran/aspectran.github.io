@@ -47,7 +47,7 @@ JSP는 서블릿 컨테이너에 의해 직접 실행되는 고전적인 뷰 기
 **실전 설정 예제 (단일 JSP 뷰 & Aspect 전역 주입):**
 ```xml
 <!-- 1. JSP 뷰 디스패처 빈 등록 -->
-<bean id="jspViewDispatcher" class="com.aspectran.web.support.view.JspViewDispatcher">
+<bean id="jspViewDispatcher" class="com.aspectran.web.servlet.support.view.JspViewDispatcher">
     <property name="prefix" value="/WEB-INF/jsp/"/>
     <property name="suffix" value=".jsp"/>
 </bean>
@@ -75,7 +75,7 @@ JSP는 서블릿 컨테이너에 의해 직접 실행되는 고전적인 뷰 기
 **레이아웃 템플릿 적용 예제 (`JspTemplateViewDispatcher`):**
 ```xml
 <!-- 메인 레이아웃 JSP에 본문 JSP 경로를 includePageKey 속성으로 전달 -->
-<bean id="jspTemplateViewDispatcher" class="com.aspectran.web.support.view.JspTemplateViewDispatcher">
+<bean id="jspTemplateViewDispatcher" class="com.aspectran.web.servlet.support.view.JspTemplateViewDispatcher">
     <property name="template" value="/WEB-INF/jsp/layout/main-layout.jsp"/>
     <property name="includePageKey" value="includePage"/>
     <property name="prefix" value="/WEB-INF/jsp/"/>

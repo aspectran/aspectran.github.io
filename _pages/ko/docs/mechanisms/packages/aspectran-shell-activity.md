@@ -40,6 +40,6 @@ subheadline: 패키지 명세
 
 `com.aspectran.shell.activity` 패키지는 Aspectran 아키텍처의 유연성을 보여주는 또 다른 중요한 예시입니다. 이 패키지의 핵심 아키텍처적 의미는 **단순한 어댑테이션을 넘어선, 환경 특화 로직의 확장**에 있습니다.
 
-`WebActivity`나 `DaemonActivity`가 주로 입출력 대상을 변환하는 '어댑터' 역할에 집중하는 반면, `ShellActivity`는 `preProcedure()`라는 고유한 단계를 통해 **대화형 상호작용**이라는 새로운 기능을 `Activity`의 생명주기 안에 통합했습니다. 이는 Aspectran의 `Activity` 모델이 단순히 정해진 파이프라인을 실행하는 것을 넘어, 각 환경의 고유한 요구사항에 맞춰 실행 흐름 자체를 확장할 수 있도록 설계되었음을 보여줍니다.
+`ServletWebActivity`나 `DaemonActivity`가 주로 입출력 대상을 변환하는 '어댑터' 역할에 집중하는 반면, `ShellActivity`는 `preProcedure()`라는 고유한 단계를 통해 **대화형 상호작용**이라는 새로운 기능을 `Activity`의 생명주기 안에 통합했습니다. 이는 Aspectran의 `Activity` 모델이 단순히 정해진 파이프라인을 실행하는 것을 넘어, 각 환경의 고유한 요구사항에 맞춰 실행 흐름 자체를 확장할 수 있도록 설계되었음을 보여줍니다.
 
 이러한 설계 덕분에, 개발자는 Aspectran의 핵심 기능을 그대로 활용하면서도, 마치 전용 CLI 라이브러리를 사용하듯 풍부한 상호작용을 제공하는 커맨드-라인 애플리케이션을 손쉽게 구축할 수 있습니다.

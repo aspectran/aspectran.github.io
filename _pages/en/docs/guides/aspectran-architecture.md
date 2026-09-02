@@ -88,7 +88,7 @@ Aspectran supports web environments through two primary modules: one for generic
 *   **Generic Servlet Environment (`com.aspectran.web`)**
   *   **Purpose:** To run an Aspectran application within any standard Java Servlet container (e.g., Tomcat, Jetty, WildFly). It acts as a bridge between Aspectran's core and the Servlet API.
   *   **Main Entry Points:** `com.aspectran.web.servlet.listener.WebServiceListener`, `com.aspectran.web.servlet.WebActivityServlet`
-  *   **Key Components:** `WebService`, `WebActivity`, `DefaultServletHttpRequestHandler`
+  *   **Key Components:** `WebService`, `ServletWebActivity`, `DefaultServletHttpRequestHandler`
   *   **Characteristics:** Reactive (responds to HTTP requests), Servlet API-based, supports all web features (sessions, encoding, multipart, async), traditional WAR deployment.
 
 *   **Undertow Environment (`com.aspectran.undertow`)**

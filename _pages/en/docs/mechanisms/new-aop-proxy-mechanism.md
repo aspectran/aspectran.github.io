@@ -21,7 +21,7 @@ Aspectran framework's AOP (Aspect-Oriented Programming) proxy mechanism is desig
 
 ### 2.2. `ProxyActivity`: Lightweight Context for Advice Execution
 
-`ProxyActivity` is a lightweight `Activity` designed for the specific purpose of executing AOP advice. Unlike `WebActivity` or `ShellActivity`, which handle general request-response cycles, it operates very lightly by providing only the minimum functionality required for advice execution.
+`ProxyActivity` is a lightweight `Activity` designed for the specific purpose of executing AOP advice. Unlike `ServletWebActivity` or `ShellActivity`, which handle general request-response cycles, it operates very lightly by providing only the minimum functionality required for advice execution.
 
 -   **Two Creation Modes**:
     1.  **Independent Mode (`new ProxyActivity(context)`)**: Created when there is no `Activity` running in the current thread (e.g., when an `@Async` method is called for the first time). This `ProxyActivity` has its own independent `ActivityData` and executes advice in a completely isolated context.

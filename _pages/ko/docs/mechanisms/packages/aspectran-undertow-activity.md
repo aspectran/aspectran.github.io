@@ -31,7 +31,7 @@ Undertow 웹 서버 환경을 위한 `Activity`의 최종 구현체입니다. �
     -   `TowResponseAdapter`: 마찬가지로 `HttpServerExchange`를 감싸 `ResponseAdapter` 역할을 합니다. 응답 데이터를 `HttpServerExchange`의 응답 채널로 보내거나 헤더를 설정하는 표준화된 방법을 제공합니다.
     -   `TowSessionAdapter`: Undertow의 세션 관리 기능을 감싸 `SessionAdapter` 역할을 합니다.
     -   *설계 참고*: 서블릿 환경에서는 `request`와 `response`가 별개의 객체지만, Undertow에서는 `HttpServerExchange`가 요청과 응답 상태를 모두 관리합니다. 따라서 모든 어댑터가 사실상 동일한 `HttpServerExchange` 객체를 참조하는 구조입니다.
--   `parseRequest()`: `WebActivity`와 유사하게, HTTP 요청의 본문(body)을 파싱하는 로직을 수행합니다. `Content-Type`이 `multipart/form-data`일 경우, Undertow의 내장 파서를 사용하여 파일 업로드를 처리합니다.
+-   `parseRequest()`: `ServletWebActivity`와 유사하게, HTTP 요청의 본문(body)을 파싱하는 로직을 수행합니다. `Content-Type`이 `multipart/form-data`일 경우, Undertow의 내장 파서를 사용하여 파일 업로드를 처리합니다.
 
 **다른 클래스와의 상호작용:**
 -   `TowService`: `service()` 메서드 내에서 모든 유효한 요청에 대해 `TowActivity`를 생성하고 `prepare()`와 `perform()`을 호출합니다.
@@ -40,7 +40,7 @@ Undertow 웹 서버 환경을 위한 `Activity`의 최종 구현체입니다. �
 
 ## 3. 패키지 요약 및 아키텍처적 의미
 
-`com.aspectran.undertow.activity` 패키지와 그 핵심인 `TowActivity` 클래스는 `WebActivity`와 함께 **Aspectran의 환경 적응형 아키텍처**를 보여주는 대표적인 사례입니다.
+`com.aspectran.undertow.activity` 패키지와 그 핵심인 `TowActivity` 클래스는 `ServletWebActivity`와 함께 **Aspectran의 환경 적응형 아키텍처**를 보여주는 대표적인 사례입니다.
 
 이 패키지의 가장 큰 아키텍처적 의미는 **코어 로직과 특정 환경 기술의 완벽한 분리**를 다시 한번 증명한다는 점입니다. `CoreActivity`는 자신이 처리하는 요청이 서블릿 API를 통해 온 것인지, Undertow의 `HttpServerExchange`를 통해 온 것인지 전혀 알 필요가 없습니다. `TowActivity`라는 어댑터가 모든 기술적인 차이점을 흡수하고 표준화된 인터페이스를 제공하기 때문입니다.
 
