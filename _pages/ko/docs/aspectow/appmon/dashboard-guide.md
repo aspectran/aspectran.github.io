@@ -21,7 +21,7 @@ subheadline: Aspectow AppMon
 ### 2. 서버 리소스 및 성능 모니터링
 *   **실시간 리소스 지표**:
     *   **Heap Status**: JVM 힙 메모리의 현재 사용량과 최대치를 표시하여 GC 상태와 메모리 누수를 감지합니다 (`HeapMemoryUsageReader`).
-    *   **Undertow Thread Pool**: 활성 스레드와 전체 워커 풀 크기를 비교하여 서버의 동시 처리 부하를 모니터링합니다 (`NioWorkerMetricsReader`).
+    *   **Thread Pool Status**: Undertow 또는 Netty 서버의 스레드 풀 자원을 모니터링합니다 (`UndertowThreadPoolMetricsReader`, `NettyThreadPoolMetricsReader`). 활성 스레드(가상 스레드 환경 포함)와 전체 워커 풀 용량을 비교하여 서버의 동시 처리 부하를 실시간으로 모니터링합니다.
 *   **Activity Status (실시간 활동 수치)**: 서버 애플리케이션별로 Activity(요청) 처리 현황을 숫자로 제공합니다.
     1.  **Active Activity**: 현재 서버에서 동시에 처리 중인 실시간 활동 수입니다.
     2.  **Current Period Count**: 현재 5분 주기의 집계 구간 동안 유입된 활동 수(예: `+94`)입니다.

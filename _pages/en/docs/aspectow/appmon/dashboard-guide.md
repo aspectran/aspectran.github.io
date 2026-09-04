@@ -21,7 +21,7 @@ Beyond a simple listing of metrics, this guide introduces the key components and
 ### 2. Server Resources & Performance Monitoring
 *   **Real-time Resource Metrics**:
     *   **Heap Status**: Displays current JVM heap memory usage against maximum limits to detect GC states and memory leaks (`HeapMemoryUsageReader`).
-    *   **Undertow Thread Pool**: Compares active threads against total worker pool capacity to monitor concurrent server load (`NioWorkerMetricsReader`).
+    *   **Thread Pool Status**: Monitors Undertow or Netty server thread pool resources (`UndertowThreadPoolMetricsReader`, `NettyThreadPoolMetricsReader`). Compares active threads (including Virtual Threads) against total pool capacity to monitor concurrent server load.
 *   **Activity Status (Real-time Activity Counts)**: Provides numerical request processing status for each server application.
     1.  **Active Activity**: Number of real-time activities currently being processed concurrently on the server (e.g., `11`).
     2.  **Current Period Count**: Number of activities ingested during the current 5-minute aggregation period (e.g., `+94`).

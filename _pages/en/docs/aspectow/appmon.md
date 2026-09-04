@@ -19,7 +19,7 @@ It can run embedded within Aspectow Console in an integrated control environment
 *   **Non-intrusive Username Resolution**: Flexibly extracts usernames from complex session objects via declarative property expressions (`usernameAttribute`) or custom `SessionUserResolver` extensions.
 *   **Diverse Data Sources**:
     *   **Events**: Tracks and counts core application events such as HTTP request handling and session creation/destruction.
-    *   **Metrics**: Collects system metrics including JVM heap memory usage (`HeapMemoryUsageReader`), Undertow thread pool status (`NioWorkerMetricsReader`), and HikariCP connection pool metrics (`HikariPoolMBeanReader`).
+    *   **Metrics**: Collects system metrics including JVM heap memory usage (`HeapMemoryUsageReader`), Undertow thread pool status (`UndertowThreadPoolMetricsReader`), and HikariCP connection pool metrics (`HikariPoolMBeanReader`).
     *   **Logs**: Streams real-time tailing of specified application and access log files on the UI.
 *   **Data Persistence**: Periodically saves event counter metrics to an embedded H2 database or external RDBMS to preserve statistical data across application restarts.
 *   **Flexible APON Configuration**: Defines nodes and monitoring target applications flexibly using APON (Aspectran Parameter Object Notation) configuration files.

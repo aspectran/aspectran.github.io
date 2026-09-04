@@ -19,7 +19,7 @@ Console에 내장 통합되어 통합 관제 환경에서 구동될 수도 있�
 *   **비침투적 사용자명 추출 (Non-intrusive Username Resolution)**: 선언적 프로퍼티 경로(`usernameAttribute`) 또는 `SessionUserResolver` 확장을 통해 복잡한 세션 객체에서 사용자명을 손쉽게 추출합니다.
 *   **다양한 데이터 소스 지원**:
     *   **이벤트(Events)**: HTTP 요청 처리, 세션 생성/소멸 등 애플리케이션의 주요 이벤트를 추적하고 카운팅합니다.
-    *   **메트릭(Metrics)**: JVM 힙 메모리 사용량(`HeapMemoryUsageReader`), Undertow 스레드 풀 상태(`NioWorkerMetricsReader`), HikariCP 커넥션 풀 상태(`HikariPoolMBeanReader`) 등 다양한 시스템 메트릭을 수집합니다.
+    *   **메트릭 (Metrics)**: JVM 힙 메모리 사용량 (`HeapMemoryUsageReader`), Undertow 스레드 풀 상태 (`UndertowThreadPoolMetricsReader`), HikariCP 커넥션 풀 상태 (`HikariPoolMBeanReader`) 등 다양한 시스템 메트릭을 수집합니다.
     *   **로그(Logs)**: 지정된 애플리케이션 및 액세스 로그 파일을 실시간으로 테일링(Tailing)하여 UI에 표시합니다.
 *   **데이터 영속성**: 주요 이벤트 카운트 데이터를 내장된 H2 데이터베이스 또는 외부 RDBMS에 주기적으로 저장하여, 애플리케이션 재시작 시에도 통계 데이터가 유실되지 않고 유지됩니다.
 *   **유연한 APON 설정**: APON(Aspectran Parameter Object Notation) 기반의 설정 파일을 통해 노드 및 모니터링 대상 앱을 유연하게 정의할 수 있습니다.
