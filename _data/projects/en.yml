@@ -55,11 +55,11 @@ starter_projects:
     url: https://github.com/aspectran/aspectow-enterprise
     repo: https://github.com/aspectran/aspectow-enterprise
   - subheadline: Starter Projects
-    title: Aspectow Light Edition
-    description: A lightweight, non-servlet starter optimized for building high-performance REST APIs and microservices. It includes an embedded Undertow server for a minimal footprint and fast startup.
-    caption: Aspectow\nLight
-    url: https://github.com/aspectran/aspectow-light
-    repo: https://github.com/aspectran/aspectow-light
+    title: Aspectow Edge Edition
+    description: An ultra-lightweight, high-performance starter optimized for building modern REST APIs and microservices. By combining an embedded Netty server with Java 21 Virtual Threads, it eliminates servlet overhead to achieve a minimal footprint and maximum throughput.
+    caption: Aspectow\nEdge
+    url: https://github.com/aspectran/aspectow-edge
+    repo: https://github.com/aspectran/aspectow-edge
   - subheadline: Starter Projects
     title: Aspectow Jetty Edition
     description: An all-in-one starter for building enterprise web applications, pre-configured with an embedded Jetty server. It provides a full-featured, servlet-compliant environment, offering an alternative to the default Undertow server.

@@ -62,8 +62,8 @@ Aspectow는 사용 목적과 배포 환경에 따라 다음과 같은 모듈화�
 *   **Aspectow Enterprise Edition**
     > 서블릿 사양을 완벽하게 지원하며 엔터프라이즈 웹 애플리케이션 구축에 적합합니다. 시각적 관제 플랫폼인 **Aspectow Console이 기본 내장**되어 있으며, JBoss의 [Undertow](https://undertow.io) 웹서버와 Apache Tomcat의 JSP 엔진인 [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp)가 포함되어 있습니다.
 
-*   **Aspectow Light Edition**
-    > 서블릿 사양이 제거된 고성능 경량화 버전이며, 최소 메모리 사용량으로 경량 REST API 서비스를 구축하는데 최적화되어 있습니다. [Undertow](https://undertow.io) 웹서버가 내장되어 있습니다.
+*   **Aspectow Edge Edition**
+    > 서블릿 오버헤드를 완전히 배제한 초경량 고성능 에디션으로, 임베디드 [Netty](https://netty.io) 서버와 Java 21 가상 스레드(Virtual Threads)를 결합하여 최소 리소스 점유와 극대화된 I/O 처리량으로 고성능 마이크로서비스 및 REST API 서비스를 구축하는 데 최적화되어 있습니다.
 
 *   **Aspectow Jetty Edition**
     > Jetty 웹서버가 내장된 버전으로, 특정 인프라 요구사항에 맞게 서블릿 기반 웹 애플리케이션을 실행할 수 있습니다.
@@ -116,7 +116,7 @@ Aspectow는 바로 새로운 프로젝트 개발에 착수할 수 있도록 GitH
 기본 환경만 구성되어 있어, 새로운 프로젝트를 시작하는 뼈대로 사용하기 위한 프로젝트입니다.
 
 *   [Aspectow Enterprise](https://github.com/aspectran/aspectow-enterprise): Aspectow Enterprise 에디션의 기본 스타터입니다.
-*   [Aspectow Light](https://github.com/aspectran/aspectow-light): Aspectow Light 에디션의 기본 스타터입니다.
+*   [Aspectow Edge](https://github.com/aspectran/aspectow-edge): Aspectow Edge 에디션의 기본 스타터입니다.
 *   [Aspectow Jetty](https://github.com/aspectran/aspectow-jetty): Aspectow Jetty 에디션의 기본 스타터입니다.
 
 ### 데모 및 샘플 프로젝트 (Demo & Sample Projects)

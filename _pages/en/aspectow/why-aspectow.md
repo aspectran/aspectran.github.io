@@ -62,8 +62,8 @@ Aspectow offers modular editions tailored to specific usage purposes and deploym
 *   **Aspectow Enterprise Edition**
     > Fully supports the Servlet specification and is suitable for building enterprise web applications. It **includes the visual management platform, Aspectow Console, by default**, alongside JBoss's [Undertow](https://undertow.io) web server and [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp), the JSP engine used by Apache Tomcat.
 
-*   **Aspectow Light Edition**
-    > A lightweight, non-servlet version optimized for building high-performance REST API services with a minimal memory footprint. It includes JBoss's [Undertow](https://undertow.io) web server.
+*   **Aspectow Edge Edition**
+    > An ultra-lightweight, high-performance edition that eliminates servlet overhead. By combining an embedded [Netty](https://netty.io) server with Java 21 Virtual Threads, it is optimized for building high-throughput microservices and REST API services with a minimal resource footprint.
 
 *   **Aspectow Jetty Edition**
     > A version with the Jetty web server built-in, providing flexibility for specific infrastructure requirements while running Servlet-based web applications.
@@ -116,7 +116,7 @@ Aspectow offers starter projects to kickstart new development and sample/demo pr
 These projects provide only the basic environment and are intended to be used as a skeleton for starting a new project.
 
 *   [Aspectow Enterprise](https://github.com/aspectran/aspectow-enterprise): The default starter for the Aspectow Enterprise Edition.
-*   [Aspectow Light](https://github.com/aspectran/aspectow-light): The default starter for the Aspectow Light Edition.
+*   [Aspectow Edge](https://github.com/aspectran/aspectow-edge): The default starter for the Aspectow Edge Edition.
 *   [Aspectow Jetty](https://github.com/aspectran/aspectow-jetty): The default starter for the Aspectow Jetty Edition.
 
 ### Demo and Sample Projects
