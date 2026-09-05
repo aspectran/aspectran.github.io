@@ -304,8 +304,8 @@ ASPECTRAN_OPTS="
 -Daspectow.node.id=$NODE_ID
 -Djava.io.tmpdir=$TEMP_DIR
 -Dtow.server.listener.http.port=$PORT
--Dtow.context.root.session.cookieName=JSESSIONID-$PORT
--Dtow.context.console.session.cookieName=JSESSIONID-$PORT
+-Dtow.context.root.session.cookieName=JSESSIONID_$PORT
+-Dtow.context.console.session.cookieName=JSESSIONID_$PORT
 -Daspectow.console.config.db.h2.path_explicit=~/aspectow-console-demo-${NODE_ID}
 "
 
