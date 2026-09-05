@@ -19,7 +19,7 @@ It can run embedded within Aspectow Console in an integrated control environment
 *   **Non-intrusive Username Resolution**: Flexibly extracts usernames from complex session objects via declarative property expressions (`usernameAttribute`) or custom `SessionUserResolver` extensions.
 *   **Diverse Data Sources**:
     *   **Events**: Tracks and counts core application events such as HTTP request handling and session creation/destruction.
-    *   **Metrics**: Collects system metrics including JVM heap memory usage (`HeapMemoryUsageReader`), Undertow thread pool status (`UndertowThreadPoolMetricsReader`), and HikariCP connection pool metrics (`HikariPoolMBeanReader`).
+    *   **Metrics**: Collects diverse system metrics including JVM heap memory usage (`HeapMemoryUsageReader`), Undertow and Netty thread pool status (`UndertowThreadPoolMetricsReader`, `NettyThreadPoolMetricsReader`), and HikariCP connection pool metrics (`HikariPoolMBeanReader`).
     *   **Logs**: Streams real-time tailing of specified application and access log files on the UI.
 *   **Data Persistence**: Periodically saves event counter metrics to an embedded H2 database or external RDBMS to preserve statistical data across application restarts.
 *   **Flexible APON Configuration**: Defines nodes and monitoring target applications flexibly using APON (Aspectran Parameter Object Notation) configuration files.
@@ -41,19 +41,19 @@ Aspectow AppMon utilizes a 3-tier hierarchy—**`Group` (Server Group) - `Node` 
 
 ## 4. Session Monitoring & User Tracking Architecture
 
-AppMon provides an advanced session monitoring mechanism combining **always-on user tracking** and **on-demand live event broadcasting**.
+AppMon provides an advanced session monitoring architecture combining **always-on user tracking** and **on-demand live event broadcasting**.
 
 ### 4.1. Lifecycle Separation: Always-On vs. On-Demand
 
 *   **Always-On User Tracking (`UserTrackingListener`)**:
-    *   Registered permanently to the target `SessionManager` during `SessionEventReader.init()` at server startup.
+    *   Registered permanently to the target context's (`contextName`) `SessionManager` during `SessionEventReader.init()` at server startup.
     *   Operates 24/7 regardless of whether an administrator is connected to the AppMon UI, ensuring that all created sessions have client IP addresses and country codes populated.
-    *   Guarantees that full active session inquiries (`getAllActiveSessions`) always display complete client location details.
-    *   Built-in duplicate registration guard (`registeredTrackingTargets`) ensures that even if multiple apps reference the same deployment target (e.g., `tow.server/demo`), the listener is registered only once.
+    *   Guarantees that full active session inquiries (`getAllActiveSessions`) always display complete client location details without omissions.
+    *   Built-in duplicate registration guard (`registeredTrackingTargets`) ensures that even if multiple `app`s reference the same target (`tow.server/demo` or `netty.server/demo`), the listener is registered exactly once.
 *   **On-Demand Live Broadcasting (`SessionEventReadingListener`)**:
-    *   Registered only when a dashboard client subscribes to the app's channel and unregistered when the subscriber count drops to zero (`SessionEventReader.start()` / `stop()`), minimizing runtime resource overhead.
+    *   Registered only when an administrator subscribes to a specific app's dashboard and unregistered when subscriber count drops to zero (`stop()`), minimizing runtime resource overhead.
 
-### 4.2. Geolocation Resolution (`IPCountryResolver`)
+### 4.2. Country Code Resolution (`IPCountryResolver`)
 
 AppMon resolves ISO 2-letter country codes (e.g., `KR`, `US`, `JP`) from client IP addresses using the pluggable `IPCountryResolver` interface:
 
@@ -66,19 +66,19 @@ public interface IPCountryResolver {
 }
 ```
 
-Implementations can query external APIs (e.g., KISA WHOIS OpenAPI) or local databases (e.g., MaxMind GeoIP). Registering an `IPCountryResolver` Bean in `appmon-rules.xml` activates automatic country code resolution across all monitored sessions.
+Implementations integrating with KISA WHOIS OpenAPI (`WhoisIPCountryResolver`) or MaxMind GeoIP database registered as Beans in `appmon-rules.xml` enable automatic querying and injection into `user.countryCode` upon session creation.
 
 ### 4.3. Non-intrusive Username Extraction (`usernameAttribute` & `SessionUserResolver`)
 
-Applications often store user information inside custom session objects (e.g., `UserSession`, `Account`, Spring Security Context) rather than a plain string attribute. AppMon extracts usernames non-intrusively using three priority levels:
+Production web applications store login details inside custom objects such as `UserSession`, `Account`, or `Principal` rather than simple strings. AppMon supports a 3-tier priority hierarchy to extract usernames without modifying application code:
 
-1.  **Custom Resolver (`userResolver`)**: A dedicated `SessionUserResolver` Bean or class defined in `event.parameters.userResolver` or in the context:
+1.  **Custom Resolver (`userResolver`)**: Preferentially invokes `event.parameters.userResolver` or a `SessionUserResolver` Bean/class registered in the context:
     ```java
     public interface SessionUserResolver {
         String resolveUsername(String deploymentName, Session session);
     }
     ```
-2.  **Declarative Property Path (`usernameAttribute`)**: Automatically navigates nested JavaBean properties (e.g., `user.account.username` resolves `session.getAttribute("user").getAccount().getUsername()`):
+2.  **Declarative Property Path Navigation (`usernameAttribute`)**: Specifying a JavaBean property path (e.g., `user.account.username`) automatically traverses nested getters (`session.getAttribute("user").getAccount().getUsername()`):
     ```apon
     event: {
         id: session
@@ -88,24 +88,24 @@ Applications often store user information inside custom session objects (e.g., `
         }
     }
     ```
-3.  **Default Fallback**: Reads the default `user.name` session attribute if present.
+3.  **Default Fallback**: Reads the `user.name` attribute configured on the session if present.
 
 ### 4.4. Real-time Authentication State Detection
 
-When a user logs in and the session attribute (e.g., `"user"`) is added or updated, `SessionEventReader` intercepts `attributeAdded` / `attributeUpdated` events and immediately broadcasts a refreshed session event to the AppMon UI in real time.
+When a user logs in and an authentication object (e.g., `"user"`) is added or updated in the session, `SessionEventReader` intercepts `attributeAdded` / `attributeUpdated` events and immediately broadcasts a refreshed session event to the AppMon dashboard.
 
 ## 5. Data Persistence Architecture Overview
 
 Aspectow AppMon persistently stores event count metrics in a database to maintain continuous statistics. By default, it uses an embedded H2 database and provides the following primary tables:
 
-*   **`appmon_event_count`**: Stores count metrics aggregated by minute, hour, day, month, and year, queried directly for real-time visualization charts.
-*   **`appmon_event_count_last`**: Stores the most recent count state for each event to restore in-memory counters upon application restarts, ensuring statistical continuity.
+*   **`appmon_event_count`**: Stores count metrics aggregated by minute, hour, day, month, and year, queried directly for dashboard visualization charts.
+*   **`appmon_event_count_last`**: Stores the most recent count state for each event to restore in-memory counters upon application restart, ensuring statistical continuity.
 
 > For detailed composite PK schemas and pre-aggregation 3-tier storage architecture, refer to the [AppMon Event Count Data Structure and Architecture](/en/docs/aspectow/appmon/event-count-data-structure/) documentation.
 
 ## 6. Standalone Installation & Configuration Guide (Without Console)
 
-When deploying AppMon standalone on specific application servers without Console, configuration files are located under the project's **`/config/appmon/`** directory.
+When deploying AppMon standalone on specific application servers without building Console, configuration files are organized under the project's **`/config/appmon/`** directory.
 
 ### 6.1. Configuration Directory Structure (`/config/appmon/`)
 
@@ -116,7 +116,7 @@ When deploying AppMon standalone on specific application servers without Console
 
 ### 6.2. APON Main Configuration (`appmon-config.apon`) Example
 
-`appmon-config.apon` defines target applications (`app`), collected events, metrics, logs, and persistence intervals.
+The `appmon-config.apon` file defines target applications (`app`), collected events, metrics, logs, and persistence intervals.
 
 ```apon
 # DB persistence interval (in minutes, e.g., 1 minute)
@@ -154,14 +154,24 @@ app: {
         reader: com.aspectran.aspectow.appmon.engine.exporter.metric.jvm.HeapMemoryUsageReader
         sampleInterval: 500
     }
+    # When using Undertow server
     metric: {
         id: undertow-tp
         title: Undertow Thread Pool
-        description: Monitors Undertow NIO worker thread pool resources.
-        reader: com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.NioWorkerMetricsReader
+        description: Monitors Undertow worker thread pool resources.
+        reader: com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.UndertowThreadPoolMetricsReader
         target: tow.server
         sampleInterval: 500
     }
+    # When using Netty server
+    # metric: {
+    #     id: netty-tp
+    #     title: Netty Thread Pool
+    #     description: Monitors Netty worker thread pool and concurrent request processing status.
+    #     reader: com.aspectran.aspectow.appmon.engine.exporter.metric.netty.NettyThreadPoolMetricsReader
+    #     target: netty.server
+    #     sampleInterval: 500
+    # }
     log: {
         id: app
         file: /logs/jpetstore.log
@@ -173,15 +183,15 @@ app: {
 
 ### 6.3. Key APON Parameter Specifications
 
-*   **`counterPersistInterval`**: Interval in minutes for saving event counter data to DB (default: 5 minutes; setting to `0` disables DB persistence).
-*   **`pollingConfig`**: Long-Polling configuration (`pollingInterval`, `sessionTimeout`).
-*   **`app`**: Defines individual application monitoring units.
+*   **`counterPersistInterval`**: Interval in minutes for saving aggregated event counter data to DB (default: 5 minutes; setting to `0` disables DB persistence).
+*   **`pollingConfig`**: Configures Long-Polling connection behavior (`pollingInterval`, `sessionTimeout`).
+*   **`app`**: Individual application unit to monitor.
     *   **`event`**:
         *   `id`: Event type (`activity`, `session`).
-        *   `target`: Target context name or server deployment path (`tow.server/<deploymentName>`).
+        *   `target`: Target context identifier or server context path (`tow.server/<contextName>` or `netty.server/<contextName>`).
         *   `parameters`:
             *   For `activity`: Pointcut `+`/`-` path filters.
-            *   For `session`: `usernameAttribute` (property path such as `user.account.username`), `userResolver` (custom `SessionUserResolver` class or Bean ID).
+            *   For `session`: `usernameAttribute` (property path, e.g., `user.account.username`), `userResolver` (custom `SessionUserResolver` class name or Bean ID).
     *   **`metric`**: `reader` (fully qualified class name of `MetricReader` implementation), `parameters` (additional arguments).
     *   **`log`**: `file` (target log file path for tailing), `lastLines` (initial line count loaded upon UI access).
 
@@ -229,7 +239,7 @@ Specify configuration files using `AppMonConfigResolver` inside `appmon-rules.xm
         </properties>
     </bean>
 
-    <!-- Optional: Register IP Country Resolver for Geolocation -->
+    <!-- Optional: Register IP Country Resolver Bean -->
     <!-- <bean id="ipCountryResolver" class="com.aspectran.aspectow.demo.root.common.WhoisIPCountryResolver"/> -->
 
     <append file="/config/appmon/node-rules.xml"/>

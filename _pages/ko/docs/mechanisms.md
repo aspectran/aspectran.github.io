@@ -26,7 +26,6 @@ Aspectran 프레임워크의 실행 엔진, 소스 로딩, 컨텍스트 빌드 �
 *   [요청(Request) 및 응답(Response) 처리 메커니즘](/ko/docs/mechanisms/aspectran-request-response/)
 *   [Aspectran 설정 규칙 아키텍처 심층 분석](/ko/docs/mechanisms/aspectran-rule-architecture/)
 *   [Aspectran 서비스 아키텍처 심층 분석](/ko/docs/mechanisms/aspectran-services/)
-*   [Aspectran Session Manager: Deep Dive](/ko/docs/mechanisms/aspectran-session-manager/)
 *   [Aspectran AOP 프록시 메커니즘: `AbstractBeanProxy`와 `ProxyActivity`](/ko/docs/mechanisms/new-aop-proxy-mechanism/)
 
 ## <i class="bi bi-box"></i> 패키지별 상세 명세

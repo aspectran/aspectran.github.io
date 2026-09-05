@@ -23,7 +23,7 @@ subheadline: Aspectow AppMon
     *   **Heap Status**: JVM 힙 메모리의 현재 사용량과 최대치를 표시하여 GC 상태와 메모리 누수를 감지합니다 (`HeapMemoryUsageReader`).
     *   **Thread Pool Status**: Undertow 또는 Netty 서버의 스레드 풀 자원을 모니터링합니다 (`UndertowThreadPoolMetricsReader`, `NettyThreadPoolMetricsReader`). 활성 스레드(가상 스레드 환경 포함)와 전체 워커 풀 용량을 비교하여 서버의 동시 처리 부하를 실시간으로 모니터링합니다.
 *   **Activity Status (실시간 활동 수치)**: 서버 애플리케이션별로 Activity(요청) 처리 현황을 숫자로 제공합니다.
-    1.  **Active Activity**: 현재 서버에서 동시에 처리 중인 실시간 활동 수입니다.
+    1.  **Active Activity**: 현재 서버에서 동시에 처리 중인 실시간 활동 수(예: `11`)입니다.
     2.  **Current Period Count**: 현재 5분 주기의 집계 구간 동안 유입된 활동 수(예: `+94`)입니다.
     3.  **Cumulative Total**: 현재까지 누적된 전체 활동 수(예: `12883893`)입니다.
 *   **5분 주기 집계 관리**: 수치 하단에 표시되는 타이머(예: `280/300`)는 5분(300초) 단위의 데이터 집계 진행 상태를 나타냅니다. `300/300`에 도달하면 해당 주기의 집계 데이터를 서버 DB에 저장하고 분석 차트에 반영한 뒤, 주기를 초기화합니다.

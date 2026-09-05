@@ -42,6 +42,8 @@ aspectran:
           url: /en/docs/guides/aspectran-translet/
         - title: Scheduler
           url: /en/docs/guides/aspectran-scheduler/
+        - title: Session Manager
+          url: /en/docs/guides/aspectran-session-manager/
         - title: View Tech
           url: /en/docs/guides/aspectran-view-technologies/
         - title: Profiles
@@ -129,9 +131,12 @@ aspectow:
     - title: Administration & Configuration
       anchor: aspectow
       cards:
-        - title: Server Configuration Guide
+        - title: Aspectow Enterprise Configuration Guide
           url: /en/docs/aspectow/configuration-guide/
-          description: Systematic guide to the server structure of Aspectow and core feature configurations for production.
+          description: Systematic guide to the server structure and advanced configurations of Undertow-powered Aspectow Enterprise.
+        - title: Aspectow Edge Configuration Guide
+          url: /en/docs/aspectow/edge-configuration-guide/
+          description: Configuration guide for Aspectow Edge, featuring Netty, Java 21 Virtual Threads, and a Headless Console context.
         - title: Node Manager Guide
           url: /en/docs/aspectow/node-manager/
           description: Detailed guide to the core Control Plane library that organically binds distributed multi-node clusters and controls routing.
@@ -141,8 +146,8 @@ aspectow:
       tags:
         - title: Aspectow Architecture
           url: /en/docs/aspectow/architecture/
-        - title: Node Manager Guide
-          url: /en/docs/aspectow/node-manager/
+        - title: Session Manager
+          url: /en/docs/guides/aspectran-session-manager/
         - title: Multi-context Sessions
           url: /en/docs/aspectow/multi-context-session-strategy/
         - title: Nginx & Clustering

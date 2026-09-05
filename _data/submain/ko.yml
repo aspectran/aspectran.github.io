@@ -42,6 +42,8 @@ aspectran:
           url: /ko/docs/guides/aspectran-translet/
         - title: 스케줄러
           url: /ko/docs/guides/aspectran-scheduler/
+        - title: 세션 관리자
+          url: /ko/docs/guides/aspectran-session-manager/
         - title: 뷰 기술
           url: /ko/docs/guides/aspectran-view-technologies/
         - title: 프로파일
@@ -129,9 +131,12 @@ aspectow:
     - title: 운영 및 환경 설정 가이드
       anchor: aspectow
       cards:
-        - title: 서버 환경 설정 가이드
+        - title: Aspectow Enterprise 구성 가이드
           url: /ko/docs/aspectow/configuration-guide/
-          description: Aspectow의 서버 구조와 실운영 환경을 위한 핵심 기능 설정에 대한 체계적인 지침을 제공합니다.
+          description: JBoss Undertow와 서블릿/JSP 엔진을 탑재한 Aspectow Enterprise의 서버 구조 및 상세 설정 지침을 제공합니다.
+        - title: Aspectow Edge 구성 가이드
+          url: /ko/docs/aspectow/edge-configuration-guide/
+          description: Netty와 Java 21 가상 스레드, 그리고 Headless Console 컨텍스트 기반의 초경량 마이크로서비스 서버 설정 지침을 제공합니다.
         - title: Node Manager 가이드
           url: /ko/docs/aspectow/node-manager/
           description: 분산 멀티 노드 클러스터를 유기적으로 결합하고 라우팅 및 릴레이 패킷을 통제하는 핵심 제어 평면 라이브러리 가이드입니다.
@@ -141,8 +146,8 @@ aspectow:
       tags:
         - title: Aspectow 아키텍처
           url: /ko/docs/aspectow/architecture/
-        - title: Node Manager 가이드
-          url: /ko/docs/aspectow/node-manager/
+        - title: 세션 관리자
+          url: /ko/docs/guides/aspectran-session-manager/
         - title: 멀티 컨텍스트 세션
           url: /ko/docs/aspectow/multi-context-session-strategy/
         - title: Nginx 및 클러스터링

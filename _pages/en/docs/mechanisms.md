@@ -26,7 +26,6 @@ In-depth technical specifications covering Aspectran's execution engine, resourc
 *   [Request and Response Handling Mechanism](/en/docs/mechanisms/aspectran-request-response/)
 *   [In-Depth Analysis of Configuration Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/)
 *   [In-Depth Analysis of Service Architecture](/en/docs/mechanisms/aspectran-services/)
-*   [Aspectran Session Manager: Deep Dive](/en/docs/mechanisms/aspectran-session-manager/)
 *   [AOP Proxy Mechanism: `AbstractBeanProxy` and `ProxyActivity`](/en/docs/mechanisms/new-aop-proxy-mechanism/)
 
 ## <i class="bi bi-box"></i> Package Specifications

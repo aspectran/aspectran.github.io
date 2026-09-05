@@ -19,7 +19,7 @@ Console에 내장 통합되어 통합 관제 환경에서 구동될 수도 있�
 *   **비침투적 사용자명 추출 (Non-intrusive Username Resolution)**: 선언적 프로퍼티 경로(`usernameAttribute`) 또는 `SessionUserResolver` 확장을 통해 복잡한 세션 객체에서 사용자명을 손쉽게 추출합니다.
 *   **다양한 데이터 소스 지원**:
     *   **이벤트(Events)**: HTTP 요청 처리, 세션 생성/소멸 등 애플리케이션의 주요 이벤트를 추적하고 카운팅합니다.
-    *   **메트릭 (Metrics)**: JVM 힙 메모리 사용량 (`HeapMemoryUsageReader`), Undertow 스레드 풀 상태 (`UndertowThreadPoolMetricsReader`), HikariCP 커넥션 풀 상태 (`HikariPoolMBeanReader`) 등 다양한 시스템 메트릭을 수집합니다.
+    * **메트릭 (Metrics)**: JVM 힙 메모리 사용량 (`HeapMemoryUsageReader`), Undertow 및 Netty 스레드 풀 상태 (`UndertowThreadPoolMetricsReader`, `NettyThreadPoolMetricsReader`), HikariCP 커넥션 풀 상태 (`HikariPoolMBeanReader`) 등 다양한 시스템 메트릭을 수집합니다.
     *   **로그(Logs)**: 지정된 애플리케이션 및 액세스 로그 파일을 실시간으로 테일링(Tailing)하여 UI에 표시합니다.
 *   **데이터 영속성**: 주요 이벤트 카운트 데이터를 내장된 H2 데이터베이스 또는 외부 RDBMS에 주기적으로 저장하여, 애플리케이션 재시작 시에도 통계 데이터가 유실되지 않고 유지됩니다.
 *   **유연한 APON 설정**: APON(Aspectran Parameter Object Notation) 기반의 설정 파일을 통해 노드 및 모니터링 대상 앱을 유연하게 정의할 수 있습니다.
@@ -46,10 +46,10 @@ AppMon은 **상시 세션 추적(Always-On User Tracking)**과 **온디맨드 �
 ### 4.1. 생명주기 분리: 상시 동작(Always-On) vs 온디맨드(On-Demand)
 
 *   **상시 세션 추적 (`UserTrackingListener`)**:
-    *   서버 기동 시 `SessionEventReader.init()`에서 대상 배포(`deploymentName`)의 `SessionManager`에 **영구 상시 등록**됩니다.
+    *   서버 기동 시 `SessionEventReader.init()`에서 대상 컨텍스트(`contextName`)의 `SessionManager`에 **영구 상시 등록**됩니다.
     *   관리자가 AppMon 웹 UI를 보고 있지 않은 평상시에도 24시간 365일 모든 신규 세션에 클라이언트 IP 주소와 국가 코드를 안전하게 주입합니다.
     *   이를 통해 관리자가 나중에 접속하여 전체 활성 세션 목록(`getAllActiveSessions`)을 조회하더라도 모든 세션의 위치/IP 정보가 누락 없이 완전하게 표시됩니다.
-    *   내장된 중복 등록 방지 가드(`registeredTrackingTargets`)를 통해 동일한 배포 타겟(`tow.server/demo`)을 여러 `app`에서 참조하더라도 리스너는 정확히 단 1회만 등록됩니다.
+    *   내장된 중복 등록 방지 가드(`registeredTrackingTargets`)를 통해 동일한 타겟(`tow.server/demo` 또는 `netty.server/demo`)을 여러 `app`에서 참조하더라도 리스너는 정확히 단 1회만 등록됩니다.
 *   **온디맨드 실시간 브로드캐스트 (`SessionEventReadingListener`)**:
     *   관리자가 특정 앱의 대시보드에 접속(`subscribe`)할 때만 등록되고, 구독자가 0명이 되면 해제(`stop()`)되어 런타임 리소스 낭비를 최소화합니다.
 
@@ -154,14 +154,24 @@ app: {
         reader: com.aspectran.aspectow.appmon.engine.exporter.metric.jvm.HeapMemoryUsageReader
         sampleInterval: 500
     }
+    # Undertow 서버를 사용하는 경우
     metric: {
         id: undertow-tp
         title: Undertow Thread Pool
-        description: Undertow NIO 워커 스레드 풀을 모니터링합니다.
-        reader: com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.NioWorkerMetricsReader
+        description: Undertow 워커 스레드 풀을 모니터링합니다.
+        reader: com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.UndertowThreadPoolMetricsReader
         target: tow.server
         sampleInterval: 500
     }
+    # Netty 서버를 사용하는 경우
+    # metric: {
+    #     id: netty-tp
+    #     title: Netty Thread Pool
+    #     description: Netty 워커 스레드 풀 및 동시 요청 처리 상태를 모니터링합니다.
+    #     reader: com.aspectran.aspectow.appmon.engine.exporter.metric.netty.NettyThreadPoolMetricsReader
+    #     target: netty.server
+    #     sampleInterval: 500
+    # }
     log: {
         id: app
         file: /logs/jpetstore.log
@@ -178,7 +188,7 @@ app: {
 *   **`app`**: 모니터링할 개별 애플리케이션 단위.
     *   **`event`**:
         *   `id`: 이벤트 종류 (`activity`, `session`).
-        *   `target`: 대상 컨텍스트 식별자 또는 서버 배포 경로 (`tow.server/<deploymentName>`).
+        *   `target`: 대상 컨텍스트 식별자 또는 서버 컨텍스트 경로 (`tow.server/<contextName>` 또는 `netty.server/<contextName>`).
         *   `parameters`:
             *   `activity`인 경우: Pointcut `+`/`-` 경로 필터.
             *   `session`인 경우: `usernameAttribute` (프로퍼티 경로, 예: `user.account.username`), `userResolver` (커스텀 `SessionUserResolver` 구현 클래스명 또는 빈 ID).
