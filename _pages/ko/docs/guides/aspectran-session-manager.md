@@ -14,17 +14,17 @@ Aspectran은 특정 웹 컨테이너나 서블릿 스펙에 얽매이지 않고,
 
 ### 1.1. 주요 컴포넌트 구성
 
-* **[`SessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/SessionManager.java)** (기본 구현체: [`DefaultSessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java))
+* **[`SessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManager.java)** (기본 구현체: [`DefaultSessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java))
   * 세션 관리의 전체 흐름을 관장하는 중앙 컨트롤러이자 진입점입니다.
   * 세션의 생성, 조회, 갱신, 무효화(Invalidation) 등 전체 수명주기 이벤트를 총괄합니다.
   * 내부적으로 `SessionCache`, `SessionStore`, `HouseKeeper` 등 핵심 컴포넌트를 조율하여 최적의 I/O 효율을 보장합니다. 세션 조회 요청 시 1차 메모리 캐시를 확인하고, 캐시 미스 발생 시 영속 저장소에서 데이터를 로드합니다.
-* **[`Session`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/Session.java)** (구현체: [`ManagedSession`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/ManagedSession.java))
+* **[`Session`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/Session.java)** (구현체: [`ManagedSession`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/ManagedSession.java))
   * 개별 사용자의 상태 정보를 보관하는 세션 데이터 객체입니다.
   * 세션 고유 식별자(ID), 생성 시각, 최종 접근 시각, 최대 유휴 시간 등의 메타데이터와 사용자가 바인딩한 속성(Attribute) 맵을 관리합니다.
-* **[`SessionCache`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/SessionCache.java)** (기본 구현체: [`DefaultSessionCache`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/DefaultSessionCache.java))
+* **[`SessionCache`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionCache.java)** (기본 구현체: [`DefaultSessionCache`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionCache.java))
   * 활성 세션 객체를 JVM 힙 메모리에 상주시키는 고속 캐시 계층입니다.
   * 물리적 저장소(파일, Redis 등)로 향하는 디스크 및 네트워크 I/O를 최소화하여 동시성 처리 성능을 극대화합니다.
-* **[`SessionStore`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/SessionStore.java)** (저장소 추상화 인터페이스)
+* **[`SessionStore`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionStore.java)** (저장소 추상화 인터페이스)
   * 세션 데이터를 물리적으로 영속화하고 인스턴스 간에 공유하는 스토리지 계층입니다.
   * 저장소 플러그형(`Pluggable`) 아키텍처로 구현되어 있어 코드 변경 없이 설정을 통해 파일 스토리지나 Redis 분산 스토리지 등으로 자유롭게 교체할 수 있습니다.
 * **`HouseKeeper`**
@@ -58,7 +58,7 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
 
 ### 2.1. 순수 인메모리 세션 (스토어리스 / SessionStore 생략)
 
-* **동작 원리**: 세션 관리자 Bean 정의 시 `sessionStore` 프로퍼티를 명시하지 않고, 오직 [`SessionManagerConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)만 주입하여 가동합니다.
+* **동작 원리**: 세션 관리자 Bean 정의 시 `sessionStore` 프로퍼티를 명시하지 않고, 오직 [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)만 주입하여 가동합니다.
 * **특징**:
   * 외부 디스크 파일 I/O나 Redis 네트워크 통신이 전혀 발생하지 않으며, 오직 JVM 힙 메모리(`ConcurrentHashMap`) 내에서만 세션 데이터가 관리됩니다.
   * 디스크나 외부 서버 연결에 따른 오버헤드가 전무하므로, 현존하는 모든 구성 중 **가장 빠르고 가벼운 극상의 성능**을 제공합니다.
@@ -97,7 +97,7 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
 
 ### 2.4. 단일 서버 모드 vs 분산 클러스터 모드 동작 비교
 
-[`SessionManagerConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)의 `clusterEnabled` 설정값은 세션 데이터의 신뢰 원천과 동기화 빈도를 제어하는 핵심 분기점입니다.
+[`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)의 `clusterEnabled` 설정값은 세션 데이터의 신뢰 원천과 동기화 빈도를 제어하는 핵심 분기점입니다.
 
 | 구분 | 단일 서버 모드 (`clusterEnabled: false`) | 분산 클러스터 모드 (`clusterEnabled: true`) |
 | :--- | :--- | :--- |
@@ -118,7 +118,7 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
 
 ### 3.2. `SessionManagerConfig` 핵심 설정 파라미터
 
-XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)의 파라미터 명세는 다음과 같습니다.
+XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)의 파라미터 명세는 다음과 같습니다.
 
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
@@ -286,7 +286,7 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
 
 분산 환경에서 세션을 Redis나 파일에 직렬화할 때, 네트워크 소켓, 데이터베이스 커넥션, 대용량 버퍼와 같이 직렬화가 불가능하거나 외부 저장이 부적절한 객체가 포함되어 있으면 예외가 발생하거나 네트워크 대역폭이 낭비됩니다.
 
-Aspectran은 [`@NonPersistent`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java) 어노테이션을 통해 세션 속성의 영속화 범위를 세밀하게 제어할 수 있습니다.
+Aspectran은 [`@NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java) 어노테이션을 통해 세션 속성의 영속화 범위를 세밀하게 제어할 수 있습니다.
 
 ```java
 package com.aspectran.example;
@@ -339,17 +339,17 @@ shell: {
 
 ### 5.2. Aspectow Enterprise 환경 구성 (Undertow 서블릿 바인딩)
 
-Aspectow Enterprise에서는 [`TowSessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java)를 통해 서블릿 스펙(`io.undertow.server.session.SessionManager`)과 Aspectran 코어 세션 엔진을 브릿징합니다.
+Aspectow Enterprise에서는 [`TowSessionManager`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java)를 통해 서블릿 스펙(`io.undertow.server.session.SessionManager`)과 Aspectran 코어 세션 엔진을 브릿징합니다.
 
 `/app/config/server/undertow/tow-context-root.xml`:
 ```xml
 <!-- 서블릿 웹 컨텍스트 정의 -->
 <bean id="tow.context.root" class="com.aspectran.undertow.server.servlet.TowServletContext">
     <property name="contextPath">/</property>
-    
+
     <!-- 서블릿 세션 관리자 바인딩 -->
     <property name="sessionManager">#{tow.context.root.sessionManager}</property>
-    
+
     <!-- 서블릿 표준 세션 쿠키 정책 정의 -->
     <property name="servletSessionConfig">
         <bean class="com.aspectran.undertow.server.servlet.TowServletSessionConfig">
@@ -411,14 +411,14 @@ Aspectow Enterprise에서는 [`TowSessionManager`](file:///Users/Aspectran/Proje
 
 ### 5.3. Aspectow Edge 환경 구성 (Netty 논-서블릿 바인딩)
 
-Aspectow Edge에서는 서블릿 컨테이너 오버헤드를 배제하고 Netty 채널 파이프라인에서 직접 가동되는 [`NettySessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java)와 [`NettySessionConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java)를 사용합니다.
+Aspectow Edge에서는 서블릿 컨테이너 오버헤드를 배제하고 Netty 채널 파이프라인에서 직접 가동되는 [`NettySessionManager`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java)와 [`NettySessionConfig`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java)를 사용합니다.
 
 `/app/config/server/netty/netty-context-root.xml`:
 ```xml
 <!-- Netty 컨텍스트 정의 -->
 <bean id="netty.context.root" class="com.aspectran.netty.server.NettyContext">
     <property name="contextPath">/</property>
-    
+
     <!-- Netty 경량 세션 관리자 바인딩 -->
     <property name="sessionManager">#{netty.context.root.sessionManager}</property>
 </bean>
@@ -524,7 +524,7 @@ public class UserSessionTrackingListener implements SessionListener {
 
 ### 6.2. 리스너 등록 Bean 정의
 
-Netty 환경에서는 [`SessionListenerRegistrationBean`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java)을 사용하여 특정 컨텍스트 경로(`/`)의 세션 관리자에 리스너를 안전하게 주입합니다.
+Netty 환경에서는 [`SessionListenerRegistrationBean`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java)을 사용하여 특정 컨텍스트 경로(`/`)의 세션 관리자에 리스너를 안전하게 주입합니다.
 
 ```xml
 <bean class="com.aspectran.netty.support.SessionListenerRegistrationBean">
@@ -547,7 +547,7 @@ Aspectow 서버 아키텍처의 강력한 보안 특징 중 하나는 **다중 �
 
 ## 8. 코드 레벨의 일관된 세션 조작 (Session API)
 
-비즈니스 로직(Translet 액션, 컨트롤러, 서비스 Bean) 내부에서는 서블릿 API(`HttpServletRequest`, `HttpSession`)나 Netty 네이티브 객체에 종속되지 않고, Aspectran이 제공하는 통합 [`SessionAdapter`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) 인터페이스를 통해 세션을 다룹니다.
+비즈니스 로직(Translet 액션, 컨트롤러, 서비스 Bean) 내부에서는 서블릿 API(`HttpServletRequest`, `HttpSession`)나 Netty 네이티브 객체에 종속되지 않고, Aspectran이 제공하는 통합 [`SessionAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) 인터페이스를 통해 세션을 다룹니다.
 
 ```java
 package com.aspectran.example.action;
@@ -568,11 +568,11 @@ public class LoginAction {
         if (authenticate(username, password)) {
             // 환경 독립적 SessionAdapter 획득
             SessionAdapter sessionAdapter = translet.getSessionAdapter();
-            
+
             // 세션 속성 저장 (자동 캐싱 및 영속 스토어 동기화)
             sessionAdapter.setAttribute("currentUser", username);
             sessionAdapter.setAttribute("loginTime", System.currentTimeMillis());
-            
+
             return "SUCCESS";
         }
         return "FAIL";

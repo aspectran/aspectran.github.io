@@ -14,17 +14,17 @@ Rather than treating HTTP sessions as a mechanism exclusive to servlet container
 
 ### 1.1. Core Components
 
-* **[`SessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/SessionManager.java)** (Default implementation: [`DefaultSessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java))
+* **[`SessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManager.java)** (Default implementation: [`DefaultSessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java))
   * The central entry point and orchestrator for all session management flows.
   * Governs the entire session lifecycle, including creation, retrieval, updates, and explicit invalidation.
   * Coordinates underlying core components such as `SessionCache`, `SessionStore`, and `HouseKeeper` to ensure optimal I/O efficiency. When a session retrieval request arrives, it inspects the primary memory cache first, loading state from persistent storage only upon a cache miss.
-* **[`Session`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/Session.java)** (Implementation: [`ManagedSession`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/ManagedSession.java))
+* **[`Session`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/Session.java)** (Implementation: [`ManagedSession`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/ManagedSession.java))
   * Represents an individual user's stateful session data object.
   * Encapsulates metadata (session ID, creation timestamp, last accessed timestamp, max idle intervals) and a thread-safe map of user-bound attributes.
-* **[`SessionCache`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/SessionCache.java)** (Default implementation: [`DefaultSessionCache`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/DefaultSessionCache.java))
+* **[`SessionCache`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionCache.java)** (Default implementation: [`DefaultSessionCache`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionCache.java))
   * High-speed caching layer maintaining active session instances in the JVM heap.
   * Minimizes disk and network I/O toward physical storage (files, Redis, etc.), maximizing concurrent request throughput.
-* **[`SessionStore`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/SessionStore.java)** (Storage Abstraction Interface)
+* **[`SessionStore`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionStore.java)** (Storage Abstraction Interface)
   * Pluggable persistence layer responsible for physical durability and cross-instance session sharing.
   * Designed with a pluggable architecture, allowing developers to switch freely between local disk storage and distributed Redis clusters purely via configuration without altering business logic.
 * **`HouseKeeper`**
@@ -58,7 +58,7 @@ Aspectran Session Manager provides a flexible storage hierarchy adaptable to dis
 
 ### 2.1. Pure In-Memory Sessions (Storeless / SessionStore Omitted)
 
-* **Operating Principle**: Configured simply by omitting the `sessionStore` property entirely from the session manager bean definition and injecting only the [`SessionManagerConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) bean.
+* **Operating Principle**: Configured simply by omitting the `sessionStore` property entirely from the session manager bean definition and injecting only the [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) bean.
 * **Characteristics**:
   * Incurs zero disk I/O and zero network communication; sessions are maintained purely within JVM heap memory (`ConcurrentHashMap`).
   * Yields the **absolute highest throughput and lowest latency** among all configurations due to zero persistence overhead.
@@ -97,7 +97,7 @@ Aspectran Session Manager provides a flexible storage hierarchy adaptable to dis
 
 ### 2.4. Single Server Mode vs. Clustered Mode
 
-The `clusterEnabled` flag in [`SessionManagerConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) defines the single source of truth and synchronization semantics:
+The `clusterEnabled` flag in [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) defines the single source of truth and synchronization semantics:
 
 | Dimension | Single Server Mode (`clusterEnabled: false`) | Distributed Clustered Mode (`clusterEnabled: true`) |
 | :--- | :--- | :--- |
@@ -118,7 +118,7 @@ Web environments frequently suffer from resource exhaustion caused by search eng
 
 ### 3.2. `SessionManagerConfig` Core Configuration Parameters
 
-The parameter specification for [`SessionManagerConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) in XML Bean definitions or APON configuration blocks is as follows:
+The parameter specification for [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) in XML Bean definitions or APON configuration blocks is as follows:
 
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
@@ -286,7 +286,7 @@ Configured for developers running workstations and interactive debugging session
 
 When serializing sessions to Redis or disk files, non-serializable objects (such as network sockets, database connections, or large rendering buffers) can cause exceptions or degrade network bandwidth.
 
-Aspectran provides the [`@NonPersistent`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java) annotation to exclude specific attributes from persistent storage:
+Aspectran provides the [`@NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java) annotation to exclude specific attributes from persistent storage:
 
 ```java
 package com.aspectran.example;
@@ -339,17 +339,17 @@ shell: {
 
 ### 5.2. Aspectow Enterprise Deployments (Undertow Servlet Binding)
 
-Aspectow Enterprise bridges Undertow's servlet specification (`io.undertow.server.session.SessionManager`) with Aspectran's core session engine via [`TowSessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java).
+Aspectow Enterprise bridges Undertow's servlet specification (`io.undertow.server.session.SessionManager`) with Aspectran's core session engine via [`TowSessionManager`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java).
 
 `/app/config/server/undertow/tow-context-root.xml`:
 ```xml
 <!-- Servlet Context Definition -->
 <bean id="tow.context.root" class="com.aspectran.undertow.server.servlet.TowServletContext">
     <property name="contextPath">/</property>
-    
+
     <!-- Bind Servlet Session Manager -->
     <property name="sessionManager">#{tow.context.root.sessionManager}</property>
-    
+
     <!-- Standard Servlet Cookie Configuration -->
     <property name="servletSessionConfig">
         <bean class="com.aspectran.undertow.server.servlet.TowServletSessionConfig">
@@ -411,14 +411,14 @@ Aspectow Enterprise bridges Undertow's servlet specification (`io.undertow.serve
 
 ### 5.3. Aspectow Edge Deployments (Netty Non-Servlet Binding)
 
-Aspectow Edge eliminates servlet container overhead by running [`NettySessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java) and [`NettySessionConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java) directly within Netty's HTTP channel pipeline.
+Aspectow Edge eliminates servlet container overhead by running [`NettySessionManager`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java) and [`NettySessionConfig`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java) directly within Netty's HTTP channel pipeline.
 
 `/app/config/server/netty/netty-context-root.xml`:
 ```xml
 <!-- Netty Context Definition -->
 <bean id="netty.context.root" class="com.aspectran.netty.server.NettyContext">
     <property name="contextPath">/</property>
-    
+
     <!-- Bind Lightweight Netty Session Manager -->
     <property name="sessionManager">#{netty.context.root.sessionManager}</property>
 </bean>
@@ -524,7 +524,7 @@ public class UserSessionTrackingListener implements SessionListener {
 
 ### 6.2. Listener Registration Bean
 
-In Netty environments, use [`SessionListenerRegistrationBean`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java) to safely inject listeners into the session manager of a specific context path (`/`):
+In Netty environments, use [`SessionListenerRegistrationBean`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java) to safely inject listeners into the session manager of a specific context path (`/`):
 
 ```xml
 <bean class="com.aspectran.netty.support.SessionListenerRegistrationBean">
@@ -547,7 +547,7 @@ Aspectow server architectures enforce strict **Multi-Context Session Isolation**
 
 ## 8. Application Code: Unified Session API
 
-Application components (Translet actions, controllers, business services) interact with sessions using Aspectran's unified [`SessionAdapter`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) rather than tying business logic to `HttpServletRequest`, `HttpSession`, or Netty native channel buffers:
+Application components (Translet actions, controllers, business services) interact with sessions using Aspectran's unified [`SessionAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) rather than tying business logic to `HttpServletRequest`, `HttpSession`, or Netty native channel buffers:
 
 ```java
 package com.aspectran.example.action;
@@ -568,11 +568,11 @@ public class LoginAction {
         if (authenticate(username, password)) {
             // Retrieve container-agnostic SessionAdapter
             SessionAdapter sessionAdapter = translet.getSessionAdapter();
-            
+
             // Set session attributes (auto-synced to cache and persistent store)
             sessionAdapter.setAttribute("currentUser", username);
             sessionAdapter.setAttribute("loginTime", System.currentTimeMillis());
-            
+
             return "SUCCESS";
         }
         return "FAIL";

@@ -448,11 +448,11 @@ For architecture-specific Maven dependency configurations (x86_64, aarch64), ref
 When deployed behind Nginx, Kubernetes Ingress, or cloud ALBs, enabling `proxyAddressForwarding` ensures that client IP addresses (`X-Forwarded-For`) and protocols (`X-Forwarded-Proto`) are accurately reconstructed and exposed to Netty access logs and Translet request adapters.
 
 #### 5.2.4. URL Path-Based Logging Group Routing (`PathBasedLoggingGroupHandler`)
-In high-throughput microservice environments, writing all request logs to a single monolithic `app.log` causes I/O contention and hinders troubleshooting. [`PathBasedLoggingGroupHandler`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/logging/PathBasedLoggingGroupHandler.java) analyzes incoming URI paths to route logs into discrete, domain-specific log files in real time.
+In high-throughput microservice environments, writing all request logs to a single monolithic `app.log` causes I/O contention and hinders troubleshooting. [`PathBasedLoggingGroupHandler`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/logging/PathBasedLoggingGroupHandler.java) analyzes incoming URI paths to route logs into discrete, domain-specific log files in real time.
 
 * **Operating Mechanism**:
   * Evaluates incoming request paths against APON wildcard pattern rules (`+:` include, `-:` exclude) defined in `pathPatternsByGroupName` to determine the active logging group (`groupName`).
-  * Attaches the resolved group name to the Netty channel attribute (`LOGGING_GROUP_KEY`) via [`ChannelLoggingGroupHelper`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/logging/ChannelLoggingGroupHelper.java), binding it simultaneously into the SLF4J MDC context of the virtual thread servicing the request.
+  * Attaches the resolved group name to the Netty channel attribute (`LOGGING_GROUP_KEY`) via [`ChannelLoggingGroupHelper`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/logging/ChannelLoggingGroupHelper.java), binding it simultaneously into the SLF4J MDC context of the virtual thread servicing the request.
   * In Logback (`logback-netty.xml`), configuring `LoggingGroupDiscriminator` or `SiftingAppender` automatically segregates logs into dedicated files (e.g., `order.log`, `payment.log`, `api.log`).
   * Non-matching requests fall back to the default group of the active `NettyContext`, and `LoggingGroupHelper.clear()` is invoked in a `finally` block to prevent thread context leakage.
 
@@ -520,7 +520,7 @@ A `NettyContext` represents an isolated application runtime mounted at a specifi
 Aspectow Edge delivers static assets (HTML, CSS, JavaScript, images, web fonts) straight out of the Netty inbound channel pipeline at maximum speed without passing through a servlet container.
 
 ##### 1) Filesystem-Based Resource Serving (`NettyResourceHandler`)
-To serve assets stored in a local directory on disk, use [`NettyResourceHandler`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java).
+To serve assets stored in a local directory on disk, use [`NettyResourceHandler`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java).
 
 ```xml
 <!-- Filesystem Static Resource Handler Configuration -->
@@ -552,7 +552,7 @@ To serve assets stored in a local directory on disk, use [`NettyResourceHandler`
 ```
 
 ##### 2) Classpath-Based Resource Serving (`NettyClassPathResourceHandler`)
-For self-contained microservices where static UI assets are packaged directly within JAR archives or libraries on the classpath, use [`NettyClassPathResourceHandler`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyClassPathResourceHandler.java).
+For self-contained microservices where static UI assets are packaged directly within JAR archives or libraries on the classpath, use [`NettyClassPathResourceHandler`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyClassPathResourceHandler.java).
 
 ```xml
 <!-- Classpath Static Resource Handler Configuration -->
@@ -578,13 +578,13 @@ For self-contained microservices where static UI assets are packaged directly wi
 ```
 
 * `NettyClassPathResourceHandler` extends `NettyResourceHandler`, fully inheriting the **exact same security sanitization (`sanitizePath`), protected directory guards (`blockProtectedDirectories`), APON wildcard filtering (`pathPatterns`), directory index mapping (`indexFiles`), and conditional HTTP caching (`If-Modified-Since` -> `304 Not Modified`)**.
-* Implements [`ActivityContextAware`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyClassPathResourceHandler.java#L59) to obtain the context class loader, streaming resources directly through Netty's `ChunkedStream` without memory overhead.
+* Implements [`ActivityContextAware`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyClassPathResourceHandler.java#L59) to obtain the context class loader, streaming resources directly through Netty's `ChunkedStream` without memory overhead.
 
 ##### Supported Bean Properties
 
 * **`basePath` / `baseDir`** (`NettyResourceHandler` only):
   * Filesystem directory containing static assets.
-  * Implements [`ApplicationAdapterAware`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L19); relative paths like `/webapps/root` resolve automatically against the application home directory.
+  * Implements [`ApplicationAdapterAware`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L19); relative paths like `/webapps/root` resolve automatically against the application home directory.
 * **`prefix`** (`NettyClassPathResourceHandler` only):
   * Package path prefix in the classpath from which to locate assets (e.g., `static/` or `public/`).
 * **`contextPath`**:
@@ -603,8 +603,8 @@ For self-contained microservices where static UI assets are packaged directly wi
 ##### Internal Operations & Performance Mechanisms
 
 * **Hybrid Zero-Copy & Chunked Streaming Transfer**:
-  * **Cleartext HTTP (Filesystem)**: Uses [`DefaultFileRegion`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L475) leveraging the OS kernel `sendfile` system call to stream data directly from disk to network socket buffers without copying into user-space memory.
-  * **Classpath Resources & TLS/Compression**: When serving from JAR archives or when `SslHandler`/`HttpContentCompressor` is present in the pipeline, the handler automatically transitions to 8KB chunked streaming via [`HttpChunkedInput`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L471) and `ChunkedFile` or `ChunkedStream` for safe encryption and compression.
+  * **Cleartext HTTP (Filesystem)**: Uses [`DefaultFileRegion`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L475) leveraging the OS kernel `sendfile` system call to stream data directly from disk to network socket buffers without copying into user-space memory.
+  * **Classpath Resources & TLS/Compression**: When serving from JAR archives or when `SslHandler`/`HttpContentCompressor` is present in the pipeline, the handler automatically transitions to 8KB chunked streaming via [`HttpChunkedInput`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L471) and `ChunkedFile` or `ChunkedStream` for safe encryption and compression.
 * **Directory Traversal Defense**:
   * Sanitizes request paths via `sanitizePath`, rejecting relative navigation (`..`) and hidden segments (`.`).
   * For filesystem serving, enforces `file.getCanonicalPath().startsWith(baseDir.getCanonicalPath())` to prevent path traversal attacks escaping the designated root.
@@ -622,14 +622,14 @@ Aspectow Edge completely eliminates the heavyweight overhead of servlet session 
 
 ##### 1) Architecture & Internal Mechanics
 
-* **[`NettySessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java)**:
-  * Extends Aspectran core's [`DefaultSessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java) directly.
+* **[`NettySessionManager`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java)**:
+  * Extends Aspectran core's [`DefaultSessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java) directly.
   * Operates completely independent of the Servlet API (`HttpServletRequest`, `HttpSession`), decoding the HTTP `Cookie` header on incoming requests and encoding the `Set-Cookie` header on outbound responses.
   * Preserves single-node memory caching, idle eviction, and periodic background scavenging (`HouseKeeper`) without container baggage.
 
 ##### 2) Configuring Session Cookie Policies via `NettySessionConfig`
 
-Session cookie generation in Netty is configured cleanly via the [`NettySessionConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java) bean:
+Session cookie generation in Netty is configured cleanly via the [`NettySessionConfig`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java) bean:
 
 ```xml
 <property name="sessionConfig">
@@ -656,14 +656,14 @@ Session cookie generation in Netty is configured cleanly via the [`NettySessionC
 ##### 3) Storage Strategy (In-Memory / File / Redis)
 
 * **Pure In-Memory Mode (Omitting `sessionStore`)**:
-  * Omit the `sessionStore` property entirely and inject only [`SessionManagerConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) to operate as a pure in-memory session manager without disk or network I/O.
+  * Omit the `sessionStore` property entirely and inject only [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) to operate as a pure in-memory session manager without disk or network I/O.
   * Yields maximum responsiveness with zero persistence overhead, making it ideal for console demos (such as `aspectow-demo-console`), short-lived tokens, and testing.
 * **Local Filesystem Persistence (`!prod`)**: Uses `FileSessionStoreFactoryBean` to serialize sessions to local disk (`app/work/_sessions/`), preserving active sessions across server restarts.
 * **Production Redis Clustering (`prod`)**: High-availability Redis clustering via `DefaultLettuceSessionStoreFactoryBean`, enabling elastic, stateless microservice scaling with zero-downtime failover.
 
 ##### 4) Session Lifecycle Listeners (`SessionListenerRegistrationBean`)
 
-To track session creation/destruction events for audit logging or active user metrics, register listeners via [`SessionListenerRegistrationBean`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java):
+To track session creation/destruction events for audit logging or active user metrics, register listeners via [`SessionListenerRegistrationBean`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java):
 
 ```xml
 <bean class="com.aspectran.netty.support.SessionListenerRegistrationBean">
@@ -675,7 +675,7 @@ To track session creation/destruction events for audit logging or active user me
 ```
 
 > [!TIP]
-> For complete details on `SessionManagerConfig` lifecycle tuning, crawler/bot phantom session mitigation, `@NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](file:///Users/Aspectran/Projects/workspace/aspectran.github.io/_pages/en/docs/guides/aspectran-session-manager.md)**.
+> For complete details on `SessionManagerConfig` lifecycle tuning, crawler/bot phantom session mitigation, `@NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
 
 ### 5.4. Console Management Context (`netty-context-console.xml`)
 
@@ -792,7 +792,7 @@ app/config/logging/
   * Entry point for local development and debugging. Includes `logback-console.xml` alongside file appenders to stream ANSI color-highlighted logs to the terminal, elevating package levels to `DEBUG` or `TRACE`.
   * Usage: `app/bin/shell.sh --debug`
 * **`included/logback-default.xml`**:
-  * Core definition for business logging. Couples [`LoggingGroupDiscriminator`](file:///Users/Aspectran/Projects/workspace/aspectran/logging/src/main/java/com/aspectran/logging/LoggingGroupDiscriminator.java) with `SiftingAppender` to route logs into `app/logs/${LOGGING_GROUP}.log` (e.g., `root.log`, `console.log`, `order.log`) based on the logging group resolved by `PathBasedLoggingGroupHandler`.
+  * Core definition for business logging. Couples [`LoggingGroupDiscriminator`](https://github.com/aspectran/aspectran/blob/master/logging/src/main/java/com/aspectran/logging/LoggingGroupDiscriminator.java) with `SiftingAppender` to route logs into `app/logs/${LOGGING_GROUP}.log` (e.g., `root.log`, `console.log`, `order.log`) based on the logging group resolved by `PathBasedLoggingGroupHandler`.
   * Pre-configured with time-and-size rolling policies (`SizeAndTimeBasedRollingPolicy`, 10MB per file, 30-day retention).
 * **`included/logback-accesslog.xml`**:
   * Dedicated collector for Netty HTTP access log events (`com.aspectran.netty.accesslog`), partitioned by logging group into `app/logs/${LOGGING_GROUP}-access.log`.

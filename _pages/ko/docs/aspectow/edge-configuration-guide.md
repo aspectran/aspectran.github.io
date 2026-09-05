@@ -448,11 +448,11 @@ Aspectow Edge의 가장 혁신적인 특징입니다:
 Nginx나 Kubernetes Ingress, 클라우드 ALB 뒤에 배치될 경우, `proxyAddressForwarding`을 `true`로 활성화하면 클라이언트의 실제 IP(`X-Forwarded-For`)와 프로토콜(`X-Forwarded-Proto`)을 정확히 복원하여 Access 로그와 Translet Request Adapter에 제공합니다.
 
 #### 5.2.4. URL 경로 기반 로깅 그룹 분기 (`PathBasedLoggingGroupHandler`)
-마이크로서비스에서 대용량 트래픽이 유입될 때 모든 요청 로그를 단일 `app.log` 파일에 기록하면 가독성이 떨어지고 I/O 병목이 발생합니다. [`PathBasedLoggingGroupHandler`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/logging/PathBasedLoggingGroupHandler.java)는 수신 요청의 URI 경로를 분석하여 로그를 업무 도메인별로 물리적인 개별 로그 파일에 실시간 분기 저장합니다.
+마이크로서비스에서 대용량 트래픽이 유입될 때 모든 요청 로그를 단일 `app.log` 파일에 기록하면 가독성이 떨어지고 I/O 병목이 발생합니다. [`PathBasedLoggingGroupHandler`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/logging/PathBasedLoggingGroupHandler.java)는 수신 요청의 URI 경로를 분석하여 로그를 업무 도메인별로 물리적인 개별 로그 파일에 실시간 분기 저장합니다.
 
 * **동작 메커니즘**:
   * 클라이언트 요청이 들어오면 설정된 `pathPatternsByGroupName`의 APON 와일드카드 패턴(`+:` include, `-:` exclude)과 대조하여 해당 요청이 속할 로깅 그룹명(`groupName`)을 결정합니다.
-  * 결정된 그룹명은 [`ChannelLoggingGroupHelper`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/logging/ChannelLoggingGroupHelper.java)를 통해 Netty 채널 속성(`LOGGING_GROUP_KEY`)에 저장되는 동시에, 현재 요청을 수행하는 가상 스레드의 SLF4J MDC 컨텍스트에 즉시 바인딩됩니다.
+  * 결정된 그룹명은 [`ChannelLoggingGroupHelper`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/logging/ChannelLoggingGroupHelper.java)를 통해 Netty 채널 속성(`LOGGING_GROUP_KEY`)에 저장되는 동시에, 현재 요청을 수행하는 가상 스레드의 SLF4J MDC 컨텍스트에 즉시 바인딩됩니다.
   * Logback 설정 파일(`logback-netty.xml`)에서 `LoggingGroupDiscriminator`나 `SiftingAppender`를 지정하면, 업무 도메인별 전용 로그 파일(예: `order.log`, `payment.log`, `api.log`)로 자동 라우팅되어 기록됩니다.
   * 패턴과 일치하지 않는 요청은 해당 컨텍스트(`NettyContext`)의 기본 로깅 그룹으로 폴백되며, 요청 처리가 완료되면 `finally` 블록에서 `LoggingGroupHelper.clear()`가 호출되어 스레드 오염을 방지합니다.
 
@@ -520,7 +520,7 @@ Nginx나 Kubernetes Ingress, 클라우드 ALB 뒤에 배치될 경우, `proxyAdd
 Aspectow Edge는 서블릿 컨테이너를 거치지 않고 Netty 인바운드 채널 파이프라인에서 파일시스템 또는 클래스패스의 정적 파일(HTML, CSS, JavaScript, 이미지, 폰트 등)을 직접 클라이언트에게 초고속으로 서빙합니다.
 
 ##### 1) 파일시스템 기반 리소스 서빙 (`NettyResourceHandler`)
-로컬 디스크의 특정 디렉터리로부터 정적 파일을 서빙할 때는 [`NettyResourceHandler`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java)를 사용합니다.
+로컬 디스크의 특정 디렉터리로부터 정적 파일을 서빙할 때는 [`NettyResourceHandler`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java)를 사용합니다.
 
 ```xml
 <!-- 파일시스템 정적 리소스 핸들러 설정 예시 -->
@@ -552,7 +552,7 @@ Aspectow Edge는 서블릿 컨테이너를 거치지 않고 Netty 인바운드 �
 ```
 
 ##### 2) 클래스패스 기반 리소스 서빙 (`NettyClassPathResourceHandler`)
-정적 리소스가 애플리케이션 JAR 파일 내부나 클래스패스에 패키징되어 배포되는 단일 실행 아티팩트/마이크로서비스 환경에서는 [`NettyClassPathResourceHandler`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyClassPathResourceHandler.java)를 사용합니다.
+정적 리소스가 애플리케이션 JAR 파일 내부나 클래스패스에 패키징되어 배포되는 단일 실행 아티팩트/마이크로서비스 환경에서는 [`NettyClassPathResourceHandler`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyClassPathResourceHandler.java)를 사용합니다.
 
 ```xml
 <!-- 클래스패스 정적 리소스 핸들러 설정 예시 -->
@@ -578,13 +578,13 @@ Aspectow Edge는 서블릿 컨테이너를 거치지 않고 Netty 인바운드 �
 ```
 
 * `NettyClassPathResourceHandler`는 `NettyResourceHandler`를 상속하여 **동일한 보안 필터링(`sanitizePath`, `blockProtectedDirectories`), APON 와일드카드 패턴 매칭(`pathPatterns`), 디렉터리 인덱스 매핑(`indexFiles`), 그리고 HTTP 캐싱(`If-Modified-Since` 기반 `304 Not Modified`) 메커니즘**을 모두 공유합니다.
-* [`ActivityContextAware`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyClassPathResourceHandler.java#L59)를 구현하여 컨텍스트 클래스로더로부터 리소스 `InputStream`을 열고, Netty의 `ChunkedStream`을 통해 메모리 부하 없이 클라이언트에게 고속 스트리밍 전송합니다.
+* [`ActivityContextAware`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyClassPathResourceHandler.java#L59)를 구현하여 컨텍스트 클래스로더로부터 리소스 `InputStream`을 열고, Netty의 `ChunkedStream`을 통해 메모리 부하 없이 클라이언트에게 고속 스트리밍 전송합니다.
 
 ##### 지원 프로퍼티 (Bean Properties)
 
 * **`basePath` / `baseDir`** (`NettyResourceHandler` 전용):
   * 정적 리소스 파일이 위치한 파일시스템 디렉터리 경로입니다.
-  * [`ApplicationAdapterAware`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L19)를 구현하여 `/webapps/root`와 같은 상대 경로를 지정하면 애플리케이션 루트 디렉터리를 기준으로 자동 변환됩니다.
+  * [`ApplicationAdapterAware`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L19)를 구현하여 `/webapps/root`와 같은 상대 경로를 지정하면 애플리케이션 루트 디렉터리를 기준으로 자동 변환됩니다.
 * **`prefix`** (`NettyClassPathResourceHandler` 전용):
   * 클래스패스 내에서 정적 파일을 탐색할 패키지 접두사 경로(예: `static/` 또는 `public/`)를 지정합니다.
 * **`contextPath`**:
@@ -603,8 +603,8 @@ Aspectow Edge는 서블릿 컨테이너를 거치지 않고 Netty 인바운드 �
 ##### 핵심 내부 동작 및 성능 최적화 메커니즘
 
 * **Zero-Copy 전송과 청크 스트리밍의 하이브리드 지원**:
-  * **일반 비암호화 HTTP (파일시스템)**: OS 커널 수준의 `sendfile` 시스템 콜을 활용하는 [`DefaultFileRegion`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L475)을 사용하여 사용자 공간 메모리 복사 없이 디스크에서 소켓 버퍼로 다이렉트 전송합니다.
-  * **클래스패스 리소스 및 TLS/SSL/압축 환경**: JAR 내부 리소스 서빙 또는 파이프라인에 `SslHandler`/`HttpContentCompressor`가 활성화된 경우, [`HttpChunkedInput`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L471)과 `ChunkedFile` 또는 `ChunkedStream`을 통한 8KB 청크 스트리밍으로 자동 전환되어 안전하게 서빙됩니다.
+  * **일반 비암호화 HTTP (파일시스템)**: OS 커널 수준의 `sendfile` 시스템 콜을 활용하는 [`DefaultFileRegion`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L475)을 사용하여 사용자 공간 메모리 복사 없이 디스크에서 소켓 버퍼로 다이렉트 전송합니다.
+  * **클래스패스 리소스 및 TLS/SSL/압축 환경**: JAR 내부 리소스 서빙 또는 파이프라인에 `SslHandler`/`HttpContentCompressor`가 활성화된 경우, [`HttpChunkedInput`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L471)과 `ChunkedFile` 또는 `ChunkedStream`을 통한 8KB 청크 스트리밍으로 자동 전환되어 안전하게 서빙됩니다.
 * **디렉터리 순회(Directory Traversal) 공격 원천 방어**:
   * `sanitizePath` 메서드를 통해 `..` 상대 경로 이동이나 숨김 세그먼트(`.`)가 포함된 경로 조작을 즉시 무효화합니다.
   * 실제 파일시스템 서빙 시 정규 경로(`getCanonicalPath()`)가 `baseDir` 하위에 위치하는지 엄격히 검증하여 파일시스템 외부 디렉터리로의 탈출을 원천 방어합니다.
@@ -622,14 +622,14 @@ Aspectow Edge는 서블릿 컨테이너의 무거운 세션 오버헤드를 완�
 
 ##### 1) 핵심 아키텍처 및 동작 원리
 
-* **[`NettySessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java)**:
-  * Aspectran 코어의 [`DefaultSessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java)를 직접 상속하여 구현되었습니다.
+* **[`NettySessionManager`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java)**:
+  * Aspectran 코어의 [`DefaultSessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java)를 직접 상속하여 구현되었습니다.
   * 서블릿 API(`HttpServletRequest`, `HttpSession`)에 전혀 의존하지 않으며, Netty 네이티브 HTTP 요청(`FullHttpRequest`) 수신 시 `Cookie` 헤더를 디코딩하여 세션을 식별하고, 응답 송신 시 `Set-Cookie` 헤더를 안전하게 주입합니다.
   * 논-서블릿 환경에서도 단일 서버 메모리 캐싱 및 백그라운드 세션 청소(`HouseKeeper`)가 동일하게 작동합니다.
 
 ##### 2) `NettySessionConfig`를 통한 세션 쿠키 정책 설정
 
-Netty 환경에서의 세션 쿠키 발급 정책은 [`NettySessionConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java) Bean을 통해 정밀하게 제어합니다.
+Netty 환경에서의 세션 쿠키 발급 정책은 [`NettySessionConfig`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java) Bean을 통해 정밀하게 제어합니다.
 
 ```xml
 <property name="sessionConfig">
@@ -656,14 +656,14 @@ Netty 환경에서의 세션 쿠키 발급 정책은 [`NettySessionConfig`](file
 ##### 3) 세션 저장소(`sessionStore`) 전략 (인메모리 / 파일 / Redis)
 
 * **순수 인메모리 세션 (`sessionStore` 생략)**:
-  * `sessionStore` Bean을 정의하지 않고 [`SessionManagerConfig`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)만 주입하면, 디스크나 외부 네트워크 I/O 없이 오직 JVM 힙 메모리에서만 구동되는 초경량 세션 매니저로 동작합니다.
+  * `sessionStore` Bean을 정의하지 않고 [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)만 주입하면, 디스크나 외부 네트워크 I/O 없이 오직 JVM 힙 메모리에서만 구동되는 초경량 세션 매니저로 동작합니다.
   * 파일 기록 오버헤드가 없어 최고 수준의 반응 속도를 제공하며, 콘솔 데모 환경(예: `aspectow-demo-console`), 임시 토큰 보관, 단기 테스트 등 세션 영속화가 불필요한 환경에 매우 적합합니다.
 * **로컬 파일 영속화 (`!prod`)**: `FileSessionStoreFactoryBean`을 사용하여 디스크 파일(`app/work/_sessions/`)에 세션을 기록하므로, 로컬 개발 시 서버 재기동 후에도 로그인 상태가 유지됩니다.
 * **운영 환경 Redis 클러스터링 (`prod`)**: 무상태(Stateless) 마이크로서비스 확장을 위해 Lettuce 기반의 `DefaultLettuceSessionStoreFactoryBean`을 주입하여 중앙 집중형 Redis 클러스터와 세션을 실시간 동기화합니다.
 
 ##### 4) 세션 이벤트 리스너 등록 (`SessionListenerRegistrationBean`)
 
-Netty 환경에서 세션의 생성 및 소멸 이벤트를 감지하여 감사 로그를 기록하거나 접속자 수를 추적할 때는 [`SessionListenerRegistrationBean`](file:///Users/Aspectran/Projects/workspace/aspectran/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java)을 컨텍스트에 등록합니다.
+Netty 환경에서 세션의 생성 및 소멸 이벤트를 감지하여 감사 로그를 기록하거나 접속자 수를 추적할 때는 [`SessionListenerRegistrationBean`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java)을 컨텍스트에 등록합니다.
 
 ```xml
 <bean class="com.aspectran.netty.support.SessionListenerRegistrationBean">
@@ -675,7 +675,7 @@ Netty 환경에서 세션의 생성 및 소멸 이벤트를 감지하여 감사 
 ```
 
 > [!TIP]
-> 세션 유휴 시간 관리(`SessionManagerConfig`), 신규/일반 세션 분리를 통한 봇/크롤러 세션 차단 최적화, `@NonPersistent`를 통한 선택적 영속화, 그리고 Redis 분산 클러스터링의 세부 동작 메커니즘은 **[`Aspectran Session Manager 가이드`](file:///Users/Aspectran/Projects/workspace/aspectran.github.io/_pages/ko/docs/guides/aspectran-session-manager.md)**를 참조하십시오.
+> 세션 유휴 시간 관리(`SessionManagerConfig`), 신규/일반 세션 분리를 통한 봇/크롤러 세션 차단 최적화, `@NonPersistent`를 통한 선택적 영속화, 그리고 Redis 분산 클러스터링의 세부 동작 메커니즘은 **[`Aspectran Session Manager 가이드`](/ko/docs/guides/aspectran-session-manager/)**를 참조하십시오.
 
 ### 5.4. Console 관제 컨텍스트 (`netty-context-console.xml`)
 
@@ -792,7 +792,7 @@ app/config/logging/
   * 개발 및 로컬 테스트를 위한 진입 파일입니다. 파일 로깅과 더불어 `logback-console.xml`을 포함하여 ANSI 컬러 하이라이팅이 적용된 로그를 터미널 콘솔로 동시 출력하며, 세부 패키지의 로그 레벨을 `DEBUG` 또는 `TRACE`로 상향합니다.
   * 실행 예시: `app/bin/shell.sh --debug`
 * **`included/logback-default.xml`**:
-  * 애플리케이션 비즈니스 로그의 핵심 파일입니다. [`LoggingGroupDiscriminator`](file:///Users/Aspectran/Projects/workspace/aspectran/logging/src/main/java/com/aspectran/logging/LoggingGroupDiscriminator.java)와 `SiftingAppender`를 결합하여, `PathBasedLoggingGroupHandler`가 판별한 로깅 그룹에 따라 `app/logs/${LOGGING_GROUP}.log`(예: `root.log`, `console.log`, `order.log` 등)로 로그를 자동 분기 저장합니다.
+  * 애플리케이션 비즈니스 로그의 핵심 파일입니다. [`LoggingGroupDiscriminator`](https://github.com/aspectran/aspectran/blob/master/logging/src/main/java/com/aspectran/logging/LoggingGroupDiscriminator.java)와 `SiftingAppender`를 결합하여, `PathBasedLoggingGroupHandler`가 판별한 로깅 그룹에 따라 `app/logs/${LOGGING_GROUP}.log`(예: `root.log`, `console.log`, `order.log` 등)로 로그를 자동 분기 저장합니다.
   * 일자별 및 크기별 롤링 정책(`SizeAndTimeBasedRollingPolicy`, 최대 10MB, 30일 보관)이 기본 적용됩니다.
 * **`included/logback-accesslog.xml`**:
   * Netty HTTP 접근 로그 카테고리(`com.aspectran.netty.accesslog`)를 전담 수집합니다. 메인 로그와 동일하게 로깅 그룹별로 `app/logs/${LOGGING_GROUP}-access.log` 파일에 분리 기록됩니다.

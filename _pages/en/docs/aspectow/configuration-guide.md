@@ -590,7 +590,7 @@ Logs all incoming HTTP transaction outcomes in standard web server access log fo
 Aspectow Enterprise fully supports high-performance static asset delivery from both filesystems and classpaths.
 
 ##### 1) Filesystem-Based Resource Serving (`TowResourceManager`)
-Extends Undertow's `PathResourceManager`, implementing [`ApplicationAdapterAware`](file:///Users/Aspectran/Projects/workspace/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowResourceManager.java#L35) for dynamic path resolution relative to the application home:
+Extends Undertow's `PathResourceManager`, implementing [`ApplicationAdapterAware`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowResourceManager.java#L35) for dynamic path resolution relative to the application home:
 
 ```xml
 <property name="resourceManager">
@@ -610,7 +610,7 @@ Extends Undertow's `PathResourceManager`, implementing [`ApplicationAdapterAware
 * **`resourceMappings`**: Binds external filesystem directories outside the webroot to specific URL path prefixes, simplifying access to shared asset folders or upload directories.
 
 ##### 2) Classpath-Based Resource Serving (`TowClassPathResourceManager`)
-For modular application architectures where static web assets are packaged inside JAR archives or libraries on the classpath, [`TowClassPathResourceManager`](file:///Users/Aspectran/Projects/workspace/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowClassPathResourceManager.java) serves files directly using the class loader:
+For modular application architectures where static web assets are packaged inside JAR archives or libraries on the classpath, [`TowClassPathResourceManager`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowClassPathResourceManager.java) serves files directly using the class loader:
 
 ```xml
 <property name="resourceManager">
@@ -622,7 +622,7 @@ For modular application architectures where static web assets are packaged insid
 ```
 
 * **`prefix`**: Package path prefix in the classpath from which to locate assets (e.g., `static/` or `public/`).
-* **Aspectran ClassLoader Integration**: Implements [`ActivityContextAware`](file:///Users/Aspectran/Projects/workspace/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowClassPathResourceManager.java#L48) to stream resources seamlessly out of JAR files without runtime unpack overhead.
+* **Aspectran ClassLoader Integration**: Implements [`ActivityContextAware`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowClassPathResourceManager.java#L48) to stream resources seamlessly out of JAR files without runtime unpack overhead.
 
 #### 5.4.2. Servlet and JSP Mapping (`DefaultJspServlet` & `TowServlet`)
 * **`DefaultJspServlet`**: Activates the Apache Jasper-based JSP compiler and servlet handler, compiling JSP files dynamically at runtime for rapid execution. (Can be omitted in contexts that rely purely on template engines like Thymeleaf).
@@ -640,8 +640,8 @@ Initializes Undertow's low-latency WebSocket engine.
 
 #### 5.4.5. Servlet Session Management (`TowSessionManager` & `TowServletSessionConfig`)
 Bridges Aspectran's enterprise state management engine with Undertow's servlet specification (`io.undertow.server.session.SessionManager`).
-* **[`TowSessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java)**:
-  * Delegates standard servlet session lifecycle events directly to Aspectran's core [`DefaultSessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java).
+* **[`TowSessionManager`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java)**:
+  * Delegates standard servlet session lifecycle events directly to Aspectran's core [`DefaultSessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java).
   * Transparently adapts between servlet `HttpSession` contracts and Aspectran's unified `SessionAdapter`.
 * **`TowServletSessionConfig` (Servlet Cookie Policies)**:
   * `sessionTrackingModes`: Explicitly configured as `COOKIE` to prevent URL rewriting session leak vulnerabilities.
@@ -654,7 +654,7 @@ Bridges Aspectran's enterprise state management engine with Undertow's servlet s
   * Production (`prod`): High-availability Redis clustering via `DefaultLettuceSessionStoreFactoryBean`.
 
 > [!TIP]
-> For complete details on `SessionManagerConfig` lifecycle tuning, bot/crawler session optimization, `@NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](file:///Users/Aspectran/Projects/workspace/aspectran.github.io/_pages/en/docs/guides/aspectran-session-manager.md)**.
+> For complete details on `SessionManagerConfig` lifecycle tuning, bot/crawler session optimization, `@NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
 
 ### 5.5. Console Management Context (`tow-context-console.xml`)
 
@@ -732,7 +732,7 @@ app/config/logging/
   * Entry point for local development and debugging. Loads `logback-console.xml` alongside file appenders to stream ANSI color-highlighted logs to the terminal, elevating package levels to `DEBUG` or `TRACE`.
   * Usage: `app/bin/shell.sh --debug`
 * **`included/logback-default.xml`**:
-  * Handles application business logs. Couples [`LoggingGroupDiscriminator`](file:///Users/Aspectran/Projects/workspace/aspectran/logging/src/main/java/com/aspectran/logging/LoggingGroupDiscriminator.java) with `SiftingAppender` to route logs into `app/logs/${LOGGING_GROUP}.log` (e.g., `root.log`, `console.log`) based on the logging group resolved by `PathBasedLoggingGroupHandlerWrapper`.
+  * Handles application business logs. Couples [`LoggingGroupDiscriminator`](https://github.com/aspectran/aspectran/blob/master/logging/src/main/java/com/aspectran/logging/LoggingGroupDiscriminator.java) with `SiftingAppender` to route logs into `app/logs/${LOGGING_GROUP}.log` (e.g., `root.log`, `console.log`) based on the logging group resolved by `PathBasedLoggingGroupHandlerWrapper`.
   * Pre-configured with time-and-size rolling policies (`SizeAndTimeBasedRollingPolicy`, 10MB per file, 30-day retention).
 * **`included/logback-undertow.xml`**:
   * Collects Undertow server engine logs (`io.undertow`) and access logs (`io.undertow.accesslog`), partitioned into `app/logs/${LOGGING_GROUP}-undertow.log`.

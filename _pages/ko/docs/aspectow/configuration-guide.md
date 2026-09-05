@@ -590,7 +590,7 @@ Gzip 등의 압축 알고리즘을 조건부로 적용하여 네트워크 대역
 Aspectow Enterprise는 파일시스템과 클래스패스 두 가지 방식의 고성능 정적 리소스 서빙을 완벽히 지원합니다.
 
 ##### 1) 파일시스템 기반 리소스 서빙 (`TowResourceManager`)
-Undertow의 `PathResourceManager`를 상속 및 확장한 컴포넌트로, [`ApplicationAdapterAware`](file:///Users/Aspectran/Projects/workspace/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowResourceManager.java#L35)를 구현하여 애플리케이션 루트 경로에 맞춘 유연한 경로 해석을 제공합니다.
+Undertow의 `PathResourceManager`를 상속 및 확장한 컴포넌트로, [`ApplicationAdapterAware`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowResourceManager.java#L35)를 구현하여 애플리케이션 루트 경로에 맞춘 유연한 경로 해석을 제공합니다.
 
 ```xml
 <property name="resourceManager">
@@ -610,7 +610,7 @@ Undertow의 `PathResourceManager`를 상속 및 확장한 컴포넌트로, [`App
 * **`resourceMappings`**: 웹 루트 외부의 디렉터리를 특정 URL 경로 접두사에 연결합니다. 이를 통해 공용 에셋 디렉터리나 업로드 폴더를 손쉽게 정적 웹 경로로 노출할 수 있습니다.
 
 ##### 2) 클래스패스 기반 리소스 서빙 (`TowClassPathResourceManager`)
-정적 리소스가 애플리케이션 JAR 파일 내부나 클래스패스에 패키징되어 배포되는 모듈형 아키텍처를 위해 [`TowClassPathResourceManager`](file:///Users/Aspectran/Projects/workspace/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowClassPathResourceManager.java)를 제공합니다.
+정적 리소스가 애플리케이션 JAR 파일 내부나 클래스패스에 패키징되어 배포되는 모듈형 아키텍처를 위해 [`TowClassPathResourceManager`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowClassPathResourceManager.java)를 제공합니다.
 
 ```xml
 <property name="resourceManager">
@@ -622,7 +622,7 @@ Undertow의 `PathResourceManager`를 상속 및 확장한 컴포넌트로, [`App
 ```
 
 * **`prefix`**: 클래스패스 내에서 정적 파일을 탐색할 패키지 접두사 경로(예: `static/` 또는 `public/`)를 지정합니다.
-* **Aspectran 클래스로더 연동**: [`ActivityContextAware`](file:///Users/Aspectran/Projects/workspace/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowClassPathResourceManager.java#L48)를 통해 현재 컨텍스트의 클래스로더를 사용하여 JAR 파일 내부 리소스라도 지연 없이 신속하게 추출하여 서빙합니다.
+* **Aspectran 클래스로더 연동**: [`ActivityContextAware`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowClassPathResourceManager.java#L48)를 통해 현재 컨텍스트의 클래스로더를 사용하여 JAR 파일 내부 리소스라도 지연 없이 신속하게 추출하여 서빙합니다.
 
 #### 5.4.2. 서블릿 및 JSP 매핑 (`DefaultJspServlet` & `TowServlet`)
 * **`DefaultJspServlet`**: Apache Jasper 기반의 JSP 컴파일러 및 서블릿 핸들러를 활성화합니다. JSP 파일을 런타임에 동적으로 컴파일하여 고속 실행합니다. (PetClinic 등 순수 템플릿 엔진만 사용하는 컨텍스트에서는 생략 가능)
@@ -640,8 +640,8 @@ Undertow의 고성능 웹소켓 엔진을 초기화합니다.
 
 #### 5.4.5. 서블릿 세션 관리자 (`TowSessionManager` & `TowServletSessionConfig`)
 Aspectran 고유의 엔터프라이즈 세션 관리 엔진을 Undertow 서블릿 스펙(`io.undertow.server.session.SessionManager`)과 매끄럽게 브릿징합니다.
-* **[`TowSessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java)**:
-  * 서블릿 컨테이너의 표준 세션 라이프사이클 이벤트를 Aspectran 코어 [`DefaultSessionManager`](file:///Users/Aspectran/Projects/workspace/aspectran/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java)로 위임합니다.
+* **[`TowSessionManager`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java)**:
+  * 서블릿 컨테이너의 표준 세션 라이프사이클 이벤트를 Aspectran 코어 [`DefaultSessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java)로 위임합니다.
   * 서블릿 API(`HttpSession`)와 Aspectran 내부 세션 어댑터 간의 상호작용을 투명하게 중계합니다.
 * **`TowServletSessionConfig` (서블릿 세션 쿠키 정책)**:
   * `sessionTrackingModes`: `COOKIE`로 지정하여 URL Rewriting에 세션 식별자가 노출되는 보안 취약점을 원천 방지합니다.
@@ -654,7 +654,7 @@ Aspectran 고유의 엔터프라이즈 세션 관리 엔진을 Undertow 서블�
   * 운영 환경(`prod`): Lettuce 기반 `DefaultLettuceSessionStoreFactoryBean`을 통한 무중단 Redis 분산 세션 클러스터링
 
 > [!TIP]
-> 세션 생명주기 옵션(`SessionManagerConfig`), 봇/크롤러 유휴 세션 신속 회수 메커니즘, `@NonPersistent` 영속화 제어, 그리고 Redis 분산 클러스터링의 심층 동작 원리는 **[`Aspectran Session Manager 가이드`](file:///Users/Aspectran/Projects/workspace/aspectran.github.io/_pages/ko/docs/guides/aspectran-session-manager.md)**를 참조하십시오.
+> 세션 생명주기 옵션(`SessionManagerConfig`), 봇/크롤러 유휴 세션 신속 회수 메커니즘, `@NonPersistent` 영속화 제어, 그리고 Redis 분산 클러스터링의 심층 동작 원리는 **[`Aspectran Session Manager 가이드`](/ko/docs/guides/aspectran-session-manager/)**를 참조하십시오.
 
 ### 5.5. Console 관제 컨텍스트 (`tow-context-console.xml`)
 
@@ -732,7 +732,7 @@ app/config/logging/
   * 개발 및 로컬 테스트를 위한 진입 파일입니다. 파일 로깅과 함께 `logback-console.xml`을 로드하여 ANSI 컬러 하이라이팅이 적용된 실시간 로그를 터미널 콘솔로 동시 출력하며, 세부 패키지의 로그 레벨을 `DEBUG` 또는 `TRACE`로 상향합니다.
   * 실행 예시: `app/bin/shell.sh --debug`
 * **`included/logback-default.xml`**:
-  * 애플리케이션 비즈니스 로그를 담당합니다. [`LoggingGroupDiscriminator`](file:///Users/Aspectran/Projects/workspace/aspectran/logging/src/main/java/com/aspectran/logging/LoggingGroupDiscriminator.java)와 `SiftingAppender`를 결합하여, `PathBasedLoggingGroupHandlerWrapper`가 판별한 로깅 그룹에 따라 `app/logs/${LOGGING_GROUP}.log`(예: `root.log`, `console.log`)로 로그를 자동 분기 저장합니다.
+  * 애플리케이션 비즈니스 로그를 담당합니다. [`LoggingGroupDiscriminator`](https://github.com/aspectran/aspectran/blob/master/logging/src/main/java/com/aspectran/logging/LoggingGroupDiscriminator.java)와 `SiftingAppender`를 결합하여, `PathBasedLoggingGroupHandlerWrapper`가 판별한 로깅 그룹에 따라 `app/logs/${LOGGING_GROUP}.log`(예: `root.log`, `console.log`)로 로그를 자동 분기 저장합니다.
   * 일자별 및 크기별 롤링 정책(`SizeAndTimeBasedRollingPolicy`, 최대 10MB, 30일 보관)이 기본 적용됩니다.
 * **`included/logback-undertow.xml`**:
   * Undertow 서버 엔진(`io.undertow`) 및 Access 로그(`io.undertow.accesslog`)를 전담 수집하여 `app/logs/${LOGGING_GROUP}-undertow.log`에 분리 기록합니다.
