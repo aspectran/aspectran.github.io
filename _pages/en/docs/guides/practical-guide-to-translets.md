@@ -63,6 +63,8 @@ The extracted value is mapped to the method argument name. In most cases, the `$
 
 *   **POJO Mapping**: Request parameters can be automatically mapped to the fields of a POJO (Plain Old Java Object).
 
+*   **Uploaded Files**: Files submitted via multipart form data can be directly injected by declaring parameters of type `FileParameter`, `FileParameter[]`, or `FileParameterMap`. (See [8. File Upload and Multipart Request Handling](#8-file-upload-and-multipart-request-handling) for details)
+
 ```java
 @Component
 public class ProductActivity {
@@ -351,4 +353,107 @@ public void someMethod(Translet translet) {
     SessionAdapter sessionAdapter = translet.getSessionAdapter();
     sessionAdapter.setAttribute("user", user);
 }
+```
+
+## 8. File Upload and Multipart Request Handling
+
+Aspectran provides intuitive, safe, and flexible features for handling `multipart/form-data` file upload requests.
+
+### 8.1. Automatic File Parameter Detection
+
+When you declare action method parameters of type `FileParameter`, `FileParameter[]`, or `FileParameterMap`, Aspectran automatically detects them and configures the Translet to process multipart requests. File uploads are enabled simply by declaring the parameter, without requiring any additional annotations.
+
+*   **`FileParameter`**: Injects a single uploaded file. The parameter name or `@Qualifier("fieldName")` is used to match the form field name.
+*   **`FileParameter[]`**: Injects multiple files uploaded under the same form field name as an array.
+*   **`FileParameterMap`**: Injects all uploaded files in the request as a map.
+
+```java
+@Component
+public class FileUploadActivity {
+
+    // 1. Single file upload (form field name: attachment)
+    @RequestToPost("/upload/single")
+    public void uploadSingle(FileParameter attachment) {
+        if (attachment != null && attachment.getFileSize() > 0) {
+            String fileName = attachment.getFileName();
+            long fileSize = attachment.getFileSize();
+            // File saving or business logic processing
+            // File savedFile = attachment.save(new File("/path/to/dest", fileName));
+        }
+    }
+
+    // 2. Multiple file upload (specifying field name with @Qualifier)
+    @RequestToPost("/upload/multiple")
+    public void uploadMultiple(@Qualifier("photos") FileParameter[] photos) {
+        if (photos != null) {
+            for (FileParameter photo : photos) {
+                // Process each file
+            }
+        }
+    }
+
+    // 3. Complete map of uploaded files
+    @RequestToPost("/upload/all")
+    public void uploadAll(FileParameterMap fileMap) {
+        for (Map.Entry<String, FileParameter[]> entry : fileMap.entrySet()) {
+            String fieldName = entry.getKey();
+            FileParameter[] files = entry.getValue();
+            // Process files by field name
+        }
+    }
+}
+```
+
+### 8.2. The `@Multipart` Annotation
+
+The `@Multipart` annotation can be used when you need to parse multipart form parameters even without `FileParameter` arguments, or when you want to explicitly specify a particular parser bean.
+
+*   **Method-level declaration**: Configures multipart handling for a specific action method.
+*   **Class-level declaration**: Applies multipart handling as the default for all action methods within the component class. You can override it on individual methods with a different parser.
+*   **Supported HTTP methods**: Supports multipart requests using `POST`, `PUT`, or `PATCH`.
+
+```java
+@Component
+@Multipart // Applies multipart processing to all requests in this class by default
+public class ArticleActivity {
+
+    // Parses multipart form data with class-level @Multipart applied
+    @RequestToPost("/articles")
+    public void createArticle(Article article, FileParameter coverImage) {
+        // Both regular fields of article and coverImage are injected
+    }
+
+    // Explicitly specifies a dedicated parser bean for this action method
+    @RequestToPut("/articles/${articleId}/attachments")
+    @Multipart("largeFileUploader")
+    public void updateAttachments(long articleId, FileParameter[] attachments) {
+        // Parsed using the "largeFileUploader" parser bean
+    }
+}
+```
+
+### 8.3. Multipart Parser Bean Resolution Order
+
+When parsing a multipart request, the `MultipartFormDataParser` bean is resolved in the following priority order:
+
+1.  **Direct Translet specification**: The parser bean name specified in the `@Multipart("beanName")` attribute.
+2.  **Aspect environment setting**: The bean name specified by an Aspect's `<setting name="multipartFormDataParser" value="beanName"/>`.
+3.  **Default bean ID**: A bean registered in the container with the ID `"multipartFormDataParser"`.
+4.  **Unique bean by type**: Automatically injected if exactly **one** bean of type `MultipartFormDataParser` is defined in the container.
+
+In most web applications, only a single multipart parser bean is registered, so omitting the parser name and simply using `@Multipart` or declaring a `FileParameter` argument is sufficient.
+
+> For security reasons, if a request does not have a `@Multipart` annotation, a `FileParameter` argument, or an Aspect `multipartFormDataParser` setting, the multipart request body will not be parsed and a warning will be logged.
+
+### 8.4. Startup-Time Bean Reference Validation
+
+When a specific parser bean name is provided via `@Multipart("someParser")`, Aspectran validates at **application startup and context build time** whether the referenced bean is actually defined.
+
+If an invalid or misspelled bean name is specified, a `BeanReferenceException` is thrown immediately during server boot rather than failing at runtime when an upload request arrives, preventing configuration mistakes early.
+
+```text
+ERROR [main] Cannot resolve reference to bean 'standardFileUploader---'; Referer: transletRule {name=/examples/file-upload/files, method=[POST], ...}
+
+Caused by: com.aspectran.core.context.rule.validation.BeanReferenceException: Found 1 broken bean reference(s):
+1. Cannot resolve reference to bean 'standardFileUploader---'; Referer: transletRule {name=/examples/file-upload/files, method=[POST], ...}
 ```

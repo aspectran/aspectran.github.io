@@ -63,6 +63,8 @@ Aspectran의 가장 강력한 기능 중 하나는 액션 메소드의 인자를
 
 *   **POJO 매핑**: 요청 파라미터들을 자동으로 POJO(Plain Old Java Object)의 필드에 매핑할 수 있습니다.
 
+*   **업로드 파일 (Uploaded Files)**: 멀티파트 폼 데이터로 전송된 파일은 `FileParameter`, `FileParameter[]`, 또는 `FileParameterMap` 인자를 선언하여 직접 주입받을 수 있습니다. (자세한 내용은 [8. 파일 업로드 및 멀티파트 요청 처리](#8-파일-업로드-및-멀티파트-요청-처리) 참조)
+
 ```java
 @Component
 public class ProductActivity {
@@ -351,4 +353,107 @@ public void someMethod(Translet translet) {
     SessionAdapter sessionAdapter = translet.getSessionAdapter();
     sessionAdapter.setAttribute("user", user);
 }
+```
+
+## 8. 파일 업로드 및 멀티파트 요청 처리
+
+Aspectran은 `multipart/form-data` 형식의 파일 업로드 요청을 간단하고 안전하게 처리할 수 있는 직관적인 기능을 제공합니다.
+
+### 8.1. 파일 파라미터 자동 감지
+
+액션 메소드의 인자로 `FileParameter`, `FileParameter[]`, 또는 `FileParameterMap`을 선언하면, Aspectran이 이를 자동으로 감지하여 멀티파트 요청을 처리하도록 트랜슬릿을 구성합니다. 별도의 어노테이션 없이도 인자 선언만으로 파일 업로드가 활성화됩니다.
+
+*   **`FileParameter`**: 단일 업로드 파일을 주입받습니다. 인자 이름 또는 `@Qualifier("fieldName")`로 폼 필드 이름과 매핑됩니다.
+*   **`FileParameter[]`**: 동일한 폼 필드 이름으로 업로드된 여러 개의 파일을 배열로 주입받습니다.
+*   **`FileParameterMap`**: 요청에 포함된 모든 업로드 파일을 맵 형태로 한 번에 주입받습니다.
+
+```java
+@Component
+public class FileUploadActivity {
+
+    // 1. 단일 파일 업로드 (폼 필드명: attachment)
+    @RequestToPost("/upload/single")
+    public void uploadSingle(FileParameter attachment) {
+        if (attachment != null && attachment.getFileSize() > 0) {
+            String fileName = attachment.getFileName();
+            long fileSize = attachment.getFileSize();
+            // 파일 저장 또는 비즈니스 로직 처리
+            // File savedFile = attachment.save(new File("/path/to/dest", fileName));
+        }
+    }
+
+    // 2. 다중 파일 업로드 (@Qualifier로 필드명 지정)
+    @RequestToPost("/upload/multiple")
+    public void uploadMultiple(@Qualifier("photos") FileParameter[] photos) {
+        if (photos != null) {
+            for (FileParameter photo : photos) {
+                // 각 파일 처리
+            }
+        }
+    }
+
+    // 3. 전체 업로드 파일 맵 주입
+    @RequestToPost("/upload/all")
+    public void uploadAll(FileParameterMap fileMap) {
+        for (Map.Entry<String, FileParameter[]> entry : fileMap.entrySet()) {
+            String fieldName = entry.getKey();
+            FileParameter[] files = entry.getValue();
+            // 필드별 파일 처리
+        }
+    }
+}
+```
+
+### 8.2. `@Multipart` 어노테이션
+
+`FileParameter` 인자가 없더라도 멀티파트 요청 바디의 일반 폼 파라미터를 파싱해야 하거나, 특정 파서 빈을 명시적으로 지정하고 싶을 때는 `@Multipart` 어노테이션을 사용할 수 있습니다.
+
+*   **메소드 레벨 선언**: 특정 액션 메소드에 멀티파트 처리를 지정합니다.
+*   **클래스 레벨 선언**: 해당 컴포넌트 내의 모든 액션 메소드에 멀티파트 처리를 기본으로 적용합니다. 메소드 레벨에서 다른 파서를 지정하여 재정의할 수도 있습니다.
+*   **지원 HTTP 메소드**: `POST` 뿐만 아니라 `PUT`, `PATCH` 요청의 멀티파트 데이터도 지원합니다.
+
+```java
+@Component
+@Multipart // 클래스 내 모든 요청에 멀티파트 처리 기본 적용
+public class ArticleActivity {
+
+    // 클래스 레벨 @Multipart가 적용되어 멀티파트 폼 데이터 파싱
+    @RequestToPost("/articles")
+    public void createArticle(Article article, FileParameter coverImage) {
+        // article의 일반 필드들과 coverImage가 모두 주입됨
+    }
+
+    // 특정 액션 메소드에서 전용 파서 빈을 지정
+    @RequestToPut("/articles/${articleId}/attachments")
+    @Multipart("largeFileUploader")
+    public void updateAttachments(long articleId, FileParameter[] attachments) {
+        // "largeFileUploader" 파서 빈을 사용하여 파싱
+    }
+}
+```
+
+### 8.3. 멀티파트 파서 빈 해석 우선순위
+
+멀티파트 요청을 파싱할 때 사용할 `MultipartFormDataParser` 빈은 다음 순서로 유연하게 결정됩니다:
+
+1.  **트랜슬릿 직접 지정**: `@Multipart("beanName")` 속성에 지정된 파서 빈 이름
+2.  **Aspect 환경 설정**: Aspect의 `<setting name="multipartFormDataParser" value="beanName"/>`으로 지정된 빈 이름
+3.  **기본 빈 ID**: 컨테이너에 ID가 `"multipartFormDataParser"`로 등록된 빈
+4.  **타입 기반 단일 빈**: 컨테이너에 `MultipartFormDataParser` 타입의 빈이 **단 1개**만 정의되어 있을 경우 자동 주입
+
+대부분의 웹 애플리케이션에서는 하나의 멀티파트 파서 빈만 등록하여 사용하므로, 파서 이름을 생략하고 `@Multipart`를 사용하거나 `FileParameter` 인자를 선언하는 것만으로 충분합니다.
+
+> 보안상의 이유로 `@Multipart` 어노테이션, `FileParameter` 인자, 또는 Aspect의 `multipartFormDataParser` 설정이 전혀 없는 요청에 대해서는 멀티파트 요청 바디를 파싱하지 않고 경고 로그를 남깁니다.
+
+### 8.4. 시작 시점 빈 참조 검증
+
+`@Multipart("someParser")`와 같이 특정 파서 빈의 이름을 지정했을 경우, Aspectran은 **애플리케이션 시작 및 컨텍스트 빌드 시점**에 해당 빈이 실제로 등록되어 있는지 사전에 검증합니다.
+
+만약 오타 등으로 존재하지 않는 빈 이름을 지정했다면, 런타임에 파일 업로드 요청이 들어와서야 실패하는 대신 서버 기동 시점에 즉시 `BeanReferenceException`이 발생하여 실수를 사전에 방지할 수 있습니다.
+
+```text
+ERROR [main] Cannot resolve reference to bean 'standardFileUploader---'; Referer: transletRule {name=/examples/file-upload/files, method=[POST], ...}
+
+Caused by: com.aspectran.core.context.rule.validation.BeanReferenceException: Found 1 broken bean reference(s):
+1. Cannot resolve reference to bean 'standardFileUploader---'; Referer: transletRule {name=/examples/file-upload/files, method=[POST], ...}
 ```
