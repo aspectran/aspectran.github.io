@@ -674,8 +674,7 @@ Netty 환경에서 세션의 생성 및 소멸 이벤트를 감지하여 감사 
 </bean>
 ```
 
-> [!TIP]
-> 세션 유휴 시간 관리(`SessionManagerConfig`), 신규/일반 세션 분리를 통한 봇/크롤러 세션 차단 최적화, `@NonPersistent`를 통한 선택적 영속화, 그리고 Redis 분산 클러스터링의 세부 동작 메커니즘은 **[`Aspectran Session Manager 가이드`](/ko/docs/guides/aspectran-session-manager/)**를 참조하십시오.
+> **참고:** 세션 유휴 시간 관리(`SessionManagerConfig`), 신규/일반 세션 분리를 통한 봇/크롤러 세션 차단 최적화, `@NonPersistent`를 통한 선택적 영속화, 그리고 Redis 분산 클러스터링의 세부 동작 메커니즘은 **[`Aspectran Session Manager 가이드`](/ko/docs/guides/aspectran-session-manager/)**를 참조하십시오.
 
 ### 5.4. Console 관제 컨텍스트 (`netty-context-console.xml`)
 

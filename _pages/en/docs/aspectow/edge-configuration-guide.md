@@ -674,8 +674,7 @@ To track session creation/destruction events for audit logging or active user me
 </bean>
 ```
 
-> [!TIP]
-> For complete details on `SessionManagerConfig` lifecycle tuning, crawler/bot phantom session mitigation, `@NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
+> **Note:** For complete details on `SessionManagerConfig` lifecycle tuning, crawler/bot phantom session mitigation, `@NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
 
 ### 5.4. Console Management Context (`netty-context-console.xml`)
 

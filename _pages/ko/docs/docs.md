@@ -35,6 +35,7 @@ permalink: /ko/docs/
 {: #실용-가이드-practical-guides}
 *   [Aspectran Beans: IoC/DI 실용 가이드](/ko/docs/guides/practical-guide-to-beans/)
 *   [Aspectran Translet 실용 가이드](/ko/docs/guides/practical-guide-to-translets/)
+*   [Aspectran 파일 업로드 실용 가이드](/ko/docs/guides/practical-guide-to-file-upload/)
 *   [PBE를 이용한 인증 토큰 활용 가이드](/ko/docs/guides/practical-guide-to-pbe-token-based-authentication/)
 *   [Aspectran에서 Thymeleaf 레이아웃 적용 가이드](/ko/docs/guides/practical-guide-to-thymeleaf-layout/)
 *   [Aspectran에서 CORS(Cross-Origin Resource Sharing) 활용하기](/ko/docs/guides/practical-guide-to-cors/)

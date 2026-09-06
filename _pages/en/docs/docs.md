@@ -35,6 +35,7 @@ permalink: /en/docs/
 {: #practical-guides}
 *   [Aspectran Beans: Practical Guide to IoC/DI](/en/docs/guides/practical-guide-to-beans/)
 *   [Practical Guide to Aspectran Translets](/en/docs/guides/practical-guide-to-translets/)
+*   [Practical Guide to Aspectran File Uploads](/en/docs/guides/practical-guide-to-file-upload/)
 *   [Practical Guide to PBE Token-Based Authentication](/en/docs/guides/practical-guide-to-pbe-token-based-authentication/)
 *   [Guide to Applying Thymeleaf Layout in Aspectran](/en/docs/guides/practical-guide-to-thymeleaf-layout/)
 *   [Using CORS (Cross-Origin Resource Sharing) in Aspectran](/en/docs/guides/practical-guide-to-cors/)

@@ -359,6 +359,8 @@ public void someMethod(Translet translet) {
 
 Aspectran provides intuitive, safe, and flexible features for handling `multipart/form-data` file upload requests.
 
+> **Note:** For in-depth coverage of parser configuration (size limits, extension filters, temporary file thresholds) and managing endpoint-specific upload policies via AOP Aspects, see the [Practical Guide to Aspectran File Uploads](/en/docs/guides/practical-guide-to-file-upload/).
+
 ### 8.1. Automatic File Parameter Detection
 
 When you declare action method parameters of type `FileParameter`, `FileParameter[]`, or `FileParameterMap`, Aspectran automatically detects them and configures the Translet to process multipart requests. File uploads are enabled simply by declaring the parameter, without requiring any additional annotations.

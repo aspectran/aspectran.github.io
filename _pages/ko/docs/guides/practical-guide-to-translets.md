@@ -359,6 +359,8 @@ public void someMethod(Translet translet) {
 
 Aspectran은 `multipart/form-data` 형식의 파일 업로드 요청을 간단하고 안전하게 처리할 수 있는 직관적인 기능을 제공합니다.
 
+> **참고:** 파일 업로드 파서의 종류 및 세부 설정(크기 제한, 확장자 필터, 임시 파일 임계값 등)과 AOP Aspect를 통한 엔드포인트별 업로드 정책 관리에 대한 자세한 내용은 [Aspectran 파일 업로드 실용 가이드](/ko/docs/guides/practical-guide-to-file-upload/)를 참고하십시오.
+
 ### 8.1. 파일 파라미터 자동 감지
 
 액션 메소드의 인자로 `FileParameter`, `FileParameter[]`, 또는 `FileParameterMap`을 선언하면, Aspectran이 이를 자동으로 감지하여 멀티파트 요청을 처리하도록 트랜슬릿을 구성합니다. 별도의 어노테이션 없이도 인자 선언만으로 파일 업로드가 활성화됩니다.
