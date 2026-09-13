@@ -186,8 +186,7 @@ Aspectran을 웹 애플리케이션으로 실행할 때의 환경을 정의합�
 - **`trailingSlashRedirect`**: URI 끝에 슬래시(`/`)가 없을 때 자동으로 슬래시를 붙여 리디렉션할지 여부를 설정합니다.
 - **`legacyHeadHandling`**: 레거시 시스템과의 호환성을 위해 HEAD 요청을 GET 요청처럼 처리할지 여부를 설정합니다.
 - **`proxyAddressForwarding`**: 리버스 프록시(Reverse Proxy) 환경에서 전달되는 `X-Forwarded-*` 헤더들(`X-Forwarded-For`, `X-Forwarded-Proto`, `X-Forwarded-Host`, `X-Forwarded-Port`, `X-Forwarded-Path`)을 인식하여 클라이언트의 원본 IP 주소, 프로토콜, 호스트, 포트 및 경로 정보를 사용할지 여부를 설정합니다.
-  > [!WARNING]
-  > **보안 주의사항 (Header Spoofing / IP Spoofing 위험)**
+  > **보안 주의사항 (Header Spoofing / IP Spoofing 위험)**\
   > `proxyAddressForwarding: true`로 설정하면 클라이언트가 전송한 `X-Forwarded-*` 헤더 값을 신뢰하게 됩니다. Nginx, HAProxy, AWS ALB 등 신뢰할 수 있는 리버스 프록시나 로드 밸런서가 전단에 배치되어 있지 않은 상태에서 이 옵션을 켜면, 외부 악의적 클라이언트가 `X-Forwarded-For` 헤더를 위조(Spoofing)하여 IP 기반 접근 제어(ACL) 및 차단 목록을 우회하거나, `X-Forwarded-Host`/`X-Forwarded-Proto` 헤더를 위조하여 Host 헤더 공격, 캐시 오염, 잘못된 리디렉션 등을 유발할 수 있습니다. 따라서 **신뢰할 수 있는 프록시 서버가 외부 클라이언트의 `X-Forwarded-*` 헤더를 재작성하거나 적절히 제거하도록 인프라 보안 조치가 완료된 환경에서만 이 옵션을 활성화해야 합니다.**
 - **`acceptable`**: 웹 환경에서 허용(`+`)하거나 거부(`-`)할 Translet 요청 URL 패턴을 정의합니다. `/**`는 모든 요청을 의미합니다.
 

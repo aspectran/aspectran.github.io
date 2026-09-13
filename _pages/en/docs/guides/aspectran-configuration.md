@@ -186,8 +186,7 @@ Defines the environment for running Aspectran as a web application.
 - **`trailingSlashRedirect`**: Sets whether to automatically redirect by adding a slash (`/`) to the end of a URI if it is missing.
 - **`legacyHeadHandling`**: Sets whether to treat HEAD requests like GET requests for compatibility with legacy systems.
 - **`proxyAddressForwarding`**: Sets whether to respect `X-Forwarded-*` headers (`X-Forwarded-For`, `X-Forwarded-Proto`, `X-Forwarded-Host`, `X-Forwarded-Port`, `X-Forwarded-Path`) passed from a reverse proxy to extract the original client IP address, protocol, host, port, and path information.
-  > [!WARNING]
-  > **Security Warning (Header Spoofing / IP Spoofing Risk)**
+  > **Security Warning (Header Spoofing / IP Spoofing Risk)**\
   > Setting `proxyAddressForwarding: true` causes the application to trust incoming `X-Forwarded-*` headers. If this option is enabled without being deployed behind a trusted reverse proxy or load balancer (such as Nginx, HAProxy, or AWS ALB), external malicious clients can spoof headers like `X-Forwarded-For` to bypass IP-based access control lists (ACLs), or spoof `X-Forwarded-Host`/`X-Forwarded-Proto` to launch Host header attacks, cache poisoning, or unintended redirects. Therefore, **this option must only be enabled in environments where trusted proxy servers are configured to strip or overwrite incoming `X-Forwarded-*` headers from untrusted clients.**
 - **`acceptable`**: Defines Translet request URL patterns to be allowed (`+`) or denied (`-`) in the web environment. `/**` means all requests.
 
