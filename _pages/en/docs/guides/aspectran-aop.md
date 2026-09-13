@@ -164,14 +164,12 @@ The `<settings>` element injects configuration parameters directly into the matc
     <settings>
         <setting name="characterEncoding" value="utf-8"/>
         <setting name="viewDispatcher" value="thymeleafViewDispatcher"/>
-        <setting name="proxyProtocolAware" value="true"/>
     </settings>
 </aspect>
 ```
 
 * **`characterEncoding`**: Sets the default request/response character encoding.
 * **`viewDispatcher`**: Assigns the default `ViewDispatcher` bean for the matching scope.
-* **`proxyProtocolAware`**: Enables parsing client IPs/ports behind reverse proxies (Nginx/HAProxy).
 
 ### 2.4. Advice Types and Composition (`<advice>`)
 

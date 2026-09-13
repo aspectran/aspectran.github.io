@@ -164,14 +164,12 @@ Aspectran의 Pointcut 필터링 엔진은 선언된 **순서(Top-Down)**대로 �
     <settings>
         <setting name="characterEncoding" value="utf-8"/>
         <setting name="viewDispatcher" value="thymeleafViewDispatcher"/>
-        <setting name="proxyProtocolAware" value="true"/>
     </settings>
 </aspect>
 ```
 
 * **`characterEncoding`**: 요청 및 응답의 기본 문자 인코딩 설정
 * **`viewDispatcher`**: 해당 요청 범위에서 사용할 기본 `ViewDispatcher` 빈 지정
-* **`proxyProtocolAware`**: Nginx/HAProxy 등 리버스 프록시 뒤에서 실제 클라이언트 IP/포트를 해석할지 여부
 
 ### 2.4. Advice 유형 및 구성 (`<advice>`)
 

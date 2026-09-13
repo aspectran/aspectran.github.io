@@ -268,6 +268,7 @@ daemon: {
 web: {
     uriDecoding: utf-8
     trailingSlashRedirect: true
+    proxyAddressForwarding: false
     acceptable: {
         +: /**
     }
@@ -286,7 +287,7 @@ web: {
 * **`scheduler`**: 서버 시작 후 지연 기동 시간(`startDelaySeconds`) 및 정상 종료 대기(`waitOnShutdown`) 정책을 설정합니다.
 * **`shell`**: 대화형 CLI 도구인 `app/bin/shell.sh`를 위한 설정입니다. `NettyCommand`를 통해 셸 터미널에서 Netty 서버의 바인딩 포트 및 활성 채널 상태를 즉시 점검할 수 있습니다.
 * **`daemon`**: 백그라운드 서비스 데몬(`app/bin/daemon.sh`)이 `app/cmd/incoming/` 디렉터리를 감시하며 파일 기반의 비동기 명령을 처리하는 File Commander 엔진 설정입니다.
-* **`web`**: 수신 URI 디코딩 인코딩 및 트레일링 슬래시(`/`) 정규화 리다이렉트 정책을 선언합니다.
+* **`web`**: 수신 URI 디코딩 인코딩, 트레일링 슬래시(`/`) 정규화 리다이렉트 정책, 그리고 리버스 프록시 헤더 인식 여부(`proxyAddressForwarding`)를 설정합니다. 단, Netty Server(`DefaultNettyServer`)나 Undertow Server(`TowServer`) 빈 설정에서 `<property name="proxyAddressForwarding" valueType="boolean">true</property>`와 같이 해당 속성을 명시적으로 주입한 경우, 서버 빈의 설정이 `web` 섹션의 설정을 덮어쓰고 우선하여 적용됩니다.
 
 ## 5. Netty 내장 서버 설정 가이드
 
@@ -411,19 +412,19 @@ Aspectow Edge의 내장 서버는 `/app/config/server/` 디렉토리의 XML 파�
     <bean id="netty.server.handler.loggingGroupHandler"
           class="com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler"
           scope="prototype">
-        <property name="pathPatternsByGroupName">
-            <item name="order">
+        <property name="pathPatternsByGroupName" type="map">
+            <entry name="order">
                 +: /order/**
                 +: /checkout/**
-            </item>
-            <item name="payment">
+            </entry>
+            <entry name="payment">
                 +: /payment/**
                 +: /billing/**
-            </item>
-            <item name="api">
+            </entry>
+            <entry name="api">
                 +: /api/**
                 -: /api/internal/**
-            </item>
+            </entry>
         </property>
     </bean>
 

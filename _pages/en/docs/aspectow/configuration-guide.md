@@ -232,6 +232,7 @@ web: {
     defaultServletName: none
     trailingSlashRedirect: true
     legacyHeadHandling: true
+    proxyAddressForwarding: false
     acceptable: {
         +: /**
     }

@@ -268,6 +268,7 @@ daemon: {
 web: {
     uriDecoding: utf-8
     trailingSlashRedirect: true
+    proxyAddressForwarding: false
     acceptable: {
         +: /**
     }
@@ -286,7 +287,7 @@ web: {
 * **`scheduler`**: Controls startup delay (`startDelaySeconds`) and graceful termination (`waitOnShutdown`) for scheduled jobs.
 * **`shell`**: Configures the interactive diagnostic terminal (`app/bin/shell.sh`). The included `NettyCommand` enables instant CLI inspection of bound ports and active channel states.
 * **`daemon`**: Configures the background service daemon (`app/bin/daemon.sh`) and File Commander queue watching `app/cmd/incoming/` for asynchronous file-based administrative commands.
-* **`web`**: Configures URI decoding charsets and trailing slash (`/`) canonicalization redirects.
+* **`web`**: Configures URI decoding charsets, trailing slash (`/`) canonicalization redirects, and reverse proxy header forwarding (`proxyAddressForwarding`). Note that if `<property name="proxyAddressForwarding" valueType="boolean">true</property>` is explicitly defined within the Netty Server (`DefaultNettyServer`) or Undertow Server (`TowServer`) bean configuration, the server bean setting overrides the `web` section configuration and takes precedence.
 
 ## 5. Embedded Netty Server Configuration Guide
 
@@ -411,19 +412,19 @@ Aspectow Edge's embedded server is managed modularly through XML definitions org
     <bean id="netty.server.handler.loggingGroupHandler"
           class="com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler"
           scope="prototype">
-        <property name="pathPatternsByGroupName">
-            <item name="order">
+        <property name="pathPatternsByGroupName" type="map">
+            <entry name="order">
                 +: /order/**
                 +: /checkout/**
-            </item>
-            <item name="payment">
+            </entry>
+            <entry name="payment">
                 +: /payment/**
                 +: /billing/**
-            </item>
-            <item name="api">
+            </entry>
+            <entry name="api">
                 +: /api/**
                 -: /api/internal/**
-            </item>
+            </entry>
         </property>
     </bean>
 

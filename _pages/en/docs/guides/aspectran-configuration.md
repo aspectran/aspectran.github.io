@@ -75,7 +75,6 @@ context: {
 - **`name`**: Specifies a unique name for the `ActivityContext`.
 - **`rules`**: Specifies the path to the core rule files written in XML or APON format. You can specify multiple files in an array. These files define major rules such as **Bean, Translet, and Aspect**.
 - **`resources`**: Adds multiple directory paths for the application classloader to find libraries (JAR files) or resources. For example, `resources: [ /lib/ext ]` means adding the `/lib/ext` directory under the application's execution location to the classpath.
-
     > **Note:** When running the application in an IDE (Integrated Development Environment), Aspectran automatically ignores this `resources` setting to prevent `ClassCastException` due to classloader conflicts. This is to avoid duplicate loading of classes from the IDE's classpath and classes contained in JAR files in the directories specified by `resources`.
 - **`scan`**: Specifies the base packages for component scanning. Aspectran finds classes annotated with `@Component`, `@Bean`, `@Aspect`, etc., in the specified packages and automatically registers them as beans.
 - **`profiles`**: Sets up profiles to distinguish the application's execution environment.
@@ -186,6 +185,10 @@ Defines the environment for running Aspectran as a web application.
 - **`defaultServletName`**: Specifies the name of the default servlet to handle static resources, etc. If set to `none`, requests not handled by Aspectran will not be passed to the default servlet.
 - **`trailingSlashRedirect`**: Sets whether to automatically redirect by adding a slash (`/`) to the end of a URI if it is missing.
 - **`legacyHeadHandling`**: Sets whether to treat HEAD requests like GET requests for compatibility with legacy systems.
+- **`proxyAddressForwarding`**: Sets whether to respect `X-Forwarded-*` headers (`X-Forwarded-For`, `X-Forwarded-Proto`, `X-Forwarded-Host`, `X-Forwarded-Port`, `X-Forwarded-Path`) passed from a reverse proxy to extract the original client IP address, protocol, host, port, and path information.
+  > [!WARNING]
+  > **Security Warning (Header Spoofing / IP Spoofing Risk)**
+  > Setting `proxyAddressForwarding: true` causes the application to trust incoming `X-Forwarded-*` headers. If this option is enabled without being deployed behind a trusted reverse proxy or load balancer (such as Nginx, HAProxy, or AWS ALB), external malicious clients can spoof headers like `X-Forwarded-For` to bypass IP-based access control lists (ACLs), or spoof `X-Forwarded-Host`/`X-Forwarded-Proto` to launch Host header attacks, cache poisoning, or unintended redirects. Therefore, **this option must only be enabled in environments where trusted proxy servers are configured to strip or overwrite incoming `X-Forwarded-*` headers from untrusted clients.**
 - **`acceptable`**: Defines Translet request URL patterns to be allowed (`+`) or denied (`-`) in the web environment. `/**` means all requests.
 
 ## 7. Full Configuration Example
@@ -315,6 +318,7 @@ web: {
     defaultServletName: none
     trailingSlashRedirect: true
     legacyHeadHandling: true
+    proxyAddressForwarding: false
     acceptable: {
         +: /**
     }

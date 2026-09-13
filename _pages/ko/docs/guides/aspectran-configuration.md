@@ -75,7 +75,6 @@ context: {
 - **`name`**: `ActivityContext`의 고유한 이름을 지정합니다.
 - **`rules`**: XML 또는 APON 형식으로 작성된 핵심 규칙 파일의 경로를 지정합니다. 배열 형태로 여러 파일을 지정할 수 있습니다. 이 파일들에는 **Bean, Translet, Aspect** 등의 주요 규칙이 정의됩니다.
 - **`resources`**: 애플리케이션 클래스로더가 라이브러리(JAR 파일)나 리소스를 찾을 수 있도록 여러 디렉토리 경로를 추가합니다. 예를 들어, `resources: [ /lib/ext ]`는 애플리케이션 실행 위치 하위의 `/lib/ext` 디렉토리를 클래스패스에 추가하라는 의미입니다.
-
     > **참고:** IDE(통합 개발 환경)에서 애플리케이션을 실행할 때, Aspectran은 클래스로더 충돌로 인한 `ClassCastException`을 방지하기 위해 이 `resources` 설정을 자동으로 무시합니다. 이는 IDE의 클래스패스에 있는 클래스와 `resources`에 지정된 디렉토리의 JAR 파일에 포함된 클래스가 중복으로 로드되는 것을 막기 위함입니다.
 - **`scan`**: 컴포넌트 스캔을 수행할 기본 패키지를 지정합니다. Aspectran은 지정된 패키지 하위에서 `@Component`, `@Bean`, `@Aspect` 등의 어노테이션이 붙은 클래스를 찾아 자동으로 빈(Bean)으로 등록합니다.
 - **`profiles`**: 애플리케이션의 실행 환경을 구분하는 프로필을 설정합니다.
@@ -186,6 +185,10 @@ Aspectran을 웹 애플리케이션으로 실행할 때의 환경을 정의합�
 - **`defaultServletName`**: 정적 리소스 등을 처리할 기본 서블릿의 이름을 지정합니다. `none`으로 설정하면 Aspectran이 처리하지 못한 요청을 기본 서블릿으로 넘기지 않습니다.
 - **`trailingSlashRedirect`**: URI 끝에 슬래시(`/`)가 없을 때 자동으로 슬래시를 붙여 리디렉션할지 여부를 설정합니다.
 - **`legacyHeadHandling`**: 레거시 시스템과의 호환성을 위해 HEAD 요청을 GET 요청처럼 처리할지 여부를 설정합니다.
+- **`proxyAddressForwarding`**: 리버스 프록시(Reverse Proxy) 환경에서 전달되는 `X-Forwarded-*` 헤더들(`X-Forwarded-For`, `X-Forwarded-Proto`, `X-Forwarded-Host`, `X-Forwarded-Port`, `X-Forwarded-Path`)을 인식하여 클라이언트의 원본 IP 주소, 프로토콜, 호스트, 포트 및 경로 정보를 사용할지 여부를 설정합니다.
+  > [!WARNING]
+  > **보안 주의사항 (Header Spoofing / IP Spoofing 위험)**
+  > `proxyAddressForwarding: true`로 설정하면 클라이언트가 전송한 `X-Forwarded-*` 헤더 값을 신뢰하게 됩니다. Nginx, HAProxy, AWS ALB 등 신뢰할 수 있는 리버스 프록시나 로드 밸런서가 전단에 배치되어 있지 않은 상태에서 이 옵션을 켜면, 외부 악의적 클라이언트가 `X-Forwarded-For` 헤더를 위조(Spoofing)하여 IP 기반 접근 제어(ACL) 및 차단 목록을 우회하거나, `X-Forwarded-Host`/`X-Forwarded-Proto` 헤더를 위조하여 Host 헤더 공격, 캐시 오염, 잘못된 리디렉션 등을 유발할 수 있습니다. 따라서 **신뢰할 수 있는 프록시 서버가 외부 클라이언트의 `X-Forwarded-*` 헤더를 재작성하거나 적절히 제거하도록 인프라 보안 조치가 완료된 환경에서만 이 옵션을 활성화해야 합니다.**
 - **`acceptable`**: 웹 환경에서 허용(`+`)하거나 거부(`-`)할 Translet 요청 URL 패턴을 정의합니다. `/**`는 모든 요청을 의미합니다.
 
 ## 7. 전체 설정 예제
@@ -315,6 +318,7 @@ web: {
     defaultServletName: none
     trailingSlashRedirect: true
     legacyHeadHandling: true
+    proxyAddressForwarding: false
     acceptable: {
         +: /**
     }
