@@ -88,14 +88,48 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
 * **장점**: 외부 데이터베이스나 인메모리 캐시 서버 없이도 동작하므로 로컬 개발 환경, 독립형 데몬, 단일 노드 운영 환경에서 가볍고 빠르게 사용할 수 있습니다.
 * **안정성**: 애플리케이션 재시작 시 디스크에 남아있는 유효 세션 파일을 자동으로 복구하여 개발 편의성을 대폭 향상시킵니다.
 * **주의점**: 서버 인스턴스 간 파일시스템 공유가 어렵기 때문에 다중 노드 로드밸런싱 환경에서는 적합하지 않습니다.
+* **파일 세션 스토어 전용 설정 파라미터 ([`FileSessionStoreFactoryBean`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/FileSessionStoreFactoryBean.java))**:
+  * `storeDir`: 세션 데이터 파일이 저장될 로컬 디렉터리 경로 (예: `/work/_sessions/tow`, 미지정 시 `java.io.tmpdir`)
+  * `deleteUnrestorableFiles`: 손상되거나 역직렬화할 수 없는 유효하지 않은 세션 파일의 자동 삭제 여부 (기본값: `true`)
 
 ### 2.3. 고성능 Redis 세션 스토어 (`LettuceSessionStore`)
 
 * **동작 원리**: 넌블로킹 비동기 Redis 클라이언트인 **Lettuce**를 기반으로 세션 데이터를 중앙 집중형 Redis 서버 또는 Redis 클러스터에 영속화합니다.
 * **데이터 구조**: 각 세션은 Redis의 바이너리 세이프 `String` 타입으로 저장되며, `네임스페이스:세션ID` 포맷을 가집니다. 값은 고속 직렬화된 세션 바이트 스트림입니다.
 * **장점**: 대규모 트래픽 분산 환경에서 여러 WAS 인스턴스가 완벽한 무상태(Stateless) 구조를 유지하면서 실시간으로 세션 상태를 공유할 수 있습니다. 노드가 예기치 않게 다운되더라도 클러스터 내 다른 노드가 즉시 세션을 이어받아 무중단 페일오버를 달성합니다.
+* **Lock-Free 스트라이프 커넥션 풀링**:
+  * Lettuce의 논블로킹 멀티플렉싱 커넥션을 스트라이핑(`poolSize`, 기본값: 8, 범위: 2~32)하여 `AtomicInteger` 기반 라운드로빈으로 고속 분배합니다.
+  * 락 경합(Lock Contention)이 없는 Lock-Free 구조로 설계되어 Java 21+ 가상 스레드(Virtual Threads) 및 대규모 동시성 환경에서도 극대화된 I/O 처리량을 제공합니다.
+* **Dynamic Proxy 및 자동 재연결(Auto-Reconnect) 보장**:
+  * 공유 커넥션은 Dynamic Proxy로 래핑되어 `try-with-resources` 블록에서 `close()`를 호출하더라도 실제 TCP 소켓을 닫지 않고 no-op 처리됩니다.
+  * 일시적인 네트워크 장애나 Redis 재시작 시 Lettuce 내부 Netty 채널의 자동 재연결(Auto-Reconnect) 메커니즘이 백그라운드에서 동작하여 인스턴스 재생성 없이 즉시 연결이 복구됩니다.
+* **지원 토폴로지**:
+  * **단일 노드(Standalone)**: [`RedisConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/RedisConnectionPoolConfig.java)를 통한 기본 단일 인스턴스 연결
+  * **클러스터(Cluster)**: [`RedisClusterConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/cluster/RedisClusterConnectionPoolConfig.java)를 통한 다중 마스터/슬레이브 자동 라우팅 및 토폴로지 갱신
+  * **주-복제(Primary-Replica)**: [`RedisPrimaryReplicaConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/primaryreplica/RedisPrimaryReplicaConnectionPoolConfig.java)를 통한 읽기/쓰기 분리 및 페일오버 지원
+* **Redis 커넥션 풀 설정 파라미터 ([`AbstractConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/AbstractConnectionPoolConfig.java))**:
+  * `uri` / `redisURI`: 단일 Redis 접속 URI (예: `"redis://localhost:6379/0"`)
+  * `nodes` / `redisURIs`: 클러스터 또는 주-복제 환경의 다중 노드 URI 목록 (예: `"redis://node1:6379,node2:6379"`)
+  * `poolSize`: 스트라이프 풀 내 공유 멀티플렉싱 커넥션 개수 (기본값: `8`, 범위: 2~32)
+  * `timeout`: 커맨드 및 연결 타임아웃 (예: `"5s"`, `"5000ms"`, `"1m"`, 기본값: `5s`)
+  * `clientOptions`: 소켓 옵션(Keep-Alive, TCP NoDelay), SSL 설정, 단절 시 명령 버퍼링 정책(`DisconnectedBehavior`), 클러스터 토폴로지 자동 갱신(`ClusterTopologyRefreshOptions`) 등 Lettuce 클라이언트 동작 정밀 제어
+  * `clientResources`: Netty `EventLoopGroup` 스레드 풀 공유, 커스텀 DNS/주소 해석기([`SocketAddressResolver`](https://lettuce.io/core/release/api/io/lettuce/core/resource/SocketAddressResolver.html), NAT 및 도커 포트 포워딩 환경 매핑용) 등 고급 리소스 설정
 
-### 2.4. 단일 서버 모드 vs 분산 클러스터 모드 동작 비교
+### 2.4. 세션 스토어 공통 설정 옵션 (`AbstractSessionStore`)
+
+모든 영속화 세션 스토어([`FileSessionStore`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/FileSessionStore.java), [`LettuceSessionStore`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/AbstractLettuceSessionStore.java) 등) 및 해당 팩토리([`AbstractSessionStoreFactory`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/AbstractSessionStoreFactory.java))는 다음과 같은 공통 생명주기 및 저장 최적화 파라미터를 제공합니다.
+
+* **`gracePeriodSecs`**:
+  * 스캐빈저(Scavenger)가 만료된 세션을 일괄 정리할 때 클러스터 노드 간 시계 오차(Clock Skew)나 파일/네트워크 I/O 지연으로 인한 조기 만료 및 오삭제를 방지하기 위해 부여하는 유예 시간(초)입니다 (기본값: `60`).
+  * 최초 만료 검사 시에는 `gracePeriodSecs * 3` 이전 만료 세션만 조회하고, 이후 정기 검사 시에는 `gracePeriodSecs` 이전 만료 세션을 조회하여 안전하게 정리합니다.
+* **`savePeriodSecs`**:
+  * 세션 속성(`attributes`)의 변경(dirty) 없이 클라이언트의 단순 요청으로 최종 접근 시간(`lastAccessedTime`)만 갱신될 때, 빈번한 영속 저장소 쓰기 I/O를 방지하기 위한 최소 저장 간격(초)입니다 (기본값: `0`).
+  * `0` (기본값): 세션이 dirty 상태이거나 매 요청 종료 시 즉시 저장소에 저장합니다.
+  * `> 0`: 세션 데이터가 수정되지 않았더라도 마지막 저장 이후 `savePeriodSecs`가 경과한 경우에만 저장소에 접근하여 만료 시간을 최신화합니다.
+* **`nonPersistentAttributes`**:
+  * 영속 스토어(File, Redis 등)로 직렬화하여 저장하지 않고 로컬 메모리(세션 캐시)에서만 유지할 세션 속성 이름들의 문자열 배열입니다 (임시 인증 코드, 직렬화 불가능한 핸들러 객체 등을 저장 대상에서 제외할 때 활용).
+
+### 2.5. 단일 서버 모드 vs 분산 클러스터 모드 동작 비교
 
 [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)의 `clusterEnabled` 설정값은 세션 데이터의 신뢰 원천과 동기화 빈도를 제어하는 핵심 분기점입니다.
 

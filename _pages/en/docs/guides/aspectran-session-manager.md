@@ -88,14 +88,48 @@ Aspectran Session Manager provides a flexible storage hierarchy adaptable to dis
 * **Advantages**: Requires zero external databases or middleware dependencies. Ideal for standalone daemons, local development, and single-node production environments.
 * **Resilience**: Automatically restores valid sessions from disk upon server restarts, preserving active logins across redeployments.
 * **Limitations**: Unsuitable for multi-instance load-balanced environments because local filesystem state is not shared across nodes.
+* **File Session Store Specific Parameters ([`FileSessionStoreFactoryBean`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/FileSessionStoreFactoryBean.java))**:
+  * `storeDir`: Directory path where session data files are stored (e.g., `/work/_sessions/tow`, defaults to `java.io.tmpdir`)
+  * `deleteUnrestorableFiles`: Whether to automatically delete corrupted or unreadable session files during restoration (default: `true`)
 
 ### 2.3. High-Performance Redis Session Store (`LettuceSessionStore`)
 
 * **Operating Principle**: Uses **Lettuce**, a high-performance non-blocking asynchronous Redis client, to persist session state into a centralized Redis instance or Redis Cluster.
 * **Data Layout**: Stored as Redis binary-safe `String` entries under the key format `namespace:sessionId`. Values contain serialized byte arrays of session attributes.
 * **Advantages**: Enables true stateless application server architectures. Multiple WAS instances share real-time session state, providing seamless zero-downtime failover if any node crashes.
+* **Lock-Free Striped Connection Pooling**:
+  * Maintains a striped set of shared multiplexed connections (`poolSize`, default: 8, range: 2–32) distributed via round-robin with an `AtomicInteger`.
+  * Designed without lock contention to deliver ultra-high, non-blocking I/O throughput optimized for Java 21+ Virtual Threads and high-concurrency workloads.
+* **Dynamic Proxy & Resilient Auto-Reconnect**:
+  * Shared connections are wrapped in dynamic proxies where `close()` calls are no-ops, ensuring complete compatibility with standard `try-with-resources` blocks.
+  * Lettuce's built-in Netty channel auto-reconnect automatically re-establishes dropped connections in the background without needing connection replacement or pool recreation.
+* **Supported Topologies**:
+  * **Standalone**: [`RedisConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/RedisConnectionPoolConfig.java) for single-instance Redis deployments
+  * **Cluster**: [`RedisClusterConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/cluster/RedisClusterConnectionPoolConfig.java) for multi-node master/replica cluster routing with automatic topology refresh
+  * **Primary-Replica**: [`RedisPrimaryReplicaConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/primaryreplica/RedisPrimaryReplicaConnectionPoolConfig.java) for master/replica setups with read/write splitting and automatic failover
+* **Connection Pool Configuration Parameters ([`AbstractConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/AbstractConnectionPoolConfig.java))**:
+  * `uri` / `redisURI`: Single Redis endpoint URI (e.g. `"redis://localhost:6379/0"`)
+  * `nodes` / `redisURIs`: Comma-delimited or array list of Redis URIs for Cluster or Primary-Replica topologies (e.g. `"redis://node1:6379,node2:6379"`)
+  * `poolSize`: Number of shared multiplexed connections in the striped pool (default: `8`, range: 2–32)
+  * `timeout`: Command and connection timeout (e.g. `"5s"`, `"5000ms"`, `"1m"`, default: `5s`)
+  * `clientOptions`: Fine-grained tuning for socket options (Keep-Alive, TCP NoDelay), SSL, disconnected command buffering (`DisconnectedBehavior`), and automatic cluster topology refresh (`ClusterTopologyRefreshOptions`)
+  * `clientResources`: Advanced resource configuration including shared Netty `EventLoopGroup` thread pools and custom DNS/address resolvers ([`SocketAddressResolver`](https://lettuce.io/core/release/api/io/lettuce/core/resource/SocketAddressResolver.html), useful for Docker port-forwarding and NAT environments)
 
-### 2.4. Single Server Mode vs. Clustered Mode
+### 2.4. Common Session Store Configuration Options (`AbstractSessionStore`)
+
+All persistent session stores ([`FileSessionStore`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/FileSessionStore.java), [`LettuceSessionStore`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/AbstractLettuceSessionStore.java), etc.) and their factories ([`AbstractSessionStoreFactory`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/AbstractSessionStoreFactory.java)) provide common lifecycle and storage optimization parameters:
+
+* **`gracePeriodSecs`**:
+  * The grace period (in seconds) granted during scavenger sweeps to prevent accidental early deletion caused by clock skews across clustered nodes or file/network I/O delays (default: `60`).
+  * On initial startup, only sessions that expired at least `gracePeriodSecs * 3` ago are scavenged; subsequent regular sweeps clean sessions that expired before `gracePeriodSecs` ago.
+* **`savePeriodSecs`**:
+  * The minimum interval (in seconds) between persistent store writes when only last-access timestamps change without session attribute mutations (dirty flag), mitigating excessive storage I/O (default: `0`).
+  * `0` (default): Saves immediately whenever a session is dirty or upon every request completion.
+  * `> 0`: Even if session attributes are unchanged, persists the updated access time if the elapsed duration since the last save exceeds `savePeriodSecs`.
+* **`nonPersistentAttributes`**:
+  * String array of session attribute keys to keep exclusively in local memory (session cache) and exclude from external serialization/persistence (e.g., temporary security tokens, non-serializable handler objects).
+
+### 2.5. Single Server Mode vs. Clustered Mode
 
 The `clusterEnabled` flag in [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) defines the single source of truth and synchronization semantics:
 
