@@ -126,8 +126,11 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
   * 세션 속성(`attributes`)의 변경(dirty) 없이 클라이언트의 단순 요청으로 최종 접근 시간(`lastAccessedTime`)만 갱신될 때, 빈번한 영속 저장소 쓰기 I/O를 방지하기 위한 최소 저장 간격(초)입니다 (기본값: `0`).
   * `0` (기본값): 세션이 dirty 상태이거나 매 요청 종료 시 즉시 저장소에 저장합니다.
   * `> 0`: 세션 데이터가 수정되지 않았더라도 마지막 저장 이후 `savePeriodSecs`가 경과한 경우에만 저장소에 접근하여 만료 시간을 최신화합니다.
-* **`nonPersistentAttributes`**:
-  * 영속 스토어(File, Redis 등)로 직렬화하여 저장하지 않고 로컬 메모리(세션 캐시)에서만 유지할 세션 속성 이름들의 문자열 배열입니다 (임시 인증 코드, 직렬화 불가능한 핸들러 객체 등을 저장 대상에서 제외할 때 활용).
+* **`nonPersistentAttributes` 및 비영속 속성 제어**:
+  * 세션 속성 중 영속 스토어(File, Redis 등)에 직렬화하여 저장하지 않고 로컬 힙 메모리(세션 캐시)에서만 유지할 속성을 지정하는 두 가지 방법을 지원합니다.
+  * **속성 이름 기반 지정 (`nonPersistentAttributes`)**: 세션 스토어 설정 시 제외할 속성 키 이름들의 문자열 배열을 등록하여 영속화 대상에서 제외합니다 (예: 임시 인증 토큰 등).
+  * **마커 인터페이스 기반 지정 ([`NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java))**: 세션에 저장되는 객체 클래스가 `NonPersistent` 인터페이스를 구현하면, 속성 이름과 무관하게 직렬화 시 자동으로 영속화 대상에서 제외됩니다.
+  * **래퍼 클래스 활용 ([`NonPersistentValue`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistentValue.java))**: 클래스 소스코드를 직접 수정할 수 없는 외부 라이브러리 객체(예: Netty WebSocket 세션, Undertow 내부 속성 등)는 `NonPersistentValue.wrap(value)`로 감싸서 세션에 저장하면 비영속 속성으로 안전하게 관리되며, 필요 시 `NonPersistentValue.unwrap(value)`로 원본 객체를 추출할 수 있습니다.
 
 ### 2.5. 단일 서버 모드 vs 분산 클러스터 모드 동작 비교
 
@@ -316,36 +319,75 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
   * **개발 생산성**: 디버깅 중이나 코드 수정 중에 세션이 자주 끊기면 반복 로그인을 해야 하므로 유휴 시간을 1시간(`maxIdleSeconds: 3600`)으로 넉넉하게 설정합니다.
   * **재기동 복구**: `FileSessionStoreFactoryBean`을 함께 사용하여 서버를 재시작해도 로그인 상태가 그대로 유지되도록 합니다.
 
-## 4. 영속성 제어: `@NonPersistent`
+## 4. 비영속 세션 속성 제어: `NonPersistent` & `NonPersistentValue`
 
-분산 환경에서 세션을 Redis나 파일에 직렬화할 때, 네트워크 소켓, 데이터베이스 커넥션, 대용량 버퍼와 같이 직렬화가 불가능하거나 외부 저장이 부적절한 객체가 포함되어 있으면 예외가 발생하거나 네트워크 대역폭이 낭비됩니다.
+분산 환경에서 세션을 Redis나 파일 저장소에 영속화(직렬화)할 때, 네트워크 소켓, 데이터베이스 커넥션, 대용량 버퍼와 같이 직렬화가 불가능하거나 외부 저장이 부적절한 객체가 포함되어 있으면 직렬화 예외가 발생하거나 네트워크 대역폭이 낭비됩니다.
 
-Aspectran은 [`@NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java) 어노테이션을 통해 세션 속성의 영속화 범위를 세밀하게 제어할 수 있습니다.
+Aspectran은 이러한 임시 데이터가 세션 캐시(로컬 힙 메모리)에는 유지되면서도 영속 스토어에는 저장되지 않도록 하는 **타입 안전한 비영속(Non-persistent) 제어 메커니즘**을 제공합니다.
+
+### 4.1. 마커 인터페이스 (`NonPersistent`)
+
+세션 속성으로 저장할 커스텀 도메인 객체가 [`NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java) 인터페이스를 구현하도록 선언하면, `SessionData` 직렬화 시 자동으로 저장 대상에서 제외됩니다.
 
 ```java
 package com.aspectran.example;
 
 import com.aspectran.core.component.session.NonPersistent;
-import java.io.Serializable;
 
 /**
- * 힙 메모리 세션에는 유지되지만 Redis나 파일 저장소로는 전송되지 않는 임시 데이터
+ * 힙 메모리 세션에는 유지되지만 Redis나 파일 저장소로는 전송/저장되지 않는 임시 데이터
  */
-@NonPersistent
-public class TemporarySecurityContext implements Serializable {
+public class TemporarySecurityContext implements NonPersistent {
 
     private String temporaryToken;
-    private transient Object activeConnection;
+    private Object activeConnection;
 
-    // Getter, Setter ...
+    public String getTemporaryToken() {
+        return temporaryToken;
+    }
+
+    public void setTemporaryToken(String temporaryToken) {
+        this.temporaryToken = temporaryToken;
+    }
+
+    public Object getActiveConnection() {
+        return activeConnection;
+    }
+
+    public void setActiveConnection(Object activeConnection) {
+        this.activeConnection = activeConnection;
+    }
+
 }
 ```
 
-* **적용 대상**:
-  * 직렬화 불가능한 런타임 리소스 (`Socket`, `Connection`, `Thread`)
+### 4.2. 래퍼 클래스 유틸리티 (`NonPersistentValue`)
+
+서드파티 라이브러리 객체나 프레임워크 내부 리소스(예: Netty `Channel`, Undertow 내부 속성 등)처럼 **소스코드를 직접 수정하여 `NonPersistent`를 구현할 수 없는 경우**, [`NonPersistentValue`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistentValue.java) 래퍼를 사용하여 손쉽게 비영속 속성으로 등록할 수 있습니다.
+
+```java
+import com.aspectran.core.component.session.NonPersistentValue;
+import com.aspectran.core.component.session.Session;
+
+// 1. 세션에 비영속 객체 저장
+Object rawResource = getNativeConnection();
+session.setAttribute("runtimeResource", NonPersistentValue.wrap(rawResource));
+
+// 2. 세션에서 객체 조회 및 언래핑
+Object retrieved = session.getAttribute("runtimeResource");
+Connection conn = NonPersistentValue.unwrap(retrieved);
+```
+
+### 4.3. 비영속 속성 적용 대상 및 동작 원리
+
+* **주요 적용 대상**:
+  * 직렬화 불가능한 런타임 리소스 (`Socket`, `Connection`, `Thread`, `Channel`)
   * 민감한 일회성 보안 인증 토큰 (외부 스토리지 노출 방지)
   * 용량이 매우 큰 임시 렌더링 캐시 데이터 (Redis 직렬화/네트워크 전송 비용 절감)
-* **동작 방식**: `SessionData`를 스토리지로 직렬화하기 직전 속성 객체의 클래스 및 상속 계층을 검사하여, `@NonPersistent`가 선언되어 있다면 저장 대상 맵에서 안전하게 제외합니다.
+* **동작 원리**:
+  * `SessionData.serialize()` 수행 시 각 속성 값에 대해 `instanceof NonPersistent` 검사를 수행합니다.
+  * `NonPersistent`를 구현한 객체(또는 `NonPersistentValue`로 래핑된 객체)는 직렬화 스트림에 기록되지 않고 스킵됩니다.
+  * 로컬 메모리의 세션 캐시에는 원본 인스턴스가 그대로 보존되므로, 동일 요청이나 동일 노드 내에서는 제약 없이 빠르게 접근할 수 있습니다.
 
 ## 5. 실행 환경별 세션 구성 실전 가이드
 
@@ -638,4 +680,4 @@ Aspectran Session Manager는 단순한 키-값 저장소를 넘어선 **차세�
 * **인프라 독립성**: 서블릿, Netty, CLI, 데몬 전 영역에 걸친 단일한 개발 및 운영 패러다임을 확립합니다.
 * **지능형 리소스 보호**: 신규/일반 세션 분리 알고리즘을 통해 봇과 크롤러로부터 메모리와 스토리지를 완벽하게 방어합니다.
 * **유연한 확장성**: 설정 변경만으로 로컬 개발용 파일 스토리지에서 대규모 Redis 분산 세션 클러스터링으로 무중단 전환됩니다.
-* **보안과 성능의 양립**: `@NonPersistent`를 통한 선택적 영속화, 정교한 쿠키 보안 플래그(`HttpOnly`, `SameSite`, `Secure`), 다중 컨텍스트 완전 격리를 통해 엔터프라이즈 환경이 요구하는 엄격한 보안 요건을 충족합니다.
+* **보안과 성능의 양립**: `NonPersistent` 및 `NonPersistentValue`를 통한 선택적 영속화, 정교한 쿠키 보안 플래그(`HttpOnly`, `SameSite`, `Secure`), 다중 컨텍스트 완전 격리를 통해 엔터프라이즈 환경이 요구하는 엄격한 보안 요건을 충족합니다.

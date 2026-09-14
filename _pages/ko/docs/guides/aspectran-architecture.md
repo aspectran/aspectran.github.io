@@ -239,7 +239,7 @@ Aspectran Session Manager는 웹, 셸, 데몬 등 다양한 실행 환경에서 
 *   **동작 모드 비교: 단일 서버 vs. 클러스터**
     *   **단일 서버 모드 (`clusterEnabled: false`)**: `SessionCache`(메모리)를 우선적으로 신뢰하여 최고의 성능을 지향합니다.
     *   **클러스터 모드 (`clusterEnabled: true`)**: `SessionStore`(Redis)를 유일한 **최종 데이터 저장소(Single Source of Truth)**로 신뢰하여 여러 서버 노드 간의 데이터 일관성을 보장합니다.
-*   **영속성 제어**: `@NonPersistent` 어노테이션을 사용하여 직렬화할 수 없거나 보안상 민감한 객체가 세션 저장소에 저장되지 않도록 할 수 있습니다.
+*   **영속성 제어**: `NonPersistent` 마커 인터페이스나 `NonPersistentValue` 래퍼, 또는 `nonPersistentAttributes` 설정을 사용하여 직렬화할 수 없거나 보안상 민감한 객체가 세션 저장소에 저장되지 않도록 할 수 있습니다.
 
 ### 7.3. 클래스 로딩 메커니즘 (`SiblingClassLoader`)
 

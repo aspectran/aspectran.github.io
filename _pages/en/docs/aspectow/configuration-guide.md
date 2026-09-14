@@ -654,7 +654,7 @@ Bridges Aspectran's enterprise state management engine with Undertow's servlet s
   * Local Development (`!prod`): `FileSessionStoreFactoryBean` preserves sessions across server restarts.
   * Production (`prod`): High-availability Redis clustering via `DefaultLettuceSessionStoreFactoryBean`.
 
-> **Note:** For complete details on `SessionManagerConfig` lifecycle tuning, bot/crawler session optimization, `@NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
+> **Note:** For complete details on `SessionManagerConfig` lifecycle tuning, bot/crawler session optimization, `NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
 
 ### 5.5. Console Management Context (`tow-context-console.xml`)
 

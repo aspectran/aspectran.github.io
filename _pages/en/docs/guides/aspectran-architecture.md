@@ -239,7 +239,7 @@ Aspectran Session Manager provides a **high-performance, environment-independent
 *   **Operation Mode Comparison: Single Server vs. Cluster**
   *   **Single Server Mode (`clusterEnabled: false`)**: Aims for the best performance by trusting `SessionCache` (memory) as the primary source.
   *   **Cluster Mode (`clusterEnabled: true`)**: Ensures data consistency across multiple server nodes by trusting `SessionStore` (Redis) as the sole **Single Source of Truth**.
-*   **Persistence Control**: You can use the `@NonPersistent` annotation to prevent objects that cannot be serialized or are security-sensitive from being stored in the session store.
+*   **Persistence Control**: You can use the `NonPersistent` marker interface, the `NonPersistentValue` wrapper, or the `nonPersistentAttributes` configuration to prevent objects that cannot be serialized or are security-sensitive from being stored in the session store.
 
 ### 7.3. Class Loading Mechanism (`SiblingClassLoader`)
 

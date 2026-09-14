@@ -126,8 +126,11 @@ All persistent session stores ([`FileSessionStore`](https://github.com/aspectran
   * The minimum interval (in seconds) between persistent store writes when only last-access timestamps change without session attribute mutations (dirty flag), mitigating excessive storage I/O (default: `0`).
   * `0` (default): Saves immediately whenever a session is dirty or upon every request completion.
   * `> 0`: Even if session attributes are unchanged, persists the updated access time if the elapsed duration since the last save exceeds `savePeriodSecs`.
-* **`nonPersistentAttributes`**:
-  * String array of session attribute keys to keep exclusively in local memory (session cache) and exclude from external serialization/persistence (e.g., temporary security tokens, non-serializable handler objects).
+* **`nonPersistentAttributes` and Transient Attribute Control**:
+  * Aspectran provides two complementary mechanisms to keep specific session attributes exclusively in local heap memory (session cache) and exclude them from persistent store serialization:
+  * **Attribute Name Matching (`nonPersistentAttributes`)**: Configures an array of attribute key names on the session store to exclude during serialization (e.g., temporary security tokens).
+  * **Marker Interface ([`NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java))**: Any object whose class implements the `NonPersistent` interface is automatically skipped during session serialization regardless of attribute name.
+  * **Wrapper Utility ([`NonPersistentValue`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistentValue.java))**: For third-party or framework-managed objects whose classes cannot be modified directly (e.g., Netty WebSocket session maps, internal Undertow attributes in `TowSession`), wrap them using `NonPersistentValue.wrap(value)` to prevent persistence, and retrieve the original instance with `NonPersistentValue.unwrap(value)`.
 
 ### 2.5. Single Server Mode vs. Clustered Mode
 
@@ -316,36 +319,75 @@ Configured for developers running workstations and interactive debugging session
   * **Productivity**: Generously sets idle expiration to 1 hour (`maxIdleSeconds: 3600`) so developers are not repeatedly forced to re-login during debugging pauses.
   * **Persistence Across Restarts**: Pairs with `FileSessionStoreFactoryBean` to preserve active logins across development server restarts.
 
-## 4. Controlling Persistence: `@NonPersistent`
+## 4. Controlling Non-Persistent Attributes: `NonPersistent` & `NonPersistentValue`
 
-When serializing sessions to Redis or disk files, non-serializable objects (such as network sockets, database connections, or large rendering buffers) can cause exceptions or degrade network bandwidth.
+When serializing sessions to Redis or disk files, non-serializable runtime handles (such as network sockets, database connections, or large rendering buffers) can trigger serialization exceptions or waste network bandwidth.
 
-Aspectran provides the [`@NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java) annotation to exclude specific attributes from persistent storage:
+Aspectran provides a **type-safe non-persistent attribute mechanism** ensuring ephemeral objects remain strictly in local heap cache without being persisted to the backend storage.
+
+### 4.1. Marker Interface (`NonPersistent`)
+
+Custom domain objects intended for session storage can implement the [`NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java) marker interface to be automatically excluded during `SessionData` serialization:
 
 ```java
 package com.aspectran.example;
 
 import com.aspectran.core.component.session.NonPersistent;
-import java.io.Serializable;
 
 /**
  * Retained in heap session memory but excluded from Redis or disk storage.
  */
-@NonPersistent
-public class TemporarySecurityContext implements Serializable {
+public class TemporarySecurityContext implements NonPersistent {
 
     private String temporaryToken;
-    private transient Object activeConnection;
+    private Object activeConnection;
 
-    // Getter, Setter ...
+    public String getTemporaryToken() {
+        return temporaryToken;
+    }
+
+    public void setTemporaryToken(String temporaryToken) {
+        this.temporaryToken = temporaryToken;
+    }
+
+    public Object getActiveConnection() {
+        return activeConnection;
+    }
+
+    public void setActiveConnection(Object activeConnection) {
+        this.activeConnection = activeConnection;
+    }
+
 }
 ```
 
+### 4.2. Wrapper Utility (`NonPersistentValue`)
+
+For third-party library objects or framework-level handles (such as Netty `Channel`, Undertow internal attributes, etc.) where **the underlying class cannot be modified to implement `NonPersistent`**, use the [`NonPersistentValue`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistentValue.java) wrapper:
+
+```java
+import com.aspectran.core.component.session.NonPersistentValue;
+import com.aspectran.core.component.session.Session;
+
+// 1. Store a non-persistent wrapped object in the session
+Object rawResource = getNativeConnection();
+session.setAttribute("runtimeResource", NonPersistentValue.wrap(rawResource));
+
+// 2. Retrieve and unwrap the attribute
+Object retrieved = session.getAttribute("runtimeResource");
+Connection conn = NonPersistentValue.unwrap(retrieved);
+```
+
+### 4.3. Target Candidates & Execution Mechanics
+
 * **Target Candidates**:
-  * Non-serializable runtime handles (`Socket`, `Connection`, `Thread`)
+  * Non-serializable runtime handles (`Socket`, `Connection`, `Thread`, `Channel`)
   * Highly sensitive single-use authentication tokens (preventing external storage leakage)
   * Large ephemeral cache payloads (reducing Redis serialization and network transfer overhead)
-* **Execution**: During `SessionData` serialization, Aspectran inspects the type hierarchy of attribute objects; if marked with `@NonPersistent`, the attribute is safely excluded from persistent storage.
+* **Execution Mechanics**:
+  * During `SessionData.serialize()`, Aspectran evaluates each attribute value using `instanceof NonPersistent`.
+  * Any object implementing `NonPersistent` (or wrapped in `NonPersistentValue`) is skipped from the serialization stream.
+  * The original instance remains fully accessible in the local `SessionCache` for subsequent requests on the same node.
 
 ## 5. Environment-Specific Configuration Guide
 
@@ -638,4 +680,4 @@ Aspectran Session Manager is a comprehensive **enterprise-grade state management
 * **Infrastructure Agnostic**: Unifies state management semantics across Servlets, Netty, CLI shells, and daemons into a single developer and operations paradigm.
 * **Intelligent Resource Defense**: Safeguards system memory and Redis storage against crawlers via dual new/normal session timeout algorithms.
 * **Elastic Scalability**: Smoothly shifts from file-based local development to high-throughput Redis clustering purely via configuration without code modifications.
-* **Enterprise Security**: Delivers multi-context isolation, `@NonPersistent` persistence boundary controls, and modern cookie security flags (`HttpOnly`, `SameSite`, `Secure`) to meet rigorous enterprise security requirements.
+* **Enterprise Security**: Delivers multi-context isolation, `NonPersistent` and `NonPersistentValue` persistence boundary controls, and modern cookie security flags (`HttpOnly`, `SameSite`, `Secure`) to meet rigorous enterprise security requirements.

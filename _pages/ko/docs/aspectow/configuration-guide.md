@@ -654,7 +654,7 @@ Aspectran 고유의 엔터프라이즈 세션 관리 엔진을 Undertow 서블�
   * 로컬 개발 환경(`!prod`): `FileSessionStoreFactoryBean`을 통해 서버 재시작 시에도 로그인 세션 복구 지원
   * 운영 환경(`prod`): Lettuce 기반 `DefaultLettuceSessionStoreFactoryBean`을 통한 무중단 Redis 분산 세션 클러스터링
 
-> **참고:** 세션 생명주기 옵션(`SessionManagerConfig`), 봇/크롤러 유휴 세션 신속 회수 메커니즘, `@NonPersistent` 영속화 제어, 그리고 Redis 분산 클러스터링의 심층 동작 원리는 **[`Aspectran Session Manager 가이드`](/ko/docs/guides/aspectran-session-manager/)**를 참조하십시오.
+> **참고:** 세션 생명주기 옵션(`SessionManagerConfig`), 봇/크롤러 유휴 세션 신속 회수 메커니즘, `NonPersistent` 영속화 제어, 그리고 Redis 분산 클러스터링의 심층 동작 원리는 **[`Aspectran Session Manager 가이드`](/ko/docs/guides/aspectran-session-manager/)**를 참조하십시오.
 
 ### 5.5. Console 관제 컨텍스트 (`tow-context-console.xml`)
 
