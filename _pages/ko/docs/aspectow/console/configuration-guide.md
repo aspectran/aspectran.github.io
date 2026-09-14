@@ -139,14 +139,24 @@ app: {
         reader: com.aspectran.aspectow.appmon.engine.exporter.metric.jvm.HeapMemoryUsageReader
         sampleInterval: 500
     }
+    # Undertow 서버를 사용하는 경우
     metric: {
         id: undertow-tp
         title: Undertow Thread Pool
-        description: Undertow NIO 워커 스레드 풀을 모니터링합니다.
-        reader: com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.NioWorkerMetricsReader
+        description: Undertow 워커 스레드 풀을 모니터링합니다.
+        reader: com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.UndertowThreadPoolMetricsReader
         target: tow.server
         sampleInterval: 500
     }
+    # Netty 서버를 사용하는 경우
+    # metric: {
+    #     id: netty-tp
+    #     title: Netty Thread Pool
+    #     description: Netty 워커 스레드 풀 및 동시 요청 처리 상태를 모니터링합니다.
+    #     reader: com.aspectran.aspectow.appmon.engine.exporter.metric.netty.NettyThreadPoolMetricsReader
+    #     target: netty.server
+    #     sampleInterval: 500
+    # }
     log: {
         id: app
         file: /logs/jpetstore.log
@@ -163,7 +173,7 @@ app: {
 *   **`app`**: 모니터링할 개별 애플리케이션 단위.
     *   **`event`**:
         *   `id`: 이벤트 종류 (`activity`, `session`).
-        *   `target`: 대상 컨텍스트 식별자 또는 서버 배포 경로 (`tow.server/<deploymentName>`).
+        *   `target`: 대상 컨텍스트 식별자 또는 서버 컨텍스트 경로 (`tow.server/<contextName>` 또는 `netty.server/<contextName>`).
         *   `parameters`:
             *   `activity`인 경우: Pointcut `+`/`-` 경로 필터.
             *   `session`인 경우: `usernameAttribute` (프로퍼티 경로, 예: `user.account.username`), `userResolver` (커스텀 `SessionUserResolver` 구현 클래스명 또는 빈 ID).

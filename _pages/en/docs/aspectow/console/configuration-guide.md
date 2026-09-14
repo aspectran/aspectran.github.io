@@ -139,14 +139,24 @@ app: {
         reader: com.aspectran.aspectow.appmon.engine.exporter.metric.jvm.HeapMemoryUsageReader
         sampleInterval: 500
     }
+    # For Undertow Server
     metric: {
         id: undertow-tp
         title: Undertow Thread Pool
-        description: Monitors Undertow NIO worker thread pool resources.
-        reader: com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.NioWorkerMetricsReader
+        description: Monitors Undertow worker thread pool resources.
+        reader: com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.UndertowThreadPoolMetricsReader
         target: tow.server
         sampleInterval: 500
     }
+    # For Netty Server
+    # metric: {
+    #     id: netty-tp
+    #     title: Netty Thread Pool
+    #     description: Monitors Netty worker thread pool and concurrent request processing.
+    #     reader: com.aspectran.aspectow.appmon.engine.exporter.metric.netty.NettyThreadPoolMetricsReader
+    #     target: netty.server
+    #     sampleInterval: 500
+    # }
     log: {
         id: app
         file: /logs/jpetstore.log
@@ -163,7 +173,7 @@ app: {
 *   **`app`**: Defines individual application monitoring units.
     *   **`event`**:
         *   `id`: Event type (`activity`, `session`).
-        *   `target`: Target context name or server deployment path (`tow.server/<deploymentName>`).
+        *   `target`: Target context name or server context path (`tow.server/<contextName>` or `netty.server/<contextName>`).
         *   `parameters`:
             *   For `activity`: Pointcut `+`/`-` path filters.
             *   For `session`: `usernameAttribute` (declarative property path, e.g., `user.account.username`), `userResolver` (custom `SessionUserResolver` class or Bean ID).
