@@ -40,7 +40,7 @@ JSP는 서블릿 컨테이너에 의해 직접 실행되는 고전적인 뷰 기
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-web</artifactId>
-    <version>9.6.5</version>
+    <version>9.7.1</version>
 </dependency>
 ```
 
@@ -109,7 +109,7 @@ Thymeleaf는 웹 및 독립 실행형 환경 모두를 지원하는 최신 서�
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-with-thymeleaf</artifactId>
-    <version>9.6.5</version>
+    <version>9.7.1</version>
 </dependency>
 ```
 
@@ -163,7 +163,7 @@ FreeMarker는 복잡한 매크로, 데이터 가공, 이메일 본문 생성 등
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-with-freemarker</artifactId>
-    <version>9.6.5</version>
+    <version>9.7.1</version>
 </dependency>
 ```
 
@@ -211,7 +211,7 @@ Pebble은 Twig과 유사한 직관적인 문법을 가진 가볍고 빠른 고�
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-with-pebble</artifactId>
-    <version>9.6.5</version>
+    <version>9.7.1</version>
 </dependency>
 ```
 
