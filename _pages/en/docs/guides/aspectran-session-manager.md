@@ -95,7 +95,21 @@ Aspectran Session Manager provides a flexible storage hierarchy adaptable to dis
 ### 2.3. High-Performance Redis Session Store (`LettuceSessionStore`)
 
 * **Operating Principle**: Uses **Lettuce**, a high-performance non-blocking asynchronous Redis client, to persist session state into a centralized Redis instance or Redis Cluster.
-* **Data Layout**: Stored as Redis binary-safe `String` entries under the key format `namespace:sessionId`. Values contain serialized byte arrays of session attributes.
+* **Data Layout**:
+  * **Session Payload**: Each session is stored as a binary-safe Redis `String` entry under the key format `namespace:sessionId`. The value contains a fast-serialized byte stream of the session state.
+  * **ZSET-Based Expiry Index (`expiryIndexKey`)**: To completely eliminate $O(N)$ full keyspace scanning (`KEYS` or `SCAN`) during scavenger sweeps, an active Redis Sorted Set (ZSET) index (e.g., `aspectran:sessions:expiry`) is maintained.
+    * When a session is created or updated, its expiration timestamp (in milliseconds) is recorded as the score, and the session ID is recorded as the member via atomic `ZADD`.
+    * When a session is explicitly invalidated or deleted, it is immediately removed from the index via `ZREM`.
+    * During scavenger and expiration sweeps, `ZRANGEBYSCORE` retrieves only sessions that have crossed the expiration threshold at an ultra-low $O(\log N + M)$ computational complexity.
+* **Ultra-Lightweight Codec (`SessionDataCodec`) Magic Byte Architecture**:
+  * To optimize serialization overhead between session data and ZSET index members, a two-phase encoding strategy is employed using a 1-byte magic header:
+    * `MAGIC_FULL (0x01)`: Full serialized binary payload containing the session ID, creation time, last accessed time, max idle timeout, and the complete session attributes map.
+    * `MAGIC_ID_ONLY (0x02)`: Lightweight payload used for ZSET members and distributed lock tokens where only the session identifier string is needed, bypassing full object deserialization costs.
+* **Distributed Locking for Concurrency Control**:
+  * In a multi-node cluster, Redis atomic distributed locks (`SET key value NX EX lockTtl`) prevent redundant sweeps, duplicate loads, and network I/O contention across nodes.
+  * **Store Sweeper Lock (`scavenge-lock`)**: Only the single node that acquires `expiryIndexKey + ":scavenge-lock"` executes the Redis ZSET index query to sweep store-only expired sessions.
+  * **Orphan Cleanup Lock (`clean-lock`)**: Only the single node that acquires `expiryIndexKey + ":clean-lock"` executes the bulk physical deletion of long-abandoned orphan sessions (`doCleanOrphans`).
+  * Because these lock keys are strictly segregated, regular session scavenging and deep orphan cleanup run concurrently and independently without blocking each other.
 * **Advantages**: Enables true stateless application server architectures. Multiple WAS instances share real-time session state, providing seamless zero-downtime failover if any node crashes.
 * **Lock-Free Striped Connection Pooling**:
   * Maintains a striped set of shared multiplexed connections (`poolSize`, default: 8, range: 2–32) distributed via round-robin with an `AtomicInteger`.
@@ -123,9 +137,9 @@ All persistent session stores ([`FileSessionStore`](https://github.com/aspectran
   * The grace period (in seconds) granted during scavenger sweeps to prevent accidental early deletion caused by clock skews across clustered nodes or file/network I/O delays (default: `60`).
   * On initial startup, only sessions that expired at least `gracePeriodSecs * 3` ago are scavenged; subsequent regular sweeps clean sessions that expired before `gracePeriodSecs` ago.
 * **`savePeriodSecs`**:
-  * The minimum interval (in seconds) between persistent store writes when only last-access timestamps change without session attribute mutations (dirty flag), mitigating excessive storage I/O (default: `0`).
-  * `0` (default): Saves immediately whenever a session is dirty or upon every request completion.
-  * `> 0`: Even if session attributes are unchanged, persists the updated access time if the elapsed duration since the last save exceeds `savePeriodSecs`.
+  * The minimum interval (in seconds) between persistent store writes when only last-access timestamps change without session attribute mutations (dirty flag), mitigating excessive storage network and disk I/O (default: `0`).
+  * **`savePeriodSecs: 0` (default)**: Even for read-only requests (such as HTTP GET) where session data is not mutated (`!dirty`), persists to the backing store immediately upon every request completion to ensure expiration timestamps are kept fresh.
+  * **`savePeriodSecs > 0`**: For read-only requests where session data is not mutated, persists the updated last-access and expiration times only if the duration since the last persistent write exceeds `savePeriodSecs`. (If session attributes are created, modified, or deleted causing a dirty state, the session is persisted immediately upon request completion regardless of this setting.)
 * **`nonPersistentAttributes` and Transient Attribute Control**:
   * Aspectran provides two complementary mechanisms to keep specific session attributes exclusively in local heap memory (session cache) and exclude them from persistent store serialization:
   * **Attribute Name Matching (`nonPersistentAttributes`)**: Configures an array of attribute key names on the session store to exclude during serialization (e.g., temporary security tokens).
@@ -319,13 +333,90 @@ Configured for developers running workstations and interactive debugging session
   * **Productivity**: Generously sets idle expiration to 1 hour (`maxIdleSeconds: 3600`) so developers are not repeatedly forced to re-login during debugging pauses.
   * **Persistence Across Restarts**: Pairs with `FileSessionStoreFactoryBean` to preserve active logins across development server restarts.
 
-## 4. Controlling Non-Persistent Attributes: `NonPersistent` & `NonPersistentValue`
+## 4. High-Reliability Clustered Scavenging & Orphan Session Cleanup Architecture
+
+When multiple application server instances are clustered behind a load balancer (L4/L7), disparities between an individual node's local memory cache lifecycle and the central Redis persistent store lifecycle introduce complex challenges: premature invalidation of active sessions, multi-node I/O contention, duplicate event listener triggers, and storage leakage from abandoned orphan sessions. Aspectran solves these distributed challenges through a sophisticated 4-tier high-reliability scavenging architecture.
+
+### 4.1. Local Inactivity Eviction vs. Central Store Session State (`Silent Eviction`)
+
+* **The Problem**: In a clustered environment, a user's initial request may be served by Node A and cached locally. Subsequent requests from the same user may be routed by the load balancer to Node B, where the session remains actively used and updated in Redis. If Node A's local inactivity timer expires and Node A blindly executes `session.invalidate()`, it would delete the active session from Redis, unintentionally logging out the active user on Node B.
+* **Resolution Mechanism (`checkActiveInStore`)**:
+  * When a node's local inactivity timer fires (`sessionInactivityTimerExpired`), rather than immediately triggering invalidation, it calls `sessionStore.checkActiveInStore(session)` to inspect the true last-accessed timestamp and active state in the central Redis store.
+  * **Active on Another Node**: If Redis reports that the session is still active and valid, the session is silently evicted strictly from Node A's JVM heap cache (`SessionCache.evict()`, Silent Eviction). The central Redis data and session destruction listeners (`sessionDestroyed`) remain completely untouched.
+  * **Expired Globally**: Only if Redis confirms that the session has indeed exceeded its max idle timeout is the full invalidation pipeline (`session.invalidate()`) and destruction notification executed.
+
+```mermaid
+flowchart TD
+    A["Local Inactivity Timer Expires<br/>(sessionInactivityTimerExpired)"] --> B{"Verify Store Active State<br/>(checkActiveInStore)"}
+    B -- "Active and updated on another node" --> C["Evict strictly from local cache<br/>(SessionCache.evict / Silent Eviction)<br/>* Preserves Redis store & skips listener"]
+    B -- "Expired in backing store as well" --> D["Execute Invalidation Pipeline<br/>(session.invalidate)"]
+```
+
+### 4.2. Dual-Tier Scavenging Pipeline (Local Candidates + Store Sweeper)
+
+When the background scavenger (`HouseKeeper`) runs periodically, it processes in-memory session candidates and store-only expired sessions through two decoupled tiers.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant HK as HouseKeeper
+    participant SC as SessionCache
+    participant SS as LettuceSessionStore (Redis)
+    participant SL as SessionListener
+
+    HK->>SC: 1. checkExpiration(candidates) [Check local cache candidates]
+    SC-->>HK: Return locally expired session list
+    HK->>SS: 2. getExpired(candidates) [Sweep store-only expired sessions]
+    activate SS
+    SS->>SS: SET expiryIndexKey:scavenge-lock NX EX (Acquire distributed lock)
+    alt Lock Acquired (Single Sweeper Node)
+        SS->>SS: ZRANGEBYSCORE expiryIndexKey 0 (now - gracePeriod)
+        SS-->>HK: Return union of local + store-only expired IDs
+    else Lock Busy (Acquired by another node)
+        SS-->>HK: Return local candidate IDs only (skip store sweep)
+    end
+    deactivate SS
+    loop Invalidate Collected Expired Sessions
+        HK->>SS: 3. invalidate() -> c.del(sessionKey) (Atomic Delete)
+        alt Delete Succeeded (DEL == 1)
+            HK->>SL: 4. onSessionDestroyed() (Trigger listener exactly once)
+        else Already deleted by another node (DEL == 0)
+            HK-->>HK: Skip listener notification
+        end
+    end
+```
+
+1. **Tier 1: Immediate Local Candidate Verification (`sessionCache.checkExpiration(candidates)`)**:
+   * Each node scans its own in-memory session cache and collects session IDs that have expired relative to the current timestamp (`now`).
+   * This local evaluation operates independently without waiting for Redis distributed locks, ensuring that every node cleans its own idle memory rapidly.
+2. **Tier 2: Store-Only Expired Session Sweep (`sessionStore.getExpired()`) & `scavenge-lock`**:
+   * Collects expired sessions that have long been evicted from all nodes' local heap caches but still reside in Redis.
+   * To prevent dozens of cluster nodes from simultaneously querying the entire Redis ZSET index and generating duplicate deserialization workloads, a distributed lock (`expiryIndexKey + ":scavenge-lock"`) is used. **Only the single node that acquires the lock performs the ZSET index sweep**.
+   * Nodes that do not acquire the lock skip the Redis ZSET sweep safely, processing only their local candidate expirations.
+
+### 4.3. Atomic Store Deletion and Exactly-Once Listener Notification
+
+* When `session.invalidate()` is invoked on an expired session, it issues an atomic `DEL sessionKey` to Redis.
+* Owing to Redis's single-command atomicity, exactly one node will receive a positive deletion result (`deletedInStore == true`).
+* The `SessionManager` fires `SessionListener.sessionDestroyed()` only on the node where `deletedInStore == true`.
+* This guarantees that even if multiple cluster nodes detect expiration of the same session concurrently, post-destruction logic and audit log generation execute **strictly once across the entire cluster (Exactly-Once semantics)**.
+
+### 4.4. Physical Cleanup of Long-Abandoned Orphan Sessions (`doCleanOrphans` & `clean-lock`)
+
+* **Cause of Orphan Sessions**: Unforeseen catastrophic node failures (OOM-killer, hardware power loss, ungraceful kills) or prolonged network partitions may leave session records stranded in the ZSET expiry index beyond the regular scavenging lifecycle.
+* **Resilient Deep Cleanup (`doCleanOrphans`)**:
+  * Detects deeply orphaned sessions that have lingered far past the standard expiration window (default: `now - 100 minutes`).
+  * A dedicated distributed lock (`expiryIndexKey + ":clean-lock"`) ensures that a single node performs physical bulk deletion via `c.del()` and `zremrangebyscore()` without triggering listener events, preventing storage leakages.
+* **Concurrency Optimization via Lock Separation**:
+  * Because the store sweeper lock (`scavenge-lock`) and orphan cleanup lock (`clean-lock`) use distinct keys, regular 1–2 minute session sweeps and deep orphan purges run concurrently and smoothly without blocking each other.
+
+## 5. Controlling Non-Persistent Attributes: `NonPersistent` & `NonPersistentValue`
 
 When serializing sessions to Redis or disk files, non-serializable runtime handles (such as network sockets, database connections, or large rendering buffers) can trigger serialization exceptions or waste network bandwidth.
 
 Aspectran provides a **type-safe non-persistent attribute mechanism** ensuring ephemeral objects remain strictly in local heap cache without being persisted to the backend storage.
 
-### 4.1. Marker Interface (`NonPersistent`)
+### 5.1. Marker Interface (`NonPersistent`)
 
 Custom domain objects intended for session storage can implement the [`NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java) marker interface to be automatically excluded during `SessionData` serialization:
 
@@ -361,7 +452,7 @@ public class TemporarySecurityContext implements NonPersistent {
 }
 ```
 
-### 4.2. Wrapper Utility (`NonPersistentValue`)
+### 5.2. Wrapper Utility (`NonPersistentValue`)
 
 For third-party library objects or framework-level handles (such as Netty `Channel`, Undertow internal attributes, etc.) where **the underlying class cannot be modified to implement `NonPersistent`**, use the [`NonPersistentValue`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistentValue.java) wrapper:
 
@@ -378,7 +469,7 @@ Object retrieved = session.getAttribute("runtimeResource");
 Connection conn = NonPersistentValue.unwrap(retrieved);
 ```
 
-### 4.3. Target Candidates & Execution Mechanics
+### 5.3. Target Candidates & Execution Mechanics
 
 * **Target Candidates**:
   * Non-serializable runtime handles (`Socket`, `Connection`, `Thread`, `Channel`)
@@ -389,11 +480,11 @@ Connection conn = NonPersistentValue.unwrap(retrieved);
   * Any object implementing `NonPersistent` (or wrapped in `NonPersistentValue`) is skipped from the serialization stream.
   * The original instance remains fully accessible in the local `SessionCache` for subsequent requests on the same node.
 
-## 5. Environment-Specific Configuration Guide
+## 6. Environment-Specific Configuration Guide
 
 Aspectran Session Manager's strongest advantage is its ability to easily adapt optimized bindings for the target deployment infrastructure while sharing the exact same session lifecycle engine.
 
-### 5.1. Standalone / Shell / Daemon Deployments
+### 6.1. Standalone / Shell / Daemon Deployments
 
 CLI shell environments and daemon processes utilize sessions to track interactive user logins and task execution contexts without a web container. Configured directly in `aspectran-config.apon`:
 
@@ -413,7 +504,7 @@ shell: {
 }
 ```
 
-### 5.2. Aspectow Enterprise Deployments (Undertow Servlet Binding)
+### 6.2. Aspectow Enterprise Deployments (Undertow Servlet Binding)
 
 Aspectow Enterprise bridges Undertow's servlet specification (`io.undertow.server.session.SessionManager`) with Aspectran's core session engine via [`TowSessionManager`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java).
 
@@ -422,10 +513,10 @@ Aspectow Enterprise bridges Undertow's servlet specification (`io.undertow.serve
 <!-- Servlet Context Definition -->
 <bean id="tow.context.root" class="com.aspectran.undertow.server.servlet.TowServletContext">
     <property name="contextPath">/</property>
-
+    
     <!-- Bind Servlet Session Manager -->
     <property name="sessionManager">#{tow.context.root.sessionManager}</property>
-
+    
     <!-- Standard Servlet Cookie Configuration -->
     <property name="servletSessionConfig">
         <bean class="com.aspectran.undertow.server.servlet.TowServletSessionConfig">
@@ -485,7 +576,7 @@ Aspectow Enterprise bridges Undertow's servlet specification (`io.undertow.serve
 </bean>
 ```
 
-### 5.3. Aspectow Edge Deployments (Netty Non-Servlet Binding)
+### 6.3. Aspectow Edge Deployments (Netty Non-Servlet Binding)
 
 Aspectow Edge eliminates servlet container overhead by running [`NettySessionManager`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java) and [`NettySessionConfig`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java) directly within Netty's HTTP channel pipeline.
 
@@ -494,7 +585,7 @@ Aspectow Edge eliminates servlet container overhead by running [`NettySessionMan
 <!-- Netty Context Definition -->
 <bean id="netty.context.root" class="com.aspectran.netty.server.NettyContext">
     <property name="contextPath">/</property>
-
+    
     <!-- Bind Lightweight Netty Session Manager -->
     <property name="sessionManager">#{netty.context.root.sessionManager}</property>
 </bean>
@@ -567,11 +658,11 @@ Aspectow Edge eliminates servlet container overhead by running [`NettySessionMan
 * **`sameSite`**: CSRF defense setting (`Strict`, `Lax`, `None`, default: `Lax`).
 * **`maxAge`**: Cookie lifespan in seconds (default `-1` denotes an in-memory session cookie purged on browser close).
 
-## 6. Session Lifecycle Event Listeners
+## 7. Session Lifecycle Event Listeners
 
 To implement audit logging or track active visitor metrics upon session creation, destruction, or attribute mutation, register custom listeners implementing `SessionListener`.
 
-### 6.1. Custom Listener Implementation
+### 7.1. Custom Listener Implementation
 
 ```java
 package com.aspectran.example.listener;
@@ -598,7 +689,7 @@ public class UserSessionTrackingListener implements SessionListener {
 }
 ```
 
-### 6.2. Listener Registration Bean
+### 7.2. Listener Registration Bean
 
 In Netty environments, use [`SessionListenerRegistrationBean`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java) to safely inject listeners into the session manager of a specific context path (`/`):
 
@@ -613,7 +704,7 @@ In Netty environments, use [`SessionListenerRegistrationBean`](https://github.co
 
 Under Undertow Servlet environments, attach listeners via `TowServletSessionConfig` servlet listener chains or dynamic session manager listener registration beans.
 
-## 7. Multi-Context Session Isolation Architecture
+## 8. Multi-Context Session Isolation Architecture
 
 Aspectow server architectures enforce strict **Multi-Context Session Isolation**:
 
@@ -621,7 +712,7 @@ Aspectow server architectures enforce strict **Multi-Context Session Isolation**
 * **Security**: Administrator session tokens and authentication credentials created under `/console` are isolated at the heap cache and storage keyspace levels from public contexts. Security vulnerabilities in public web modules cannot leak administrative session state.
 * **Domain Sharing Pattern**: When single sign-on (SSO) across subdomains is explicitly desired, configuring a shared `cookieDomain` and harmonizing Redis keyspace prefixes allows secure federation across contexts.
 
-## 8. Application Code: Unified Session API
+## 9. Application Code: Unified Session API
 
 Application components (Translet actions, controllers, business services) interact with sessions using Aspectran's unified [`SessionAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) rather than tying business logic to `HttpServletRequest`, `HttpSession`, or Netty native channel buffers:
 
@@ -644,11 +735,11 @@ public class LoginAction {
         if (authenticate(username, password)) {
             // Retrieve container-agnostic SessionAdapter
             SessionAdapter sessionAdapter = translet.getSessionAdapter();
-
+            
             // Set session attributes (auto-synced to cache and persistent store)
             sessionAdapter.setAttribute("currentUser", username);
             sessionAdapter.setAttribute("loginTime", System.currentTimeMillis());
-
+            
             return "SUCCESS";
         }
         return "FAIL";
@@ -673,11 +764,12 @@ public class LoginAction {
 * **Zero-Modification Portability**: The Java action code above executes identically across Undertow servlet environments, Netty asynchronous pipelines, or standalone automated command-line testing without modifying a single line of source code.
 * **Thread Safety**: Attribute mutations within `SessionAdapter` are thread-safe and protected by `DefaultSessionManager` concurrency controls in multithreaded environments.
 
-## 9. Conclusion
+## 10. Conclusion
 
 Aspectran Session Manager is a comprehensive **enterprise-grade state management framework** that goes far beyond a simple key-value store:
 
 * **Infrastructure Agnostic**: Unifies state management semantics across Servlets, Netty, CLI shells, and daemons into a single developer and operations paradigm.
 * **Intelligent Resource Defense**: Safeguards system memory and Redis storage against crawlers via dual new/normal session timeout algorithms.
 * **Elastic Scalability**: Smoothly shifts from file-based local development to high-throughput Redis clustering purely via configuration without code modifications.
+* **High-Reliability Clustered Scavenging**: Maintains seamless cluster consistency with Sorted Set expiry indexes, ultra-lightweight magic byte codecs, distributed lock concurrency control, Silent Eviction, and Exactly-Once session destruction notifications.
 * **Enterprise Security**: Delivers multi-context isolation, `NonPersistent` and `NonPersistentValue` persistence boundary controls, and modern cookie security flags (`HttpOnly`, `SameSite`, `Secure`) to meet rigorous enterprise security requirements.

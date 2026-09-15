@@ -94,8 +94,22 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
 
 ### 2.3. 고성능 Redis 세션 스토어 (`LettuceSessionStore`)
 
-* **동작 원리**: 넌블로킹 비동기 Redis 클라이언트인 **Lettuce**를 기반으로 세션 데이터를 중앙 집중형 Redis 서버 또는 Redis 클러스터에 영속화합니다.
-* **데이터 구조**: 각 세션은 Redis의 바이너리 세이프 `String` 타입으로 저장되며, `네임스페이스:세션ID` 포맷을 가집니다. 값은 고속 직렬화된 세션 바이트 스트림입니다.
+* **동작 원리**: 논블로킹 비동기 Redis 클라이언트인 **Lettuce**를 기반으로 세션 데이터를 중앙 집중형 Redis 서버 또는 Redis 클러스터에 영속화합니다.
+* **데이터 구조**:
+  * **세션 데이터 본체**: 각 세션은 Redis의 바이너리 세이프 `String` 타입으로 저장되며, `네임스페이스:세션ID` 포맷의 키를 가집니다. 값은 고속 직렬화된 세션 바이트 스트림입니다.
+  * **ZSET 기반 만료 인덱스 (`expiryIndexKey`)**: 만료 세션 정리를 위해 전체 키스페이스를 스캔(`KEYS` 또는 `SCAN`)하는 $O(N)$ 오버헤드를 원천 배제하고자 Redis 정렬 집합(Sorted Set) 인덱스(예: `aspectran:sessions:expiry`)를 운용합니다.
+    * 세션이 생성되거나 최종 접근 시각이 갱신되어 저장될 때 만료 타임스탬프(밀리초)를 점수(Score)로, 세션 ID를 멤버(Member)로 하여 `ZADD`로 인덱스를 원자적 동기화합니다.
+    * 세션이 명시적으로 무효화되거나 삭제될 때는 `ZREM`을 통해 인덱스에서 즉시 제거됩니다.
+    * 스캐빈저 및 만료 검사 시 `ZRANGEBYSCORE`를 사용하여 만료 시점에 도달한 세션 ID들만 $O(\log N + M)$의 극도로 낮은 비용으로 정밀 조회합니다.
+* **초경량 코덱 (`SessionDataCodec`) 매직 바이트 아키텍처**:
+  * 세션 데이터와 ZSET 인덱스 멤버 간의 직렬화 오버헤드를 최적화하기 위해 바이트 스트림 선두에 1바이트 매직 바이트(`Magic Byte`)를 적용한 2단계 인코딩 전략을 사용합니다.
+    * `MAGIC_FULL (0x01)`: 세션 ID, 생성 시각, 최종 접근 시각, 유효 시간, 세션 속성(`attributes`) 맵 등 전체 세션 상태를 포함하는 완전 직렬화 바이너리 페이로드입니다.
+    * `MAGIC_ID_ONLY (0x02)`: ZSET 멤버, 분산 락 토큰 등 세션 식별자 문자열만 필요할 때 전체 세션 역직렬화 비용 없이 고속으로 ID만 인코딩/디코딩하는 경량 페이로드입니다.
+* **Redis 분산 락 기반 경합 제어 (Distributed Locking)**:
+  * 다중 노드 클러스터 환경에서 만료 세션 정리 및 고아 세션 삭제 시 발생하는 노드 간 불필요한 중복 조회와 I/O 경합을 차단하기 위해 Redis의 원자적 분산 락(`SET key value NX EX lockTtl`)을 활용합니다.
+  * **스토어 만료 세션 스윕 락 (`scavenge-lock`)**: `expiryIndexKey + ":scavenge-lock"` 키를 선점한 단 1개의 노드만 Redis ZSET 만료 인덱스를 조회하여 스토어 전용 만료 세션을 회수합니다.
+  * **고아 세션 정리 락 (`clean-lock`)**: `expiryIndexKey + ":clean-lock"` 키를 선점한 단 1개의 노드만 장시간 방치된 고아 세션 물리 삭제(`doCleanOrphans`)를 수행합니다.
+  * 두 작업의 분산 락 키가 완벽히 분리되어 있어 상호 간섭 없이 독립적으로 안전하게 병렬 실행됩니다.
 * **장점**: 대규모 트래픽 분산 환경에서 여러 WAS 인스턴스가 완벽한 무상태(Stateless) 구조를 유지하면서 실시간으로 세션 상태를 공유할 수 있습니다. 노드가 예기치 않게 다운되더라도 클러스터 내 다른 노드가 즉시 세션을 이어받아 무중단 페일오버를 달성합니다.
 * **Lock-Free 스트라이프 커넥션 풀링**:
   * Lettuce의 논블로킹 멀티플렉싱 커넥션을 스트라이핑(`poolSize`, 기본값: 8, 범위: 2~32)하여 `AtomicInteger` 기반 라운드로빈으로 고속 분배합니다.
@@ -123,9 +137,9 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
   * 스캐빈저(Scavenger)가 만료된 세션을 일괄 정리할 때 클러스터 노드 간 시계 오차(Clock Skew)나 파일/네트워크 I/O 지연으로 인한 조기 만료 및 오삭제를 방지하기 위해 부여하는 유예 시간(초)입니다 (기본값: `60`).
   * 최초 만료 검사 시에는 `gracePeriodSecs * 3` 이전 만료 세션만 조회하고, 이후 정기 검사 시에는 `gracePeriodSecs` 이전 만료 세션을 조회하여 안전하게 정리합니다.
 * **`savePeriodSecs`**:
-  * 세션 속성(`attributes`)의 변경(dirty) 없이 클라이언트의 단순 요청으로 최종 접근 시간(`lastAccessedTime`)만 갱신될 때, 빈번한 영속 저장소 쓰기 I/O를 방지하기 위한 최소 저장 간격(초)입니다 (기본값: `0`).
-  * `0` (기본값): 세션이 dirty 상태이거나 매 요청 종료 시 즉시 저장소에 저장합니다.
-  * `> 0`: 세션 데이터가 수정되지 않았더라도 마지막 저장 이후 `savePeriodSecs`가 경과한 경우에만 저장소에 접근하여 만료 시간을 최신화합니다.
+  * 세션 속성(`attributes`)의 변경(dirty) 없이 클라이언트의 단순 조회 요청(HTTP GET 등)으로 최종 접근 시간(`lastAccessedTime`)만 갱신될 때, 빈번한 영속 저장소 쓰기 네트워크/디스크 I/O를 최적화하기 위한 최소 저장 간격(초)입니다 (기본값: `0`).
+  * **`savePeriodSecs: 0` (기본값)**: 세션 데이터가 수정(dirty)되지 않은 단순 조회 요청이라도 세션 만료 시간 최신화를 위해 매 요청 종료 시 즉시 영속 저장소에 저장합니다.
+  * **`savePeriodSecs > 0`**: 세션 데이터가 수정(dirty)되지 않은 경우, 마지막으로 영속 저장소에 기록된 시각으로부터 `savePeriodSecs` 이상 경과했을 때만 저장소에 접근하여 최종 접근 시각과 만료 시간을 갱신합니다. (단, 세션 속성이 추가/수정/삭제되어 dirty 상태가 된 경우에는 `savePeriodSecs` 설정과 무관하게 요청 종료 즉시 저장소에 반영됩니다.)
 * **`nonPersistentAttributes` 및 비영속 속성 제어**:
   * 세션 속성 중 영속 스토어(File, Redis 등)에 직렬화하여 저장하지 않고 로컬 힙 메모리(세션 캐시)에서만 유지할 속성을 지정하는 두 가지 방법을 지원합니다.
   * **속성 이름 기반 지정 (`nonPersistentAttributes`)**: 세션 스토어 설정 시 제외할 속성 키 이름들의 문자열 배열을 등록하여 영속화 대상에서 제외합니다 (예: 임시 인증 토큰 등).
@@ -319,13 +333,90 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
   * **개발 생산성**: 디버깅 중이나 코드 수정 중에 세션이 자주 끊기면 반복 로그인을 해야 하므로 유휴 시간을 1시간(`maxIdleSeconds: 3600`)으로 넉넉하게 설정합니다.
   * **재기동 복구**: `FileSessionStoreFactoryBean`을 함께 사용하여 서버를 재시작해도 로그인 상태가 그대로 유지되도록 합니다.
 
-## 4. 비영속 세션 속성 제어: `NonPersistent` & `NonPersistentValue`
+## 4. 분산 클러스터 환경에서의 고신뢰 스캐빈징 & 고아 세션 정리 아키텍처
+
+다중 인스턴스가 로드밸런서(L4/L7) 뒤에서 클러스터로 묶여 동작할 때, 개별 노드의 로컬 캐시 수명 주기와 중앙 Redis 영속 스토어의 세션 수명 주기가 어긋나면서 발생할 수 있는 여러 난제(조기 만료 오삭제, 다중 노드 I/O 경합, 이벤트 중복 발행, 방치된 고아 세션 메모리 누수 등)를 완벽하게 해결하도록 정교한 4단계 고신뢰 스캐빈징 아키텍처를 제공합니다.
+
+### 4.1. 로컬 캐시 비활성 축출 vs 스토어 세션 상태의 분리 (`Silent Eviction`)
+
+* **문제 상황**: 클러스터 환경에서 사용자의 이전 요청이 노드 A에서 처리된 후 로컬 캐시에 적재되었으나, 이후 후속 요청들이 로드밸런서에 의해 노드 B로 라우팅되어 계속 활발히 사용 중일 수 있습니다. 이 상태에서 노드 A의 세션 비활성 타이머가 도래했을 때 무조건 `session.invalidate()`를 호출하면 Redis의 원본 세션까지 조기 삭제되어 다른 노드(노드 B)의 정상 사용자가 로그아웃되는 심각한 장애가 발생합니다.
+* **해결 원리 (`checkActiveInStore`)**:
+  * 노드 로컬에서 세션 비활성 타이머가 만료(`sessionInactivityTimerExpired`)되면, 즉시 무효화하지 않고 `sessionStore.checkActiveInStore(session)`를 호출하여 Redis 중앙 저장소의 실제 최종 접근 시각과 만료 여부를 사전 조회합니다.
+  * **타 노드에서 활성 중인 경우**: Redis 상의 세션이 여전히 유효하고 활성 상태라면, 해당 세션은 노드 A의 힙 메모리에서만 조용히 축출(`SessionCache.evict()`, Silent Eviction)합니다. 이 과정에서 Redis의 원본 세션 데이터와 세션 소멸 리스너 이벤트(`sessionDestroyed`)는 일체 건드리지 않습니다.
+  * **저장소에서도 만료된 경우**: Redis 상에서도 비활성 유효 시간을 초과한 경우에만 비로소 정상적인 무효화(`session.invalidate()`) 및 소멸 통지 절차를 밟습니다.
+
+```mermaid
+flowchart TD
+    A["로컬 비활성 타이머 만료<br/>(sessionInactivityTimerExpired)"] --> B{"스토어 활성 상태 검증<br/>(checkActiveInStore)"}
+    B -- "타 노드에서 갱신되어 활성 중" --> C["로컬 캐시에서만 조용히 축출<br/>(SessionCache.evict / Silent Eviction)<br/>* 스토어 데이터 보존 & 리스너 미호출"]
+    B -- "스토어에서도 만료/비활성" --> D["정상 무효화 파이프라인 가동<br/>(session.invalidate)"]
+```
+
+### 4.2. 이중화된 스캐빈징 파이프라인 (Local Candidates + Store Sweeper)
+
+백그라운드 청소부(`HouseKeeper`)가 정기적으로 가동될 때, 로컬 캐시에 상주하는 세션과 어떤 노드의 캐시에도 존재하지 않는 스토어 전용(Store-Only) 만료 세션을 이원화하여 처리합니다.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant HK as HouseKeeper
+    participant SC as SessionCache
+    participant SS as LettuceSessionStore (Redis)
+    participant SL as SessionListener
+
+    HK->>SC: 1. checkExpiration(candidates) [로컬 캐시 만료 후보 검사]
+    SC-->>HK: 로컬 검증 만료 세션 목록 반환
+    HK->>SS: 2. getExpired(candidates) [스토어 전용 만료 세션 수집]
+    activate SS
+    SS->>SS: SET expiryIndexKey:scavenge-lock NX EX (분산 락 선점 시도)
+    alt 락 획득 성공 (단일 마스터 노드)
+        SS->>SS: ZRANGEBYSCORE expiryIndexKey 0 (now - gracePeriod)
+        SS-->>HK: 로컬 후보 + 스토어 전용 만료 세션 합집합 반환
+    else 락 획득 실패 (타 노드 선점)
+        SS-->>HK: 로컬 후보 세션만 반환 (스토어 스윕 스킵)
+    end
+    deactivate SS
+    loop 수집된 만료 세션 무효화
+        HK->>SS: 3. invalidate() -> c.del(sessionKey) (원자적 삭제)
+        alt 삭제 성공 (DEL == 1)
+            HK->>SL: 4. onSessionDestroyed() (정확히 1회 이벤트 통지)
+        else 이미 타 노드가 삭제함 (DEL == 0)
+            HK-->>HK: 리스너 통지 스킵
+        end
+    end
+```
+
+1. **1단계: 로컬 캐시 후보군 즉시 판별 (`sessionCache.checkExpiration(candidates)`)**:
+   * 각 노드는 자신의 로컬 메모리 캐시에 등록된 세션 목록 중 현재 시각(`now`) 기준으로 만료된 세션 ID 목록을 즉시 수집합니다.
+   * 로컬 검증 과정에서는 외부 Redis 네트워크 락 획득 여부와 상관없이 각 노드가 독립적으로 자신의 유휴 캐시를 신속하게 정리합니다.
+2. **2단계: 스토어 전용 만료 세션 스윕 (`sessionStore.getExpired()`) & `scavenge-lock` 분산 락**:
+   * 사용자의 모든 요청이 완료된 후 오랜 시간이 흘러 모든 노드의 메모리 캐시에서 이미 축출되었으나 Redis에만 남아있는 만료 세션을 수거합니다.
+   * 클러스터 내 수십~수백 대의 노드가 동시에 Redis ZSET 만료 인덱스를 중복 조회하고 동일 세션들을 반복 로드하는 극심한 네트워크 I/O 경합을 방지하기 위해 **분산 락(`expiryIndexKey + ":scavenge-lock"`)을 선점한 단 1개의 노드만 ZSET 스윕을 수행**합니다.
+   * 락을 획득하지 못한 노드는 불필요한 Redis ZSET 조회를 안전하게 건너뛰고 자신의 로컬 후보군 정리만 신속히 완료합니다.
+
+### 4.3. 원자적 스토어 삭제 및 정확히 1회 소멸 이벤트 보장 (Exactly-Once Listener Notification)
+
+* 만료 세션에 대해 `session.invalidate()`가 실행되면 세션 스토어의 `delete()`를 호출하여 Redis에서 해당 세션 키를 삭제합니다.
+* Redis의 단일 커맨드 원자성(`DEL sessionKey`)에 의해 실제로 키를 삭제하는 데 성공한 단 1개의 노드만 `deletedInStore = true`를 반환받습니다.
+* 세션 관리자는 오직 `deletedInStore == true`인 노드에서만 `SessionListener.sessionDestroyed()` 이벤트를 발행합니다.
+* 이를 통해 클러스터 내 다중 노드가 동일 세션의 만료를 동시에 감지하더라도, 사용자 로그아웃 감사 로그 기록이나 세션 소멸 후속 로직이 **중복 실행되지 않고 클러스터 전체에서 정확히 1회만 실행**됩니다.
+
+### 4.4. 장기 방치 고아 세션 물리적 청소 (`doCleanOrphans` & `clean-lock`)
+
+* **고아 세션 발생 원인**: 서버 프로세스의 갑작스러운 비정상 강제 종료(OOM-Killer, 하드웨어 장애, 전원 차단 등)나 네트워크 단절로 인해 정상적인 스캐빈징 수명 주기에서 누락된 세션이 ZSET 만료 인덱스에 잔류할 수 있습니다.
+* **안전한 물리 청소 (`doCleanOrphans`)**:
+  * 정상 유휴 만료 시간보다 훨씬 긴 임계치(기본값: `now - 100분`)를 초과하여 방치된 고아 세션들을 주기적으로 감지합니다.
+  * 별도의 분산 락인 `expiryIndexKey + ":clean-lock"`을 선점한 단일 노드가 리스너 이벤트 호출 없이 Redis `c.del()` 및 `zremrangebyscore()`를 통해 일괄 물리 삭제합니다.
+* **락 분리를 통한 동시성 최적화**:
+  * 스토어 전용 세션 스윕 락(`scavenge-lock`)과 고아 세션 청소 락(`clean-lock`)이 분리되어 있으므로, 통상적인 1~2분 단위 세션 스캐빈징과 장기 고아 세션 청소 작업이 서로를 블로킹하지 않고 독립적으로 안전하게 병렬 가동됩니다.
+
+## 5. 비영속 세션 속성 제어: `NonPersistent` & `NonPersistentValue`
 
 분산 환경에서 세션을 Redis나 파일 저장소에 영속화(직렬화)할 때, 네트워크 소켓, 데이터베이스 커넥션, 대용량 버퍼와 같이 직렬화가 불가능하거나 외부 저장이 부적절한 객체가 포함되어 있으면 직렬화 예외가 발생하거나 네트워크 대역폭이 낭비됩니다.
 
 Aspectran은 이러한 임시 데이터가 세션 캐시(로컬 힙 메모리)에는 유지되면서도 영속 스토어에는 저장되지 않도록 하는 **타입 안전한 비영속(Non-persistent) 제어 메커니즘**을 제공합니다.
 
-### 4.1. 마커 인터페이스 (`NonPersistent`)
+### 5.1. 마커 인터페이스 (`NonPersistent`)
 
 세션 속성으로 저장할 커스텀 도메인 객체가 [`NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java) 인터페이스를 구현하도록 선언하면, `SessionData` 직렬화 시 자동으로 저장 대상에서 제외됩니다.
 
@@ -361,7 +452,7 @@ public class TemporarySecurityContext implements NonPersistent {
 }
 ```
 
-### 4.2. 래퍼 클래스 유틸리티 (`NonPersistentValue`)
+### 5.2. 래퍼 클래스 유틸리티 (`NonPersistentValue`)
 
 서드파티 라이브러리 객체나 프레임워크 내부 리소스(예: Netty `Channel`, Undertow 내부 속성 등)처럼 **소스코드를 직접 수정하여 `NonPersistent`를 구현할 수 없는 경우**, [`NonPersistentValue`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistentValue.java) 래퍼를 사용하여 손쉽게 비영속 속성으로 등록할 수 있습니다.
 
@@ -378,7 +469,7 @@ Object retrieved = session.getAttribute("runtimeResource");
 Connection conn = NonPersistentValue.unwrap(retrieved);
 ```
 
-### 4.3. 비영속 속성 적용 대상 및 동작 원리
+### 5.3. 비영속 속성 적용 대상 및 동작 원리
 
 * **주요 적용 대상**:
   * 직렬화 불가능한 런타임 리소스 (`Socket`, `Connection`, `Thread`, `Channel`)
@@ -389,11 +480,11 @@ Connection conn = NonPersistentValue.unwrap(retrieved);
   * `NonPersistent`를 구현한 객체(또는 `NonPersistentValue`로 래핑된 객체)는 직렬화 스트림에 기록되지 않고 스킵됩니다.
   * 로컬 메모리의 세션 캐시에는 원본 인스턴스가 그대로 보존되므로, 동일 요청이나 동일 노드 내에서는 제약 없이 빠르게 접근할 수 있습니다.
 
-## 5. 실행 환경별 세션 구성 실전 가이드
+## 6. 실행 환경별 세션 구성 실전 가이드
 
 Aspectran Session Manager의 가장 강력한 장점은 동일한 세션 라이프사이클 엔진을 기반으로, 실행 대상 인프라에 맞춰 최적화된 바인딩 구성을 손쉽게 적용할 수 있다는 점입니다.
 
-### 5.1. Standalone / Shell / Daemon 환경 구성
+### 6.1. Standalone / Shell / Daemon 환경 구성
 
 웹 컨테이너가 없는 CLI 쉘 콘솔이나 백그라운드 데몬 프로세스에서도 사용자 로그인 상태나 작업 컨텍스트를 유지하기 위해 세션을 활용합니다. `aspectran-config.apon`에 직접 선언합니다.
 
@@ -413,7 +504,7 @@ shell: {
 }
 ```
 
-### 5.2. Aspectow Enterprise 환경 구성 (Undertow 서블릿 바인딩)
+### 6.2. Aspectow Enterprise 환경 구성 (Undertow 서블릿 바인딩)
 
 Aspectow Enterprise에서는 [`TowSessionManager`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java)를 통해 서블릿 스펙(`io.undertow.server.session.SessionManager`)과 Aspectran 코어 세션 엔진을 브릿징합니다.
 
@@ -485,7 +576,7 @@ Aspectow Enterprise에서는 [`TowSessionManager`](https://github.com/aspectran/
 </bean>
 ```
 
-### 5.3. Aspectow Edge 환경 구성 (Netty 논-서블릿 바인딩)
+### 6.3. Aspectow Edge 환경 구성 (Netty 논-서블릿 바인딩)
 
 Aspectow Edge에서는 서블릿 컨테이너 오버헤드를 배제하고 Netty 채널 파이프라인에서 직접 가동되는 [`NettySessionManager`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java)와 [`NettySessionConfig`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java)를 사용합니다.
 
@@ -567,11 +658,11 @@ Aspectow Edge에서는 서블릿 컨테이너 오버헤드를 배제하고 Netty
 * **`sameSite`**: CSRF 공격 방어를 위한 SameSite 정책 (`Strict`, `Lax`, `None` 지원, 기본값: `Lax`)
 * **`maxAge`**: 쿠키 생존 시간(초). 기본값 `-1`은 브라우저 종료 시 삭제되는 세션 쿠키 동작을 의미
 
-## 6. 세션 생명주기 이벤트 리스너
+## 7. 세션 생명주기 이벤트 리스너
 
 세션의 생성, 소멸, 속성 변경 시 감사 로그 기록이나 접속자 수 통계를 집계하기 위해 세션 리스너를 등록할 수 있습니다.
 
-### 6.1. 세션 리스너 구현
+### 7.1. 세션 리스너 구현
 
 ```java
 package com.aspectran.example.listener;
@@ -598,7 +689,7 @@ public class UserSessionTrackingListener implements SessionListener {
 }
 ```
 
-### 6.2. 리스너 등록 Bean 정의
+### 7.2. 리스너 등록 Bean 정의
 
 Netty 환경에서는 [`SessionListenerRegistrationBean`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java)을 사용하여 특정 컨텍스트 경로(`/`)의 세션 관리자에 리스너를 안전하게 주입합니다.
 
@@ -613,7 +704,7 @@ Netty 환경에서는 [`SessionListenerRegistrationBean`](https://github.com/asp
 
 Undertow 서블릿 환경의 경우 `TowServletSessionConfig`의 서블릿 리스너 체인 또는 Aspectran 세션 매니저 리스너 등록 빈을 통해 동적으로 바인딩할 수 있습니다.
 
-## 7. 다중 컨텍스트 환경에서의 세션 격리 전략
+## 8. 다중 컨텍스트 환경에서의 세션 격리 전략
 
 Aspectow 서버 아키텍처의 강력한 보안 특징 중 하나는 **다중 컨텍스트 세션 완전 격리**입니다.
 
@@ -621,7 +712,7 @@ Aspectow 서버 아키텍처의 강력한 보안 특징 중 하나는 **다중 �
 * **보안성**: 관리자 콘솔에서 로그인하여 생성된 세션 ID와 인증 정보는 메인 서비스 컨텍스트와 메모리 캐시 및 스토리지 키스페이스 수준에서 완전히 격리됩니다. 메인 웹 애플리케이션의 세션 탈취 취약점이 관리자 권한 탈취로 전이되지 않습니다.
 * **도메인 공유 패턴**: 필요에 따라 동일 호스트 내에서 특정 SSO(Single Sign-On)가 요구될 경우, `cookieDomain`과 Redis 스토어 네임스페이스를 일치시켜 도메인 단위로 안전하게 세션을 공유할 수 있습니다.
 
-## 8. 코드 레벨의 일관된 세션 조작 (Session API)
+## 9. 코드 레벨의 일관된 세션 조작 (Session API)
 
 비즈니스 로직(Translet 액션, 컨트롤러, 서비스 Bean) 내부에서는 서블릿 API(`HttpServletRequest`, `HttpSession`)나 Netty 네이티브 객체에 종속되지 않고, Aspectran이 제공하는 통합 [`SessionAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) 인터페이스를 통해 세션을 다룹니다.
 
@@ -673,11 +764,12 @@ public class LoginAction {
 * **환경 이식성**: 위 Java 코드는 Undertow 서블릿 환경이든, Netty 비동기 환경이든, 또는 자동화 테스트 쉘 환경이든 **단 1줄의 코드 수정 없이 100% 동일하게 실행**됩니다.
 * **스레드 안전성**: `SessionAdapter` 내부의 속성 조작은 `DefaultSessionManager`에 의해 동시성 보호를 받으므로 멀티스레드 환경에서도 데이터 오염 없이 안전하게 작동합니다.
 
-## 9. 결론
+## 10. 결론
 
 Aspectran Session Manager는 단순한 키-값 저장소를 넘어선 **차세대 엔터프라이즈 상태 관리 솔루션**입니다.
 
 * **인프라 독립성**: 서블릿, Netty, CLI, 데몬 전 영역에 걸친 단일한 개발 및 운영 패러다임을 확립합니다.
 * **지능형 리소스 보호**: 신규/일반 세션 분리 알고리즘을 통해 봇과 크롤러로부터 메모리와 스토리지를 완벽하게 방어합니다.
 * **유연한 확장성**: 설정 변경만으로 로컬 개발용 파일 스토리지에서 대규모 Redis 분산 세션 클러스터링으로 무중단 전환됩니다.
+* **고신뢰 분산 스캐빈징**: Sorted Set 만료 인덱스, 초경량 매직 바이트 코덱, 분산 락 기반 경합 제어, Silent Eviction, Exactly-Once 소멸 이벤트 보장을 통해 대규모 클러스터 환경에서도 무결점 동기화를 유지합니다.
 * **보안과 성능의 양립**: `NonPersistent` 및 `NonPersistentValue`를 통한 선택적 영속화, 정교한 쿠키 보안 플래그(`HttpOnly`, `SameSite`, `Secure`), 다중 컨텍스트 완전 격리를 통해 엔터프라이즈 환경이 요구하는 엄격한 보안 요건을 충족합니다.
