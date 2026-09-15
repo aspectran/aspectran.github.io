@@ -2,6 +2,7 @@
 title: "Aspectran Session Manager: State Management & Session Clustering Guide"
 subheadline: Core Guide
 permalink: /en/docs/guides/aspectran-session-manager/
+mermaid: true
 ---
 
 Aspectran provides its own dedicated session management architecture to support **consistent state management across all execution environments**—from standalone daemons and interactive CLI shells to microservices and enterprise web application servers—without being bound to any specific web container or servlet specification.

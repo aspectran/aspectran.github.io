@@ -2,6 +2,7 @@
 title: "Aspectran Session Manager: 상태 관리 및 세션 클러스터링 가이드"
 subheadline: 핵심 가이드
 permalink: /ko/docs/guides/aspectran-session-manager/
+mermaid: true
 ---
 
 Aspectran은 특정 웹 컨테이너나 서블릿 스펙에 얽매이지 않고, 독립 실행형 데몬, 대화형 CLI 셸, 마이크로서비스, 그리고 대규모 웹 애플리케이션 서버에 이르기까지 **모든 실행 환경에서 일관된 상태 관리(State Management)**를 지원하도록 자체 세션 관리 아키텍처를 제공합니다.
