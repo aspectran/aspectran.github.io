@@ -43,7 +43,7 @@ cd hello-aspectran
         <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.parameters>true</maven.compiler.parameters>
 
-        <aspectran.version>9.7.1</aspectran.version>
+        <aspectran.version>9.7.2-SNAPSHOT</aspectran.version>
     </properties>
 
     <repositories>
