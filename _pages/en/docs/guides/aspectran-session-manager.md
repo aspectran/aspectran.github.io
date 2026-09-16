@@ -690,20 +690,139 @@ public class UserSessionTrackingListener implements SessionListener {
 }
 ```
 
-### 7.2. Listener Registration Bean
+### 7.2. Methods for Registering Session Listeners
 
-In Netty environments, use [`SessionListenerRegistrationBean`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java) to safely inject listeners into the session manager of a specific context path (`/`):
+Aspectran provides **two standard approaches** to register session listeners based on application architecture and operational requirements.
+
+#### Approach 1: Declarative Registration via `DefaultSessionListenerRegistration` Bean
+
+A declarative approach using [`DefaultSessionListenerRegistration`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionListenerRegistration.java), the standard implementation of [`SessionListenerRegistration`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionListenerRegistration.java).
+
+* **Operating Principle**:
+  * Can be initialized with a specific server bean ID (e.g., `tow.server`, `netty.server`) and a default target context name or path (`root`, `/`, etc.).
+  * If the server bean ID is omitted, it **auto-detects** the single [`SessionManagerProvider`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManagerProvider.java) bean (such as `TowServer` in Undertow or `NettyServer` in Netty) registered in the BeanRegistry.
+  * When `nameOrPath` is `null`, `""`, `"/"`, or `"root"`, it automatically resolves and routes to the root or single deployment context's `SessionManager`.
+
+* **XML Bean Definition (`support.xml`)**:
 
 ```xml
-<bean class="com.aspectran.netty.support.SessionListenerRegistrationBean">
-    <property name="targetPath">/</property>
-    <property name="sessionListener">
-        <bean class="com.aspectran.example.listener.UserSessionTrackingListener"/>
-    </property>
+<!-- 1. Explicitly specifying the server bean ID and default context (root) -->
+<bean id="sessionListenerRegistration"
+      class="com.aspectran.core.component.session.DefaultSessionListenerRegistration"
+      lazyInit="true">
+    <argument>netty.server</argument>
+    <argument>root</argument>
 </bean>
+
+<!-- 2. Auto-detecting the SessionManagerProvider without specifying a server ID -->
+<bean id="sessionListenerRegistration"
+      class="com.aspectran.core.component.session.DefaultSessionListenerRegistration"
+      lazyInit="true"/>
 ```
 
-Under Undertow Servlet environments, attach listeners via `TowServletSessionConfig` servlet listener chains or dynamic session manager listener registration beans.
+* **Registering and Deregistering Listeners in Java Code**:
+
+```java
+package com.aspectran.example.support;
+
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.session.DefaultSessionListenerRegistration;
+import com.aspectran.core.component.session.SessionListener;
+import com.aspectran.example.listener.UserSessionTrackingListener;
+
+@Component
+public class SessionListenerManager implements InitializableBean, DisposableBean {
+
+    private final DefaultSessionListenerRegistration registration;
+
+    private final SessionListener trackingListener = new UserSessionTrackingListener();
+
+    @Autowired
+    public SessionListenerManager(DefaultSessionListenerRegistration registration) {
+        this.registration = registration;
+    }
+
+    @Override
+    public void initialize() {
+        // Registers listener to the default configured context (root)
+        registration.register(trackingListener);
+
+        // Can also register to a specific context (e.g., "admin") by name or path
+        // registration.register(trackingListener, "admin");
+    }
+
+    @Override
+    public void destroy() {
+        // Deregisters the listener
+        registration.remove(trackingListener);
+    }
+
+}
+```
+
+#### Approach 2: Direct Registration via `SessionManagerProvider` or `SessionManager`
+
+A programmatic approach where you inject the server bean itself (`SessionManagerProvider`) or individual context `SessionManager` instances and attach listeners directly.
+
+* **Operating Principle**:
+  * Both `TowServer` (Undertow) and `NettyServer` (Netty) implement the [`SessionManagerProvider`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManagerProvider.java) interface.
+  * Retrieve the target [`SessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManager.java) via `server.getSessionManager()` or `server.getSessionManager(contextNameOrPath)`, and invoke `addSessionListener(listener)` directly.
+  * When you already have access to the session manager instance, this approach is the most straightforward and avoids extra registration bean lookups.
+
+* **Direct Registration in Java Component**:
+
+```java
+package com.aspectran.example.support;
+
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.session.SessionListener;
+import com.aspectran.core.component.session.SessionManager;
+import com.aspectran.core.component.session.SessionManagerProvider;
+import com.aspectran.example.listener.UserSessionTrackingListener;
+
+@Component
+public class DirectSessionListenerRegistrar implements InitializableBean, DisposableBean {
+
+    private final SessionManagerProvider sessionManagerProvider;
+
+    private final SessionListener trackingListener = new UserSessionTrackingListener();
+
+    @Autowired
+    public DirectSessionListenerRegistrar(SessionManagerProvider sessionManagerProvider) {
+        this.sessionManagerProvider = sessionManagerProvider;
+    }
+
+    @Override
+    public void initialize() {
+        // Retrieve SessionManager for the root context and attach listener directly
+        SessionManager sessionManager = sessionManagerProvider.getSessionManager();
+        if (sessionManager != null) {
+            sessionManager.addSessionListener(trackingListener);
+        }
+
+        // When registering to a specific context (e.g., "console"):
+        // SessionManager consoleSessionManager = sessionManagerProvider.getSessionManager("console");
+        // if (consoleSessionManager != null) {
+        //     consoleSessionManager.addSessionListener(trackingListener);
+        // }
+    }
+
+    @Override
+    public void destroy() {
+        SessionManager sessionManager = sessionManagerProvider.getSessionManager();
+        if (sessionManager != null) {
+            sessionManager.removeSessionListener(trackingListener);
+        }
+    }
+
+}
+```
 
 ## 8. Multi-Context Session Isolation Architecture
 

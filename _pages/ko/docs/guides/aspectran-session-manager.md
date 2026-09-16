@@ -690,20 +690,139 @@ public class UserSessionTrackingListener implements SessionListener {
 }
 ```
 
-### 7.2. 리스너 등록 Bean 정의
+### 7.2. 세션 리스너 등록 방법
 
-Netty 환경에서는 [`SessionListenerRegistrationBean`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java)을 사용하여 특정 컨텍스트 경로(`/`)의 세션 관리자에 리스너를 안전하게 주입합니다.
+Aspectran에서는 애플리케이션의 아키텍처와 요구사항에 맞춰 세션 리스너를 등록할 수 있도록 **두 가지 표준 등록 방식**을 제공합니다.
+
+#### 방식 1: `DefaultSessionListenerRegistration` 빈을 이용한 간편 등록
+
+[`SessionListenerRegistration`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionListenerRegistration.java) 인터페이스의 표준 구현체인 [`DefaultSessionListenerRegistration`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionListenerRegistration.java)을 Bean으로 선언하여 사용하는 선언적 등록 방식입니다.
+
+* **동작 원리**:
+  * 내장 WAS 서버 빈 ID(예: `tow.server`, `netty.server`) 및 기본 대상 컨텍스트 이름/경로(`root`, `/` 등)를 미리 지정하여 초기화할 수 있습니다.
+  * 서버 빈 ID를 생략하면 BeanRegistry 내에 등록된 유일한 [`SessionManagerProvider`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManagerProvider.java) 빈(Undertow의 `TowServer` 또는 Netty의 `NettyServer`)을 **자동 감지(Auto-detect)**하여 바인딩합니다.
+  * `nameOrPath`가 `null`, `""`, `"/"`, `"root"`인 경우 루트 컨텍스트 또는 단일 배포 컨텍스트의 `SessionManager`를 자동으로 해석하여 유연하게 연결합니다.
+
+* **XML Bean 정의 (`support.xml`)**:
 
 ```xml
-<bean class="com.aspectran.netty.support.SessionListenerRegistrationBean">
-    <property name="targetPath">/</property>
-    <property name="sessionListener">
-        <bean class="com.aspectran.example.listener.UserSessionTrackingListener"/>
-    </property>
+<!-- 1. 특정 서버 ID와 기본 컨텍스트(root)를 지정하여 선언 -->
+<bean id="sessionListenerRegistration"
+      class="com.aspectran.core.component.session.DefaultSessionListenerRegistration"
+      lazyInit="true">
+    <argument>netty.server</argument>
+    <argument>root</argument>
 </bean>
+
+<!-- 2. 서버 ID 없이 SessionManagerProvider를 자동 감지하도록 선언 -->
+<bean id="sessionListenerRegistration"
+      class="com.aspectran.core.component.session.DefaultSessionListenerRegistration"
+      lazyInit="true"/>
 ```
 
-Undertow 서블릿 환경의 경우 `TowServletSessionConfig`의 서블릿 리스너 체인 또는 Aspectran 세션 매니저 리스너 등록 빈을 통해 동적으로 바인딩할 수 있습니다.
+* **자바 코드에서의 리스너 등록 및 해제**:
+
+```java
+package com.aspectran.example.support;
+
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.session.DefaultSessionListenerRegistration;
+import com.aspectran.core.component.session.SessionListener;
+import com.aspectran.example.listener.UserSessionTrackingListener;
+
+@Component
+public class SessionListenerManager implements InitializableBean, DisposableBean {
+
+    private final DefaultSessionListenerRegistration registration;
+
+    private final SessionListener trackingListener = new UserSessionTrackingListener();
+
+    @Autowired
+    public SessionListenerManager(DefaultSessionListenerRegistration registration) {
+        this.registration = registration;
+    }
+
+    @Override
+    public void initialize() {
+        // 기본 지정된 컨텍스트(root)에 리스너 등록
+        registration.register(trackingListener);
+
+        // 특정 컨텍스트(예: "admin")를 지정하여 등록할 수도 있음 (컨텍스트 이름 및 경로 모두 지원)
+        // registration.register(trackingListener, "admin");
+    }
+
+    @Override
+    public void destroy() {
+        // 리스너 등록 해제
+        registration.remove(trackingListener);
+    }
+
+}
+```
+
+#### 방식 2: `SessionManagerProvider` 또는 `SessionManager` 빈을 통한 직접 등록
+
+서버 빈 자체(`SessionManagerProvider`) 또는 개별 컨텍스트의 `SessionManager` 인스턴스를 직접 주입받아 리스너를 동적으로 등록하는 프로그래밍 방식입니다.
+
+* **동작 원리**:
+  * Undertow의 `TowServer`와 Netty의 `NettyServer`는 모두 [`SessionManagerProvider`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManagerProvider.java) 인터페이스를 구현하고 있습니다.
+  * 서버 빈으로부터 `server.getSessionManager()` 또는 `server.getSessionManager(contextNameOrPath)`를 호출하여 대상 [`SessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManager.java)를 획득한 후 `addSessionListener(listener)`를 직접 호출합니다.
+  * 세션 관리자 인스턴스를 이미 확보한 상태라면 별도의 `SessionListenerRegistration` 빈을 거치지 않고 가장 직관적이고 빠르게 리스너를 부착할 수 있습니다.
+
+* **자바 컴포넌트 직접 등록 예시**:
+
+```java
+package com.aspectran.example.support;
+
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.session.SessionListener;
+import com.aspectran.core.component.session.SessionManager;
+import com.aspectran.core.component.session.SessionManagerProvider;
+import com.aspectran.example.listener.UserSessionTrackingListener;
+
+@Component
+public class DirectSessionListenerRegistrar implements InitializableBean, DisposableBean {
+
+    private final SessionManagerProvider sessionManagerProvider;
+
+    private final SessionListener trackingListener = new UserSessionTrackingListener();
+
+    @Autowired
+    public DirectSessionListenerRegistrar(SessionManagerProvider sessionManagerProvider) {
+        this.sessionManagerProvider = sessionManagerProvider;
+    }
+
+    @Override
+    public void initialize() {
+        // 루트 컨텍스트의 SessionManager 획득 후 리스너 직접 등록
+        SessionManager sessionManager = sessionManagerProvider.getSessionManager();
+        if (sessionManager != null) {
+            sessionManager.addSessionListener(trackingListener);
+        }
+
+        // 특정 컨텍스트(예: "console")의 SessionManager에 등록하는 경우:
+        // SessionManager consoleSessionManager = sessionManagerProvider.getSessionManager("console");
+        // if (consoleSessionManager != null) {
+        //     consoleSessionManager.addSessionListener(trackingListener);
+        // }
+    }
+
+    @Override
+    public void destroy() {
+        SessionManager sessionManager = sessionManagerProvider.getSessionManager();
+        if (sessionManager != null) {
+            sessionManager.removeSessionListener(trackingListener);
+        }
+    }
+
+}
+```
 
 ## 8. 다중 컨텍스트 환경에서의 세션 격리 전략
 

@@ -662,18 +662,30 @@ Netty 환경에서의 세션 쿠키 발급 정책은 [`NettySessionConfig`](http
 * **로컬 파일 영속화 (`!prod`)**: `FileSessionStoreFactoryBean`을 사용하여 디스크 파일(`app/work/_sessions/`)에 세션을 기록하므로, 로컬 개발 시 서버 재기동 후에도 로그인 상태가 유지됩니다.
 * **운영 환경 Redis 클러스터링 (`prod`)**: 무상태(Stateless) 마이크로서비스 확장을 위해 Lettuce 기반의 `DefaultLettuceSessionStoreFactoryBean`을 주입하여 중앙 집중형 Redis 클러스터와 세션을 실시간 동기화합니다.
 
-##### 4) 세션 이벤트 리스너 등록 (`SessionListenerRegistrationBean`)
+##### 4) 세션 이벤트 리스너 등록
 
-Netty 환경에서 세션의 생성 및 소멸 이벤트를 감지하여 감사 로그를 기록하거나 접속자 수를 추적할 때는 [`SessionListenerRegistrationBean`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java)을 컨텍스트에 등록합니다.
+Netty 환경에서 세션의 생성 및 소멸 이벤트를 감지하여 감사 로그를 기록하거나 접속자 수를 집계할 때는 다음 두 가지 방법 중 하나를 선택하여 리스너를 등록합니다.
 
+###### 방법 1: `DefaultSessionListenerRegistration` 빈 활용 (`netty-support.xml`)
+
+`SessionListenerRegistration` 인터페이스의 표준 구현체인 [`DefaultSessionListenerRegistration`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionListenerRegistration.java) 빈을 선언하여 선언적으로 세션 리스너를 등록합니다.
+
+`/app/config/server/netty/netty-support.xml`:
 ```xml
-<bean class="com.aspectran.netty.support.SessionListenerRegistrationBean">
-    <property name="targetPath">/</property>
-    <property name="sessionListener">
-        <bean class="com.aspectran.example.listener.UserSessionTrackingListener"/>
-    </property>
+<!-- Netty 서버와 기본 컨텍스트(root)가 지정된 리스너 등록 빈 -->
+<bean id="sessionListenerRegistration"
+      class="com.aspectran.core.component.session.DefaultSessionListenerRegistration"
+      lazyInit="true">
+    <argument>netty.server</argument>
+    <argument>root</argument>
 </bean>
 ```
+
+자바 컴포넌트나 서비스에서 `sessionListenerRegistration.register(listener)`를 호출하면 미리 지정된 기본 컨텍스트(또는 루트)의 세션 관리자에 리스너가 등록되며, `register(listener, "admin")`과 같이 특정 컨텍스트 이름이나 경로를 명시하여 등록할 수도 있습니다.
+
+###### 방법 2: `SessionManagerProvider` 또는 `SessionManager` 직접 접근
+
+`NettyServer` 빈(`SessionManagerProvider`)으로부터 `nettyServer.getSessionManager()`를 호출하여 대상 [`SessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManager.java)를 획득한 후 `sessionManager.addSessionListener(listener)`로 직접 부착합니다.
 
 > **참고:** 세션 유휴 시간 관리(`SessionManagerConfig`), 신규/일반 세션 분리를 통한 봇/크롤러 세션 차단 최적화, `NonPersistent`를 통한 선택적 영속화, 그리고 Redis 분산 클러스터링의 세부 동작 메커니즘은 **[`Aspectran Session Manager 가이드`](/ko/docs/guides/aspectran-session-manager/)**를 참조하십시오.
 

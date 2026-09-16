@@ -662,18 +662,30 @@ Session cookie generation in Netty is configured cleanly via the [`NettySessionC
 * **Local Filesystem Persistence (`!prod`)**: Uses `FileSessionStoreFactoryBean` to serialize sessions to local disk (`app/work/_sessions/`), preserving active sessions across server restarts.
 * **Production Redis Clustering (`prod`)**: High-availability Redis clustering via `DefaultLettuceSessionStoreFactoryBean`, enabling elastic, stateless microservice scaling with zero-downtime failover.
 
-##### 4) Session Lifecycle Listeners (`SessionListenerRegistrationBean`)
+##### 4) Session Lifecycle Event Listeners
+ 
+To track session creation and destruction events for audit logging or active visitor metrics in Netty environments, choose one of the following two methods:
 
-To track session creation/destruction events for audit logging or active user metrics, register listeners via [`SessionListenerRegistrationBean`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/support/SessionListenerRegistrationBean.java):
+###### Method 1: Using `DefaultSessionListenerRegistration` Bean (`netty-support.xml`)
 
+Declare [`DefaultSessionListenerRegistration`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionListenerRegistration.java), the standard implementation of `SessionListenerRegistration`, to register session listeners declaratively.
+
+`/app/config/server/netty/netty-support.xml`:
 ```xml
-<bean class="com.aspectran.netty.support.SessionListenerRegistrationBean">
-    <property name="targetPath">/</property>
-    <property name="sessionListener">
-        <bean class="com.aspectran.example.listener.UserSessionTrackingListener"/>
-    </property>
+<!-- Listener registration bean configured with Netty server ID and default context (root) -->
+<bean id="sessionListenerRegistration"
+      class="com.aspectran.core.component.session.DefaultSessionListenerRegistration"
+      lazyInit="true">
+    <argument>netty.server</argument>
+    <argument>root</argument>
 </bean>
 ```
+
+Calling `sessionListenerRegistration.register(listener)` in Java code registers the listener to the preconfigured default (or root) context's session manager. You can also explicitly specify a target context by name or path, such as `register(listener, "admin")`.
+
+###### Method 2: Direct Access via `SessionManagerProvider` or `SessionManager`
+
+Retrieve the target [`SessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManager.java) from the `NettyServer` bean (`SessionManagerProvider`) via `nettyServer.getSessionManager()` and attach the listener directly with `sessionManager.addSessionListener(listener)`.
 
 > **Note:** For complete details on `SessionManagerConfig` lifecycle tuning, crawler/bot phantom session mitigation, `NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
 
