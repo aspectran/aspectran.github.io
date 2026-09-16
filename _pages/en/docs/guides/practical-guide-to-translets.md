@@ -63,6 +63,10 @@ The extracted value is mapped to the method argument name. In most cases, the `$
 
 *   **POJO Mapping**: Request parameters can be automatically mapped to the fields of a POJO (Plain Old Java Object).
 
+*   **APON Parameters Mapping (Automatic JSON/APON Request Body Injection)**: Request bodies sent by clients in JSON or APON format can be directly injected into a `com.aspectran.utils.apon.Parameters` object. This allows you to safely and conveniently extract dynamic or variable JSON data with type safety without having to define separate DTO classes for every request structure.
+    *   Key extraction methods: `getString(name)`, `getInt(name)`, `getLong(name)`, `getBoolean(name)`, `getDouble(name)`, `getParameters(name)`, `getParametersList(name)`, `hasValue(name)`, etc.
+    *   Default value support: Overloaded helper methods such as `parameters.getString("key", "defaultValue")` and `parameters.getInt("key", 0)` allow safe handling of missing fields with fallback values.
+
 *   **Uploaded Files**: Files submitted via multipart form data can be directly injected by declaring parameters of type `FileParameter`, `FileParameter[]`, or `FileParameterMap`. (See [8. File Upload and Multipart Request Handling](#8-file-upload-and-multipart-request-handling) for details)
 
 ```java
@@ -88,6 +92,22 @@ public class ProductActivity {
     public void createAccount(Account account) {
         // The parameter values are automatically populated into the fields of the account object
         accountService.create(account);
+    }
+
+    /**
+     * Automatic injection of JSON/APON request body into Parameters object
+     * Request JSON example: {"title": "Learn Aspectran", "completed": false, "order": 1}
+     */
+    @RequestToPost("/todos/api")
+    @Transform(FormatType.JSON)
+    public Todo createTodo(Translet translet, Parameters parameters) {
+        Todo todo = new Todo();
+        todo.setTitle(parameters.getString("title", ""));
+        todo.setCompleted(parameters.getBoolean("completed", false));
+        todo.setOrder(parameters.getInt("order", 0));
+
+        todoService.addTodo(todo);
+        return todo;
     }
 }
 ```

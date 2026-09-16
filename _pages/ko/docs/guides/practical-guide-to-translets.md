@@ -63,6 +63,10 @@ Aspectran의 가장 강력한 기능 중 하나는 액션 메소드의 인자를
 
 *   **POJO 매핑**: 요청 파라미터들을 자동으로 POJO(Plain Old Java Object)의 필드에 매핑할 수 있습니다.
 
+*   **APON Parameters 매핑 (JSON/APON 요청 바디 자동 주입)**: 클라이언트가 JSON 또는 APON 형식으로 전송한 요청 바디(Request Body)를 `com.aspectran.utils.apon.Parameters` 객체로 직접 주입받을 수 있습니다. 별도의 DTO 클래스를 일일이 정의하지 않고도 동적 필드나 가변 구조의 JSON 데이터를 타입에 맞게 안전하고 간편하게 추출하여 사용할 수 있습니다.
+    *   주요 추출 메서드: `getString(name)`, `getInt(name)`, `getLong(name)`, `getBoolean(name)`, `getDouble(name)`, `getParameters(name)`, `getParametersList(name)`, `hasValue(name)` 등
+    *   기본값 지정 지원: `parameters.getString("key", "defaultValue")`, `parameters.getInt("key", 0)` 등의 오버로딩 메서드로 누락된 필드의 기본값을 안전하게 처리할 수 있습니다.
+
 *   **업로드 파일 (Uploaded Files)**: 멀티파트 폼 데이터로 전송된 파일은 `FileParameter`, `FileParameter[]`, 또는 `FileParameterMap` 인자를 선언하여 직접 주입받을 수 있습니다. (자세한 내용은 [8. 파일 업로드 및 멀티파트 요청 처리](#8-파일-업로드-및-멀티파트-요청-처리) 참조)
 
 ```java
@@ -88,6 +92,22 @@ public class ProductActivity {
     public void createAccount(Account account) {
         // account 객체의 각 필드에 파라미터 값이 자동으로 채워짐
         accountService.create(account);
+    }
+
+    /**
+     * JSON/APON 요청 바디를 Parameters 객체로 자동 주입
+     * 요청 JSON 예: {"title": "Aspectran 학습", "completed": false, "order": 1}
+     */
+    @RequestToPost("/todos/api")
+    @Transform(FormatType.JSON)
+    public Todo createTodo(Translet translet, Parameters parameters) {
+        Todo todo = new Todo();
+        todo.setTitle(parameters.getString("title", ""));
+        todo.setCompleted(parameters.getBoolean("completed", false));
+        todo.setOrder(parameters.getInt("order", 0));
+
+        todoService.addTodo(todo);
+        return todo;
     }
 }
 ```

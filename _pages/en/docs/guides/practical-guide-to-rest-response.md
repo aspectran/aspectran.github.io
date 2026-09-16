@@ -302,14 +302,61 @@ public RestResponse getAdminSettings(UserInfo userInfo) {
 }
 ```
 
-### Example 5: Formatting and Custom Header Control
+### Example 5: Dynamic Request Body Handling (Using APON Parameters)
+Injecting a client's JSON request body directly into Aspectran's `com.aspectran.utils.apon.Parameters` object. This pattern allows flexible handling of variable or dynamic request payloads without defining dedicated DTO classes for every scenario, streamlining validation and standard response construction.
+
+```java
+@RequestToPost("/api/todos")
+public RestResponse createTodo(Parameters parameters) {
+    String title = parameters.getString("title");
+    if (StringUtils.isEmpty(title)) {
+        return new FailureResponse()
+                .badRequest()
+                .setError("INVALID_TITLE", "Todo title is required.");
+    }
+
+    Todo todo = new Todo();
+    todo.setTitle(title);
+    todo.setCompleted(parameters.getBoolean("completed", false));
+    todo.setOrder(parameters.getInt("order", 0));
+
+    todoService.addTodo(todo);
+
+    return new SuccessResponse(todo)
+            .created("/api/todos/" + todo.getId());
+}
+```
+
+**Sample Request Data (JSON Body):**
+```json
+{
+  "title": "Documenting Aspectran",
+  "completed": false,
+  "order": 1
+}
+```
+
+**Sample Response Data (JSON - 201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 101,
+    "title": "Documenting Aspectran",
+    "completed": false,
+    "order": 1
+  }
+}
+```
+
+### Example 6: Formatting and Custom Header Control
 Formatting response data for readability and setting cache-control alongside custom metadata headers.
 
 ```java
 @Request("/api/system/stats")
 public RestResponse getSystemStats() {
     Map<String, Object> stats = statsService.getGlobalStats();
-
+    
     return new SuccessResponse(stats)
             .prettyPrint(true) // Enable indentation and line breaks for readability
             .nullWritable(false) // Omit null fields
@@ -319,24 +366,24 @@ public RestResponse getSystemStats() {
 }
 ```
 
-### Example 6: Backend API Relay (Using RestRequest)
+### Example 7: Backend API Relay (Using RestRequest)
 Using `RestRequest` to invoke external microservices or internal cluster node APIs and relaying the result directly as the current server's response. `RestRequest.retrieve()` returns either a `SuccessResponse` or `FailureResponse` based on the remote status code, providing seamless client-server symmetry.
 
 ```java
 @Request("/relay/weather")
 public RestResponse relayWeatherRequest(CloseableHttpClient httpClient) {
     String targetUrl = "https://internal-api.example.com/weather/today";
-
+    
     try {
         RestRequest restRequest = new RestRequest(httpClient);
-
+        
         // The result of RestRequest.retrieve() is already a SuccessResponse or FailureResponse
         RestResponse response = restRequest.get()
                                            .url(targetUrl)
                                            .retrieve();
-
+        
         // Return the received standard response directly as the Translet response
-        return response;
+        return response; 
     } catch (IOException e) {
         return new FailureResponse()
                 .internalServerError()
@@ -345,7 +392,7 @@ public RestResponse relayWeatherRequest(CloseableHttpClient httpClient) {
 }
 ```
 
-### Example 7: Global Exception Handling via Aspect
+### Example 8: Global Exception Handling via Aspect
 Intercepting exceptions thrown across the application and transforming them into standard `FailureResponse` objects ensures predictable and consistent error structures for API consumers.
 
 ```java
@@ -358,22 +405,22 @@ public class GlobalRestExceptionAdvice {
     @AfterThrown(target = "activity", thrown = "java.lang.IllegalArgumentException")
     public void handleIllegalArgument(Translet translet, Exception ex) {
         logger.warn("Invalid client argument: {}", ex.getMessage());
-
+        
         RestResponse response = new FailureResponse()
                 .badRequest()
                 .setError("INVALID_PARAMETER", ex.getMessage());
-
+        
         translet.transform(response);
     }
 
     @AfterThrown(target = "activity", thrown = "java.lang.Exception")
     public void handleGeneralException(Translet translet, Exception ex) {
         logger.error("Unhandled server exception occurred", ex);
-
+        
         RestResponse response = new FailureResponse()
                 .internalServerError()
                 .setError("INTERNAL_SERVER_ERROR", "An internal server error occurred.");
-
+        
         translet.transform(response);
     }
 

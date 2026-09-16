@@ -251,7 +251,7 @@ public RestResponse register(User user) {
                 .badRequest() // HTTP 400 상태 코드 지정
                 .setError("REQUIRED_FIELD", "이메일은 필수 항목입니다.");
     }
-
+    
     userService.register(user);
     return new SuccessResponse("Registered successfully");
 }
@@ -302,7 +302,54 @@ public RestResponse getAdminSettings(UserInfo userInfo) {
 }
 ```
 
-### 예제 5: 응답 포맷팅 및 커스텀 헤더 제어
+### 예제 5: 동적 요청 바디 처리 (APON Parameters 활용)
+클라이언트가 전송한 JSON 요청 바디를 Aspectran의 `com.aspectran.utils.apon.Parameters` 객체로 직접 주입받아 처리하는 케이스입니다. 별도의 DTO 클래스를 일일이 정의하지 않고도 가변적이거나 동적인 요청 페이로드를 유연하게 다룰 수 있으며, 필수 필드 검증과 응답 생성을 간결하게 구현할 수 있습니다.
+
+```java
+@RequestToPost("/api/todos")
+public RestResponse createTodo(Parameters parameters) {
+    String title = parameters.getString("title");
+    if (StringUtils.isEmpty(title)) {
+        return new FailureResponse()
+                .badRequest()
+                .setError("INVALID_TITLE", "할 일 제목을 입력해야 합니다.");
+    }
+
+    Todo todo = new Todo();
+    todo.setTitle(title);
+    todo.setCompleted(parameters.getBoolean("completed", false));
+    todo.setOrder(parameters.getInt("order", 0));
+
+    todoService.addTodo(todo);
+
+    return new SuccessResponse(todo)
+            .created("/api/todos/" + todo.getId());
+}
+```
+
+**요청 데이터 샘플 (JSON Body):**
+```json
+{
+  "title": "Aspectran 문서 작성",
+  "completed": false,
+  "order": 1
+}
+```
+
+**응답 데이터 샘플 (JSON - 201 Created):**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 101,
+    "title": "Aspectran 문서 작성",
+    "completed": false,
+    "order": 1
+  }
+}
+```
+
+### 예제 6: 응답 포맷팅 및 커스텀 헤더 제어
 클라이언트나 개발자가 디버깅하기 쉽도록 데이터를 정렬 출력하고 캐시 방지 및 커스텀 메타데이터 헤더를 추가합니다.
 
 ```java
@@ -319,7 +366,7 @@ public RestResponse getSystemStats() {
 }
 ```
 
-### 예제 6: 백엔드 API Relay (RestRequest 활용)
+### 예제 7: 백엔드 API Relay (RestRequest 활용)
 `RestRequest` 클래스를 사용하여 외부 마이크로서비스나 내부 클러스터 노드의 REST API를 호출하고, 그 결과를 가공 없이 현재 서버의 응답으로 바로 중계(Relay)하는 패턴입니다. `RestRequest.retrieve()`는 원격 응답 상태에 따라 이미 `SuccessResponse` 또는 `FailureResponse`를 구성하여 반환하므로 완벽한 대칭성을 가집니다.
 
 ```java
@@ -336,7 +383,7 @@ public RestResponse relayWeatherRequest(CloseableHttpClient httpClient) {
                                            .retrieve();
 
         // 반환받은 표준 응답 객체를 Translet의 응답으로 그대로 전달
-        return response;
+        return response; 
     } catch (IOException e) {
         return new FailureResponse()
                 .internalServerError()
@@ -345,7 +392,7 @@ public RestResponse relayWeatherRequest(CloseableHttpClient httpClient) {
 }
 ```
 
-### 예제 7: 전역 예외 처리(Exception Handling / Aspect)에서의 일관된 응답 변환
+### 예제 8: 전역 예외 처리(Exception Handling / Aspect)에서의 일관된 응답 변환
 애플리케이션 전역에서 발생하는 예외를 Aspect나 Exception Rule에서 가로채어 표준 `FailureResponse`로 변환하면, 클라이언트에게 항상 일관된 형식의 에러 응답을 보장할 수 있습니다.
 
 ```java
