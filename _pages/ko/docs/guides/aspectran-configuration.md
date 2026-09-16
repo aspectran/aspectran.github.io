@@ -111,7 +111,7 @@ Aspectran을 독립적인 셸(Command-Line Interface) 애플리케이션으로 �
 - **`prompt`**: 셸 명령줄 프롬프트의 형식을 정의합니다.
 - **`commands`**: 셸 환경에서 사용할 명령어 클래스들의 전체 경로를 배열 형태로 등록합니다. 여기에 등록된 명령어만 해당 셸에서 사용할 수 있습니다.
 - **`session`**: 셸 세션 관리 설정을 정의합니다.
-    - **`workerName`**: 세션 ID에 포함될 워커의 고유 이름입니다. 하나의 애플리케이션에서 여러 세션 매니저를 사용할 경우, 세션 ID 충돌을 방지하기 위해 이 값을 중복되지 않게 설정해야 합니다. (예: 세션 ID `1757036789577_1itojbks5r0jw1fsahrs1se7e70.rn0`에서 `.rn0` 부분이 워커 이름에 해당합니다.)
+    - **`routeId`**: 세션 ID 접미사로 사용될 고유 라우트 ID입니다. L7 로드밸런서의 Sticky Session 라우팅 식별자로 활용되며, 설정하지 않으면(`null`) 접미사 없는 순수 세션 ID가 발급됩니다. (예: `routeId`가 `rn0`인 경우 세션 ID 뒤에 `.rn0` 접미사가 부여됩니다.)
     - **`maxActiveSessions`**: 동시에 활성화될 수 있는 최대 세션 수를 지정합니다.
     - **`maxIdleSeconds`**: 일반 세션이 비활성 상태로 유지될 수 있는 최대 시간(초)입니다. 이 시간이 지나면 세션이 만료될 수 있습니다.
     - **`maxIdleSecondsForNew`**: 신규 세션의 최대 유휴 시간(초)입니다. 세션 생성 후 이 시간 내에 속성이 추가되지 않으면 만료됩니다.
@@ -270,7 +270,7 @@ shell: {
         com.aspectran.shell.command.builtins.QuitCommand
     ]
     session: {
-        workerName: shell
+        routeId: shell
         maxActiveSessions: 1
         maxIdleSeconds: 1800
         scavengingIntervalSeconds: 600
@@ -305,7 +305,7 @@ daemon: {
         com.aspectran.daemon.command.builtins.QuitCommand
     ]
     session: {
-        workerName: daemon
+        routeId: daemon
         enabled: true
     }
     acceptable: {

@@ -111,7 +111,7 @@ Defines the environment for running Aspectran as a standalone shell (Command-Lin
 - **`prompt`**: Defines the format of the shell command-line prompt.
 - **`commands`**: Registers the full class paths of command classes to be used in the shell environment as an array. Only the commands registered here can be used in that shell.
 - **`session`**: Defines the shell session management settings.
-    - **`workerName`**: A unique name for the worker to be included in the session ID. If you use multiple session managers in one application, you must set this value to be unique to avoid session ID collisions. (e.g., in the session ID `1757036789577_1itojbks5r0jw1fsahrs1se7e70.rn0`, the `.rn0` part corresponds to the worker name).
+    - **`routeId`**: A unique route ID to be included as a suffix in the session ID. Used as a routing key for L7 load balancers' Sticky Sessions. If not configured (`null`), a clean session ID without suffix is issued. (e.g., if `routeId` is `rn0`, the `.rn0` suffix is appended to the session ID).
     - **`maxActiveSessions`**: Specifies the maximum number of sessions that can be active at the same time.
     - **`maxIdleSeconds`**: The maximum time in seconds that a regular session can remain inactive. The session may expire after this time.
     - **`maxIdleSecondsForNew`**: The maximum idle time in seconds for a new session. If no attributes are added within this time after session creation, it expires.
@@ -270,7 +270,7 @@ shell: {
         com.aspectran.shell.command.builtins.QuitCommand
     ]
     session: {
-        workerName: shell
+        routeId: shell
         maxActiveSessions: 1
         maxIdleSeconds: 1800
         scavengingIntervalSeconds: 600
@@ -305,7 +305,7 @@ daemon: {
         com.aspectran.daemon.command.builtins.QuitCommand
     ]
     session: {
-        workerName: daemon
+        routeId: daemon
         enabled: true
     }
     acceptable: {

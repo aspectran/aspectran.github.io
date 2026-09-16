@@ -32,7 +32,7 @@ Aspectran은 특정 웹 컨테이너나 서블릿 스펙에 얽매이지 않고,
   * 백그라운드에서 주기적으로 가동되어 만료된 세션을 감지하고 정리하는 세션 청소부(Scavenger) 스레드입니다.
   * 장시간 방치된 비활성 세션을 영구 삭제하여 시스템 메모리와 저장소의 누수를 원천 차단합니다.
 * **`SessionIdGenerator`**
-  * 보안 난수(SecureRandom) 알고리즘을 활용하여 전역적으로 고유하며 추측 불가능한 세션 ID를 생성합니다. 클러스터 환경에서는 노드 식별을 위한 워커 이름(`workerName`) 접미사를 조합합니다.
+  * 보안 난수(SecureRandom) 알고리즘을 활용하여 전역적으로 고유하며 추측 불가능한 세션 ID를 생성합니다. 클러스터 환경에서는 노드 식별 및 세션 고정(Sticky Session) 라우팅을 위한 라우트 식별자(`routeId`) 접미사를 조합할 수 있습니다.
 
 ### 1.2. 세션 수명주기 상호작용 흐름
 
@@ -74,7 +74,7 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
     <property name="sessionManagerConfig">
         <bean class="com.aspectran.core.context.config.SessionManagerConfig">
             <argument>
-                workerName: rn0
+                routeId: rn0
                 maxActiveSessions: 100
                 maxIdleSeconds: 300
             </argument>
@@ -175,7 +175,7 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
     <argument>
-        workerName: node1
+        routeId: node1
         maxActiveSessions: 50000
         maxIdleSeconds: 1800
         evictionIdleSeconds: 600
@@ -190,9 +190,9 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
 </bean>
 ```
 
-* **`workerName`**:
-  * 클러스터 내에서 개별 서버 인스턴스를 식별하는 고유 이름입니다.
-  * 생성되는 세션 ID 뒤에 접미사(예: `session123.node1`)로 부착되어 L4/L7 로드밸런서의 Sticky Session 라우팅과 충돌 방지에 활용됩니다.
+* **`routeId`**:
+  * 클러스터 및 로드밸런서(L4/L7) 연동 환경에서 Sticky Session 라우팅을 위해 세션 ID 뒤에 부착되는 고유한 라우트 식별자 접미사(예: `session123.node1`)입니다.
+  * 미지정 시 접미사 없이 순수 세션 ID가 발급됩니다. 분산 환경에서는 시스템 프로퍼티(`%{system:aspectow.node.route}`) 등을 통해 동적으로 주입하여 운영할 수 있습니다.
 * **`maxActiveSessions`**:
   * 메모리 캐시에 동시에 유지할 수 있는 최대 세션 개수입니다.
   * 허용 한도를 초과하면 유휴 시간이 긴 세션부터 메모리 캐시에서 선제적으로 축출(Evict)하여 OutOfMemory 오류를 방지합니다.
@@ -227,7 +227,7 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
 
 | 설정 파라미터 | 1) 관리자 관제 콘솔 | 2) 대규모 대고객 서비스 | 3) 초경량 엣지 API | 4) 로컬 개발 및 테스트 |
 | :--- | :--- | :--- | :--- | :--- |
-| **`workerName`** | `cn0` | `rn0` | `edge0` | `dev0` |
+| **`routeId`** | `cn0` | `rn0` | `edge0` | `dev0` |
 | **`maxActiveSessions`** | `999` | `50000` | `5000` | `100` |
 | **`maxIdleSeconds`** | `600` (10분) | `1800` (30분) | `300` (5분) | `3600` (1시간) |
 | **`evictionIdleSeconds`** | `300` (5분) | `600` (10분) | `120` (2분) | `1800` (30분) |
@@ -244,7 +244,7 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
     <argument>
-        workerName: cn0
+        routeId: cn0
         maxActiveSessions: 999
         maxIdleSeconds: 600
         evictionIdleSeconds: 300
@@ -269,7 +269,7 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
     <argument>
-        workerName: rn0
+        routeId: rn0
         maxActiveSessions: 50000
         maxIdleSeconds: 1800
         evictionIdleSeconds: 600
@@ -295,7 +295,7 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
     <argument>
-        workerName: edge0
+        routeId: edge0
         maxActiveSessions: 5000
         maxIdleSeconds: 300
         evictionIdleSeconds: 120
@@ -318,7 +318,7 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
     <argument>
-        workerName: dev0
+        routeId: dev0
         maxActiveSessions: 100
         maxIdleSeconds: 3600
         evictionIdleSeconds: 1800
@@ -493,7 +493,7 @@ Aspectran Session Manager의 가장 강력한 장점은 동일한 세션 라이�
 ```apon
 shell: {
     session: {
-        workerName: shell
+        routeId: shell
         maxActiveSessions: 1
         maxIdleSeconds: 1800
         scavengingIntervalSeconds: 600
@@ -540,7 +540,7 @@ Aspectow Enterprise에서는 [`TowSessionManager`](https://github.com/aspectran/
     <property name="sessionManagerConfig">
         <bean class="com.aspectran.core.context.config.SessionManagerConfig">
             <argument>
-                workerName: ent0
+                routeId: %{system:aspectow.node.route}
                 maxActiveSessions: 10000
                 maxIdleSeconds: 1800
                 evictionIdleSeconds: 900
@@ -612,7 +612,7 @@ Aspectow Edge에서는 서블릿 컨테이너 오버헤드를 배제하고 Netty
     <property name="sessionManagerConfig">
         <bean class="com.aspectran.core.context.config.SessionManagerConfig">
             <argument>
-                workerName: edge0
+                routeId: %{system:aspectow.node.route}
                 maxActiveSessions: 50000
                 maxIdleSeconds: 1800
                 evictionIdleSeconds: 600
@@ -679,7 +679,7 @@ public class UserSessionTrackingListener implements SessionListener {
 
     @Override
     public void sessionCreated(Session session) {
-        logger.info("New session created: id={}, worker={}", session.getId(), session.getWorkerName());
+        logger.info("New session created: id={}", session.getId());
     }
 
     @Override

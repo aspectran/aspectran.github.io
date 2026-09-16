@@ -192,7 +192,7 @@ shell: {
         com.aspectran.shell.command.builtins.QuitCommand
     ]
     session: {
-        workerName: shell
+        routeId: shell
         maxActiveSessions: 1
         maxIdleSeconds: 1800
         scavengingIntervalSeconds: 600
@@ -223,7 +223,7 @@ daemon: {
         com.aspectran.daemon.command.builtins.QuitCommand
     ]
     session: {
-        workerName: daemon
+        routeId: daemon
         enabled: true
     }
 }
@@ -549,7 +549,7 @@ Logs all incoming HTTP transaction outcomes in standard web server access log fo
         <property name="sessionManagerConfig">
             <bean class="com.aspectran.core.context.config.SessionManagerConfig">
                 <argument>
-                    workerName: rn0
+                    routeId: %{system:aspectow.node.route}
                     maxActiveSessions: 9999
                     maxIdleSeconds: 1800
                     evictionIdleSeconds: 900

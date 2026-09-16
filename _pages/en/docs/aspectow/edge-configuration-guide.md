@@ -230,7 +230,7 @@ shell: {
         com.aspectran.shell.command.builtins.QuitCommand
     ]
     session: {
-        workerName: shell
+        routeId: shell
         maxActiveSessions: 1
         maxIdleSeconds: 1800
         scavengingIntervalSeconds: 600
@@ -261,7 +261,7 @@ daemon: {
         com.aspectran.daemon.command.builtins.QuitCommand
     ]
     session: {
-        workerName: daemon
+        routeId: daemon
         enabled: true
     }
 }
@@ -493,7 +493,7 @@ A `NettyContext` represents an isolated application runtime mounted at a specifi
         <property name="sessionManagerConfig">
             <bean class="com.aspectran.core.context.config.SessionManagerConfig">
                 <argument>
-                    workerName: edge0
+                    routeId: %{system:aspectow.node.route}
                     maxActiveSessions: 50000
                     maxIdleSeconds: 1800
                     evictionIdleSeconds: 600

@@ -32,7 +32,7 @@ Rather than treating HTTP sessions as a mechanism exclusive to servlet container
   * Periodic background scavenger thread that detects and purges expired sessions.
   * Permanently deletes stale, unattended sessions to prevent heap memory exhaustion and storage leakage.
 * **`SessionIdGenerator`**
-  * Employs cryptographically secure pseudo-random number generation (`SecureRandom`) to issue globally unique, tamper-resistant session IDs. Appends worker node identifiers (`workerName`) in clustered topologies.
+  * Employs cryptographically secure pseudo-random number generation (`SecureRandom`) to issue globally unique, tamper-resistant session IDs. Can append a routing identifier (`routeId`) as a suffix in clustered topologies for sticky session routing.
 
 ### 1.2. Component Interaction Lifecycle
 
@@ -67,14 +67,14 @@ Aspectran Session Manager provides a flexible storage hierarchy adaptable to dis
   * When the server process terminates or restarts, all active session data is reset.
 
 ```xml
-<!-- Pure In-Memory Lightweight Session Manager (No SessionStore) -->
+<!-- Pure in-memory ultralight session manager configuration without SessionStore -->
 <bean id="netty.context.root.sessionManager"
       class="com.aspectran.netty.server.session.NettySessionManager"
       scope="prototype">
     <property name="sessionManagerConfig">
         <bean class="com.aspectran.core.context.config.SessionManagerConfig">
             <argument>
-                workerName: rn0
+                routeId: rn0
                 maxActiveSessions: 100
                 maxIdleSeconds: 300
             </argument>
@@ -85,97 +85,95 @@ Aspectran Session Manager provides a flexible storage hierarchy adaptable to dis
 
 ### 2.2. Local File Session Store (`FileSessionStore`)
 
-* **Operating Principle**: Serializes `SessionData` onto local disk directories as individual files using Java serialization.
-* **Advantages**: Requires zero external databases or middleware dependencies. Ideal for standalone daemons, local development, and single-node production environments.
-* **Resilience**: Automatically restores valid sessions from disk upon server restarts, preserving active logins across redeployments.
-* **Limitations**: Unsuitable for multi-instance load-balanced environments because local filesystem state is not shared across nodes.
-* **File Session Store Specific Parameters ([`FileSessionStoreFactoryBean`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/FileSessionStoreFactoryBean.java))**:
-  * `storeDir`: Directory path where session data files are stored (e.g., `/work/_sessions/tow`, defaults to `java.io.tmpdir`)
-  * `deleteUnrestorableFiles`: Whether to automatically delete corrupted or unreadable session files during restoration (default: `true`)
+* **Operating Principle**: Persists session objects to individual binary files in a designated local directory using standard Java serialization.
+* **Advantages**: Runs without database or memory cache dependencies, making it ideal for standalone daemons, local development, and single-node instances.
+* **Reliability**: Seamlessly reloads valid session files upon application restarts.
+* **Constraint**: Because file systems cannot be readily shared across instances, it is not suitable for multi-node load-balanced deployments.
+* **File Session Store Configuration Parameters ([`FileSessionStoreFactoryBean`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/FileSessionStoreFactoryBean.java))**:
+  * `storeDir`: File directory path (e.g., `/work/_sessions/tow`, defaults to `java.io.tmpdir`)
+  * `deleteUnrestorableFiles`: Whether to automatically delete corrupted or unreadable session files (default: `true`)
 
-### 2.3. High-Performance Redis Session Store (`LettuceSessionStore`)
+### 2.3. High-Performance Distributed Redis Store (`LettuceSessionStore`)
 
-* **Operating Principle**: Uses **Lettuce**, a high-performance non-blocking asynchronous Redis client, to persist session state into a centralized Redis instance or Redis Cluster.
-* **Data Layout**:
-  * **Session Payload**: Each session is stored as a binary-safe Redis `String` entry under the key format `namespace:sessionId`. The value contains a fast-serialized byte stream of the session state.
-  * **ZSET-Based Expiry Index (`expiryIndexKey`)**: To completely eliminate $O(N)$ full keyspace scanning (`KEYS` or `SCAN`) during scavenger sweeps, an active Redis Sorted Set (ZSET) index (e.g., `aspectran:sessions:expiry`) is maintained.
-    * When a session is created or updated, its expiration timestamp (in milliseconds) is recorded as the score, and the session ID is recorded as the member via atomic `ZADD`.
-    * When a session is explicitly invalidated or deleted, it is immediately removed from the index via `ZREM`.
-    * During scavenger and expiration sweeps, `ZRANGEBYSCORE` retrieves only sessions that have crossed the expiration threshold at an ultra-low $O(\log N + M)$ computational complexity.
-* **Ultra-Lightweight Codec (`SessionDataCodec`) Magic Byte Architecture**:
-  * To optimize serialization overhead between session data and ZSET index members, a two-phase encoding strategy is employed using a 1-byte magic header:
-    * `MAGIC_FULL (0x01)`: Full serialized binary payload containing the session ID, creation time, last accessed time, max idle timeout, and the complete session attributes map.
-    * `MAGIC_ID_ONLY (0x02)`: Lightweight payload used for ZSET members and distributed lock tokens where only the session identifier string is needed, bypassing full object deserialization costs.
-* **Distributed Locking for Concurrency Control**:
-  * In a multi-node cluster, Redis atomic distributed locks (`SET key value NX EX lockTtl`) prevent redundant sweeps, duplicate loads, and network I/O contention across nodes.
-  * **Store Sweeper Lock (`scavenge-lock`)**: Only the single node that acquires `expiryIndexKey + ":scavenge-lock"` executes the Redis ZSET index query to sweep store-only expired sessions.
-  * **Orphan Cleanup Lock (`clean-lock`)**: Only the single node that acquires `expiryIndexKey + ":clean-lock"` executes the bulk physical deletion of long-abandoned orphan sessions (`doCleanOrphans`).
-  * Because these lock keys are strictly segregated, regular session scavenging and deep orphan cleanup run concurrently and independently without blocking each other.
-* **Advantages**: Enables true stateless application server architectures. Multiple WAS instances share real-time session state, providing seamless zero-downtime failover if any node crashes.
+* **Operating Principle**: Persists session data to a centralized Redis standalone or cluster topology using the non-blocking **Lettuce** driver.
+* **Data Structures**:
+  * **Session Payload**: Stored as a binary-safe Redis `String` under `namespace:sessionId` keys.
+  * **ZSET Expiry Index (`expiryIndexKey`)**: Avoids $O(N)$ full-keyspace `KEYS`/`SCAN` overhead by maintaining an atomic Sorted Set index (e.g., `aspectran:sessions:expiry`).
+    * Session creation/touch atomically executes `ZADD` with the millisecond expiration timestamp as score and session ID as member.
+    * Explicit invalidations invoke `ZREM` to purge index entries immediately.
+    * Scavengers query `ZRANGEBYSCORE` to fetch only expired IDs in $O(\log N + M)$ cost.
+* **Lightweight Codec (`SessionDataCodec`) with Magic Byte**:
+  * Employs a 2-stage encoding scheme with a 1-byte header:
+    * `MAGIC_FULL (0x01)`: Full binary payload containing session ID, metadata, and the attribute map.
+    * `MAGIC_ID_ONLY (0x02)`: Lightweight encoding for ZSET members or lock tokens without deserializing full session attributes.
+* **Redis Distributed Locking**:
+  * Uses atomic `SET key value NX EX lockTtl` commands to eliminate cross-node I/O contention during scavenger sweeps.
+  * **Store Scavenge Lock (`scavenge-lock`)**: Only 1 elected node per interval sweeps store-only expired sessions from the ZSET index.
+  * **Orphan Cleanup Lock (`clean-lock`)**: Only 1 node performs physical bulk deletions (`doCleanOrphans`) for long-abandoned orphan sessions.
+  * Distinct lock keys allow normal scavenging and orphan sweeps to execute safely and concurrently.
+* **Advantages**: Multiple WAS instances maintain a completely stateless tier while sharing session state in real time. If a node fails, another node handles subsequent requests transparently without session loss.
 * **Lock-Free Striped Connection Pooling**:
-  * Maintains a striped set of shared multiplexed connections (`poolSize`, default: 8, range: 2–32) distributed via round-robin with an `AtomicInteger`.
-  * Designed without lock contention to deliver ultra-high, non-blocking I/O throughput optimized for Java 21+ Virtual Threads and high-concurrency workloads.
-* **Dynamic Proxy & Resilient Auto-Reconnect**:
-  * Shared connections are wrapped in dynamic proxies where `close()` calls are no-ops, ensuring complete compatibility with standard `try-with-resources` blocks.
-  * Lettuce's built-in Netty channel auto-reconnect automatically re-establishes dropped connections in the background without needing connection replacement or pool recreation.
+  * Distributes non-blocking multiplexed connections across a striped pool (`poolSize`, default: 8, range: 2–32) via `AtomicInteger` round-robin.
+  * Lock-free design eliminates contention under high concurrency with Java 21+ Virtual Threads.
+* **Dynamic Proxy & Resilient Auto-Reconnection**:
+  * Shared connections wrapped in dynamic proxies treat `try-with-resources` `close()` calls as no-ops.
+  * Transient network disconnects trigger Lettuce's automated Netty reconnect handlers without instance re-creation.
 * **Supported Topologies**:
-  * **Standalone**: [`RedisConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/RedisConnectionPoolConfig.java) for single-instance Redis deployments
-  * **Cluster**: [`RedisClusterConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/cluster/RedisClusterConnectionPoolConfig.java) for multi-node master/replica cluster routing with automatic topology refresh
-  * **Primary-Replica**: [`RedisPrimaryReplicaConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/primaryreplica/RedisPrimaryReplicaConnectionPoolConfig.java) for master/replica setups with read/write splitting and automatic failover
-* **Connection Pool Configuration Parameters ([`AbstractConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/AbstractConnectionPoolConfig.java))**:
-  * `uri` / `redisURI`: Single Redis endpoint URI (e.g. `"redis://localhost:6379/0"`)
-  * `nodes` / `redisURIs`: Comma-delimited or array list of Redis URIs for Cluster or Primary-Replica topologies (e.g. `"redis://node1:6379,node2:6379"`)
-  * `poolSize`: Number of shared multiplexed connections in the striped pool (default: `8`, range: 2–32)
-  * `timeout`: Command and connection timeout (e.g. `"5s"`, `"5000ms"`, `"1m"`, default: `5s`)
-  * `clientOptions`: Fine-grained tuning for socket options (Keep-Alive, TCP NoDelay), SSL, disconnected command buffering (`DisconnectedBehavior`), and automatic cluster topology refresh (`ClusterTopologyRefreshOptions`)
-  * `clientResources`: Advanced resource configuration including shared Netty `EventLoopGroup` thread pools and custom DNS/address resolvers ([`SocketAddressResolver`](https://lettuce.io/core/release/api/io/lettuce/core/resource/SocketAddressResolver.html), useful for Docker port-forwarding and NAT environments)
+  * **Standalone**: Single-node via [`RedisConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/RedisConnectionPoolConfig.java)
+  * **Cluster**: Sharded routing via [`RedisClusterConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/cluster/RedisClusterConnectionPoolConfig.java)
+  * **Primary-Replica**: Read/write split via [`RedisPrimaryReplicaConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/primaryreplica/RedisPrimaryReplicaConnectionPoolConfig.java)
+* **Connection Pool Settings ([`AbstractConnectionPoolConfig`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/AbstractConnectionPoolConfig.java))**:
+  * `uri` / `redisURI`: Single connection URI (e.g., `"redis://localhost:6379/0"`)
+  * `nodes` / `redisURIs`: Multi-node URIs (e.g., `"redis://node1:6379,node2:6379"`)
+  * `poolSize`: Multiplexed connection count (default: `8`, range: 2–32)
+  * `timeout`: Command/connect timeout (e.g., `"5s"`, `"5000ms"`, `"1m"`, default: `5s`)
+  * `clientOptions`: Socket tuning (Keep-Alive, TCP NoDelay), SSL, `DisconnectedBehavior`, and automated topology refresh options
+  * `clientResources`: Shared Netty `EventLoopGroup` threads and custom [`SocketAddressResolver`](https://lettuce.io/core/release/api/io/lettuce/core/resource/SocketAddressResolver.html) configurations for NAT/Docker port-forwarding environments
 
-### 2.4. Common Session Store Configuration Options (`AbstractSessionStore`)
+### 2.4. Common Store Settings (`AbstractSessionStore`)
 
-All persistent session stores ([`FileSessionStore`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/FileSessionStore.java), [`LettuceSessionStore`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/AbstractLettuceSessionStore.java), etc.) and their factories ([`AbstractSessionStoreFactory`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/AbstractSessionStoreFactory.java)) provide common lifecycle and storage optimization parameters:
+All persistent stores ([`FileSessionStore`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/FileSessionStore.java), [`LettuceSessionStore`](https://github.com/aspectran/aspectran/blob/master/rss-lettuce/src/main/java/com/aspectran/core/component/session/redis/lettuce/AbstractLettuceSessionStore.java)) provide uniform tuning parameters:
 
 * **`gracePeriodSecs`**:
-  * The grace period (in seconds) granted during scavenger sweeps to prevent accidental early deletion caused by clock skews across clustered nodes or file/network I/O delays (default: `60`).
-  * On initial startup, only sessions that expired at least `gracePeriodSecs * 3` ago are scavenged; subsequent regular sweeps clean sessions that expired before `gracePeriodSecs` ago.
+  * Safety buffer (in seconds, default: `60`) preventing premature eviction caused by clock skew or network lag across clustered nodes.
+  * Initial pass targets sessions expired before `now - (gracePeriodSecs * 3)`, and subsequent sweeps evaluate against `now - gracePeriodSecs`.
 * **`savePeriodSecs`**:
-  * The minimum interval (in seconds) between persistent store writes when only last-access timestamps change without session attribute mutations (dirty flag), mitigating excessive storage network and disk I/O (default: `0`).
-  * **`savePeriodSecs: 0` (default)**: Even for read-only requests (such as HTTP GET) where session data is not mutated (`!dirty`), persists to the backing store immediately upon every request completion to ensure expiration timestamps are kept fresh.
-  * **`savePeriodSecs > 0`**: For read-only requests where session data is not mutated, persists the updated last-access and expiration times only if the duration since the last persistent write exceeds `savePeriodSecs`. (If session attributes are created, modified, or deleted causing a dirty state, the session is persisted immediately upon request completion regardless of this setting.)
-* **`nonPersistentAttributes` and Transient Attribute Control**:
-  * Aspectran provides two complementary mechanisms to keep specific session attributes exclusively in local heap memory (session cache) and exclude them from persistent store serialization:
-  * **Attribute Name Matching (`nonPersistentAttributes`)**: Configures an array of attribute key names on the session store to exclude during serialization (e.g., temporary security tokens).
-  * **Marker Interface ([`NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java))**: Any object whose class implements the `NonPersistent` interface is automatically skipped during session serialization regardless of attribute name.
-  * **Wrapper Utility ([`NonPersistentValue`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistentValue.java))**: For third-party or framework-managed objects whose classes cannot be modified directly (e.g., Netty WebSocket session maps, internal Undertow attributes in `TowSession`), wrap them using `NonPersistentValue.wrap(value)` to prevent persistence, and retrieve the original instance with `NonPersistentValue.unwrap(value)`.
+  * Minimum update interval (in seconds, default: `0`) for read-only requests (HTTP GET) that only update `lastAccessedTime` without attribute modifications.
+  * **`savePeriodSecs: 0` (default)**: Flushes updated access timestamps to the store on every request completion.
+  * **`savePeriodSecs > 0`**: Only flushes access timestamps if the elapsed time since the last persist exceeds `savePeriodSecs`. (Modified/dirty attributes are always persisted immediately).
+* **`nonPersistentAttributes` and Marker Control**:
+  * Supports excluding transient objects (sockets, DB connections) from persistence.
+  * **Name-Based**: Array of attribute names to omit from serialization.
+  * **Interface-Based ([`NonPersistent`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistent.java))**: Classes implementing `NonPersistent` are automatically skipped during serialization.
+  * **Wrapper Utility ([`NonPersistentValue`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/NonPersistentValue.java))**: Wraps third-party objects (`NonPersistentValue.wrap(value)`) without modifying their source code.
 
-### 2.5. Single Server Mode vs. Clustered Mode
+### 2.5. Standalone Mode vs. Distributed Cluster Mode
 
-The `clusterEnabled` flag in [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) defines the single source of truth and synchronization semantics:
+[`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)'s `clusterEnabled` setting determines the source of truth:
 
-| Dimension | Single Server Mode (`clusterEnabled: false`) | Distributed Clustered Mode (`clusterEnabled: true`) |
+| Dimension | Standalone Mode (`clusterEnabled: false`) | Distributed Cluster Mode (`clusterEnabled: true`) |
 | :--- | :--- | :--- |
-| **Source of Truth** | Prioritizes local heap memory (`SessionCache`) | Central store (`SessionStore` / Redis) is the definitive authority |
-| **Load Strategy** | If present in memory cache, never queries external store (maximum performance) | Verifies cache freshness against central store to guarantee consistency across nodes |
-| **Save Strategy** | Batched at end of last request or during cache eviction | Saved immediately upon creation, after every request completion, and upon cache eviction |
-| **Primary Goal** | Maximum single-node throughput via I/O minimization | Absolute data consistency and zero-downtime high availability |
+| **Source of Truth** | Primary reliance on `SessionCache` (local memory) | Absolute reliance on central `SessionStore` (Redis) |
+| **Load Policy** | Uses memory cache without querying the store (max throughput) | Validates and syncs with remote store to capture updates by peer nodes |
+| **Persist Policy** | Batch writes upon request completion or memory eviction | Immediate persistence on session creation, touch, and modification |
+| **Design Goal** | Maximum single-node execution throughput | Flawless cross-node session consistency and zero-loss failover |
 
-## 3. Session Lifecycle Management and Timeout Optimization
+## 3. Session Lifecycle Control and Timeout Optimization
 
-Web environments frequently suffer from resource exhaustion caused by search engine crawlers, bots, and automated health checks that trigger session creation without subsequent interaction. Aspectran eliminates these "ghost sessions" using a dual timeout architecture.
+Aspectran separates new sessions from established normal sessions to counter ghost sessions generated by web crawlers and health check probes.
 
-### 3.1. Separation of New and Normal Sessions
+### 3.1. New vs. Normal Sessions
 
-* **New Session**: A newly minted session that has only processed its initial request and has not yet made a second roundtrip.
-* **Normal Session**: A session that has presented a valid session cookie and performed two or more requests.
-* **Optimization Principle**: Automated bots rarely send a second request with the same session cookie. By configuring a drastically shortened timeout (`maxIdleSecondsForNew`) for new sessions, phantom sessions are scavenged within seconds rather than lingering for 30 minutes, preventing heap and Redis saturation.
+* **New Session**: Created on the first request; has not yet produced a second request.
+* **Normal Session**: Validated by returning the assigned session cookie on subsequent requests.
+* **Optimization**: Bots and crawlers never make a second request. Setting a very short `maxIdleSecondsForNew` purges these orphaned sessions before they consume Redis or heap capacity.
 
-### 3.2. `SessionManagerConfig` Core Configuration Parameters
-
-The parameter specification for [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java) in XML Bean definitions or APON configuration blocks is as follows:
+### 3.2. `SessionManagerConfig` Core Parameters
 
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
     <argument>
-        workerName: node1
+        routeId: node1
         maxActiveSessions: 50000
         maxIdleSeconds: 1800
         evictionIdleSeconds: 600
@@ -190,9 +188,9 @@ The parameter specification for [`SessionManagerConfig`](https://github.com/aspe
 </bean>
 ```
 
-* **`workerName`**:
-  * Unique node identifier in a cluster.
-  * Appended as a suffix to generated session IDs (e.g., `session123.node1`) for L4/L7 sticky session routing and cross-node collision prevention.
+* **`routeId`**:
+  * Unique routing identifier used as a suffix for session IDs (e.g., `session123.node1`) for L4/L7 sticky session load balancing.
+  * If omitted, a clean session ID without suffixes is generated. In distributed deployments, it can be dynamically injected via system properties (e.g., `%{system:aspectow.node.route}`).routing and cross-node collision prevention.
 * **`maxActiveSessions`**:
   * Maximum number of concurrent active session instances held in the memory cache.
   * When exceeded, the least recently used idle sessions are proactively evicted from memory to prevent OutOfMemory errors.
@@ -227,7 +225,7 @@ To eliminate guesswork when configuring session timeouts and cache thresholds, A
 
 | Parameter | 1) Admin Console | 2) High-Traffic Public Web | 3) Lightweight Edge API | 4) Local Dev & Testing |
 | :--- | :--- | :--- | :--- | :--- |
-| **`workerName`** | `cn0` | `rn0` | `edge0` | `dev0` |
+| **`routeId`** | `cn0` | `rn0` | `edge0` | `dev0` |
 | **`maxActiveSessions`** | `999` | `50000` | `5000` | `100` |
 | **`maxIdleSeconds`** | `600` (10m) | `1800` (30m) | `300` (5m) | `3600` (1h) |
 | **`evictionIdleSeconds`** | `300` (5m) | `600` (10m) | `120` (2m) | `1800` (30m) |
@@ -244,7 +242,7 @@ Designed for the dedicated `/console` management plane accessed exclusively by a
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
     <argument>
-        workerName: cn0
+        routeId: cn0
         maxActiveSessions: 999
         maxIdleSeconds: 600
         evictionIdleSeconds: 300
@@ -269,7 +267,7 @@ Built for high-volume customer-facing portals subject to relentless search engin
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
     <argument>
-        workerName: rn0
+        routeId: rn0
         maxActiveSessions: 50000
         maxIdleSeconds: 1800
         evictionIdleSeconds: 600
@@ -295,7 +293,7 @@ Optimized for ultra-fast API endpoints and short-lived request contexts running 
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
     <argument>
-        workerName: edge0
+        routeId: edge0
         maxActiveSessions: 5000
         maxIdleSeconds: 300
         evictionIdleSeconds: 120
@@ -318,7 +316,7 @@ Configured for developers running workstations and interactive debugging session
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
     <argument>
-        workerName: dev0
+        routeId: dev0
         maxActiveSessions: 100
         maxIdleSeconds: 3600
         evictionIdleSeconds: 1800
@@ -493,7 +491,7 @@ CLI shell environments and daemon processes utilize sessions to track interactiv
 ```apon
 shell: {
     session: {
-        workerName: shell
+        routeId: shell
         maxActiveSessions: 1
         maxIdleSeconds: 1800
         scavengingIntervalSeconds: 600
@@ -540,7 +538,7 @@ Aspectow Enterprise bridges Undertow's servlet specification (`io.undertow.serve
     <property name="sessionManagerConfig">
         <bean class="com.aspectran.core.context.config.SessionManagerConfig">
             <argument>
-                workerName: ent0
+                routeId: %{system:aspectow.node.route}
                 maxActiveSessions: 10000
                 maxIdleSeconds: 1800
                 evictionIdleSeconds: 900
@@ -612,7 +610,7 @@ Aspectow Edge eliminates servlet container overhead by running [`NettySessionMan
     <property name="sessionManagerConfig">
         <bean class="com.aspectran.core.context.config.SessionManagerConfig">
             <argument>
-                workerName: edge0
+                routeId: %{system:aspectow.node.route}
                 maxActiveSessions: 50000
                 maxIdleSeconds: 1800
                 evictionIdleSeconds: 600
@@ -679,7 +677,7 @@ public class UserSessionTrackingListener implements SessionListener {
 
     @Override
     public void sessionCreated(Session session) {
-        logger.info("New session created: id={}, worker={}", session.getId(), session.getWorkerName());
+        logger.info("New session created: id={}", session.getId());
     }
 
     @Override
