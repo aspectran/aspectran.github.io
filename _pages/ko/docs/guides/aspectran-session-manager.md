@@ -184,7 +184,6 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
         scavengingIntervalSeconds: 60
         clusterEnabled: true
         saveOnCreate: true
-        saveOnInactiveEviction: true
         removeUnloadableSessions: true
     </argument>
 </bean>
@@ -214,8 +213,6 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
   * `true` 설정 시 분산 클러스터링 모드로 가동되며 중앙 세션 스토어와의 일관성 동기화가 활성화됩니다.
 * **`saveOnCreate`**:
   * 신규 세션 생성 즉시 영속 저장소에 쓸 것인지 여부입니다. (단일 서버 모드 최적화 옵션이며, `clusterEnabled: true`인 경우 항상 생성 즉시 저장됩니다.)
-* **`saveOnInactiveEviction`**:
-  * 비활성 세션이 메모리 한계로 인해 캐시에서 축출될 때 영속 저장소에 최신 상태를 백업할 것인지 여부입니다.
 * **`removeUnloadableSessions`**:
   * 애플리케이션 클래스 구조 변경 등으로 인해 저장소의 세션 바이너리를 역직렬화할 수 없을 때, 에러를 반복 발생시키지 않고 해당 세션 데이터를 저장소에서 즉시 삭제할 것인지 여부입니다.
 
@@ -278,7 +275,6 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
         scavengingIntervalSeconds: 60
         clusterEnabled: true
         saveOnCreate: true
-        saveOnInactiveEviction: true
     </argument>
 </bean>
 ```

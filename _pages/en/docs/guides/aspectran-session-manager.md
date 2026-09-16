@@ -182,7 +182,6 @@ Aspectran separates new sessions from established normal sessions to counter gho
         scavengingIntervalSeconds: 60
         clusterEnabled: true
         saveOnCreate: true
-        saveOnInactiveEviction: true
         removeUnloadableSessions: true
     </argument>
 </bean>
@@ -212,8 +211,6 @@ Aspectran separates new sessions from established normal sessions to counter gho
   * Set to `true` to enable distributed Redis clustering and multi-node consistency synchronization.
 * **`saveOnCreate`**:
   * Dictates whether sessions are written to storage immediately upon creation. (Single-server optimization; in clustered mode (`clusterEnabled: true`), sessions are always saved immediately upon creation.)
-* **`saveOnInactiveEviction`**:
-  * Ensures that sessions evicted from heap memory due to inactivity are written to backing storage prior to memory dereferencing.
 * **`removeUnloadableSessions`**:
   * When `true`, automatically purges unreadable or deserialization-corrupted session records from storage (e.g., after application class refactorings) to prevent cascading errors.
 
@@ -276,7 +273,6 @@ Built for high-volume customer-facing portals subject to relentless search engin
         scavengingIntervalSeconds: 60
         clusterEnabled: true
         saveOnCreate: true
-        saveOnInactiveEviction: true
     </argument>
 </bean>
 ```
