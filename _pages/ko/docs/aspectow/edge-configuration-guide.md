@@ -762,9 +762,9 @@ Undertow와 마찬가지로 Netty 역시 멀티 컨텍스트를 기본 지원하
         "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
-    <!-- 세션 이벤트 리스너 자동 등록 -->
+    <!-- 세션 리스너 등록을 지원하기 위한 빈 정의 -->
     <bean id="sessionListenerRegistration"
-          class="com.aspectran.netty.support.SessionListenerRegistrationBean" lazyInit="true">
+          class="com.aspectran.core.component.session.DefaultSessionListenerRegistration" lazyInit="true">
         <argument>netty.server</argument>
         <argument>root</argument>
     </bean>

@@ -690,9 +690,9 @@ Undertow는 완전한 서블릿 컨테이너 격리를 지원하므로, 단일 �
         "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
-    <!-- 특정 컨텍스트(root)에 세션 생명주기 리스너(UserTrackingListener 등) 동적 등록 -->
+    <!-- 세션 리스너 등록을 지원하기 위한 빈 정의 -->
     <bean id="sessionListenerRegistration"
-          class="com.aspectran.undertow.support.SessionListenerRegistrationBean" lazyInit="true">
+          class="com.aspectran.core.component.session.DefaultSessionListenerRegistration" lazyInit="true">
         <argument>tow.server</argument>
         <argument>root</argument>
     </bean>

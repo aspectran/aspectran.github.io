@@ -690,9 +690,9 @@ Undertow provides full servlet container isolation, enabling the deployment of t
         "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
-    <!-- Dynamically register session lifecycle listeners (UserTrackingListener, etc.) for a specific context -->
+    <!-- Bean definition supporting session listener registration -->
     <bean id="sessionListenerRegistration"
-          class="com.aspectran.undertow.support.SessionListenerRegistrationBean" lazyInit="true">
+          class="com.aspectran.core.component.session.DefaultSessionListenerRegistration" lazyInit="true">
         <argument>tow.server</argument>
         <argument>root</argument>
     </bean>

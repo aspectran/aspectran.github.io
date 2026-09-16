@@ -762,9 +762,9 @@ Used when every Edge node directly hosts the integrated management web UI withou
         "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
 
-    <!-- Auto-register Session Event Listeners -->
+    <!-- Bean definition supporting session listener registration -->
     <bean id="sessionListenerRegistration"
-          class="com.aspectran.netty.support.SessionListenerRegistrationBean" lazyInit="true">
+          class="com.aspectran.core.component.session.DefaultSessionListenerRegistration" lazyInit="true">
         <argument>netty.server</argument>
         <argument>root</argument>
     </bean>
