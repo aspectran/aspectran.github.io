@@ -51,7 +51,7 @@ public class ProductService {
 @Aspect(id = "cacheApplyAspect")
 @Joinpoint(
     pointcut = {
-        "+: com.example.service.*Service.get*"
+        "+: @class:com.example.service.*Service^get*"
     }
 )
 public class CacheAspect {

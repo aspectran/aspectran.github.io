@@ -65,7 +65,7 @@ In Aspectran, aspects can be configured declaratively via `<aspect>` XML rules o
 The `<joinpoint>` element precisely specifies where and when advice should be triggered.
 
 ```xml
-<joinpoint>
+<joinpoint target="activity">
     methods: [
         GET
         POST
@@ -83,19 +83,49 @@ The `<joinpoint>` element precisely specifies where and when advice should be tr
 </joinpoint>
 ```
 
+| Attribute / Element | Default | Description |
+| :--- | :--- | :--- |
+| **`target`** | `activity` | Specifies the join point target type.<br/>• **`activity`**: Intercepts the entire request lifecycle stages of Translets (Non-Proxy Core Interception).<br/>• **`method`**: Intercepts bean methods annotated with `@Advisable` via dynamic proxies (Selective Dynamic Proxying). |
+| **`methods`** | All | Restricts aspect execution to specific HTTP request methods (`GET`, `POST`, etc.). |
+| **`headers`** | All | Evaluates specific client request headers to determine aspect execution. |
+| **`pointcut`** | All | Granular filtering combining Translet names, Bean IDs, Class names, and Method patterns. |
+
 #### a. Pointcut Expression Structure
 Pointcuts are defined in APON format and follow this pattern:
 
 $$\text{transletPattern}[\text{@beanOrClassPattern}][\text{^methodNamePattern}]$$
 
-* **Translet Pattern** (Pre-`@`): Matches target Translet URI/name patterns (e.g., `/user/**`, `/api/*`).
-* **Bean/Class Pattern** (Post-`@`): Matches target Bean IDs or fully-qualified class names (e.g., `@userService`, `@com.mycompany.service.*`).
-* **Method Pattern** (Post-`^`): Matches target method names (e.g., `^get*`, `^execute`).
+A pointcut expression consists of three distinct segments delimited by `@` and `^`, allowing precise targeting combinations. Each segment is optional and can be omitted as needed.
 
-*Pattern Examples:*
-* **Specific Bean method in a specific Translet**: `+: /user/list@userService^get*`
-* **Specific Bean method across all Translets**: `+: @orderService^process*` (Translet pattern omitted)
-* **Specific Translet itself (Activity Lifecycle Target)**: `+: /order/**` (Bean/Method patterns omitted)
+* **Delimiters**:
+  * **`@` (Bean/Class Delimiter)**: Separates the Translet pattern from the Bean/Class pattern.
+  * **`^` (Method Delimiter)**: Separates the Bean/Class pattern from the Method pattern.
+
+* **Segment Components**:
+  * **Translet Pattern** (Pre-`@`): Matches the target Translet name or request URI path pattern (e.g., `/user/**`, `/api/v1/*`). If omitted, all Translets are targeted.
+  * **Bean ID Pattern** (Post-`@`, Pre-`^`): Matches the target Bean ID pattern (e.g., `@userService`, `@*Service`). Specifying an identifier without any prefix directive is interpreted as a Bean ID.
+  * **Class Pattern** (Post-`@class:`, Pre-`^`): Matches fully-qualified package/class name patterns. To target class types, **the `class:` directive prefix is required** (e.g., `@class:com.mycompany.service.*`, `@class:*.UserServiceImpl`). This is essential for targeting anonymous beans (beans without an ID) or all implementations of a specific package/interface.
+  * **Method Pattern** (Post-`^`): Matches the target method name pattern (e.g., `^get*`, `^save*`, `^execute`). If omitted, all methods of the target bean or the entire Activity lifecycle are targeted.
+
+| Pattern Format | Pattern Example | Target Description |
+| :--- | :--- | :--- |
+| `transletPattern` | `/order/**` | Targets the entire **Activity lifecycle** of all Translets under `/order/` |
+| `transletPattern@beanId` | `/user/*@userDao` | Targets the `userDao` bean executing within `/user/*` Translets |
+| `transletPattern@class:className` | `/api/**@class:com.mycompany.dao.*` | Targets beans of class types in that package within `/api/**` Translets |
+| `transletPattern@beanId^methodName` | `/user/*@userService^get*` | Targets methods starting with `get` on the `userService` bean within `/user/*` Translets |
+| `transletPattern@class:className^methodName` | `/translet@class:hello.Simplest^hello*` | Targets methods starting with `hello` on the `hello.Simplest` class within `/translet` requests |
+| `@beanId` | `@orderService` | Targets the `orderService` bean across all Translets |
+| `@class:className` | `@class:com.mycompany.service.*` | Targets beans under the `com.mycompany.service` package across all Translets |
+| `@beanId^methodName` | `@orderService^process*` | Targets methods starting with `process` on the `orderService` bean across all Translets |
+| `@class:className^methodName` | `@class:com.mycompany.service.*Service^process*` | Targets methods starting with `process` on all Service classes across all Translets |
+| `@^methodName` | `@^execute*` | Targets methods starting with `execute` on all beans regardless of Translet or bean type |
+
+* **Advanced Pattern Matching Features**:
+  * **Single-Segment Wildcard (`*`)**: Matches zero or more characters within a single segment excluding delimiters (`/` or `.`) (e.g., `/api/*` matches `/api/users` but not `/api/v1/users`; `com.example.*Service` matches `com.example.UserService`).
+  * **Multi-Segment Wildcard (`**`)**: Matches across multiple path or package hierarchy levels including delimiters (e.g., `/user/**` matches `/user/list` and `/user/a/b/c`; `@class:com.mycompany.**Service` matches `com.mycompany.order.OrderService`).
+  * **Single-Character Wildcard (`?`)**: Matches exactly one arbitrary character.
+  * **Multi-Pattern OR Matching (`|`)**: Connects multiple patterns using the pipeline (`|`) symbol to evaluate OR conditions within a single rule (e.g., `+: /user/**|/order/**@userService|orderService^get*|find*`).
+  * **Hierarchical Path and Namespace Matching**: Translet names use the slash (`/`) delimiter, while Bean IDs and class names use the dot (`.`) delimiter for structured matching.
 
 #### b. Include (`+:`) and Exclude (`-:`) Rules with Top-Down Evaluation
 
@@ -225,6 +255,17 @@ Defining an `<exception>` element within an aspect allows catching specific exce
 </aspect>
 ```
 
+#### Differences Between `<advice><thrown>` and `<exception><thrown>`
+
+When defining behavior for raised exceptions, Aspectran provides two distinct mechanisms: `<thrown>` inside `<advice>` and `<thrown>` inside `<exception>`. They differ fundamentally in purpose and exception propagation:
+
+| Category | `<advice><thrown>` (Exception Handling Advice) | `<exception><thrown>` (Global Exception Response Mapping) |
+| :--- | :--- | :--- |
+| **Primary Purpose** | Executes supplementary logic upon exceptions (e.g., error logging, transaction rollback, alerting) | Catches raised exceptions and maps them to dedicated error view pages or JSON error responses |
+| **Exception Propagation** | Executes advice logic and **continues to propagate (rethrow) the exception upward** | Completely catches and handles the exception, **returning a normal error response to the client** |
+| **Available Actions** | Bean method invocations (`<invoke>`), Action executions (`<action>`), Header injection (`<headers>`) | View dispatching (`<dispatch>`), Data transformations (`<transform>`), Action executions (`<action>`) |
+| **Annotation Equivalent** | Advice methods annotated with `@ExceptionThrown` | Translet/Aspect exception handling rule mappings |
+
 ## 3. Annotation-Based AOP Configuration
 
 Aspectran allows full AOP configuration using pure Java classes and annotations without XML.
@@ -283,13 +324,14 @@ public class LoggingAspect {
     }
 
     @ExceptionThrown(Exception.class)
-    public void onError(Translet translet, Exception e) {
+    public void onError(Translet translet) {
+        Throwable e = translet.getRaisedException();
         logger.error("[Request Error] {} - {}", translet.getRequestName(), e.getMessage(), e);
     }
 
     @Finally
-    public void onFinally(Activity activity) {
-        // Resource cleanup logic
+    public void onFinally(Translet translet) {
+        // Perform resource cleanup
     }
 }
 ```

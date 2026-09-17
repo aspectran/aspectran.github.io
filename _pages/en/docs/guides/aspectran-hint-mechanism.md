@@ -51,7 +51,7 @@ Hints can be retrieved from anywhere using the `peekHint()` method of the `Trans
 @Aspect(id = "cacheApplyAspect")
 @Joinpoint(
     pointcut = {
-        "+: com.example.service.*Service.get*"
+        "+: @class:com.example.service.*Service^get*"
     }
 )
 public class CacheAspect {

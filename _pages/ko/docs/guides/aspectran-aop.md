@@ -65,7 +65,7 @@ Aspectran의 AOP는 XML 설정 파일의 `<aspect>` 요소 또는 자바 어노�
 `<joinpoint>` 요소는 Aspect가 적용될 대상과 시점을 정밀하게 지정합니다.
 
 ```xml
-<joinpoint>
+<joinpoint target="activity">
     methods: [
         GET
         POST
@@ -83,19 +83,49 @@ Aspectran의 AOP는 XML 설정 파일의 `<aspect>` 요소 또는 자바 어노�
 </joinpoint>
 ```
 
+| 속성 / 요소 | 기본값 | 설명 |
+| :--- | :--- | :--- |
+| **`target`** | `activity` | Joinpoint 대상 유형을 지정합니다.<br/>• **`activity`**: Translet 요청의 전체 생명주기 단계에 인터셉션합니다 (Non-Proxy Core Interception).<br/>• **`method`**: Bean 내부의 `@Advisable` 어노테이션이 선언된 메서드 호출을 동적 프록시로 가로챕니다 (Selective Dynamic Proxying). |
+| **`methods`** | 전체 | Aspect가 동작할 HTTP 요청 메서드 목록을 제한합니다 (`GET`, `POST` 등). |
+| **`headers`** | 전체 | 클라이언트의 특정 요청 헤더 조건을 검사하여 Aspect 실행 여부를 결정합니다. |
+| **`pointcut`** | 전체 | 대상 Translet, Bean ID, Class명, Method 패턴을 조합하여 정밀 필터링합니다. |
+
 #### a. Pointcut 표현식 구조
 Pointcut은 APON 형식으로 작성되며, 다음과 같은 패턴 구조를 가집니다:
 
 $$\text{transletPattern}[\text{@beanOrClassPattern}][\text{^methodNamePattern}]$$
 
-* **Translet 패턴** (`@` 앞): 대상 Translet의 URI/이름 패턴을 지정합니다 (예: `/user/**`, `/api/*`).
-* **Bean/Class 패턴** (`@` 뒤): 대상 Bean ID 또는 완전한 클래스명 패턴을 지정합니다 (예: `@userService`, `@com.mycompany.service.*`).
-* **Method 패턴** (`^` 뒤): 대상 메서드 이름 패턴을 지정합니다 (예: `^get*`, `^execute`).
+Pointcut 표현식은 3개의 영역으로 구성되며, 구분자(`@`, `^`)를 통해 각 대상을 정밀하게 조합할 수 있습니다. 각 영역은 필요에 따라 생략 가능합니다.
 
-*패턴 지정 예시:*
-* **특정 Translet 내의 특정 Bean 메서드**: `+: /user/list@userService^get*`
-* **모든 Translet에서 특정 Bean 메서드**: `+: @orderService^process*` (Translet 패턴 생략)
-* **특정 Translet 자체 (Activity 생명주기 대상)**: `+: /order/**` (Bean/Method 패턴 생략)
+* **구분자(Delimiters)**:
+  * **`@` (Bean/Class 구분자)**: Translet 패턴과 Bean/Class 패턴을 구분합니다.
+  * **`^` (Method 구분자)**: Bean/Class 패턴과 Method 패턴을 구분합니다.
+
+* **영역별 구성 요소**:
+  * **Translet 패턴** (`@` 앞): 대상 Translet의 이름 또는 요청 URI 경로 패턴을 지정합니다 (예: `/user/**`, `/api/v1/*`). 생략 시 모든 Translet을 대상으로 합니다.
+  * **Bean ID 패턴** (`@` 뒤, `^` 앞): 대상 빈의 식별자(ID) 패턴을 지정합니다 (예: `@userService`, `@*Service`). 지시자 없이 이름만 작성하면 Bean ID로 해석됩니다.
+  * **Class 패턴** (`@class:` 뒤, `^` 앞): 대상 클래스의 완전한 패키지명/클래스명 패턴을 지정합니다. 클래스 타입을 타겟팅할 때는 **반드시 `class:` 지시자(Prefix)**를 붙여야 합니다 (예: `@class:com.mycompany.service.*`, `@class:*.UserServiceImpl`). 특정 인터페이스 구현체나 익명 빈(ID가 없는 빈)을 일괄 타겟팅할 때 필수적입니다.
+  * **Method 패턴** (`^` 뒤): 대상 메서드 이름 패턴을 지정합니다 (예: `^get*`, `^save*`, `^execute`). 생략 시 대상 빈의 모든 메서드 또는 Activity 생명주기 단계에 적용됩니다.
+
+| 패턴 형식 | 패턴 예시 | 타겟팅 대상 설명 |
+| :--- | :--- | :--- |
+| `transletPattern` | `/order/**` | `/order/` 하위 모든 Translet 자체의 **Activity 생명주기**를 타겟팅 |
+| `transletPattern@beanId` | `/user/*@userDao` | `/user/*` Translet 내에서 실행되는 `userDao` 빈을 타겟팅 |
+| `transletPattern@class:className` | `/api/**@class:com.mycompany.dao.*` | `/api/**` Translet 내에서 해당 패키지에 속한 클래스 타입의 빈들을 타겟팅 |
+| `transletPattern@beanId^methodName` | `/user/*@userService^get*` | `/user/*` Translet 내 `userService` 빈의 `get`으로 시작하는 메서드를 타겟팅 |
+| `transletPattern@class:className^methodName` | `/translet@class:hello.Simplest^hello*` | `/translet` 요청 내 `hello.Simplest` 클래스의 `hello`로 시작하는 메서드를 타겟팅 |
+| `@beanId` | `@orderService` | 모든 Translet에서 `orderService` 빈을 타겟팅 |
+| `@class:className` | `@class:com.mycompany.service.*` | 모든 Translet에서 `com.mycompany.service` 패키지 하위 클래스 빈들을 타겟팅 |
+| `@beanId^methodName` | `@orderService^process*` | 모든 Translet에서 `orderService` 빈의 `process`로 시작하는 메서드를 타겟팅 |
+| `@class:className^methodName` | `@class:com.mycompany.service.*Service^process*` | 모든 Service 클래스의 `process`로 시작하는 메서드를 타겟팅 |
+| `@^methodName` | `@^execute*` | Translet 및 빈 종류와 상관없이 모든 빈의 `execute`로 시작하는 메서드를 타겟팅 |
+
+* **패턴 매칭 고급 기능**:
+  * **단일 세그먼트 와일드카드 (`*`)**: 구분자(`/` 또는 `.`)를 제외한 단일 세그먼트 내에서 0개 이상의 임의 문자열과 매칭됩니다 (예: `/api/*`는 `/api/users`와 매칭되나 `/api/v1/users`와는 불일치, `com.example.*Service`는 `com.example.UserService`와 매칭).
+  * **다중 계층 와일드카드 (`**`)**: 구분자를 포함하여 모든 하위 경로 또는 하위 패키지 전체와 매칭됩니다 (예: `/user/**`는 `/user/list`, `/user/a/b/c` 모두 매칭, `@class:com.mycompany.**Service`는 `com.mycompany.order.OrderService`와 매칭).
+  * **단일 문자 와일드카드 (`?`)**: 1개의 임의 문자와 매칭됩니다.
+  * **다중 패턴 OR 결합 (`|`)**: 파이프라인(`|`) 기호로 복수 패턴을 연결하여 단일 규칙에서 OR 조건을 평가할 수 있습니다 (예: `+: /user/**|/order/**@userService|orderService^get*|find*`).
+  * **계층형 경로 및 네임스페이스 매칭**: Translet 이름은 슬래시(`/`) 구분자를, 빈 ID 및 클래스명은 점(`.`) 구분자를 기반으로 정밀하게 매칭됩니다.
 
 #### b. 포함(`+:`) 및 제외(`-:`) 규칙과 평가 순서
 
@@ -225,6 +255,17 @@ AOP 레벨에서 `<exception>` 요소를 정의하면, Translet 실행 중 발�
 </aspect>
 ```
 
+#### `<advice><thrown>`과 `<exception><thrown>`의 차이점
+
+Aspectran에서는 예외 발생 시 동작을 정의할 때 `<advice>` 내부의 `<thrown>`과 `<exception>` 내부의 `<thrown>` 두 가지 방식을 제공합니다. 두 기능은 목적과 예외 전파 방식에서 명확한 차이가 있습니다:
+
+| 구분 | `<advice><thrown>` (예외 발생 시 부가 처리) | `<exception><thrown>` (글로벌 예외 응답 매핑) |
+| :--- | :--- | :--- |
+| **주요 목적** | 예외 발생 시 로깅, 트랜잭션 롤백, 관리자 알림 등 부가 로직 실행 | 발생한 예외를 가로채 전용 에러 화면 디스패치 또는 JSON 에러 응답 반환 |
+| **예외 전파** | Advice 로직을 실행한 후 **예외를 삼키지 않고 상위로 계속 전파(Rethrow)** | 예외를 완전히 처리(Catch)하여 **클라이언트에게 정상적인 에러 응답 전송** |
+| **사용 가능한 액션** | Bean 메서드 호출(`<invoke>`), Action 실행(`<action>`), 헤더 주입(`<headers>`) | 화면 디스패치(`<dispatch>`), 데이터 변환(`<transform>`), Action 실행(`<action>`) |
+| **어노테이션 대응** | `@ExceptionThrown` 어노테이션이 선언된 Advice 메서드 | Translet/Aspect 예외 처리 규칙 매핑 |
+
 ## 3. Java 어노테이션 기반 AOP 설정
 
 Aspectran은 XML 설정 없이 순수 Java 클래스와 어노테이션만으로 완전한 AOP를 구성할 수 있습니다.
@@ -283,12 +324,13 @@ public class LoggingAspect {
     }
 
     @ExceptionThrown(Exception.class)
-    public void onError(Translet translet, Exception e) {
+    public void onError(Translet translet) {
+        Throwable e = translet.getRaisedException();
         logger.error("[Request Error] {} - {}", translet.getRequestName(), e.getMessage(), e);
     }
 
     @Finally
-    public void onFinally(Activity activity) {
+    public void onFinally(Translet translet) {
         // 리소스 정리 로직 수행
     }
 }
