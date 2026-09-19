@@ -12,8 +12,22 @@ $(function () {
         } else {
           anchor = "top-of-page";
         }
+        let rawText = $(item).text().trim();
+        let match = rawText.match(/^((?:\d+(?:\.\d+)*\.?|\d+\)|\([0-9a-zA-Z가-힣]+\)|\[[0-9a-zA-Z가-힣]+\]|[A-Za-z]\.))\s+(.*)$/);
+        let $a = $("<a anchor='" + anchor + "' href='#" + anchor + "'/>");
+        if (match) {
+          $a.append($("<span class='toc-num'/>").text(match[1]));
+          $a.append($("<span class='toc-text'/>").text(match[2]));
+        } else {
+          if (localName === "h2") {
+            $a.append($("<span class='toc-bullet'>–</span>"));
+          } else if (localName === "h3") {
+            $a.append($("<span class='toc-bullet'>·</span>"));
+          }
+          $a.append($("<span class='toc-text'/>").text(rawText));
+        }
         $("<li class='toc-" + localName + "'></li>")
-          .append($("<a anchor='" + anchor + "' href='#" + anchor + "'/>").text($(item).text()))
+          .append($a)
           .appendTo("#toc ul");
       });
     }
