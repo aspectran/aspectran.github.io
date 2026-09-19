@@ -1,0 +1,115 @@
+<div class="blog-posts-container" data-page-size="{{ include.page_size | default: 10 }}">
+  <div class="posts-list">
+    {% for post in include.posts %}
+    <div class="post-item mb-3 auto-lang {{ post.lang }}">
+      <p class="text-muted mb-0 text-uppercase">{% if post.categories %}{{ post.categories | join: ' &middot; ' }}{% endif %}{% if post.subheadline %} – {{ post.subheadline }}{% endif %}</p>
+      <h3 class="border-bottom pb-2 mb-3"><a href="{{ post.url }}" class="text-decoration-none">{{ post.title }}</a></h3>
+      <div class="d-flex">
+        {% if post.image.thumb %}
+        <div class="flex-shrink-0 me-3">
+          <a href="{{ post.url }}" title="{{ post.title | escape_once }}"><img src="{{ site.urlimg }}{{ post.image.thumb }}" style="width: 150px; height: 150px;" alt="{{ post.title | escape_once }}"></a>
+        </div>
+        {% endif %}
+        <div class="flex-grow-1">
+          <p>
+            {% if post.meta_description %}{{ post.meta_description | strip_html }}{% elsif post.teaser %}{{ post.teaser | strip_html }}{% elsif post.excerpt %}{{ post.excerpt | strip_html }}{% endif %}
+            <a href="{{ post.url }}" title="{{ post.title | escape_once }}"><small>{{ site.data.messages[post.lang].read_more }}</small></a>
+          </p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if include.paginate == true %}
+  <nav class="blog-pagination mt-4" aria-label="Page navigation" style="display: none;">
+    <ul class="pagination justify-content-center"></ul>
+  </nav>
+
+  <script>
+  (function() {
+    function initBlogPagination() {
+      const container = document.querySelector('.blog-posts-container');
+      if (!container) return;
+      const nav = container.querySelector('.blog-pagination');
+      if (!nav) return;
+      const paginationUl = nav.querySelector('.pagination');
+      const pageSize = parseInt(container.getAttribute('data-page-size') || '10', 10);
+
+      function getLang() {
+        if (typeof getPreferredLangCode === 'function') {
+          return getPreferredLangCode();
+        }
+        return localStorage.getItem('lang') || 'en';
+      }
+
+      function render(currentPage) {
+        const lang = getLang();
+        const items = Array.from(container.querySelectorAll('.posts-list > .post-item.' + lang));
+        const totalItems = items.length;
+        const totalPages = Math.ceil(totalItems / pageSize);
+
+        if (totalPages <= 1) {
+          nav.style.display = 'none';
+          items.forEach(function(item) { item.style.display = ''; });
+          return;
+        }
+
+        nav.style.display = '';
+        if (currentPage < 1) currentPage = 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        items.forEach(function(item, idx) {
+          if (idx >= (currentPage - 1) * pageSize && idx < currentPage * pageSize) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+
+        let html = '';
+        if (currentPage > 1) {
+          html += '<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '" aria-label="Previous">Previous</a></li>';
+        } else {
+          html += '<li class="page-item disabled"><span class="page-link">Previous</span></li>';
+        }
+
+        for (let p = 1; p <= totalPages; p++) {
+          if (p === currentPage) {
+            html += '<li class="page-item active" aria-current="page"><span class="page-link">' + p + '</span></li>';
+          } else {
+            html += '<li class="page-item"><a class="page-link" href="#" data-page="' + p + '">' + p + '</a></li>';
+          }
+        }
+
+        if (currentPage < totalPages) {
+          html += '<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '" aria-label="Next">Next</a></li>';
+        } else {
+          html += '<li class="page-item disabled"><span class="page-link">Next</span></li>';
+        }
+
+        paginationUl.innerHTML = html;
+
+        paginationUl.querySelectorAll('a.page-link').forEach(function(link) {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetPage = parseInt(this.getAttribute('data-page'), 10);
+            render(targetPage);
+            const blogTabs = document.querySelector('.blog-tabs') || container;
+            blogTabs.scrollIntoView({ behavior: 'smooth' });
+          });
+        });
+      }
+
+      render(1);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initBlogPagination);
+    } else {
+      setTimeout(initBlogPagination, 10);
+    }
+  })();
+  </script>
+  {% endif %}
+</div>

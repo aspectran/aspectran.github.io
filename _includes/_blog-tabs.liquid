@@ -1,0 +1,37 @@
+{% assign current_url = page.url | remove: 'index.html' %}
+{% assign all_count = site.posts | where: 'lang', 'ko' | size %}
+{% if all_count == 0 %}
+  {% assign all_count = site.posts.size %}
+{% endif %}
+{% assign news_count = site.categories['news'] | where: 'lang', 'ko' | size %}
+{% if news_count == 0 and site.categories['news'] %}
+  {% assign news_count = site.categories['news'].size %}
+{% endif %}
+{% assign arch_count = site.categories['architecture'] | where: 'lang', 'ko' | size %}
+{% if arch_count == 0 and site.categories['architecture'] %}
+  {% assign arch_count = site.categories['architecture'].size %}
+{% endif %}
+<div class="blog-tabs pt-4 pt-xl-5 pb-4">
+  <ul class="nav nav-tabs mobile-btn-tabs border rounded p-2 pb-md-0 bg-body-tertiary">
+    <li class="nav-item">
+      <a class="nav-link justify-content-between{% if current_url == '/blog/' or current_url contains '/blog/page' %} active{% endif %}" href="/blog/">
+        All <span class="badge rounded-pill bg-secondary ms-1">{{ all_count }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link justify-content-between{% if current_url contains '/blog/news' %} active{% endif %}" href="/blog/news/">
+        News <span class="badge rounded-pill bg-secondary ms-1">{{ news_count }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link justify-content-between{% if current_url contains '/blog/architecture' %} active{% endif %}" href="/blog/architecture/">
+        Architecture <span class="badge rounded-pill bg-secondary ms-1">{{ arch_count }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link justify-content-between{% if current_url contains '/blog/archive' %} active{% endif %}" href="/blog/archive/">
+        Archive <span class="badge rounded-pill bg-secondary ms-1">{{ all_count }}</span>
+      </a>
+    </li>
+  </ul>
+</div>
