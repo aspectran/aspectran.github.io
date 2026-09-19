@@ -1,0 +1,364 @@
+<style>
+  code.language-mermaid,
+  .mermaid {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin: 1.5rem auto;
+    background-color: transparent !important;
+    border: none !important;
+    cursor: zoom-in;
+    transition: opacity 0.15s ease-in-out;
+  }
+  code.language-mermaid:hover,
+  .mermaid:hover {
+    opacity: 0.9;
+  }
+  code.language-mermaid svg,
+  .mermaid svg {
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+    pointer-events: none;
+  }
+  #mermaid-zoom-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(6px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  #mermaid-zoom-overlay.show {
+    opacity: 1;
+  }
+  #mermaid-zoom-overlay .mermaid-modal-dialog {
+    position: relative;
+    width: 95vw;
+    max-width: 1600px;
+    height: 95vh;
+    background-color: var(--bs-body-bg, #ffffff);
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #mermaid-zoom-overlay .mermaid-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    user-select: none;
+    background-color: var(--bs-secondary-bg, rgba(0, 0, 0, 0.03));
+    flex-shrink: 0;
+  }
+  #mermaid-zoom-overlay .mermaid-modal-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--bs-body-color, #333333);
+  }
+  #mermaid-zoom-overlay .mermaid-modal-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  #mermaid-zoom-overlay .mermaid-control-btn {
+    background: rgba(128, 128, 128, 0.15);
+    color: var(--bs-body-color, #333333);
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 6px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s, transform 0.1s;
+  }
+  #mermaid-zoom-overlay .mermaid-control-btn:hover {
+    background: rgba(128, 128, 128, 0.25);
+  }
+  #mermaid-zoom-overlay .mermaid-control-btn:active {
+    transform: scale(0.95);
+  }
+  #mermaid-zoom-overlay .mermaid-modal-body {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    padding: 2rem;
+    background: var(--bs-body-bg, #ffffff);
+    cursor: grab;
+    -webkit-overflow-scrolling: touch;
+  }
+  #mermaid-zoom-overlay .mermaid-modal-body.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+  #mermaid-zoom-overlay .mermaid-svg-container {
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  #mermaid-zoom-overlay svg {
+    display: block;
+    margin: 0 auto;
+    max-width: none !important;
+    max-height: none !important;
+    height: auto !important;
+    pointer-events: none;
+  }
+  @media (max-width: 768px) {
+    #mermaid-zoom-overlay {
+      padding: 0;
+    }
+    #mermaid-zoom-overlay .mermaid-modal-dialog {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      max-width: 100vw;
+      max-height: 100vh;
+      max-height: 100dvh;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+    }
+    #mermaid-zoom-overlay .mermaid-modal-header {
+      padding: 0.6rem 1rem;
+      border-radius: 0;
+    }
+    #mermaid-zoom-overlay .mermaid-modal-body {
+      padding: 1rem;
+    }
+  }
+</style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.0.0/+esm';
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: document.documentElement.getAttribute('data-bs-theme') || 'light'
+  });
+  await mermaid.run({
+    querySelector: '.language-mermaid'
+  });
+
+  // Mermaid zoom modal logic
+  document.querySelectorAll('.language-mermaid, .mermaid').forEach(container => {
+    container.addEventListener('click', () => {
+      const svg = container.querySelector('svg');
+      if (!svg) return;
+
+      const overlay = document.createElement('div');
+      overlay.id = 'mermaid-zoom-overlay';
+
+      let currentScale = 1.0;
+      let baseWidth = 800;
+
+      const dialog = document.createElement('div');
+      dialog.className = 'mermaid-modal-dialog';
+
+      const header = document.createElement('div');
+      header.className = 'mermaid-modal-header';
+
+      const title = document.createElement('div');
+      title.className = 'mermaid-modal-title';
+      title.textContent = 'Diagram Preview';
+
+      const controls = document.createElement('div');
+      controls.className = 'mermaid-modal-controls';
+
+      const zoomOutBtn = document.createElement('button');
+      zoomOutBtn.className = 'mermaid-control-btn';
+      zoomOutBtn.textContent = '−';
+      zoomOutBtn.title = 'Zoom Out';
+
+      const zoomResetBtn = document.createElement('button');
+      zoomResetBtn.className = 'mermaid-control-btn';
+      zoomResetBtn.textContent = '100%';
+      zoomResetBtn.title = 'Reset Zoom';
+
+      const zoomInBtn = document.createElement('button');
+      zoomInBtn.className = 'mermaid-control-btn';
+      zoomInBtn.textContent = '+';
+      zoomInBtn.title = 'Zoom In';
+
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'mermaid-control-btn';
+      closeBtn.innerHTML = '&times;';
+      closeBtn.title = 'Close (Esc)';
+      closeBtn.style.fontWeight = 'bold';
+
+      controls.appendChild(zoomOutBtn);
+      controls.appendChild(zoomResetBtn);
+      controls.appendChild(zoomInBtn);
+      controls.appendChild(closeBtn);
+
+      header.appendChild(title);
+      header.appendChild(controls);
+
+      const body = document.createElement('div');
+      body.className = 'mermaid-modal-body';
+
+      const svgContainer = document.createElement('div');
+      svgContainer.className = 'mermaid-svg-container';
+
+      const clonedSvg = svg.cloneNode(true);
+      clonedSvg.removeAttribute('style');
+      clonedSvg.removeAttribute('width');
+      clonedSvg.removeAttribute('height');
+
+        const isMobile = window.innerWidth <= 768;
+        let vbWidth = 800;
+        let vbHeight = 600;
+
+        const viewBox = clonedSvg.getAttribute('viewBox');
+        if (viewBox) {
+          const parts = viewBox.split(/[\s,]+/).map(Number);
+          if (parts.length === 4 && parts[2] > 0) {
+            vbWidth = parts[2];
+            vbHeight = parts[3];
+          }
+        } else if (svg.clientWidth > 0) {
+          vbWidth = svg.clientWidth;
+          vbHeight = svg.clientHeight || 600;
+        }
+
+        if (isMobile) {
+          // On mobile, fit diagram within available screen width with slight padding
+          const availableWidth = Math.max(window.innerWidth - 32, 280);
+          baseWidth = Math.min(vbWidth, availableWidth);
+        } else {
+          // On desktop, scale up small diagrams while bounding huge ones to dialog width
+          const availableWidth = Math.min(window.innerWidth * 0.88, 1400);
+          if (vbWidth < 650) {
+            baseWidth = Math.min(Math.max(vbWidth * 1.4, 600), availableWidth);
+          } else {
+            baseWidth = Math.min(vbWidth, availableWidth);
+          }
+        }
+
+        const applyScale = () => {
+          const targetWidth = Math.round(baseWidth * currentScale);
+          clonedSvg.style.width = `${targetWidth}px`;
+          zoomResetBtn.textContent = `${Math.round(currentScale * 100)}%`;
+        };
+
+        applyScale();
+
+      svgContainer.appendChild(clonedSvg);
+      body.appendChild(svgContainer);
+
+      dialog.appendChild(header);
+      dialog.appendChild(body);
+      overlay.appendChild(dialog);
+      document.body.appendChild(overlay);
+
+      zoomInBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (currentScale < 4.0) {
+          currentScale = Math.min(4.0, +(currentScale + 0.25).toFixed(2));
+          applyScale();
+        }
+      });
+
+      zoomOutBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (currentScale > 0.25) {
+          currentScale = Math.max(0.25, +(currentScale - 0.25).toFixed(2));
+          applyScale();
+        }
+      });
+
+      zoomResetBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentScale = 1.0;
+        applyScale();
+      });
+
+      // Mouse Drag to Pan
+      let isDown = false;
+      let startX = 0;
+      let startY = 0;
+      let scrollLeft = 0;
+      let scrollTop = 0;
+
+      body.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.mermaid-control-btn')) return;
+        isDown = true;
+        body.classList.add('is-dragging');
+        startX = e.pageX - body.offsetLeft;
+        startY = e.pageY - body.offsetTop;
+        scrollLeft = body.scrollLeft;
+        scrollTop = body.scrollTop;
+      });
+
+      const handleMouseUp = () => {
+        if (isDown) {
+          isDown = false;
+          body.classList.remove('is-dragging');
+        }
+      };
+
+      window.addEventListener('mouseup', handleMouseUp);
+
+      body.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - body.offsetLeft;
+        const y = e.pageY - body.offsetTop;
+        body.scrollLeft = scrollLeft - (x - startX);
+        body.scrollTop = scrollTop - (y - startY);
+      });
+
+      // Wheel Zoom (Ctrl+Wheel or Meta+Wheel)
+      body.addEventListener('wheel', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+          e.preventDefault();
+          if (e.deltaY < 0) {
+            currentScale = Math.min(4.0, +(currentScale + 0.15).toFixed(2));
+          } else {
+            currentScale = Math.max(0.25, +(currentScale - 0.15).toFixed(2));
+          }
+          applyScale();
+        }
+      }, { passive: false });
+
+      requestAnimationFrame(() => overlay.classList.add('show'));
+
+      const closeOverlay = () => {
+        window.removeEventListener('mouseup', handleMouseUp);
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.remove(), 200);
+      };
+
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeOverlay();
+      });
+
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          closeOverlay();
+        }
+      });
+
+      const handleKeydown = (e) => {
+        if (e.key === 'Escape') {
+          closeOverlay();
+          document.removeEventListener('keydown', handleKeydown);
+        }
+      };
+      document.addEventListener('keydown', handleKeydown);
+    });
+  });
+</script>
