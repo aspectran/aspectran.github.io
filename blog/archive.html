@@ -8,7 +8,9 @@ sitemap: false
 breadcrumb: true
 ---
 
-<div class="row py-4">
+{% include _blog-tabs.liquid %}
+
+<div class="row">
   <div class="col-12">
     <div class="accordion">
       {% assign posts = site.posts | sort: 'date' %}
