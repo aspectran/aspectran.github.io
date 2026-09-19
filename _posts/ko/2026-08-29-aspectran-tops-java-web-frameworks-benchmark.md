@@ -53,7 +53,7 @@ Java 21 환경에서 측정된 총 21개 Java 웹 프레임워크의 세부 결�
 | 20 | Helidon SE (4.5) | 1,285 | 1,672 | 1,663 | 1,540.0 | 마이크로서비스 프레임워크 |
 | 21 | Blade (2.1) | 1,318 | 1,656 | 1,643 | 1,539.0 | 경량 MVC 프레임워크 |
 
-{% include image.liquid src="/images/news/web-frameworks-benchmark-chart-20260829.png" alt="Web Frameworks Benchmark - Aspectran vs Spring vs Spring WebFlux" %}
+{% include image.liquid src="/images/blog/web-frameworks-benchmark-chart-20260829.png" alt="Web Frameworks Benchmark - Aspectran vs Spring vs Spring WebFlux" %}
 
 ## 🌟 주요 결과 분석
 

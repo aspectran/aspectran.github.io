@@ -1,0 +1,62 @@
+---
+auto_lang: true
+layout: page
+title: Architecture
+subheadline: Blog
+noindex: true
+sitemap: false
+breadcrumb: true
+---
+
+<div class="row py-4">
+  <div class="col-12">
+    <div class="accordion">
+      {% assign posts = site.categories['architecture'] | sort: 'date' %}
+      {% for post in posts reversed %}
+      <div class="accordion-item border-0 border-bottom auto-lang {{ post.lang }}">
+        <h2 class="accordion-header" id="heading{{ forloop.index }}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.index }}" aria-expanded="false" aria-controls="collapse{{ forloop.index }}">
+            <span class="text-muted text-uppercase d-none d-md-block">{% if post.categories %}{{ post.categories | join: ' &middot; ' }}{% endif %}{% if post.subheadline %} – {{ post.subheadline }}{% endif %}</span>
+            <i class="bi bi-chevron-double-right me-2 ms-md-2"></i> <strong>{{ post.title }}</strong>
+          </button>
+        </h2>
+        <div id="collapse{{ forloop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.index }}">
+          <div class="accordion-body">
+            {% if post.meta_description %}{{ post.meta_description | strip_html }}{% elsif post.teaser %}{{ post.teaser | strip_html }}{% elsif post.excerpt %}{{ post.excerpt | strip_html }}{% endif %}
+            <p class="text-end mt-3"><a class="btn btn-sm btn-secondary" href="{{ post.url }}" title="{{ post.title | escape_once }}">{{ site.data.messages[post.lang].read_more }}</a></p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% comment %}
+[글의 성격 및 단계별 구분]
+• ARCHITECTURE – PLAN (현재 적용)
+  • 용도: 기능 구현 전의 아키텍처 기획안, 기술 검토안, RFC 성격의 글
+  • 예시: 이번에 작성한 일시정지 노드 리다이렉트 기획안
+• ARCHITECTURE – DESIGN
+  • 용도: 확정된 기능의 구체적인 내부 구조, 클래스 다이어그램, 모듈 간 상호작용 명세
+  • 예시: Aspectow NodeRegistry 분산 동기화 프로토콜 설계 명세
+• ARCHITECTURE – DEEP DIVE
+  • 용도: 특정 핵심 메커니즘의 내부 동작 원리를 소스 코드 레벨까지 깊게 파고드는 글
+  • 예시: Java 21 Virtual Threads와 Netty EventLoop 결합 메커니즘 심층 분석
+• ARCHITECTURE – OVERVIEW
+  • 용도: 특정 대형 서브시스템의 전체적인 구조와 흐름을 한눈에 조망하는 개요 글
+  • 예시: Aspectran Multi-Context 격리 모델 및 계층 구조 아키텍처 개요
+• ARCHITECTURE – EVOLUTION
+  • 용도: 서블릿 WAS에서 Netty 기반으로의 전환 등 아키텍처의 패러다임 변화와 진화 과정을 다루는 글
+  • 예시: 서블릿의 황혼에서 순수 Netty 런타임으로: Aspectran의 구조적 진화
+• ARCHITECTURE – BENCHMARK
+  • 용도: 성능, 메모리 효율성, 동시성 관점의 아키텍처 벤치마크 및 병목 개선 사례
+  • 예시: Non-blocking I/O vs Virtual Threads 동시성 처리 성능 비교 분석
+
+[기술 도메인/주제별 구분]
+• ARCHITECTURE – CLUSTERING (분산 클러스터링, 노드 관리, 고가용성)
+• ARCHITECTURE – RUNTIME (Netty, Undertow, Servlet 엔진 등 웹 런타임)
+• ARCHITECTURE – CONCURRENCY (가상 스레드, 비동기 I/O, 스케줄링)
+• ARCHITECTURE – STORAGE (Redis, Lettuce, 세션 저장소 및 캐싱 계층)
+• ARCHITECTURE – SECURITY (PBE 토큰 인증, 분산 세션 보안)
+{% endcomment %}

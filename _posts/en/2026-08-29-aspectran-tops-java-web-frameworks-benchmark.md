@@ -53,7 +53,7 @@ Below are the detailed performance metrics for all 21 Java web frameworks runnin
 | 20 | Helidon SE (4.5) | 1,285 | 1,672 | 1,663 | 1,540.0 | Microservices Framework |
 | 21 | Blade (2.1) | 1,318 | 1,656 | 1,643 | 1,539.0 | Lightweight MVC Framework |
 
-{% include image.liquid src="/images/news/web-frameworks-benchmark-chart-20260829.png" alt="Web Frameworks Benchmark - Aspectran vs Spring vs Spring WebFlux" %}
+{% include image.liquid src="/images/blog/web-frameworks-benchmark-chart-20260829.png" alt="Web Frameworks Benchmark - Aspectran vs Spring vs Spring WebFlux" %}
 
 ## 🌟 Key Performance Highlights
 
