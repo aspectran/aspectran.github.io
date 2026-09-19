@@ -152,7 +152,7 @@
     querySelector: '.language-mermaid'
   });
 
-  // Mermaid zoom modal logic
+  /* Mermaid zoom modal logic */
   document.querySelectorAll('.language-mermaid, .mermaid').forEach(container => {
     container.addEventListener('click', () => {
       const svg = container.querySelector('svg');
@@ -234,11 +234,11 @@
         }
 
         if (isMobile) {
-          // On mobile, fit diagram within available screen width with slight padding
+          /* On mobile, fit diagram within available screen width with slight padding */
           const availableWidth = Math.max(window.innerWidth - 32, 280);
           baseWidth = Math.min(vbWidth, availableWidth);
         } else {
-          // On desktop, scale up small diagrams while bounding huge ones to dialog width
+          /* On desktop, scale up small diagrams while bounding huge ones to dialog width */
           const availableWidth = Math.min(window.innerWidth * 0.88, 1400);
           if (vbWidth < 650) {
             baseWidth = Math.min(Math.max(vbWidth * 1.4, 600), availableWidth);
@@ -285,7 +285,7 @@
         applyScale();
       });
 
-      // Mouse Drag to Pan
+      /* Mouse Drag to Pan */
       let isDown = false;
       let startX = 0;
       let startY = 0;
@@ -320,7 +320,7 @@
         body.scrollTop = scrollTop - (y - startY);
       });
 
-      // Wheel Zoom (Ctrl+Wheel or Meta+Wheel)
+      /* Wheel Zoom (Ctrl+Wheel or Meta+Wheel) */
       body.addEventListener('wheel', (e) => {
         if (e.ctrlKey || e.metaKey) {
           e.preventDefault();
