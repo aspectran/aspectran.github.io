@@ -2,44 +2,79 @@ $(function () {
   // Navigation, etc.
   const $win = $(window);
   const $nav = $("#navigation");
-  const navHeight = $("#masthead").height()||$nav.height() + $nav.height();
-  let lastScrollTop = 0;
-  let scrolled;
-  let navFixed;
-  $win.scroll(function () {
+  let lastScrollTop = $win.scrollTop();
+  let scrolled = false;
+
+  // Unlock navigation only when genuine user interaction occurs
+  $(window).on("wheel touchstart pointerdown keydown", function () {
+    if (window._navLocked) {
+      window._navLocked = false;
+      lastScrollTop = $win.scrollTop();
+    }
+  });
+
+  $win.on("scroll", function () {
+    if (window._navLocked) {
+      lastScrollTop = $win.scrollTop();
+      scrolled = false;
+      if ($win.scrollTop() <= 0) {
+        $nav.addClass("no-transition").removeClass("nav-up scrolled");
+        setTimeout(function () {
+          $nav.removeClass("no-transition");
+        }, 50);
+      } else {
+        $nav.addClass("nav-up");
+      }
+      return;
+    }
     scrolled = true;
   });
+
   setInterval(function () {
+    if (window._navLocked) {
+      lastScrollTop = $win.scrollTop();
+      scrolled = false;
+      if ($win.scrollTop() <= 0) {
+        $nav.addClass("no-transition").removeClass("nav-up scrolled");
+        setTimeout(function () {
+          $nav.removeClass("no-transition");
+        }, 50);
+      } else {
+        $nav.addClass("nav-up");
+      }
+      return;
+    }
     if (scrolled) {
-      let scrollTop = $win.scrollTop();
-      if (Math.abs(lastScrollTop - scrollTop) <= 10) {
+      if ($nav.find(".navbar-collapse.show, .navbar-collapse.collapsing").length) {
+        lastScrollTop = $win.scrollTop();
+        scrolled = false;
+        $nav.removeClass("nav-up");
         return;
       }
-      if (scrollTop <= navHeight) {
-        if (navFixed) {
-          $nav.removeClass("fixed");
-          navFixed = false;
-        }
-      } else if (scrollTop > lastScrollTop) {
-        if (navFixed) {
-          $nav.removeClass("fixed");
-          navFixed = false;
-        }
+      let scrollTop = $win.scrollTop();
+      let diff = lastScrollTop - scrollTop;
+
+      if (scrollTop <= 0) {
+        $nav.addClass("no-transition").removeClass("nav-up scrolled");
+        setTimeout(function () {
+          $nav.removeClass("no-transition");
+        }, 50);
       } else {
-        if (!navFixed) {
-          if ($nav.hasClass("immediate")) {
-            $nav.removeClass("immediate")
-          } else {
-            $nav.addClass("fixed");
-            $nav.hide().fadeIn(500);
-            navFixed = true;
-          }
+        $nav.addClass("scrolled");
+        if (diff < -10 && scrollTop > 60) {
+          // Scroll down: hide navigation
+          $nav.addClass("nav-up");
+        } else if (diff > 10) {
+          // Scroll up: show navigation
+          $nav.removeClass("nav-up");
         }
       }
+
       lastScrollTop = scrollTop;
       scrolled = false;
     }
-  }, 200);
+  }, 100);
+
   $nav.find("ul.submenu > li > a").on('click touchend', function (e) {
     let link = $(this).attr('href');
     if (link) {

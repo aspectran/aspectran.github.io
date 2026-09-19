@@ -32,96 +32,56 @@ $(function () {
       });
     }
 
-    $(".lazy-sticky").each(function () {
-      const $win = $(window);
-      const $this = $(this);
-      const baseOffsetTop = $this.offset().top;
-      const upToTopHeight = $("#up-to-top").height() + 30 + 60;
-      let footerHeight = $("#footer-content").height() + upToTopHeight;
-      let offsetTop = 0;
-      let thisHeight = $this.height();
-      let winHeight = $win.height();
-      let scrollTimer = null;
-      let immediate = false;
-      $this.find("#toc ul a").on("click", function () {
-        immediate = true;
-        let anchor = $(this).attr("anchor");
-        if (anchor !== "top-of-page") {
-          $("#navigation").addClass("immediate");
-        }
-      });
-      $win.on("scroll", function () {
-        let scrollTop = $win.scrollTop();
-        if (scrollTop < baseOffsetTop) {
-          if (scrollTimer) {
-            clearInterval(scrollTimer);
-            scrollTimer = null;
-          }
-          scrollTimer = setInterval(function () {
-            if (offsetTop !== 0) {
-              $this.css({
-                top: 0
-              });
-            }
-            offsetTop = 0;
-            clearInterval(scrollTimer);
-            scrollTimer = null;
-            immediate = false;
-          }, immediate ? 250 : 500);
+    // TOC click handler
+    $("#toc ul a").on("click", function (e) {
+      let anchor = $(this).attr("anchor");
+      if (anchor) {
+        let $target;
+        if (anchor === "top-of-page") {
+          $target = $("#masthead").length ? $("#masthead") : $("body");
         } else {
-          let topBarHeight = $("#navigation.fixed .top-bar").height() || 0;
-          if (immediate || (scrollTop > baseOffsetTop + topBarHeight + offsetTop + thisHeight - 20) ||
-            (scrollTop < baseOffsetTop + offsetTop - 50)) {
-            if ($win.width() > 992) {
-              if (scrollTimer) {
-                clearInterval(scrollTimer);
-                scrollTimer = null;
-              }
-              scrollTimer = setInterval(function () {
-                topBarHeight = $("#navigation.fixed .top-bar").height() || 0;
-                scrollTop = $win.scrollTop();
-                if (scrollTop < baseOffsetTop + topBarHeight) {
-                  scrollTop = 0;
-                } else {
-                  scrollTop = scrollTop - baseOffsetTop + topBarHeight + 30;
-                }
-                const docHeight = $(document).height();
-                if (scrollTop > docHeight - footerHeight - thisHeight - baseOffsetTop + topBarHeight) {
-                  scrollTop = docHeight - footerHeight - thisHeight - baseOffsetTop + topBarHeight;
-                }
-                offsetTop = scrollTop;
-                $this.css({
-                  position: "relative"
-                }).animate({
-                  top: (scrollTop + topBarHeight) + "px"
-                }, 300);
-                clearInterval(scrollTimer);
-                scrollTimer = null;
-                winHeight = $win.height();
-                thisHeight = $this.height();
-                footerHeight = $("#footer-content").height() + upToTopHeight;
-                immediate = false;
-              }, immediate ? 250 : 500);
-            }
+          $target = $("a#" + anchor).length ? $("a#" + anchor) : ($("." + anchor).length ? $("." + anchor) : $("#" + anchor));
+        }
+        if ($target.length) {
+          e.preventDefault();
+          let isTop = (anchor === "top-of-page");
+          window._navLocked = true;
+          if (isTop) {
+            $("#navigation").addClass("no-transition").removeClass("nav-up scrolled");
+          } else {
+            $("#navigation").addClass("nav-up");
           }
+
+          let $heading = $target.is("h1, h2, h3, h4, h5, h6") ? $target : $target.nextAll("h1, h2, h3, h4, h5, h6").first();
+          let headingTop = $heading.length ? $heading.offset().top : $target.offset().top;
+          let targetOffset = isTop ? 0 : Math.max(0, Math.round(headingTop) - 30);
+
+          if (history.pushState) {
+            history.pushState(null, null, "#" + anchor);
+          }
+
+          $("html, body").stop().animate({
+            scrollTop: targetOffset
+          }, 300, function () {
+            if (isTop) {
+              $("#navigation").removeClass("no-transition nav-up scrolled");
+              window._navLocked = false;
+            }
+          });
         }
+      }
+    });
+
+    $(document).on("click", "#up-to-top a[href='#top-of-page']", function (e) {
+      e.preventDefault();
+      window._navLocked = true;
+      $("#navigation").addClass("no-transition").removeClass("nav-up scrolled");
+      $("html, body").stop().animate({
+        scrollTop: 0
+      }, 300, function () {
+        $("#navigation").removeClass("no-transition nav-up scrolled");
+        window._navLocked = false;
       });
-      $win.on("resize", function () {
-        if ($win.width() <= 992) {
-          clearInterval(scrollTimer);
-          offsetTop = 0;
-          $this.css("top", 0);
-        } else {
-          offsetTop = $win.scrollTop();
-          $win.scroll();
-        }
-      });
-      setTimeout(function () {
-        if ($win.scrollTop() > baseOffsetTop) {
-          offsetTop = $win.scrollTop();
-          $win.scroll();
-        }
-      }, 150);
     });
   }
 });
