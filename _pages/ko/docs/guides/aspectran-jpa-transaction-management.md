@@ -234,6 +234,6 @@ Aspectran JPA 환경을 구축하기 위해 `pom.xml`에 포함해야 할 주요
 Aspectran의 포인트컷은 `+:`(포함)와 `-:`(제외) 접두사를 사용합니다.
 *   **특정 빈 ID 대상**: `+: **@entityQuery`
 *   **특정 클래스/인터페이스 대상**: `+: **@class:com.example.repository.*Repository`
-*   **패키지 범위 지정**: `+: **@com.example.service.**`
+*   **패키지 범위 지정**: `+: **@class:com.example.service.**`
 
 Aspectran은 내부 트랜잭션 스택을 활용하여 중첩된 호출 구조에서도 데이터 무결성과 안전한 전파(Propagation)를 보장합니다.

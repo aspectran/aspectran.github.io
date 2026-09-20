@@ -137,7 +137,7 @@ public class SampleTxAspect extends SqlSessionAdvice {
 Aspectran pointcuts use `+:` (include) and `-:` (exclude) prefixes.
 *   **Targeting specific Bean ID**: `+: **@sqlSession`
 *   **Targeting specific Class/Interface**: `+: **@class:com.example.db.*Dao`
-*   **Package scope**: `+: **@com.example.service.**`
+*   **Package scope**: `+: **@class:com.example.service.**`
 
 ## 5. Multi-SqlSessionFactory Environments
 

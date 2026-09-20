@@ -234,6 +234,6 @@ Method for precisely filtering targets to which the transaction advice will be a
 Aspectran pointcuts use `+:` (include) and `-:` (exclude) prefixes.
 *   **Targeting specific Bean ID**: `+: **@entityQuery`
 *   **Targeting specific Class/Interface**: `+: **@class:com.example.repository.*Repository`
-*   **Package scope**: `+: **@com.example.service.**`
+*   **Package scope**: `+: **@class:com.example.service.**`
 
 Aspectran leverages an internal transaction stack to ensure data integrity and safe propagation even in nested call structures.
