@@ -26,7 +26,7 @@ sample_projects:
     title: ToDo Webapp
     description: A simple ToDo example application based on the Aspectow Enterprise Edition.
     thumb_img: projects/todo.png
-    url: https://github.com/aspectran/aspectow-todo-webapp
+    url: https://examples.aspectran.com/todos/
     repo: https://github.com/aspectran/aspectow-todo-webapp
   - subheadline: Sample Project
     title: JPetStore Demo
