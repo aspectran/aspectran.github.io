@@ -58,6 +58,10 @@ aspectran:
           url: /ko/docs/guides/aspectran-hint-mechanism/
         - title: 와일드카드 매칭
           url: /ko/docs/guides/aspectran-wildcard-matching/
+        - title: Shell 소개
+          url: /ko/docs/guides/aspectran-shell-introduction/
+        - title: Daemon 소개
+          url: /ko/docs/guides/aspectran-daemon-introduction/
         - title: File Commander
           url: /ko/docs/guides/aspectran-daemon-file-commander/
 
