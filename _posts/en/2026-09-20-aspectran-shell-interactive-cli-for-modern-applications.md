@@ -1,9 +1,9 @@
 ---
 subheadline: Interactive CLI
-title: "Beyond a Simple CLI: Building Next-Gen Interactive Applications & Practical Use Cases with Aspectran Shell"
+title: "Beyond a Simple CLI: Unlocking Aspectran Shell's Potential with 5 Practical Application Scenarios"
 categories:
   - use-cases
-tags: [Aspectran, Shell, CLI, REPL, JLine, Architecture, Use Cases, AI Agent, DevOps]
+tags: [Aspectran, Shell, CLI, REPL, JLine, Architecture, Application Scenarios, AI Agent, DevOps]
 published: true
 ---
 
@@ -12,9 +12,9 @@ For many developers, a CLI (Command-Line Interface) is often viewed merely as a 
 Within the Aspectran ecosystem, however, **Aspectran Shell** is far more than a basic command runner. It is a standalone, full-featured **interactive application platform seamlessly integrated with an IoC/DI container, AOP proxy engine, stateful session management, and the unified Translet architecture**.
 <!--more-->
 
-Moving beyond the common local testing practice of launching `DemoRichShell` from `src/test/java` in your IDE, this article explores the fundamental architectural strengths of Aspectran Shell and introduces **five innovative, enterprise-ready practical use cases**.
+Moving beyond the common local testing practice of launching `DemoRichShell` from `src/test/java` in your IDE, this article explores the fundamental architectural strengths of Aspectran Shell and introduces **five innovative application scenarios and architectural patterns you can build for real-world projects**.
 
-[![asciicast](https://asciinema.org/a/1264203.png)](https://asciinema.org/a/1264203)
+[<img alt="asciicast" src="https://asciinema.org/a/1264203.png" class="img-fluid"/>](https://asciinema.org/a/1264203)
 
 ## 💡 Key Architectural Distinctions from Typical CLI Frameworks
 

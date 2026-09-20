@@ -1,9 +1,9 @@
 ---
 subheadline: Interactive CLI
-title: "단순한 CLI를 넘어: Aspectran Shell로 구축하는 차세대 대화형 애플리케이션과 실무 활용 사례"
+title: "단순한 CLI를 넘어: Aspectran Shell의 숨겨진 잠재력과 5가지 실무 활용 방안"
 categories:
   - use-cases
-tags: [Aspectran, Shell, CLI, REPL, JLine, Architecture, Use Cases, AI Agent, DevOps]
+tags: [Aspectran, Shell, CLI, REPL, JLine, Architecture, Application Scenarios, AI Agent, DevOps]
 published: true
 ---
 
@@ -12,7 +12,7 @@ published: true
 하지만 Aspectran 생태계에서 **Aspectran Shell**은 단순한 명령어 실행기가 아닙니다. **IoC/DI 컨테이너, AOP 엔진, 상태 유지 세션(Stateful Session), 그리고 통합 Translet 아키텍처가 완벽하게 결합된 독보적인 대화형(Interactive) 애플리케이션 플랫폼**입니다.
 <!--more-->
 
-웹 애플리케이션을 개발할 때 IDE에서 `src/test/java`의 `DemoRichShell`을 띄워 로컬 로직을 검증하던 경험을 넘어, **"Aspectran Shell을 어디에 활용하면 최고의 엔터프라이즈 가치를 만들어낼 수 있을까?"**라는 질문에서 출발하여, Aspectran Shell의 핵심 강점과 5가지 혁신적인 실무 활용 사례를 소개합니다.
+웹 애플리케이션을 개발할 때 IDE에서 `src/test/java`의 `DemoRichShell`을 띄워 로컬 로직을 검증하던 경험을 넘어, **"Aspectran Shell을 실무 프로젝트에 어떻게 응용하고 구축할 수 있을까?"**라는 관점에서, Aspectran Shell의 핵심 강점과 **실무에 바로 적용해 볼 수 있는 5가지 혁신적인 애플리케이션 아키텍처 시나리오**를 제안합니다.
 
 [<img alt="asciicast" src="https://asciinema.org/a/1264203.png" class="img-fluid"/>](https://asciinema.org/a/1264203)
 
