@@ -29,6 +29,8 @@ permalink: /en/docs/
 *   [Aspectran JSON Utilities Guide](/en/docs/guides/aspectran-json-guide/)
 *   [Aspectran Hint Mechanism Guide](/en/docs/guides/aspectran-hint-mechanism/)
 *   [Aspectran Wildcard Matching Guide](/en/docs/guides/aspectran-wildcard-matching/)
+*   [Introduction to Aspectran Shell](/en/docs/guides/aspectran-shell-introduction/)
+*   [Introduction to Aspectran Daemon](/en/docs/guides/aspectran-daemon-introduction/)
 *   [Remote Command Injection and Control via File Commander](/en/docs/guides/aspectran-daemon-file-commander/)
 
 ### Practical Guides

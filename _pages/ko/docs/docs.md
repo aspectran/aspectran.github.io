@@ -29,6 +29,8 @@ permalink: /ko/docs/
 *   [Aspectran JSON 유틸리티 가이드](/ko/docs/guides/aspectran-json-guide/)
 *   [Aspectran 힌트 메커니즘 가이드](/ko/docs/guides/aspectran-hint-mechanism/)
 *   [Aspectran 와일드카드 패턴 매칭 가이드](/ko/docs/guides/aspectran-wildcard-matching/)
+*   [Aspectran Shell 소개](/ko/docs/guides/aspectran-shell-introduction/)
+*   [Aspectran Daemon 소개](/ko/docs/guides/aspectran-daemon-introduction/)
 *   [File Commander를 통한 원격 명령 주입 및 제어](/ko/docs/guides/aspectran-daemon-file-commander/)
 
 ### 실용 가이드
