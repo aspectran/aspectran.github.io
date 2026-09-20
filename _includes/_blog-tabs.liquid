@@ -11,6 +11,10 @@
 {% if arch_count == 0 and site.categories['architecture'] %}
   {% assign arch_count = site.categories['architecture'].size %}
 {% endif %}
+{% assign use_cases_count = site.categories['use-cases'] | where: 'lang', 'ko' | size %}
+{% if use_cases_count == 0 and site.categories['use-cases'] %}
+  {% assign use_cases_count = site.categories['use-cases'].size %}
+{% endif %}
 <div class="blog-tabs pt-4 pt-xl-5 pb-4">
   <ul class="nav nav-tabs mobile-btn-tabs border rounded p-2 pb-md-0 bg-body-tertiary">
     <li class="nav-item">
@@ -26,6 +30,11 @@
     <li class="nav-item">
       <a class="nav-link justify-content-between{% if current_url contains '/blog/architecture' %} active{% endif %}" href="/blog/architecture/">
         Architecture <span class="badge rounded-pill bg-secondary ms-1">{{ arch_count }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link justify-content-between{% if current_url contains '/blog/use-cases' %} active{% endif %}" href="/blog/use-cases/">
+        Use Cases <span class="badge rounded-pill bg-secondary ms-1">{{ use_cases_count }}</span>
       </a>
     </li>
     <li class="nav-item">

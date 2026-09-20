@@ -1,0 +1,15 @@
+---
+auto_lang: true
+layout: page
+title: Use Cases
+teaser: Discover practical application scenarios, enterprise use cases, and best practices with Aspectran & Aspectow.
+noindex: true
+sitemap: false
+breadcrumb: true
+sidebar: right
+---
+
+{% include _blog-tabs.liquid %}
+
+{% assign posts = site.categories['use-cases'] | sort: 'date' | reverse %}
+{% include _blog-posts.liquid posts=posts paginate=true page_size=10 %}
