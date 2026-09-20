@@ -16,7 +16,7 @@
   {% assign use_cases_count = site.categories['use-cases'].size %}
 {% endif %}
 <div class="blog-tabs pt-4 pt-xl-5 pb-4">
-  <ul class="nav nav-btn-tabs border rounded p-2 bg-body-tertiary">
+  <ul class="nav nav-btn-tabs border border-2 rounded p-2 bg-body-tertiary">
     <li class="nav-item">
       <a class="nav-link{% if current_url == '/blog/' or current_url contains '/blog/page' %} active{% endif %}" href="/blog/">
         All <span class="badge rounded-pill bg-secondary">{{ all_count }}</span>
