@@ -9,7 +9,7 @@ Aspectran Shell is a powerful **Interactive Command-Line Interface (REPL)** desi
 
 Aspectran Shell supports two runtime modes depending on the execution environment: a lightweight standard console (**Plain Shell**) and a JLine 3-powered rich console (**Rich Shell**). It delivers a modern terminal user experience complete with command history navigation, tab auto-completion, ANSI color/style text rendering, and output redirection (`>`, `>>`), enabling developers and operators to run and inspect backend logic directly in the terminal without requiring complex web UIs or external test clients.
 
-[![asciicast](https://asciinema.org/a/1264203.png)](https://asciinema.org/a/1264203)
+[<img alt="asciicast" src="https://asciinema.org/a/1264203.png" class="img-fluid"/>](https://asciinema.org/a/1264203)
 
 ## 2. Core Architectural Philosophy & Features
 

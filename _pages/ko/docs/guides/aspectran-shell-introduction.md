@@ -9,7 +9,7 @@ Aspectran Shell은 Aspectran 애플리케이션을 실시간으로 개발, 테�
 
 Aspectran Shell은 실행 환경에 따라 경량 표준 콘솔(Plain Shell)과 JLine 3 기반의 리치 콘솔(Rich Shell) 두 가지 모드를 모두 지원합니다. 명령어 히스토리 탐색, 탭(Tab) 자동 완성, ANSI 컬러/스타일 텍스트 렌더링, 출력 리다이렉션(`>`, `>>`) 등 현대적인 터미널 사용자 경험을 제공하여, 복잡한 웹 UI나 외부 테스트 도구 없이도 터미널 환경에서 백엔드 로직을 직접 구동하고 모니터링할 수 있습니다.
 
-[![asciicast](https://asciinema.org/a/1264203.png)](https://asciinema.org/a/1264203)
+[<img alt="asciicast" src="https://asciinema.org/a/1264203.png" class="img-fluid"/>](https://asciinema.org/a/1264203)
 
 ## 2. 핵심 설계 철학 및 특징
 
