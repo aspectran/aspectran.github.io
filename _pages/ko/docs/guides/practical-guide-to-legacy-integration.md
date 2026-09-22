@@ -29,14 +29,14 @@ Maven 프로젝트의 경우, `pom.xml` 파일에 다음 의존성을 추가합�
 <dependency>
     <groupId>com.aspectran</groupId>
     <artifactId>aspectran-utils-legacy</artifactId>
-    <version>1.2.0</version> <!-- 실제 버전에 맞게 조정하세요 -->
+    <version>1.2.1</version> <!-- 실제 버전에 맞게 조정하세요 -->
 </dependency>
 ```
 
 Gradle 프로젝트의 경우, `build.gradle` 파일에 다음 의존성을 추가합니다.
 
 ```gradle
-implementation 'com.aspectran:aspectran-utils-legacy:1.1.2' // 실제 버전에 맞게 조정하세요
+implementation 'com.aspectran:aspectran-utils-legacy:1.2.1' // 실제 버전에 맞게 조정하세요
 ```
 
 ### 2. 기본 사용 예시
