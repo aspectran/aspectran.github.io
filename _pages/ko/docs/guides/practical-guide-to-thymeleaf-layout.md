@@ -66,6 +66,7 @@ subheadline: 실용 가이드
     <!-- 2. Thymeleaf 뷰 디스패처 Bean 설정 -->
     <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
         <argument>#{thymeleaf}</argument>
+        <property name="contentType">text/html</property>
     </bean>
 
     <!-- 3. 특정 URL 요청을 Thymeleaf 뷰로 연결하는 Aspect 설정 -->

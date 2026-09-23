@@ -130,6 +130,7 @@ Thymeleaf는 웹 및 독립 실행형 환경 모두를 지원하는 최신 서�
 
 <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
     <argument>#{thymeleafEngine}</argument>
+    <property name="contentType">text/html</property>
 </bean>
 
 <!-- 2. Aspect를 통한 기본 viewDispatcher 및 응답 헤더 주입 -->

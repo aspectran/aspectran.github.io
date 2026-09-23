@@ -347,6 +347,7 @@ public class LoggingAspect {
     <!-- 1. 뷰 디스패처 등록 -->
     <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
         <argument>#{thymeleafEngine}</argument>
+        <property name="contentType">text/html</property>
     </bean>
 
     <!-- 2. 전역 웹 트랜스릿 설정 Aspect -->
@@ -385,7 +386,6 @@ public class LoggingAspect {
         <advice>
             <before>
                 <headers>
-                    <item name="Content-Type">text/html; charset=utf-8</item>
                     <item name="Content-Security-Policy">default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com;</item>
                 </headers>
             </before>

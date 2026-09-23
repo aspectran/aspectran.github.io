@@ -130,6 +130,7 @@ Thymeleaf is a modern server-side Java template engine for both web and standalo
 
 <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
     <argument>#{thymeleafEngine}</argument>
+    <property name="contentType">text/html</property>
 </bean>
 
 <!-- 2. Aspect to inject default viewDispatcher globally -->

@@ -347,6 +347,7 @@ Automatically injects security response headers (CSP, X-Frame-Options) and defau
     <!-- 1. Register View Dispatcher Bean -->
     <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
         <argument>#{thymeleafEngine}</argument>
+        <property name="contentType">text/html</property>
     </bean>
 
     <!-- 2. Global Web Translet Settings Aspect -->
@@ -385,7 +386,6 @@ Automatically injects security response headers (CSP, X-Frame-Options) and defau
         <advice>
             <before>
                 <headers>
-                    <item name="Content-Type">text/html; charset=utf-8</item>
                     <item name="Content-Security-Policy">default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com;</item>
                 </headers>
             </before>

@@ -66,6 +66,7 @@ After adding the dependencies, you need to register the Thymeleaf template engin
     <!-- 2. Configure Thymeleaf View Dispatcher Bean -->
     <bean id="thymeleafViewDispatcher" class="com.aspectran.thymeleaf.view.ThymeleafViewDispatcher">
         <argument>#{thymeleaf}</argument>
+        <property name="contentType">text/html</property>
     </bean>
 
     <!-- 3. Configure Aspect to map specific URL requests to Thymeleaf views -->
