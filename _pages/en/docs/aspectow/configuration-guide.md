@@ -380,11 +380,141 @@ Undertow relies on XNIO, a lightweight asynchronous I/O framework:
 * **`multipartMaxEntitySize`**: Upper threshold for multipart upload payloads.
 * **`idleTimeout`**: Socket idle timeout in milliseconds.
 
-### 5.3. Middleware Handler Chain Configuration
+### 5.3. SSL/TLS Security and HTTP/2 Protocol Configuration
+
+Aspectow Enterprise provides full out-of-the-box support for **HTTP/2** and **TLS encrypted communication**. By multiplexing multiple concurrent request/response streams over a single TCP connection and applying HPACK header compression, HTTP/2 significantly minimizes network bandwidth consumption and round-trip latency (RTT).
+
+#### 5.3.1. HTTP/2 Transport Modes
+
+* **TLS-Based HTTP/2 (`h2`)**: Negotiates the `h2` protocol during the TLS handshake via ALPN (Application-Layer Protocol Negotiation). Major web browsers (Chrome, Safari, Firefox, Edge) enforce HTTP/2 exclusively over HTTPS connections.
+* **Cleartext HTTP/2 (`h2c`)**: Establishes HTTP/2 connections over unencrypted plain TCP ports using either HTTP/2 Prior-Knowledge or the HTTP/1.1 Upgrade header mechanism. Commonly utilized in microservice-to-microservice internal networking, gRPC backends, and benchmarking utilities (`h2load`, `curl`).
+
+#### 5.3.2. SSL/TLS Certificate and KeyStore Preparation
+
+To run a direct HTTPS listener, a KeyStore file formatted in PKCS12 (`.p12`) or JKS is required. For local development and testing, self-signed certificates can be generated with JDK's built-in `keytool`:
+
+```bash
+# Example generating a PKCS12 self-signed keystore
+keytool -genkeypair -alias aspectow -keyalg RSA -keysize 2048 \
+    -storetype PKCS12 -keystore app/config/keystore.p12 \
+    -validity 3650 -storepass changeit -keypass changeit \
+    -dname "CN=localhost, OU=Aspectow, O=Aspectran, L=Seoul, ST=Seoul, C=KR"
+```
+
+#### 5.3.3. Undertow HTTP/2 and HTTPS Listener XML Configuration
+
+In `tow-server.xml`, enable the `enableHttp2` option on `TowOptions` and add an `HttpsListenerConfig` to activate HTTPS and HTTP/2. It is recommended to use conditional profile properties (`profile="http2"`) so HTTP/2 can be toggled per deployment environment:
+
+```xml
+<bean id="tow.server" class="com.aspectran.undertow.server.DefaultTowServer">
+    <!-- Restore real client IP and protocol when behind reverse proxies -->
+    <property name="proxyAddressForwarding" valueType="boolean">true</property>
+
+    <!-- Plaintext HTTP Listener (Default port: 8081) -->
+    <property name="httpListeners" type="array">
+        <bean class="com.aspectran.undertow.server.HttpListenerConfig">
+            <property name="host">%{tow.server.listener.http.host}</property>
+            <property name="port" valueType="int">%{tow.server.listener.http.port}</property>
+        </bean>
+    </property>
+
+    <!-- Secure HTTPS/TLS Listener (Port: 8443) -->
+    <property name="httpsListeners" type="array">
+        <bean class="com.aspectran.undertow.server.HttpsListenerConfig">
+            <property name="host">0.0.0.0</property>
+            <property name="port" valueType="int">8443</property>
+            <property name="keyStorePath">/config/keystore.p12</property>
+            <property name="keyStorePassword">changeit</property>
+            <property name="keyPassword">changeit</property>
+            <property name="keyStoreType">PKCS12</property>
+        </bean>
+    </property>
+
+    <!-- Undertow Server Options -->
+    <property name="serverOptions">
+        <bean class="com.aspectran.undertow.server.TowOptions">
+            <property name="decodeUrl" valueType="boolean">true</property>
+            <property name="urlCharset">UTF-8</property>
+            <!-- Apply HTTP/2 and tuning settings when http2 profile is active -->
+            <properties profile="http2">
+                <item name="enableHttp2" valueType="boolean">true</item>
+                <item name="http2SettingsHeaderTableSize" valueType="int">4096</item>
+                <item name="http2SettingsEnablePush" valueType="boolean">true</item>
+                <item name="http2SettingsMaxConcurrentStreams" valueType="int">100</item>
+                <item name="http2SettingsInitialWindowSize" valueType="int">65535</item>
+                <item name="http2SettingsMaxFrameSize" valueType="int">16384</item>
+            </properties>
+        </bean>
+    </property>
+</bean>
+```
+
+#### 5.3.4. Nginx Reverse Proxy and SSL Termination Architecture
+
+In production environments, placing Nginx or a cloud load balancer (ALB) at the front to terminate SSL and HTTP/2 while proxying traffic to the backend Aspectow instance is standard practice:
+
+```
+[ Web Browser ]  --- (HTTPS / HTTP/2: h2) --->  [ Nginx (SSL Termination) ]  --- (HTTP/1.1 Keep-Alive) --->  [ Aspectow (8081) ]
+```
+
+##### Nginx Reverse Proxy Configuration Example (`nginx.conf`)
+
+```nginx
+server {
+    listen 443 ssl;
+    http2 on; # Standard for modern Nginx (Legacy: listen 443 ssl http2;)
+
+    server_name your-domain.com;
+
+    ssl_certificate     /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    location / {
+        proxy_pass http://127.0.0.1:8081;
+        proxy_http_version 1.1;
+
+        # Forward proxy headers (Interoperates with Aspectow proxyAddressForwarding)
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+    }
+}
+```
+
+#### 5.3.5. HTTP/2 Verification and Benchmarking
+
+After starting the server, protocol negotiation and multiplexing throughput can be validated using `curl` and `h2load` CLI utilities.
+
+##### 1) Verifying HTTP/2 Protocol with cURL
+
+```bash
+# 1. Plaintext port (8081) H2C Prior-Knowledge verification
+curl -v --http2-prior-knowledge http://localhost:8081/console/
+
+# 2. Self-signed HTTPS port (8443) TLS ALPN h2 verification (-k: ignore cert validation)
+curl -v -k --http2 https://localhost:8443/console/
+```
+* Verify that `< HTTP/2 200` and HPACK-compressed headers are received in the response stream.
+
+##### 2) Multiplexing Benchmarks with h2load
+
+Using the `h2load` tool from the [nghttp2](https://nghttp2.org/) package, evaluate multi-stream throughput over single or multiple TCP connections:
+
+```bash
+# Benchmark 1,000 requests over 1 TCP connection with 100 concurrent streams
+h2load -v -n 1000 -c 1 -m 100 http://localhost:8081/console/
+```
+* Inspect `Application protocol: h2c`, increasing `stream_id` values, `space savings` percentage, and verify `0 failed, 0 errored`.
+
+### 5.4. Middleware Handler Chain Configuration
 
 The `handlerChainWrappers` property chains pre/post-processing middleware before requests hit servlet contexts.
 
-#### 5.3.1. Compression Encoding Handler (`EncodingHandlerWrapper`)
+#### 5.4.1. Compression Encoding Handler (`EncodingHandlerWrapper`)
 Conditionally applies Gzip compression to conserve network bandwidth and accelerate client response times.
 
 ```xml
@@ -419,7 +549,7 @@ Conditionally applies Gzip compression to conserve network bandwidth and acceler
 </bean>
 ```
 
-#### 5.3.2. Path-Based Logging Group Handler (`PathBasedLoggingGroupHandlerWrapper`)
+#### 5.4.2. Path-Based Logging Group Handler (`PathBasedLoggingGroupHandlerWrapper`)
 Automatically binds a logging group (`loggingGroup`) variable into the SLF4J MDC (Mapped Diagnostic Context) based on incoming request URL patterns. Combined with Logback, this cleanly segregates administrator logs, API logs, and batch logs into separate physical files.
 
 ```xml
@@ -437,7 +567,7 @@ Automatically binds a logging group (`loggingGroup`) variable into the SLF4J MDC
 </bean>
 ```
 
-#### 5.3.3. Access Log Handler (`AccessLogHandlerWrapper`)
+#### 5.4.3. Access Log Handler (`AccessLogHandlerWrapper`)
 Logs all incoming HTTP transaction outcomes in standard web server access log format.
 
 ```xml
@@ -464,7 +594,7 @@ Logs all incoming HTTP transaction outcomes in standard web server access log fo
   * `%b`: Transmitted response bytes (excluding headers)
   * `%D`: Request processing duration in milliseconds
 
-### 5.4. Servlet Context Deployment & Detailed Configuration (`tow-context-root.xml`)
+### 5.5. Servlet Context Deployment & Detailed Configuration (`tow-context-root.xml`)
 
 `TowServletContext` mounts an independent web application context into Undertow, assembling servlet mappings, static resource managers, JSP compilation engines, custom tag libraries (TLD), WebSockets, and distributed session managers.
 
@@ -586,7 +716,7 @@ Logs all incoming HTTP transaction outcomes in standard web server access log fo
 </aspectran>
 ```
 
-#### 5.4.1. Static Resource Management (`TowResourceManager` & `TowClassPathResourceManager`)
+#### 5.5.1. Static Resource Management (`TowResourceManager` & `TowClassPathResourceManager`)
 
 Aspectow Enterprise fully supports high-performance static asset delivery from both filesystems and classpaths.
 
@@ -625,21 +755,21 @@ For modular application architectures where static web assets are packaged insid
 * **`prefix`**: Package path prefix in the classpath from which to locate assets (e.g., `static/` or `public/`).
 * **Aspectran ClassLoader Integration**: Implements [`ActivityContextAware`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowClassPathResourceManager.java#L48) to stream resources seamlessly out of JAR files without runtime unpack overhead.
 
-#### 5.4.2. Servlet and JSP Mapping (`DefaultJspServlet` & `TowServlet`)
+#### 5.5.2. Servlet and JSP Mapping (`DefaultJspServlet` & `TowServlet`)
 * **`DefaultJspServlet`**: Activates the Apache Jasper-based JSP compiler and servlet handler, compiling JSP files dynamically at runtime for rapid execution. (Can be omitted in contexts that rely purely on template engines like Thymeleaf).
 * **`TowServlet`**: Registers Aspectran's core `WebActivityServlet` at the root mapping (`/`), dispatching all incoming web requests into the Aspectran Translet engine.
 
-#### 5.4.3. Custom JSP Tag Library (TLD) Configuration (`TowJasperInitializer`)
+#### 5.5.3. Custom JSP Tag Library (TLD) Configuration (`TowJasperInitializer`)
 To use framework tags such as `<aspectran:message>` and `<aspectran:token>` or load custom project TLDs in JSP views, declare paths under `tldResources`:
 * `classpath:com/aspectran/web/support/tags/aspectran.tld`: Standard Aspectran tag library
 * `/webapps/{contextName}/WEB-INF/taglibs/`: Directory path containing custom `.tld` definitions
 
-#### 5.4.4. JSR-356 WebSocket Configuration (`TowWebSocketServerContainerInitializer`)
+#### 5.5.4. JSR-356 WebSocket Configuration (`TowWebSocketServerContainerInitializer`)
 Initializes Undertow's low-latency WebSocket engine.
 * Supports standard JSR-356 annotations (`@ServerEndpoint`).
 * `idleTimeout`: Maximum socket idle duration (in milliseconds) before connection closure.
 
-#### 5.4.5. Servlet Session Management (`TowSessionManager` & `TowServletSessionConfig`)
+#### 5.5.5. Servlet Session Management (`TowSessionManager` & `TowServletSessionConfig`)
 Bridges Aspectran's enterprise state management engine with Undertow's servlet specification (`io.undertow.server.session.SessionManager`).
 * **[`TowSessionManager`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java)**:
   * Delegates standard servlet session lifecycle events directly to Aspectran's core [`DefaultSessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java).
@@ -656,7 +786,7 @@ Bridges Aspectran's enterprise state management engine with Undertow's servlet s
 
 > **Note:** For complete details on `SessionManagerConfig` lifecycle tuning, bot/crawler session optimization, `NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
 
-### 5.5. Console Management Context (`tow-context-console.xml`)
+### 5.6. Console Management Context (`tow-context-console.xml`)
 
 Undertow provides full servlet container isolation, enabling the deployment of the centralized **Console management context (`/console`)** alongside the main application context (`/`) on a single port (e.g., 8081).
 
@@ -680,7 +810,7 @@ Undertow provides full servlet container isolation, enabling the deployment of t
   * In single-node deployments, loading `tow-context-console.xml` activates the full web dashboard for immediate administrative browser access.
   * In clustered deployments with dedicated central console nodes, loading `tow-context-console-headless.xml` runs an ultra-lean backend control plane (WebSocket streaming, remote CLI dispatch, scheduler control APIs) without rendering UI views.
 
-### 5.6. Runtime Support Components (`tow-support.xml`)
+### 5.7. Runtime Support Components (`tow-support.xml`)
 
 `tow-support.xml` registers helper components that intercept server lifecycle events and expose diagnostic telemetry.
 

@@ -457,7 +457,135 @@ In high-throughput microservice environments, writing all request logs to a sing
   * In Logback (`logback-netty.xml`), configuring `LoggingGroupDiscriminator` or `SiftingAppender` automatically segregates logs into dedicated files (e.g., `order.log`, `payment.log`, `api.log`).
   * Non-matching requests fall back to the default group of the active `NettyContext`, and `LoggingGroupHelper.clear()` is invoked in a `finally` block to prevent thread context leakage.
 
-### 5.3. Main Service Context (`netty-context-root.xml`)
+### 5.3. SSL/TLS Security and HTTP/2 Protocol Configuration
+
+Aspectow Edge fully supports **HTTP/2** and **TLS encrypted communication** on top of Netty's high-performance asynchronous pipeline. Multiple request streams (`Http2StreamChannel`) are multiplexed over a single TCP socket connection, and HPACK header compression drastically minimizes network latency.
+
+#### 5.3.1. Netty HTTP/2 Architecture and Transport Modes
+
+* **TLS-based HTTP/2 (`h2`)**: Automatically negotiates `h2` or `http/1.1` during the SSL/TLS handshake via ALPN (Application-Layer Protocol Negotiation). When `h2` is selected, `Http2FrameCodec` and `Http2MultiplexHandler` are dynamically attached to the pipeline to spawn stream channels. This is the standard mode for modern web browsers.
+* **Cleartext HTTP/2 (`h2c`)**: Uses `CleartextHttp2ServerUpgradeHandler` to detect client HTTP/2 Prior-Knowledge (connection preface: `PRI * HTTP/2.0...`) or HTTP/1.1 Upgrade requests, instantly transitioning cleartext ports into HTTP/2 multiplexing mode.
+
+#### 5.3.2. SSL/TLS Certificate and KeyStore Preparation
+
+To run an HTTPS encrypted listener directly, a PKCS12 (`.p12`) or JKS format KeyStore file is required. A self-signed certificate for development and local testing can be generated easily with the JDK's built-in `keytool` command.
+
+```bash
+# Generate a self-signed PKCS12 KeyStore
+keytool -genkeypair -alias aspectow -keyalg RSA -keysize 2048 \
+    -storetype PKCS12 -keystore app/config/keystore.p12 \
+    -validity 3650 -storepass changeit -keypass changeit \
+    -dname "CN=localhost, OU=AspectowEdge, O=Aspectran, L=Seoul, ST=Seoul, C=KR"
+```
+
+#### 5.3.3. Netty HTTP/2 and HTTPS Listener XML Configuration
+
+In `netty-server.xml`, configure `http2` and `ssl` properties independently per listener via [`NettyListenerConfig`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/NettyListenerConfig.java). Configuring HTTP/2 conditionally under the `http2` profile is recommended.
+
+```xml
+<bean id="netty.server" class="com.aspectran.netty.server.DefaultNettyServer">
+    <property name="virtualThreads" valueType="boolean">true</property>
+    <property name="proxyAddressForwarding" valueType="boolean">true</property>
+
+    <!-- Configure Network Listeners -->
+    <property name="listeners" type="array">
+        <!-- 1. Cleartext HTTP/H2C Listener (Default Port: 8081) -->
+        <bean class="com.aspectran.netty.server.NettyListenerConfig">
+            <property name="host">%{netty.server.listener.http.host}</property>
+            <property name="port" valueType="int">%{netty.server.listener.http.port}</property>
+            <!-- Apply H2C support and tuning options when http2 profile is active -->
+            <properties profile="http2">
+                <item name="http2" valueType="boolean">true</item>
+                <item name="http2MaxConcurrentStreams" valueType="int">100</item>
+                <item name="http2InitialWindowSize" valueType="int">65535</item>
+                <item name="http2MaxFrameSize" valueType="int">16384</item>
+            </properties>
+        </bean>
+
+        <!-- 2. Secure HTTPS/H2 Listener (Port: 8443) -->
+        <bean class="com.aspectran.netty.server.NettyListenerConfig">
+            <property name="host">0.0.0.0</property>
+            <property name="port" valueType="int">8443</property>
+            <property name="ssl" valueType="boolean">true</property>
+            <property name="keyStorePath">/config/keystore.p12</property>
+            <property name="keyStorePassword">changeit</property>
+            <property name="keyStoreType">PKCS12</property>
+            <properties profile="http2">
+                <item name="http2" valueType="boolean">true</item>
+            </properties>
+        </bean>
+    </property>
+
+    <!-- Multi-Context Registration -->
+    <property name="contexts" type="array">
+        <value>#{netty.context.root}</value>
+        <value>#{netty.context.console}</value>
+    </property>
+</bean>
+```
+
+#### 5.3.4. Nginx Reverse Proxy Integration and SSL Termination Architecture
+
+In production environments, a common architecture involves installing public SSL certificates on Nginx or cloud load balancers (ALBs) to terminate HTTPS and HTTP/2, forwarding traffic to the backend Netty server at high speed.
+
+```
+[ Web Browser ]  --- (HTTPS / HTTP/2: h2) --->  [ Nginx (SSL Termination) ]  --- (HTTP/1.1 Keep-Alive) --->  [ Aspectow Edge (8081) ]
+```
+
+##### Nginx Reverse Proxy Configuration Example (`nginx.conf`)
+
+```nginx
+server {
+    listen 443 ssl;
+    http2 on; # For modern Nginx versions (legacy: listen 443 ssl http2;)
+
+    server_name your-domain.com;
+
+    ssl_certificate     /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    location / {
+        proxy_pass http://127.0.0.1:8081;
+        proxy_http_version 1.1;
+
+        # Forward proxy headers (integrated with Aspectow proxyAddressForwarding)
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+    }
+}
+```
+
+#### 5.3.5. HTTP/2 Verification and Benchmarking
+
+After starting the server, verify protocol negotiation and multiplexing performance immediately using `curl` and `h2load` CLI tools.
+
+##### 1) Verifying HTTP/2 Communication with cURL
+
+```bash
+# 1. Cleartext port (8081) H2C Prior-Knowledge verification
+curl -v --http2-prior-knowledge http://localhost:8081/console/
+
+# 2. Self-signed HTTPS port (8443) TLS ALPN h2 verification (-k: ignore certificate validation)
+curl -v -k --http2 https://localhost:8443/console/
+```
+* Inspect output for `< HTTP/2 200` response and compressed HPACK headers.
+
+##### 2) Multiplexed Concurrent Load Benchmarking with h2load
+
+Use `h2load` from the [nghttp2](https://nghttp2.org/) package to benchmark how thousands of concurrent streams perform over single or multiple TCP connections.
+
+```bash
+# Benchmark 1,000 requests using 100 concurrent streams over 1 TCP connection
+h2load -v -n 1000 -c 1 -m 100 http://localhost:8081/console/
+```
+* Confirm complete HTTP/2 multiplexing throughput via `Application protocol: h2c`, incrementing `stream_id`, `space savings` (HPACK compression ratio), and `0 failed, 0 errored` results.
+
+### 5.4. Main Service Context (`netty-context-root.xml`)
 
 A `NettyContext` represents an isolated application runtime mounted at a specific context path.
 
@@ -516,7 +644,7 @@ A `NettyContext` represents an isolated application runtime mounted at a specifi
 </aspectran>
 ```
 
-#### 5.3.1. Non-Servlet Static Resource Handlers (`NettyResourceHandler` & `NettyClassPathResourceHandler`)
+#### 5.4.1. Non-Servlet Static Resource Handlers (`NettyResourceHandler` & `NettyClassPathResourceHandler`)
 
 Aspectow Edge delivers static assets (HTML, CSS, JavaScript, images, web fonts) straight out of the Netty inbound channel pipeline at maximum speed without passing through a servlet container.
 
@@ -617,7 +745,7 @@ For self-contained microservices where static UI assets are packaged directly wi
 * **HTTP Method Validation**:
   * Handles `GET` and `HEAD` requests only. On `HEAD` requests, skips the content body and writes headers exclusively, conserving network bandwidth.
 
-#### 5.3.2. Non-Servlet Session Management (`NettySessionManager` & `NettySessionConfig`)
+#### 5.4.2. Non-Servlet Session Management (`NettySessionManager` & `NettySessionConfig`)
 
 Aspectow Edge completely eliminates the heavyweight overhead of servlet session tracking by running an ultra-lightweight session manager directly inside Netty's inbound and outbound HTTP pipeline.
 
@@ -663,7 +791,7 @@ Session cookie generation in Netty is configured cleanly via the [`NettySessionC
 * **Production Redis Clustering (`prod`)**: High-availability Redis clustering via `DefaultLettuceSessionStoreFactoryBean`, enabling elastic, stateless microservice scaling with zero-downtime failover.
 
 ##### 4) Session Lifecycle Event Listeners
- 
+
 To track session creation and destruction events for audit logging or active visitor metrics in Netty environments, choose one of the following two methods:
 
 ###### Method 1: Using `DefaultSessionListenerRegistration` Bean (`netty-support.xml`)
@@ -689,11 +817,11 @@ Retrieve the target [`SessionManager`](https://github.com/aspectran/aspectran/bl
 
 > **Note:** For complete details on `SessionManagerConfig` lifecycle tuning, crawler/bot phantom session mitigation, `NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
 
-### 5.4. Console Management Context (`netty-context-console.xml`)
+### 5.5. Console Management Context (`netty-context-console.xml`)
 
 Just like Undertow, Netty supports multi-context deployment out of the box, mounting an independent Console context under the `/console` path. Depending on your operational topology, the Console context can run in either **Headless Console mode** (omitting UI assets) or **Full Console mode** (with web UI included).
 
-#### 5.4.1. Headless Console Mode (Recommended when separating Console nodes)
+#### 5.5.1. Headless Console Mode (Recommended when separating Console nodes)
 When a dedicated centralized console node or an Aspectow Enterprise flagship server provides the administrative web dashboard, Edge service nodes can omit the heavy HTML/JSP UI templates and only activate backend control plane channels (WebSocket sessions, remote CLI execution, and scheduler APIs) for minimal footprint.
 
 `/app/config/server/netty/netty-context-console.xml`:
@@ -730,7 +858,7 @@ Internally, `netty-context-console-headless.xml` initializes the WebSocket conta
 </bean>
 ```
 
-#### 5.4.2. Full Console Mode (All-in-One Node Deployment)
+#### 5.5.2. Full Console Mode (All-in-One Node Deployment)
 Used when every Edge node directly hosts the integrated management web UI without separating a dedicated console node.
 
 `/app/config/server/netty/netty-context-console.xml`:
@@ -752,7 +880,7 @@ Used when every Edge node directly hosts the integrated management web UI withou
 
 * **Single Port Integration**: The main business services (`/`) and the management context (`/console`) are served simultaneously on the same Netty listening port (e.g., 8081), eliminating the need for additional port exposure or separate process management.
 
-### 5.5. Runtime Support Components (`netty-support.xml`)
+### 5.6. Runtime Support Components (`netty-support.xml`)
 
 `netty-support.xml` handles session listener registrations and exposes runtime listening port metadata to the monitoring plane.
 

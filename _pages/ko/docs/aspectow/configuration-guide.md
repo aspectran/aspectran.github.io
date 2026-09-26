@@ -380,11 +380,141 @@ Undertow는 초경량 비동기 I/O 라이브러리인 XNIO를 사용합니다.
 * **`multipartMaxEntitySize`**: 멀티파트 파일 업로드 시의 전체 요청 크기 상한선입니다.
 * **`idleTimeout`**: 소켓 유휴(Idle) 타임아웃(밀리초)입니다.
 
-### 5.3. 미들웨어 핸들러 체인 구성
+### 5.3. SSL/TLS 보안 및 HTTP/2 프로토콜 구성
+
+Aspectow Enterprise는 최신 고성능 웹 표준인 **HTTP/2**와 **TLS 암호화 통신**을 완벽하게 지원합니다. 단일 TCP 연결 상에서 다수의 요청과 응답을 스트림 단위로 다중화(Multiplexing)하고, HPACK 헤더 압축을 적용하여 네트워크 대역폭과 왕복 지연 시간(RTT)을 획기적으로 줄여줍니다.
+
+#### 5.3.1. HTTP/2 전송 모드
+
+* **TLS 기반 HTTP/2 (`h2`)**: SSL/TLS 핸드셰이크 과정에서 ALPN(Application-Layer Protocol Negotiation)을 통해 `h2` 프로토콜을 협상합니다. 웹 브라우저(Chrome, Safari, Firefox 등)는 보안 규격에 따라 오직 HTTPS 환경에서만 HTTP/2 통신을 수행합니다.
+* **평문 기반 HTTP/2 (`h2c`, Cleartext)**: TLS 암호화 없이 TCP 평문 포트 상에서 사전 지식(Prior-Knowledge) 또는 HTTP/1.1 Upgrade 헤더를 통해 H2C 연결을 수립합니다. 주로 마이크로서비스 내부 통신, gRPC 연동, 또는 벤치마크 테스트 도구(`h2load`, `curl`)에서 사용됩니다.
+
+#### 5.3.2. SSL/TLS 인증서 및 KeyStore 준비
+
+HTTPS 암호화 리스너를 직접 구동하려면 PKCS12(`.p12`) 또는 JKS 형식의 KeyStore 파일이 필요합니다. 개발 및 로컬 테스트를 위한 자체 서명 인증서(Self-Signed Certificate)는 JDK 내장 `keytool` 명령어로 손쉽게 생성할 수 있습니다.
+
+```bash
+# PKCS12 포맷의 자체 서명 키스토어 생성 예시
+keytool -genkeypair -alias aspectow -keyalg RSA -keysize 2048 \
+    -storetype PKCS12 -keystore app/config/keystore.p12 \
+    -validity 3650 -storepass changeit -keypass changeit \
+    -dname "CN=localhost, OU=Aspectow, O=Aspectran, L=Seoul, ST=Seoul, C=KR"
+```
+
+#### 5.3.3. Undertow HTTP/2 및 HTTPS 리스너 XML 구성
+
+`tow-server.xml`에서 `TowOptions`의 `enableHttp2` 속성을 활성화하고, `httpsListeners`를 추가하여 HTTPS 및 HTTP/2를 가동합니다. `http2` 프로파일 활성화 시에만 HTTP/2가 켜지도록 조건부 프로퍼티로 구성하는 것을 권장합니다.
+
+```xml
+<bean id="tow.server" class="com.aspectran.undertow.server.DefaultTowServer">
+    <!-- 리버스 프록시 연동 시 클라이언트 원격 IP/프로토콜 복원 -->
+    <property name="proxyAddressForwarding" valueType="boolean">true</property>
+
+    <!-- 평문 HTTP 리스너 (기본 포트: 8081) -->
+    <property name="httpListeners" type="array">
+        <bean class="com.aspectran.undertow.server.HttpListenerConfig">
+            <property name="host">%{tow.server.listener.http.host}</property>
+            <property name="port" valueType="int">%{tow.server.listener.http.port}</property>
+        </bean>
+    </property>
+
+    <!-- 보안 HTTPS/TLS 리스너 (포트: 8443) -->
+    <property name="httpsListeners" type="array">
+        <bean class="com.aspectran.undertow.server.HttpsListenerConfig">
+            <property name="host">0.0.0.0</property>
+            <property name="port" valueType="int">8443</property>
+            <property name="keyStorePath">/config/keystore.p12</property>
+            <property name="keyStorePassword">changeit</property>
+            <property name="keyPassword">changeit</property>
+            <property name="keyStoreType">PKCS12</property>
+        </bean>
+    </property>
+
+    <!-- Undertow 서버 옵션 -->
+    <property name="serverOptions">
+        <bean class="com.aspectran.undertow.server.TowOptions">
+            <property name="decodeUrl" valueType="boolean">true</property>
+            <property name="urlCharset">UTF-8</property>
+            <!-- http2 프로파일 활성화 시 HTTP/2 및 세부 옵션 적용 -->
+            <properties profile="http2">
+                <item name="enableHttp2" valueType="boolean">true</item>
+                <item name="http2SettingsHeaderTableSize" valueType="int">4096</item>
+                <item name="http2SettingsEnablePush" valueType="boolean">true</item>
+                <item name="http2SettingsMaxConcurrentStreams" valueType="int">100</item>
+                <item name="http2SettingsInitialWindowSize" valueType="int">65535</item>
+                <item name="http2SettingsMaxFrameSize" valueType="int">16384</item>
+            </properties>
+        </bean>
+    </property>
+</bean>
+```
+
+#### 5.3.4. Nginx 리버스 프록시 연동 및 SSL 종단 아키텍처
+
+운영 환경에서는 Nginx 또는 클라우드 로드밸런서(ALB)에 공인 SSL 인증서를 설치하여 HTTPS 및 HTTP/2를 종단(Termination)하고, 백엔드의 Aspectow 서버와 고속으로 통신하는 아키텍처가 널리 사용됩니다.
+
+```
+[ 웹 브라우저 ]  --- (HTTPS / HTTP/2: h2) --->  [ Nginx (SSL 종단) ]  --- (HTTP/1.1 Keep-Alive) --->  [ Aspectow (8081) ]
+```
+
+##### Nginx 리버스 프록시 설정 예시 (`nginx.conf`)
+
+```nginx
+server {
+    listen 443 ssl;
+    http2 on; # 최신 Nginx 기준 (구버전: listen 443 ssl http2;)
+
+    server_name your-domain.com;
+
+    ssl_certificate     /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    location / {
+        proxy_pass http://127.0.0.1:8081;
+        proxy_http_version 1.1;
+
+        # 프록시 헤더 전달 (Aspectow proxyAddressForwarding과 연동)
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+    }
+}
+```
+
+#### 5.3.5. HTTP/2 연결 검증 및 벤치마크
+
+서버 기동 후 `curl` 및 `h2load` CLI 도구를 사용하여 프로토콜 협상과 다중화 성능을 즉시 검증할 수 있습니다.
+
+##### 1) cURL을 이용한 HTTP/2 통신 확인
+
+```bash
+# 1. 평문 포트(8081) H2C Prior-Knowledge 검증
+curl -v --http2-prior-knowledge http://localhost:8081/console/
+
+# 2. 자체 서명 HTTPS 포트(8443) TLS ALPN h2 검증 (-k: 인증서 검증 무시)
+curl -v -k --http2 https://localhost:8443/console/
+```
+* 응답 출력에서 `< HTTP/2 200` 및 HPACK 압축 헤더가 수신되는지 확인합니다.
+
+##### 2) h2load를 이용한 다중화 동시 처리 벤치마크
+
+[nghttp2](https://nghttp2.org/) 패키지의 `h2load` 도구를 사용하여 단일/다중 TCP 커넥션 상에서 수천 개의 동시 스트림이 정상 처리되는지 부하 테스트를 수행합니다.
+
+```bash
+# 1개 연결 위에서 100개 스트림으로 총 1,000건 요청 벤치마크
+h2load -v -n 1000 -c 1 -m 100 http://localhost:8081/console/
+```
+* `Application protocol: h2c`, `stream_id` 증가, `space savings`(HPACK 절감률), 그리고 `0 failed, 0 errored` 결과를 통해 완전한 HTTP/2 다중화 성능을 확인할 수 있습니다.
+
+### 5.4. 미들웨어 핸들러 체인 구성
 
 `handlerChainWrappers` 속성을 통해 요청이 서블릿 컨텍스트로 전달되기 전/후에 동작하는 미들웨어를 체인 형태로 결합합니다.
 
-#### 5.3.1. 압축 인코딩 핸들러 (`EncodingHandlerWrapper`)
+#### 5.4.1. 압축 인코딩 핸들러 (`EncodingHandlerWrapper`)
 Gzip 등의 압축 알고리즘을 조건부로 적용하여 네트워크 대역폭을 절감하고 클라이언트 응답 속도를 향상시킵니다.
 
 ```xml
@@ -419,7 +549,7 @@ Gzip 등의 압축 알고리즘을 조건부로 적용하여 네트워크 대역
 </bean>
 ```
 
-#### 5.3.2. 경로 기반 로깅 그룹 핸들러 (`PathBasedLoggingGroupHandlerWrapper`)
+#### 5.4.2. 경로 기반 로깅 그룹 핸들러 (`PathBasedLoggingGroupHandlerWrapper`)
 요청 URL 패턴에 따라 SLF4J MDC(Mapped Diagnostic Context)에 로깅 그룹(`loggingGroup`) 변수를 자동으로 바인딩합니다. Logback 설정과 결합하여 콘솔 관리자 로그, 일반 API 로그, 배치 로그를 별도의 로그 파일로 분리 저장할 수 있습니다.
 
 ```xml
@@ -437,7 +567,7 @@ Gzip 등의 압축 알고리즘을 조건부로 적용하여 네트워크 대역
 </bean>
 ```
 
-#### 5.3.3. 접근 로그 핸들러 (`AccessLogHandlerWrapper`)
+#### 5.4.3. 접근 로그 핸들러 (`AccessLogHandlerWrapper`)
 모든 수신 HTTP 요청의 처리 결과를 표준 웹 서버 포맷으로 기록합니다.
 
 ```xml
@@ -464,7 +594,7 @@ Gzip 등의 압축 알고리즘을 조건부로 적용하여 네트워크 대역
   * `%b`: 전송된 응답 바이트 수 (헤더 제외)
   * `%D`: 요청 처리 소요 시간 (밀리초)
 
-### 5.4. 서블릿 컨텍스트 배포 및 상세 구성 (`tow-context-root.xml`)
+### 5.5. 서블릿 컨텍스트 배포 및 상세 구성 (`tow-context-root.xml`)
 
 `TowServletContext` Bean은 독립적인 웹 애플리케이션 컨텍스트를 Undertow 서버에 마운트하며, 서블릿 매핑, 정적 리소스 핸들러, JSP 엔진, 커스텀 태그 라이브러리(TLD), 웹소켓, 그리고 분산 세션 관리자를 결합합니다.
 
@@ -586,7 +716,7 @@ Gzip 등의 압축 알고리즘을 조건부로 적용하여 네트워크 대역
 </aspectran>
 ```
 
-#### 5.4.1. 정적 리소스 관리자 (`TowResourceManager` & `TowClassPathResourceManager`)
+#### 5.5.1. 정적 리소스 관리자 (`TowResourceManager` & `TowClassPathResourceManager`)
 
 Aspectow Enterprise는 파일시스템과 클래스패스 두 가지 방식의 고성능 정적 리소스 서빙을 완벽히 지원합니다.
 
@@ -625,21 +755,21 @@ Undertow의 `PathResourceManager`를 상속 및 확장한 컴포넌트로, [`App
 * **`prefix`**: 클래스패스 내에서 정적 파일을 탐색할 패키지 접두사 경로(예: `static/` 또는 `public/`)를 지정합니다.
 * **Aspectran 클래스로더 연동**: [`ActivityContextAware`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/handler/resource/TowClassPathResourceManager.java#L48)를 통해 현재 컨텍스트의 클래스로더를 사용하여 JAR 파일 내부 리소스라도 지연 없이 신속하게 추출하여 서빙합니다.
 
-#### 5.4.2. 서블릿 및 JSP 매핑 (`DefaultJspServlet` & `TowServlet`)
+#### 5.5.2. 서블릿 및 JSP 매핑 (`DefaultJspServlet` & `TowServlet`)
 * **`DefaultJspServlet`**: Apache Jasper 기반의 JSP 컴파일러 및 서블릿 핸들러를 활성화합니다. JSP 파일을 런타임에 동적으로 컴파일하여 고속 실행합니다. (PetClinic 등 순수 템플릿 엔진만 사용하는 컨텍스트에서는 생략 가능)
 * **`TowServlet`**: Aspectran의 메인 서블릿인 `WebActivityServlet`을 루트 매핑(`/`)으로 등록하여, 모든 수신 요청을 Aspectran Translet 엔진으로 전달합니다.
 
-#### 5.4.3. 커스텀 JSP 태그 라이브러리(TLD) 설정 (`TowJasperInitializer`)
+#### 5.5.3. 커스텀 JSP 태그 라이브러리(TLD) 설정 (`TowJasperInitializer`)
 JSP 뷰에서 `<aspectran:message>`, `<aspectran:token>` 등 프레임워크 제공 태그를 사용하거나 프로젝트 고유의 JSTL/커스텀 태그 라이브러리를 로드하려면 `tldResources` 속성에 경로를 등록합니다:
 * `classpath:com/aspectran/web/support/tags/aspectran.tld`: Aspectran 표준 태그 라이브러리
 * `/webapps/{contextName}/WEB-INF/taglibs/`: 프로젝트 고유의 `.tld` 정의 파일들이 위치한 디렉터리 경로
 
-#### 5.4.4. 웹소켓(WebSocket) 설정 (`TowWebSocketServerContainerInitializer`)
+#### 5.5.4. 웹소켓(WebSocket) 설정 (`TowWebSocketServerContainerInitializer`)
 Undertow의 고성능 웹소켓 엔진을 초기화합니다.
 * JSR-356 표준 어노테이션(`@ServerEndpoint`) 기반의 웹소켓 엔드포인트를 지원합니다.
 * `idleTimeout`: 클라이언트와 웹소켓 연결 후 데이터 교환이 없을 때 연결을 유지할 최대 시간(밀리초)입니다.
 
-#### 5.4.5. 서블릿 세션 관리자 (`TowSessionManager` & `TowServletSessionConfig`)
+#### 5.5.5. 서블릿 세션 관리자 (`TowSessionManager` & `TowServletSessionConfig`)
 Aspectran 고유의 엔터프라이즈 세션 관리 엔진을 Undertow 서블릿 스펙(`io.undertow.server.session.SessionManager`)과 매끄럽게 브릿징합니다.
 * **[`TowSessionManager`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/session/TowSessionManager.java)**:
   * 서블릿 컨테이너의 표준 세션 라이프사이클 이벤트를 Aspectran 코어 [`DefaultSessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java)로 위임합니다.
@@ -656,7 +786,7 @@ Aspectran 고유의 엔터프라이즈 세션 관리 엔진을 Undertow 서블�
 
 > **참고:** 세션 생명주기 옵션(`SessionManagerConfig`), 봇/크롤러 유휴 세션 신속 회수 메커니즘, `NonPersistent` 영속화 제어, 그리고 Redis 분산 클러스터링의 심층 동작 원리는 **[`Aspectran Session Manager 가이드`](/ko/docs/guides/aspectran-session-manager/)**를 참조하십시오.
 
-### 5.5. Console 관제 컨텍스트 (`tow-context-console.xml`)
+### 5.6. Console 관제 컨텍스트 (`tow-context-console.xml`)
 
 Undertow는 완전한 서블릿 컨테이너 격리를 지원하므로, 단일 포트(예: 8081) 안에서 메인 서비스 컨텍스트(`/`)와 함께 독립된 **Console 관제 컨텍스트(`/console`)**를 서블릿 컨텍스트로 격리 배포합니다.
 
@@ -680,7 +810,7 @@ Undertow는 완전한 서블릿 컨테이너 격리를 지원하므로, 단일 �
   * 단일 노드 운영 시에는 Full UI가 포함된 `tow-context-console.xml`을 로드하여 통합 웹 대시보드로 즉시 접속합니다.
   * 별도의 중앙 전용 콘솔 노드를 둔 클러스터 환경에서는 `tow-context-console-headless.xml`을 로드하여, 웹 UI 뷰 렌더링 없이 백엔드 제어 평면(웹소켓 스트리밍, 원격 CLI 디스패치, 스케줄러 제어 API)만을 초경량으로 구동할 수 있습니다.
 
-### 5.6. 부가 지원 컴포넌트 (`tow-support.xml`)
+### 5.7. 부가 지원 컴포넌트 (`tow-support.xml`)
 
 `tow-support.xml`은 서버 동작 중 발생하는 이벤트를 가로채거나 런타임 진단 정보를 제공하는 헬퍼 컴포넌트들을 등록합니다.
 

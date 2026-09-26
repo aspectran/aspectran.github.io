@@ -457,7 +457,135 @@ Nginx나 Kubernetes Ingress, 클라우드 ALB 뒤에 배치될 경우, `proxyAdd
   * Logback 설정 파일(`logback-netty.xml`)에서 `LoggingGroupDiscriminator`나 `SiftingAppender`를 지정하면, 업무 도메인별 전용 로그 파일(예: `order.log`, `payment.log`, `api.log`)로 자동 라우팅되어 기록됩니다.
   * 패턴과 일치하지 않는 요청은 해당 컨텍스트(`NettyContext`)의 기본 로깅 그룹으로 폴백되며, 요청 처리가 완료되면 `finally` 블록에서 `LoggingGroupHelper.clear()`가 호출되어 스레드 오염을 방지합니다.
 
-### 5.3. 메인 서비스 컨텍스트 (`netty-context-root.xml`)
+### 5.3. SSL/TLS 보안 및 HTTP/2 프로토콜 구성
+
+Aspectow Edge는 Netty의 고성능 비동기 파이프라인 상에서 **HTTP/2**와 **TLS 암호화 통신**을 완벽하게 지원합니다. 단일 TCP 소켓 연결 위에서 수많은 요청 스트림(`Http2StreamChannel`)을 다중화(Multiplexing)하여 처리하며, HPACK 헤더 압축을 통해 네트워크 지연을 극적으로 단축시킵니다.
+
+#### 5.3.1. Netty HTTP/2 아키텍처 및 전송 모드
+
+* **TLS 기반 HTTP/2 (`h2`)**: SSL/TLS 핸드셰이크 시 ALPN(Application-Layer Protocol Negotiation)을 통해 `h2`와 `http/1.1`을 자동 협상합니다. 협상 결과 `h2`가 선택되면 `Http2FrameCodec` 및 `Http2MultiplexHandler`가 파이프라인에 동적으로 장착되어 스트림 채널을 생성합니다. 웹 브라우저 통신을 위한 표준 모드입니다.
+* **평문 기반 HTTP/2 (`h2c`, Cleartext)**: `CleartextHttp2ServerUpgradeHandler`를 통해 클라이언트의 HTTP/2 사전 지식(Prior-Knowledge 연결 서문: `PRI * HTTP/2.0...`) 또는 HTTP/1.1 Upgrade 요청을 감지하여 평문 포트에서도 즉시 HTTP/2 다중화 모드로 전환합니다.
+
+#### 5.3.2. SSL/TLS 인증서 및 KeyStore 준비
+
+HTTPS 암호화 리스너를 직접 구동하려면 PKCS12(`.p12`) 또는 JKS 형식의 KeyStore 파일이 필요합니다. 개발 및 로컬 테스트를 위한 자체 서명 인증서(Self-Signed Certificate)는 JDK 내장 `keytool` 명령어로 손쉽게 생성할 수 있습니다.
+
+```bash
+# PKCS12 포맷의 자체 서명 키스토어 생성 예시
+keytool -genkeypair -alias aspectow -keyalg RSA -keysize 2048 \
+    -storetype PKCS12 -keystore app/config/keystore.p12 \
+    -validity 3650 -storepass changeit -keypass changeit \
+    -dname "CN=localhost, OU=AspectowEdge, O=Aspectran, L=Seoul, ST=Seoul, C=KR"
+```
+
+#### 5.3.3. Netty HTTP/2 및 HTTPS 리스너 XML 구성
+
+`netty-server.xml`에서 [`NettyListenerConfig`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/NettyListenerConfig.java)를 통해 리스너별로 `http2`와 `ssl` 속성을 독립 구성합니다. `http2` 프로파일 활성화 시에만 HTTP/2가 켜지도록 조건부 프로퍼티로 구성하는 것을 권장합니다.
+
+```xml
+<bean id="netty.server" class="com.aspectran.netty.server.DefaultNettyServer">
+    <property name="virtualThreads" valueType="boolean">true</property>
+    <property name="proxyAddressForwarding" valueType="boolean">true</property>
+
+    <!-- 네트워크 리스너 목록 설정 -->
+    <property name="listeners" type="array">
+        <!-- 1. 평문 HTTP/H2C 리스너 (기본 포트: 8081) -->
+        <bean class="com.aspectran.netty.server.NettyListenerConfig">
+            <property name="host">%{netty.server.listener.http.host}</property>
+            <property name="port" valueType="int">%{netty.server.listener.http.port}</property>
+            <!-- http2 프로파일 활성화 시 H2C 지원 및 세부 옵션 적용 -->
+            <properties profile="http2">
+                <item name="http2" valueType="boolean">true</item>
+                <item name="http2MaxConcurrentStreams" valueType="int">100</item>
+                <item name="http2InitialWindowSize" valueType="int">65535</item>
+                <item name="http2MaxFrameSize" valueType="int">16384</item>
+            </properties>
+        </bean>
+
+        <!-- 2. 보안 HTTPS/H2 리스너 (포트: 8443) -->
+        <bean class="com.aspectran.netty.server.NettyListenerConfig">
+            <property name="host">0.0.0.0</property>
+            <property name="port" valueType="int">8443</property>
+            <property name="ssl" valueType="boolean">true</property>
+            <property name="keyStorePath">/config/keystore.p12</property>
+            <property name="keyStorePassword">changeit</property>
+            <property name="keyStoreType">PKCS12</property>
+            <properties profile="http2">
+                <item name="http2" valueType="boolean">true</item>
+            </properties>
+        </bean>
+    </property>
+
+    <!-- 멀티 컨텍스트 등록 -->
+    <property name="contexts" type="array">
+        <value>#{netty.context.root}</value>
+        <value>#{netty.context.console}</value>
+    </property>
+</bean>
+```
+
+#### 5.3.4. Nginx 리버스 프록시 연동 및 SSL 종단 아키텍처
+
+운영 환경에서는 Nginx 또는 클라우드 로드밸런서(ALB)에 공인 SSL 인증서를 설치하여 HTTPS 및 HTTP/2를 종단(Termination)하고, 백엔드의 Netty 서버와 고속으로 통신하는 아키텍처가 널리 사용됩니다.
+
+```
+[ 웹 브라우저 ]  --- (HTTPS / HTTP/2: h2) --->  [ Nginx (SSL 종단) ]  --- (HTTP/1.1 Keep-Alive) --->  [ Aspectow Edge (8081) ]
+```
+
+##### Nginx 리버스 프록시 설정 예시 (`nginx.conf`)
+
+```nginx
+server {
+    listen 443 ssl;
+    http2 on; # 최신 Nginx 기준 (구버전: listen 443 ssl http2;)
+
+    server_name your-domain.com;
+
+    ssl_certificate     /etc/letsencrypt/live/your-domain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    location / {
+        proxy_pass http://127.0.0.1:8081;
+        proxy_http_version 1.1;
+
+        # 프록시 헤더 전달 (Aspectow proxyAddressForwarding과 연동)
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+    }
+}
+```
+
+#### 5.3.5. HTTP/2 연결 검증 및 벤치마크
+
+서버 기동 후 `curl` 및 `h2load` CLI 도구를 사용하여 프로토콜 협상과 다중화 성능을 즉시 검증할 수 있습니다.
+
+##### 1) cURL을 이용한 HTTP/2 통신 확인
+
+```bash
+# 1. 평문 포트(8081) H2C Prior-Knowledge 검증
+curl -v --http2-prior-knowledge http://localhost:8081/console/
+
+# 2. 자체 서명 HTTPS 포트(8443) TLS ALPN h2 검증 (-k: 인증서 검증 무시)
+curl -v -k --http2 https://localhost:8443/console/
+```
+* 응답 출력에서 `< HTTP/2 200` 및 HPACK 압축 헤더가 수신되는지 확인합니다.
+
+##### 2) h2load를 이용한 다중화 동시 처리 벤치마크
+
+[nghttp2](https://nghttp2.org/) 패키지의 `h2load` 도구를 사용하여 단일/다중 TCP 커넥션 상에서 수천 개의 동시 스트림이 정상 처리되는지 부하 테스트를 수행합니다.
+
+```bash
+# 1개 연결 위에서 100개 스트림으로 총 1,000건 요청 벤치마크
+h2load -v -n 1000 -c 1 -m 100 http://localhost:8081/console/
+```
+* `Application protocol: h2c`, `stream_id` 증가, `space savings`(HPACK 절감률), 그리고 `0 failed, 0 errored` 결과를 통해 완전한 HTTP/2 다중화 성능을 확인할 수 있습니다.
+
+### 5.4. 메인 서비스 컨텍스트 (`netty-context-root.xml`)
 
 `NettyContext`는 특정 URL 경로(Context Path)에 배포되는 독립된 애플리케이션 런타임입니다.
 
@@ -516,7 +644,7 @@ Nginx나 Kubernetes Ingress, 클라우드 ALB 뒤에 배치될 경우, `proxyAdd
 </aspectran>
 ```
 
-#### 5.3.1. 논-서블릿(Non-Servlet) 정적 리소스 핸들러 (`NettyResourceHandler` & `NettyClassPathResourceHandler`)
+#### 5.4.1. 논-서블릿(Non-Servlet) 정적 리소스 핸들러 (`NettyResourceHandler` & `NettyClassPathResourceHandler`)
 
 Aspectow Edge는 서블릿 컨테이너를 거치지 않고 Netty 인바운드 채널 파이프라인에서 파일시스템 또는 클래스패스의 정적 파일(HTML, CSS, JavaScript, 이미지, 폰트 등)을 직접 클라이언트에게 초고속으로 서빙합니다.
 
@@ -617,7 +745,7 @@ Aspectow Edge는 서블릿 컨테이너를 거치지 않고 Netty 인바운드 �
 * **HTTP 메서드 지원**:
   * `GET` 및 `HEAD` 요청만 처리하며, `HEAD` 요청 시에는 바디 전송 없이 HTTP 헤더만 반환하여 네트워크 자원을 절약합니다.
 
-#### 5.3.2. 논-서블릿(Non-Servlet) 세션 관리자 (`NettySessionManager` & `NettySessionConfig`)
+#### 5.4.2. 논-서블릿(Non-Servlet) 세션 관리자 (`NettySessionManager` & `NettySessionConfig`)
 
 Aspectow Edge는 서블릿 컨테이너의 무거운 세션 오버헤드를 완전히 배제하고, Netty 인바운드/아웃바운드 HTTP 채널 파이프라인에서 직결 구동되는 초경량 세션 관리자를 제공합니다.
 
@@ -689,11 +817,11 @@ Netty 환경에서 세션의 생성 및 소멸 이벤트를 감지하여 감사 
 
 > **참고:** 세션 유휴 시간 관리(`SessionManagerConfig`), 신규/일반 세션 분리를 통한 봇/크롤러 세션 차단 최적화, `NonPersistent`를 통한 선택적 영속화, 그리고 Redis 분산 클러스터링의 세부 동작 메커니즘은 **[`Aspectran Session Manager 가이드`](/ko/docs/guides/aspectran-session-manager/)**를 참조하십시오.
 
-### 5.4. Console 관제 컨텍스트 (`netty-context-console.xml`)
+### 5.5. Console 관제 컨텍스트 (`netty-context-console.xml`)
 
 Undertow와 마찬가지로 Netty 역시 멀티 컨텍스트를 기본 지원하므로, `/console` 경로에 독립된 Console 컨텍스트를 마운트합니다. Console 컨텍스트는 클러스터 구성 전략에 따라 **Headless Console 모드(UI 제외)**와 **Full Console 모드(UI 포함)**를 자유롭게 선택할 수 있습니다.
 
-#### 5.4.1. Headless Console 모드 (콘솔 노드 분리 시 권장)
+#### 5.5.1. Headless Console 모드 (콘솔 노드 분리 시 권장)
 별도의 독립된 콘솔 전용 노드나 Aspectow Enterprise 기함 서버에서 중앙 관제 웹 UI를 제공하고, 각 서비스 노드(Edge)에서는 웹 UI를 제외한 백엔드 제어 평면(웹소켓 세션, 원격 CLI, 스케줄러 제어 API)만을 활성화하여 리소스 점유를 극소화하는 구성입니다.
 
 `/app/config/server/netty/netty-context-console.xml`:
@@ -730,7 +858,7 @@ Undertow와 마찬가지로 Netty 역시 멀티 컨텍스트를 기본 지원하
 </bean>
 ```
 
-#### 5.4.2. Full Console 모드 (올인원 노드 구성)
+#### 5.5.2. Full Console 모드 (올인원 노드 구성)
 콘솔 전용 노드를 따로 분리하지 않고, 모든 서비스 노드가 직접 브라우저로 접속 가능한 통합 관제 웹 UI를 함께 제공하고자 할 때 사용합니다.
 
 `/app/config/server/netty/netty-context-console.xml`:
@@ -752,7 +880,7 @@ Undertow와 마찬가지로 Netty 역시 멀티 컨텍스트를 기본 지원하
 
 * **단일 포트 통합**: Netty 서버의 단일 포트(예: 8081)에서 메인 서비스(`/`)와 관제 컨텍스트(`/console`)를 동시에 서빙하므로 추가 포트 개방이나 별도의 프로세스 관리가 필요 없습니다.
 
-### 5.5. 부가 지원 컴포넌트 (`netty-support.xml`)
+### 5.6. 부가 지원 컴포넌트 (`netty-support.xml`)
 
 `netty-support.xml`은 세션 리스너 등록과 런타임 바인딩 포트 정보를 관제 제어 평면에 노출합니다.
 
