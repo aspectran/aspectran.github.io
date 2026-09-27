@@ -96,14 +96,18 @@ Aspectow Console comes equipped with core security mechanisms at the codebase le
 * **Real-time Event Tracking**: When high-risk actions are performed—such as creating/editing/deleting user accounts, altering role permissions, managing Vault assets, or viewing System Encryption passwords—the **executor ID, action type, target resource, details, and remote IP** are logged to the database in real time.
 * **Audit Log Monitoring**: Administrators can inspect audit logs by user or keyword and monitor security compliance in real time via **Accounts > Audit Log**.
 
-### 4.5 Declarative Security HTTP Response Headers & XSS Protection
-* **Declarative Security Headers**: Applied automatically to all HTML view responses via the `htmlWebSecuritySettings` Aspect joinpoint condition (`headers: [ "Accept=text/html" ]`) in `web.xml`:
+### 4.5 Declarative Security HTTP Response Headers & Profile-based Control (Web Security Headers & XSS)
+* **Modularized Security Configuration (`web-security.xml`)**: Web security header configurations are separated from general web configurations (`web.xml`) into a dedicated configuration file (`web-security.xml`) for clean modularity.
+* **Automatic Declarative Security Headers**: Applied automatically to all HTML view responses via the `htmlWebSecuritySettings` Aspect joinpoint condition (`headers: [ "Accept=text/html" ]`) in `web-security.xml`:
   * `Content-Type: text/html; charset=utf-8`: Prevents HTML source code from rendering as Plain Text when `nosniff` is enabled.
-  * `Content-Security-Policy`: Blocks XSS attacks and specifies allowed CDN/font domains.
+  * `Content-Security-Policy`: Blocks XSS attacks and specifies allowed external CDN/font domains.
   * `X-Frame-Options: SAMEORIGIN`: Prevents Clickjacking attacks.
   * `X-Content-Type-Options: nosniff`: Blocks execution of MIME-sniffing script modifications.
   * `X-XSS-Protection: 1; mode=block`: Enables legacy browser built-in XSS filters.
   * `Referrer-Policy: strict-origin-when-cross-origin`: Prevents leakage of sensitive URL paths.
+* **Profile-based Security Header Deactivation (`no-web-security`)**:
+  * For environments where reverse proxies (e.g., Nginx, Cloudflare) globally inject security headers or where the console needs to be embedded within an internal portal `<iframe>`, profile-based control is provided.
+  * By activating the `console.no-web-security` profile (or `appmon.no-web-security` for Appmon), the built-in security header injection is cleanly omitted, preventing duplicate headers and policy conflicts.
 * **XSS Sanitizer Utilities**: Protects against script execution in user-submitted tags and text data via `escapeHtml` and `cleanInput` methods in `ConsoleWebUtils`.
 
 ### 4.6 Sensitive Data Response Masking
@@ -118,4 +122,5 @@ When deploying Aspectow Console in production environments, customer security ad
 2. **Network Isolation Inspection**: For enterprise environments, ensure that the Console web binding port is not exposed to public interfaces (`0.0.0.0`) and is bound exclusively to internal VPN or Private IPs.
 3. **SUPER_ADMIN Account Hygiene**: Restrict access permissions for master keys and encryption configurations to `SUPER_ADMIN` only, and change administrator passwords periodically.
 4. **Regular Audit Log Database Backups**: Periodically back up data in the `asc_audit_log` table and block unauthorized modifications to audit logs.
-5. **External CDN & Domain Policy Verification**: When new static libraries are required, place them in the local static resource directory (`/assets/`), or inspect allowed domains in `web.xml`'s `Content-Security-Policy` when using external CDNs.
+5. **External CDN & Domain Policy Verification**: When new static libraries are required, place them in the local static resource directory (`/assets/`), or inspect allowed domains in `web-security.xml`'s `Content-Security-Policy` when using external CDNs.
+6. **Reverse Proxy Integration & Header Deduplication**: If an upstream reverse proxy (e.g., Nginx, HAProxy) globally manages security headers, activate the `console.no-web-security` profile or configure `proxy_hide_header` in the proxy to prevent duplicate response headers.

@@ -96,14 +96,18 @@ Aspectow Console에는 고객사의 안전한 운용을 위해 핵심 보안 메
 * **실시간 추적 기록**: 사용자 계정 생성/수정/삭제, 역할 권한 변경, Vault 자산 등록/수정, System Encryption 비밀번호 조회 등 고위험 작업 실행 시 **실행자 ID, 작업 유형, 대상 자원, 상세 내역, 접속 IP**를 실시간으로 DB에 기록합니다.
 * **감사 로그 모니터링**: 운영자는 콘솔 **Accounts > Audit Log** 메뉴를 통해 사용자별/키워드별 감사 로그를 조회하고 실시간으로 보안 이행을 모니터링할 수 있습니다.
 
-### 4.5 선언적 보안 HTTP 응답 헤더 및 XSS 방어막 (Web Security Headers & XSS)
-* **선언적 보안 헤더 적용**: `web.xml`의 `htmlWebSecuritySettings` Aspect 조인포인트(`headers: [ "Accept=text/html" ]`)를 통해 브라우저로 전송되는 모든 HTML 뷰 응답에 5대 보안 헤더가 자동 적용됩니다:
+### 4.5 선언적 보안 HTTP 응답 헤더 및 프로필 기반 통제 (Web Security Headers & XSS)
+* **독립된 보안 헤더 설정 분리 (`web-security.xml`)**: 웹 보안 헤더 설정은 일반 웹 설정(`web.xml`)과 분리된 전용 설정 파일(`web-security.xml`)로 모듈화되어 관리됩니다.
+* **선언적 보안 헤더 자동 적용**: `web-security.xml`의 `htmlWebSecuritySettings` Aspect 조인포인트(`headers: [ "Accept=text/html" ]`)를 통해 브라우저로 전송되는 모든 HTML 뷰 응답에 5대 핵심 웹 보안 헤더가 자동 적용됩니다:
   * `Content-Type: text/html; charset=utf-8`: `nosniff` 적용 시 소스코드가 Plain Text로 노출되는 현상 방지
-  * `Content-Security-Policy`: XSS 공격 차단 및 허용된 CDN/폰트 도메인 지정
+  * `Content-Security-Policy`: XSS 공격 차단 및 허용된 외부 CDN/폰트 도메인 지정
   * `X-Frame-Options: SAMEORIGIN`: 클릭재킹(Clickjacking) 공격 방지
   * `X-Content-Type-Options: nosniff`: MIME-sniffing 변조 스크립트 실행 차단
   * `X-XSS-Protection: 1; mode=block`: 구형 브라우저 내장 XSS 필터 활성화
-  * `Referrer-Policy: strict-origin-when-cross-origin`: 민감 URL 유출 방지
+  * `Referrer-Policy: strict-origin-when-cross-origin`: 민감 URL 경로 유출 방지
+* **프로필 기반 보안 헤더 비활성화 지원 (`no-web-security`)**:
+  * Nginx/Cloudflare 등 상위 리버스 프록시에서 보안 헤더를 전역으로 일괄 주입하거나, 사내 통합 포털의 `<iframe>` 내에 콘솔을 임베딩해야 하는 특수 환경을 위해 프로필 제어 기능이 제공됩니다.
+  * 실행 프로필에 `console.no-web-security` (Appmon의 경우 `appmon.no-web-security`)를 지정하면 콘솔 내장 보안 헤더 주입이 깔끔하게 비활성화되어 헤더 중복 및 정책 충돌을 방지할 수 있습니다.
 * **XSS Sanitizer 유틸리티**: `ConsoleWebUtils`의 `escapeHtml` 및 `cleanInput` 메서드를 통해 사용자 입력 태그 및 텍스트 데이터의 스크립트 실행을 방어합니다.
 
 ### 4.6 민감 데이터 응답 마스킹 (Sensitive Data Masking)
@@ -118,4 +122,5 @@ Aspectow Console을 운영 환경에 배치할 때 고객사 보안 담당자는
 2. **네트워크 격리 점검**: 대규모 환경의 경우 Console 웹 바인딩 포트가 공인 망(`0.0.0.0`)에 포함되지 않고 사내 VPN 또는 Private IP로 바인딩되어 있는지 확인합니다.
 3. **SUPER_ADMIN 계정 관리**: 마스터 키 및 암호화 설정 접근 권한을 최상위 관리자(`SUPER_ADMIN`)로 최소화하고, 관리자 비밀번호를 주기적으로 변경합니다.
 4. **감사 로그 DB 주기적 백업**: `asc_audit_log` 테이블 데이터를 정기적으로 백업하고 권한 없는 자에 의한 감사 로그 수정을 차단합니다.
-5. **외부 CDN 및 도메인 정책 점검**: 신규 정적 라이브러리가 필요한 경우 사내 자체 정적 자원 디렉터리(`/assets/`)로 배치하거나, 외부 CDN 사용 시 `web.xml`의 `Content-Security-Policy` 허용 도메인을 점검합니다.
+5. **외부 CDN 및 도메인 정책 점검**: 신규 정적 라이브러리가 필요한 경우 사내 자체 정적 자원 디렉터리(`/assets/`)로 배치하거나, 외부 CDN 사용 시 `web-security.xml`의 `Content-Security-Policy` 허용 도메인을 점검합니다.
+6. **리버스 프록시 연동 및 보안 헤더 중복 점검**: Nginx, HAProxy 등 상위 리버스 프록시에서 보안 헤더를 전역 관리하는 경우, `console.no-web-security` 프로필을 활성화하거나 프록시 설정에서 `proxy_hide_header`를 지정하여 헤더 중복을 방지합니다.
