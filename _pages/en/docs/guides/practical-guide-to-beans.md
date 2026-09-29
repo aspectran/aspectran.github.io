@@ -10,7 +10,7 @@ Inspired by the robust concepts of Spring Beans (IoC, DI, etc.), it has been red
 
 The core of Aspectran Beans is to help you write cleaner, more modular, and easier-to-test code by managing your application's objects (called "beans").
 
--   **IoC (Inversion of Control)**: Instead of you creating and managing the lifecycle of your objects, the Aspectran container does it for you. You just define the objects, and the framework instantiates, configures, and assembles them at the appropriate time. This "inversion" of control allows you to focus solely on your business logic.
+-   **IoC (Inversion of Control)**: Instead of developers manually creating objects and managing their lifecycle, the Aspectran container takes over this responsibility. You just define the objects, and the framework instantiates, configures, and assembles them at the appropriate time. This "inversion" of control allows you to focus solely on your business logic.
 
 -   **DI (Dependency Injection)**: This is the primary mechanism for implementing IoC. Instead of an object creating its own dependencies (`new MyService()`), it receives them from an external source (the IoC container). This reduces the coupling between components, making them easier to manage, test, and reuse.
 
@@ -38,7 +38,8 @@ public class MyService {
 
 ### Explicit Definition with `@Bean`
 
-The `@Bean` annotation is used to explicitly declare a bean and can specify additional attributes. It can be applied to a class or method along with the `@Component` annotation.
+The `@Bean` annotation is used to explicitly declare a bean and can specify additional attributes.
+It can be applied to a class or method along with the `@Component` annotation.
 
 #### On a Class
 You can explicitly declare a bean using `@Bean` on a class.
@@ -192,28 +193,29 @@ public class AppInfo {
     private final String appVersion;
     private final String appName;
 
-    // Inject an external configuration value into a public field using an AsEL expression
-    @Value("%{app^description}")
+    // Injects a specific property value from the classpath properties file into a public field
+    @Value("%{classpath:app.properties^description}")
     public String description;
 
     private boolean startup;
 
-    // Inject external configuration values via the constructor with @Value
+    // Injects Environment property values via the constructor (with default value support)
     @Autowired
     public AppInfo(
-            @Value("%{app^version}") String appVersion,
-            @Value("%{app^name:DefaultAppName}") String appName) {
+            @Value("%{app.version}") String appVersion,
+            @Value("%{app.name:DefaultAppName}") String appName) {
         this.appVersion = appVersion;
         this.appName = appName;
     }
 
-    // Dependency injection via a setter method
-    @Value("%{app^startup}")
+    // Injects Environment property value via a setter method
+    @Value("%{app.startup}")
     public void setStartup(boolean startup) {
         this.startup = startup;
     }
 
     public void displayInfo() {
+        System.out.println("Description: " + description);
         System.out.println("Version: " + appVersion);
         System.out.println("Name: " + appName);
         System.out.println("startup: " + startup);
@@ -323,8 +325,8 @@ public class LifecycleBean {
 Alternatively, you can implement framework interfaces for the same purpose.
 
 ```java
-import com.aspectran.core.component.bean.ablility.DisposableBean;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ability.DisposableBean;
+import com.aspectran.core.component.bean.ability.InitializableBean;
 import com.aspectran.core.component.bean.annotation.Component;
 
 @Component
@@ -351,7 +353,7 @@ This is useful for encapsulating a complex creation process or for creating prox
 The instance of the bean returned by the `getObject()` method is exposed to the application, not the factory itself.
 
 ```java
-import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ability.FactoryBean;
 import com.aspectran.core.component.bean.annotation.Component;
 
 // Assume MyProduct is a complex class to instantiate
@@ -400,8 +402,14 @@ public class MyProductFactory implements FactoryBean<MyProduct> {
 
 ### Accessing the Framework with `Aware` Interfaces
 
-If a bean needs to access Aspectran's internal framework objects, it can implement an `Aware` interface.
-For example, `ActivityContextAware` provides access to the current `ActivityContext`.
+If a bean needs to access Aspectran's internal framework objects (such as the context, environment, or active activity), it can implement an `Aware` interface.
+The container calls the `set*()` methods immediately after bean instantiation, before dependency injection (`@Autowired`) and initialization callbacks.
+
+Aspectran provides the following core `Aware` interfaces:
+-   **`CurrentActivityAware`**: Injects the active `Activity` running in the current thread.
+-   **`ActivityContextAware`**: Injects the root framework context, `ActivityContext`.
+-   **`ApplicationAdapterAware`**: Injects the runtime `ApplicationAdapter` (file system, resource loaders, etc.).
+-   **`EnvironmentAware`**: Injects the `Environment` managing active profiles and properties.
 
 ```java
 import com.aspectran.core.component.bean.annotation.Bean;
@@ -415,19 +423,23 @@ public class MyAwareBean implements ActivityContextAware {
 
     private ActivityContext context;
 
-    // Dependency injection via a setter method
+    // Injected via the Aware callback method
     @Override
     public void setActivityContext(ActivityContext context) {
-        this.context = context; // The container injects the ActivityContext here
+        this.context = context;
     }
 
-    public void printCurrentTransletName() {
+    public void printContextInfo() {
         if (this.context != null) {
-            System.out.println("Executing in translet: " + context.getTransletName());
+            System.out.println("Context Name: " + context.getName());
+            System.out.println("Base Packages: " + context.getBeanRegistry().getBasePackages());
         }
     }
 }
 ```
+
+> **Tip: Using `InstantActivitySupport`**
+> Instead of implementing `ActivityContextAware` manually, extending `com.aspectran.core.activity.InstantActivitySupport` provides convenient shortcuts like `getEnvironment()`, `getApplicationAdapter()`, `getBeanRegistry()`, and `instantActivity(...)`.
 
 ## 7. Bean-related Configuration
 

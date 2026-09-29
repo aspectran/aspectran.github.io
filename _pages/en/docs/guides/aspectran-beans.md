@@ -13,8 +13,7 @@ Inspired by the robust concepts of Spring Beans (IoC, DI, etc.), it has been red
 
 The core of Aspectran Beans is to help you write cleaner, more modular, and easier-to-test code by managing your application's objects (called "beans").
 
--   **IoC (Inversion of Control)**: Instead of you creating and managing the lifecycle of your objects, the Aspectran container does it for you. You just define the objects, and the framework instantiates, configures, and assembles them at the appropriate time. This "inversion" of control allows you to focus solely on your business logic.
-
+-   **IoC (Inversion of Control)**: Instead of developers manually creating objects and managing their lifecycle, the Aspectran container takes over this responsibility. You just define the objects, and the framework instantiates, configures, and assembles them at the appropriate time. This "inversion" of control allows you to focus solely on your business logic.
 -   **DI (Dependency Injection)**: This is the primary mechanism for implementing IoC. Instead of an object creating its own dependencies (`new MyService()`), it receives them from an external source (the IoC container). This reduces the coupling between components, making them easier to manage, test, and reuse.
 
 ## 2. Basics: Bean Definition and Scopes
@@ -141,16 +140,35 @@ public class OrderService {
 
 ### Injecting Configuration Values with `@Value`
 
-You can use the `@Value` annotation to inject the evaluation result of an AsEL expression (usually an external configuration value).
+You can use the `@Value` annotation to inject the evaluated result of an AsEL (Aspectran Expression Language) property expression (`%{...}`) into a bean.
+In addition to properties registered in the Environment, you can also directly retrieve specific items from a `.properties` file using the `classpath:` directive and the `^` delimiter.
 
 ```java
 @Component
 public class AppInfo {
-    private final String appVersion;
 
+    private final String appVersion;
+    private final String appName;
+
+    // Injects a specific property value from the classpath properties file into a public field
+    @Value("%{classpath:app.properties^description}")
+    public String description;
+
+    private boolean startup;
+
+    // Injects Environment property values via the constructor (with default value support)
     @Autowired
-    public AppInfo(@Value("%{app.version:1.0.0}") String appVersion) {
+    public AppInfo(
+            @Value("%{app.version:1.0.0}") String appVersion,
+            @Value("%{app.name:DefaultAppName}") String appName) {
         this.appVersion = appVersion;
+        this.appName = appName;
+    }
+
+    // Injects Environment property value via a setter method
+    @Value("%{app.startup:true}")
+    public void setStartup(boolean startup) {
+        this.startup = startup;
     }
 }
 ```

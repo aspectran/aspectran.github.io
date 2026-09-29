@@ -10,7 +10,7 @@ Spring Beans의 견고한 개념(IoC, DI 등)에서 영감을 받았지만, **PO
 
 Aspectran Beans의 핵심은 애플리케이션의 객체("빈"이라 불림)를 관리하여 더 깨끗하고, 모듈화되고, 테스트하기 쉬운 코드를 작성하도록 돕는 것입니다.
 
--   **IoC (Inversion of Control, 제어의 역전)**: 개발자가 객체의 생명주기를 직접 생성하고 관리하는 대신, Aspectran 컨테이너가 이를 대신합니다. 개발자는 객체를 정의하기만 하면, 프레임워크가 적절한 시점에 객체를 인스턴스화, 설정 및 조립합니다. 이러한 제어의 "역전"을 통해 개발자는 비즈니스 로직에만 집중할 수 있습니다.
+-   **IoC (Inversion of Control, 제어의 역전)**: 개발자가 객체를 직접 생성하고 생명주기를 관리하는 대신, Aspectran 컨테이너가 이 역할을 전담합니다. 개발자는 객체를 정의하기만 하면, 프레임워크가 적절한 시점에 객체를 인스턴스화, 설정 및 조립합니다. 이러한 제어의 "역전"을 통해 개발자는 비즈니스 로직에만 집중할 수 있습니다.
 
 -   **DI (Dependency Injection, 의존성 주입)**: IoC를 구현하는 주요 메커니즘입니다. 객체가 자신의 의존성을 직접 생성하는 대신(`new MyService()`), 외부 소스(IoC 컨테이너)로부터 의존성을 "주입"받습니다. 이를 통해 컴포넌트 간의 결합도를 낮추어 관리, 테스트, 재사용이 더 쉬워집니다.
 
@@ -39,7 +39,7 @@ public class MyService {
 ### `@Bean`을 사용한 명시적 정의
 
 `@Bean` 어노테이션은 빈을 명시적으로 선언하기 위해 사용되며, 빈의 세부 속성을 추가적으로 지정할 수 있습니다.
-`@Component` 어노테이션과 함께 클래스나 메소드에 적용할 수 있습니다.
+이 것은 `@Component` 어노테이션과 함께 클래스나 메소드에 적용할 수 있습니다.
 
 #### 클래스에 사용
 클래스에 `@Bean`을 사용하여 빈을 명시적으로 선언할 수 있습니다.
@@ -193,28 +193,29 @@ public class AppInfo {
     private final String appVersion;
     private final String appName;
 
-    // public 필드에 AsEL 표현식을 사용하여 외부 설정 값을 주입
-    @Value("%{app^description}")
+    // classpath의 app.properties 파일에서 description 키의 값을 읽어 public 필드에 주입
+    @Value("%{classpath:app.properties^description}")
     public String description;
 
     private boolean startup;
 
-    // 생성자를 통해 @Value로 외부 설정 값을 주입
+    // 생성자를 통해 Environment 프로퍼티 값을 주입 (기본값 지정 가능)
     @Autowired
     public AppInfo(
-            @Value("%{app^version}") String appVersion,
-            @Value("%{app^name:DefaultAppName}") String appName) {
+            @Value("%{app.version}") String appVersion,
+            @Value("%{app.name:DefaultAppName}") String appName) {
         this.appVersion = appVersion;
         this.appName = appName;
     }
 
-    // 수정자(Setter) 메소드에 의한 의존성 주입
-    @Value("%{app^startup}")
+    // 수정자(Setter) 메소드를 통해 Environment 프로퍼티 값 주입
+    @Value("%{app.startup}")
     public void setStartup(boolean startup) {
         this.startup = startup;
     }
 
     public void displayInfo() {
+        System.out.println("Description: " + description);
         System.out.println("Version: " + appVersion);
         System.out.println("Name: " + appName);
         System.out.println("startup: " + startup);
@@ -324,8 +325,8 @@ public class LifecycleBean {
 또는, 동일한 목적을 위해 프레임워크 인터페이스를 구현할 수도 있습니다.
 
 ```java
-import com.aspectran.core.component.bean.ablility.DisposableBean;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
+import com.aspectran.core.component.bean.ability.DisposableBean;
+import com.aspectran.core.component.bean.ability.InitializableBean;
 import com.aspectran.core.component.bean.annotation.Component;
 
 @Component
@@ -352,7 +353,7 @@ public class LifecycleBean implements InitializableBean, DisposableBean {
 `getObject()` 메소드가 반환하는 빈의 인스턴스가 애플리케이션에 노출되며, 팩토리 자체는 노출되지 않습니다.
 
 ```java
-import com.aspectran.core.component.bean.ablility.FactoryBean;
+import com.aspectran.core.component.bean.ability.FactoryBean;
 import com.aspectran.core.component.bean.annotation.Component;
 
 // MyProduct가 인스턴스화하기 복잡한 클래스라고 가정
@@ -401,8 +402,14 @@ public class MyProductFactory implements FactoryBean<MyProduct> {
 
 ### `Aware` 인터페이스로 프레임워크에 접근하기
 
-빈이 Aspectran의 내부 프레임워크 객체에 접근해야 하는 경우, `Aware` 인터페이스를 구현할 수 있습니다.
-예를 들어, `ActivityContextAware`는 현재 `ActivityContext`에 대한 접근을 제공합니다.
+빈이 Aspectran 내부의 프레임워크 객체(컨텍스트, 환경 설정, 활성 액티비티 등)에 직접 접근해야 하는 경우, `Aware` 인터페이스를 구현할 수 있습니다.
+컨테이너는 빈을 인스턴스화한 직후, 의존성 주입(`@Autowired`) 및 초기화 콜백 전에 `set*()` 메소드를 호출하여 해당 리소스를 주입해 줍니다.
+
+Aspectran은 다음과 같은 주요 `Aware` 인터페이스들을 제공합니다:
+-   **`CurrentActivityAware`**: 현재 스레드에서 실행 중인 활성 `Activity`를 주입받습니다.
+-   **`ActivityContextAware`**: 프레임워크의 루트 컨텍스트인 `ActivityContext`를 주입받습니다.
+-   **`ApplicationAdapterAware`**: 파일 시스템, 리소스 로더 등 환경 어댑터 `ApplicationAdapter`를 주입받습니다.
+-   **`EnvironmentAware`**: 프로파일 및 프로퍼티를 관리하는 `Environment`를 주입받습니다.
 
 ```java
 import com.aspectran.core.component.bean.annotation.Bean;
@@ -416,19 +423,23 @@ public class MyAwareBean implements ActivityContextAware {
 
     private ActivityContext context;
 
-    // 수정자(Setter) 메소드에 의한 의존성 주입
+    // Aware 콜백 메소드를 통해 ActivityContext 주입
     @Override
     public void setActivityContext(ActivityContext context) {
-        this.context = context; // 컨테이너가 여기에 ActivityContext를 주입
+        this.context = context;
     }
 
-    public void printCurrentTransletName() {
+    public void printContextInfo() {
         if (this.context != null) {
-            System.out.println("Executing in translet: " + context.getTransletName());
+            System.out.println("Context Name: " + context.getName());
+            System.out.println("Base Packages: " + context.getBeanRegistry().getBasePackages());
         }
     }
 }
 ```
+
+> **Tip: `InstantActivitySupport` 활용**
+> `ActivityContext`나 현재 `Activity`에 접근할 때 `ActivityContextAware`를 직접 구현하는 대신, `com.aspectran.core.activity.InstantActivitySupport` 클래스를 상속하면 `getEnvironment()`, `getApplicationAdapter()`, `getBeanRegistry()`, `instantActivity(...)` 등 다양한 헬퍼 메소드를 바로 활용할 수 있어 더욱 편리합니다.
 
 ## 7. 빈 관련 구성 설정
 

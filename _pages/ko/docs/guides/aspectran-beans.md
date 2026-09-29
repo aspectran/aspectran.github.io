@@ -13,8 +13,7 @@ Spring Beans의 견고한 개념(IoC, DI 등)에서 영감을 받았지만, POJO
 
 Aspectran Beans의 핵심은 애플리케이션의 객체("빈"이라 불림)를 관리하여 더 깨끗하고, 모듈화되고, 테스트하기 쉬운 코드를 작성하도록 돕는 것입니다.
 
--   **IoC (Inversion of Control, 제어의 역전)**: 개발자가 객체의 생명주기를 직접 생성하고 관리하는 대신, Aspectran 컨테이너가 이를 대신합니다. 개발자는 객체를 정의하기만 하면, 프레임워크가 적절한 시점에 객체를 인스턴스화, 설정 및 조립합니다. 이러한 제어의 "역전"을 통해 개발자는 비즈니스 로직에만 집중할 수 있습니다.
-
+-   **IoC (Inversion of Control, 제어의 역전)**: 개발자가 객체를 직접 생성하고 생명주기를 관리하는 대신, Aspectran 컨테이너가 이 역할을 전담합니다. 개발자는 객체를 정의하기만 하면, 프레임워크가 적절한 시점에 객체를 인스턴스화, 설정 및 조립합니다. 이러한 제어의 "역전"을 통해 개발자는 비즈니스 로직에만 집중할 수 있습니다.
 -   **DI (Dependency Injection, 의존성 주입)**: IoC를 구현하는 주요 메커니즘입니다. 객체가 자신의 의존성을 직접 생성하는 대신(`new MyService()`), 외부 소스(IoC 컨테이너)로부터 의존성을 "주입"받습니다. 이를 통해 컴포넌트 간의 결합도를 낮추어 관리, 테스트, 재사용이 더 쉬워집니다.
 
 ## 2. 기본: 빈(Bean) 정의와 스코프
@@ -141,16 +140,35 @@ public class OrderService {
 
 ### `@Value`로 설정값 주입
 
-`@Value` 어노테이션을 사용하여 AsEL 표현식의 평가 결과(주로 외부 설정값)를 주입할 수 있습니다.
+`@Value` 어노테이션을 사용하여 AsEL(Aspectran Expression Language) 프로퍼티 표현식(`%{...}`)의 평가 결과 값을 빈에 주입할 수 있습니다.
+Environment에 등록된 프로퍼티는 물론, `classpath:` 지시어와 `^` 구분자를 사용하여 특정 `.properties` 파일의 항목 값을 직접 가져올 수도 있습니다.
 
 ```java
 @Component
 public class AppInfo {
-    private final String appVersion;
 
+    private final String appVersion;
+    private final String appName;
+
+    // classpath의 app.properties 파일에서 description 키의 값을 읽어 public 필드에 주입
+    @Value("%{classpath:app.properties^description}")
+    public String description;
+
+    private boolean startup;
+
+    // 생성자를 통해 Environment 프로퍼티 값을 주입 (기본값 지정 가능)
     @Autowired
-    public AppInfo(@Value("%{app.version:1.0.0}") String appVersion) {
+    public AppInfo(
+            @Value("%{app.version:1.0.0}") String appVersion,
+            @Value("%{app.name:DefaultAppName}") String appName) {
         this.appVersion = appVersion;
+        this.appName = appName;
+    }
+
+    // 수정자(Setter) 메소드를 통해 Environment 프로퍼티 값 주입
+    @Value("%{app.startup:true}")
+    public void setStartup(boolean startup) {
+        this.startup = startup;
     }
 }
 ```

@@ -151,7 +151,7 @@ A Bean is a Java object managed by Aspectran's IoC (Inversion of Control) contai
 
 #### 3.2.1. Understanding IoC and DI
 
-*   **IoC (Inversion of Control)**: Instead of the developer directly managing the creation, configuration, and lifecycle of objects, the Aspectran container does it. The developer only needs to define the objects, and the framework will instantiate them at the appropriate time and connect the necessary dependencies. This allows the developer to focus solely on the business logic.
+*   **IoC (Inversion of Control)**: Instead of the developer manually managing the creation, configuration, and lifecycle of objects, the Aspectran container takes over this responsibility. The developer only needs to define the objects, and the framework will instantiate them at the appropriate time and connect the necessary dependencies. This allows the developer to focus solely on the business logic.
 *   **DI (Dependency Injection)**: This is the core mechanism for implementing IoC. It is a style where an object receives its dependencies (other objects it needs) from an external source (the IoC container) rather than creating or finding them itself. This lowers the coupling between components, greatly improving code reusability, testability, and maintainability.
 
 #### 3.2.2. How to Define a Bean
