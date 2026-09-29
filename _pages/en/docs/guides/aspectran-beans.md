@@ -149,7 +149,7 @@ public class AppInfo {
     private final String appVersion;
 
     @Autowired
-    public AppInfo(@Value("%{app^version:1.0.0}") String appVersion) {
+    public AppInfo(@Value("%{app.version:1.0.0}") String appVersion) {
         this.appVersion = appVersion;
     }
 }
@@ -291,7 +291,31 @@ public class MyProductFactory implements FactoryBean<MyProduct> {
 }
 ```
 
-### Creating Beans with a Factory Method
+#### Factory Beans Requiring Initialization: `InitializableFactoryBean`
+
+If the factory bean itself needs to execute custom initialization logic after dependency injection and before producing its product object, it can implement the `InitializableFactoryBean<T>` interface. This interface combines `FactoryBean<T>` and `InitializableBean`. The container calls `initialize()` first to prepare the factory before calling `getObject()` to obtain the product.
+
+```java
+@Component
+@Bean("complexService")
+public class ComplexServiceFactoryBean implements InitializableFactoryBean<ComplexService> {
+    private ComplexService service;
+
+    @Override
+    public void initialize() throws Exception {
+        // Initialize factory and prepare resources
+        this.service = new ComplexService();
+        this.service.init();
+    }
+
+    @Override
+    public ComplexService getObject() throws Exception {
+        return this.service;
+    }
+}
+```
+
+### Creating Beans with Factory Methods
 
 In addition to `FactoryBean`, Aspectran provides a way to create beans using a dedicated factory method. This is a powerful pattern for encapsulating complex object creation logic or integrating third-party libraries.
 
@@ -361,16 +385,108 @@ Understanding this distinction is crucial for correctly managing bean lifecycles
 
 ### Accessing the Framework with `Aware` Interfaces
 
-By implementing `Aware` interfaces like `ActivityContextAware`, a bean can access Aspectran's internal objects (e.g., `ActivityContext`).
+While typical business beans should remain framework-agnostic plain old Java objects (POJOs), infrastructure-level beans or framework extension components often need direct access to Aspectran's internal container and runtime environment objects.
+
+Aspectran provides **four Aware interfaces** that allow a bean to receive container-internal resources immediately after instantiation. When a bean class implements one of these interfaces, the container invokes the corresponding callback before dependency injection (autowiring) and initialization callbacks.
+
+| Aware Interface | Injection Method | Injected Resource & Purpose |
+| :--- | :--- | :--- |
+| **`ActivityContextAware`** | `setActivityContext(ActivityContext)` | Injects Aspectran's core container, `ActivityContext`. Provides access to `BeanRegistry`, `TransletRuleRegistry`, `TemplateRenderer`, `EventPublisher`, and all underlying configuration rules. |
+| **`ApplicationAdapterAware`** | `setApplicationAdapter(ApplicationAdapter)` | Injects the runtime `ApplicationAdapter`. Provides access to the application's runtime environment (web, shell, daemon), root directory, classloader, and root resource loaders. |
+| **`EnvironmentAware`** | `setEnvironment(Environment)` | Injects the `Environment` object managing active profiles, system properties, environment variables, and configuration properties. |
+| **`CurrentActivityAware`** | `setCurrentActivity(Activity)` | Injects the currently active `Activity` bound to the current thread at the time of bean instantiation/initialization. Useful for request-scoped beans or components needing immediate activity metadata. |
+
+#### 1. `ActivityContextAware` Example
 
 ```java
+package com.example.myapp.support;
+
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.ActivityContext;
+
 @Component
-public class MyAwareBean implements ActivityContextAware {
+public class CustomContextHelper implements ActivityContextAware {
+
     private ActivityContext context;
 
     @Override
     public void setActivityContext(ActivityContext context) {
         this.context = context;
+    }
+
+    public void printContextInfo() {
+        if (context != null) {
+            System.out.println("Active Context Name: " + context.getName());
+            System.out.println("Base Packages: " + context.getBeanRegistry().getBasePackages());
+            System.out.println("Contains 'orderService': " + context.getBeanRegistry().containsBean("orderService"));
+        }
+    }
+}
+```
+
+#### 2. `EnvironmentAware` & `ApplicationAdapterAware` Example
+
+```java
+package com.example.myapp.support;
+
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Initialize;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.EnvironmentAware;
+import com.aspectran.core.context.env.Environment;
+
+@Component
+public class SystemConfigReporter implements EnvironmentAware, ApplicationAdapterAware {
+
+    private Environment environment;
+    private ApplicationAdapter applicationAdapter;
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Override
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+    }
+
+    @Initialize
+    public void report() {
+        System.out.println("Base Path: " + applicationAdapter.getBasePath());
+        System.out.println("Active Profiles: " + String.join(", ", environment.getActiveProfiles()));
+        System.out.println("Server Port: " + environment.getProperty("server.port", "8080"));
+    }
+}
+```
+
+#### 3. Convenience Base Class: `InstantActivitySupport`
+
+When a bean needs access to `ActivityContext` to perform ad-hoc programmatic activities or access container components easily, extending `com.aspectran.core.activity.InstantActivitySupport` is often more convenient than implementing `ActivityContextAware` directly.
+
+`InstantActivitySupport` provides convenient helper methods:
+* `getActivityContext()`: Returns the injected `ActivityContext`
+* `getApplicationAdapter()`, `getEnvironment()`, `getBeanRegistry()`: Shortcuts to core subcomponents
+* `getEventPublisher()`: Accesses the central `EventPublisher`
+* `instantActivity(InstantAction<V>)`: Executes an action within a newly created `InstantActivity` boundary
+* `getCurrentActivity()`, `hasCurrentActivity()`: Accesses the current thread's active `Activity`
+
+```java
+@Component
+public class SystemBatchTask extends InstantActivitySupport {
+
+    public void executeTask() {
+        // Utilize helper methods provided by InstantActivitySupport
+        String appName = getApplicationAdapter().getName();
+        getBeanRegistry().getBean("auditLogger");
+
+        // Execute logic within an instant activity boundary
+        instantActivity(activity -> {
+            System.out.println("Instant activity running on " + appName);
+            return null;
+        });
     }
 }
 ```
@@ -450,7 +566,7 @@ public class OrderEventPublisher extends InstantActivitySupport {
 @Component
 public class OrderService {
 
-    private final EventPublisher orderEventPublisher;
+    private final OrderEventPublisher orderEventPublisher;
 
     @Autowired
     public OrderService(OrderEventPublisher orderEventPublisher) {
@@ -500,7 +616,7 @@ public class MyAsyncTaskService {
     @Async
     public Future<String> doSomethingAndReturn() {
         // Executes the task and returns the result via a Future object.
-        return new CompletableFuture<>(() -> "Hello from async task!");
+        return CompletableFuture.completedFuture("Hello from async task!");
     }
 }
 ```
@@ -555,18 +671,20 @@ public void doSomethingWithCustomExecutor() {
 
 ### Complete Lifecycle Sequence
 
-A singleton bean is created and destroyed in the following order:
+A singleton bean is created and destroyed by the container in the following order:
 
-1.  **Instantiation**: Constructor call
-2.  **Dependency Injection**: Inject dependencies into fields and setters annotated with `@Autowired`
-3.  **Aware Interface Processing**: Call the `set*()` methods of `Aware` interfaces
+1.  **Instantiation**: Object instance creation via constructor call
+2.  **Aware Interface Processing (Aware Callbacks)**: If the bean implements `Aware` interfaces, container resources are injected (`CurrentActivityAware` &rarr; `ActivityContextAware` &rarr; `ApplicationAdapterAware` &rarr; `EnvironmentAware`)
+3.  **Dependency Injection**: Field and setter method injection annotated with `@Autowired`, XML `<property>` attribute injection
 4.  **Post-Initialization Callbacks**:
     -   Call methods annotated with `@Initialize`
     -   Call the `initialize()` method of the `InitializableBean` interface
-5.  **(Bean is ready to use)**
+    -   Call `initMethod` defined in XML
+5.  **(Bean is ready to use - In Service)**
 6.  **Pre-Destruction Callbacks**:
     -   Call methods annotated with `@Destroy`
     -   Call the `destroy()` method of the `DisposableBean` interface
+    -   Call `destroyMethod` defined in XML
 
 ### Annotation-based Callbacks: `@Initialize` & `@Destroy`
 
@@ -690,7 +808,7 @@ You can also enable component scanning in XML using `<bean scan="...">`.
 
 You can define an anonymous inner bean that will only be used as a property of another bean. Thanks to a flexible parsing architecture, there is no arbitrary limit on the nesting depth of inner beans, but it is recommended to keep the structure simple for readability.
 
-> **Note on AOP and Inner Beans:** Inner beans are generally not recommended for beans that require AOP proxying. Specifically, "self-registering" beans (like `SqlSessionAgent`) that register their own Aspects during initialization cannot be proxied when used as inner beans. This is because the Aspect registration occurs during the `initialize()` phase, which is after the instance has been created and passed to the outer bean. For such beans, always define them as top-level beans.
+> **Note on AOP and Inner Beans:** Inner beans are generally not recommended for beans that require AOP proxying. Specifically, "self-registering" beans (like `DefaultSqlSessionAgent`) that register their own Aspects during initialization cannot be proxied when used as inner beans. This is because the Aspect registration occurs during the `initialize()` phase, which is after the instance has been created and passed to the outer bean. For such beans, always define them as top-level beans.
 
 ```xml
 <bean id="outerBean" class="com.example.OuterBean">
@@ -729,7 +847,7 @@ Since a singleton bean has only one instance throughout the application, it can 
 
 ### Avoid Using Inner Beans for AOP Proxy Targets
 
-Inner beans are instantiated and immediately injected into their parent bean. Because of this immediate injection, certain AOP features may not work as expected. In particular, "self-registering" beans that register their own Aspect rules during their lifecycle's initialization phase (like `SqlSessionAgent`) will not be proxied if defined as an inner bean. This is because the proxying decision happens at the moment of instantiation, before the bean has had a chance to run its initialization logic and register the necessary Aspect. Always define such beans as top-level beans and inject them by reference.
+Inner beans are instantiated and immediately injected into their parent bean. Because of this immediate injection, certain AOP features may not work as expected. In particular, "self-registering" beans that register their own Aspect rules during their lifecycle's initialization phase (like `DefaultSqlSessionAgent`) will not be proxied if defined as an inner bean. This is because the proxying decision happens at the moment of instantiation, before the bean has had a chance to run its initialization logic and register the necessary Aspect. Always define such beans as top-level beans and inject them by reference.
 
 ### Always Use `@Component` as the Entry Point
 

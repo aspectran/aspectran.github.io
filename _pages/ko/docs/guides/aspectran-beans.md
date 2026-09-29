@@ -120,10 +120,12 @@ public class MyController {
 ```java
 public interface NotificationService { /* ... */ }
 
-@Component @Bean("email")
+@Component
+@Bean("email")
 public class EmailNotificationService implements NotificationService { /* ... */ }
 
-@Component @Bean("sms")
+@Component
+@Bean("sms")
 public class SmsNotificationService implements NotificationService { /* ... */ }
 
 @Component
@@ -147,7 +149,7 @@ public class AppInfo {
     private final String appVersion;
 
     @Autowired
-    public AppInfo(@Value("%{app^version:1.0.0}") String appVersion) {
+    public AppInfo(@Value("%{app.version:1.0.0}") String appVersion) {
         this.appVersion = appVersion;
     }
 }
@@ -289,6 +291,30 @@ public class MyProductFactory implements FactoryBean<MyProduct> {
 }
 ```
 
+#### 초기화가 필요한 팩토리 빈: `InitializableFactoryBean`
+
+팩토리 빈 자체가 의존성을 주입받은 후 제품(product) 객체를 생성하기 전에 자체적인 초기화 로직을 수행해야 하는 경우, `InitializableFactoryBean<T>` 인터페이스를 구현할 수 있습니다. 이 인터페이스는 `FactoryBean<T>`과 `InitializableBean`을 함께 상속하며, 컨테이너는 의존성 주입 완료 후 `initialize()` 메소드를 먼저 호출하여 팩토리를 준비시킨 다음 `getObject()`를 통해 제품 객체를 획득합니다.
+
+```java
+@Component
+@Bean("complexService")
+public class ComplexServiceFactoryBean implements InitializableFactoryBean<ComplexService> {
+    private ComplexService service;
+
+    @Override
+    public void initialize() throws Exception {
+        // 팩토리 초기화 및 리소스 준비
+        this.service = new ComplexService();
+        this.service.init();
+    }
+
+    @Override
+    public ComplexService getObject() throws Exception {
+        return this.service;
+    }
+}
+```
+
 ### 팩토리 메소드로 빈 생성하기
 
 `FactoryBean` 외에도, Aspectran은 전용 팩토리 메소드를 사용하여 빈을 생성하는 방법을 제공합니다. 이는 복잡한 객체 생성 로직을 캡슐화하거나 서드파티 라이브러리를 통합하기 위한 강력한 패턴입니다.
@@ -359,16 +385,108 @@ XML에서는 팩토리 메소드를 선언하는 두 가지 뚜렷한 방식이 
 
 ### `Aware` 인터페이스로 프레임워크에 접근하기
 
-`ActivityContextAware`와 같은 `Aware` 인터페이스를 구현하면, 빈이 Aspectran의 내부 객체(e.g., `ActivityContext`)에 접근할 수 있습니다.
+일반적인 비즈니스 빈은 프레임워크에 종속되지 않는 순수 POJO로 작성하는 것이 이상적이지만, 인프라 계층 빈이나 프레임워크 확장 컴포넌트의 경우 Aspectran의 내부 컨테이너 및 런타임 환경 객체에 직접 접근해야 하는 경우가 있습니다.
+
+Aspectran은 빈이 인스턴스화된 직후 컨테이너 내부 리소스를 주입받을 수 있도록 **4가지 Aware 인터페이스**를 제공합니다. 빈 클래스가 이 인터페이스들 중 하나를 구현(`implements`)하면, 컨테이너는 의존성 주입(Autowiring) 및 초기화 콜백 실행 전에 해당 리소스를 전달합니다.
+
+| Aware 인터페이스 | 주입 메소드 | 주입되는 리소스 및 용도 |
+| :--- | :--- | :--- |
+| **`ActivityContextAware`** | `setActivityContext(ActivityContext)` | Aspectran의 핵심 컨테이너인 `ActivityContext`를 주입받습니다. `BeanRegistry`, `TransletRuleRegistry`, `TemplateRenderer`, `EventPublisher` 등 프레임워크 전반의 모든 컴포넌트와 규칙에 접근할 수 있습니다. |
+| **`ApplicationAdapterAware`** | `setApplicationAdapter(ApplicationAdapter)` | 현재 실행 환경의 루트 어댑터인 `ApplicationAdapter`를 주입받습니다. 웹, 셸, 데몬 등 애플리케이션의 런타임 환경 정보, 기본 작업 디렉터리, 루트 클래스로더 및 리소스 로더에 접근할 수 있습니다. |
+| **`EnvironmentAware`** | `setEnvironment(Environment)` | 활성 프로파일(Profiles), 시스템 프로퍼티, 환경 변수 및 설정 프로퍼티를 관리하는 `Environment` 객체를 주입받아 동적인 환경 정보를 조회하고 활용할 수 있습니다. |
+| **`CurrentActivityAware`** | `setCurrentActivity(Activity)` | 빈 생성/초기화 시점에 현재 스레드에 바인딩되어 있는 활성 `Activity` 인스턴스를 주입받습니다. 요청 스코프 빈이나 활동 컨텍스트 내에서 즉각적인 액티비티 정보가 필요한 빈에서 유용합니다. |
+
+#### 1. `ActivityContextAware` 사용 예시
 
 ```java
+package com.example.myapp.support;
+
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.aware.ActivityContextAware;
+import com.aspectran.core.context.ActivityContext;
+
 @Component
-public class MyAwareBean implements ActivityContextAware {
+public class CustomContextHelper implements ActivityContextAware {
+
     private ActivityContext context;
 
     @Override
     public void setActivityContext(ActivityContext context) {
         this.context = context;
+    }
+
+    public void printContextInfo() {
+        if (context != null) {
+            System.out.println("Active Context Name: " + context.getName());
+            System.out.println("Base Packages: " + context.getBeanRegistry().getBasePackages());
+            System.out.println("Contains 'orderService': " + context.getBeanRegistry().containsBean("orderService"));
+        }
+    }
+}
+```
+
+#### 2. `EnvironmentAware` 및 `ApplicationAdapterAware` 사용 예시
+
+```java
+package com.example.myapp.support;
+
+import com.aspectran.core.adapter.ApplicationAdapter;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Initialize;
+import com.aspectran.core.component.bean.aware.ApplicationAdapterAware;
+import com.aspectran.core.component.bean.aware.EnvironmentAware;
+import com.aspectran.core.context.env.Environment;
+
+@Component
+public class SystemConfigReporter implements EnvironmentAware, ApplicationAdapterAware {
+
+    private Environment environment;
+    private ApplicationAdapter applicationAdapter;
+
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    @Override
+    public void setApplicationAdapter(ApplicationAdapter applicationAdapter) {
+        this.applicationAdapter = applicationAdapter;
+    }
+
+    @Initialize
+    public void report() {
+        System.out.println("Base Path: " + applicationAdapter.getBasePath());
+        System.out.println("Active Profiles: " + String.join(", ", environment.getActiveProfiles()));
+        System.out.println("Server Port: " + environment.getProperty("server.port", "8080"));
+    }
+}
+```
+
+#### 3. 편의 베이스 클래스: `InstantActivitySupport`
+
+`ActivityContext`에 접근하여 즉각적인 액티비티 실행이나 프레임워크 컴포넌트를 손쉽게 활용하고자 할 때는 `ActivityContextAware`를 직접 구현하는 대신, 이미 이를 구현하고 다양한 헬퍼 메소드를 제공하는 `com.aspectran.core.activity.InstantActivitySupport` 클래스를 상속하는 것이 매우 편리합니다.
+
+`InstantActivitySupport`는 다음과 같은 유용한 메소드들을 기본 제공합니다:
+* `getActivityContext()`: 주입된 `ActivityContext` 반환
+* `getApplicationAdapter()`, `getEnvironment()`, `getBeanRegistry()`: 주요 서브 컴포넌트에 대한 단축 접근자
+* `getEventPublisher()`: 애플리케이션 중앙 이벤트 발행자 반환
+* `instantActivity(InstantAction<V>)`: 독립된 `InstantActivity`를 즉시 생성하여 트랜잭션/액티비티 경계 내에서 안전하게 작업 실행
+* `getCurrentActivity()`, `hasCurrentActivity()`: 현재 스레드의 활성 `Activity` 조회
+
+```java
+@Component
+public class SystemBatchTask extends InstantActivitySupport {
+
+    public void executeTask() {
+        // InstantActivitySupport가 제공하는 편리한 단축 메소드 활용
+        String appName = getApplicationAdapter().getName();
+        getBeanRegistry().getBean("auditLogger");
+
+        // 별도의 독립 Activity를 생성하여 로직 실행
+        instantActivity(activity -> {
+            System.out.println("Instant activity running on " + appName);
+            return null;
+        });
     }
 }
 ```
@@ -448,11 +566,11 @@ public class OrderEventPublisher extends InstantActivitySupport {
 @Component
 public class OrderService {
 
-    private final EventPublisher orderEventPublisher;
+    private final OrderEventPublisher orderEventPublisher;
 
     @Autowired
     public OrderService(OrderEventPublisher orderEventPublisher) {
-        this.eventPublisher = orderEventPublisher;
+        this.orderEventPublisher = orderEventPublisher;
     }
 
     public void completeOrder(String orderId) {
@@ -498,7 +616,7 @@ public class MyAsyncTaskService {
     @Async
     public Future<String> doSomethingAndReturn() {
         // 작업을 실행하고 Future 객체를 통해 결과를 반환합니다.
-        return new CompletableFuture<>(() -> "Hello from async task!");
+        return CompletableFuture.completedFuture("Hello from async task!");
     }
 }
 ```
@@ -553,18 +671,20 @@ public void doSomethingWithCustomExecutor() {
 
 ### 전체 생명주기 순서
 
-싱글톤 빈은 다음과 같은 순서로 생성되고 소멸됩니다.
+싱글톤 빈은 컨테이너에 의해 다음과 같은 순서로 생성되고 소멸됩니다.
 
-1.  **인스턴스화**: 생성자 호출
-2.  **의존성 주입**: `@Autowired`가 붙은 필드 및 수정자(setter)에 의존성 주입
-3.  **Aware 인터페이스 처리**: `Aware` 인터페이스의 `set*()` 메소드 호출
+1.  **인스턴스화 (Instantiation)**: 생성자 호출을 통한 객체 인스턴스 생성
+2.  **Aware 인터페이스 처리 (Aware Callbacks)**: 빈이 `Aware` 인터페이스를 구현한 경우 컨테이너 리소스 주입 (`CurrentActivityAware` &rarr; `ActivityContextAware` &rarr; `ApplicationAdapterAware` &rarr; `EnvironmentAware`)
+3.  **의존성 주입 (Dependency Injection)**: `@Autowired`가 지정된 필드 및 수정자(setter) 메소드 주입, XML `<property>` 속성 주입
 4.  **초기화 콜백 (Post-Initialization)**:
     -   `@Initialize` 어노테이션이 붙은 메소드 호출
     -   `InitializableBean` 인터페이스의 `initialize()` 메소드 호출
-5.  **(빈 사용 가능 상태)**
+    -   XML에 정의된 `initMethod` 호출
+5.  **(빈 사용 가능 상태 - In Service)**
 6.  **소멸 전 콜백 (Pre-Destruction)**:
     -   `@Destroy` 어노테이션이 붙은 메소드 호출
     -   `DisposableBean` 인터페이스의 `destroy()` 메소드 호출
+    -   XML에 정의된 `destroyMethod` 호출
 
 ### 어노테이션 기반 콜백: `@Initialize` & `@Destroy`
 
@@ -688,7 +808,7 @@ XML에서도 `<bean scan="...">`을 사용하여 컴포넌트 스캔을 활성�
 
 다른 빈의 속성으로만 사용될 익명의 내부 빈을 정의할 수 있습니다. 유연한 파싱 아키텍처 덕분에 내부 빈의 중첩 깊이에 대한 임의의 제한은 없지만, 가독성을 위해 구조를 단순하게 유지하는 것이 좋습니다.
 
-> **AOP와 내부 빈 사용 시 주의사항:** AOP 프록시가 필요한 빈은 내부 빈으로 정의하지 않는 것이 좋습니다. 특히 `SqlSessionAgent`와 같이 초기화(`initialize()`) 과정에서 자기 자신을 위한 Aspect를 직접 등록하는 "자가 등록형(self-registering)" 빈은 내부 빈으로 사용될 때 프록시가 생성되지 않습니다. 이는 인스턴스가 생성되어 상위 빈에 전달된 이후에야 Aspect 등록이 이루어지기 때문입니다. 이러한 빈은 반드시 최상위 빈으로 정의하여 참조를 통해 주입받아야 합니다.
+> **AOP와 내부 빈 사용 시 주의사항:** AOP 프록시가 필요한 빈은 내부 빈으로 정의하지 않는 것이 좋습니다. 특히 `DefaultSqlSessionAgent`와 같이 초기화(`initialize()`) 과정에서 자기 자신을 위한 Aspect를 직접 등록하는 "자가 등록형(self-registering)" 빈은 내부 빈으로 사용될 때 프록시가 생성되지 않습니다. 이는 인스턴스가 생성되어 상위 빈에 전달된 이후에야 Aspect 등록이 이루어지기 때문입니다. 이러한 빈은 반드시 최상위 빈으로 정의하여 참조를 통해 주입받아야 합니다.
 
 ```xml
 <bean id="outerBean" class="com.example.OuterBean">
@@ -727,7 +847,7 @@ XML에서도 `<bean scan="...">`을 사용하여 컴포넌트 스캔을 활성�
 
 ### AOP 프록시 대상인 빈은 내부 빈으로 사용하지 마세요
 
-내부 빈은 인스턴스화되는 즉시 상위 빈에 주입됩니다. 이러한 즉각적인 주입 특성 때문에 일부 AOP 기능이 예상대로 작동하지 않을 수 있습니다. 특히 `SqlSessionAgent`와 같이 자신의 생명주기 중 초기화 단계에서 스스로 Aspect 룰을 등록하는 "자가 등록형" 빈은 내부 빈으로 정의할 경우 프록시가 생성되지 않습니다. 프록시 생성 여부는 인스턴스화 시점에 결정되는데, 내부 빈은 초기화 로직을 실행하여 Aspect를 등록하기도 전에 이미 원본 객체 상태로 상위 빈에 전달되어 버리기 때문입니다. 이러한 빈은 항상 최상위 빈으로 정의하고 참조를 통해 주입하여 사용하세요.
+내부 빈은 인스턴스화되는 즉시 상위 빈에 주입됩니다. 이러한 즉각적인 주입 특성 때문에 일부 AOP 기능이 예상대로 작동하지 않을 수 있습니다. 특히 `DefaultSqlSessionAgent`와 같이 자신의 생명주기 중 초기화 단계에서 스스로 Aspect 룰을 등록하는 "자가 등록형" 빈은 내부 빈으로 정의할 경우 프록시가 생성되지 않습니다. 프록시 생성 여부는 인스턴스화 시점에 결정되는데, 내부 빈은 초기화 로직을 실행하여 Aspect를 등록하기도 전에 이미 원본 객체 상태로 상위 빈에 전달되어 버리기 때문입니다. 이러한 빈은 항상 최상위 빈으로 정의하고 참조를 통해 주입하여 사용하세요.
 
 ### 항상 `@Component`를 진입점으로 사용하세요
 
