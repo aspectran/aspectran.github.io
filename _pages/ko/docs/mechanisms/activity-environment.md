@@ -69,7 +69,7 @@ subheadline: 메커니즘
 ```xml
 <properties>
     <!-- 'uploadPath'라는 빈의 'path' 프로퍼티 값을 참조 -->
-    <item name="file.upload-path" value="#{bean:uploadPath.path}/uploads"/>
+    <item name="file.upload-path" value="#{uploadPath^path}/uploads"/>
 
     <!-- 현재 트랜슬릿의 'userId' 파라미터 값을 참조 -->
     <item name="user.home.dir" value="/home/${userId}"/>
