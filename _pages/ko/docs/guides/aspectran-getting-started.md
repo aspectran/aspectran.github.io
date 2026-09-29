@@ -18,7 +18,10 @@ mkdir hello-aspectran
 cd hello-aspectran
 ```
 
-이제 이 디렉토리 안에 다음 세 개의 파일을 생성합니다: `pom.xml`, `aspectran-config.apon`, 그리고 `src/main/java/com/example/App.java`.
+이제 이 디렉토리 안에 다음 세 개의 파일을 생성합니다:
+- `pom.xml`
+- `aspectran-config.apon`
+- `src/main/java/com/example/App.java`
 
 ### 2.1. Maven 설정 (`pom.xml`)
 

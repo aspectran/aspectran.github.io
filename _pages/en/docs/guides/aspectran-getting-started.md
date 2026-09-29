@@ -18,7 +18,10 @@ mkdir hello-aspectran
 cd hello-aspectran
 ```
 
-Now, create these three files inside this directory: `pom.xml`, `aspectran-config.apon`, and `src/main/java/com/example/App.java`.
+Now, create these three files inside this directory:
+- `pom.xml`
+- `aspectran-config.apon`
+- `src/main/java/com/example/App.java`
 
 ### 2.1. Maven Configuration (`pom.xml`)
 
