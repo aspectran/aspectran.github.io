@@ -20,14 +20,6 @@ Aspectran is a lightweight, high-performance Java framework capable of developin
 *   **Aspect-Oriented Programming (AOP)**: Modularizes cross-cutting concerns that appear repeatedly throughout the application, such as logging, transactions, and security, and separates them from the core business logic.
 *   **Adapter Pattern for Environmental Abstraction**: Provides the flexibility for the same business logic to run without modification in any environment (web, shell, daemon, etc.).
 
-### 1.2. Core Philosophy and Advantages
-
-*   **POJO-Centric Programming**: You can implement business logic using plain old Java objects (POJOs) without implementing special interfaces or inheriting from specific framework classes. This reduces the learning curve for developers and allows them to focus on solving business problems with pure Java code.
-*   **Lightweight and High-Performance**: Provides fast startup times and low memory footprint with minimal dependencies and optimized resource usage.
-*   **Inversion of Control (IoC) and Dependency Injection (DI)**: The framework takes responsibility for object creation, configuration, and lifecycle management, and automatically injects necessary dependencies to minimize coupling between components and help write flexible and reusable code.
-*   **Aspect-Oriented Programming (AOP)**: Modularizes cross-cutting concerns that appear repeatedly throughout the application, such as logging, transactions, and security, and separates them from the core business logic.
-*   **Adapter Pattern for Environmental Abstraction**: Provides the flexibility for the same business logic to run without modification in any environment (web, shell, daemon, etc.).
-
 ## 2. Getting Started with Aspectran
 
 Aspectran is designed to be easy to start with. You can quickly create a "Hello, World" application to understand the basic structure and workflow of an Aspectran project.
@@ -37,7 +29,7 @@ Aspectran is designed to be easy to start with. You can quickly create a "Hello,
 3.  **Code**: Write a simple POJO class annotated with `@Component` and `@Request` to handle commands.
 4.  **Run**: Build the project and run it as a standalone application.
 
-For a step-by-step tutorial on building your first Aspectran application, please refer to the [Getting Started with Aspectran](/en/aspectran/getting-started/) document.
+For a step-by-step tutorial on building your first Aspectran application, please refer to the [Getting Started with Aspectran](/en/docs/guides/aspectran-getting-started/) document.
 
 ## 3. Aspectran Core Concepts
 
@@ -84,12 +76,12 @@ Aspectran provides two main ways to define a Translet.
         ```java
         @Component
         public class UserApiController {
-           private UserDao userDao;
+            private UserDao userDao;
 
-           @Autowired
-           public UserApiController(UserDao userDao) {
-               this.userDao = userDao;
-           }
+            @Autowired
+            public UserApiController(UserDao userDao) {
+                this.userDao = userDao;
+            }
 
             @RequestToGet("/user/info/${userId}") // Mapped to GET /user/info/${userId} request
             @Transform(format = FormatType.JSON) // Transform the result to JSON
@@ -219,10 +211,12 @@ You can use the `@Autowired` annotation to automatically inject other Beans mana
     ```java
     public interface NotificationService { /* ... */ }
 
-    @Component @Bean("email")
+    @Component
+    @Bean("email")
     public class EmailNotificationService implements NotificationService { /* ... */ }
 
-    @Component @Bean("sms")
+    @Component
+    @Bean("sms")
     public class SmsNotificationService implements NotificationService { /* ... */ }
 
     @Component
@@ -244,7 +238,7 @@ You can use the `@Autowired` annotation to automatically inject other Beans mana
         private final String appVersion;
 
         @Autowired
-        public AppInfo(@Value("%{app^version:1.0.0}") String appVersion) {
+        public AppInfo(@Value("%{app.version:1.0.0}") String appVersion) {
             this.appVersion = appVersion;
         }
     }
@@ -471,7 +465,7 @@ When developing an application, you often find code that is repeated across mult
     *   `@Before`: Executed before the Join Point.
     *   `@After`: Executed after the Join Point successfully completes.
     *   `@Around`: Wraps around the Join Point execution and can control whether the Join Point is executed.
-    *   `@Thrown`: Executed when an exception occurs during the Join Point execution.
+    *   `@ExceptionThrown`: Executed when an exception occurs during the Join Point execution.
     *   `@Finally`: Always executed regardless of the success or failure of the Join Point.
     *   **Implementation of Advice**: The Advice logic is implemented as a method of a specific Bean. Aspectran executes the Advice at an optimized location depending on the Join Point target.
 
@@ -532,7 +526,7 @@ In Aspectran, you can create a flexible and reusable design by separating the **
     // OrderService.java (Business logic)
     @Component
     @Bean(id = "simpleSqlSession") // Specify ID to be the target of the Aspect's Pointcut
-    public class OrderService extends SqlSessionAgent {
+    public class OrderService extends DefaultSqlSessionAgent {
         public OrderService() {
             super("simpleTxAspect");
         }
@@ -586,9 +580,9 @@ AsEL uses three main tokens to access data in different scopes.
 *   **`${...}` (Parameter Token)**: Accesses the **parameters** of the current request. It is mainly used to reference path variables or request parameters of a Translet.
     ```xml
     <translet name="/users/${userId}">
-        <action bean="userService" method="deleteUser">
-            <argument value="${userId}"/> <!-- Passes the userId parameter extracted from the URL path as an argument to the action -->
-        </action>
+      <action bean="userService" method="deleteUser">
+          <argument value="${userId}"/> <!-- Passes the userId parameter extracted from the URL path as an argument to the action -->
+      </action>
     </translet>
     ```
 
@@ -793,11 +787,11 @@ Aspectran provides two main ways to configure the scheduler.
     ```java
     import com.aspectran.core.component.bean.annotation.Bean;
     import com.aspectran.core.component.bean.annotation.Component;
+    import com.aspectran.core.component.bean.annotation.CronTrigger;
+    import com.aspectran.core.component.bean.annotation.Job;
     import com.aspectran.core.component.bean.annotation.Request;
+    import com.aspectran.core.component.bean.annotation.Schedule;
     import com.aspectran.core.context.rule.type.FormatType;
-    import com.aspectran.core.scheduler.annotation.CronTrigger;
-    import com.aspectran.core.scheduler.annotation.Job;
-    import com.aspectran.core.scheduler.annotation.Schedule;
     import com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean;
     import org.quartz.SchedulerException;
     import org.quartz.impl.StdSchedulerFactory;
@@ -1052,7 +1046,7 @@ Aspectran builds a flexible and powerful logging system based on SLF4J and Logba
 *   **Adjusting Log Levels**: You can get more detailed information by adjusting the log levels (TRACE, DEBUG, INFO, WARN, ERROR) in the `logback.xml` or `logback-test.xml` file.
 *   **Separating Scheduler Logs**: You can monitor the logs of scheduled tasks by separating them into a separate file. (Utilize the logs of the `com.aspectran.core.scheduler.activity.ActivityJobReporter` class)
 
-For more details, please refer to the [Aspectran Logging Mechanism](architecture/aspectran-logging-mechanism_en.md) document.
+For more details, please refer to the [Aspectran Logging Mechanism](/en/docs/mechanisms/aspectran-logging-mechanism/) document.
 
 ### 7.2. Common Error Messages and Troubleshooting Tips
 

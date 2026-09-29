@@ -29,7 +29,7 @@ Aspectran은 쉽게 시작할 수 있도록 설계되었습니다. 간단한 "He
 3.  **코드 작성**: `@Component`와 `@Request` 어노테이션을 사용하여 명령을 처리할 간단한 POJO 클래스를 작성합니다.
 4.  **실행**: 프로젝트를 빌드하고 독립형 애플리케이션으로 실행합니다.
 
-첫 번째 Aspectran 애플리케이션을 만드는 단계별 튜토리얼은 [Aspectran 시작하기](/ko/aspectran/getting-started/) 문서를 참고하세요.
+첫 번째 Aspectran 애플리케이션을 만드는 단계별 튜토리얼은 [Aspectran 시작하기](/ko/docs/guides/aspectran-getting-started/) 문서를 참고하세요.
 
 ## 3. Aspectran 핵심 개념
 
@@ -211,10 +211,12 @@ Aspectran에서 Bean을 정의하는 가장 일반적인 방법은 어노테이�
     ```java
     public interface NotificationService { /* ... */ }
 
-    @Component @Bean("email")
+    @Component
+    @Bean("email")
     public class EmailNotificationService implements NotificationService { /* ... */ }
 
-    @Component @Bean("sms")
+    @Component
+    @Bean("sms")
     public class SmsNotificationService implements NotificationService { /* ... */ }
 
     @Component
@@ -236,7 +238,7 @@ Aspectran에서 Bean을 정의하는 가장 일반적인 방법은 어노테이�
         private final String appVersion;
 
         @Autowired
-        public AppInfo(@Value("%{app^version:1.0.0}") String appVersion) {
+        public AppInfo(@Value("%{app.version:1.0.0}") String appVersion) {
             this.appVersion = appVersion;
         }
     }
@@ -463,7 +465,7 @@ AOP(Aspect-Oriented Programming)는 로깅, 트랜잭션 관리, 보안, 캐싱 
     *   `@Before`: Join Point 실행 전에 수행됩니다.
     *   `@After`: Join Point가 성공적으로 실행된 후에 수행됩니다.
     *   `@Around`: Join Point 실행 전후를 모두 감싸며, Join Point의 실행 여부를 제어할 수 있습니다.
-    *   `@Thrown`: Join Point 실행 중 예외가 발생했을 때 수행됩니다.
+    *   `@ExceptionThrown`: Join Point 실행 중 예외가 발생했을 때 수행됩니다.
     *   `@Finally`: Join Point의 성공/실패 여부와 관계없이 항상 수행됩니다.
     *   **Advice의 구현**: Advice 로직은 특정 Bean의 메소드로 구현됩니다. Aspectran은 Join Point 대상에 따라 최적화된 위치에서 Advice를 실행합니다.
 
@@ -524,7 +526,7 @@ Aspectran에서는 트랜잭션의 실제 로직을 담은 **어드바이스 Bea
     // OrderService.java (비즈니스 로직)
     @Component
     @Bean(id = "simpleSqlSession") // Aspect의 Pointcut 대상이 되도록 ID 지정
-    public class OrderService extends SqlSessionAgent {
+    public class OrderService extends DefaultSqlSessionAgent {
         public OrderService() {
             super("simpleTxAspect");
         }
@@ -785,11 +787,11 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
     ```java
     import com.aspectran.core.component.bean.annotation.Bean;
     import com.aspectran.core.component.bean.annotation.Component;
+    import com.aspectran.core.component.bean.annotation.CronTrigger;
+    import com.aspectran.core.component.bean.annotation.Job;
     import com.aspectran.core.component.bean.annotation.Request;
+    import com.aspectran.core.component.bean.annotation.Schedule;
     import com.aspectran.core.context.rule.type.FormatType;
-    import com.aspectran.core.scheduler.annotation.CronTrigger;
-    import com.aspectran.core.scheduler.annotation.Job;
-    import com.aspectran.core.scheduler.annotation.Schedule;
     import com.aspectran.core.scheduler.support.QuartzSchedulerFactoryBean;
     import org.quartz.SchedulerException;
     import org.quartz.impl.StdSchedulerFactory;
@@ -985,7 +987,7 @@ Aspectran 애플리케이션의 초기 구동 설정은 `com.aspectran.core.cont
 *   **`context`**: `ActivityContext` 구성을 위한 설정으로, XML 규칙 파일 경로(`rules`), 컴포넌트 스캔 대상 패키지(`scan`), 활성 프로필(`profiles`) 등을 지정합니다.
 *   **`web` / `scheduler` / `shell` / `daemon`**: 각 런타임 환경에 특화된 상세 설정을 제공합니다.
 
-자세한 내용은 [Aspectran 기본 구성 설정](/ko/docs/aspectran-configuration/) 문서를 참고하세요.
+자세한 내용은 [Aspectran 기본 구성 설정](/ko/docs/guides/aspectran-configuration/) 문서를 참고하세요.
 
 ### 5.2. Aspectran XML 구성 설정
 
@@ -994,7 +996,7 @@ XML 구성은 Bean, Translet, Aspect 등 애플리케이션의 핵심 구성 요
 *   **구조**: `<aspectran>`을 루트 엘리먼트로 하며, 그 하위에 `<bean>`, `<translet>`, `<aspect>`, `<schedule>` 등의 요소를 배치합니다.
 *   **DTD 검증**: Aspectran은 설정 파일의 구조적 유효성을 검증하기 위해 복잡한 XSD 대신 단순하고 명확한 DTD(Document Type Definition)를 사용합니다.
 
-자세한 내용은 [Aspectran XML 구성 설정](/ko/docs/aspectran-xml-configuration/) 문서를 참고하세요.
+자세한 내용은 [Aspectran XML 구성 설정](/ko/docs/guides/aspectran-xml-configuration/) 문서를 참고하세요.
 
 ### 5.3. 서블릿 기반 웹 애플리케이션 구성
 
@@ -1044,7 +1046,7 @@ Aspectran은 SLF4J와 Logback을 기반으로 유연하고 강력한 로깅 시�
 *   **로그 레벨 조정**: `logback.xml` 또는 `logback-test.xml` 파일에서 로그 레벨(TRACE, DEBUG, INFO, WARN, ERROR)을 조정하여 필요한 정보를 더 상세하게 얻을 수 있습니다.
 *   **스케줄러 로그 분리**: 스케줄링된 작업의 로그는 별도의 파일로 분리하여 모니터링할 수 있습니다. (`com.aspectran.core.scheduler.activity.ActivityJobReporter` 클래스 로그 활용)
 
-자세한 내용은 [Aspectran 로깅 메카니즘](/ko/docs/mechanisms/aspectran-logging-mechanism/) 문서를 참고하세요.
+자세한 내용은 [Aspectran 로깅 메커니즘](/ko/docs/mechanisms/aspectran-logging-mechanism/) 문서를 참고하세요.
 
 ### 7.2. 일반적인 오류 메시지 및 해결 팁
 

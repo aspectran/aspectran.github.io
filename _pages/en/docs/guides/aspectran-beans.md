@@ -120,10 +120,12 @@ When there are multiple beans of the same type, you can use `@Qualifier("beanId"
 ```java
 public interface NotificationService { /* ... */ }
 
-@Component @Bean("email")
+@Component
+@Bean("email")
 public class EmailNotificationService implements NotificationService { /* ... */ }
 
-@Component @Bean("sms")
+@Component
+@Bean("sms")
 public class SmsNotificationService implements NotificationService { /* ... */ }
 
 @Component
