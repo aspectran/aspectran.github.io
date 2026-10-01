@@ -602,18 +602,77 @@ Aspectran은 생성자 주입과 수정자 주입 두 가지 주요 의존성 �
 
 ### 4.6. 컴포넌트 스캔을 위한 `<filter>`
 
-`<bean scan="...">`을 사용할 때, `<filter>`를 사용하여 패턴에 따라 특정 클래스를 포함하거나 제외할 수 있습니다. 필터는 APON 형식으로 작성됩니다.
+`<bean scan="...">`을 사용하여 클래스패스 상의 컴포넌트들을 일괄 스캔할 때, `<filter>` 요소를 사용하면 특정 클래스를 명시적으로 포함하거나 제외하는 세밀한 필터링 규칙을 정의할 수 있습니다. 또한 프로그래밍 방식의 커스텀 필터 클래스를 연동하여 빈 등록 자격을 동적으로 제어할 수도 있습니다.
+
+`<filter>` 요소의 본문은 Aspectran의 APON(Aspectran Parameter Object Notation) 구문으로 작성됩니다.
+
+#### `<filter>` 속성 및 APON 파라미터 상세
+
+-   `class` (선택 속성 또는 APON 파라미터): 빈 등록 자격을 프로그래밍 방식으로 판별하는 커스텀 필터 클래스의 완전한 이름(FQCN)을 지정합니다. 이 클래스는 `com.aspectran.core.component.bean.scan.BeanClassFilter` 인터페이스를 구현해야 합니다.
+-   `+:` (Include 패턴): 스캔 대상에 포함할 클래스 이름의 와일드카드 패턴을 지정합니다. 여러 패턴을 지정할 경우 단일 항목을 반복하거나 대괄호(`[...]`)를 사용한 배열 형식으로 작성합니다.
+-   `-:` (Exclude 패턴): 스캔 대상에서 제외할 클래스 이름의 와일드카드 패턴을 지정합니다. 여러 패턴을 지정할 경우 단일 항목을 반복하거나 대괄호(`[...]`)를 사용한 배열 형식으로 작성합니다.
+
+> **참고:** `<filter>` 내에서 `+:`(Include)와 `-:`(Exclude)를 함께 사용할 경우, 대상 클래스가 Include 패턴과 일치하면서 동시에 Exclude 패턴과 일치하지 않아야 최종적으로 빈으로 등록됩니다. Include 패턴이 명시되지 않은 경우에는 기본적으로 모든 스캔 대상이 포함 대상이 되며, Exclude 패턴에 해당하는 클래스만 제외됩니다.
+
+#### 1) 특정 패턴의 클래스 제외 예시
+다음 예제는 `com.example.app` 패키지와 모든 하위 패키지를 스캔하되, 클래스 이름이 `Repository`로 끝나거나 `Test`로 끝나는 모든 클래스를 등록 대상에서 제외합니다:
 
 ```xml
 <bean scan="com.example.app.**">
     <filter>
-        exclude: [
+        -: [
             *.*Repository
+            *.*Test
         ]
     </filter>
 </bean>
 ```
-이 예제는 `com.example.app` 패키지와 모든 하위 패키지를 스캔하지만, 이름이 `Repository`로 끝나는 모든 클래스를 제외합니다.
+
+단일 패턴인 경우 배열 대괄호 없이 간결하게 작성할 수도 있습니다:
+
+```xml
+<bean scan="com.example.app.**">
+    <filter>
+        -: *.*Repository
+    </filter>
+</bean>
+```
+
+#### 2) 포함(+) 및 제외(-) 패턴 조합 예시
+`service` 패키지 하위의 모든 서비스 클래스를 포함하되, 내부용 클래스(`Internal`로 시작)나 테스트 관련 클래스는 제외하도록 구성할 수 있습니다:
+
+```xml
+<bean scan="com.example.app.**">
+    <filter>
+        +: com.example.app.service.*Service
+        -: com.example.app.service.Internal*
+        -: **.*Test
+    </filter>
+</bean>
+```
+
+#### 3) 커스텀 `BeanClassFilter` 클래스 연동 예시
+단순 이름 패턴 매칭 외에 어노테이션 검사나 특정 인터페이스 구현 여부, 또는 동적 Bean ID 변환 등 고급 로직이 필요한 경우 커스텀 필터 클래스를 지정할 수 있습니다:
+
+```xml
+<bean scan="com.example.app.**">
+    <!-- XML 속성으로 필터 클래스 지정 -->
+    <filter class="com.example.app.filter.CustomBeanClassFilter">
+        -: **.*Test
+    </filter>
+</bean>
+```
+
+또는 APON 본문 내에 `class:` 키로 직접 정의할 수도 있습니다:
+
+```xml
+<bean scan="com.example.app.**">
+    <filter>
+        class: com.example.app.filter.CustomBeanClassFilter
+        -: **.*Test
+    </filter>
+</bean>
+```
 
 ## 5. 트랜슬릿(`<translet>`) 관련 요소
 

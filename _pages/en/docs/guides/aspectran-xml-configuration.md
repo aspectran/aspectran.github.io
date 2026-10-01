@@ -602,18 +602,77 @@ When `resourceManager` is created, `initialize()` is called after its `resourceP
 
 ### 4.6. `<filter>` for Component Scanning
 
-When using `<bean scan="...">`, you can use `<filter>` to include or exclude specific classes based on patterns. The filter is written in APON format.
+When performing batch scanning of classpath components using `<bean scan="...">`, you can use the `<filter>` element to define fine-grained filtering rules that explicitly include or exclude specific classes. You can also integrate a programmatic custom filter class to dynamically control bean registration eligibility.
+
+The body of the `<filter>` element is written in Aspectran's APON (Aspectran Parameter Object Notation) syntax.
+
+#### `<filter>` Attributes and APON Parameters
+
+-   `class` (optional attribute or APON parameter): Specifies the fully qualified class name (FQCN) of a custom filter class that programmatically evaluates bean registration eligibility. This class must implement the `com.aspectran.core.component.bean.scan.BeanClassFilter` interface.
+-   `+:` (Include pattern): Specifies a wildcard pattern for class names to include in scanning. For multiple patterns, repeat individual entries or write them as an array using brackets (`[...]`).
+-   `-:` (Exclude pattern): Specifies a wildcard pattern for class names to exclude from scanning. For multiple patterns, repeat individual entries or write them as an array using brackets (`[...]`).
+
+> **Note:** When `+:` (Include) and `-:` (Exclude) are used together within `<filter>`, a candidate class is registered as a bean only if it matches the include pattern and does not match any exclude pattern. If no include pattern is specified, all scanned classes are included by default, and only classes matching the exclude patterns are filtered out.
+
+#### 1) Example: Excluding Classes by Pattern
+The following example scans the `com.example.app` package and all its sub-packages, but excludes any classes whose names end with `Repository` or `Test`:
 
 ```xml
 <bean scan="com.example.app.**">
     <filter>
-        exclude: [
+        -: [
             *.*Repository
+            *.*Test
         ]
     </filter>
 </bean>
 ```
-This example scans the `com.example.app` package and all its sub-packages, but excludes any class whose name ends with `Repository`.
+
+For a single pattern, it can be written concisely without brackets:
+
+```xml
+<bean scan="com.example.app.**">
+    <filter>
+        -: *.*Repository
+    </filter>
+</bean>
+```
+
+#### 2) Example: Combining Include (+) and Exclude (-) Patterns
+You can configure scanning to include all service classes under the `service` package while excluding internal classes (starting with `Internal`) or test-related classes:
+
+```xml
+<bean scan="com.example.app.**">
+    <filter>
+        +: com.example.app.service.*Service
+        -: com.example.app.service.Internal*
+        -: **.*Test
+    </filter>
+</bean>
+```
+
+#### 3) Example: Integrating a Custom `BeanClassFilter` Class
+When advanced filtering logic is required (e.g., checking annotations, verifying implemented interfaces, or dynamically transforming bean IDs), you can specify a custom filter class:
+
+```xml
+<bean scan="com.example.app.**">
+    <!-- Specify filter class via XML attribute -->
+    <filter class="com.example.app.filter.CustomBeanClassFilter">
+        -: **.*Test
+    </filter>
+</bean>
+```
+
+Alternatively, it can be defined directly using the `class:` key in the APON body:
+
+```xml
+<bean scan="com.example.app.**">
+    <filter>
+        class: com.example.app.filter.CustomBeanClassFilter
+        -: **.*Test
+    </filter>
+</bean>
+```
 
 ## 5. Translet-related Elements (`<translet>`)
 
