@@ -68,7 +68,7 @@ Because Aspectow Edge actively leverages Java 21 Virtual Threads, the compiler r
     <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <netty.version>4.2.17.Final</netty.version>
+    <netty.version>4.2.18.Final</netty.version>
 </properties>
 ```
 
