@@ -119,9 +119,9 @@ public class UserApiController {
 In **(1)** of the example above, the path variable `${userId}` is automatically converted and injected into the method parameter named `userId`. Aspectran intelligently injects path variables, request parameters, and registered beans based on name and type matching without requiring boilerplate annotations. Furthermore, declaring a `Translet` parameter injects the active `Translet` instance currently executing the request.
 
 > **💡 Deprecation of `@Required` and Adoption of `@NonNull` Standard**
-> 
+>
 > Previously, Aspectran provided its own `@Required` annotation (`com.aspectran.core.component.bean.annotation.Required`) to denote non-null parameters and mandatory dependencies.
-> 
+>
 > In modern Aspectran development, `@Required` is **`@Deprecated`** in favor of the industry-standard **JSpecify `@NonNull` (`org.jspecify.annotations.NonNull`)** annotation, which ensures maximum compatibility with IDE static analysis tools and explicit nullability contracts.
 
 ### 4.2. Asynchronous Request Handling
@@ -130,7 +130,7 @@ If you need to handle a long-running task, you can instruct the `Activity` to **
 
 ```java
 @RequestToPost(
-    path = "/reports/generate",
+    translet = "/reports/generate",
     async = true, // Enables asynchronous execution.
     timeout = 30000L
 )
@@ -356,7 +356,7 @@ Look up beans from the Aspectran IoC container or resolve environment properties
 public void loadServiceDynamically(@NonNull Translet translet) {
     // Dynamic bean retrieval
     MailService mailService = translet.getBean(MailService.class);
-    
+
     // Resolve environment property
     String adminEmail = translet.getProperty("app.admin.email");
     mailService.sendNotification(adminEmail, "Service operation completed.");

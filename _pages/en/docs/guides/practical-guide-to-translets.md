@@ -29,7 +29,7 @@ These are used to associate an action method with a specific request URL and met
 *   **`@Request`**: The most general request mapping annotation. You can use the `method` attribute to specify the allowed request methods directly. If the `method` attribute is omitted, it allows **all request methods**.
     ```java
     // Allow only GET and POST requests
-    @Request(path = "/some/path", method = {MethodType.GET, MethodType.POST})
+    @Request(translet = "/some/path", method = {MethodType.GET, MethodType.POST})
     public void handleGetAndPost() { ... }
 
     // Allow all request methods
@@ -39,11 +39,11 @@ These are used to associate an action method with a specific request URL and met
 
 *   **`@RequestToGet`, `@RequestToPost`, `@RequestToPut`, `@RequestToPatch`, `@RequestToDelete`**: These are shortcut annotations for specific request methods. They make the code more concise and intuitive.
     ```java
-    // Same as @Request(path = "/users", method = MethodType.GET)
+    // Same as @Request(translet = "/users", method = MethodType.GET)
     @RequestToGet("/users")
     public List<User> listUsers() { ... }
 
-    // Same as @Request(path = "/users", method = MethodType.POST)
+    // Same as @Request(translet = "/users", method = MethodType.POST)
     @RequestToPost("/users")
     public void createUser(User user) { ... }
     ```

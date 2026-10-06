@@ -103,7 +103,7 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
                 this.reportService = reportService;
             }
 
-            @RequestToPost(path = "/reports/generate", async = true, timeout = 30000L)
+            @RequestToPost(translet = "/reports/generate", async = true, timeout = 30000L)
             @Transform(format = FormatType.TEXT)
             public String generateReport(Translet translet) {
                 // 요청 본문을 Aspectran의 Parameters 객체로 파싱합니다.
@@ -118,7 +118,7 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
         }
         ```
 
-    *   **어노테이션 상세**: `@Request` 어노테이션은 요청 경로, HTTP 메소드 등 상세한 규칙을 정의할 때 사용합니다. 편의를 위해 `GET`, `POST` 등 각 HTTP 메소드에 해당하는 `@RequestToGet`, `@RequestToPost` 같은 전용 어노테이션도 제공됩니다. 이 어노테이션들은 `value` (경로), `async`, `timeout` 속성을 공통으로 가집니다.
+    *   **어노테이션 상세**: `@Request` 어노테이션은 요청 경로, 요청 메소드 등 상세한 규칙을 정의할 때 사용합니다. 편의를 위해 `GET`, `POST` 등 각 요청 메소드에 해당하는 `@RequestToGet`, `@RequestToPost` 같은 전용 어노테이션도 제공됩니다. 이 어노테이션들은 `value` 또는 `translet` (경로), `async`, `timeout` 속성을 공통으로 가집니다.
 
     *   **동적 Translet 생성 (Scanning)**: 수백 개의 유사한 Translet을 반복해서 정의하는 대신, 단 하나의 규칙으로 런타임에 동적으로 Translet을 생성할 수 있습니다. 예를 들어, 특정 디렉터리 아래의 모든 JSP 파일을 스캔하여 각 파일을 뷰로 사용하는 Translet을 자동으로 생성하는 방식입니다.
 

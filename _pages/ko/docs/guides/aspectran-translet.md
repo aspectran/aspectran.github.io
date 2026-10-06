@@ -119,9 +119,9 @@ public class UserApiController {
 위 예제 코드의 **(1)**을 보면, 경로 변수 `${userId}`는 이름이 동일한 `userId` 매개변수에 자동으로 타입 변환되어 주입됩니다. Aspectran은 별도의 어노테이션 없이도 매개변수 이름과 타입을 기반으로 경로 변수, 요청 파라미터, 빈 인스턴스를 지능적으로 주입합니다. 또한 메소드 인자에 `Translet` 타입을 선언하면 `Activity`가 현재 실행 중인 `Translet` 인스턴스를 주입해 줍니다.
 
 > **💡 `@Required` 어노테이션의 Deprecation과 `@NonNull` 표준화**
-> 
+>
 > 과거 Aspectran에서는 필수 의존성 및 non-null 매개변수를 명시하기 위해 자체 `@Required` 어노테이션(`com.aspectran.core.component.bean.annotation.Required`)을 사용했습니다.
-> 
+>
 > 하지만 최신 Aspectran에서는 표준 사양을 준수하고 정적 분석 도구와의 호환성을 극대화하기 위해 `@Required`를 **`@Deprecated`** 처리하였으며, 현대적인 **JSpecify의 `@NonNull`(`org.jspecify.annotations.NonNull`)** 어노테이션을 표준으로 채택하여 필수 매개변수와 널 불허(Non-null) 조건을 명시하도록 권장합니다.
 
 ### 4.2. 비동기 요청 처리
@@ -130,7 +130,7 @@ public class UserApiController {
 
 ```java
 @RequestToPost(
-    path = "/reports/generate",
+    translet = "/reports/generate",
     async = true, // 비동기 실행을 활성화합니다.
     timeout = 30000L
 )
@@ -356,7 +356,7 @@ Aspectran IoC 컨테이너에 등록된 빈 인스턴스를 가져오거나 환�
 public void loadServiceDynamically(@NonNull Translet translet) {
     // 컨테이너에서 빈 동적 획득
     MailService mailService = translet.getBean(MailService.class);
-    
+
     // 환경 설정 프로퍼티 조회
     String adminEmail = translet.getProperty("app.admin.email");
     mailService.sendNotification(adminEmail, "서비스 작업 완료");

@@ -29,7 +29,7 @@ public class UserActivity {
 *   **`@Request`**: 가장 일반적인 요청 매핑 어노테이션입니다. `method` 속성을 사용하여 허용할 요청 메소드를 직접 지정할 수 있습니다. 만약 `method` 속성을 생략하면, **모든 요청 메소드**를 허용합니다.
     ```java
     // GET과 POST 요청만 허용
-    @Request(path = "/some/path", method = {MethodType.GET, MethodType.POST})
+    @Request(translet = "/some/path", method = {MethodType.GET, MethodType.POST})
     public void handleGetAndPost() { ... }
 
     // 모든 요청 메소드 허용
@@ -39,11 +39,11 @@ public class UserActivity {
 
 *   **`@RequestToGet`, `@RequestToPost`, `@RequestToPut`, `@RequestToPatch`, `@RequestToDelete`**: 특정 요청 메소드에 대한 단축(Shortcut) 어노테이션입니다. 코드를 더 간결하고 직관적으로 만들어 줍니다.
     ```java
-    // @Request(path = "/users", method = MethodType.GET)과 동일
+    // @Request(translet = "/users", method = MethodType.GET)과 동일
     @RequestToGet("/users")
     public List<User> listUsers() { ... }
 
-    // @Request(path = "/users", method = MethodType.POST)과 동일
+    // @Request(translet = "/users", method = MethodType.POST)과 동일
     @RequestToPost("/users")
     public void createUser(User user) { ... }
     ```

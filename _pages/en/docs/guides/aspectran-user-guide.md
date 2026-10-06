@@ -103,7 +103,7 @@ Aspectran provides two main ways to define a Translet.
                 this.reportService = reportService;
             }
 
-            @RequestToPost(path = "/reports/generate", async = true, timeout = 30000L)
+            @RequestToPost(translet = "/reports/generate", async = true, timeout = 30000L)
             @Transform(format = FormatType.TEXT)
             public String generateReport(Translet translet) {
                 // Parse the request body into Aspectran's Parameters object.
@@ -118,7 +118,7 @@ Aspectran provides two main ways to define a Translet.
         }
         ```
 
-    *   **Annotation Details**: The `@Request` annotation is used to define detailed rules such as the request path and HTTP method. For convenience, dedicated annotations like `@RequestToGet` and `@RequestToPost` corresponding to each HTTP method are also provided. These annotations share common attributes like `value` (path), `async`, and `timeout`.
+    *   **Annotation Details**: The `@Request` annotation is used to define detailed rules such as the request path and allowed request methods. For convenience, dedicated annotations like `@RequestToGet` and `@RequestToPost` corresponding to each request method are also provided. These annotations share common attributes like `value` or `translet` (path), `async`, and `timeout`.
 
     *   **Dynamic Translet Generation (Scanning)**: Instead of repeatedly defining hundreds of similar Translets, you can dynamically generate Translets at runtime with a single rule. For example, you can scan all JSP files under a specific directory and automatically create a Translet that uses each file as a view.
 
