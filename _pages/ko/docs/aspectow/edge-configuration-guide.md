@@ -68,7 +68,7 @@ Aspectow Edge는 Java 21 가상 스레드를 적극적으로 활용하므로 컴
     <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <netty.version>4.2.18.Final</netty.version>
+    <netty.version>4.2.19.Final</netty.version>
 </properties>
 ```
 
