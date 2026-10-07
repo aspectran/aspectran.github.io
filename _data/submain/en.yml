@@ -95,7 +95,7 @@ aspectran:
           url: /en/docs/guides/aspectran-jpa-transaction-management/
 
     - title: Architecture & Mechanisms
-      anchor: architecture-mechanisms
+      anchor: architecture
       cards:
         - title: Integrated Architecture
           url: /en/docs/guides/aspectran-architecture/

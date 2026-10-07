@@ -95,7 +95,7 @@ aspectran:
           url: /ko/docs/guides/aspectran-jpa-transaction-management/
 
     - title: 아키텍처 및 메커니즘
-      anchor: 아키텍처-및-메커니즘
+      anchor: 아키텍처
       cards:
         - title: 통합 아키텍처
           url: /ko/docs/guides/aspectran-architecture/
