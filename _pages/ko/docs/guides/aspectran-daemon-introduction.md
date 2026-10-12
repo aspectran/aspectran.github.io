@@ -260,7 +260,7 @@ public class CacheEvictCommand extends AbstractCommand {
 
 ## 10. 개발 환경(IDE)에서의 런처 구성
 
-IDE 환경에서 데몬 서비스와 스케줄러를 디버깅 모드로 실행하기 위한 런처 클래스(`TestDaemon.java`)를 작성합니다.
+IDE 환경에서 데몬 서비스와 스케줄러를 디버깅 모드로 실행하기 위한 런처 클래스(`TestDaemon.java`)를 `src/test/java` 아래에 작성합니다.
 
 ```java
 package com.aspectran.demo;
