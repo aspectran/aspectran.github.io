@@ -2,6 +2,7 @@
 title: Aspectow Node Manager 가이드
 teaser: 분산 멀티 노드 클러스터를 유기적으로 결합하고 라우팅 및 릴레이 패킷을 통제하는 핵심 제어 평면(Control Plane) 라이브러리 가이드입니다.
 subheadline: Aspectow
+mermaid: true
 ---
 
 ## 1. 개요
