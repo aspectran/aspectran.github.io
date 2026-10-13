@@ -18,7 +18,7 @@ Aspectow Node Manager는 안정적인 클러스터 운영을 위해 다음과 �
 클러스터에 참여하는 모든 노드의 생명주기를 관장합니다. 노드는 기동 시 자신의 상세 메타데이터(`NodeInfo`)를 등록하고, 주기적인 생존 신호(Pulse, 기본 10초 간격)를 발송합니다. 관제 콘솔(Aspectow Console)은 이 펄스 신호를 감지하여 활성 노드의 실시간 상태(Live, Paused, Dead)를 직관적으로 추적하며, 지정된 타임아웃(기본 60초) 동안 펄스가 수신되지 않는 좀비 노드는 자동으로 감지 및 정리됩니다.
 
 ### 2.2. 투명한 메시지 릴레이 (Transparent Relay)
-Console과 노드 간, 또는 노드와 노드 간의 제어 명령 및 모니터링 데이터 패킷을 중계합니다. Redis Pub/Sub 기반의 **투명한 릴레이(Transparent Relay)** 방식을 채택하여 중계 주체가 패킷 본문을 파싱하지 않고 고속 전송하므로, 높은 트래픽 환경에서도 처리 지연이 거의 발생하지 않습니다.
+Console과 노드 간, 또는 노드와 노드 간의 제어 명령 및 모니터링 데이터 패킷을 중계합니다. Redis Pub/Sub 기반의 **투명한 릴레이(Transparent Relay)** 방식을 채택하여 중계 주체가 패킷 본문을 파싱하지 않고 고속 전송하므로, 높은 트래픽 환경에서도 처리 지연이 거의 발생하지 않습니다. 클러스터 브로드캐스트 채널($O(1)$ 최적화), 세션 1:1 유니캐스트 채널, 제어 채널 등 통신 유형별 상세 명세는 **[4. 클러스터 노드 통신 프로토콜 및 메시징 아키텍처](#4-클러스터-노드-통신-프로토콜-및-메시징-아키텍처-cluster-messaging-protocol)**에서 상세히 기술합니다.
 
 ### 2.3. 공유 비밀키 및 암호화 토큰 보안 (Security & Authentication)
 클러스터 내 신뢰할 수 있는 노드 간 통신만 허용하기 위해 **Shared Secret** 기반의 암호화 검증을 수행합니다. 생성된 토큰은 단기 유효기간(기본 30초)과 AES 암호화를 적용하여 외부 트래픽의 무단 침입을 차단합니다.
@@ -86,21 +86,99 @@ location /console/nodes/node2/ {
 }
 ```
 
-## 4. 노드 정체성 결정 메커니즘 (Node Identity Resolution)
+## 4. 클러스터 노드 통신 프로토콜 및 메시징 아키텍처 (Cluster Messaging Protocol)
+
+Gateway 모드로 구동되는 Aspectow 클러스터는 노드 간의 빈번한 실시간 텔레메트리 스트리밍과 정밀한 제어 명령을 지연 없이 처리하기 위해 Redis Pub/Sub 기반의 전용 통신 규격(`NodeMessageProtocol`)을 사용합니다.
+
+이 아키텍처는 고성능 실시간 데이터 흐름(**Data Plane**)과 안정적인 노드 제어 흐름(**Control Plane**)을 엄격히 분리하고, 다중 노드 환경에서도 네트워크 오버헤드가 증가하지 않는 $O(1)$ 복잡도의 브로드캐스트 최적화를 구현합니다.
+
+### 4.1. 제어 평면과 데이터 평면의 분리 (Control Plane vs Data Plane)
+
+클러스터 내 트래픽 성격에 따라 데이터 경로를 물리적·논리적으로 분리하여 대용량 모니터링 데이터가 제어 명령을 지연시키지 않도록 보장합니다:
+
+*   **제어 평면 (Control Plane)**:
+    *   노드의 라이프사이클 관리, 구독 시작(`subscribe`), 구독 해제(`unsubscribe`), 데이터 새로고침 명령 등을 담당합니다.
+    *   아무도 관제 대시보드를 열어보지 않는 유휴 애플리케이션에 대해 불필요한 Exporter(로그 테일러, 메트릭 수집기 등)가 기동되어 시스템 리소스를 낭비하지 않도록 온디맨드(On-Demand) 기동/정지 제어 신호를 전달합니다.
+    *   노드 대상의 1:1 유니캐스트 제어 채널을 통해 신뢰성 있게 전달됩니다.
+*   **데이터 평면 (Data Plane)**:
+    *   실시간 로그 스트림(`log`), 성능 지표(`metric`), 세션/액티비티 이벤트(`event`), 실시간 차트 통계(`data/chart`) 등 대량으로 빈번하게 발생하는 텔레메트리 데이터를 고속 중계합니다.
+    *   메시지 중계 주체가 패킷 본문을 파싱하지 않고 투명하게 전송(Transparent Relay)하며, 클러스터 공용 릴레이 채널을 통해 단 1회 발행(Broadcast)하는 고효율 파이프라인을 형성합니다.
+
+### 4.2. Redis 채널 명세 및 4대 통신 패턴 (Channel Specification)
+
+모든 Redis 채널은 `NodeMessageProtocol`에 정의된 일관된 키 프리픽스(`aspectow:cluster:`)를 사용하며, 통신 목적과 대상에 따라 4가지 패턴으로 분류됩니다:
+
+| 채널 유형 | Redis 채널 포맷 | 통신 패턴 | 주요 목적 및 전달 데이터 |
+| :--- | :--- | :--- | :--- |
+| **클러스터 릴레이 (Cluster Relay)** | `aspectow:cluster:relay:<category>:<clusterId>` | 1 : N (Broadcast) | 대량 실시간 스트리밍 데이터 전송 (로그, 메트릭, 이벤트, 차트 롤업 등) |
+| **노드/세션 릴레이 (Session Unicast)** | `aspectow:cluster:relay:<category>:<clusterId>:<nodeId>:<sessionId>` | 1 : 1 (Unicast) | 새로고침(Refresh), 과거 로그 조회(Load Previous) 등 특정 세션 대상 1:1 응답 데이터 |
+| **노드 제어 채널 (Node Control)** | `aspectow:cluster:control:<category>:<clusterId>:<nodeId>:` | 1 : 1 (Control) | 특정 대상 노드 제어 명령 (`subscribe`, `unsubscribe`, `refresh`, `pulse` 등) |
+| **클러스터 이벤트 (Cluster Event)** | `aspectow:cluster:event:<clusterId>` | 1 : N (Event) | 노드 참여(`joined`), 탈퇴(`left`), 상태 변경(`statusChanged`) 등 클러스터 토폴로지 통보 |
+
+### 4.3. 노드별 자동 구독 패턴 (Subscription Pattern)
+
+클러스터에 참여하는 모든 노드의 `NodeMessageSubscriber`는 인스턴스 기동 시 자신의 정체성에 맞추어 다음 2가지 패턴의 채널을 자동으로 구독(Subscribe)합니다:
+
+1.  **노드 전용 유니캐스트 패턴 (Node-Specific Pattern)**:
+    ```text
+    aspectow:cluster:*:*:<clusterId>:<myNodeId>:*
+    ```
+    *   자신(`myNodeId`)을 타깃으로 전달되는 1:1 원격 제어 명령(`control`)과 특정 세션 전용 응답(`relay`)을 수신합니다.
+2.  **클러스터 릴레이 브로드캐스트 패턴 (Cluster-Wide Relay Pattern)**:
+    ```text
+    aspectow:cluster:relay:*:<clusterId>
+    ```
+    *   클러스터 내 임의의 노드가 발행하는 모든 실시간 데이터 스트림을 단일 채널 리스너로 통합 수신합니다.
+
+### 4.4. 클러스터 브로드캐스트 최적화 ($O(M) \rightarrow O(1)$) 및 자가 스킵 (Self-Skip) 메커니즘
+
+과거 방식에서는 $M$개의 원격 노드가 동일한 애플리케이션을 모니터링할 경우, 1건의 로그나 지표가 생성될 때마다 $M$번의 개별 Redis `PUBLISH` 명령을 루프로 실행해야 했습니다($O(M)$ 부하). 
+
+Aspectow는 이를 혁신하여 **단 1회 클러스터 브로드캐스트 + 자가 스킵(Self-Skip)** 메커니즘을 적용했습니다:
+
+```mermaid
+sequenceDiagram
+    participant S as Node A (발신 노드)
+    participant L as Node A 로컬 세션 (Client)
+    participant R as Redis (Cluster Relay 채널)
+    participant G as Node G (게이트웨이 노드)
+    participant C as Node G 로컬 세션 (Client)
+
+    Note over S: 텔레메트리 데이터 발생
+    S->>L: 1. relayLocally() [지연 시간 0]
+    S->>R: 2. publishClusterRelay() [클러스터 공용 채널로 1회만 발행]
+    R->>S: 3. 메시지 수신 (Self-Skip 판별: isSameNode -> 즉시 폐기)
+    R->>G: 3. 메시지 수신 (다른 노드)
+    G->>C: 4. relayLocally() [해당 앱 구독 세션에 전달]
+```
+
+1.  **로컬 직결 전송 (Local Direct)**: 데이터를 생성한 노드는 자신의 로컬 메모리에 접속된 활성 클라이언트 세션에 제로 지연(Zero-latency)으로 즉시 메시지를 전달(`relayLocally`)합니다.
+2.  **클러스터 1회 발행 ($O(1)$ Broadcast)**: 구독 노드 목록을 순회하지 않고, 공용 릴레이 채널(`aspectow:cluster:relay:<category>:<clusterId>`)로 메시지를 **단 1회만 발행**합니다. 노드 수가 아무리 증가하더라도 발행 측 I/O 부하는 일정하게 유지됩니다.
+3.  **자가 노드 스킵 (Self-Skip)**: 공용 채널을 통해 메시지를 수신한 노드는 헤더의 발신 노드 식별자(`messageNodeId`)가 자기 자신(`isSameNode()`)인 경우 즉시 패킷을 폐기(Drop)합니다. 이미 1단계에서 로컬 클라이언트에 직접 전달되었기 때문에 화면에 데이터가 중복 출력(Double-rendering)되는 현상을 원천 방지합니다.
+4.  **원격 노드의 로컬 중계 (Selective Local Relay)**: 발신 노드가 아닌 다른 노드들은 수신된 메시지의 애플리케이션 ID를 확인하고, 자신에게 연결된 로컬 세션 중 해당 앱을 구독하고 있는 세션에게만 선택적으로 중계합니다.
+
+### 4.5. 세션 1:1 질의/응답 격리 (Query/Response Isolation)
+
+대시보드 새로고침(`refresh`), 특정 기간 차트 재집계, 또는 과거 로그 추가 로드(`loadPrevious`)와 같은 요청은 클러스터 전체가 아닌 **요청을 보낸 단일 브라우저 세션만을 위한 데이터**입니다.
+
+*   이러한 질의에 대한 응답은 클러스터 브로드캐스트 채널을 타지 않고, 요청 시 전달된 세션 ID 기반의 **세션 전용 유니캐스트 채널**(`aspectow:cluster:relay:<category>:<clusterId>:<nodeId>:<sessionId>`)로 반환됩니다.
+*   이를 통해 브로드캐스트 채널에는 순수한 실시간 스트리밍 텔레메트리만 흐르게 되며, 개별 사용자의 대용량 히스토리 조회 패킷이 다른 노드의 실시간 모니터링을 방해하지 않도록 완벽히 격리됩니다.
+
+## 5. 노드 정체성 결정 메커니즘 (Node Identity Resolution)
 
 노드가 기동될 때 수동 설정 없이도 자신의 정체성을 확립하는 자동 리졸빙 규칙을 가집니다.
 
-### 4.1. 소속 그룹 (`Group ID`) 결정
+### 5.1. 소속 그룹 (`Group ID`) 결정
 1.  **System Property**: 자바 실행 속성 `-Daspectow.node.group` 값이 최우선 적용됩니다.
 2.  **APON 설정**: `node-config.apon` 파일 내 `group` 블록의 ID를 자동으로 할당받습니다.
 3.  **기본값**: 위 정보가 모두 없는 경우 `group1`이 기본 할당됩니다.
 
-### 4.2. 노드 식별자 (`Node ID`) 결정
+### 5.2. 노드 식별자 (`Node ID`) 결정
 1.  **System Property**: 자바 실행 속성 `-Daspectow.node.id` 값이 최우선 적용됩니다.
 2.  **동적 생성 (Gateway 모드)**: 지정된 ID가 없을 경우 **UUID 기반 고유 ID가 동적 생성**되어 오토스케일링 시 ID 충돌을 방지합니다.
 3.  **기본값 (Direct 모드)**: Direct 모드에서는 고정된 `node1`을 기본값으로 사용합니다.
 
-### 4.3. 콘솔 전용 노드 (`console`) 여부 결정 및 역할 분리
+### 5.3. 콘솔 전용 노드 (`console`) 여부 결정 및 역할 분리
 클러스터 내에서 관리 콘솔(Aspectow Console)을 호스팅하는 관리 전용 노드와 비즈니스 애플리케이션을 구동하는 서비스 노드의 역할을 분리할 수 있습니다.
 
 1.  **System Property**: 자바 실행 속성 `-Daspectow.node.console=true` (또는 `false`) 값이 최우선 적용됩니다.
@@ -111,14 +189,14 @@ location /console/nodes/node2/ {
     *   **클러스터 일괄 제어 (Cluster Bulk Control)**: 일괄 제어 모달에서 `Exclude Console` 옵션을 통해 콘솔 노드를 손쉽게 보호할 수 있으며, 콘솔 컨텍스트에 지원되지 않는 `PAUSE`/`RESUME` 명령이 콘솔 노드로 전송되지 않도록 원천 차단합니다.
     *   **시각적 식별성 강화**: Cluster Nodes 및 Scheduler 화면에서 콘솔 노드에 `[Console]` 뱃지가 부여되어 운영자가 역할을 한눈에 식별할 수 있습니다.
 
-### 4.4. 그룹(Group)의 개념과 서비스 일관성 원칙
+### 5.4. 그룹(Group)의 개념과 서비스 일관성 원칙
 Aspectow Node Manager에서 **그룹(Group)**은 동일한 역할을 수행하는 노드 인스턴스들의 **논리적 스케일아웃(Scale-out) 집합**을 의미합니다.
 
 *   **서비스 구성의 일관성**: 동일한 `Group ID`를 공유하는 노드들은 동일한 서비스 및 애플리케이션 명세를 제공하는 복제본(Replica)으로 간주됩니다.
 *   **독립적인 서비스 분리**: 노드마다 호스팅하는 서비스나 내부 애플리케이션 구성이 서로 다른 경우, 단일 그룹에 혼합하지 않고 **서로 다른 `Group ID`로 분리**하여 독립적인 서비스 풀로 관리해야 합니다.
 *   **설정 변경 시 운영 원칙**: 그룹 내 서비스 구성(예: AppMon 메타데이터 등)이 변경되는 경우, 해당 그룹 전체의 일관성을 유지하기 위해 **그룹 단위 롤링 재시작** 또는 **블루/그린 그룹 전환**을 권장합니다.
 
-## 5. Redis 기반 동적 메타데이터 관리, 자가 치유(Self-Healing) 및 자율 삭제 (GC)
+## 6. Redis 기반 동적 메타데이터 관리, 자가 치유(Self-Healing) 및 자율 삭제 (GC)
 
 Gateway 모드에서는 노드가 수시로 생성되거나 소멸하더라도 관제 콘솔 대시보드가 항상 최신 클러스터 토폴로지를 유지할 수 있도록 Redis 기반의 동적 메타데이터 관리 및 자율 정리(Garbage Collection) 시스템을 운용합니다.
 
@@ -126,9 +204,9 @@ Gateway 모드에서는 노드가 수시로 생성되거나 소멸하더라도 �
 *   **실시간 계층 구조 구성 (Topology Construction)**: 관제 콘솔(Console)은 Redis에 수집된 동적 메타데이터를 기반으로 전체 클러스터의 계층 구조와 활성 노드 목록을 실시간으로 구성하고 대시보드에 시각화합니다.
 *   **역할 분리 및 자율 데이터 정리 (Separation of Concerns & Cleanup)**: `NodeRegistry`는 순수하게 노드와 그룹 레지스트리 관리를 전담하며, 노드가 정상 종료되거나 좀비 타임아웃(기본 60초) 만료로 추방될 때 활성 노드가 없는 고아 그룹(Orphaned Group)을 Redis에서 자동으로 정리합니다. 애플리케이션 등 각 도메인 메타데이터의 등록과 정리는 `NodeRegistryListener`를 구독하는 해당 컴포넌트(예: AppMon)가 안전하게 자율 처리합니다.
 
-## 6. 실전 APON 설정 및 XML 룰 구성
+## 7. 실전 APON 설정 및 XML 룰 구성
 
-### 6.1. Gateway 모드 설정 (`/config/console/node-config.apon`)
+### 7.1. Gateway 모드 설정 (`/config/console/node-config.apon`)
 
 ```apon
 cluster: {
@@ -157,7 +235,7 @@ node: {
 > * `pulseTimeout`: 노드 펄스가 수신되지 않을 때 좀비 노드로 판정하는 만료 기준 시간입니다. 기본값 60초는 일시적인 GC 지연이나 네트워크 순단 상황에서 오탐(Flapping)을 방지할 수 있는 충분한 유예 시간을 제공합니다.
 > * `console`: 관리 콘솔 전용 인스턴스인 경우 `console: true`를 지정하거나 `-Daspectow.node.console=true`를 부여합니다.
 
-### 6.2. Direct 모드 설정 (`/config/console/node-config.apon`)
+### 7.2. Direct 모드 설정 (`/config/console/node-config.apon`)
 
 ```apon
 cluster: {
@@ -194,7 +272,7 @@ node: {
 }
 ```
 
-### 6.3. Aspectran XML 빈 등록 (`node-rules.xml`)
+### 7.3. Aspectran XML 빈 등록 (`node-rules.xml`)
 
 ```xml
 <aspectran>
@@ -208,6 +286,6 @@ node: {
 </aspectran>
 ```
 
-## 7. 결론
+## 8. 결론
 
 Aspectow Node Manager는 분산 환경의 개별 서버들을 단순한 개별 인스턴스 모음이 아닌, **유기적이고 안전하게 연결된 지능형 클러스터 시스템**으로 진화시키는 결합체 역할을 수행합니다.
