@@ -19,7 +19,7 @@ Aspectow Node Manager performs three essential roles to ensure cluster stability
 Manages the lifecycle of all participating nodes. Nodes register detailed metadata (`NodeInfo`) upon startup and periodically send a pulse (survival signal, default 10 seconds). Aspectow Console observes these signals to track real-time active node states (Live, Paused, Dead), and zombie nodes that have not sent a pulse within the specified timeout (default 60 seconds) are automatically detected and evicted.
 
 ### 2.2. Transparent Message Relay
-Relays control commands and telemetry data packets between Console and nodes or between nodes. Adopting a **Transparent Relay** model based on Redis Pub/Sub, the relaying agent forwards messages as text without parsing payloads, eliminating latency even in high-throughput environments. For detailed specifications on channel formats, $O(1)$ cluster broadcast optimization, and session unicast channels, refer to **[4. Cluster Node Messaging Protocol & Architecture](#4-cluster-node-messaging-protocol--architecture)**.
+Relays control commands and telemetry data packets between Console and nodes or between nodes. Adopting a **Transparent Relay** model based on Redis Pub/Sub, the relaying agent forwards messages as text without parsing payloads, eliminating latency even in high-throughput environments. For detailed specifications on channel formats, *O*(1) cluster broadcast optimization, and session unicast channels, refer to **[4. Cluster Node Messaging Protocol & Architecture](#4-cluster-node-messaging-protocol--architecture)**.
 
 ### 2.3. Shared Secret & Encrypted Token Security
 Enforces **Shared Secret**-based cryptographic verification to ensure communication only occurs between trusted nodes. Tokens feature short validity periods (default 30 seconds) and AES encryption to prevent unauthorized external access.
@@ -91,7 +91,7 @@ location /console/nodes/node2/ {
 
 In Gateway mode, the Aspectow cluster employs a dedicated Redis Pub/Sub communication specification (`NodeMessageProtocol`) to deliver high-frequency telemetry streams and precise node control commands with zero latency.
 
-This architecture strictly decouples the high-throughput real-time data pipeline (**Data Plane**) from the reliable cluster control pipeline (**Control Plane**), implementing an $O(1)$ broadcast optimization that eliminates network overhead regardless of cluster size.
+This architecture strictly decouples the high-throughput real-time data pipeline (**Data Plane**) from the reliable cluster control pipeline (**Control Plane**), implementing an *O*(1) broadcast optimization that eliminates network overhead regardless of cluster size.
 
 ### 4.1. Separation of Control Plane and Data Plane
 
@@ -131,9 +131,9 @@ Upon startup, the `NodeMessageSubscriber` on each participating node automatical
     ```
     *   Receives all real-time data streams broadcast by any node in the cluster through a unified channel listener.
 
-### 4.4. Cluster Broadcast Optimization ($O(M) \rightarrow O(1)$) and Self-Skip Mechanism
+### 4.4. Cluster Broadcast Optimization (*O*(*M*) → *O*(1)) and Self-Skip Mechanism
 
-Historically, when $M$ remote nodes monitored the same application, each generated log or metric required looping through all $M$ nodes to issue individual Redis `PUBLISH` commands ($O(M)$ overhead). 
+Historically, when $M$ remote nodes monitored the same application, each generated log or metric required looping through all $M$ nodes to issue individual Redis `PUBLISH` commands (*O*(*M*) overhead).
 
 Aspectow replaces this with a single-pass **Local Direct + Cluster Broadcast + Self-Skip** mechanism:
 
@@ -154,7 +154,7 @@ sequenceDiagram
 ```
 
 1.  **Local Direct Dispatch**: The node generating the data immediately delivers the message in-memory (`relayLocally`) to its directly connected client sessions with zero latency.
-2.  **Single Cluster Publish ($O(1)$ Broadcast)**: Instead of iterating over subscribers, the node publishes the message **exactly once** to the shared cluster relay channel (`aspectow:cluster:relay:<category>:<clusterId>`). Egress I/O remains constant regardless of cluster scale.
+2.  **Single Cluster Publish (*O*(1) Broadcast)**: Instead of iterating over subscribers, the node publishes the message **exactly once** to the shared cluster relay channel (`aspectow:cluster:relay:<category>:<clusterId>`). Egress I/O remains constant regardless of cluster scale.
 3.  **Self-Skip on Receive**: When a node receives a broadcast message from the shared channel, it checks the originating node identifier (`messageNodeId`) in the header. If it matches its own ID (`isSameNode()`), the message is immediately dropped, preventing double-rendering on local client dashboards.
 4.  **Selective Local Relay**: Remote nodes inspect the application ID (`appId`) and relay the message only to their local sessions that actively subscribe to that application.
 

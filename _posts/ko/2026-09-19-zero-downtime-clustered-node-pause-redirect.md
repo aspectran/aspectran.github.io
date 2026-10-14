@@ -239,8 +239,10 @@ flowchart TD
 
 * **URL 조립 규칙**:
   * `NodeInfo`의 `EndpointConfig` 또는 `host` / `port` 정보를 결합하여 베이스 URL을 결정합니다.
-  $$\text{TargetBaseUrl} = \text{Scheme} + \text{"://"} + \text{NodeInfo.getHost()} + \text{":"} + \text{NodeInfo.getPort()}$$
-  $$\text{Redirect URL} = \text{TargetBaseUrl} + \text{RequestURI} + (\text{QueryString} \neq \emptyset \;?\; \text{"?"} + \text{QueryString} : \text{""})$$
+    ```
+    TargetBaseUrl = {Scheme}://{Host}:{Port}
+    RedirectUrl   = {TargetBaseUrl}{RequestURI}[?{QueryString}]
+    ```
 * **Reverse Proxy / SSL 오프로딩 고려**:
   * `X-Forwarded-Proto`, `X-Forwarded-Port`, `X-Forwarded-Path` 헤더를 분석하여 클라이언트가 원래 인입된 스킴(HTTP/HTTPS)에 맞춰 적절한 엔드포인트를 선택합니다.
 

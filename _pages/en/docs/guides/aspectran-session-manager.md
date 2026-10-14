@@ -98,10 +98,10 @@ Aspectran Session Manager provides a flexible storage hierarchy adaptable to dis
 * **Operating Principle**: Persists session data to a centralized Redis standalone or cluster topology using the non-blocking **Lettuce** driver.
 * **Data Structures**:
   * **Session Payload**: Stored as a binary-safe Redis `String` under `namespace:sessionId` keys.
-  * **ZSET Expiry Index (`expiryIndexKey`)**: Avoids $O(N)$ full-keyspace `KEYS`/`SCAN` overhead by maintaining an atomic Sorted Set index (e.g., `aspectran:sessions:expiry`).
+  * **ZSET Expiry Index (`expiryIndexKey`)**: Avoids *O*(*N*) full-keyspace `KEYS`/`SCAN` overhead by maintaining an atomic Sorted Set index (e.g., `aspectran:sessions:expiry`).
     * Session creation/touch atomically executes `ZADD` with the millisecond expiration timestamp as score and session ID as member.
     * Explicit invalidations invoke `ZREM` to purge index entries immediately.
-    * Scavengers query `ZRANGEBYSCORE` to fetch only expired IDs in $O(\log N + M)$ cost.
+    * Scavengers query `ZRANGEBYSCORE` to fetch only expired IDs in *O*(log *N* + *M*) cost.
 * **Lightweight Codec (`SessionDataCodec`) with Magic Byte**:
   * Employs a 2-stage encoding scheme with a 1-byte header:
     * `MAGIC_FULL (0x01)`: Full binary payload containing session ID, metadata, and the attribute map.
@@ -508,10 +508,10 @@ Aspectow Enterprise bridges Undertow's servlet specification (`io.undertow.serve
 <!-- Servlet Context Definition -->
 <bean id="tow.context.root" class="com.aspectran.undertow.server.servlet.TowServletContext">
     <property name="contextPath">/</property>
-    
+
     <!-- Bind Servlet Session Manager -->
     <property name="sessionManager">#{tow.context.root.sessionManager}</property>
-    
+
     <!-- Standard Servlet Cookie Configuration -->
     <property name="servletSessionConfig">
         <bean class="com.aspectran.undertow.server.servlet.TowServletSessionConfig">
@@ -580,7 +580,7 @@ Aspectow Edge eliminates servlet container overhead by running [`NettySessionMan
 <!-- Netty Context Definition -->
 <bean id="netty.context.root" class="com.aspectran.netty.server.NettyContext">
     <property name="contextPath">/</property>
-    
+
     <!-- Bind Lightweight Netty Session Manager -->
     <property name="sessionManager">#{netty.context.root.sessionManager}</property>
 </bean>
@@ -849,11 +849,11 @@ public class LoginAction {
         if (authenticate(username, password)) {
             // Retrieve container-agnostic SessionAdapter
             SessionAdapter sessionAdapter = translet.getSessionAdapter();
-            
+
             // Set session attributes (auto-synced to cache and persistent store)
             sessionAdapter.setAttribute("currentUser", username);
             sessionAdapter.setAttribute("loginTime", System.currentTimeMillis());
-            
+
             return "SUCCESS";
         }
         return "FAIL";

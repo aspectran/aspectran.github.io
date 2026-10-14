@@ -235,8 +235,10 @@ The bridge selects candidates from `NodeRegistry` using strict health checks:
 ### 5.4. Target URL Construction and Proxy Support
 
 * **URL Assembly Rule:**
-  $$\text{TargetBaseUrl} = \text{Scheme} + \text{"://"} + \text{NodeInfo.getHost()} + \text{":"} + \text{NodeInfo.getPort()}$$
-  $$\text{Redirect URL} = \text{TargetBaseUrl} + \text{RequestURI} + (\text{QueryString} \neq \emptyset \;?\; \text{"?"} + \text{QueryString} : \text{""})$$
+  ```
+  TargetBaseUrl = {Scheme}://{Host}:{Port}
+  RedirectUrl   = {TargetBaseUrl}{RequestURI}[?{QueryString}]
+  ```
 * **Reverse Proxy / SSL Offloading:** Inspects `X-Forwarded-Proto`, `X-Forwarded-Port`, and `X-Forwarded-Path` headers to preserve the client's original ingress scheme and path structure.
 
 ### 5.5. Loop Prevention and Safety Mechanisms
