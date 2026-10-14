@@ -93,7 +93,13 @@ Aspectran의 AOP는 XML 설정 파일의 `<aspect>` 요소 또는 자바 어노�
 #### a. Pointcut 표현식 구조
 Pointcut은 APON 형식으로 작성되며, 다음과 같은 패턴 구조를 가집니다:
 
-$$\text{transletPattern}[\text{@beanOrClassPattern}][\text{^methodNamePattern}]$$
+<div style="display: inline-flex; align-items: center; gap: 6px; font-family: monospace; font-size: 0.95em; margin-bottom: 1rem;">
+  <span style="background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35); padding: 3px 8px; border-radius: 4px;">transletPattern</span>
+  <span style="color: #f87171; font-weight: bold; font-size: 1.15em;">@</span>
+  <span style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); padding: 3px 8px; border-radius: 4px;">beanOrClassPattern</span>
+  <span style="color: #f87171; font-weight: bold; font-size: 1.15em;">^</span>
+  <span style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); padding: 3px 8px; border-radius: 4px;">methodNamePattern</span>
+</div>
 
 Pointcut 표현식은 3개의 영역으로 구성되며, 구분자(`@`, `^`)를 통해 각 대상을 정밀하게 조합할 수 있습니다. 각 영역은 필요에 따라 생략 가능합니다.
 

@@ -93,7 +93,13 @@ The `<joinpoint>` element precisely specifies where and when advice should be tr
 #### a. Pointcut Expression Structure
 Pointcuts are defined in APON format and follow this pattern:
 
-$$\text{transletPattern}[\text{@beanOrClassPattern}][\text{^methodNamePattern}]$$
+<div style="display: inline-flex; align-items: center; gap: 6px; font-family: monospace; font-size: 0.95em; margin-bottom: 1rem;">
+  <span style="background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35); padding: 3px 8px; border-radius: 4px;">transletPattern</span>
+  <span style="color: #f87171; font-weight: bold; font-size: 1.15em;">@</span>
+  <span style="background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); padding: 3px 8px; border-radius: 4px;">beanOrClassPattern</span>
+  <span style="color: #f87171; font-weight: bold; font-size: 1.15em;">^</span>
+  <span style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); padding: 3px 8px; border-radius: 4px;">methodNamePattern</span>
+</div>
 
 A pointcut expression consists of three distinct segments delimited by `@` and `^`, allowing precise targeting combinations. Each segment is optional and can be omitted as needed.
 
