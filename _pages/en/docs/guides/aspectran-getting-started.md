@@ -6,8 +6,8 @@ subheadline: Core Guides
 
 ## 1. Development Environment Setup
 
-*   **JDK (Java Development Kit)**: Aspectran requires Java 21 or higher as the minimum runtime version. It is recommended to use the latest Java LTS version.
-*   **Maven**: Apache Maven 3.9.4 or higher must be installed for project builds.
+* **JDK (Java Development Kit)**: Aspectran requires Java 21 or higher as the minimum runtime version. It is recommended to use the latest Java LTS version.
+* **Maven**: Apache Maven 3.9.4 or higher must be installed for project builds.
 
 ## 2. Project File Creation
 
@@ -19,9 +19,9 @@ cd hello-aspectran
 ```
 
 Now, create these three files inside this directory:
-- `pom.xml`
-- `aspectran-config.apon`
-- `src/main/java/com/example/App.java`
+* `pom.xml`
+* `aspectran-config.apon`
+* `src/main/java/com/example/App.java`
 
 ### 2.1. Maven Configuration (`pom.xml`)
 
@@ -46,7 +46,7 @@ Create a `pom.xml` file in the project root and copy and paste the content below
         <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.parameters>true</maven.compiler.parameters>
 
-        <aspectran.version>9.8.0</aspectran.version>
+        <aspectran.version>9.8.1-SNAPSHOT</aspectran.version>
     </properties>
 
     <repositories>
@@ -176,43 +176,61 @@ public class App {
 
 }
 ```
-*   `@Request("hello")`: Maps the command named `hello` to the `hello()` method.
-*   `@Transform(FormatType.TEXT)`: Specifies that the return value (`String`) of the `hello()` method should be converted to plain text format and output to the console.
-*   `main()` method: Starts the shell by passing command-line arguments to `JLineAspectranShell.main()`.
+* `@Component` / `@Bean("helloBean")`: Declares `App` as a managed component and registers it with bean name `helloBean`.
+* `@Request("hello")`: Maps the command named `hello` to the `hello()` method.
+* `@Transform(FormatType.TEXT)`: Specifies that the return value (`String`) of the `hello()` method should be converted to plain text format and output to the console.
+* `main()` method: Starts the shell by passing command-line arguments to `JLineAspectranShell.main()`.
 
 ## 3. Build and Run
 
 Now you are ready to build and run the project.
 
-1.  **Build**: Run the following command in the terminal to create an executable JAR file.
-    ```bash
-    mvn package
-    ```
-    If the build is successful, a `hello-aspectran-jar-with-dependencies.jar` file will be created in the `target` directory.
+1. **Build**: Run the following command in the terminal to create an executable JAR file.
+   ```bash
+   mvn package
+   ```
+   If the build is successful, a `hello-aspectran-jar-with-dependencies.jar` file will be created in the `target` directory.
 
-2.  **Run**: Run the application with the following command. You must pass the path to the `aspectran-config.apon` file as an argument.
-    ```bash
-    java -jar target/hello-aspectran-jar-with-dependencies.jar aspectran-config.apon
-    ```
+2. **Run**: Run the application with the following command. You must pass the path to the `aspectran-config.apon` file as an argument.
+   ```bash
+   java -jar target/hello-aspectran-jar-with-dependencies.jar aspectran-config.apon
+   ```
 
-    When the application starts, the Aspectran shell prompt will appear with a welcome message like this:
-    ```
-    Welcome to Hello Aspectran!
-    To see a list of commands, type 'help'.
-    To run the 'hello' command, type 'hello'.
-    To exit, type 'quit'.
+   When the application starts, the Aspectran shell prompt will appear with a welcome message like this:
+   ```text
+   Welcome to Hello Aspectran!
+   To see a list of commands, type 'help'.
+   To run the 'hello' command, type 'hello'.
+   To exit, type 'quit'.
 
-    hello-aspectran>
-    ```
-    *   You can check the list of all Translets defined in the current application using the `translet -l` command.
-        ```text
-        ------+-------------------------------------------------------------+-------
-          No. | Translet Name                                               | Async
-        ------+-------------------------------------------------------------+-------
-            1 | hello                                                       | false
-        ------+-------------------------------------------------------------+-------
-        ```
-    *   Type `hello` and press Enter to output `Hello, World!`.
-    *   Type `quit` and press Enter to exit the application.
+   hello-aspectran> 
+   ```
+   * You can check the list of all Translets defined in the current application using the `translet -l` command.
+     ```text
+     ------+-------------------------------------------------------------+-------
+       No. | Translet Name                                               | Async 
+     ------+-------------------------------------------------------------+-------
+         1 | hello                                                       | false 
+     ------+-------------------------------------------------------------+-------
+     ```
+   * Type `hello` and press Enter to output `Hello, World!`.
+   * Type `quit` and press Enter to exit the application.
 
 This method has the advantage of keeping the configuration file outside the JAR file, allowing you to easily change settings without rebuilding the application.
+
+## 4. Understanding Core Concepts
+
+Although this example is concise, it encapsulates the core design principles of Aspectran:
+
+* **ActivityContext**: The foundational IoC/DI container that centrally manages beans, translets, AOP advices, schedulers, and environment configurations.
+* **Translet**: The fundamental execution unit that processes a request, coordinates actions, and transforms results into views. Whether it is a CLI console command, an HTTP endpoint, or a scheduled cron job, all requests are executed through uniform Translet abstractions.
+* **APON (Aspectran Parameter Object Notation)**: Aspectran's human-readable, lightweight data interchange and configuration format designed to simplify hierarchical configuration.
+
+## 5. Next Steps
+
+Now that you have built a working CLI application, explore these guides to expand into web applications and enterprise deployments:
+
+* **[Aspectow Configuration Guide](/en/docs/aspectow/configuration-guide/)**: Learn how to configure and operate enterprise web applications using embedded Undertow and the Jasper JSP engine.
+* **[Aspectran JSP Tag Library Guide](/en/docs/aspectran/aspectran-jsp-tag-library/)**: Discover how to use custom tags for AsEL expressions, localized messages, and URL templating in JSP views.
+* **[Aspectran Beans Guide](/en/docs/aspectran/beans/)**: Master dependency injection, bean scopes, lifecycle callbacks, and factory beans using annotations and XML.
+* **[Aspectran Translet In-Depth Guide](/en/docs/aspectran/translet/)**: Dive deeper into request parameter mapping, file uploads, and versatile response transformations (JSON, XML, template engines).

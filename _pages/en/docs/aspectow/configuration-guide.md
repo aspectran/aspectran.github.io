@@ -654,14 +654,9 @@ Logs all incoming HTTP transaction outcomes in standard web server access log fo
             </bean>
         </property>
 
-        <!-- Initialize JSP Tag Libraries (TLD) and Jasper Container -->
+        <!-- Initialize JSP Tag Libraries (TLD) and Jasper Container (Classpath TLD Auto-Scanning Enabled) -->
         <property name="servletContainerInitializers" type="array">
-            <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
-                <property name="tldResources" type="array">
-                    <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
-                    <value>/webapps/%{tow.context.root.name}/WEB-INF/taglibs/</value>
-                </property>
-            </bean>
+            <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer"/>
         </property>
 
         <!-- Initialize JSR-356 WebSocket Server Container -->
@@ -759,10 +754,43 @@ For modular application architectures where static web assets are packaged insid
 * **`DefaultJspServlet`**: Activates the Apache Jasper-based JSP compiler and servlet handler, compiling JSP files dynamically at runtime for rapid execution. (Can be omitted in contexts that rely purely on template engines like Thymeleaf).
 * **`TowServlet`**: Registers Aspectran's core `WebActivityServlet` at the root mapping (`/`), dispatching all incoming web requests into the Aspectran Translet engine.
 
-#### 5.5.3. Custom JSP Tag Library (TLD) Configuration (`TowJasperInitializer`)
-To use framework tags such as `<aspectran:message>` and `<aspectran:token>` or load custom project TLDs in JSP views, declare paths under `tldResources`:
-* `classpath:com/aspectran/web/support/tags/aspectran.tld`: Standard Aspectran tag library
-* `/webapps/{contextName}/WEB-INF/taglibs/`: Directory path containing custom `.tld` definitions
+#### 5.5.3. JSP Tag Library (TLD) Configuration (`TowJasperInitializer`)
+[`TowJasperInitializer`](file:///home/aspectran/projects/public/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/servlet/TowJasperInitializer.java) initializes the Apache Jasper JSP compilation engine within the Undertow servlet environment and scans and loads the required TLD (Tag Library Descriptor) metadata for view rendering.
+
+##### 1) Default Behavior: Classpath TLD Auto-Scanning
+To maximize development productivity, Aspectow **automatically detects** framework-provided standard TLDs and JSTL libraries located on the classpath:
+* **Automatic Registration of Aspectran Tag Library**: Automatically locates and parses `com/aspectran/web/servlet/support/tags/aspectran.tld` packaged inside `aspectran-web-servlet.jar`.
+* **Automatic Registration of JSTL Tag Libraries**: Automatically searches the classpath for standard TLDs (`c.tld`, `fmt.tld`, `fn.tld`, `c-1_2.tld`, etc.) bundled in GlassFish JSTL (`jakarta.servlet.jsp.jstl-3.0.1.jar`) and registers them with the Jasper engine.
+* **Modern Tag URIs and Bidirectional Compatibility**:
+  * Aspectran Modern Standard URI: `aspectran.tags`
+  * Backward Compatibility: Legacy declarations using `http://aspectran.com/tags` are automatically mapped (aliased) to the exact same TLD resource.
+  * Modern JSTL URIs: `jakarta.tags.core`, `jakarta.tags.fmt`, `jakarta.tags.functions`, etc.
+
+Consequently, for standard web applications without third-party custom TLDs, developers can omit the `tldResources` property entirely and declare a plain bean:
+
+```xml
+<property name="servletContainerInitializers" type="array">
+    <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer"/>
+</property>
+```
+
+##### 2) Registering Custom TLDs (`tldResources`)
+If you need to load project-specific custom tag libraries or `.tld` definitions from external file paths, register the target file or directory paths as an array under the `tldResources` property:
+
+```xml
+<property name="servletContainerInitializers" type="array">
+    <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
+        <property name="tldResources" type="array">
+            <!-- Explicit classpath TLD resource -->
+            <value>classpath:com/example/tags/custom.tld</value>
+            <!-- Scan all TLD files within the web application taglibs directory -->
+            <value>/webapps/%{tow.context.root.name}/WEB-INF/taglibs/</value>
+        </property>
+    </bean>
+</property>
+```
+* **Directory Paths (`/WEB-INF/taglibs/`)**: Recursively discovers and registers all `.tld` files and JAR-embedded TLDs inside the specified directory.
+* **`classpath:` Prefix**: Directly points to a specific `.tld` file or library JAR located on the application classpath.
 
 #### 5.5.4. JSR-356 WebSocket Configuration (`TowWebSocketServerContainerInitializer`)
 Initializes Undertow's low-latency WebSocket engine.

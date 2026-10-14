@@ -654,14 +654,9 @@ Gzip 등의 압축 알고리즘을 조건부로 적용하여 네트워크 대역
             </bean>
         </property>
 
-        <!-- JSP 태그 라이브러리(TLD) 및 Jasper 컨테이너 초기화 -->
+        <!-- JSP 태그 라이브러리(TLD) 및 Jasper 컨테이너 초기화 (클래스패스 TLD 자동 스캔 지원) -->
         <property name="servletContainerInitializers" type="array">
-            <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
-                <property name="tldResources" type="array">
-                    <value>classpath:com/aspectran/web/support/tags/aspectran.tld</value>
-                    <value>/webapps/%{tow.context.root.name}/WEB-INF/taglibs/</value>
-                </property>
-            </bean>
+            <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer"/>
         </property>
 
         <!-- JSR-356 웹소켓 서버 컨테이너 초기화 -->
@@ -759,10 +754,43 @@ Undertow의 `PathResourceManager`를 상속 및 확장한 컴포넌트로, [`App
 * **`DefaultJspServlet`**: Apache Jasper 기반의 JSP 컴파일러 및 서블릿 핸들러를 활성화합니다. JSP 파일을 런타임에 동적으로 컴파일하여 고속 실행합니다. (PetClinic 등 순수 템플릿 엔진만 사용하는 컨텍스트에서는 생략 가능)
 * **`TowServlet`**: Aspectran의 메인 서블릿인 `WebActivityServlet`을 루트 매핑(`/`)으로 등록하여, 모든 수신 요청을 Aspectran Translet 엔진으로 전달합니다.
 
-#### 5.5.3. 커스텀 JSP 태그 라이브러리(TLD) 설정 (`TowJasperInitializer`)
-JSP 뷰에서 `<aspectran:message>`, `<aspectran:token>` 등 프레임워크 제공 태그를 사용하거나 프로젝트 고유의 JSTL/커스텀 태그 라이브러리를 로드하려면 `tldResources` 속성에 경로를 등록합니다:
-* `classpath:com/aspectran/web/support/tags/aspectran.tld`: Aspectran 표준 태그 라이브러리
-* `/webapps/{contextName}/WEB-INF/taglibs/`: 프로젝트 고유의 `.tld` 정의 파일들이 위치한 디렉터리 경로
+#### 5.5.3. JSP 태그 라이브러리(TLD) 설정 (`TowJasperInitializer`)
+[`TowJasperInitializer`](file:///home/aspectran/projects/public/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/servlet/TowJasperInitializer.java)는 Undertow 서블릿 환경에서 Apache Jasper JSP 엔진을 초기화하고, 화면 구성에 필요한 TLD(Tag Library Descriptor) 메타데이터를 스캔하여 로드합니다.
+
+##### 1) 기본 동작: 클래스패스 TLD 자동 스캔 (Auto-Scanning)
+Aspectow는 개발 편의성을 극대화하기 위해 클래스패스 상에 위치한 프레임워크 표준 TLD 및 JSTL 라이브러리를 **자동으로 감지**합니다:
+* **Aspectran 태그 라이브러리 자동 등록**: `aspectran-web-servlet.jar`에 내장된 `com/aspectran/web/servlet/support/tags/aspectran.tld`를 자동으로 찾아 파싱합니다.
+* **JSTL 태그 라이브러리 자동 등록**: 의존성으로 추가된 GlassFish JSTL(`jakarta.servlet.jsp.jstl-3.0.1.jar`) 내부의 표준 TLD들(`c.tld`, `fmt.tld`, `fn.tld`, `c-1_2.tld` 등)을 클래스패스에서 자동으로 탐색하여 Jasper 엔진에 바인딩합니다.
+* **최신 태그 URI 및 양방향 호환성**:
+  * Aspectran 최신 표준 URI: `aspectran.tags`
+  * 레거시 호환 지원: 기존 코드의 `http://aspectran.com/tags`도 동일한 TLD 리소스로 자동 매핑(Alias)됩니다.
+  * JSTL 최신 표준 URI: `jakarta.tags.core`, `jakarta.tags.fmt`, `jakarta.tags.functions` 등
+
+따라서 별도의 외부 커스텀 TLD가 없는 일반적인 웹 애플리케이션의 경우, `tldResources` 속성을 생략하고 기본 빈 형태로 선언하기만 하면 모든 태그를 즉시 사용할 수 있습니다:
+
+```xml
+<property name="servletContainerInitializers" type="array">
+    <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer"/>
+</property>
+```
+
+##### 2) 커스텀 TLD 추가 등록 (`tldResources`)
+프로젝트 고유의 비즈니스 태그 라이브러리나 외부 경로의 `.tld` 정의 파일을 추가로 로드해야 하는 경우, `tldResources` 속성에 대상 파일 또는 디렉터리 경로를 배열로 등록합니다:
+
+```xml
+<property name="servletContainerInitializers" type="array">
+    <bean class="com.aspectran.undertow.server.servlet.TowJasperInitializer">
+        <property name="tldResources" type="array">
+            <!-- 특정 클래스패스 TLD 직접 명시 -->
+            <value>classpath:com/example/tags/custom.tld</value>
+            <!-- 웹 애플리케이션 내부 TLD 디렉터리 전체 스캔 -->
+            <value>/webapps/%{tow.context.root.name}/WEB-INF/taglibs/</value>
+        </property>
+    </bean>
+</property>
+```
+* **디렉터리 경로 (`/WEB-INF/taglibs/`)**: 지정된 디렉터리 내의 모든 `.tld` 파일 및 JAR 파일 내부의 TLD를 재귀적으로 탐색하여 일괄 등록합니다.
+* **`classpath:` 접두사**: 클래스패스 상의 특정 `.tld` 리소스 파일 또는 라이브러리 JAR 경로를 직접 지정합니다.
 
 #### 5.5.4. 웹소켓(WebSocket) 설정 (`TowWebSocketServerContainerInitializer`)
 Undertow의 고성능 웹소켓 엔진을 초기화합니다.
