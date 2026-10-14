@@ -231,6 +231,5 @@ public class App {
 기본적인 CLI 애플리케이션을 완성했다면 다음 가이드들을 통해 웹 애플리케이션 및 엔터프라이즈 환경으로 확장해 보세요:
 
 * **[Aspectow Configuration Guide](/ko/docs/aspectow/configuration-guide/)**: 고성능 내장 Undertow 서버와 Jasper JSP 컴파일러를 결합한 Aspectow Enterprise 웹 애플리케이션 설정 및 운영 방법을 확인하세요.
-* **[Aspectran JSP Tag Library 가이드](/ko/docs/aspectran/aspectran-jsp-tag-library/)**: AsEL 표현식 평가, 다국어 메시지, URL 템플릿 처리 등 JSP 뷰 화면을 풍부하게 만드는 커스텀 태그 활용법을 학습하세요.
-* **[Aspectran Beans 가이드](/ko/docs/aspectran/beans/)**: 어노테이션 및 XML 설정을 통한 빈 의존성 주입, 스코프 관리, 팩토리 빈 활용법을 자세히 알아보세요.
-* **[Aspectran Translet 심화 가이드](/ko/docs/aspectran/translet/)**: 요청 파라미터 매핑, 파일 업로드, 다양한 응답 변환(JSON, XML, 템플릿 뷰)을 다루는 방법을 확인하세요.
+* **[Aspectran Beans 가이드](/ko/docs/guides/aspectran-beans/)**: 어노테이션 및 XML 설정을 통한 빈 의존성 주입, 스코프 관리, 팩토리 빈 활용법을 자세히 알아보세요.
+* **[Aspectran Translet 심화 가이드](/ko/docs/guides/aspectran-translet/)**: 요청 파라미터 매핑, 파일 업로드, 다양한 응답 변환(JSON, XML, 템플릿 뷰)을 다루는 방법을 확인하세요.

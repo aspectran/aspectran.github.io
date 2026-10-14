@@ -231,6 +231,5 @@ Although this example is concise, it encapsulates the core design principles of 
 Now that you have built a working CLI application, explore these guides to expand into web applications and enterprise deployments:
 
 * **[Aspectow Configuration Guide](/en/docs/aspectow/configuration-guide/)**: Learn how to configure and operate enterprise web applications using embedded Undertow and the Jasper JSP engine.
-* **[Aspectran JSP Tag Library Guide](/en/docs/aspectran/aspectran-jsp-tag-library/)**: Discover how to use custom tags for AsEL expressions, localized messages, and URL templating in JSP views.
-* **[Aspectran Beans Guide](/en/docs/aspectran/beans/)**: Master dependency injection, bean scopes, lifecycle callbacks, and factory beans using annotations and XML.
-* **[Aspectran Translet In-Depth Guide](/en/docs/aspectran/translet/)**: Dive deeper into request parameter mapping, file uploads, and versatile response transformations (JSON, XML, template engines).
+* **[Aspectran Beans Guide](/en/docs/guides/aspectran-beans/)**: Master dependency injection, bean scopes, lifecycle callbacks, and factory beans using annotations and XML.
+* **[Aspectran Translet In-Depth Guide](/en/docs/guides/aspectran-translet/)**: Dive deeper into request parameter mapping, file uploads, and versatile response transformations (JSON, XML, template engines).
