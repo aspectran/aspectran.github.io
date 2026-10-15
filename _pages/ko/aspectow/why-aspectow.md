@@ -8,6 +8,7 @@ header:
 inside_heading: true
 sidebar: toc
 permalink: /ko/why-aspectow/
+mermaid: true
 ---
 
 ## 혹시 이런 고민 없으신가요?
@@ -22,6 +23,35 @@ permalink: /ko/why-aspectow/
 **Aspectow**는 강력한 오픈소스 프레임워크 `Aspectran`을 기반으로 엔터프라이즈 환경에 맞추어 최적화하고 안정화한 **엔터프라이즈 WAS 및 관제 솔루션**입니다.
 
 과거 전통적인 WAS(WebSphere, WebLogic 등)는 독립된 중앙 관리 서버(Admin Server/DMGR)를 별도로 구축하고 구동해야만 클러스터를 관리할 수 있었습니다. 반면 **Aspectow는 클러스터 내 모든 노드가 고성능 WAS 엔진과 함께 시각적 웹 관제 콘솔(Aspectow Console)을 자체 내장(Self-Contained)**하고 있습니다.
+
+```mermaid
+flowchart TD
+    subgraph Traditional["전통적 중앙 집중식 WAS (SPOF 위험)"]
+        AdminServer["중앙 관리 서버 (Admin/DMGR)<br/>⚠️ 장애 시 전체 클러스터 통제 불가"]
+        NodeA["Node 1 (WAS Only)"]
+        NodeB["Node 2 (WAS Only)"]
+        AdminServer -.-> NodeA
+        AdminServer -.-> NodeB
+    end
+
+    subgraph AspectowArch["Aspectow 분산 자율 아키텍처 (Self-Contained)"]
+        subgraph N1["Node 1 (Active)"]
+            W1["WAS Engine"]
+            C1["Aspectow Console"]
+        end
+        subgraph N2["Node 2 (Active)"]
+            W2["WAS Engine"]
+            C2["Aspectow Console"]
+        end
+        subgraph N3["Node 3 (Active)"]
+            W3["WAS Engine"]
+            C3["Aspectow Console"]
+        end
+        N1 <--> N2
+        N2 <--> N3
+        N1 <--> N3
+    end
+```
 
 이러한 현대적 분산 아키텍처 덕분에 별도의 외부 관제 서버 인프라를 설치할 필요가 없으며, 클러스터 내 살아있는 어떤 노드에 접속하더라도 전체 클러스터를 안정적으로 관제할 수 있는 높은 가용성을 제공합니다.
 
@@ -53,6 +83,10 @@ Aspectran의 모든 요청은 `Translet`이라는 간단하고 명확한 규칙 
 
 이처럼 직관적인 구조는 개발자가 프레임워크에 대한 깊은 이해 없이도 빠르게 적응하고 생산성을 높일 수 있도록 돕습니다.
 
+### 4. 환경으로부터의 자유: 어댑터(Adapter) 기반의 런타임 독립성
+
+Aspectran은 어댑터 패턴을 통해 비즈니스 로직(Translet)을 런타임 환경으로부터 완전히 분리합니다. 특정 WAS나 서블릿 API에 코드가 종속되지 않으므로, 동일하게 작성된 비즈니스 로직이 언더토우(Undertow) 기반의 엔터프라이즈 서블릿 환경이든, 네티(Netty) 기반의 초고속 논서블릿 마이크로서비스 환경이든, 제티(Jetty) 환경이든 **단 한 줄의 코드 수정 없이 그대로 구동**됩니다. 바로 이 어댑터 추상화 아키텍처가 있기에, Aspectow는 개발자에게 인프라 요구에 최적화된 다양한 에디션을 자유롭게 선택할 수 있는 유연성을 제공할 수 있습니다.
+
 이렇게 Aspectran으로 만든 강력하고 유지보수하기 쉬운 애플리케이션을, 최고의 성능과 안정성, 그리고 시각적 관제 기능으로 운영할 수 있도록 만들어진 플랫폼이 바로 Aspectow입니다.
 
 ## Aspectow 에디션
@@ -78,12 +112,32 @@ Aspectow는 서버 구동을 넘어 전체 클러스터와 애플리케이션을
 *   **클러스터 노드 관리**: 클러스터 내 모든 활성 노드의 생존 상태(Live, Paused, Dead)를 실시간 감시하고, 일괄 제어(Pause, Resume, Restart) 명령을 실행합니다.
 *   **대화형 원격 명령 센터**: 클러스터 내 특정 노드 또는 전체 노드로 원격 CLI/Shell 명령을 발송하고 실시간 콘솔 출력을 확인합니다.
 *   **분산 스케줄러 관리자**: 전체 노드의 스케줄러 상태와 통합 로그를 관찰하는 Dashboard 뷰 및 특정 노드의 잡(Job)을 집중 동적 제어(Pause, Resume, Details)하는 Detail View를 지원합니다.
+*   **원격 빌드 및 롤아웃 배포 관리자 (Build & Deployment)**: 외부 CI/CD 도구나 별도 에이전트 없이도 웹 콘솔에서 원클릭으로 Git 소스 동기화, Maven 빌드 패키징, 설정/웹 자산 배포, 그리고 프로세스 독립적 안전 재시작(Detached Restart)을 오케스트레이션하며, WebSocket 기반 대화형 다크 터미널을 통해 실시간 빌드/배포 로그를 스트리밍합니다.
 *   **보안 및 Vault 관리**: PBE(Password-Based Encryption) 암호화 기반 보안 토큰 발급 및 시스템 암호화 구성을 안전하게 관리합니다.
 *   **런타임 진단 도구**: 와일드카드 패턴 검증기, AsEL 표현식 평가기, APON 데이터 변환기 등 개발자 유틸리티를 내장 제공합니다.
 
 ### 2. 고성능 분산 클러스터링 아키텍처 및 노드 관리자 (Node Manager Control Plane)
 
 Aspectow는 다중 노드를 하나의 유기적인 클러스터로 묶어주는 핵심 제어 평면(Control Plane) 라이브러리인 **`Aspectow Node Manager`**를 내장하고 있습니다. 개발자는 인프라 환경과 확장 계획에 따라 **Gateway 모드**와 **Direct 모드**를 자유롭게 선택할 수 있습니다.
+
+```mermaid
+flowchart TD
+    subgraph GatewayMode["Gateway 모드 (클라우드 & 오토스케일링 최적화)"]
+        Redis[("Redis<br/>(중앙 메시지 브로커 & 메타데이터)")]
+        G1["Node (K8s Pod / EC2)"]
+        G2["Node (K8s Pod / EC2)"]
+        G3["Node (K8s Pod / EC2)"]
+        G1 <-->|Dynamic Clustering / NAT Traversal| Redis
+        G2 <-->|Dynamic Clustering / NAT Traversal| Redis
+        G3 <-->|Dynamic Clustering / NAT Traversal| Redis
+    end
+
+    subgraph DirectMode["Direct 모드 (소규모 고정 인프라)"]
+        D1["Node A (Fixed IP)"]
+        D2["Node B (Fixed IP)"]
+        D1 <-->|P2P Direct Connect| D2
+    end
+```
 
 *   **Gateway 모드 (Cloud-Native & Autoscaling 최적화)**:
     *   **동적 클러스터링**: Redis를 중앙 메시지 브로커 및 메타데이터 저장소로 활용합니다. 노드 기동 시 UUID 기반의 고유 식별자를 자율 생성하고 동적 등록하므로, 노드가 수시로 생성/소멸되는 **쿠버네티스(K8s) 및 AWS Auto Scaling** 환경에 완벽하게 대응합니다.

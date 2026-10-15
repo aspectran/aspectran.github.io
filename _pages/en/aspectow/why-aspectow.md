@@ -8,6 +8,7 @@ header:
 inside_heading: true
 sidebar: toc
 permalink: /en/why-aspectow/
+mermaid: true
 ---
 
 ## Are You Facing These Challenges?
@@ -22,6 +23,35 @@ permalink: /en/why-aspectow/
 **Aspectow** is an **enterprise WAS and control platform** based on the powerful open-source framework `Aspectran`, optimized and stabilized for modern enterprise environments.
 
 Unlike traditional WAS (such as WebSphere or WebLogic) that required deploying and running a separate, dedicated administration server (DMGR/Admin Server), **Aspectow embeds the visual web management console (Aspectow Console) directly into every node (Self-Contained Architecture)** alongside its high-performance WAS engine.
+
+```mermaid
+flowchart TD
+    subgraph Traditional["Traditional Centralized WAS (SPOF Risk)"]
+        AdminServer["Dedicated Admin Server (Admin/DMGR)<br/>⚠️ Cluster unmanageable if Admin fails"]
+        NodeA["Node 1 (WAS Only)"]
+        NodeB["Node 2 (WAS Only)"]
+        AdminServer -.-> NodeA
+        AdminServer -.-> NodeB
+    end
+
+    subgraph AspectowArch["Aspectow Distributed Autonomous Architecture (Self-Contained)"]
+        subgraph N1["Node 1 (Active)"]
+            W1["WAS Engine"]
+            C1["Aspectow Console"]
+        end
+        subgraph N2["Node 2 (Active)"]
+            W2["WAS Engine"]
+            C2["Aspectow Console"]
+        end
+        subgraph N3["Node 3 (Active)"]
+            W3["WAS Engine"]
+            C3["Aspectow Console"]
+        end
+        N1 <--> N2
+        N2 <--> N3
+        N1 <--> N3
+    end
+```
 
 Following modern distributed architecture principles, this eliminates the need for separate external management infrastructure and provides high availability, allowing administrators to seamlessly monitor and control the entire cluster through any active node.
 
@@ -53,6 +83,10 @@ In Aspectran, all requests are processed in simple, clear rule units called `Tra
 
 This intuitive structure helps developers quickly adapt and increase productivity without needing a deep understanding of the framework.
 
+### 4. Freedom from Runtime Lock-in: Adapter-Based Runtime Independence
+
+Aspectran completely decouples business logic (Translets) from the runtime environment using the Adapter Pattern. Because your code never binds directly to a specific WAS or Servlet API, the exact same business logic runs **with zero code changes** whether deployed in Undertow-based enterprise Servlet environments, Netty-based ultra-fast non-servlet microservices, or Jetty. This adapter abstraction architecture empowers Aspectow to offer developers the flexibility to choose the edition best optimized for their infrastructure needs.
+
 Aspectow is the platform built to run these powerful and easy-to-maintain applications with peak performance, stability, and comprehensive visual control.
 
 ## Aspectow Editions
@@ -78,12 +112,32 @@ Beyond server execution, Aspectow includes **Aspectow Console**, a unified web i
 *   **Cluster Node Management**: Real-time monitoring of node statuses (Live, Paused, Dead) and bulk action controls (Pause, Resume, Restart).
 *   **Interactive Remote Command Center**: Dispatch interactive CLI/Shell commands to specific nodes or all nodes in real time with live console streaming.
 *   **Distributed Scheduler Manager**: Offers a Dashboard view for cluster-wide schedule overview and a Detail View for node-specific job dynamic control (Pause, Resume, Details).
+*   **Remote Build & Rollout Deployment Manager (Build & Deployment)**: Orchestrates Git source synchronization, Maven build packaging, configuration/web asset deployment, and process-independent safe server restarts (Detached Restart) directly from the web console with a single click—eliminating the need for external CI/CD tools or separate agents—while streaming real-time build and deployment logs through an interactive dark WebSocket terminal.
 *   **Security & Vault Management**: Securely manages PBE (Password-Based Encryption) security tokens and system encryption configurations.
 *   **Runtime Diagnostic Tools**: Built-in developer utilities including Wildcard Pattern Tester, AsEL Expression Evaluator, and APON Data Converter.
 
 ### 2. High-Performance Cluster Architecture & Node Manager (Node Manager Control Plane)
 
 Aspectow embeds **`Aspectow Node Manager`**, a core Control Plane library that binds multiple distributed nodes into an organic, cohesive cluster. Developers can flexibly select between **Gateway Mode** and **Direct Mode** based on infrastructure environments and scaling plans.
+
+```mermaid
+flowchart TD
+    subgraph GatewayMode["Gateway Mode (Cloud-Native & Autoscaling Optimized)"]
+        Redis[("Redis<br/>(Central Message Broker & Metadata)")]
+        G1["Node (K8s Pod / EC2)"]
+        G2["Node (K8s Pod / EC2)"]
+        G3["Node (K8s Pod / EC2)"]
+        G1 <-->|Dynamic Clustering / NAT Traversal| Redis
+        G2 <-->|Dynamic Clustering / NAT Traversal| Redis
+        G3 <-->|Dynamic Clustering / NAT Traversal| Redis
+    end
+
+    subgraph DirectMode["Direct Mode (Small-Scale Fixed Infrastructure)"]
+        D1["Node A (Fixed IP)"]
+        D2["Node B (Fixed IP)"]
+        D1 <-->|P2P Direct Connect| D2
+    end
+```
 
 *   **Gateway Mode (Cloud-Native & Autoscaling Optimized)**:
     *   **Dynamic Clustering**: Utilizes Redis as a central message broker and metadata repository. Nodes autonomously generate UUID-based unique identifiers upon startup and register dynamically, perfectly adapting to **Kubernetes (K8s) and AWS Auto Scaling** environments where instances are frequently added or removed.
