@@ -3,7 +3,7 @@ title: "Aspectran Configuration Loading Mechanism: An In-Depth Analysis of the `
 subheadline: Mechanisms
 ---
 
-Aspectran parses configuration files in XML or APON (Aspectran Object Notation) format to create a tree of `*Rule` objects, which serve as the blueprint for the application's core components (Bean, Translet, Aspect, etc.). At the heart of this process is the high-performance, event-based parsing engine **`nodelet`**, specially designed for Aspectran and implemented in the `com.aspectran.utils.nodelet` package.
+Aspectran parses configuration files in XML or APON (Aspectran Parameters Object Notation) format to create a tree of `*Rule` objects, which serve as the blueprint for the application's core components (Bean, Translet, Aspect, etc.). At the heart of this process is the high-performance, event-based parsing engine **`nodelet`**, specially designed for Aspectran and implemented in the `com.aspectran.utils.nodelet` package.
 
 ```text
 [XML/APON Config File] ---> [NodeletParser] --uses--> [AspectranNodeletGroup] ---> [*Rule Object Tree] ---> [ActivityContext]

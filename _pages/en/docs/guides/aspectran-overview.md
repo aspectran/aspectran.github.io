@@ -37,7 +37,7 @@ graph TD
         direction TB
         ACT["Activity Layer<br/>(Request Lifecycle Management & Execution Context)"]
         TRANS["Translet Layer<br/>(Request Routing & Processing Rule Pipeline)"]
-        
+
         subgraph LogicLayer ["Business Logic & Component Layer"]
             direction LR
             AOP["AOP Layer<br/>(Cross-Cutting Concerns & Dynamic Proxies)"]
@@ -126,26 +126,26 @@ Aspectran provides various powerful features for modern application development.
 *   **Transaction Management**: Aspectran provides a declarative transaction management infrastructure seamlessly integrated with the `aspectran-with-jpa` and `aspectran-with-mybatis` modules to guarantee enterprise data consistency.
     *   Transactions can be declaratively initiated, committed, or rolled back upon executing business methods, with fine-grained rollback policies based on specific exception types.
     *   The lifecycle of data sources and session factories is safely synchronized with the framework's IoC container to prevent connection leaks.
-*   **Session Management**: Aspectran provides a **high-performance, environment-independent session management component** that can maintain state consistently across various execution environments such as web, shell, and daemon. 
+*   **Session Management**: Aspectran provides a **high-performance, environment-independent session management component** that can maintain state consistently across various execution environments such as web, shell, and daemon.
     *   **Pluggable Storage**: You can choose from various session store implementations, such as file-based or Redis-based using high-performance Lettuce client, with full support for clustering in distributed environments.
     *   **Sophisticated Policies**: Features enterprise-grade capabilities like specialized timeout policies for new sessions (`maxIdleSecondsForNew`) to prevent bloat from bots or crawlers.
-*   **Hint Mechanism**: A highly flexible and powerful tool used to convey execution "intents" or supplementary metadata from business logic (Service, DAO, etc.) to the framework or other underlying modules. 
-    *   By using the `@Hint` annotation, developers can leave "sticky notes" on methods to dynamically instruct behaviors such as cache application, layout control, or security settings without creating direct dependencies on specific modules (**Loose Coupling**). 
+*   **Hint Mechanism**: A highly flexible and powerful tool used to convey execution "intents" or supplementary metadata from business logic (Service, DAO, etc.) to the framework or other underlying modules.
+    *   By using the `@Hint` annotation, developers can leave "sticky notes" on methods to dynamically instruct behaviors such as cache application, layout control, or security settings without creating direct dependencies on specific modules (**Loose Coupling**).
     *   It supports propagation and isolation of hints, allowing for precise control even in nested method call environments.
-*   **Profiles and Environment Management**: Provides a powerful way to enable or disable parts of an application's configuration only in specific environments (dev, test, prod, etc.). 
-    *   Profiles are activated via system properties like `aspectran.profiles.active`, and Aspectran supports complex activation expressions using logical operators (`!`, `()`, `[]`). 
+*   **Profiles and Environment Management**: Provides a powerful way to enable or disable parts of an application's configuration only in specific environments (dev, test, prod, etc.).
+    *   Profiles are activated via system properties like `aspectran.profiles.active`, and Aspectran supports complex activation expressions using logical operators (`!`, `()`, `[]`).
     *   Conditional configurations can be easily applied through XML elements like `<properties>` and `<append>` or via the `@Profile` annotation in Java code.
-*   **Configuration and Loading**: Aspectran configures applications through configuration files in APON (Aspectran Object Notation) or XML format. 
+*   **Configuration and Loading**: Aspectran configures applications through configuration files in APON (Aspectran Parameters Object Notation) or XML format.
     *   It uses a **highly advanced `nodelet` parsing engine** to efficiently load configuration files. Features like `mount`, which dynamically handles nested rules, maximize parsing speed.
     *   It supports dynamic reloading for enhanced development convenience.
 *   **Dynamic Hot-Reloading**: Through a unique classloader mechanism called `SiblingClassLoader`, Aspectran can instantly reflect changes in configurations or classes without restarting the JVM. It uses a "Sibling-First" delegation model to flexibly support class sharing and dynamic replacement between modules.
 *   **AsEL (Aspectran Expression Language)**: Aspectran provides its own expression language, AsEL, for handling dynamic values within configuration files. AsEL supports powerful features such as dynamically referencing and injecting request data or properties of other beans at runtime using tokens like `${...}` (parameters), `@{...}` (attributes), and `#{...}` (beans or bean properties). Additionally, it can process complex expressions, such as calling object methods or navigating properties within tokens, by internally using OGNL (Object-Graph Navigation Language).
 *   **Logging**: Aspectran builds a flexible and powerful logging system based on SLF4J and Logback. It provides a unique feature, **`LoggingGroupDiscriminator`**, to separate and manage logs by service or URI path unit. This makes it easy to track logs for specific features even in environments where numerous requests are mixed.
-*   **Job Scheduling**: Features a **built-in powerful scheduling framework based on Quartz** to automatically execute tasks according to a set time or cycle. 
-    *   It can be used immediately through configuration without separate library integration, and its key characteristic is the ability to use **Translets** as the body of the tasks to be executed. 
-    *   Supports both `simple` triggers (interval-based) and `cron` triggers (schedule-based), and provides both explicit XML/APON configuration and convenient `@Schedule` annotation-based configuration. 
+*   **Job Scheduling**: Features a **built-in powerful scheduling framework based on Quartz** to automatically execute tasks according to a set time or cycle.
+    *   It can be used immediately through configuration without separate library integration, and its key characteristic is the ability to use **Translets** as the body of the tasks to be executed.
+    *   Supports both `simple` triggers (interval-based) and `cron` triggers (schedule-based), and provides both explicit XML/APON configuration and convenient `@Schedule` annotation-based configuration.
     *   Execution events (start, success, failure) can be monitored through detailed logging via `ActivityJobReporter`.
-*   **RESTful Web Services**: Aspectran provides optimized features for RESTful API development. It can process requests based on HTTP methods (GET, POST, PUT, DELETE, etc.) with concise configuration and generate responses in various formats like JSON/XML/APON. 
+*   **RESTful Web Services**: Aspectran provides optimized features for RESTful API development. It can process requests based on HTTP methods (GET, POST, PUT, DELETE, etc.) with concise configuration and generate responses in various formats like JSON/XML/APON.
     *   It applies an **intelligent search priority** that favors the most specific rules, ensuring rational request mapping, such as finding `/users/info` before `/users/*`.
 *   **Rapid Development and Startup**: Actively utilizes the Convention over Configuration principle to minimize boilerplate code that developers need to write. It also shortens application startup time through lightweight design and optimized initialization processes, enhancing development and deployment efficiency.
 *   **Production-Grade Applications**: Aspectran is designed with stability and scalability in mind and can be flexibly deployed in various operating environments. It can be deployed as a standalone JVM application, an embedded server environment based on Netty, Undertow, or Jetty, a web application in traditional servlet containers (Tomcat, WildFly), or embedded within other Java applications, ensuring stable operation. By actively leveraging Java 21 Virtual Threads and non-blocking I/O, it maintains high throughput with minimal resource utilization even under heavy concurrent loads. The **adapter pattern for environment abstraction** allows the same business logic to run without modification in any environment.

@@ -15,7 +15,7 @@ title: 레거시 시스템과 최신 Aspectran 애플리케이션 서버 연동 
 ## 주요 기능 및 이점
 
 *   **광범위한 JDK 호환성:** JDK 1.6부터 JDK 17까지의 다양한 레거시 Java 환경을 지원하여, 오래된 시스템에서도 최신 Aspectran 서버와 연동할 수 있습니다.
-*   **API 호출 간소화:** JSON 또는 APON(Aspectran Object Notation) 형식의 데이터를 쉽게 직렬화(Serialization) 및 역직렬화(Deserialization)할 수 있는 기능을 제공하여, API 요청 및 응답 처리를 간소화합니다.
+*   **API 호출 간소화:** JSON 또는 APON(Aspectran Parameters Object Notation) 형식의 데이터를 쉽게 직렬화(Serialization) 및 역직렬화(Deserialization)할 수 있는 기능을 제공하여, API 요청 및 응답 처리를 간소화합니다.
 *   **보안 통신 지원:** `PBEncryptionUtils`와 같은 유틸리티를 활용하여 민감한 데이터를 안전하게 암호화하고 복호화할 수 있습니다.
 *   **레거시 코드 변경 최소화:** 기존 레거시 시스템의 코드베이스에 최소한의 변경만으로 최신 Aspectran 서버와의 연동 기능을 추가할 수 있도록 설계되었습니다.
 

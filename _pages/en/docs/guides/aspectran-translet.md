@@ -11,7 +11,7 @@ Everything that runs in Aspectran—from handling HTTP requests in web applicati
 
 ### 1.1. Declarative & Rule-Based
 
-A Translet is defined as a **collection of declarative rules** in XML or APON (Aspectran Object Notation) format. This allows for the separation of business logic and processing flow.
+A Translet is defined as a **collection of declarative rules** in XML or APON (Aspectran Parameters Object Notation) format. This allows for the separation of business logic and processing flow.
 
 ```xml
 <translet name="/user/info">

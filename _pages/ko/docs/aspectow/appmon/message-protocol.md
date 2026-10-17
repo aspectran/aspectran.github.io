@@ -63,7 +63,7 @@ subheadline: Aspectow Aspectow AppMon
 
 ## 3. 클라이언트-서버 명령 구조 (Pull/Request)
 
-클라이언트가 서버에 특정 동작이나 데이터를 요청할 때 사용하는 프로토콜입니다. **APON(Aspectran Object Notation)** 인라인 형식을 기반으로 하며, 세미콜론(`;`)으로 구분된 `key:value` 쌍으로 전송됩니다.
+클라이언트가 서버에 특정 동작이나 데이터를 요청할 때 사용하는 프로토콜입니다. **APON(Aspectran Parameters Object Notation)** 인라인 형식을 기반으로 하며, 세미콜론(`;`)으로 구분된 `key:value` 쌍으로 전송됩니다.
 
 서버의 `CommandOptions` 클래스는 이 문자열을 파싱하여 파라미터 객체로 변환하며, `command` 키의 값을 확인하여 수행할 작업을 수행합니다.
 

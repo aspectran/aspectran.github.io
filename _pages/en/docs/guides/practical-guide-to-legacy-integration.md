@@ -15,7 +15,7 @@ The `aspectran-utils-legacy` module acts as a Compatibility Layer to support sea
 ## Key Features and Benefits
 
 *   **Broad JDK Compatibility:** Supports various legacy Java environments from JDK 1.6 to JDK 17, allowing older systems to integrate with modern Aspectran servers.
-*   **Simplified API Calls:** Provides functions to easily serialize and deserialize data in JSON or APON (Aspectran Object Notation) formats, simplifying API request and response processing.
+*   **Simplified API Calls:** Provides functions to easily serialize and deserialize data in JSON or APON (Aspectran Parameters Object Notation) formats, simplifying API request and response processing.
 *   **Secure Communication Support:** Utilizes utilities like `PBEncryptionUtils` to securely encrypt and decrypt sensitive data in configuration files or within data itself.
 *   **Minimal Legacy Code Changes:** Designed to add integration capabilities with modern Aspectran servers with minimal changes to the existing codebase of legacy systems.
 

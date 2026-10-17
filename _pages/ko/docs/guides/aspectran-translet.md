@@ -11,7 +11,7 @@ Aspectran 프레임워크에서 **트랜스렛(Translet)**은 그 이름만 보�
 
 ### 1.1. 선언적 규칙 기반 (Declarative & Rule-Based)
 
-Translet은 XML 또는 APON(Aspectran Object Notation) 형식의 **선언적인 규칙(Rule)들의 집합**으로 정의됩니다. 이를 통해 비즈니스 로직과 처리 흐름을 분리할 수 있습니다.
+Translet은 XML 또는 APON(Aspectran Parameters Object Notation) 형식의 **선언적인 규칙(Rule)들의 집합**으로 정의됩니다. 이를 통해 비즈니스 로직과 처리 흐름을 분리할 수 있습니다.
 
 ```xml
 <translet name="/user/info">

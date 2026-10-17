@@ -5,7 +5,7 @@ subheadline: Aspectow AppMon
 ---
 
 {% capture info_message %}
-This protocol adopts a human-readable text-based structure and declarative APON (Aspectran Object Notation) inline format, ensuring easy debugging and high scalability across Gateway bridges and multi-node environments.
+This protocol adopts a human-readable text-based structure and declarative APON (Aspectran Parameters Object Notation) inline format, ensuring easy debugging and high scalability across Gateway bridges and multi-node environments.
 {% endcapture %}
 {% include alert.liquid info=info_message %}
 
@@ -63,7 +63,7 @@ Delivers single metric values as JSON payloads.
 
 ## 3. Client-to-Server Command Structure (Pull/Request)
 
-Protocol used by clients to request specific operations or data from the server. Formatted as semicolon-delimited (`;`) `key:value` pairs based on **APON (Aspectran Object Notation)** inline syntax.
+Protocol used by clients to request specific operations or data from the server. Formatted as semicolon-delimited (`;`) `key:value` pairs based on **APON (Aspectran Parameters Object Notation)** inline syntax.
 
 The server's `CommandOptions` class parses this string into parameter objects and executes tasks according to the `command` key value.
 
