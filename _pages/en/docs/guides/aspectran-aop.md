@@ -13,33 +13,52 @@ Aspectran AOP offers two dimensions of join points and interception mechanisms t
 
 | Architectural Pillar | Target | Mechanism | Primary Use Cases |
 | :--- | :--- | :--- | :--- |
-| **Activity Lifecycle AOP**<br/>*(Translet Lifecycle)* | `Activity` (The entire request-processing flow) | Zero proxy overhead; the `CoreActivity` engine directly executes aspects according to lifecycle stages (Non-Proxy Core Interception) | Web security response headers, global character encoding and view dispatcher injection, pre/post-processing, authentication/authorization, global exception handling |
+| **Activity Lifecycle AOP**<br/>*(Translet Lifecycle)* | `Activity` (The entire request-processing flow) | Zero proxy overhead; the `CoreActivity` engine directly and sequentially executes aspects according to lifecycle stages (Non-Proxy Core Interception) | Web security response headers, global character encoding and view dispatcher injection, pre/post-processing, authentication/authorization, global exception handling |
 | **Bean Proxy AOP**<br/>*(Method Interception)* | Bean method invocations (`JoinpointTargetType.METHOD`) | Runtime dynamic proxy (`AbstractBeanProxy`, Javassist/JDK) intercepts methods annotated with `@Advisable` | Declarative database transactions, business method profiling, audit logging |
 
 ### 1.1. Activity Lifecycle AOP (Non-Proxy Core Interception)
 
 In Aspectran, incoming client requests (Web, Daemon, Shell) are executed by an `Activity` instance. The `Activity` engine traverses predefined lifecycle stages from initiation to completion, directly invoking matched aspects without intermediate proxy overhead.
 
+#### a. Normal Execution Flow
+
+The standard execution flow when no unhandled exception occurs during request processing:
+
 | Stage | Lifecycle Stage | Primary Tasks & Responsibilities |
 | :---: | :--- | :--- |
-| **Stage 1** | **Before Advice** | Executes pre-processing logic, injects `<settings>` (encoding, view dispatcher) and security `<headers>`, validates authentication |
-| **Stage 2** | **Translet Action Execution** | Executes core business actions and process routines, generating response data |
+| **Stage 1** | **Before Advice** | Executes pre-processing logic, injects `<settings>` (encoding, view dispatcher) and security `<headers>`, validates authentication and authorization |
+| **Stage 2** | **Translet Action Execution** | Executes core business actions and process routines, generating response data (`ProcessResult`) |
 | **Stage 3** | **After Advice** | Performs post-processing on results, records audit logs |
-| **Stage 4** | **Exception Handling (`<exception>`)** | Catches exceptions and maps them to error view pages (`<dispatch>`) or RESTful JSON (`<transform>`) error responses |
-| **Stage 5** | **Finally Advice** | Always runs at the end regardless of success or failure to clean up resources and session states |
+| **Stage 4** | **Finally Advice** | Always runs at the end regardless of success or failure to clean up resources, close sessions, and release ThreadLocal state |
+{: .table-nowrap-1}
+
+#### b. Exception Handling Flow
+
+When an exception occurs during the execution of business actions or Before advice, execution shifts to a strictly ordered sequence designed to preserve data integrity and ensure resource cleanup:
+
+| Order | Lifecycle Stage | Primary Tasks & Responsibilities |
+| :---: | :--- | :--- |
+| **Step 1** | **Skip After Advice** | Any pending After advice is immediately skipped upon exception. |
+| **Step 2** | **Execute Thrown Advice and Exception Rules (`<thrown>`, `<exception>`)** | **Executed before the Finally stage** so that transaction rollback, error logging, and alerts execute safely while database sessions and connections are still open. According to matched exception rules, an error view dispatch (`<dispatch>`) or JSON (`<transform>`) error response is reserved. |
+| **Step 3** | **Execute Finally Advice** | Guaranteed to run regardless of success or failure, safely closing resources (e.g., `SqlSession.close()`) and clearing memory. |
+| **Step 4** | **Send Exception Response or Rethrow** | Dispatches the reserved exception response (view page or JSON) to the client, or rethrows unhandled exceptions to the container. |
 {: .table-nowrap-1}
 
 * **Zero Overhead**: Directly executed within the framework core flow without proxy creation or reflective overhead, ensuring maximum throughput.
 * **Structural Flow Control**: Beyond simple method interception, it declaratively injects and manages request context (`Activity`) attributes such as encoding, view dispatchers, security headers, and global exception screens.
+* **Guaranteed Transactional Integrity**: Because `THROWN` advice (rollback) always executes before `FINALLY` advice (resource cleanup), transactions are never orphaned or left uncommitted by premature connection closing.
 
 ### 1.2. Bean Proxy AOP (Selective Dynamic Proxying)
 
-When applying AOP at the level of individual service methods, Aspectran employs dynamic proxies based on bytecode generation with **Javassist** (`JavassistProxyBean`) or standard **JDK Dynamic Proxies** (`JdkDynamicProxyBean`).
+When applying AOP at the level of individual service methods, Aspectran employs dynamic proxies based on bytecode generation with **Javassist** (`JavassistBeanProxy`) or standard **JDK Dynamic Proxies** (`JdkBeanProxy`).
 
 * **`@Advisable` Selective Proxying (Performance Optimization)**:
   * Dynamic proxies do not indiscriminately intercept every method invocation.
-  * Pointcut evaluation and advice chains are triggered **only for methods annotated with `@Advisable`**.
+  * Pointcut evaluation and advice chains are triggered **only for methods annotated with `@Advisable` or `@Async`**.
   * Unannotated regular methods bypass the proxy chain entirely, immediately delegating to the target method with **zero proxy overhead**.
+* **Consistent Method-Level Lifecycle**:
+  * Applies a consistent execution sequence: `Before` ➔ target method execution ➔ `After` (on success) ➔ `Finally`.
+  * If an exception occurs within the target method, `After` advice is skipped, registered exception rules are processed first, and `Finally` advice finishes the lifecycle.
 
 ## 2. Core Components of the `<aspect>` Rule
 
@@ -56,8 +75,8 @@ In Aspectran, aspects can be configured declaratively via `<aspect>` XML rules o
 | Attribute | Description |
 | :--- | :--- |
 | **`id`** | Unique identifier of the Aspect. |
-| **`order`** | Defines the execution precedence among multiple aspects. Lower integer values denote higher priority (default: `Integer.MAX_VALUE`). If two aspects have identical order values, the one declared first takes precedence. |
-| **`isolated`** | Configures **Exception Isolation Mode (`true`/`false`)**. When `isolated="true"`, any unhandled exception occurring inside the aspect's advice will not halt the main request flow; an error log is recorded and the request proceeds normally. Ideal for non-critical cross-cutting concerns like statistics, monitoring, or external telemetry. |
+| **`order`** | Defines the execution precedence among multiple aspects. Lower integer values denote higher priority (default: `Integer.MAX_VALUE`). If two aspects have identical order values, the one declared first takes precedence.<br/>• **Ascending Sorted Insertion**: Aspectran's `AdviceRuleRegistry` sorts both regular advice and `ExceptionRule` instances in strict ascending order (0, 1, 2...).<br/>• **Infrastructure Precedence**: Assigning `order="0"` to infrastructure aspects (e.g., database transaction management) guarantees they run before business aspects, ensuring rollback is executed first without exception. |
+| **`isolated`** | Configures **Exception Isolation Mode (`true`/`false`)**.<br/>• **Aspect-Level Isolation**: When `isolated="true"`, any unhandled exception occurring inside the aspect's advice will not halt the main request flow; an error log is recorded and the request proceeds normally. Ideal for non-critical concerns like metrics, telemetry, or notifications.<br/>• **Core-Level Dual Isolation Protection**: During exception handling, even if an individual exception action fails, the framework core isolates the error via internal `try-catch` blocks, ensuring that subsequent exception rules and database rollbacks run to completion. |
 | **`disabled`** | When set to `true`, disables the aspect at runtime. |
 
 ### 2.2. Precision Joinpoint and Pointcut Control (`<joinpoint>`)
@@ -209,15 +228,17 @@ The `<settings>` element injects configuration parameters directly into the matc
 
 ### 2.4. Advice Types and Composition (`<advice>`)
 
-Advice defines the concrete logic executed at a join point. Aspectran supports 5 standard advice types:
+Advice defines the concrete logic executed at a join point. Aspectran supports **4 standard advice types** for clear and predictable flow control:
 
 | Advice Type | Execution Timing | Primary Use Cases |
 | :--- | :--- | :--- |
-| **`before`** | Prior to join point execution | Input validation, security verification, response header injection |
-| **`after`** | After successful join point execution | Result data enrichment, audit logging |
-| **`around`** | Surrounds join point execution | Execution profiling, transaction boundaries (begin & commit) |
-| **`thrown`** | Upon exception | Error logging, transaction rollback, alerting |
-| **`finally`** | Always executed at the end | Resource cleanup, session cleanup, ThreadLocal clearing |
+| **`before`** | Prior to join point execution | Input validation, security verification, response header injection, recording start timestamps |
+| **`after`** | After successful join point execution | Result data enrichment, audit logging (skipped if an exception is raised) |
+| **`thrown`** | Upon exception | Error logging, transaction rollback, alerting (invoked prior to Finally) |
+| **`finally`** | Always executed at the end | Resource cleanup, session closing, ThreadLocal clearing, elapsed time profiling |
+
+> **💡 Why Aspectran Adopts 4 Standard Advice Stages over Around Advice:**
+> Layering nested Around proxies introduces deep call stacks, debugging ambiguity, and obscure exception propagation chains. Aspectran instead provides 4 declarative lifecycle stages (Before, After, Thrown, Finally). This design cleanly separates transactional boundaries, performance telemetry, security checks, and resource cleanup without proxy chaining overhead.
 
 Inside `<advice>`, you can configure bean method invocations (`<invoke>`), action routines (`<action>`), and **declarative response header injection (`<headers>`)**:
 
@@ -235,6 +256,9 @@ Inside `<advice>`, you can configure bean method invocations (`<invoke>`), actio
     </before>
 </advice>
 ```
+
+#### Precise Exception Matching in `<thrown>`
+Both `<advice><thrown>` and `<exception><thrown>` support specifying a target exception class via the `type` attribute (e.g., `type="com.mycompany.MyException"`). Aspectran's internal matching engine evaluates both the **type hierarchy (`isAssignableFrom`) and root causes (`getCause()`)** to accurately match the raised exception.
 
 ### 2.5. Global Exception Handling (`<exception>`)
 
@@ -261,7 +285,7 @@ Defining an `<exception>` element within an aspect allows catching specific exce
 </aspect>
 ```
 
-#### Differences Between `<advice><thrown>` and `<exception><thrown>`
+#### a. Differences Between `<advice><thrown>` and `<exception><thrown>`
 
 When defining behavior for raised exceptions, Aspectran provides two distinct mechanisms: `<thrown>` inside `<advice>` and `<thrown>` inside `<exception>`. They differ fundamentally in purpose and exception propagation:
 
@@ -271,6 +295,19 @@ When defining behavior for raised exceptions, Aspectran provides two distinct me
 | **Exception Propagation** | Executes advice logic and **continues to propagate (rethrow) the exception upward** | Completely catches and handles the exception, **returning a normal error response to the client** |
 | **Available Actions** | Bean method invocations (`<invoke>`), Action executions (`<action>`), Header injection (`<headers>`) | View dispatching (`<dispatch>`), Data transformations (`<transform>`), Action executions (`<action>`) |
 | **Annotation Equivalent** | Advice methods annotated with `@ExceptionThrown` | Translet/Aspect exception handling rule mappings |
+
+#### b. Precedence Rules for Multiple Exception Rules
+
+When multiple exception handling rules are declared, Aspectran resolves them using the following precedence principles:
+
+1. **Local `TransletRule` `<exception>` Takes Precedence**:
+   An `<exception>` rule declared directly inside a Translet is always evaluated first. Endpoint-specific business error views take priority over global configurations.
+2. **Global Aspect `<exception>` Evaluated in Ascending `order`**:
+   Matched aspect exception rules are evaluated in ascending order of their `order` attribute (0, 1, 2...).
+3. **Most Specific Exception Type Matches First**:
+   Within the same configuration block, rules targeting the most specific exception class (e.g., `UserNotFoundException`) are prioritized over general types (e.g., `Throwable`).
+4. **Isolated Completion Guarantee**:
+   Even if an exception action fails with a secondary error, the framework core isolates the error in a `try-catch` block, ensuring that subsequent exception rules (such as database rollbacks) continue to run.
 
 ## 3. Annotation-Based AOP Configuration
 
@@ -284,7 +321,6 @@ Aspectran allows full AOP configuration using pure Java classes and annotations 
 | **`@Joinpoint`** | Configures pointcut matching criteria. | `pointcut`, `target`, `methods`, `headers` |
 | **`@Before`** | Designates a Before advice method. | - |
 | **`@After`** | Designates an After advice method. | - |
-| **`@Around`** | Designates an Around advice method. | - |
 | **`@Finally`** | Designates a Finally advice method. | - |
 | **`@ExceptionThrown`** | Designates an Exception advice method. | `value` (Target exception class) |
 | **`@Settings`** | Injects settings into the Activity context. | `name`, `value` |
@@ -404,14 +440,14 @@ Automatically injects security response headers (CSP, X-Frame-Options) and defau
 
 Completely decouples MyBatis `SqlSession` lifecycle management (open, commit, rollback, close) from business logic.
 
-**1. Transaction Aspect Configuration (`mybatis-context.xml`):**
+**1. Transaction Aspect Configuration (`mybatis-rules.xml`):**
 ```xml
-<!-- 1. SqlSessionAdvice Bean Definition -->
+<!-- 1. SqlSessionAdvice Bean Definition (prototype scope for fresh per-request instances) -->
 <bean id="sqlSessionTxAdvice" class="com.aspectran.mybatis.SqlSessionAdvice" scope="prototype">
     <argument>#{sqlSessionFactory}</argument>
 </bean>
 
-<!-- 2. Transaction Aspect Definition -->
+<!-- 2. Declarative Transaction Aspect (order="0" for highest priority) -->
 <aspect id="txAspect" order="0">
     <joinpoint>
         pointcut: {
@@ -426,6 +462,9 @@ Completely decouples MyBatis `SqlSession` lifecycle management (open, commit, ro
             <invoke method="commit"/>
         </after>
         <finally>
+            <thrown>
+                <invoke method="rollback"/>
+            </thrown>
             <invoke method="close"/>
         </finally>
     </advice>
@@ -448,47 +487,128 @@ public class OrderService {
         // Calling sqlSession methods automatically triggers txAspect to handle the transaction
         sqlSession.insert("app.demo.mapper.OrderMapper.insertOrder", order);
         sqlSession.update("app.demo.mapper.ItemMapper.updateStock", order.getItemId());
+        // If an exception occurs, after(commit) is skipped, finally/thrown(rollback) safely rolls back, and finally(close) closes the session.
     }
 }
 ```
 
-### Pattern 3: RESTful API Performance Profiling (Around Advice)
+* **Transactional Safety Mechanism**:
+  * On success: `before(open)` ➔ business logic ➔ `after(commit)` ➔ `finally(close)`
+  * On exception: `before(open)` ➔ business logic (exception raised) ➔ `after(commit)` automatically skipped ➔ `<finally><thrown>` explicitly executes `rollback` ➔ `finally(close)` safely closes the session and returns connection to pool.
 
-Monitors slow API requests using an Around advice with exception isolation.
+### Pattern 3: Performance Profiling and Audit Logging (Before + Finally Pattern)
+
+Monitors slow API requests without proxy overhead by pairing `Before` and `Finally` advice to calculate elapsed execution time.
 
 ```java
 package com.aspectran.demo.aspect;
 
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.component.bean.annotation.Around;
 import com.aspectran.core.component.bean.annotation.Aspect;
+import com.aspectran.core.component.bean.annotation.Before;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Finally;
 import com.aspectran.core.component.bean.annotation.Joinpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component
-@Aspect(id = "profilingAspect", isolated = true)
+@Aspect(id = "profilingAspect", order = 10, isolated = true)
 @Joinpoint(pointcut = "+: /api/**")
 public class ProfilingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfilingAspect.class);
 
-    @Around
-    public Object profile(Translet translet) throws Throwable {
-        long startTime = System.currentTimeMillis();
-        try {
-            // Proceed with the request flow
-            return null;
-        } finally {
+    @Before
+    public long startProfiling(Translet translet) {
+        // Return value is automatically saved in the current Activity's beforeAdviceResult keyed by Aspect ID ("profilingAspect")
+        return System.currentTimeMillis();
+    }
+
+    @Finally
+    public void endProfiling(Translet translet) {
+        // Retrieve the start timestamp directly from beforeAdviceResult
+        Long startTime = translet.getBeforeAdviceResult("profilingAspect");
+        if (startTime != null) {
             long elapsedTime = System.currentTimeMillis() - startTime;
             if (elapsedTime > 500) {
-                logger.warn("[SLOW QUERY/API] {} took {} ms", translet.getRequestName(), elapsedTime);
+                logger.warn("[SLOW API] {} {} took {} ms (status: {})",
+                        translet.getRequestMethod(),
+                        translet.getRequestName(),
+                        elapsedTime,
+                        (translet.isExceptionRaised() ? "ERROR" : "SUCCESS"));
             }
         }
     }
 }
 ```
+
+* **Advantages of this Approach**:
+  * **Automatic Framework Result Binding**: When a `@Before` advice method returns a value (e.g., `long`), the Aspectran engine automatically stores it in the current `Activity`'s `beforeAdviceResult` under the aspect's ID (`"profilingAspect"`). The `@Finally` method can effortlessly retrieve this value via `translet.getBeforeAdviceResult("profilingAspect")` without manual attribute management.
+  * Avoids the nested interceptor chaining overhead of Around advice.
+  * Preserves thread safety by storing state in the request context without concurrency issues.
+  * Reliably captures elapsed time during `Finally` regardless of whether the request succeeded or failed.
+
+### Pattern 4: Harmonizing Business Error Response Mapping and Transaction Rollback
+
+Configures AOP to return structured RESTful JSON responses upon business exceptions while guaranteeing database transaction rollbacks.
+
+```xml
+<aspectran>
+    <!-- 1. Transaction Management Aspect (order="0") -->
+    <aspect id="txAspect" order="0">
+        <joinpoint>
+            pointcut: {
+                +: /api/**@*Service^*
+            }
+        </joinpoint>
+        <advice bean="sqlSessionTxAdvice">
+            <before>
+                <invoke method="open"/>
+            </before>
+            <after>
+                <invoke method="commit"/>
+            </after>
+            <finally>
+                <thrown>
+                    <invoke method="rollback"/>
+                </thrown>
+                <invoke method="close"/>
+            </finally>
+        </advice>
+    </aspect>
+
+    <!-- 2. Global RESTful Exception Response Aspect (order="1") -->
+    <aspect id="apiExceptionAspect" order="1">
+        <joinpoint>
+            pointcut: {
+                +: /api/**
+            }
+        </joinpoint>
+        <exception>
+            <!-- Return 400 Bad Request JSON on business validation errors -->
+            <thrown type="com.mycompany.common.exception.ValidationException">
+                <transform type="json" contentType="application/json; charset=UTF-8">
+                    <template>
+                        {"code": "INVALID_INPUT", "message": "@{exception.message}"}
+                    </template>
+                </transform>
+            </thrown>
+            <!-- Return 500 JSON on unhandled server errors -->
+            <thrown type="java.lang.Throwable">
+                <action bean="errorAlertService" method="sendAlert"/>
+                <transform type="json" contentType="application/json; charset=UTF-8">
+                    <template>
+                        {"code": "SERVER_ERROR", "message": "An unexpected error occurred."}
+                    </template>
+                </transform>
+            </thrown>
+        </exception>
+    </aspect>
+</aspectran>
+```
+
+* Because `txAspect` is configured with `order="0"`, transaction rollback and resource cleanup are guaranteed upon exception before `apiExceptionAspect` (`order="1"`) transforms the exception into a client-friendly JSON response.
 
 ## 5. Conclusion
 
@@ -496,5 +616,6 @@ Aspectran AOP replaces bulky proxy configurations with two finely-tuned mechanis
 
 1. **Activity Lifecycle AOP**: Provides zero-overhead declarative control over global environment settings, security headers, authentication, and exception routing.
 2. **Bean Proxy AOP**: Selectively applies dynamic proxies only where necessary, efficiently managing transactions and business method profiling.
+3. **Guaranteed Lifecycle Integrity**: With 4 standard advice types (Before, After, Thrown, Finally), strict ascending `order` sorting, and core-level dual exception isolation, enterprise applications maintain robust transactional integrity and reliable resource management under all conditions.
 
-This dual-pillar architecture empowers developers to build clean, maintainable, and high-performance enterprise applications with minimal configuration overhead.
+This architecture empowers developers to build clean, maintainable, and high-performance enterprise systems with minimal configuration overhead.

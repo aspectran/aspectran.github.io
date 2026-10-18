@@ -144,7 +144,7 @@ Elements declared in `<append>` child blocks undergo strict overriding and scope
         <!-- Valid override: aBean exists in module-a.xml -->
         <bean id="aBean" class="com.example.OverrideABean"/>
         <translet name="/example/action"/>
-        
+
         <!-- Invalid override: nonExistentBean does not exist in module-a.xml -> throws IllegalRuleException -->
         <!-- <bean id="nonExistentBean" class="com.example.NewBean"/> -->
     </append>
@@ -236,8 +236,10 @@ In Aspectran, an aspect modularizes a cross-cutting concern (like logging, trans
 #### `<aspect>` Attribute Details
 
 -   `id`: A unique ID to identify the aspect.
--   `order`: Specifies the execution order when multiple aspects are applied to the same joinpoint. A lower number indicates higher priority (executed first).
--   `isolated`: If `true`, advice executed within this aspect is not a target for other aspects. This prevents infinite recursion. The default is `false`.
+-   `order`: Specifies the execution order when multiple aspects are applied to the same joinpoint. A lower number indicates higher priority (executed first, default: `Integer.MAX_VALUE`).
+    -   `AdviceRuleRegistry` strictly manages both standard advice and `ExceptionRule` instances sorted in ascending order of `order` (0, 1, 2...).
+    -   Designating infrastructure aspects like transaction management with `order="0"` guarantees that they are registered and executed before business aspects, ensuring that rollbacks are executed with the highest priority when exceptions occur.
+-   `isolated`: If `true`, advice executed within this aspect is not a target for other aspects (preventing infinite recursion), and even if an exception occurs during the execution of this aspect's advice, the overall request flow is not halted—an error log is recorded and processing proceeds normally (ideal for monitoring and metrics). In addition, the framework core isolates action failures during exception handling via nested `try-catch` blocks, ensuring that subsequent rollbacks and exception rules complete their execution. The default is `false`.
 -   `disabled`: If `true`, this aspect is disabled and will not be applied. The default is `false`.
 
 ### 3.1. `<joinpoint>`: Defining a Pointcut
@@ -295,15 +297,14 @@ This pointcut targets all methods (`^*`) on the bean with the ID `orderService` 
 
 ### 3.2. `<advice>`: Defining Advice
 
-The `<advice>` element defines the logic to execute at the selected joinpoints. It links to a bean containing the advice methods. The timing of the advice is declared using the following child elements:
+The `<advice>` element defines the logic to execute at the selected joinpoints. It links to a bean containing the advice methods (`bean="beanId"`). The execution timing of the advice is declared using the following child elements:
 
--   `<before>`: Executes an action **before** the joinpoint.
--   `<after>`: Executes an action only **after** the joinpoint completes successfully.
--   `<around>`: A simple advice type that executes a single action. Note that this is different from AspectJ's `@Around` advice, as it does not wrap the joinpoint and there is no `proceed()` call to manage. It's a straightforward action execution.
--   `<finally>`: Executes an action **after** the joinpoint finishes, regardless of success or failure. This is the ideal place for resource cleanup.
-    -   **Conditional logic with `<thrown>`**: The `<finally>` block can contain a `<thrown>` child element. The action inside this nested `<thrown>` will *only* execute if the joinpoint threw an exception. This is perfect for scenarios like transaction management, where you commit on success but must rollback on failure.
+-   `<before>`: Executes an action **before** the joinpoint is executed. Commonly used for validation, security authorization checks, response header injection, etc.
+-   `<after>`: Executes an action only **after** the joinpoint completes successfully. If an exception is thrown, execution is skipped.
+-   `<finally>`: Always executes an action at the very end, regardless of whether the joinpoint succeeded or failed. This is the ideal place for resource release and session cleanup.
+    -   **Explicit Rollback and Handling on Exception via `<thrown>` inside `<finally>`**: The `<finally>` block can optionally contain a `<thrown>` child element (`<!ELEMENT finally (thrown?, ...) >`). Actions inside this nested `<thrown>` (e.g., `<invoke method="rollback"/>`) are executed only when an exception occurs in the joinpoint, and are **always executed before the general resource cleanup actions in `<finally>` (e.g., `<invoke method="close"/>`)**, perfectly ensuring safe transaction rollback and resource release.
 
-The declarative transaction example from the next section illustrates this perfectly:
+The following declarative transaction example illustrates this clearly:
 ```xml
 <advice bean="sqlSessionTxAdvice">
     <before>
@@ -314,10 +315,10 @@ The declarative transaction example from the next section illustrates this perfe
     </after>
     <finally>
         <thrown>
-            <!-- Executes only if an exception was thrown -->
+            <!-- Executes only when an exception occurs, before close -->
             <invoke method="rollback"/>
         </thrown>
-        <!-- Always executes after the joinpoint finishes -->
+        <!-- Always executes upon joinpoint completion regardless of success or failure -->
         <invoke method="close"/>
     </finally>
 </advice>
@@ -557,7 +558,7 @@ Aspectran will scan the given package (and its sub-packages, thanks to `**`) and
 To give scanned beans a predictable ID, you can use the `mask` attribute. For example, if you scan `com.example.app.services.UserService`, and you want the bean ID to be `userService`:
 
 ```xml
-<!-- 
+<!--
   Scans classes like 'com.example.app.services.UserService'
   and registers it with the ID 'userService'.
 -->
@@ -956,7 +957,7 @@ The following is a complete example that defines a scheduler bean and uses it to
 <!-- 2. Define a schedule rule -->
 <schedule id="daily-batch">
     <description>Performs daily report generation and log archiving at midnight every day.</description>
-    
+
     <!-- Execution cycle: every day at midnight -->
     <scheduler bean="mainScheduler">
         <trigger type="cron">
@@ -1089,3 +1090,22 @@ Exception handling can also be defined within an `<aspect>`. This allows you to 
 <bean id="exceptionLoggingAdvice" class="com.example.app.aop.ExceptionLoggingAdvice"/>
 ```
 In this example, any exception thrown from a method in a bean whose ID ends with "Service" will be caught. The aspect then invokes the `logException` method on the `exceptionLoggingAdvice` bean to log the error, without stopping the exception from propagating further (unless the advice itself forwards to another translet).
+
+### 8.3. Exception Handling Priority and Evaluation Rules
+
+When an exception occurs during application execution, the Aspectran framework handles it consistently and safely according to predefined rules and evaluation priorities:
+
+-   **Translet-level Exception Handling First**:
+    -   When an exception occurs during the execution of a translet, the `<exception>` rules declared directly inside that `<translet>` are **always evaluated and executed first**, before any advice aspect exception rules.
+    -   This allows endpoint-specific error handling (such as returning custom JSON error responses for specific APIs) to take precedence over shared or global aspects.
+-   **Aspect Exception Rule Ordering (Based on `order` Attribute)**:
+    -   When multiple aspects match a joinpoint, their `<exception>` rules are strictly sorted in ascending order of the aspect's `order` attribute (0, 1, 2...) and executed sequentially.
+    -   For instance, giving a transaction rollback aspect `order="0"` ensures that it runs before business logging aspects (`order="1"`), guaranteeing that rollbacks occur with the highest priority without omission.
+-   **Most Specific Exception Type Matching**:
+    -   When multiple `<thrown>` elements are defined within a single `<exception>` block, the framework analyzes the class inheritance hierarchy of the thrown exception and selects the `<thrown>` block with the most specific matching `type`.
+    -   A `<thrown>` element without a `type` attribute acts as a fallback default handler, catching all remaining exceptions that do not match more specific types.
+-   **Response Reservation Precedence**:
+    -   When multiple exception handling rules define a response (`<transform>`, `<dispatch>`, or `<forward>`), **the response from the first matched rule is reserved (`reserveResponse`) and used as the final response** returned to the client.
+    -   Response definitions in subsequent rules executed after a response has already been reserved are skipped, while non-response actions (such as logging or auditing actions) continue to execute normally.
+-   **Fault-Tolerant Isolation**:
+    -   The framework core wraps the execution of each exception rule and action in its own isolated `try-catch` block. Even if an action within an exception handler fails and throws an error, the failure is logged and subsequent exception rules (such as resource cleanup and rollback) continue to execute to completion, safeguarding system stability.
