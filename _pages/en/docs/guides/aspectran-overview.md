@@ -90,7 +90,7 @@ sequenceDiagram
         Activity->>Action: Execute Action (Invoke / Annotated / Include / Echo / Header)
         Note over Action: Bean dependency injection, AsEL evaluation, business logic
     end
-    Activity->>Aspect: Execute After / Around Aspect (Logging, Transaction commit, etc.)
+    Activity->>Aspect: Execute After Aspect (Logging, Transaction commit, etc.)
     alt View Rendering Required
         Activity->>View: Render Template Engine or Data View (JSON / APON)
     else Direct Output Stream

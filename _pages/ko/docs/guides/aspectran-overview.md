@@ -90,7 +90,7 @@ sequenceDiagram
         Activity->>Action: Action 실행 (Invoke / Annotated / Include / Echo / Header)
         Note over Action: Bean 의존성 주입, AsEL 표현식 평가, 비즈니스 로직 수행
     end
-    Activity->>Aspect: After / Around Aspect 실행 (로깅, 트랜잭션 커밋 등)
+    Activity->>Aspect: After Aspect 실행 (로깅, 트랜잭션 커밋 등)
     alt 뷰 렌더링이 필요한 경우
         Activity->>View: 템플릿 엔진 또는 데이터 뷰(JSON/APON) 렌더링
     else 응답 스트림 직접 출력
