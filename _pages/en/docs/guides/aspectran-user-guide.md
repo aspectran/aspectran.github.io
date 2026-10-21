@@ -55,10 +55,10 @@ The core role of a Translet is to be a **blueprint that defines the request proc
 
 #### 3.1.2. How to Define a Translet
 
-Aspectran provides two main ways to define a Translet.
+Aspectran provides two main ways to define a Translet:
 
 1.  **Declarative Rule-Based (XML/APON)**:
-    This is the traditional method, where the processing flow of a Translet is declaratively defined using configuration files in XML or APON (Aspectran Parameter Object Notation) format. This allows for the separation of business logic and processing flow.
+    This is the traditional method where the processing flow of a Translet is declaratively defined using configuration files in XML or APON (Aspectran Parameters Object Notation) format. It completely separates business logic from processing flow, enhancing configuration visibility.
 
     ```xml
     <translet name="/user/info">
@@ -69,81 +69,208 @@ Aspectran provides two main ways to define a Translet.
     The example above defines a Translet that, upon receiving a `/user/info` request, executes the `getUserInfo` method of the `userDao` bean and responds with the result transformed into JSON format.
 
 2.  **Annotation-Based (Java Code)**:
-    Similar to `@RequestMapping` in Spring MVC, this is a modern method of defining a Translet directly in Java code using annotations. This provides developers with greater convenience and productivity.
+    This is a modern method of defining a Translet directly in Java code using annotations, providing developers with high convenience and intuitive productivity.
 
-    *   **Basic Request Handling**: If you attach an annotation corresponding to an HTTP request method, such as `@RequestToGet` or `@RequestToPost`, to a specific method within a bean class registered with `@Component`, Aspectran will implicitly create a Translet rule with that method as the core action.
+    *   **Activity Classes and Action Methods**:
+        In Aspectran, it is a standard convention to suffix classes that handle web requests with **`*Activity`** (e.g., `UserActivity`, `ReportActivity`, `OrderActivity`). Within an Activity class, multiple Action methods can be defined for different business operations, and these methods are registered as Actions to be invoked by the Translet.
+        Methods annotated with request mapping annotations such as `@RequestToGet` and `@RequestToPost` operate internally as core Actions executed via `InvokeAction` (`AnnotatedAction`).
+
+    *   **The `@Action` Annotation and Model Resolution**:
+        You can assign an explicit unique identifier to an Action by declaring the **`@Action("actionId")`** annotation on the action method.
+        The return value produced by the action method is seamlessly utilized in view templates and response transformers as follows:
+        *   **View Template Model Integration**: When rendering a view via `Dispatch`, the Action ID can be referenced directly as a model attribute in view templates (Thymeleaf, FreeMarker, JSP, etc.). Aspectran internally provides **`ActivityData`** as a unified view model facade that consolidates action results, request parameters, and attributes, allowing templates to easily render data without concerning themselves with underlying storage structures.
+        *   **Data Transformation Response (`@Transform`)**: When using transformers such as `@Transform(format = FormatType.JSON)`, the transformer treats the Action ID as the root key or node name, producing structured and intuitive output.
+        *   **Java Code Access**: When programmatic access to an action's execution result is needed in Java code, it can be retrieved via `translet.getProcessResult("actionId")` or `translet.getActivityData().get("actionId")`.
 
         ```java
         @Component
-        public class UserApiController {
-            private UserDao userDao;
+        public class UserActivity {
+
+            private final UserDao userDao;
 
             @Autowired
-            public UserApiController(UserDao userDao) {
+            public UserActivity(UserDao userDao) {
                 this.userDao = userDao;
             }
 
-            @RequestToGet("/user/info/${userId}") // Mapped to GET /user/info/${userId} request
-            @Transform(format = FormatType.JSON) // Transform the result to JSON
+            // Map GET /user/info/${userId} request
+            // Assign Action ID "userInfo" -> mapped as the root key during JSON transform
+            @RequestToGet("/user/info/${userId}")
+            @Action("userInfo")
+            @Transform(format = FormatType.JSON)
             public User getUserInfo(Long userId) {
                 return userDao.getUserById(userId);
             }
+
+            // Map GET /user/profile/${userId} request
+            // Action ID "userProfile" is immediately accessible in view templates (Thymeleaf, FreeMarker, JSP)
+            @RequestToGet("/user/profile/${userId}")
+            @Action("userProfile")
+            @Dispatch("user/profile")
+            public User getUserProfile(Long userId) {
+                return userDao.getUserById(userId);
+            }
+
         }
         ```
 
-    *   **Asynchronous Request Handling**: If you need to handle a long-running task, you can execute the Translet asynchronously by using the `async = true` attribute. This helps maintain the application's responsiveness by performing the task in the background without blocking the request thread.
+    *   **Path Variables and Parameter Mapping**:
+        Aspectran natively supports **AsEL token syntax** in URI path patterns, allowing you to declaratively designate where parsed path variables should be stored:
+        *   **`${variableName}` (Parameter Token)**:
+            Example: `@RequestToGet("/user/info/${userId}")`
+            The parsed `userId` value from the URL path is automatically added to the **request parameters (`ParameterMap`)**. As a result, it is automatically bound to method parameters (e.g., `Long userId`) and can also be retrieved directly via `translet.getParameter("userId")`. This is the most commonly used approach.
+        *   **`@{variableName}` (Attribute Token)**:
+            Example: `@RequestToGet("/user/info/@{userId}")`
+            The parsed `userId` value from the URL path is automatically added to the **request attributes (`AttributeMap`)**. Without writing any storage code, it can be retrieved via `translet.getAttribute("userId")` or directly passed as a model attribute to view templates like JSP or Thymeleaf for immediate rendering.
+        *   **Standard Request Parameters and DTO Binding**: HTTP query string or form parameters are automatically converted and injected into method arguments matching parameter names. When declaring a composite DTO/Command POJO, properties are automatically populated via their setter methods (model binding). Declaring a `Translet` type in method parameters also automatically injects the current executing `Translet` instance.
+        *   **Mandatory Parameter Validation (`@NonNull`)**: You can annotate parameters with standard JSpecify `@NonNull` (`org.jspecify.annotations.NonNull`) to enforce safe validation against missing mandatory parameters.
+
+    *   **Asynchronous Request Handling**: If you need to handle a long-running task, you can execute the Translet asynchronously by setting `async = true`. This prevents blocking request threads and performs processing in the background, keeping the application responsive.
 
         ```java
         @Component
-        public class ReportController {
-            private ReportService reportService;
+        public class ReportActivity {
+
+            private final ReportService reportService;
 
             @Autowired
-            public ReportController(ReportService reportService) {
+            public ReportActivity(ReportService reportService) {
                 this.reportService = reportService;
             }
 
             @RequestToPost(translet = "/reports/generate", async = true, timeout = 30000L)
+            @Action("generationResult")
             @Transform(format = FormatType.TEXT)
             public String generateReport(Translet translet) {
-                // Parse the request body into Aspectran's Parameters object.
-                // JSON, XML, etc., are automatically parsed based on the Content-Type.
                 Parameters parameters = translet.getRequestAdapter().getBodyAsParameters();
-
-                // The business logic directly uses the Parameters object.
                 reportService.generate(parameters);
-
                 return "Report generation has started in the background.";
             }
+
         }
         ```
 
-    *   **Annotation Details**: The `@Request` annotation is used to define detailed rules such as the request path and allowed request methods. For convenience, dedicated annotations like `@RequestToGet` and `@RequestToPost` corresponding to each request method are also provided. These annotations share common attributes like `value` or `translet` (path), `async`, and `timeout`.
+    *   **Annotation Details**: The `@Request` annotation is used to define detailed rules such as request paths and HTTP methods. For convenience, dedicated annotations corresponding to each HTTP method are provided: `@RequestToGet`, `@RequestToPost`, `@RequestToPut`, `@RequestToDelete`, and `@RequestToPatch`. These annotations share common attributes such as `value` or `translet` (path), `async`, and `timeout`.
 
-    *   **Dynamic Translet Generation (Scanning)**: Instead of repeatedly defining hundreds of similar Translets, you can dynamically generate Translets at runtime with a single rule. For example, you can scan all JSP files under a specific directory and automatically create a Translet that uses each file as a view.
+#### 3.1.3. Request Path Mapping and Search Priority
 
-        ```xml
-        <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
-            <description>
-                This automatically finds all JSP files in the '/WEB-INF/jsp/' directory and its subdirectories and registers them as Translets.
-                The path of the discovered jsp file is specified as the value of the file attribute of the template element.
-            </description>
-            <dispatch>
-                <template/>
-            </dispatch>
-        </translet>
-        ```
-        The rule above scans for all `.jsp` files in the `/WEB-INF/jsp/` directory and its subdirectories, and dynamically creates and registers Translets based on the file paths. For example, if a file `/WEB-INF/jsp/user/list.jsp` is found, a Translet named `user/list` is created. This feature is very useful for serving a large number of static view files and dramatically reduces repetitive Translet definitions.
+Once Translet rules are registered via XML or Java annotations, Aspectran resolves and executes the best-matching Translet when a client request (URL path and HTTP method) arrives. Aspectran accurately routes requests using a proprietary **wildcard pattern matching engine**—which rigorously extends Ant-style matching—along with a **weight-based priority system**.
 
-#### 3.1.3. Translet Lifecycle and Relationship with Activity
+##### 1. Wildcards and Path Variable Tokens
+*   `*`: Matches zero or more characters within a single segment (between path delimiters `/`). Does not cross delimiter boundaries.
+*   `**`: Matches zero or more characters across multiple segments (including delimiters `/`).
+*   `?`: Matches zero or one character within a segment.
+*   `+`: Matches **exactly one** character within a segment (empty strings not allowed).
+*   `${variableName}`: Extracts the path segment at that position and stores it in the **request parameters (`ParameterMap`)**. It can be bound to method arguments or retrieved via `translet.getParameter()`.
+*   `@{variableName}`: Extracts the path segment at that position and stores it in the **request attributes (`AttributeMap`)**. It can be supplied directly to view template models or retrieved via `translet.getAttribute()`.
 
-When a request comes in, the `Activity` finds the most suitable Translet rule (blueprint) from the **`TransletRuleRegistry`**, creates an instance, and processes the request according to that rule. In other words, the Translet is the 'blueprint' and the `Activity` is the 'execution engine' that works by looking at that blueprint. The `TransletRuleRegistry` is a highly optimized data structure for fast and efficient lookups, using the request name, request method, wildcards, and path variable patterns to find a Translet.
+##### 2. Flexible Structural Matching
+*   **Leading `**/` Can Be Omitted**: `**/user` matches `/user` as well as the root-level `user`.
+*   **Trailing `/**` Can Be Omitted**: `/api/**` matches not only `/api/` subpaths, but also `/api` itself.
+*   **Intermediate `/**/` Can Be Omitted**: `a/**/b` matches `a/x/b` as well as direct `a/b`.
 
-The `Activity` parses the request information according to the rules defined in the Translet and sequentially executes the Actions that contain the business logic. Methods annotated with `@RequestToGet` and the like are called Action methods. In addition to the Invoke Action, which by default calls a bean's method, there are various types of Actions such as Echo Action, Header Action, and Include Action.
+##### 3. Translet Resolution Priority
+When an `Activity` receives a request, the `TransletRuleRegistry` resolves the matching Translet using the following priority order:
+1.  **Exact Match Takes Top Precedence**: Rules without wildcards or path variables are selected first.
+2.  **More Specific Patterns Take Precedence**: Patterns that are more concrete and less abstract receive higher priority through the weighting system (e.g., `/users/${id}/profile` takes precedence over `/users/${id}/*`).
+3.  **Fallback to Translets Without Specified HTTP Methods**: If no dedicated HTTP method rule matches, an unconstrained fallback Translet rule matching the path is selected.
+4.  **Later Defined Rules Take Precedence (Override)**: When multiple rules share identical names and methods, rules loaded later override existing ones.
 
-During this process, the created `Translet` instance acts as a **'medium for communication'** between the `Activity` and the user code (mainly the Action method). If a `Translet` type is declared as an argument in an Action method, the `Activity` will automatically inject the `Translet` instance when calling the method. Through this `Translet` instance, the developer can access the data created by the `Activity` (using the `getActivityData()` method), further process the data, and arbitrarily control the response logic, thus interacting with the framework.
+#### 3.1.4. Internal Components of Translet and Action Pipeline
 
-As such, the Translet is a well-designed **Facade** that hides the complex internal execution logic (`Activity`) and presents only a clear and simple 'blueprint' and 'interface' to the user.
+A Translet is not merely a request-mapping object, but a **workflow pipeline blueprint** that executes multiple tasks sequentially and conditionally from request ingestion to response delivery.
+
+##### 1. Four Standard Action Types
+Work units executed within a Translet are categorized into four standard Action types:
+
+*   **Invoke Action (`<invoke>`)**:
+    Invokes a specific business method of a Bean registered in the IoC container. In Java annotation-based configurations, action methods inside Activity classes combine with `@RequestTo*` to operate internally as `InvokeAction` (`AnnotatedAction`), and can be assigned unique IDs via `@Action("actionId")`. The action result is saved in `ProcessResult` using the Action ID as its key, seamlessly integrating with view template models.
+    ```xml
+    <action id="order" bean="orderService" method="createOrder"/>
+    ```
+
+*   **Echo Action (`<echo>`)**:
+    Echoes request parameters or specific attributes into the response model or passes them to the view.
+    ```xml
+    <echo id="echoInfo">
+        <item name="orderId"/>
+        <item name="customerName"/>
+    </echo>
+    ```
+
+*   **Header Action (`<headers>`)**:
+    Declaratively sets HTTP response headers (cache control, custom security headers, etc.) sent to clients in batch.
+    ```xml
+    <headers>
+        <item name="Cache-Control">no-cache, no-store, must-revalidate</item>
+        <item name="Pragma">no-cache</item>
+    </headers>
+    ```
+
+*   **Include Action (`<include>`)**:
+    Invokes another Translet like a subroutine and includes its result within the current Translet's pipeline. Very useful for modularizing reusable data queries or common widgets.
+    ```xml
+    <include id="userProfile" translet="/user/profile-widget"/>
+    ```
+
+##### 2. Content Blocks (`<contents>`) and Result Management (`ProcessResult` & `ActivityData`)
+When multiple Actions are defined within a Translet, the execution results of each Action are systematically stored in the **`ProcessResult`** container under their respective Action IDs.
+Aspectran provides **`ActivityData`** as a unified facade that brings together action results, request parameters, and attributes, allowing view templates (Thymeleaf, FreeMarker, JSP, etc.) and Java code to access data naturally by Action ID without worrying about internal storage locations:
+*   **View Template Integration**: When rendering via `Dispatch`, data can be output directly in templates by referencing Action IDs.
+*   **Java Code & AsEL Queries**: Results can be retrieved effortlessly in Java code via `translet.getProcessResult("actionId")` or `translet.getActivityData().get("actionId")`.
+*   **Full Result Tree Traversal**: In complex multi-step pipelines, developers can inspect and control the entire structured hierarchy of content blocks (`ContentResult`) via `translet.getProcessResult()`.
+
+##### 3. Conditional Branch Execution (`<choose>`, `<when>`, `<otherwise>`)
+Aspectran provides declarative conditional control tags to selectively execute Actions or Responses based on request parameters, headers, and properties, without writing nested `if-else` branching in Java code:
+
+```xml
+<translet name="/dashboard">
+    <choose>
+        <when test="${role == 'admin'}">
+            <action id="dashboardData" bean="adminService" method="getAdminDashboard"/>
+            <dispatch name="dashboard/admin"/>
+        </when>
+        <otherwise>
+            <action id="dashboardData" bean="userService" method="getUserDashboard"/>
+            <dispatch name="dashboard/user"/>
+        </otherwise>
+    </choose>
+</translet>
+```
+
+#### 3.1.5. Declarative Exception Handling in Translets (`<exception>` / `<thrown>`)
+
+When an exception occurs during business logic (Action) execution or view rendering within a Translet, it can be declaratively intercepted to dispatch to dedicated error views or return transformed responses (JSON/XML):
+
+```xml
+<translet name="/order/checkout">
+    <action bean="orderService" method="checkout"/>
+    <dispatch name="order/complete"/>
+    <exception>
+        <thrown type="com.example.OutOfStockException">
+            <transform format="json">
+                <template>{"status": "fail", "message": "Product is out of stock."}</template>
+            </transform>
+        </thrown>
+        <thrown type="java.lang.Exception">
+            <dispatch name="error/general"/>
+        </thrown>
+    </exception>
+</translet>
+```
+Specifying a target exception class type in the `thrown` tag matches matching subclasses as well, with the most specific matching exception handler being prioritized.
+
+#### 3.1.6. Translet Lifecycle and Relationship with Activity
+
+When a request arrives, the `Activity` resolves the best matching Translet rule (blueprint) from the **`TransletRuleRegistry`**, creates an instance, and processes the request according to those rules. In short, the Translet is the 'blueprint' and the `Activity` is the 'execution engine' that works against that blueprint. The `TransletRuleRegistry` is a highly optimized data structure designed for fast lookups, utilizing request paths, HTTP methods, wildcards, and path variable patterns.
+
+The `Activity` parses incoming request data according to the rules defined in the Translet and sequentially executes the Actions carrying the business logic. Methods annotated with annotations like `@RequestToGet` are called Action methods; in addition to Invoke Actions that call bean methods, various Action types such as Echo Actions, Header Actions, and Include Actions are supported.
+
+During this process, the generated `Translet` instance acts as a **'communication medium'** between the `Activity` and user code (primarily Action methods). When a `Translet` type parameter is declared in an Action method, the `Activity` automatically injects the `Translet` instance upon invocation. Developers can leverage this `Translet` instance to access activity data (`getActivityData()` method), apply further transformations, and programmatically manipulate response logic.
+
+As such, the Translet serves as a well-designed **Facade** that encapsulates complex internal processing (`Activity`) while exposing a clear, intuitive blueprint and interface to developers.
+
+For detailed practical examples and in-depth discussions, refer to the [Understanding Translet: The Face of Aspectran](/en/docs/guides/aspectran-translet/) and [Practical Guide to Translets](/en/docs/guides/practical-guide-to-translets/) guides.
 
 ### 3.2. Bean
 
@@ -194,11 +321,11 @@ You can use the `@Autowired` annotation to automatically inject other Beans mana
 
     ```java
     @Component
-    public class MyController {
+    public class MyActivity {
         private final MyService myService;
 
         @Autowired
-        public MyController(MyService myService) {
+        public MyActivity(MyService myService) {
             this.myService = myService;
         }
     }
@@ -785,7 +912,7 @@ public class ProfilingAspect {
 
 ##### Pattern 3: Global Web Security Headers and Environment Configuration (Activity Lifecycle AOP)
 
-Instead of configuring security headers and view dispatchers redundantly across individual controllers or Translets, declare them globally using Activity Lifecycle AOP's Non-Proxy Core Interception:
+Instead of configuring security headers and view dispatchers redundantly across individual Translets, declare them globally using Activity Lifecycle AOP's Non-Proxy Core Interception:
 
 ```xml
 <aspect id="webSecurityAspect">
@@ -855,28 +982,85 @@ AsEL uses three main tokens to access data in different scopes.
 
 #### 3.4.2. @Value Annotation and AsEL
 
-When used with the `@Value` annotation, the power of AsEL can be extended to the code level. You can inject values defined in an external configuration file (`properties`) directly into a Bean's fields or constructor arguments.
+When used with the `@Value` annotation, the power of AsEL can be extended to the code level. Configuration values defined in environments (`properties`) can be injected directly into a Bean's fields or constructor arguments.
 
-*   **`%{...}` (Property Token)**: Used within the `@Value` annotation, it references a **property** value defined in a `<properties>` element or an external configuration file.
+*   **`%{...}` (Property Token)**: Used within the `@Value` annotation, it references a **property** value registered via `<environment>` rules, JVM system properties, or `PropertiesFactoryBean`.
 
 ```java
-// content of config.properties file: app.version=1.2.3
-// XML configuration: <properties file="config.properties"/>
-
+// References the app.version property registered in PropertiesFactoryBean or <environment>
 @Component
 public class AppInfo {
     private final String appVersion;
 
     @Autowired
     public AppInfo(@Value("%{app.version:1.0.0}") String appVersion) {
-        // If the value exists in config.properties, "1.2.3" is injected.
-        // Otherwise, the default value "1.0.0" is injected.
+        // If app.version exists, that value is injected;
+        // otherwise, the default value "1.0.0" following the colon (:) is injected.
         this.appVersion = appVersion;
     }
 }
 ```
 
 By making good use of AsEL, you can effectively connect static configurations with dynamic application logic to create flexible applications that can respond to various situations just by changing the configuration without modifying the code.
+
+### 3.5. APON (Aspectran Parameters Object Notation)
+
+**APON (Aspectran Parameters Object Notation)** is Aspectran's proprietary, lightweight data interchange format and object model designed to represent structured data. By overcoming the strict syntactic constraints of JSON (disallowance of comments, trailing comma errors) and the indentation-sensitive complexity of YAML, APON offers both human-friendly intuitiveness for reading and writing, and rock-solid stability for system parsing.
+
+APON is pervasive across Aspectran: it powers the core system configuration file `aspectran-config.apon`, internal parameter containers, and dynamic data structure definitions throughout the framework.
+
+#### 3.5.1. Key Characteristics of APON
+
+*   **Exceptional Readability and Flexible Delimiters**: Line breaks or commas (`,`) can be used interchangeably as delimiters. Quotation marks can be omitted for standard strings containing no special characters, making configurations concise and clean.
+*   **Complete Comment Support (`#`)**: The `#` symbol enables both standalone line comments and inline comments directly following parameter values.
+*   **Explicit Data Typing**: Data types (`string`, `int`, `long`, `boolean`, `text`, etc.) can be explicitly declared within parentheses following parameter names in `name(type): value` format, guaranteeing runtime correctness and type safety.
+*   **Hierarchical Structuring**: Systematic structuring is achieved using curly braces (`{ }`) for nested blocks and square brackets (`[ ]`) for arrays.
+*   **Multiline Long Text (`text`)**: Multiline strings such as SQL queries, templates, and extended descriptions can be neatly defined using parentheses `( )` and pipe (`|`) symbols.
+
+#### 3.5.2. APON Syntax and Structure Example
+
+```apon
+# Server environment configuration example
+server: {
+    host: "0.0.0.0"
+    port: 8080             # Service port
+    timeout: 30000         # 30-second timeout
+    sessionTracking: [
+        cookie
+        url
+    ]
+}
+
+# Explicit typing and multiline text support
+database: {
+    driver: com.mysql.cj.jdbc.Driver
+    url: "jdbc:mysql://localhost:3306/aspectran"
+    maxActive(int): 20
+    autoCommit(boolean): false
+    initScript(text): (
+        |CREATE TABLE IF NOT EXISTS sample_logs (
+        |    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        |    message VARCHAR(255) NOT NULL
+        |);
+    )
+}
+```
+
+#### 3.5.3. Parameters Object Model and Java Integration
+
+APON is more than a file format; it integrates one-to-one with the **`Parameters` (`com.aspectran.core.context.rule.params.Parameters`)** interface in Java:
+
+*   **Automatic Request Body Parsing**: Payloads in JSON, XML, or APON sent by clients are instantly parsed into Aspectran's standard `Parameters` object via `translet.getRequestAdapter().getBodyAsParameters()` without requiring third-party parsing dependencies.
+*   **Type-Safe Data Access**:
+    ```java
+    Parameters parameters = translet.getRequestAdapter().getBodyAsParameters();
+    if (parameters != null) {
+        String title = parameters.getString("title");
+        int count = parameters.getInt("count", 1); // Default value supported
+        Parameters subParams = parameters.getParameters("subConfig");
+    }
+    ```
+*   **Dynamic Configuration Container**: Complex business parameters or external settings can be flexibly and type-safely encapsulated using `DefaultParameters` without having to define dedicated boilerplate DTO classes.
 
 ## 4. Utilizing Aspectran's Main Features
 
@@ -928,7 +1112,7 @@ In Aspectran's configuration files (XML or APON), you can use the `profile` attr
     </environment>
 
     <!-- Include a specific configuration file only when the 'prod' profile is active -->
-    <append file="/config/metrics-context.xml" profile="prod"/>
+    <append file="/config/metrics-rules.xml" profile="prod"/>
 
 </aspectran>
 ```
@@ -992,19 +1176,127 @@ Here is a complete example of setting different database connection information 
   java -Daspectran.profiles.active=prod -jar my-app.jar
   ```
 
-### 4.2. Scheduler
+### 4.2. Properties (Property System)
 
-Aspectran Scheduler is a powerful feature that allows specific tasks within an application to be **executed automatically at a set time or periodically**. With this feature, developers can easily implement and manage various background tasks such as batch jobs, data synchronization, and report generation using Aspectran's core component, the Translet.
+Aspectran provides a powerful, hierarchical **Properties System** supporting flexible configuration management across runtime environments, dynamic runtime evaluation, and intelligent caching. Configuration values that differ across environments—such as database connection info, external API keys, and storage paths—are completely separated from Java source code, ensuring secure and maintainable operations.
 
-#### 4.2.1. Role of the Scheduler and Quartz-based Architecture
+#### 4.2.1. Property Ingestion Channels and Precedence
 
-Aspectran Scheduler has a **powerful scheduling framework based on the Quartz scheduler built into its core**. Developers can immediately activate and use the scheduling feature with just the configuration rules provided by Aspectran, without the complex process of integrating a separate scheduling library themselves. Without worrying about the complex internal workings of scheduling, you can easily automate the tasks you want using the Translet you know best.
+Aspectran ingests properties through multiple channels into a unified container, with higher-priority channels overriding lower ones:
 
-#### 4.2.2. How to Configure the Scheduler
+1.  **JVM System Properties (`-D` Options)**: Most common and carries top precedence. (`-Dproperty.name=value`)
+2.  **Deployment Configurations (`setup/app.conf`)**: In Aspectow-based applications, properties are automatically converted to JVM system properties (VM options) during boot script execution (`startup.sh`, `daemon.sh`).
+3.  **Application Bootstrap Settings (`aspectran-config.apon`)**: Values defined in the `system.properties` section of the skeleton configuration file, registered at startup via `System.setProperty()`.
+4.  **External Property Files (`PropertiesFactoryBean`)**: `.properties` files located on the filesystem or classpath integrated into container properties.
+5.  **Rule-Based Environment Definitions (XML `<environment>`)**: Properties declaratively defined in XML rule files.
 
-Aspectran provides two main ways to configure the scheduler.
+#### 4.2.2. Rule-Based Property Definitions (`<environment>`)
 
-1.  **XML/APON-based Configuration**: Explicitly define the scheduler bean and schedule rules (`<schedule>`) in an XML or APON file.
+In XML configuration files, properties are defined within the **`<environment>`** element using `<property>` tags. By combining them with the `profile` attribute, you can declare distinct property sets per environment.
+
+```xml
+<aspectran>
+
+    <!-- 1. Default property definitions -->
+    <environment>
+        <property name="app.title">Aspectran Demo Service</property>
+        <property name="upload.maxSize">10485760</property>
+    </environment>
+
+    <!-- 2. Conditional property definitions per profile -->
+    <environment profile="dev">
+        <property name="upload.dir">/tmp/uploads</property>
+        <property name="db.url">jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1</property>
+    </environment>
+
+    <environment profile="prod">
+        <property name="upload.dir">/nas/storage/uploads</property>
+        <property name="db.url">jdbc:mysql://prod-server:3306/prod_db</property>
+    </environment>
+
+</aspectran>
+```
+
+#### 4.2.3. Integrating External Property Files (`PropertiesFactoryBean`)
+
+To read external `.properties` files and integrate them into the Aspectran property system, register the utility bean **`com.aspectran.core.support.PropertiesFactoryBean`**:
+
+```xml
+<bean id="appProperties" class="com.aspectran.core.support.PropertiesFactoryBean">
+    <properties>
+        <!-- Determine whether to ignore missing files without raising an error -->
+        <item name="ignoreInvalidResource" valueType="boolean">false</item>
+    </properties>
+
+    <!-- File loaded when the 'prod' profile is active -->
+    <properties profile="prod">
+        <item name="locations" type="array">
+            <value>/config/app-prod.properties</value>
+        </item>
+    </properties>
+
+    <!-- File loaded when the 'prod' profile is not active (dev/test) -->
+    <properties profile="!prod">
+        <item name="locations" type="array">
+            <value>classpath:config/app-dev.properties</value>
+        </item>
+    </properties>
+</bean>
+```
+
+*   **Path Resolution**: The `classpath:` prefix resolves resources from the classpath root; paths without a prefix are resolved relative to the application's base path.
+*   **AsEL Support**: Inside loaded property files, tokens in `%{...}` syntax can reference other Aspectran properties and are automatically resolved during initialization.
+
+#### 4.2.4. Property Chaining & Caching
+
+When a property definition references other properties via `%{...}` tokens, Aspectran guarantees consistency through internal **caching**:
+
+*   If a property definition contains **at least one property token (`%{...}`)**, the full expression is evaluated upon first access, and the resulting value is stored in an internal cache for subsequent reuse.
+*   If an expression contains only bean tokens (`#{...}`) or parameter tokens (`${...}`), it is evaluated dynamically on each access without being cached.
+
+#### 4.2.5. Injection via AsEL `%{...}` Tokens and `@Value`
+
+Defined properties can be referenced across the framework using AsEL's **`%{propertyName}`** syntax:
+
+*   **XML Configuration References**: Can be injected into bean properties or Translet action parameters.
+    ```xml
+    <bean id="fileUploader" class="com.example.FileUploader">
+        <!-- Injects property value with fallback syntax: %{propertyName:defaultValue} -->
+        <property name="targetDir" value="%{upload.dir:/tmp}"/>
+    </bean>
+    ```
+
+*   **Java Code Injection via `@Value`**:
+    ```java
+    @Component
+    public class FileService {
+
+        private final String uploadDir;
+        private final long maxSize;
+
+        @Autowired
+        public FileService(
+                @Value("%{upload.dir:/tmp}") String uploadDir,
+                @Value("%{upload.maxSize:5242880}") long maxSize) {
+            this.uploadDir = uploadDir;
+            this.maxSize = maxSize;
+        }
+    }
+    ```
+
+### 4.3. Scheduler
+
+Aspectran Scheduler is a powerful feature that allows specific tasks within an application to be **executed automatically at set times or periodically**. With this feature, developers can implement and manage various background tasks—such as batch jobs, data synchronization, and report generation—using Translets as the core execution unit.
+
+#### 4.3.1. Role of the Scheduler and Quartz-Based Architecture
+
+Aspectran Scheduler has a **robust scheduling framework based on Quartz built directly into its core**. Developers can immediately activate scheduling capabilities through Aspectran configuration rules without dealing with the complexity of third-party library integrations. You can easily automate tasks using Translets without having to manage low-level scheduler threading or job mechanics.
+
+#### 4.3.2. How to Configure the Scheduler
+
+Aspectran provides two main ways to configure the scheduler:
+
+1.  **XML/APON-Based Configuration**: Explicitly define the scheduler bean and schedule rules (`<schedule>`) in XML or APON:
 
     ```xml
     <!-- Scheduler bean definition -->
@@ -1012,7 +1304,7 @@ Aspectran provides two main ways to configure the scheduler.
         <property type="properties" name="quartzProperties">
             <entry name="org.quartz.scheduler.instanceName" value="MyScheduler"/>
             <entry name="org.quartz.threadPool.threadCount" value="10"/>
-            <!-- All other Quartz properties... -->
+            <!-- Other Quartz properties... -->
         </property>
     </bean>
 
@@ -1020,15 +1312,15 @@ Aspectran provides two main ways to configure the scheduler.
     <schedule id="my-daily-report">
         <scheduler bean="scheduler1">
             <trigger type="cron">
-                expression: 0 0 2 * * ? <!-- Run every day at 2 AM -->
+                expression: 0 0 2 * * ? <!-- Run every day at 2:00 AM -->
             </trigger>
         </scheduler>
-        <job translet="/batch/daily-report"/> <!-- Specify the Translet to run -->
+        <job translet="/batch/daily-report"/> <!-- Specify Translet to run -->
         <job translet="/batch/log-archive"/>
     </schedule>
     ```
 
-2.  **Annotation-based Configuration**: Using the `@Schedule` annotation, you can declaratively handle everything from defining the scheduler bean to setting up jobs and triggers, all within a single Java class. This has the advantage of increasing code cohesion and minimizing XML configuration.
+2.  **Annotation-Based Configuration**: Using the `@Schedule` annotation, you can declaratively manage everything—from defining the scheduler bean to configuring jobs and triggers—within a single Java class. This enhances code cohesion and minimizes XML configuration.
 
     ```java
     import com.aspectran.core.component.bean.annotation.Bean;
@@ -1049,15 +1341,15 @@ Aspectran provides two main ways to configure the scheduler.
     @Schedule(
         id = "my-annotated-job",
         scheduler = "mySchedulerBean", // ID of the scheduler Bean
-        cronTrigger = @CronTrigger(expression = "0 0/1 * * * ?"), // Run every 1 minute
+        cronTrigger = @CronTrigger(expression = "0 0/1 * * * ?"), // Run every minute
         jobs = { @Job(translet = "/annotated/task") }
     )
     public class MyScheduledTasks {
 
-        @Request("/annotated/task") // Translet method to be executed by the scheduler
+        @Request("/annotated/task") // Translet method executed by the scheduler
         @Transform(FormatType.TEXT)
         public String executeTask() {
-            return "Scheduled task has been executed: " + LocalDateTime.now();
+            return "Scheduled task executed: " + LocalDateTime.now();
         }
 
         @Bean("mySchedulerBean") // Quartz Scheduler Bean definition
@@ -1070,12 +1362,12 @@ Aspectran provides two main ways to configure the scheduler.
     }
     ```
 
-#### 4.2.3. Trigger Type Details
+#### 4.3.3. Trigger Type Details
 
-Triggers precisely control when a job is executed. They can be configured through the `<trigger>` element in XML or the `@SimpleTrigger` and `@CronTrigger` annotations in the annotation-based approach.
+Triggers control when jobs are executed. They can be configured via XML `<trigger>` elements or annotations like `@SimpleTrigger` and `@CronTrigger`:
 
-*   **`simple` trigger**: Used to repeat a task at simple intervals, such as "start 10 seconds from now, and run every hour, for a total of 5 times." It is best suited for repeating a task a set number of times or indefinitely at a specific interval.
-    *   **Main attributes**: `startDelaySeconds`, `intervalInSeconds/Minutes/Hours`, `repeatCount` (`-1` for infinite repeat), `repeatForever`.
+*   **`simple` Trigger**: Used to repeat tasks at straightforward intervals, such as "start 10 seconds from now and repeat every hour, 5 times in total."
+    *   **Key Attributes**: `startDelaySeconds`, `intervalInSeconds/Minutes/Hours`, `repeatCount` (`-1` for infinite repetition), `repeatForever`.
 
     ```xml
     <trigger type="simple">
@@ -1088,12 +1380,12 @@ Triggers precisely control when a job is executed. They can be configured throug
     @SimpleTrigger(
         startDelaySeconds = 300,
         intervalInSeconds = 30,
-        repeatCount = 9 // 1 initial execution + 9 repeats = 10 total executions
+        repeatCount = 9 // 1 initial run + 9 repetitions = 10 total runs
     )
     ```
 
-*   **`cron` trigger**: Used to execute tasks according to a complex calendar-related schedule, such as "every Friday at 5:30 PM" or "at 1 AM on the last day of every month." It operates based on the powerful **Cron expression**, providing very flexible and powerful scheduling.
-    *   **Main attribute**: `expression` (Cron expression string).
+*   **`cron` Trigger**: Used to run tasks according to calendar-driven schedules, such as "every Friday at 5:30 PM" or "at 1:00 AM on the last day of every month," powered by standard **Cron expressions**.
+    *   **Key Attribute**: `expression` (Cron expression string).
 
     ```xml
     <trigger type="cron">
@@ -1101,25 +1393,30 @@ Triggers precisely control when a job is executed. They can be configured throug
     </trigger>
     ```
     ```java
-    @CronTrigger(expression = "0 30 9 ? * MON-FRI") // Every week from Monday to Friday, at 9:30 AM
+    @CronTrigger(expression = "0 30 9 ? * MON-FRI") // Monday through Friday at 9:30 AM
     ```
 
-#### 4.2.4. Schedule Job Logging and Monitoring
+#### 4.3.4. Schedule Job Logging and Monitoring
 
-It is very important to check the execution status of scheduled tasks and to debug them. Aspectran supports detailed logging of schedule job execution events through Logback.
+Monitoring and debugging scheduled tasks is vital for production stability. Aspectran records detailed schedule execution events via Logback:
 
-*   **Logging Mechanism**: The `com.aspectran.core.scheduler.activity.ActivityJobReporter` class logs events such as the start, success, and failure of a job. This reporter is linked with Quartz's `JobListener` to record key information that occurs during the job's lifecycle.
-*   **Logback Configuration Example**: To manage scheduler logs in a separate file, you can use Logback's `SiftingAppender` and Aspectran's `LoggingGroupDiscriminator`. This allows scheduler logs to be recorded in a separate file based on the `LOGGING_GROUP` value.
+*   **Logging Mechanism**: The `com.aspectran.core.scheduler.activity.ActivityJobReporter` logs job start, success, and failure events. It interfaces with Quartz's `JobListener` to record lifecycle milestones.
+*   **Logback Configuration Example**: To separate scheduler logs into dedicated files, utilize Logback's `SiftingAppender` along with Aspectran's `LoggingGroupDiscriminator`, which routes logs based on `LOGGING_GROUP`.
 
-### 4.3. Response Handling
+### 4.4. Response Handling
 
-Aspectran provides three main ways to return the processing results of an action method to the client. First, `dispatch` delegates processing to a view template like JSP or Thymeleaf to render a complete UI page. Second, `transform` easily converts the processing result into a specific data format like JSON or XML through declarative rules. Finally, `RestResponse` is used to programmatically control the HTTP status and response data in detail within Java code to construct dynamic REST API responses.
+Aspectran provides versatile response handling mechanisms to return Translet results to clients or forward them to downstream components:
+1.  **`dispatch`**: Delegates processing to view template engines like JSP or Thymeleaf to render complete UI pages.
+2.  **`transform`**: Serializes processing results into formats such as JSON, XML, or Text through declarative rules.
+3.  **`forward`**: Forwards processing to another Translet internally on the server while preserving request context and attributes.
+4.  **`redirect`**: Instructs client web browsers to issue a new request to a different URL.
+5.  **`RestResponse`**: Programmatically assembles HTTP status codes, headers, and response payloads directly in Java code.
 
-#### 4.3.1. Dispatch: View Template Rendering
+#### 4.4.1. Dispatch: View Template Rendering
 
-The `dispatch` response is used to render a complete HTML web page by delegating processing to an external view template engine such as JSP, Thymeleaf, or FreeMarker. This is suitable for constructing the UI screens of a traditional web application.
+The `dispatch` response renders complete HTML pages by delegating to external view template engines (JSP, Thymeleaf, FreeMarker, etc.), ideal for traditional web applications:
 
-The `name` attribute of the `<dispatch>` rule specifies the path to the template file, and the `dispatcher` attribute can specify the `ViewDispatcher` bean responsible for rendering. If the `dispatcher` attribute is omitted, the default `ViewDispatcher` is used.
+The `name` attribute of `<dispatch>` specifies the template file path, and `dispatcher` specifies the `ViewDispatcher` bean responsible for rendering. If omitted, the default `ViewDispatcher` is used.
 
 ```xml
 <!-- 1. Thymeleaf view dispatcher bean configuration -->
@@ -1129,17 +1426,17 @@ The `name` attribute of the `<dispatch>` rule specifies the path to the template
     <property name="templateEngine" value-ref="thymeleafEngine"/>
 </bean>
 
-<!-- 2. Using a Dispatch rule in a Translet to call a Thymeleaf view -->
+<!-- 2. Using Dispatch rule in Translet to invoke Thymeleaf view -->
 <translet name="/hello">
     <dispatch name="hello" dispatcher="thymeleafViewDispatcher" contentType="text/html" encoding="UTF-8"/>
 </translet>
 ```
 
-#### 4.3.2. Transform: Data Format Conversion
+#### 4.4.2. Transform: Data Format Conversion
 
-The `transform` response is used to directly generate the response body by converting the processing result of an action into a specific data format (JSON, XML, text, etc.). This is very useful for generating responses for REST APIs or for returning text in a specific format for data integration.
+The `transform` response generates response payloads directly by serializing action results into data formats (JSON, XML, text, etc.), essential for REST APIs:
 
-*   **JSON Conversion**: Use `format="json"` to convert the processing result into a JSON string. This is most commonly used in REST APIs. Adding the `pretty="true"` attribute will format the output for readability.
+*   **JSON Conversion**: Use `format="json"` to convert results into JSON strings. Adding `pretty="true"` formats the output for readability.
     ```xml
     <translet name="/api/users/1">
         <action bean="userService" method="getUser" id="user"/>
@@ -1147,7 +1444,7 @@ The `transform` response is used to directly generate the response body by conve
     </translet>
     ```
 
-*   **XML Conversion**: Use `format="xml"` to convert to XML.
+*   **XML Conversion**: Use `format="xml"` to convert results into XML.
     ```xml
     <translet name="/api/users/1.xml">
         <action bean="userService" method="getUser" id="user"/>
@@ -1155,7 +1452,7 @@ The `transform` response is used to directly generate the response body by conve
     </translet>
     ```
 
-*   **Text Conversion and Template Usage**: Use `format="text"` to convert to plain text. When used with a `<template>` rule, you can create dynamic text content using AsEL tokens.
+*   **Text Conversion and Template Usage**: Use `format="text"` for plain text. When combined with `<template>`, dynamic content can be constructed using AsEL tokens.
     ```xml
     <translet name="/api/users/1/info">
         <action bean="userService" method="getUser" id="user"/>
@@ -1168,18 +1465,83 @@ The `transform` response is used to directly generate the response body by conve
     </translet>
     ```
 
-By understanding these two response methods, you can effectively build flexible applications that support both web pages and REST APIs.
+#### 4.4.3. Forward: Internal Translet Routing
 
-#### 4.3.3. RestResponse: Programmatic REST Response
+A `forward` response transfers request execution to another Translet internally on the server without immediately sending a response to the client:
 
-While the `transform` rule provides a convenient way to generate responses declaratively, the `RestResponse` interface offers a more flexible and powerful way to dynamically construct RESTful responses programmatically within Java code. This approach allows you to finely control the HTTP status code, headers, and response data based on conditions.
+*   **Preserving Request Context**: Because a new HTTP request is not generated by the client, existing request attributes (`translet.getAttribute()`) and parameters stored in the current `Activity` are seamlessly preserved.
+*   **Declarative XML Configuration**:
+    ```xml
+    <translet name="/order/process">
+        <action bean="orderService" method="processPayment"/>
+        <!-- Forward to internal summary Translet upon payment completion -->
+        <forward translet="/order/summary"/>
+    </translet>
+    ```
+*   **Dynamic Forwarding in Java Code**:
+    ```java
+    @RequestToPost("/login")
+    public void handleLogin(Translet translet) {
+        boolean success = authService.authenticate(translet);
+        if (success) {
+            translet.forward("/dashboard");
+        } else {
+            translet.setAttribute("loginError", "Invalid username or password.");
+            translet.forward("/login-form");
+        }
+    }
+    ```
 
-Typically, you create an instance of `DefaultRestResponse` in an action method, set the data, and then call methods like `.ok()`, `.notFound()`, or `.created()` to return the final `RestResponse` object.
+#### 4.4.4. Redirect: Client Redirection and FlashMap
+
+A `redirect` response issues an HTTP redirect instruction (default: 302 Found) to the client web browser, directing it to request a new URL. This is the cornerstone of the **POST-Redirect-GET (PRG) pattern**, preventing duplicate form submissions upon page refresh.
+
+*   **Declarative XML Configuration**:
+    ```xml
+    <translet name="/user/register" method="POST">
+        <action bean="userService" method="register"/>
+        <!-- Redirect to welcome page upon registration completion -->
+        <redirect path="/user/welcome"/>
+    </translet>
+    ```
+
+*   **Dynamic Redirection in Java Code with FlashMap Integration**:
+    Because redirection causes the browser to issue an entirely new request, standard request scope attributes are discarded. Aspectran provides **`FlashMap`** as a temporary store for one-time attributes across redirects:
+
+    ```java
+    @RequestToPost("/user/signup")
+    public void registerUser(@NonNull Translet translet, UserRegistrationDto dto) {
+        userService.register(dto);
+
+        // 1. Set one-time notification message for subsequent redirected request
+        FlashMap flashMap = translet.getOutputFlashMap();
+        flashMap.put("welcomeMsg", "Welcome aboard, " + dto.getUsername() + "!");
+
+        // 2. Redirect to welcome page (query parameters can also be appended)
+        translet.redirect("/user/welcome");
+    }
+
+    @RequestToGet("/user/welcome")
+    public void welcomePage(@NonNull Translet translet) {
+        // FlashMap attributes from the previous request are automatically restored to request attributes
+        if (translet.hasInputFlashMap()) {
+            Map<String, ?> flashData = translet.getInputFlashMap();
+            // Accessible directly in view templates
+        }
+        translet.dispatch("user/welcome");
+    }
+    ```
+
+#### 4.4.5. RestResponse: Programmatic REST Response
+
+While the `transform` rule offers declarative simplicity, the `RestResponse` interface provides full programmatic control in Java code to construct dynamic RESTful responses. You can finely control HTTP status codes, headers, and body payloads conditionally.
+
+Typically, instantiate `DefaultRestResponse` inside an action method, set data, and chain methods such as `.ok()`, `.notFound()`, or `.created()` to return the final response:
 
 *   **Key Features**:
-    *   **Set Data**: Set the response data via `setData("key", value)` or through the constructor.
-    *   **Status Code Chaining**: Set the HTTP status code and return the response object by chaining intuitive methods like `.ok()`, `.created(location)`, `.notFound()`, `.forbidden()`.
-    *   **Flexibility**: Very useful when you need to dynamically determine the response content and status based on the results of complex business logic.
+    *   **Set Data**: Pass payload data via `setData("key", value)` or constructors.
+    *   **Status Code Chaining**: Easily chain status methods like `.ok()`, `.created(location)`, `.notFound()`, `.forbidden()`.
+    *   **Dynamic Flexibility**: Ideal when response structures and statuses depend on complex conditional business logic.
 
 *   **Usage Example**:
     ```java
@@ -1194,25 +1556,25 @@ Typically, you create an instance of `DefaultRestResponse` in an action method, 
         }
 
         @RequestToGet("/customers/${id}")
-        public RestResponse getCustomer(@Required Integer id) {
+        public RestResponse getCustomer(@NonNull Integer id) {
             Customer customer = repository.getCustomer(id);
             RestResponse response = new DefaultRestResponse();
             if (customer != null) {
-                // Return 200 OK status with data
+                // Return 200 OK with data
                 response.setData("customer", customer);
                 response.ok();
             } else {
-                // Return 404 Not Found status
+                // Return 404 Not Found
                 response.notFound();
             }
             return response;
         }
 
         @RequestToPost("/customers")
-        public RestResponse addCustomer(@NonNull Translet translet, @Required Customer customer) {
+        public RestResponse addCustomer(@NonNull Translet translet, @NonNull Customer customer) {
             int id = repository.insertCustomer(customer);
             String resourceUri = translet.getActualRequestName() + "/" + id;
-            // Return 201 Created status with the URI of the created resource
+            // Return 201 Created with the location URI of the newly created resource
             return new DefaultRestResponse(customer).created(resourceUri);
         }
     }
@@ -1244,7 +1606,78 @@ XML configuration is used to explicitly define the core components of an applica
 
 For more details, please refer to the [Aspectran XML Configuration](/en/docs/guides/aspectran-xml-configuration/) document.
 
-### 5.3. Servlet-based Web Application Configuration
+### 5.3. Configuration File Modularization and Division (`<append>`)
+
+In enterprise-scale applications, managing countless Beans, Translets, and AOP rules within a single XML file severely degrades readability and maintainability. Aspectran provides a modularization mechanism via the **`<append>`** element, enabling you to split configurations by roles and domains and assemble them flexibly in the root rule file.
+
+#### 1) Resource Types Supported by `<append>`
+*   **`resource` Attribute**: Loads a configuration file from the classpath (including inside JARs). This is the standard, recommended approach.
+    ```xml
+    <append resource="config/common-beans.xml"/>
+    ```
+*   **`file` Attribute**: Loads a configuration file from an absolute or relative filesystem path. Useful for referencing external server configurations.
+    ```xml
+    <append file="/etc/myapp/config/external-rules.xml"/>
+    ```
+*   **`url` Attribute**: Dynamically loads configuration files from remote HTTP/HTTPS URLs.
+    ```xml
+    <append url="https://config-server.internal/rules/common-rules.xml"/>
+    ```
+
+#### 2) Environment-Specific Module Loading with Profiles
+The `<append>` element fully supports the `profile` attribute, allowing you to selectively load dedicated configuration modules required only in specific runtime environments:
+
+```xml
+<!-- Include monitoring rules only when the 'prod' profile is active -->
+<append resource="config/prod/monitoring.xml" profile="prod"/>
+```
+
+#### 3) Hierarchical Modularization Following Aspectran Rule File Naming Conventions
+
+Aspectran adopts a rule-based naming convention that cleanly separates the **Skeleton** (structural framework) from the **Content** (business rules and domain resources):
+
+*   **Structural Entry Points (Skeleton - `*-rules.xml`)**: Entry-point files that define the structural skeleton of the application and assemble (`append`) child modules.
+    *   `aspectran-rules.xml`: Root rule entry point for the entire application
+    *   `web-rules.xml`: Rule entry point for web environments
+    *   `shell-rules.xml`, `daemon-rules.xml`: Dedicated rule entry points for CLI and daemon environments
+*   **Functional & Domain Modules (Content - Concise Names)**: Content files housing actual translet groups or specific resources (Beans, database, etc.). Because they are included by parent rule files, they use concise, semantic names without redundant suffixes.
+    *   `database.xml`, `server.xml`, `home.xml`, `monitoring.xml`, `order.xml`, etc.
+
+```text
+aspectran-config.apon (System Configuration)
+└── aspectran-rules.xml (Root Rule Entry Point)
+    ├── database.xml (Resource Definitions)
+    ├── common-beans.xml (Common Bean Definitions)
+    └── web-rules.xml (Web Environment Rule Entry Point)
+        ├── home.xml (Home Translet Group)
+        └── order.xml (Order Translet Group)
+```
+
+**Root Rule File Example (`aspectran-rules.xml`):**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <description>Application Root Rule Entry Point</description>
+
+    <!-- 1. Load resources and common infrastructure modules -->
+    <append resource="config/database.xml"/>
+    <append resource="config/common-beans.xml"/>
+
+    <!-- 2. Load common AOP security and interceptor rules -->
+    <append resource="config/security-rules.xml"/>
+
+    <!-- 3. Assemble environment-specific rule entry points -->
+    <append resource="config/web-rules.xml"/>
+    <append resource="config/scheduler-rules.xml"/>
+
+</aspectran>
+```
+
+### 5.4. Servlet-based Web Application Configuration
 
 To run Aspectran in a traditional servlet container (like Tomcat or Jetty), you need to register Aspectran's `WebActivityServlet` and `WebServiceListener` in the `web.xml` deployment descriptor.
 
@@ -1254,7 +1687,7 @@ To run Aspectran in a traditional servlet container (like Tomcat or Jetty), you 
 
 For more details, please refer to the [Servlet-based Web Application Configuration](/en/docs/guides/aspectran-servlet-configuration/) document.
 
-### 5.4. Combining Annotations and XML Configuration
+### 5.5. Combining Annotations and XML Configuration
 
 In most cases, it is common to use annotation-based component scanning as the default and combine it with XML configuration when you need to override a specific Bean or register an external library.
 If a Bean with the same ID is defined in both, the configuration that is loaded later may take precedence, and you can force an override with the `<bean important="true">` attribute.
@@ -1309,10 +1742,14 @@ We hope this guide helps you in using Aspectran. For more detailed information o
 
 *   [Aspectran Basic Configuration Guide](https://aspectran.com/en/docs/guides/aspectran-configuration/)
 *   [Aspectran XML Configuration Guide](https://aspectran.com/en/docs/guides/aspectran-xml-configuration/)
+*   [Aspectran Rule File Naming Conventions](https://aspectran.com/en/docs/guides/aspectran-rule-file-naming/)
+*   [Aspectran Properties Configuration and Usage](https://aspectran.com/en/docs/guides/aspectran-properties/)
+*   [Aspectran Wildcard Pattern Matching Guide](https://aspectran.com/en/docs/guides/aspectran-wildcard-matching/)
 *   [Servlet-based Web Application Configuration](https://aspectran.com/en/docs/guides/aspectran-servlet-configuration/)
 *   [Aspectran Beans](https://aspectran.com/en/docs/guides/aspectran-beans/)
 *   [Aspectran AOP: Features & Architecture](https://aspectran.com/en/docs/guides/aspectran-aop/)
 *   [Understanding Translet: The Face of Aspectran](https://aspectran.com/en/docs/guides/aspectran-translet/)
+*   [Practical Guide to Translets](https://aspectran.com/en/docs/guides/practical-guide-to-translets/)
 *   [Aspectran Scheduler: Task Automation with Translets](https://aspectran.com/en/docs/guides/aspectran-scheduler/)
 *   [Aspectran View Technologies](https://aspectran.com/en/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](https://aspectran.com/en/docs/guides/aspectran-profiles/)

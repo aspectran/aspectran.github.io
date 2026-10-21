@@ -58,7 +58,7 @@ Translet의 핵심 역할은 **요청 처리 흐름을 정의하는 설계도**�
 Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니다.
 
 1.  **선언적 규칙 기반 (XML/APON)**:
-    전통적인 방식이며, XML 또는 APON(Aspectran Parameter Object Notation) 형식의 설정 파일을 사용하여 Translet의 처리 흐름을 선언적으로 정의합니다. 이를 통해 비즈니스 로직과 처리 흐름을 분리할 수 있습니다.
+    전통적인 방식이며, XML 또는 APON(Aspectran Parameters Object Notation) 형식의 설정 파일을 사용하여 Translet의 처리 흐름을 선언적으로 정의합니다. 비즈니스 로직과 처리 흐름을 완벽히 분리할 수 있어 설정의 가시성을 높여줍니다.
 
     ```xml
     <translet name="/user/info">
@@ -69,73 +69,198 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
     위 예제는 `/user/info` 요청이 들어오면 `userDao` 빈의 `getUserInfo` 메소드를 실행하고, 그 결과를 JSON 형식으로 변환하여 응답하는 Translet을 정의합니다.
 
 2.  **어노테이션 기반 (Java 코드)**:
-    Spring MVC의 `@RequestMapping`과 유사하게, Java 코드 내에서 어노테이션을 사용하여 Translet을 직접 정의하는 현대적인 방법입니다. 이는 개발자에게 더 높은 편의성과 생산성을 제공합니다.
+    Java 코드 내에서 어노테이션을 사용하여 Translet을 직접 정의하는 현대적인 방법입니다. 개발자에게 높은 편의성과 직관적인 생산성을 제공합니다.
 
-    *   **기본 요청 처리**: `@Component`로 등록된 빈 클래스 내에서 `@RequestToGet`, `@RequestToPost` 등 HTTP 요청 메소드에 대응되는 어노테이션을 특정 메소드에 붙이면, Aspectran은 해당 메소드를 핵심 액션으로 삼아 암시적으로 Translet 규칙을 생성합니다.
+    *   **Activity 클래스와 Action 메서드**:
+        Aspectran에서는 웹 요청을 처리하는 컴포넌트의 클래스명에 **`*Activity`** 접미사(예: `UserActivity`, `ReportActivity`, `OrderActivity`)를 붙이는 것을 표준 관례로 삼습니다. 하나의 Activity 클래스 안에는 비즈니스 단위별로 여러 Action 메서드가 정의되며, 이 메서드들이 Translet에서 호출할 Action으로 등록됩니다.
+        `@RequestToGet`, `@RequestToPost` 등 요청 매핑 어노테이션이 부여된 메서드는 실제 내부적으로 `InvokeAction`(`AnnotatedAction`)에 의해 실행되는 핵심 Action으로 작동합니다.
+
+    *   **`@Action` 어노테이션과 결과값 모델 활용**:
+        액션 메서드에 **`@Action("actionId")`** 어노테이션을 선언하여 해당 Action에 고유한 ID를 명시적으로 부여할 수 있습니다.
+        Action 메서드가 실행되고 반환한 결과값은 View 템플릿이나 응답 변환기에서 다음과 같이 자연스럽게 활용됩니다:
+        *   **뷰 템플릿 모델 연동**: `Dispatch`를 통해 화면을 렌더링할 때 Action ID는 뷰 템플릿(Thymeleaf, FreeMarker, JSP 등)의 모델 속성으로 직접 참조할 수 있습니다. Aspectran은 내부적으로 **`ActivityData`**를 통해 액션 결과, 요청 파라미터, 속성을 통합된 단일 뷰 모델로 제공하므로 복잡한 데이터 저장 구조를 신경 쓰지 않고도 템플릿에서 손쉽게 데이터를 출력할 수 있습니다.
+        *   **데이터 변환 응답 (`@Transform`)**: `@Transform(format = FormatType.JSON)` 등을 사용할 때 변환기(Transformer)는 Action ID를 최상위 키 또는 노드 이름으로 취급하여 직관적이고 구조화된 응답을 생성합니다.
+        *   **자바 코드 접근**: 자바 코드 내에서 액션의 실행 결과에 직접 접근해야 할 경우 `translet.getProcessResult("actionId")`나 `translet.getActivityData().get("actionId")`를 통해 조회할 수 있습니다.
 
         ```java
         @Component
-        public class UserApiController {
-            private UserDao userDao;
+        public class UserActivity {
+
+            private final UserDao userDao;
 
             @Autowired
-            public UserApiController(UserDao userDao) {
+            public UserActivity(UserDao userDao) {
                 this.userDao = userDao;
             }
 
-            @RequestToGet("/user/info/${userId}") // GET /user/info/${userId} 요청에 매핑
-            @Transform(format = FormatType.JSON) // 결과를 JSON으로 변환
+            // GET /user/info/${userId} 요청 매핑
+            // Action ID "userInfo" 부여 -> JSON 변환 시 "userInfo"가 루트 키로 매핑됨
+            @RequestToGet("/user/info/${userId}")
+            @Action("userInfo")
+            @Transform(format = FormatType.JSON)
             public User getUserInfo(Long userId) {
                 return userDao.getUserById(userId);
             }
+
+            // GET /user/profile/${userId} 요청 매핑
+            // "userProfile" Action ID로 뷰 템플릿(Thymeleaf, FreeMarker, JSP)에서 모델 데이터 바로 사용
+            @RequestToGet("/user/profile/${userId}")
+            @Action("userProfile")
+            @Dispatch("user/profile")
+            public User getUserProfile(Long userId) {
+                return userDao.getUserById(userId);
+            }
+
         }
         ```
+
+    *   **경로 변수 및 파라미터 매핑**:
+        Aspectran은 URI 경로 패턴에서 **AsEL 토큰 문법**을 직접 지원하여, URL 경로에서 파싱된 값이 저장될 대상 스코프를 선언적으로 지정할 수 있습니다:
+        *   **`${variableName}` (파라미터 토큰)**:
+            예: `@RequestToGet("/user/info/${userId}")`
+            경로에서 파싱된 `userId` 값이 **요청 파라미터(`ParameterMap`)**에 자동으로 추가됩니다. 따라서 메서드 매개변수(`Long userId` 등)로 자동 바인딩되거나 `translet.getParameter("userId")`로 바로 조회할 수 있습니다. 가장 보편적으로 사용되는 방식입니다.
+        *   **`@{variableName}` (어트리뷰트 토큰)**:
+            예: `@RequestToGet("/user/info/@{userId}")`
+            경로에서 파싱된 `userId` 값이 **요청 속성(`AttributeMap`)**에 자동으로 추가됩니다. 별도의 저장 코드 없이도 `translet.getAttribute("userId")`로 조회되거나, JSP나 Thymeleaf 같은 뷰 템플릿의 모델 속성으로 즉시 전달되어 렌더링에 바로 활용할 수 있습니다.
+        *   **일반 요청 파라미터 및 DTO 바인딩**: HTTP 쿼리 스트링이나 폼 파라미터 역시 메서드 인자 이름과 일치하면 기본 타입으로 자동 변환 주입되며, 복합 DTO/Command 객체(POJO)를 선언하면 Setter 메서드를 통해 자동으로 주입(Model Binding)됩니다. 메서드 인자에 `Translet` 타입을 선언하면 현재 실행 중인 `Translet` 인스턴스도 함께 주입받을 수 있습니다.
+        *   **필수 인자 검증 (`@NonNull`)**: 표준 JSpecify의 `@NonNull`(`org.jspecify.annotations.NonNull`) 어노테이션을 매개변수에 선언하여 필수 파라미터 누락 시 유효성 검증을 안전하게 수행합니다.
 
     *   **비동기 요청 처리**: 시간이 오래 걸리는 작업을 처리해야 할 경우, `async = true` 속성을 사용하여 Translet을 비동기적으로 실행할 수 있습니다. 이는 요청 스레드를 차단하지 않고 백그라운드에서 작업을 수행하여 애플리케이션의 응답성을 유지하는 데 도움을 줍니다.
 
         ```java
         @Component
-        public class ReportController {
-            private ReportService reportService;
+        public class ReportActivity {
+
+            private final ReportService reportService;
 
             @Autowired
-            public ReportController(ReportService reportService) {
+            public ReportActivity(ReportService reportService) {
                 this.reportService = reportService;
             }
 
             @RequestToPost(translet = "/reports/generate", async = true, timeout = 30000L)
+            @Action("generationResult")
             @Transform(format = FormatType.TEXT)
             public String generateReport(Translet translet) {
-                // 요청 본문을 Aspectran의 Parameters 객체로 파싱합니다.
-                // Content-Type에 따라 JSON, XML 등이 자동으로 파싱됩니다.
                 Parameters parameters = translet.getRequestAdapter().getBodyAsParameters();
-
-                // 비즈니스 로직은 Parameters 객체를 직접 사용합니다.
                 reportService.generate(parameters);
-
                 return "Report generation has started in the background.";
             }
+
         }
         ```
 
-    *   **어노테이션 상세**: `@Request` 어노테이션은 요청 경로, 요청 메소드 등 상세한 규칙을 정의할 때 사용합니다. 편의를 위해 `GET`, `POST` 등 각 요청 메소드에 해당하는 `@RequestToGet`, `@RequestToPost` 같은 전용 어노테이션도 제공됩니다. 이 어노테이션들은 `value` 또는 `translet` (경로), `async`, `timeout` 속성을 공통으로 가집니다.
+    *   **어노테이션 상세**: `@Request` 어노테이션은 요청 경로, 요청 메소드 등 상세한 규칙을 정의할 때 사용합니다. 편의를 위해 `GET`, `POST` 등 각 요청 메소드에 해당하는 `@RequestToGet`, `@RequestToPost`, `@RequestToPut`, `@RequestToDelete`, `@RequestToPatch` 같은 전용 어노테이션도 제공됩니다. 이 어노테이션들은 `value` 또는 `translet` (경로), `async`, `timeout` 속성을 공통으로 가집니다.
 
-    *   **동적 Translet 생성 (Scanning)**: 수백 개의 유사한 Translet을 반복해서 정의하는 대신, 단 하나의 규칙으로 런타임에 동적으로 Translet을 생성할 수 있습니다. 예를 들어, 특정 디렉터리 아래의 모든 JSP 파일을 스캔하여 각 파일을 뷰로 사용하는 Translet을 자동으로 생성하는 방식입니다.
+#### 3.1.3. 요청 경로 매핑 및 검색 우선순위
 
-        ```xml
-        <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
-            <description>
-                '/WEB-INF/jsp/' 디렉토리 하위 경로에서 모든 JSP 파일을 찾아서 Translet 등록을 자동으로 합니다.
-                검색된 jsp 파일의 경로는 template 요소의 file 속성 값으로 지정됩니다.
-            </description>
-            <dispatch>
-                <template/>
-            </dispatch>
-        </translet>
-        ```
-        위 규칙은 `/WEB-INF/jsp/` 디렉터리와 그 하위 경로에 있는 모든 `.jsp` 파일을 스캔하여, 파일 경로에 따라 동적으로 Translet을 생성하고 등록합니다. 예를 들어, `/WEB-INF/jsp/user/list.jsp` 파일이 발견되면 `user/list`라는 이름의 Translet이 생성됩니다. 이 기능은 정적인 뷰 파일을 대량으로 서빙할 때 매우 유용하며, 반복적인 Translet 정의를 획기적으로 줄여줍니다.
+Translet 규칙이 XML이나 Java 어노테이션으로 등록되면, 클라이언트의 요청(URL 경로 및 HTTP 메소드)이 들어왔을 때 가장 적합한 Translet을 찾아 실행해야 합니다. Aspectran은 Ant-style을 정밀하게 확장한 독자적인 **와일드카드 패턴 매칭 엔진**과 **가중치 기반 우선순위 시스템**을 통해 요청을 정확하게 라우팅합니다.
 
-#### 3.1.3. Translet의 생명주기 및 Activity와의 관계
+##### 1. 와일드카드 및 경로 변수 토큰
+*   `*`: 세그먼트(경로 구분자 `/`) 내에서 0개 이상의 문자와 매칭됩니다. (구분자를 넘지 못함)
+*   `**`: 여러 세그먼트를 가로질러 0개 이상의 문자와 매칭됩니다. (구분자를 포함하여 매칭)
+*   `?`: 세그먼트 내에서 0개 또는 1개의 문자와 매칭됩니다.
+*   `+`: 세그먼트 내에서 **정확히 1개**의 문자와 매칭됩니다. (빈 문자열 불허)
+*   `${variableName}`: 해당 위치의 경로 세그먼트를 추출하여 **요청 파라미터(`ParameterMap`)**에 등록합니다. 메서드 인자 바인딩이나 `translet.getParameter()`로 조회할 수 있습니다.
+*   `@{variableName}`: 해당 위치의 경로 세그먼트를 추출하여 **요청 속성(`AttributeMap`)**에 등록합니다. 뷰 템플릿 모델 전달이나 `translet.getAttribute()`로 조회할 수 있습니다.
+
+##### 2. 유연한 구조 매칭
+*   **선행 `**/` 생략 가능**: `**/user`는 `/user`뿐만 아니라 최상위의 `user`와도 매칭됩니다.
+*   **후행 `/**` 생략 가능**: `/api/**`는 `/api/`의 하위 경로뿐만 아니라 `/api` 자체와도 매칭됩니다.
+*   **중간 `/**/` 생략 가능**: `a/**/b`는 `a/x/b`뿐만 아니라 `a/b`와도 매칭됩니다.
+
+##### 3. Translet 검색 우선순위 (Resolution Priority)
+`Activity`가 요청을 수신했을 때 `TransletRuleRegistry`에서 처리할 Translet을 결정하는 우선순위는 다음과 같습니다:
+1.  **완전 일치 (Exact Match) 최우선**: 와일드카드나 경로 변수가 없는 정확한 경로 규칙이 가장 먼저 선택됩니다.
+2.  **더 구체적인 패턴 우선**: 가중치 시스템에 의해 덜 추상적이고 구체적인 패턴이 우선권을 갖습니다. (예: `/users/${id}/profile`은 `/users/${id}/*`보다 우선함)
+3.  **HTTP 메소드 미지정 Translet으로의 대체 (Fallback)**: `POST`, `PUT` 등 특정 메소드가 명시되지 않은 Translet 규칙이 있다면, 일치하는 전용 메소드 규칙이 없을 때 기본 규칙으로 폴백 처리됩니다.
+4.  **나중에 정의된 규칙이 우선 (오버라이드)**: 동일한 이름과 메소드로 정의된 규칙이 여러 개일 경우, 나중에 등록된 규칙이 기존 규칙을 덮어씁니다.
+
+#### 3.1.4. Translet 내부 구성 요소와 Action 파이프라인
+
+Translet은 단순한 요청 매핑 객체가 아니라, 요청 수신부터 응답 반환까지의 여러 작업을 순차적이고 조건적으로 실행할 수 있는 **워크플로우 파이프라인 설계도**입니다.
+
+##### 1. 4대 표준 Action 유형
+Translet 내부에서 실행되는 작업 단위인 Action은 크게 네 가지 표준 유형으로 나뉩니다:
+
+*   **Invoke Action (`<invoke>`)**:
+    IoC 컨테이너에 등록된 Bean의 특정 비즈니스 메서드를 호출합니다. Java 어노테이션 기반에서는 Activity 클래스 내의 액션 메서드가 `@RequestTo*`와 결합하여 내부적으로 `InvokeAction`(`AnnotatedAction`)으로 등록되며, `@Action("actionId")`를 통해 고유한 Action ID를 부여받습니다. Action의 실행 결과는 Action ID를 키로 삼아 `ProcessResult`에 저장되어 후속 처리나 뷰 템플릿 모델로 자연스럽게 연결됩니다.
+    ```xml
+    <action id="order" bean="orderService" method="createOrder"/>
+    ```
+
+*   **Echo Action (`<echo>`)**:
+    요청 파라미터나 특정 속성을 응답 모델에 포함하거나 화면에 전달하기 위해 에코(Echo)합니다.
+    ```xml
+    <echo id="echoInfo">
+        <item name="orderId"/>
+        <item name="customerName"/>
+    </echo>
+    ```
+
+*   **Header Action (`<headers>`)**:
+    클라이언트에 전송될 HTTP 응답 헤더(캐시 제어, 커스텀 보안 헤더 등)를 선언적으로 일괄 설정합니다.
+    ```xml
+    <headers>
+        <item name="Cache-Control">no-cache, no-store, must-revalidate</item>
+        <item name="Pragma">no-cache</item>
+    </headers>
+    ```
+
+*   **Include Action (`<include>`)**:
+    다른 Translet을 서브루틴처럼 호출하여 실행하고, 그 결과를 현재 Translet의 처리 파이프라인 내에 포함합니다. 공통 위젯이나 반복되는 데이터 조회를 모듈화하여 재사용할 때 매우 유용합니다.
+    ```xml
+    <include id="userProfile" translet="/user/profile-widget"/>
+    ```
+
+##### 2. 콘텐츠 블록 (`<contents>`) 및 실행 결과 관리 (`ProcessResult` 및 `ActivityData`)
+하나의 Translet 내에 여러 Action이 정의될 경우, 각 Action의 실행 결과는 Action ID를 키로 하여 **`ProcessResult`** 컨테이너에 체계적으로 저장됩니다.
+Aspectran은 **`ActivityData`**를 통해 이러한 Action 실행 결과, 요청 파라미터, 속성을 단일 모델 퍼사드로 통합 제공하므로, 뷰 템플릿(Thymeleaf, FreeMarker, JSP 등)이나 자바 코드에서는 복잡한 내부 저장 구조를 신경 쓸 필요 없이 Action ID를 통해 데이터에 자연스럽게 접근할 수 있습니다:
+*   **뷰 템플릿 연동**: `Dispatch` 응답을 통해 화면을 렌더링할 때 Action ID를 이름으로 바로 참조하여 화면에 출력할 수 있습니다.
+*   **자바 코드 및 AsEL 조회**: 자바 코드 내에서 `translet.getProcessResult("actionId")` 또는 `translet.getActivityData().get("actionId")`로 손쉽게 조회할 수 있습니다.
+*   **전체 결과 트리 제어**: 복잡한 다단계 액션 파이프라인에서는 `translet.getProcessResult()`를 통해 콘텐츠 블록(`ContentResult`) 단위로 구조화된 전체 실행 결과를 직접 순회하고 제어할 수 있습니다.
+
+##### 3. 조건부 분기 실행 제어 (`<choose>`, `<when>`, `<otherwise>`)
+Aspectran은 자바 코드로 복잡한 `if-else` 분기를 작성하지 않고도, 선언적 규칙 레벨에서 요청 파라미터, 헤더, 프로퍼티 조건에 따라 특정 Action이나 Response를 선택적으로 실행할 수 있는 조건부 제어 태그를 제공합니다.
+
+```xml
+<translet name="/dashboard">
+    <choose>
+        <when test="${role == 'admin'}">
+            <action id="dashboardData" bean="adminService" method="getAdminDashboard"/>
+            <dispatch name="dashboard/admin"/>
+        </when>
+        <otherwise>
+            <action id="dashboardData" bean="userService" method="getUserDashboard"/>
+            <dispatch name="dashboard/user"/>
+        </otherwise>
+    </choose>
+</translet>
+```
+
+#### 3.1.5. Translet 선언적 예외 처리 (`<exception>` / `<thrown>`)
+
+Translet 실행 중 비즈니스 로직(Action)이나 뷰 렌더링 단계에서 특정 예외가 발생할 경우, 이를 선언적으로 가로채어 에러 전용 뷰로 디스패치하거나 변환 응답(JSON/XML)으로 처리할 수 있습니다.
+
+```xml
+<translet name="/order/checkout">
+    <action bean="orderService" method="checkout"/>
+    <dispatch name="order/complete"/>
+    <exception>
+        <thrown type="com.example.OutOfStockException">
+            <transform format="json">
+                <template>{"status": "fail", "message": "상품 재고가 부족합니다."}</template>
+            </transform>
+        </thrown>
+        <thrown type="java.lang.Exception">
+            <dispatch name="error/general"/>
+        </thrown>
+    </exception>
+</translet>
+```
+`thrown` 태그에 대상 예외 클래스 타입을 지정하면 하위 타입까지 포괄하여 매칭되며, 가장 구체적인 예외 타입에 일치하는 처리가 우선적으로 실행됩니다.
+
+#### 3.1.6. Translet의 생명주기 및 Activity와의 관계
 
 `Activity`는 요청이 들어오면 **`TransletRuleRegistry`**에서 가장 적합한 Translet 규칙(설계도)을 찾아 인스턴스를 생성하고, 그 규칙에 따라 요청을 처리합니다. 즉, Translet은 '설계도'이고 `Activity`는 그 설계도를 보고 일하는 '실행 엔진'과 같습니다. `TransletRuleRegistry`는 빠르고 효율적인 조회를 위해 고도로 최적화된 자료구조이며, 요청 이름, 요청 메소드, 와일드카드 및 경로 변수 패턴을 사용하여 Translet을 찾아냅니다.
 
@@ -144,6 +269,8 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
 이 과정에서 생성된 `Translet` 인스턴스는 `Activity`와 사용자 코드(주로 Action 메소드) 사이의 **'소통을 위한 매개체'** 역할을 합니다. Action 메소드의 인자로 `Translet` 타입이 선언되어 있으면, `Activity`는 메소드 호출 시 `Translet` 인스턴스를 자동으로 주입해 줍니다. 개발자는 이 `Translet` 인스턴스를 통해 `Activity`가 생성한 데이터에 접근(`getActivityData()` 메소드)하거나, 데이터를 추가적으로 가공하고 응답 로직을 임의로 제어하는 등 프레임워크와 상호작용할 수 있습니다.
 
 이처럼 Translet은 복잡한 내부 실행 로직(`Activity`)을 감추고 사용자에게는 명확하고 단순한 '설계도'와 '인터페이스'만을 보여주는, 잘 설계된 **퍼사드(Facade)**입니다.
+
+자세한 내용은 [Aspectran의 대표 얼굴: Translet 이해하기](/ko/docs/guides/aspectran-translet/) 및 [Aspectran Translet 실용 가이드](/ko/docs/guides/practical-guide-to-translets/) 문서를 참고하세요.
 
 ### 3.2. Bean (빈)
 
@@ -194,11 +321,11 @@ Aspectran에서 Bean을 정의하는 가장 일반적인 방법은 어노테이�
 
     ```java
     @Component
-    public class MyController {
+    public class MyActivity {
         private final MyService myService;
 
         @Autowired
-        public MyController(MyService myService) {
+        public MyActivity(MyService myService) {
             this.myService = myService;
         }
     }
@@ -440,7 +567,7 @@ Aspectran은 Bean의 생성 및 소멸 시점에 특정 로직을 실행할 수 
 
 **AOP(Aspect-Oriented Programming, 관점 지향 프로그래밍)**는 로깅, 보안, 트랜잭션 관리, 예외 처리, 응답 헤더 주입 등 애플리케이션 전반에 걸쳐 반복적으로 나타나는 **횡단 관심사(Cross-cutting Concerns)**를 핵심 비즈니스 로직과 분리하여 모듈화하는 핵심 프로그래밍 패러다임입니다.
 
-Spring AOP가 주로 빈(Bean) 메서드 호출을 프록시로 가로채는 단일 방식에 의존하는 것과 달리, **Aspectran**은 프레임워크의 요청 처리 핵심 단위인 **`Activity`의 생명주기(Translet Lifecycle)**와 **`Bean` 메서드 인터셉션**이라는 두 개의 명확한 축을 기반으로 고도로 최적화된 **실용적 AOP 아키텍처**를 제공합니다.
+**Aspectran**은 프레임워크의 요청 처리 핵심 단위인 **`Activity`의 생명주기(Translet Lifecycle)**와 **`Bean` 메서드 인터셉션**이라는 두 개의 명확한 축을 기반으로 고도로 최적화된 **실용적 AOP 아키텍처**를 제공합니다.
 
 #### 3.3.1. AOP의 필요성
 
@@ -785,7 +912,7 @@ public class ProfilingAspect {
 
 ##### 패턴 3: 전역 웹 보안 응답 헤더 및 환경 설정 자동화 (Activity 생명주기 AOP)
 
-개별 컨트롤러나 Translet마다 반복적으로 보안 헤더나 설정을 지정하지 않고, Activity 생명주기 AOP의 Non-Proxy Core Interception을 통해 일괄 적용합니다:
+개별 Translet마다 반복적으로 보안 헤더나 설정을 지정하지 않고, Activity 생명주기 AOP의 Non-Proxy Core Interception을 통해 일괄 적용합니다:
 
 ```xml
 <aspect id="webSecurityAspect">
@@ -855,28 +982,85 @@ AsEL은 세 가지 주요 토큰을 사용하여 서로 다른 스코프의 데�
 
 #### 3.4.2. @Value 어노테이션과 AsEL
 
-`@Value` 어노테이션과 함께 사용하면 AsEL의 강력함을 코드 레벨까지 확장할 수 있습니다. 외부 설정 파일(`properties`)에 정의된 값을 Bean의 필드나 생성자 인자에 직접 주입할 수 있습니다.
+`@Value` 어노테이션과 함께 사용하면 AsEL의 강력함을 코드 레벨까지 확장할 수 있습니다. 환경 설정(`properties`)에 정의된 값을 Bean의 필드나 생성자 인자에 직접 주입할 수 있습니다.
 
-*   **`%{...}` (프로퍼티 토큰)**: `@Value` 어노테이션 내에서 사용되며, `<properties>` 엘리먼트나 외부 설정 파일에 정의된 **프로퍼티(Property)** 값을 참조합니다.
+*   **`%{...}` (프로퍼티 토큰)**: `@Value` 어노테이션 내에서 사용되며, `<environment>` 규칙이나 JVM 시스템 프로퍼티, `PropertiesFactoryBean` 등으로 등록된 **프로퍼티(Property)** 값을 참조합니다.
 
 ```java
-// config.properties 파일 내용: app.version=1.2.3
-// XML 설정: <properties file="config.properties"/>
-
+// PropertiesFactoryBean 또는 <environment>에 등록된 app.version 프로퍼티 참조
 @Component
 public class AppInfo {
     private final String appVersion;
 
     @Autowired
     public AppInfo(@Value("%{app.version:1.0.0}") String appVersion) {
-        // config.properties에 값이 있으면 "1.2.3"이 주입되고,
-        // 없으면 기본값 "1.0.0"이 주입됨
+        // 등록된 app.version 값이 있으면 해당 값이 주입되고,
+        // 없으면 콜론(:) 뒤의 기본값 "1.0.0"이 주입됨
         this.appVersion = appVersion;
     }
 }
 ```
 
 AsEL을 잘 활용하면 정적인 설정을 동적인 애플리케이션 로직과 효과적으로 연결하여, 코드 변경 없이 설정만으로 다양한 상황에 대응할 수 있는 유연한 애플리케이션을 만들 수 있습니다.
+
+### 3.5. APON (Aspectran Parameters Object Notation)
+
+**APON(Aspectran Parameters Object Notation)**은 구조화된 데이터를 표현하기 위한 Aspectran 고유의 경량 데이터 교환 포맷이자 객체 모델입니다. JSON의 엄격한 문법(주석 불가, 쉼표 누락 오류 등)과 YAML의 복잡한 들여쓰기 민감성을 극복하여, 사람이 쉽게 읽고 쓸 수 있는 직관성과 시스템 파싱의 안정성을 동시에 제공합니다.
+
+Aspectran의 핵심 환경 설정 파일인 `aspectran-config.apon`을 비롯하여, 내부 파라미터 컨테이너와 동적 데이터 구조 표현에 전방위적으로 사용됩니다.
+
+#### 3.5.1. APON의 핵심 특징
+
+*   **뛰어난 가독성과 유연한 구분자**: 줄바꿈 또는 쉼표(`,`)를 구분자로 자유롭게 사용할 수 있습니다. 특수문자가 포함되지 않은 일반 문자열 값은 따옴표를 생략할 수 있어 설정이 매우 간결해집니다.
+*   **완벽한 주석 지원 (`#`)**: 설정 파일 내에 `#` 기호를 사용하여 단독 라인 주석뿐만 아니라 파라미터 값 바로 뒤에 붙는 인라인 주석(Inline comment)을 자연스럽게 기술할 수 있습니다.
+*   **명시적 데이터 타입 지원**: `name(type): value` 형식으로 파라미터 이름 뒤에 괄호로 데이터 타입(`string`, `int`, `long`, `boolean`, `text` 등)을 직접 명시할 수 있어 런타임 값의 정확성과 타입 안정성을 보장합니다.
+*   **계층적 구조화**: 중괄호(`{ }`)를 이용한 중첩 블록과 대괄호(`[ ]`)를 이용한 배열 구조를 통해 복잡한 설정 데이터도 체계적으로 표현합니다.
+*   **멀티라인 긴 문자열(`text`) 지원**: 괄호 `( )`와 파이프(`|`) 기호를 사용하여 SQL 쿼리, 템플릿, 긴 설명문 등을 여러 줄에 걸쳐 깔끔하게 작성할 수 있습니다.
+
+#### 3.5.2. APON 기본 문법 및 구조 예시
+
+```apon
+# 서버 환경 설정 예시
+server: {
+    host: "0.0.0.0"
+    port: 8080             # 서비스 포트
+    timeout: 30000         # 30초 타임아웃
+    sessionTracking: [
+        cookie
+        url
+    ]
+}
+
+# 명시적 타입 지정과 멀티라인 텍스트 지원
+database: {
+    driver: com.mysql.cj.jdbc.Driver
+    url: "jdbc:mysql://localhost:3306/aspectran"
+    maxActive(int): 20
+    autoCommit(boolean): false
+    initScript(text): (
+        |CREATE TABLE IF NOT EXISTS sample_logs (
+        |    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        |    message VARCHAR(255) NOT NULL
+        |);
+    )
+}
+```
+
+#### 3.5.3. Parameters 객체 모델과 자바 코드 연동
+
+APON은 단순한 텍스트 포맷에 머무르지 않고, Java 코드 내에서 **`Parameters`(`com.aspectran.core.context.rule.params.Parameters`)** 인터페이스와 일대일로 완벽하게 연동됩니다:
+
+*   **요청 본문 자동 파싱**: 클라이언트가 전송한 JSON, XML, 또는 APON 형식의 페이로드는 `translet.getRequestAdapter().getBodyAsParameters()` 메서드를 통해 별도의 서드파티 파서 없이 즉시 Aspectran 표준 `Parameters` 객체로 파싱됩니다.
+*   **타입 세이프한 데이터 접근**:
+    ```java
+    Parameters parameters = translet.getRequestAdapter().getBodyAsParameters();
+    if (parameters != null) {
+        String title = parameters.getString("title");
+        int count = parameters.getInt("count", 1); // 기본값 지정 가능
+        Parameters subParams = parameters.getParameters("subConfig");
+    }
+    ```
+*   **동적 설정 컨테이너**: 복잡한 비즈니스 파라미터나 외부 구성 설정을 전용 DTO 클래스를 일일이 만들지 않고도 `DefaultParameters` 객체를 통해 유연하고 타입 안전하게 전달하고 가공할 수 있습니다.
 
 ## 4. Aspectran 주요 기능 활용
 
@@ -928,7 +1112,7 @@ Aspectran의 설정 파일(XML 또는 APON) 내 대부분의 엘리먼트에서 
     </environment>
 
     <!-- 'prod' 프로필이 활성화될 때만 특정 설정 파일을 포함 -->
-    <append file="/config/metrics-context.xml" profile="prod"/>
+    <append file="/config/metrics-rules.xml" profile="prod"/>
 
 </aspectran>
 ```
@@ -992,15 +1176,123 @@ Aspectran의 설정 파일(XML 또는 APON) 내 대부분의 엘리먼트에서 
   java -Daspectran.profiles.active=prod -jar my-app.jar
   ```
 
-### 4.2. Scheduler (스케줄러)
+### 4.2. Properties (프로퍼티 시스템)
+
+Aspectran은 실행 환경에 따른 유연한 설정 관리와 런타임 동적 평가 및 캐싱 기능을 지원하는 강력한 계층적 **프로퍼티(Properties) 시스템**을 제공합니다. 이를 통해 데이터베이스 접속 정보, 외부 API 키, 파일 저장 경로 등 환경마다 달라지는 설정들을 자바 소스 코드로부터 완전히 분리하여 안전하게 관리할 수 있습니다.
+
+#### 4.2.1. 프로퍼티 주입 경로와 우선순위
+
+Aspectran은 다음과 같은 다양한 경로를 통해 프로퍼티를 주입받아 통합 관리하며, 상위 경로의 설정이 하위 경로의 설정을 오버라이드합니다:
+
+1.  **JVM 시스템 프로퍼티 (`-D` 옵션)**: 가장 보편적이며 최우선권을 가집니다. (`-Dproperty.name=value`)
+2.  **운영 배포 설정 (`setup/app.conf`)**: Aspectow 기반 애플리케이션의 구동 스크립트(`startup.sh`, `daemon.sh`) 실행 시 JVM 시스템 프로퍼티(VM Options)로 자동 변환되어 적용됩니다.
+3.  **애플리케이션 초기 설정 (`aspectran-config.apon`)**: 뼈대 설정 파일의 `system.properties` 섹션에 정의된 값들로, 애플리케이션 구동 시 `System.setProperty()`를 통해 등록됩니다.
+4.  **외부 프로퍼티 파일 (`PropertiesFactoryBean`)**: 파일시스템이나 클래스패스에 위치한 `.properties` 파일을 읽어와 컨테이너 프로퍼티로 통합합니다.
+5.  **규칙 기반 환경 설정 (XML `<environment>`)**: XML 규칙 파일 내에서 선언적으로 정의한 프로퍼티들입니다.
+
+#### 4.2.2. 규칙 기반 프로퍼티 정의 (`<environment>`)
+
+XML 설정 파일 내에서는 **`<environment>`** 엘리먼트 내에 `<property>` 태그를 사용하여 프로퍼티를 정의합니다. 특히 앞서 살펴본 `profile` 속성과 결합하여 환경별로 서로 다른 프로퍼티 세트를 선언할 수 있습니다.
+
+```xml
+<aspectran>
+
+    <!-- 1. 기본 프로퍼티 정의 -->
+    <environment>
+        <property name="app.title">Aspectran Demo Service</property>
+        <property name="upload.maxSize">10485760</property>
+    </environment>
+
+    <!-- 2. 프로필(Profile)별 조건부 프로퍼티 정의 -->
+    <environment profile="dev">
+        <property name="upload.dir">/tmp/uploads</property>
+        <property name="db.url">jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1</property>
+    </environment>
+
+    <environment profile="prod">
+        <property name="upload.dir">/nas/storage/uploads</property>
+        <property name="db.url">jdbc:mysql://prod-server:3306/prod_db</property>
+    </environment>
+
+</aspectran>
+```
+
+#### 4.2.3. 외부 프로퍼티 파일 통합 (`PropertiesFactoryBean`)
+
+외부의 `.properties` 파일들을 읽어와 Aspectran 프로퍼티 시스템에 통합할 때는 유틸리티 빈인 **`com.aspectran.core.support.PropertiesFactoryBean`**을 등록하여 사용합니다.
+
+```xml
+<bean id="appProperties" class="com.aspectran.core.support.PropertiesFactoryBean">
+    <properties>
+        <!-- 파일 부재 시 에러 발생 방지 여부 설정 -->
+        <item name="ignoreInvalidResource" valueType="boolean">false</item>
+    </properties>
+
+    <!-- 운영(prod) 프로필 활성화 시 로드할 파일 -->
+    <properties profile="prod">
+        <item name="locations" type="array">
+            <value>/config/app-prod.properties</value>
+        </item>
+    </properties>
+
+    <!-- 운영 프로필 미활성화 시(개발/테스트) 로드할 파일 -->
+    <properties profile="!prod">
+        <item name="locations" type="array">
+            <value>classpath:config/app-dev.properties</value>
+        </item>
+    </properties>
+</bean>
+```
+
+*   **경로 규칙**: `classpath:` 접두사를 사용하면 클래스패스 루트에서 탐색하고, 접두사가 없으면 애플리케이션의 베이스 경로(Base Path)를 기준으로 탐색합니다.
+*   **AsEL 지원**: 로드된 프로퍼티 파일 내부에서도 `%{...}` 토큰을 사용하여 다른 Aspectran 프로퍼티를 참조할 수 있으며, 이는 초기화 시점에 자동으로 치환됩니다.
+
+#### 4.2.4. 프로퍼티 체이닝과 캐싱 (Property Chaining & Caching)
+
+프로퍼티 값 정의 시 다른 프로퍼티 토큰(`%{...}`)을 참조하는 경우, Aspectran은 이를 **캐싱(Caching)**하여 일관성을 보장합니다.
+
+*   프로퍼티 정의 내에 **최소 하나 이상의 프로퍼티 토큰(`%{...}`)**이 포함되어 있는 경우, 최초 호출 시점에 전체 값을 평가하고 결과값을 내부 캐시에 보관하여 이후 재사용합니다.
+*   만약 빈 토큰(`#{...}`)이나 파라미터 토큰(`${...}`)만으로 구성된 경우에는 캐싱되지 않고 매번 새로 동적 평가됩니다.
+
+#### 4.2.5. AsEL `%{...}` 토큰 및 `@Value`를 통한 주입
+
+정의된 프로퍼티는 AsEL의 **`%{propertyName}`** 문법을 사용하여 프레임워크 전반에서 자유롭게 참조할 수 있습니다.
+
+*   **XML 설정에서 참조**: Bean의 프로퍼티나 Translet의 액션 파라미터에 주입할 수 있습니다.
+    ```xml
+    <bean id="fileUploader" class="com.example.FileUploader">
+        <!-- 프로퍼티 값을 주입 (기본값 문법 지원: %{propertyName:defaultValue}) -->
+        <property name="targetDir" value="%{upload.dir:/tmp}"/>
+    </bean>
+    ```
+
+*   **Java 코드에서 `@Value`로 주입**:
+    ```java
+    @Component
+    public class FileService {
+
+        private final String uploadDir;
+        private final long maxSize;
+
+        @Autowired
+        public FileService(
+                @Value("%{upload.dir:/tmp}") String uploadDir,
+                @Value("%{upload.maxSize:5242880}") long maxSize) {
+            this.uploadDir = uploadDir;
+            this.maxSize = maxSize;
+        }
+    }
+    ```
+
+### 4.3. Scheduler (스케줄러)
 
 Aspectran Scheduler는 애플리케이션 내의 특정 작업을 **정해진 시간에 또는 주기적으로 자동 실행**할 수 있도록 하는 강력한 기능입니다. 이 기능을 통해 개발자는 배치(Batch) 작업, 데이터 동기화, 리포트 생성 등 다양한 백그라운드 태스크를 Aspectran의 핵심 컴포넌트인 Translet을 사용하여 손쉽게 구현하고 관리할 수 있습니다.
 
-#### 4.2.1. 스케줄러의 역할 및 Quartz 기반 아키텍처
+#### 4.3.1. 스케줄러의 역할 및 Quartz 기반 아키텍처
 
 Aspectran Scheduler는 **Quartz 스케줄러 기반의 강력한 스케줄링 프레임워크를 코어에 내장**하고 있습니다. 개발자는 별도의 스케줄링 라이브러리를 직접 통합하는 복잡한 과정 없이, Aspectran이 제공하는 설정 규칙만으로 즉시 스케줄링 기능을 활성화하고 사용할 수 있습니다. 스케줄링의 복잡한 내부 동작을 신경 쓸 필요 없이, 자신이 가장 잘 아는 Translet을 사용하여 원하는 작업을 손쉽게 자동화할 수 있습니다.
 
-#### 4.2.2. 스케줄러 설정 방법
+#### 4.3.2. 스케줄러 설정 방법
 
 Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합니다.
 
@@ -1070,7 +1362,7 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
     }
     ```
 
-#### 4.2.3. 트리거 (Trigger) 타입 상세
+#### 4.3.3. 트리거 (Trigger) 타입 상세
 
 트리거는 잡(Job)이 실행될 시점을 정교하게 제어합니다. XML 방식의 `<trigger>` 요소와 어노테이션 방식의 `@SimpleTrigger`, `@CronTrigger` 어노테이션을 통해 설정할 수 있습니다.
 
@@ -1104,18 +1396,23 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
     @CronTrigger(expression = "0 30 9 ? * MON-FRI") // 매주 월요일부터 금요일까지, 오전 9시 30분
     ```
 
-#### 4.2.4. 스케줄 잡 로깅 및 모니터링
+#### 4.3.4. 스케줄 잡 로깅 및 모니터링
 
 스케줄링된 작업의 실행 상태를 확인하고 디버깅하는 것은 매우 중요합니다. Aspectran은 스케줄 잡의 실행 이벤트를 Logback을 통해 상세하게 기록할 수 있도록 지원합니다.
 
 *   **로깅 메커니즘**: `com.aspectran.core.scheduler.activity.ActivityJobReporter` 클래스를 통해 잡의 시작, 성공, 실패 등의 이벤트를 로깅합니다. 이 리포터는 Quartz의 `JobListener`와 연동되어 잡의 생명주기 동안 발생하는 주요 정보를 기록합니다.
 *   **Logback 설정 예제**: 스케줄러 로그를 별도의 파일로 분리하여 관리하려면 Logback의 `SiftingAppender`와 Aspectran의 `LoggingGroupDiscriminator`를 활용할 수 있습니다. 이를 통해 `LOGGING_GROUP` 값에 따라 별도의 스케줄러 로그 파일로 기록됩니다.
 
-### 4.3. 응답 처리 (Response Handling)
+### 4.4. 응답 처리 (Response Handling)
 
-Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하기 위해 크게 세 가지 방식을 제공합니다. 첫째, `dispatch`는 JSP나 Thymeleaf 같은 뷰 템플릿으로 처리를 위임하여 완전한 UI 페이지를 렌더링합니다. 둘째, `transform`은 선언적인 규칙을 통해 처리 결과를 JSON, XML 등 특정 데이터 형식으로 간편하게 변환합니다. 마지막으로, `RestResponse`는 Java 코드 내에서 HTTP 상태와 응답 데이터를 프로그래밍 방식으로 세밀하게 제어하여 동적인 REST API 응답을 구성할 때 사용됩니다.
+Aspectran은 Translet 처리 결과를 클라이언트에 반환하거나 다음 단계로 전달하기 위해 다양한 응답 처리 방식을 제공합니다:
+1.  **`dispatch`**: JSP나 Thymeleaf 같은 뷰 템플릿으로 처리를 위임하여 완전한 UI 화면을 렌더링합니다.
+2.  **`transform`**: 선언적인 규칙을 통해 처리 결과를 JSON, XML, Text 등의 데이터 형식으로 직렬화합니다.
+3.  **`forward`**: 현재 요청 컨텍스트와 속성을 유지한 채 서버 내부에서 다른 Translet으로 처리를 전달합니다.
+4.  **`redirect`**: 클라이언트 브라우저에 새로운 URL로 이동하도록 리다이렉트 지시를 내립니다.
+5.  **`RestResponse`**: Java 코드 내에서 HTTP 상태 코드, 헤더, 응답 본문을 동적으로 조합하여 반환합니다.
 
-#### 4.3.1. Dispatch: 뷰 템플릿 렌더링
+#### 4.4.1. Dispatch: 뷰 템플릿 렌더링
 
 `dispatch` 응답은 JSP, Thymeleaf, FreeMarker와 같은 외부 뷰 템플릿 엔진으로 처리를 위임하여 완전한 HTML 웹 페이지를 렌더링하는 데 사용됩니다. 이는 전통적인 웹 애플리케이션의 UI 화면을 구성하는 데 적합합니다.
 
@@ -1135,7 +1432,7 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
 </translet>
 ```
 
-#### 4.3.2. Transform: 데이터 형식 변환
+#### 4.4.2. Transform: 데이터 형식 변환
 
 `transform` 응답은 액션의 처리 결과를 특정 데이터 형식(JSON, XML, 텍스트 등)으로 변환하여 응답 본문을 직접 생성하는 데 사용됩니다. 이는 주로 REST API의 응답을 생성하거나, 데이터 연동을 위한 특정 형식의 텍스트를 반환할 때 매우 유용합니다.
 
@@ -1168,9 +1465,74 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
     </translet>
     ```
 
-이 두 가지 응답 방식을 이해하면, 웹 페이지와 REST API를 모두 지원하는 유연한 애플리케이션을 효과적으로 구축할 수 있습니다.
+#### 4.4.3. Forward: 내부 Translet 전달
 
-#### 4.3.3. RestResponse: 프로그래밍 방식의 REST 응답
+`forward` 응답은 클라이언트에게 응답을 바로 보내지 않고, **서버 내부에서 현재 요청을 다른 Translet으로 즉시 전달(Forwarding)**하여 처리를 위임하는 방식입니다.
+
+*   **요청 컨텍스트 유지**: 클라이언트의 새로운 HTTP 요청이 발생하는 것이 아니므로, 현재 `Activity`에 저장된 요청 속성(`translet.getAttribute()`)과 파라미터들이 그대로 대상 Translet으로 안전하게 전달됩니다.
+*   **선언적 XML 설정**:
+    ```xml
+    <translet name="/order/process">
+        <action bean="orderService" method="processPayment"/>
+        <!-- 결제 완료 후 내부 요약 Translet으로 포워딩 -->
+        <forward translet="/order/summary"/>
+    </translet>
+    ```
+*   **Java 코드에서 동적 포워딩**:
+    ```java
+    @RequestToPost("/login")
+    public void handleLogin(Translet translet) {
+        boolean success = authService.authenticate(translet);
+        if (success) {
+            translet.forward("/dashboard");
+        } else {
+            translet.setAttribute("loginError", "아이디 또는 비밀번호가 일치하지 않습니다.");
+            translet.forward("/login-form");
+        }
+    }
+    ```
+
+#### 4.4.4. Redirect: 클라이언트 리다이렉션과 FlashMap
+
+`redirect` 응답은 클라이언트 웹 브라우저에게 HTTP 리다이렉트 응답(기본 302 Found)을 보내 새로운 URL로 다시 요청하도록 지시하는 방식입니다. 주로 양식 제출 후 브라우저 새로고침으로 인한 중복 처리를 방지하는 **POST-Redirect-GET(PRG) 패턴**을 구현할 때 핵심적으로 사용됩니다.
+
+*   **선언적 XML 설정**:
+    ```xml
+    <translet name="/user/register" method="POST">
+        <action bean="userService" method="register"/>
+        <!-- 회원 가입 완료 후 환영 페이지로 리다이렉트 -->
+        <redirect path="/user/welcome"/>
+    </translet>
+    ```
+
+*   **Java 코드에서 동적 리다이렉트 및 FlashMap 연계**:
+    리다이렉트는 브라우저가 새로운 요청을 생성하므로 일반적인 요청 속성(`Request Scope`)은 소멸됩니다. Aspectran은 이 문제를 우아하게 해결하기 위해 1회성 데이터 임시 보관소인 **`FlashMap`**을 기본 제공합니다:
+
+    ```java
+    @RequestToPost("/user/signup")
+    public void registerUser(@NonNull Translet translet, UserRegistrationDto dto) {
+        userService.register(dto);
+
+        // 1. 다음 요청(리다이렉트된 페이지)에서만 1회성으로 사용할 알림 메시지 설정
+        FlashMap flashMap = translet.getOutputFlashMap();
+        flashMap.put("welcomeMsg", dto.getUsername() + "님, 가입을 환영합니다!");
+
+        // 2. 환영 페이지로 리다이렉트 (쿼리 파라미터 맵 전달도 가능)
+        translet.redirect("/user/welcome");
+    }
+
+    @RequestToGet("/user/welcome")
+    public void welcomePage(@NonNull Translet translet) {
+        // 이전 요청에서 전달된 FlashMap 데이터가 현재 요청 속성(Attribute)으로 자동 복원됨
+        if (translet.hasInputFlashMap()) {
+            Map<String, ?> flashData = translet.getInputFlashMap();
+            // 뷰 템플릿에서 바로 참조 가능
+        }
+        translet.dispatch("user/welcome");
+    }
+    ```
+
+#### 4.4.5. RestResponse: 프로그래밍 방식의 REST 응답
 
 `transform` 규칙이 선언적으로 응답을 생성하는 간편한 방법을 제공하는 반면, `RestResponse` 인터페이스는 Java 코드 내에서 프로그래밍 방식으로 RESTful 응답을 동적으로 구성할 수 있는 더 유연하고 강력한 방법을 제공합니다. 이 방식을 사용하면, 조건에 따라 HTTP 상태 코드, 헤더, 응답 데이터를 세밀하게 제어할 수 있습니다.
 
@@ -1194,7 +1556,7 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
         }
 
         @RequestToGet("/customers/${id}")
-        public RestResponse getCustomer(@Required Integer id) {
+        public RestResponse getCustomer(@NonNull Integer id) {
             Customer customer = repository.getCustomer(id);
             RestResponse response = new DefaultRestResponse();
             if (customer != null) {
@@ -1209,7 +1571,7 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
         }
 
         @RequestToPost("/customers")
-        public RestResponse addCustomer(@NonNull Translet translet, @Required Customer customer) {
+        public RestResponse addCustomer(@NonNull Translet translet, @NonNull Customer customer) {
             int id = repository.insertCustomer(customer);
             String resourceUri = translet.getActualRequestName() + "/" + id;
             // 생성된 리소스의 URI와 함께 201 Created 상태를 반환
@@ -1222,7 +1584,7 @@ Aspectran은 액션 메소드의 처리 결과를 클라이언트에 반환하�
 ## 5. Aspectran 구성 설정
 
 Aspectran 애플리케이션의 초기 구동 설정은 `com.aspectran.core.context.config.AspectranConfig` 객체를 통해 관리됩니다.
-이 설정은 주로 APON(Aspectran Parameter Object Notation) 형식의 `aspectran-config.apon` 파일로 로드되며,
+이 설정은 주로 APON(Aspectran Parameters Object Notation) 형식의 `aspectran-config.apon` 파일로 로드되며,
 이 파일을 통해 XML 형식의 설정 파일(`context.rules`로 지정)을 포함하거나 어노테이션 기반 설정을 활성화할 수 있습니다.
 
 ### 5.1. Aspectran 기본 구성 설정
@@ -1244,7 +1606,78 @@ XML 구성은 Bean, Translet, Aspect 등 애플리케이션의 핵심 구성 요
 
 자세한 내용은 [Aspectran XML 구성 설정](/ko/docs/guides/aspectran-xml-configuration/) 문서를 참고하세요.
 
-### 5.3. 서블릿 기반 웹 애플리케이션 구성
+### 5.3. 설정 파일 모듈화와 분할 구성 (`<append>`)
+
+엔터프라이즈 규모의 애플리케이션에서는 수많은 Bean과 Translet, AOP 규칙이 정의되므로 단일 XML 파일에서 모든 설정을 관리하면 가독성과 유지보수성이 크게 떨어집니다. Aspectran은 **`<append>`** 엘리먼트를 통해 여러 설정 파일들을 역할별, 기능별로 분할하고 루트 규칙 파일에서 유연하게 조립(`append`)할 수 있는 모듈화 메커니즘을 제공합니다.
+
+#### 1) `<append>` 지원 리소스 유형
+*   **`resource` 속성**: 클래스패스(JAR 내부 포함) 경로에서 설정 파일을 로드합니다. 가장 권장되는 표준 방식입니다.
+    ```xml
+    <append resource="config/common-beans.xml"/>
+    ```
+*   **`file` 속성**: 파일 시스템의 절대 경로 또는 상대 경로에서 설정 파일을 로드합니다. 서버 외부의 특정 경로 설정을 불러올 때 유용합니다.
+    ```xml
+    <append file="/etc/myapp/config/external-rules.xml"/>
+    ```
+*   **`url` 속성**: 원격 HTTP/HTTPS 주소로부터 설정 파일을 동적으로 로드합니다.
+    ```xml
+    <append url="https://config-server.internal/rules/common-rules.xml"/>
+    ```
+
+#### 2) 프로필과의 결합을 통한 환경별 모듈 로딩
+`<append>` 엘리먼트는 앞서 살펴본 `profile` 속성을 완벽하게 지원하므로, 특정 실행 환경에서만 필요한 전용 설정 모듈을 선택적으로 로드할 수 있습니다:
+
+```xml
+<!-- 운영(prod) 환경에서만 모니터링 관련 규칙 모듈을 포함 -->
+<append resource="config/prod/monitoring.xml" profile="prod"/>
+```
+
+#### 3) Aspectran 규칙 파일 명명 규칙에 따른 계층적 모듈 분할
+
+Aspectran은 설정의 **뼈대(Skeleton)**와 실제 비즈니스 및 자원을 담은 **내용(Content)**을 명확하게 구분하는 규칙 기반(Rule-based) 명명 규칙을 적용합니다:
+
+*   **구조적 진입점 (Skeleton - `*-rules.xml`)**: 애플리케이션의 설정 뼈대를 잡고 하위 모듈들을 조립(`append`)하는 진입점 파일입니다.
+    *   `aspectran-rules.xml`: 애플리케이션 전체의 루트 규칙 진입점
+    *   `web-rules.xml`: 웹 환경을 위한 규칙 진입점
+    *   `shell-rules.xml`, `daemon-rules.xml`: CLI 및 데몬 환경 전용 규칙 진입점
+*   **기능 및 도메인 모듈 (Content - 간결한 이름)**: 실제 트랜슬렛 그룹이나 특정 자원(Bean, DB 등)을 담고 있는 내용물 파일입니다. 상위 규칙 파일에서 포함되므로 불필요한 접미사 없이 의미 중심의 간결한 이름을 사용합니다.
+    *   `database.xml`, `server.xml`, `home.xml`, `monitoring.xml`, `order.xml` 등
+
+```text
+aspectran-config.apon (시스템 설정)
+└── aspectran-rules.xml (루트 규칙 진입점)
+    ├── database.xml (자원 정의)
+    ├── common-beans.xml (공통 빈 정의)
+    └── web-rules.xml (웹 환경 규칙 진입점)
+        ├── home.xml (홈 트랜슬렛 그룹)
+        └── order.xml (주문 트랜슬렛 그룹)
+```
+
+**루트 규칙 파일 예시 (`aspectran-rules.xml`):**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
+        "https://aspectran.com/dtd/aspectran-9.dtd">
+<aspectran>
+
+    <description>애플리케이션 루트 규칙 진입점</description>
+
+    <!-- 1. 자원 및 공통 인프라 설정 모듈 로드 -->
+    <append resource="config/database.xml"/>
+    <append resource="config/common-beans.xml"/>
+
+    <!-- 2. 공통 AOP 보안 및 인터셉터 규칙 로드 -->
+    <append resource="config/security-rules.xml"/>
+
+    <!-- 3. 실행 환경별 전용 규칙 진입점 조립 -->
+    <append resource="config/web-rules.xml"/>
+    <append resource="config/scheduler-rules.xml"/>
+
+</aspectran>
+```
+
+### 5.4. 서블릿 기반 웹 애플리케이션 구성
 
 전통적인 서블릿 컨테이너(Tomcat, Jetty 등) 환경에서 Aspectran을 구동하기 위해서는 `web.xml` 배포 서술자에 Aspectran의 `WebActivityServlet`과 `WebServiceListener`를 등록해야 합니다.
 
@@ -1254,7 +1687,7 @@ XML 구성은 Bean, Translet, Aspect 등 애플리케이션의 핵심 구성 요
 
 자세한 내용은 [서블릿 기반 웹 애플리케이션 구성](/ko/docs/guides/aspectran-servlet-configuration/) 문서를 참고하세요.
 
-### 5.4. 어노테이션과 XML 설정의 조합
+### 5.5. 어노테이션과 XML 설정의 조합
 
 대부분의 경우 어노테이션 기반의 컴포넌트 스캔을 기본으로 사용하고, 특정 Bean을 재정의하거나 외부 라이브러리를 등록할 때 XML 설정을 조합하여 사용하는 것이 일반적입니다.
 동일한 ID의 Bean이 둘 다에 정의된 경우, 나중에 로드되는 설정이 우선권을 가질 수 있으며, `<bean important="true">` 속성으로 덮어쓰기를 강제할 수 있습니다.
@@ -1309,10 +1742,14 @@ Aspectran은 SLF4J와 Logback을 기반으로 유연하고 강력한 로깅 시�
 
 *   [Aspectran 기본 구성 가이드](https://aspectran.com/ko/docs/guides/aspectran-configuration/)
 *   [Aspectran XML 구성 가이드](https://aspectran.com/ko/docs/guides/aspectran-xml-configuration/)
+*   [Aspectran 규칙 파일 명명 규칙](https://aspectran.com/ko/docs/guides/aspectran-rule-file-naming/)
+*   [Aspectran 프로퍼티 구성 및 활용](https://aspectran.com/ko/docs/guides/aspectran-properties/)
+*   [Aspectran 와일드카드 패턴 매칭 가이드](https://aspectran.com/ko/docs/guides/aspectran-wildcard-matching/)
 *   [서블릿 기반 웹 애플리케이션 구성](https://aspectran.com/ko/docs/guides/aspectran-servlet-configuration/)
 *   [Aspectran Beans](https://aspectran.com/ko/docs/guides/aspectran-beans/)
 *   [Aspectran AOP: 기능과 아키텍처](https://aspectran.com/ko/docs/guides/aspectran-aop/)
 *   [Aspectran의 대표 얼굴: Translet 이해하기](https://aspectran.com/ko/docs/guides/aspectran-translet/)
+*   [Aspectran Translet 실용 가이드](https://aspectran.com/ko/docs/guides/practical-guide-to-translets/)
 *   [Aspectran Scheduler: Translet을 이용한 작업 자동화](https://aspectran.com/ko/docs/guides/aspectran-scheduler/)
 *   [Aspectran 뷰(View) 기술](https://aspectran.com/ko/docs/guides/aspectran-view-technologies/)
 *   [Aspectran Profiles](https://aspectran.com/ko/docs/guides/aspectran-profiles/)
