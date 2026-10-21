@@ -9,7 +9,7 @@ subheadline: 아키텍처
 ## 1. 서론
 
 ### 1.1. Aspectran 프레임워크 개요
-Aspectran은 JVM 기반의 경량 고성능 프레임워크로, 단순한 명령줄 애플리케이션부터 복잡한 엔터프라이즈 웹 서비스에 이르기까지 다양한 유형의 애플리케이션을 효율적으로 구축할 수 있도록 설계되었습니다.
+Aspectran은 JVM 기반의 경량 고성능 프레임워크로, 단순한 명령줄 애플리케이션부터 복잡한 엔터프라이즈 웹 서비스에 이르기까지 다양한 유형의 애플리케이션을 효율적으로 구축할 수 있도록 설계되었습니다. 이 문서는 Aspectran의 내부 아키텍처를 프레임워크 개발자의 관점에서 심층적으로 분석하여, 핵심 컴포넌트, 설계 원칙, 그리고 확장 지점을 이해하는 데 도움을 줍니다.
 
 ### 1.2. 핵심 설계 원칙
 Aspectran의 아키텍처는 다음과 같은 핵심 설계 원칙을 기반으로 합니다:
@@ -164,7 +164,7 @@ Aspectran의 Activity 아키텍처는 **요청 처리 모델의 핵심**이며, 
 `com.aspectran.core.activity.process` 패키지는 `Activity` 내에서 처리 흐름을 정의하고 실행하는 데 핵심적인 역할을 합니다.
 
 *   **Action의 개념**: Action은 `com.aspectran.core.activity.process.action.Executable` 인터페이스를 구현하는 모든 명령을 의미하며, `ActionList`와 `ContentList` 내에 계층적으로 구성되어 트랜슬릿의 전체 처리 흐름을 정의합니다.
-*   **Action의 종류**: `InvokeAction`, `AnnotatedAction`, `ChooseAction`, `EchoAction`, `HeaderAction`, `IncludeAction` 등 다양한 내장 Action이 제공됩니다.
+*   **Action의 종류**: `InvokeAction`, `MethodAction`, `ChooseAction`, `EchoAction`, `HeaderAction`, `IncludeAction` 등 다양한 내장 Action이 제공됩니다.
 *   **Action 처리 결과의 구조**: Action 실행 결과는 `com.aspectran.core.activity.process.result` 패키지의 클래스들을 통해 계층적으로 관리됩니다.
     *   **`ActionResult`**: 단일 `Executable` Action 실행의 결과를 캡슐화합니다.
     *   **`ContentResult`**: 논리적인 Action 그룹의 결과에 대한 컨테이너입니다. (예: `<contents>` 블록)
@@ -229,9 +229,9 @@ Aspectran의 AOP는 핵심 실행 모델인 `Activity`의 실행 흐름과 Bean 
     *   **`AbstractBeanProxy`**: 모든 AOP 프록시 객체의 기반 클래스입니다. 메소드 호출 시 `@Advisable` 또는 `@Async` 어노테이션이 있는지 먼저 검사하여, 어드바이스가 필요 없는 수많은 내부 메소드 호출의 오버헤드를 원천적으로 제거함으로써 **성능을 최적화**합니다.
     *   **`ProxyActivity`**: AOP 어드바이스 실행만을 위한 경량 `Activity`입니다. **독립 모드**와 **래핑 모드**를 통해 동기/비동기 환경 모두에서 유연하고 안정적인 컨텍스트 관리를 가능하게 합니다. 특히 `@Async` 메소드 호출 시 `ProxyActivity`를 통해 컨텍스트를 공유합니다.
 
-### 7.2. 세션 관리
+### 7.2. 세션 관리 (`com.aspectran.core.component.session`)
 
-Aspectran Session Manager는 웹, 셸, 데몬 등 다양한 실행 환경에서 일관된 방식으로 상태를 유지할 수 있도록 **환경에 비종속적인 고성능 세션 관리 컴포넌트**(`com.aspectran.core.component.session`)를 제공합니다.
+Aspectran Session Manager는 웹, 셸, 데몬 등 다양한 실행 환경에서 일관된 방식으로 상태를 유지할 수 있도록 **환경에 비종속적인 고성능 세션 관리 컴포넌트**를 제공합니다.
 
 *   **핵심 아키텍처**: `SessionManager`, `Session`, `SessionCache` (메모리 캐시), `SessionStore` (영속 저장소), `HouseKeeper` (만료 세션 정리), `SessionIdGenerator`로 구성됩니다.
 *   **교체 가능한 세션 저장소 (`SessionStore`)**: `FileSessionStore` (파일 시스템) 또는 `LettuceSessionStore` (Redis 기반, **클러스터링 지원**)를 설정에 따라 선택하여 사용할 수 있습니다.

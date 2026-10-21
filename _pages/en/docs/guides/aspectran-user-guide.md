@@ -76,7 +76,7 @@ Aspectran provides two main ways to define a Translet:
 
     *   **Activity Classes and Action Methods**:
         In Aspectran, it is a standard convention to suffix classes that handle web requests with **`*Activity`** (e.g., `UserActivity`, `ReportActivity`, `OrderActivity`). Within an Activity class, multiple Action methods can be defined for different business operations, and these methods are registered as Actions to be invoked by the Translet.
-        Methods annotated with request mapping annotations such as `@RequestToGet` and `@RequestToPost` operate internally as core Actions executed via `InvokeAction` (`AnnotatedAction`).
+        Methods annotated with request mapping annotations such as `@RequestToGet` and `@RequestToPost` operate internally as core Actions executed via `MethodAction`.
 
     *   **The `@Action` Annotation and Model Resolution**:
         You can assign an explicit unique identifier to an Action by declaring the **`@Action("actionId")`** annotation on the action method.
@@ -186,8 +186,8 @@ A Translet is not merely a request-mapping object, but a **workflow pipeline blu
 ##### 1. Four Standard Action Types
 Work units executed within a Translet are categorized into four standard Action types:
 
-*   **Invoke Action (`<invoke>`)**:
-    Invokes a specific business method of a Bean registered in the IoC container. In Java annotation-based configurations, action methods inside Activity classes combine with `@RequestTo*` to operate internally as `InvokeAction` (`AnnotatedAction`), and can be assigned unique IDs via `@Action("actionId")`. The action result is saved in `ProcessResult` using the Action ID as its key, seamlessly integrating with view template models.
+*   **Invoke Action (`<action>`, `<invoke>`) / Method Action**:
+    Invokes a specific business method of a Bean registered in the IoC container, or directly executes an action method within an Activity class. In XML configuration, it is defined as an `InvokeAction` via `<action>` or `<invoke>` elements. In Java annotation-based configurations, action methods inside Activity classes combine with `@RequestTo*` to operate internally as `MethodAction`, and can be assigned unique IDs via `@Action("actionId")`. The action result is saved in `ProcessResult` using the Action ID as its key, seamlessly integrating with view template models.
     ```xml
     <action id="order" bean="orderService" method="createOrder"/>
     ```

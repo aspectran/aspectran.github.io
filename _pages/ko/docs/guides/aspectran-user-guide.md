@@ -76,7 +76,7 @@ Aspectran은 Translet을 정의하는 두 가지 주요 방법을 제공합니�
 
     *   **Activity 클래스와 Action 메서드**:
         Aspectran에서는 웹 요청을 처리하는 컴포넌트의 클래스명에 **`*Activity`** 접미사(예: `UserActivity`, `ReportActivity`, `OrderActivity`)를 붙이는 것을 표준 관례로 삼습니다. 하나의 Activity 클래스 안에는 비즈니스 단위별로 여러 Action 메서드가 정의되며, 이 메서드들이 Translet에서 호출할 Action으로 등록됩니다.
-        `@RequestToGet`, `@RequestToPost` 등 요청 매핑 어노테이션이 부여된 메서드는 실제 내부적으로 `InvokeAction`(`AnnotatedAction`)에 의해 실행되는 핵심 Action으로 작동합니다.
+        `@RequestToGet`, `@RequestToPost` 등 요청 매핑 어노테이션이 부여된 메서드는 실제 내부적으로 `MethodAction`에 의해 실행되는 핵심 Action으로 작동합니다.
 
     *   **`@Action` 어노테이션과 결과값 모델 활용**:
         액션 메서드에 **`@Action("actionId")`** 어노테이션을 선언하여 해당 Action에 고유한 ID를 명시적으로 부여할 수 있습니다.
@@ -186,8 +186,8 @@ Translet은 단순한 요청 매핑 객체가 아니라, 요청 수신부터 응
 ##### 1. 4대 표준 Action 유형
 Translet 내부에서 실행되는 작업 단위인 Action은 크게 네 가지 표준 유형으로 나뉩니다:
 
-*   **Invoke Action (`<invoke>`)**:
-    IoC 컨테이너에 등록된 Bean의 특정 비즈니스 메서드를 호출합니다. Java 어노테이션 기반에서는 Activity 클래스 내의 액션 메서드가 `@RequestTo*`와 결합하여 내부적으로 `InvokeAction`(`AnnotatedAction`)으로 등록되며, `@Action("actionId")`를 통해 고유한 Action ID를 부여받습니다. Action의 실행 결과는 Action ID를 키로 삼아 `ProcessResult`에 저장되어 후속 처리나 뷰 템플릿 모델로 자연스럽게 연결됩니다.
+*   **Invoke Action (`<action>`, `<invoke>`) 및 Method Action**:
+    IoC 컨테이너에 등록된 Bean의 특정 비즈니스 메서드를 호출하거나, Activity 클래스 내의 액션 메서드를 실행합니다. XML 설정에서는 `<action>` 또는 `<invoke>` 태그를 통해 `InvokeAction`으로 정의되며, Java 어노테이션 기반에서는 Activity 클래스 내의 액션 메서드가 `@RequestTo*`와 결합하여 내부적으로 `MethodAction`으로 등록됩니다. 액션 메서드에는 `@Action("actionId")`를 통해 고유한 Action ID를 부여할 수 있으며, Action의 실행 결과는 Action ID를 키로 삼아 `ProcessResult`에 저장되어 후속 처리나 뷰 템플릿 모델로 자연스럽게 연결됩니다.
     ```xml
     <action id="order" bean="orderService" method="createOrder"/>
     ```

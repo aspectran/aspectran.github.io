@@ -69,9 +69,11 @@ Action들은 설정 파일(XML/APON)의 `<action>` 태그에 대응하는 `Actio
         </choose>
         ```
 
--   **`AdviceAction`**: AOP(관점 지향 프로그래밍)의 어드바이스(Advice) 빈의 메서드를 실행하는 특수한 `InvokeAction`입니다. AOP 컨텍스트에서 `@Before`, `@After` 등과 같은 어드바이스 로직을 실행할 때 내부적으로 사용됩니다.
+-   **`AdviceAction`**: XML 설정 기반으로 정의된 AOP(관점 지향 프로그래밍) 어드바이스(Advice) 빈의 메서드를 실행하는 특수한 `InvokeAction`입니다.
 
--   **`AnnotatedAction`**: `@RequestToGet`, `@Action` 등 특정 Aspectran 어노테이션으로 식별된 빈의 메서드를 실행하는 Action입니다. XML 규칙 대신 어노테이션 기반의 CoC(Convention over Configuration)를 가능하게 합니다.
+-   **`MethodAction`**: `@RequestToGet`, `@Action` 등 Aspectran 어노테이션으로 매핑된 컴포넌트의 액션 메서드를 직접 실행하는 Action입니다. Activity 컨텍스트의 데이터를 기반으로 파라미터 바인딩과 타입 변환을 자동으로 수행하며, XML 규칙 대신 어노테이션 기반의 CoC(Convention over Configuration)를 가능하게 합니다.
+
+-   **`MethodAdviceAction`**: `@Before`, `@After`, `@Around`, `@Finally`, `@ExceptionThrown` 등 AOP 어드바이스 어노테이션이 부여된 메서드를 실행하는 특수한 `MethodAction`입니다. AOP Aspect 컨텍스트에서 어드바이스 로직을 실행할 때 내부적으로 사용됩니다.
 
 ## 3. Action 처리 결과의 구조와 활용
 

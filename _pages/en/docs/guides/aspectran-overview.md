@@ -87,7 +87,7 @@ sequenceDiagram
     Activity->>Translet: Resolve Translet matching request name/path
     Activity->>Aspect: Execute Before Aspect (Authentication, Security, Preprocessing)
     loop Sequential Action Pipeline Execution
-        Activity->>Action: Execute Action (Invoke / Annotated / Include / Echo / Header)
+        Activity->>Action: Execute Action (Invoke / Method / Include / Echo / Header)
         Note over Action: Bean dependency injection, AsEL evaluation, business logic
     end
     Activity->>Aspect: Execute After Aspect (Logging, Transaction commit, etc.)
@@ -108,7 +108,7 @@ Aspectran operates based on several core concepts that provide its flexibility a
 *   **Bean**: An object managed by Aspectran's IoC container. Application components (services, DAOs, utilities, etc.) are registered as beans, their lifecycle is managed by the framework, and they are provided where needed through dependency injection. It supports singleton, prototype, request, and session scopes, allowing for flexible object lifecycle management.
 *   **Action**: An individual unit of work executed within an `Activity`, whose execution rules are defined in a `Translet`. It performs specific functions such as database queries, business logic method calls, or delegating to other Translets. Aspectran supports the following primary action types to compose modular business logic:
     *   **`InvokeAction`**: An action that explicitly calls a method on a bean to execute business logic and receive results.
-    *   **`AnnotatedAction`**: An action that conveniently executes business logic by invoking methods annotated with `@Action`.
+    *   **`MethodAction`**: An action that executes business logic by invoking action methods annotated with `@RequestTo*` or `@Action`, providing flexible parameter binding.
     *   **`IncludeAction`**: An action that invokes another Translet as a sub-task and synthesizes its results into the current context, maximizing composability and reusability across Translets.
     *   **`EchoAction`**: An action that directly records static attributes or evaluated expressions into the action result map.
     *   **`HeaderAction`**: An action that dynamically adds or modifies response headers (e.g., HTTP headers).

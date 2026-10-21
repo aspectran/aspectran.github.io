@@ -87,7 +87,7 @@ sequenceDiagram
     Activity->>Translet: 요청 이름 또는 매핑 경로에 일치하는 Translet 탐색
     Activity->>Aspect: Before Aspect 실행 (인증, 보안, 사전 가공)
     loop 액션 파이프라인 순차 실행
-        Activity->>Action: Action 실행 (Invoke / Annotated / Include / Echo / Header)
+        Activity->>Action: Action 실행 (Invoke / Method / Include / Echo / Header)
         Note over Action: Bean 의존성 주입, AsEL 표현식 평가, 비즈니스 로직 수행
     end
     Activity->>Aspect: After Aspect 실행 (로깅, 트랜잭션 커밋 등)
@@ -108,7 +108,7 @@ Aspectran은 몇 가지 핵심 개념을 기반으로 동작하며, 이들은 �
 *   **Bean (빈)**: Aspectran의 IoC 컨테이너에 의해 관리되는 객체입니다. 애플리케이션의 구성 요소(서비스, DAO, 유틸리티 등)는 빈으로 등록되어 프레임워크에 의해 생명주기가 관리되고, 필요한 곳에 의존성 주입을 통해 제공됩니다. 싱글톤, 프로토타입, 요청, 세션 스코프를 지원하여 다양한 객체 생명주기 관리가 가능합니다.
 *   **Action (액션)**: `Activity` 내에서 실행되는 개별적인 작업 단위로, 그 실행 규칙은 `Translet`에 정의되어 있습니다. 데이터베이스 조회, 비즈니스 로직 처리, 다른 Translet 호출 등 특정 기능을 수행합니다. Aspectran은 다음과 같은 주요 액션 유형을 지원하여 모듈식 비즈니스 로직을 구성합니다:
     *   **`InvokeAction`**: 빈(Bean)의 메서드를 명시적으로 호출하여 비즈니스 로직을 실행하고 결과를 반환받는 액션입니다.
-    *   **`AnnotatedAction`**: `@Action` 어노테이션이 부여된 메서드를 호출하여 간결하게 비즈니스 로직을 실행하는 액션입니다.
+    *   **`MethodAction`**: `@RequestTo*` 또는 `@Action` 어노테이션이 부여된 액션 메서드를 호출하여 간결하고 유연하게 비즈니스 로직을 실행하는 액션입니다.
     *   **`IncludeAction`**: 다른 Translet을 서브 작업으로 호출하여 그 결과를 현재 컨텍스트에 합성하는 액션으로, Translet 간의 조합성과 재사용성을 극대화합니다.
     *   **`EchoAction`**: 설정에 정의된 정적 속성이나 표현식 평가 결과를 결과 맵에 직접 기록하는 액션입니다.
     *   **`HeaderAction`**: 응답 헤더(HTTP 헤더 등)를 동적으로 추가하거나 수정하는 액션입니다.
