@@ -4,7 +4,10 @@ teaser: This is a guide document for developers who are new to Aspectran.
 subheadline: Core Guides
 ---
 
-Aspectran is a lightweight, high-performance framework based on the JVM, designed to efficiently build a wide range of applications, from simple command-line applications to complex enterprise web services. This guide is written to help developers new to Aspectran gain a deep understanding of the framework's core concepts and to cope with various situations that may arise while developing real applications.
+{% capture info_message %}
+Aspectran is a lightweight, high-performance JVM-based framework designed to efficiently build various types of applications, from simple command-line tools to complex enterprise web services. This guide is designed to help developers new to Aspectran systematically understand the framework's core philosophy and architecture, and properly leverage its key components to build applications.
+{% endcapture %}
+{% include alert.liquid info=info_message %}
 
 ## 1. Introduction to Aspectran
 
