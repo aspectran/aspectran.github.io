@@ -23,7 +23,7 @@ aspectran:
       cards:
         - title: Official User Guide
           url: /en/docs/guides/aspectran-user-guide/
-          description: The definitive manual for all Aspectran features, component management, and advanced configuration.
+          description: A comprehensive guide to understanding Aspectran's core philosophy, architecture, and key components.
         - title: Technical Overview
           url: /en/docs/guides/aspectran-overview/
           description: Understand the core design patterns and how Aspectran achieves true environmental independence.
