@@ -438,136 +438,382 @@ Aspectran은 Bean의 생성 및 소멸 시점에 특정 로직을 실행할 수 
 
 ### 3.3. AOP (관점 지향 프로그래밍)
 
-AOP(Aspect-Oriented Programming)는 로깅, 트랜잭션 관리, 보안, 캐싱 등 애플리케이션 전반에 걸쳐 반복적으로 나타나는 공통 기능(횡단 관심사)을 핵심 비즈니스 로직과 분리하여 모듈화하는 프로그래밍 패러다임입니다. Aspectran의 AOP는 프레임워크의 핵심 실행 모델인 `Activity`의 실행 흐름과 Bean 메소드 호출에 깊숙이 통합된 독자적인 모델을 가지고 있습니다.
+**AOP(Aspect-Oriented Programming, 관점 지향 프로그래밍)**는 로깅, 보안, 트랜잭션 관리, 예외 처리, 응답 헤더 주입 등 애플리케이션 전반에 걸쳐 반복적으로 나타나는 **횡단 관심사(Cross-cutting Concerns)**를 핵심 비즈니스 로직과 분리하여 모듈화하는 핵심 프로그래밍 패러다임입니다.
+
+Spring AOP가 주로 빈(Bean) 메서드 호출을 프록시로 가로채는 단일 방식에 의존하는 것과 달리, **Aspectran**은 프레임워크의 요청 처리 핵심 단위인 **`Activity`의 생명주기(Translet Lifecycle)**와 **`Bean` 메서드 인터셉션**이라는 두 개의 명확한 축을 기반으로 고도로 최적화된 **실용적 AOP 아키텍처**를 제공합니다.
 
 #### 3.3.1. AOP의 필요성
 
-애플리케이션을 개발하다 보면 여러 모듈에서 반복적으로 나타나는 코드들이 있습니다. 예를 들어, 모든 서비스 메소드 시작 전에 로그를 남기거나, 데이터베이스 작업을 트랜잭션으로 묶는 것 등이 그렇습니다. 이러한 공통 기능들을 비즈니스 로직 코드 안에 직접 작성하면 코드가 복잡해지고, 변경이 어려워지며, 재사용성이 떨어집니다. AOP는 이러한 문제를 해결하여 비즈니스 로직을 깔끔하게 유지하고, 공통 기능을 한 곳에서 관리할 수 있도록 돕습니다.
+애플리케이션을 개발하다 보면 여러 모듈에서 공통적으로 필요한 부가 기능들이 존재합니다. 예를 들어 서비스 메서드 진입 시의 매개변수 유효성 검증이나 보안 인증, 데이터베이스 작업의 트랜잭션 커밋과 롤백, 웹 응답 보안 헤더 설정 등이 대표적입니다.
 
-#### 3.3.2. Aspectran AOP의 주요 개념
+이러한 공통 기능들을 비즈니스 로직 코드 내에 직접 작성하면 다음과 같은 문제들이 발생합니다:
+*   **코드 중복 및 복잡도 증가**: 동일하거나 유사한 부가 기능 코드가 수많은 클래스와 메서드에 중복되어 전체적인 가독성을 떨어뜨립니다.
+*   **유지보수성 저하**: 공통 정책이 변경될 경우 관련된 모든 비즈니스 코드를 일일이 찾아 수정해야 하며, 누락으로 인한 잠재적 오류 위험이 큽니다.
+*   **핵심 비즈니스 관심사 흐림**: 순수한 비즈니스 로직과 부가 인프라 코드가 뒤섞여 코드의 본래 목적과 흐름을 파악하기 어려워집니다.
 
-*   **Join Point (조인 포인트)**: `Advice`가 적용될 수 있는 애플리케이션 실행 중의 특정 지점입니다. Aspectran에서는 주로 Translet의 실행 단위(Activity 실행) 또는 Bean 메소드 실행이 Join Point가 됩니다.
-    *   **Activity 실행**: Translet 규칙에 따라 요청을 처리하는 `Activity`의 실행 전/후, 예외 발생 시 등 전체 흐름에 개입할 수 있습니다. 로깅, 트랜잭션, 인증 등 요청 처리 전반에 걸쳐 필요한 공통 기능을 효과적으로 모듈화할 수 있습니다.
-    *   **Bean 메소드 실행**: 특정 Bean의 메소드 실행을 Join Point로 삼을 수 있습니다.
+AOP는 이러한 횡단 관심사들을 독립된 모듈인 **Aspect(애스펙트)**로 캡슐화하고 원하는 지점에 선언적으로 적용함으로써, 비즈니스 로직의 순수성을 유지하고 시스템 전체의 결합도를 획기적으로 낮출 수 있도록 돕습니다.
 
-*   **Pointcut (포인트컷)**: `Advice`를 적용할 대상을 정밀하게 지정하는 표현식입니다. Aspectran에서는 설정 파일의 `<aspect>` 규칙 내 `<joinpoint>` 엘리먼트를 통해 선언적으로 Pointcut을 정의합니다.
-    *   **포인트컷 표현식 구조**: `transletNamePattern[@beanOrClassPattern][^methodNamePattern]` 형태를 가집니다.
-        *   `transletNamePattern`: Translet 이름 패턴 (예: `/user/*`)
-        *   `@beanOrClassPattern`: Bean ID 또는 클래스 이름 패턴 (예: `@userService`)
-        *   `^methodNamePattern`: 메소드 이름 패턴 (예: `^get*`)
-    *   **다양한 패턴 형식 예시**:
-        *   모든 Translet에서 특정 Bean의 메소드를 대상: `*: @someService^execute*`
-        *   특정 Translet의 특정 Bean 메소드를 대상: `/user/list@userService^get*`
-        *   특정 Translet 자체를 대상: `/user/*`
-    *   **포함 및 제외 규칙**: `+` 접두사(포함)와 `-` 접두사(제외)를 사용하여 더욱 정교한 제어가 가능합니다.
+#### 3.3.2. Aspectran AOP의 2대 아키텍처 축
 
-*   **Advice (어드바이스)**: Join Point에서 실제로 수행될 공통 기능 코드입니다. Aspectran은 다음과 같은 Advice 타입을 지원합니다:
-    *   `@Before`: Join Point 실행 전에 수행됩니다.
-    *   `@After`: Join Point가 성공적으로 실행된 후에 수행됩니다.
-    *   `@Around`: Join Point 실행 전후를 모두 감싸며, Join Point의 실행 여부를 제어할 수 있습니다.
-    *   `@ExceptionThrown`: Join Point 실행 중 예외가 발생했을 때 수행됩니다.
-    *   `@Finally`: Join Point의 성공/실패 여부와 관계없이 항상 수행됩니다.
-    *   **Advice의 구현**: Advice 로직은 특정 Bean의 메소드로 구현됩니다. Aspectran은 Join Point 대상에 따라 최적화된 위치에서 Advice를 실행합니다.
+Aspectran AOP는 적용 목적과 대상에 따라 두 가지 차원의 실행 모델을 제공합니다:
 
-*   **Aspect (애스펙트)**: `Advice`와 `Pointcut`을 결합한 모듈입니다. 설정 파일의 `<aspect>` 규칙 또는 `@Aspect` 어노테이션을 사용하여 정의합니다. 여러 공통 기능을 하나의 모듈로 캡슐화하여 관리할 수 있습니다.
+| 아키텍처 축 | 대상 (Target) | 동작 원리 | 주요 적용 사례 |
+| :--- | :--- | :--- | :--- |
+| **Activity 생명주기 AOP**<br/>*(Translet Lifecycle)* | `Activity` (Translet 요청 처리 전체 흐름) | 프록시가 전혀 개입하지 않으며, `CoreActivity` 엔진이 생명주기 단계에 따라 Aspect를 직접 순차 실행 (Non-Proxy Core Interception) | 웹 보안 응답 헤더 주입, 전역 인코딩/뷰 디스패처 설정 주입, 요청 전/후 처리, 인증/인가, 글로벌 예외 처리 |
+| **Bean 프록시 AOP**<br/>*(Method Interception)* | Bean의 메서드 실행 (`target="method"`) | 런타임 동적 프록시(`AbstractBeanProxy`, Javassist/JDK)가 `@Advisable` 어노테이션이 선언된 메서드 호출을 가로채 Advice 실행 | 선언적 데이터베이스 트랜잭션, 비즈니스 메서드 실행 시간 측정, 메서드 파라미터 감사(Audit) 로깅 |
 
-#### 3.3.3. Weaving 메커니즘: 지능적인 동적 프록시
+##### 1) Activity 생명주기 AOP (Non-Proxy Core Interception)
+*   클라이언트의 모든 요청(Web, Shell, Daemon)은 하나의 `Activity` 인스턴스에 의해 실행됩니다.
+*   `Activity` 엔진은 요청의 시작부터 종료까지 정해진 생명주기 단계를 거치며, 해당 요청에 매칭되는 Aspect들을 프록시 객체 생성이나 리플렉션 오버헤드 없이 **프레임워크 코어 엔진 레벨에서 직접 순차적으로 실행**합니다.
+*   **오버헤드 제로**: 프록시 생성이 개입하지 않으므로 성능 저하가 전혀 발생하지 않으며, 보안 응답 헤더(`<headers>`), 기본 문자 인코딩 및 뷰 디스패처(`<settings>`), 글로벌 예외 매핑(`<exception>`) 등 웹 요청 전반에 걸친 환경을 선언적으로 통제할 수 있습니다.
 
-Aspectran은 AOP를 적용하기 위해 **런타임에 동적 프록시(Dynamic Proxy)**를 사용합니다. 이 프록시는 매우 효율적이고 지능적으로 동작합니다.
+##### 2) Bean 프록시 AOP (Selective Dynamic Proxying)
+*   서비스 계층의 개별 비즈니스 메서드 단위로 AOP를 적용할 때는 런타임 동적 프록시 메커니즘을 사용합니다.
+*   Aspectran은 Javassist(`JavassistBeanProxy`) 또는 표준 JDK Dynamic Proxy(`JdkBeanProxy`)를 기반으로 프록시 객체를 생성합니다.
+*   **`@Advisable` 기반 선택적 프록싱 (핵심 성능 최적화)**: Aspectran의 AOP 프록시는 모든 메서드 호출을 무차별적으로 가로채지 않습니다. 오직 **`@Advisable` 또는 `@Async` 어노테이션이 선언된 메서드에 대해서만 Pointcut 검사 및 Advice 체인을 가동**합니다. 어노테이션이 선언되지 않은 일반 메서드는 프록시 체인을 거치지 않고 원본 객체의 메서드가 즉시 직접 호출되므로, 불필요한 프록시 오버헤드를 원천적으로 제거합니다.
 
-*   **선택적 어드바이스 적용으로 성능 최적화**: Aspectran의 AOP 프록시는 무조건 모든 메소드 호출을 가로채지 않습니다. 대신, 메소드에 `@Advisable` 어노테이션이 붙어 있는 경우에만 AOP 로직을 수행합니다. 이를 통해 불필요한 프록시 오버헤드를 원천적으로 제거하여 시스템 성능을 크게 향상시킵니다.
-*   **프록시 생성 방식**: 기본적으로 Javassist를 사용하여 프록시 객체를 생성하며, 인터페이스뿐만 아니라 일반 클래스에 대해서도 프록시를 만들 수 있습니다. 대상 Bean이 인터페이스를 구현한 경우 JDK 동적 프록시를 사용하도록 선택할 수도 있습니다.
+#### 3.3.3. Aspectran AOP의 핵심 구성 요소
 
-#### 3.3.4. 어노테이션 지원
+##### 1. Join Point (조인 포인트)
+Advice가 적용될 수 있는 애플리케이션 실행 흐름 상의 특정 지점입니다:
+*   **Activity 실행 (`target="activity"`, 기본값)**: Translet의 요청 처리 생명주기 전체(Before, Translet Action, After, Thrown, Finally)가 대상이 됩니다.
+*   **Bean 메서드 실행 (`target="method"`)**: `@Advisable`이 선언된 특정 Bean 메서드의 실행 전/후 및 예외 발생 시점이 대상이 됩니다.
 
-`com.aspectran.core.component.bean.annotation` 패키지를 통해 XML 설정 없이 어노테이션만으로도 AOP를 포함한 다양한 Bean 설정을 할 수 있습니다. 주요 어노테이션은 다음과 같습니다:
+##### 2. Pointcut (포인트컷)
+Advice를 어디에 적용할지 정밀하게 지정하는 대상 필터링 규칙입니다. 설정 파일의 `<aspect>` 규칙 내 `<joinpoint>` 요소 또는 `@Joinpoint(pointcut = ...)` 어노테이션을 통해 선언적으로 정의합니다.
 
-*   `@Component`, `@Bean`: Aspect를 Bean으로 등록합니다.
-*   `@Aspect`: 해당 Bean이 Aspect임을 정의합니다. `id` 속성으로 ID를 부여하고, `order` 속성으로 적용 우선순위를 지정할 수 있습니다.
-*   `@Joinpoint`: 어드바이스를 적용할 대상을 지정하는 Pointcut을 설정합니다.
-*   `@Before`, `@After`, `@Around`, `@Finally`, `@ExceptionThrown`: 각 어드바이스 타입을 정의하는 메소드에 사용됩니다.
-*   `@Advisable`: AOP 어드바이스를 적용할 메소드임을 명시적으로 선언합니다.
-
-#### 3.3.5. 실용적인 AOP 활용 예제: 선언적 트랜잭션
-
-AOP의 가장 강력한 활용 사례 중 하나는 **선언적 트랜잭션 관리**입니다. 서비스 레이어의 비즈니스 로직 코드에 트랜잭션 시작, 커밋, 롤백 코드를 직접 작성하는 대신, AOP를 사용하여 해당 로직들을 메소드 외부에서 투명하게 적용하는 방식입니다.
-
-Aspectran에서는 트랜잭션의 실제 로직을 담은 **어드바이스 Bean**과, 이를 언제 어디에 적용할지 결정하는 **Aspect**를 분리하여 유연하고 재사용 가능한 설계를 할 수 있습니다.
-
-*   **어노테이션 기반 예시**: `SqlSessionAdvice`를 상속받아 Aspect를 정의하고 `@Joinpoint`로 대상을 지정합니다.
-
-    ```java
-    // SimpleTxAspect.java (트랜잭션 Aspect 정의 예시)
-    @Component
-    @Aspect(order = 0)
-    @Joinpoint(pointcut = "+: **@simpleSqlSession") // simpleSqlSession 빈의 모든 public 메소드에 적용
-    public class SimpleTxAspect extends SqlSessionAdvice {
-        @Autowired
-        public SimpleTxAspect(SqlSessionFactory sqlSessionFactory) {
-            super(sqlSessionFactory);
-        }
-
-        @Before
-        public void open() {
-            super.open();
-        }
-
-        @After
-        public void commit() {
-            super.commit();
-        }
-
-        @Finally
-        public void close() {
-            super.close();
-        }
-    }
-
-    // OrderService.java (비즈니스 로직)
-    @Component
-    @Bean(id = "simpleSqlSession") // Aspect의 Pointcut 대상이 되도록 ID 지정
-    public class OrderService extends DefaultSqlSessionAgent {
-        public OrderService() {
-            super("simpleTxAspect");
-        }
-
-        public void createOrder(Order order) {
-            // 이 메소드 호출 시 'simpleTxAspect'가 동작하여 트랜잭션이 자동으로 관리됩니다.
-            insert("app.demo.mapper.OrderMapper.insertOrder", order);
-        }
-    }
+*   **포인트컷 표현식 구조**:
+    ```text
+    transletPattern[@beanOrClassPattern][^methodNamePattern]
     ```
+    구분자(`@`, `^`)를 기준으로 3개의 영역으로 구성되며, 필요한 영역만 선택적으로 조합할 수 있습니다:
+    *   **Translet 패턴** (`@` 앞): 대상 Translet의 이름 또는 요청 URI 경로 패턴 (예: `/user/**`, `/api/v1/*`). 생략 시 모든 Translet을 대상으로 합니다.
+    *   **Bean ID 패턴** (`@` 뒤, `^` 앞): 대상 Bean의 식별자(ID) 패턴 (예: `@userService`, `@*Service`).
+    *   **Class 패턴** (`@class:` 뒤, `^` 앞): 대상 클래스의 완전한 패키지명/클래스명 패턴. 클래스 타입을 타겟팅할 때는 **반드시 `class:` 접두사**를 붙여야 합니다 (예: `@class:com.mycompany.service.*`, `@class:*.UserServiceImpl`).
+    *   **Method 패턴** (`^` 뒤): 대상 메서드 이름 패턴 (예: `^get*`, `^save*`, `^execute*`).
 
-*   **XML 기반 예시**: 어드바이스 Bean과 Aspect를 XML로 명확하게 분리하여 정의합니다.
+*   **다양한 패턴 형식 예시**:
+    *   `/order/**`: `/order/` 하위 모든 Translet의 Activity 생명주기를 대상
+    *   `@someService^execute*`: 모든 Translet에서 `someService` 빈의 `execute`로 시작하는 메서드를 대상
+    *   `/user/list@userService^get*`: `/user/list` Translet 내 `userService` 빈의 `get`으로 시작하는 메서드를 대상
+    *   `@class:com.mycompany.service.*Service^process*`: 모든 Service 클래스의 `process`로 시작하는 메서드를 대상
+    *   `@^execute*`: 모든 Translet 및 빈에서 `execute`로 시작하는 메서드를 대상
 
-    ```xml
-    <!-- 1. 트랜잭션의 실제 동작을 담은 어드바이스 Bean을 정의 -->
-    <bean id="sqlSessionTxAdvice" class="com.aspectran.mybatis.SqlSessionAdvice" scope="prototype">
-        <argument>#{sqlSessionFactory}</argument>
-    </bean>
+*   **포함(`+:`) 및 제외(`-:`) 규칙과 순차 평가**:
+    *   `+:` (Include): 지정한 패턴에 매칭되는 대상을 AOP 적용 대상에 포함합니다.
+    *   `-:` (Exclude): 지정한 패턴에 매칭되는 대상을 AOP 적용 대상에서 제외합니다.
+    *   선언된 순서(Top-Down)대로 순차 평가되므로, 상위에 넓은 범위를 포함시키고 하위에 특정 예외 대상을 제외하는 방식으로 매우 정교한 타겟팅이 가능합니다.
 
-    <!-- 2. simpleTxAspect: ID가 'simpleSqlSession'인 Bean을 감지 -->
-    <aspect id="simpleTxAspect" order="0">
-        <joinpoint>
-            pointcut: {
-                +: **@simpleSqlSession
+##### 3. Advice (어드바이스) - 4대 표준 Advice
+Join Point에서 실행될 실제 부가 기능 코드입니다.
+
+> **💡 4대 표준 Advice 기반의 명확한 생명주기 제어:**
+> Aspectran은 선언적이고 명확한 **4단계 표준 생명주기(Before / After / Thrown / Finally)**를 기반으로 동작합니다. 이를 통해 복잡한 프록시 체이닝 오버헤드 없이도 트랜잭션 경계 관리, 성능 프로파일링, 보안 검증, 리소스 정리를 직관적이고 견고하게 달성할 수 있습니다.
+
+| Advice 유형 | 어노테이션 | 실행 시점 | 주요 역할 및 특징 |
+| :--- | :--- | :--- | :--- |
+| **`before`** | `@Before` | Join Point 실행 전 | 전처리 유효성 검증, 보안 인증/인가 확인, 응답 `<headers>` 선언적 주입, 시작 시각 기록 |
+| **`after`** | `@After` | Join Point 정상 실행 완료 후 | 결과 데이터 후가공, 성공 감사(Audit) 로깅 (예외 발생 시 실행 건너뜀) |
+| **`thrown`** | `@ExceptionThrown` | Join Point 실행 중 예외 발생 시 | 오류 로깅, 데이터베이스 트랜잭션 롤백, 관리자 알림 발송 (**Finally 단계보다 먼저 실행됨**) |
+| **`finally`** | `@Finally` | 성공/실패 여부와 무관하게 항상 마지막 | 리소스 해제(`close()`), 세션 및 ThreadLocal 정리, 소요 시간 계산 및 성능 프로파일링 |
+
+##### 4. Aspect (애스펙트) 및 고급 제어 속성
+Pointcut과 Advice를 결합하여 독립된 모듈로 정의한 것입니다. XML의 `<aspect>` 태그나 자바의 `@Aspect` 어노테이션으로 정의합니다.
+
+*   **`order` (실행 우선순위)**:
+    *   동일한 Join Point에 여러 Aspect가 매칭될 때 실행 순서를 제어합니다. 숫자가 작을수록 높은 우선순위를 가집니다 (기본값: `Integer.MAX_VALUE`).
+    *   Aspectran의 `AdviceRuleRegistry`는 일반 Advice뿐만 아니라 예외 처리 규칙(`ExceptionRule`)까지 `order` 오름차순(0, 1, 2...)으로 엄격하게 정렬 관리합니다.
+    *   따라서 트랜잭션 관리와 같은 인프라 Aspect를 `order="0"`으로 지정하면, 비즈니스 Aspect보다 항상 먼저 실행 및 등록되어 예외 발생 시 트랜잭션 롤백이 누락 없이 최우선으로 보장됩니다.
+*   **`isolated` (예외 격리 모드)**:
+    *   `isolated="true"`로 설정하면 해당 Aspect의 Advice 실행 중 예외가 발생하더라도 전체 요청 처리 흐름이 중단되지 않고 오류 로그만 남긴 후 정상 진행됩니다.
+    *   비즈니스 로직에 영향을 주지 않아야 하는 통계 수집, 성능 모니터링, 외부 알림 발송 Aspect에 매우 유용합니다.
+    *   또한 프레임워크 코어 차원에서도 예외 처리 중 특정 액션 실패 시 2중 `try-catch` 격리를 통해 뒤따르는 트랜잭션 롤백과 자원 정리가 100% 끝까지 완주되도록 보호합니다.
+*   **`disabled`**: `true`로 설정 시 런타임에 해당 Aspect를 비활성화합니다.
+
+#### 3.3.4. 생명주기 및 예외 처리 흐름
+
+Aspectran AOP의 4대 표준 Advice는 정상 처리 흐름과 예외 발생 흐름에서 매우 엄격하고 일관된 순서로 동작합니다.
+
+##### a. 정상 처리 흐름 (Normal Execution Flow)
+1.  **Before Advice 실행**: 전처리, 유효성 검증, `<settings>` 및 보안 `<headers>` 주입.
+2.  **핵심 비즈니스 로직 실행**: Translet Action 또는 대상 Bean 메서드 본문 실행.
+3.  **After Advice 실행**: 정상 완료 후 결과 데이터 후가공 및 감사 로깅.
+4.  **Finally Advice 실행**: 리소스 정리 및 세션 종료.
+
+##### b. 예외 발생 시 처리 흐름 (Exception Handling Flow)
+비즈니스 로직이나 Before 단계에서 예외가 발생하면 시스템의 데이터 무결성과 안전한 복구를 위해 다음과 같은 순서로 제어가 전환됩니다:
+1.  **After Advice 건너뜀 (Skip)**: 예외 발생 즉시 After Advice의 실행은 건너뜁니다.
+2.  **Thrown Advice 및 예외 룰 실행 (`<thrown>`, `<exception>`)**:
+    *   **Finally 단계보다 먼저 실행**됩니다.
+    *   데이터베이스 세션이나 리소스가 닫히기 전에 트랜잭션 롤백, 에러 로깅, 관리자 알림을 안전하게 수행합니다.
+    *   글로벌 예외 처리(`<exception>`)에 매칭된 경우 클라이언트에 전달할 에러 화면(`<dispatch>`)이나 JSON 에러 응답(`<transform>`)을 예약합니다.
+3.  **Finally Advice 실행**:
+    *   성공/실패 여부와 무관하게 항상 실행되어 `SqlSession.close()` 등 사용 중인 리소스를 안전하게 닫고 메모리를 정리합니다.
+4.  **예외 응답 전송 또는 Rethrow**:
+    *   예약된 예외 응답을 클라이언트로 전송하거나, 처리되지 않은 예외를 상위 컨테이너로 안전하게 전파합니다.
+
+> **💡 완벽한 트랜잭션 무결성의 핵심 원리:**
+> 예외 발생 시 Thrown(롤백) 처리가 Finally(자원 해제)보다 항상 먼저 실행되므로, 커넥션이 먼저 닫혀 트랜잭션 롤백에 실패하는 전형적인 자원 누수 및 데이터 불일치 문제를 원천적으로 방지합니다.
+
+#### 3.3.5. 자바 어노테이션 기반 AOP 지원
+
+`com.aspectran.core.component.bean.annotation` 패키지의 어노테이션들을 활용하여 XML 설정 없이도 순수 자바 클래스만으로 완전한 Aspect를 구성할 수 있습니다:
+
+*   `@Component`: Aspect 클래스를 빈으로 자동 등록합니다.
+*   `@Aspect(id = "...", order = 0, isolated = true)`: 해당 클래스가 Aspect임을 정의하고 고유 ID, 우선순위, 격리 여부를 지정합니다.
+*   `@Joinpoint(pointcut = "...", target = JoinpointTargetType.ACTIVITY)`: 적용 대상과 Pointcut 패턴을 정의합니다.
+*   `@Before`: Join Point 실행 전에 호출될 메서드에 선언합니다.
+*   `@After`: Join Point 정상 완료 후 호출될 메서드에 선언합니다.
+*   `@ExceptionThrown(Exception.class)`: 예외 발생 시 호출될 메서드에 선언하며, 특정 예외 타입을 지정할 수 있습니다.
+*   `@Finally`: 성공/실패 여부와 무관하게 항상 마지막에 호출될 메서드에 선언합니다.
+*   `@Advisable`: Bean 프록시 AOP의 적용 대상 메서드임을 명시합니다.
+
+**어노테이션 기반 로깅 Aspect 예시:**
+```java
+package com.aspectran.demo.aspect;
+
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.After;
+import com.aspectran.core.component.bean.annotation.Aspect;
+import com.aspectran.core.component.bean.annotation.Before;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.ExceptionThrown;
+import com.aspectran.core.component.bean.annotation.Finally;
+import com.aspectran.core.component.bean.annotation.Joinpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Component
+@Aspect(id = "loggingAspect", order = 1, isolated = true)
+@Joinpoint(
+    pointcut = {
+        "+: /api/**",
+        "-: /api/health-check"
+    }
+)
+public class LoggingAspect {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+
+    @Before
+    public void beforeRequest(Translet translet) {
+        logger.info("[요청 시작] {} {}", translet.getRequestMethod(), translet.getRequestName());
+    }
+
+    @After
+    public void afterRequest(Translet translet) {
+        logger.info("[요청 성공] {}", translet.getRequestName());
+    }
+
+    @ExceptionThrown(Exception.class)
+    public void onError(Translet translet) {
+        Throwable e = translet.getRaisedException();
+        logger.error("[요청 오류] {} - {}", translet.getRequestName(), e.getMessage(), e);
+    }
+
+    @Finally
+    public void onFinally(Translet translet) {
+        // 성공/실패와 상관없이 항상 실행되는 리소스 정리 로직
+    }
+}
+```
+
+#### 3.3.6. 실무 AOP 활용 패턴
+
+##### 패턴 1: 선언적 트랜잭션 관리 (`SqlSessionAdvice` + `@Advisable`)
+
+비즈니스 로직에 데이터베이스 트랜잭션 코드(open, commit, rollback, close)를 직접 작성하지 않고, AOP를 통해 투명하게 분리합니다.
+
+**1. 자바 어노테이션 기반 트랜잭션 Aspect:**
+`SqlSessionAdvice`를 상속받아 Aspect를 정의하고 `@Joinpoint`로 대상을 지정합니다:
+
+```java
+package com.aspectran.demo.aspect;
+
+import com.aspectran.core.component.bean.annotation.After;
+import com.aspectran.core.component.bean.annotation.Aspect;
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Before;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.ExceptionThrown;
+import com.aspectran.core.component.bean.annotation.Finally;
+import com.aspectran.core.component.bean.annotation.Joinpoint;
+import com.aspectran.mybatis.SqlSessionAdvice;
+import org.apache.ibatis.session.SqlSessionFactory;
+
+@Component
+@Aspect(order = 0)
+@Joinpoint(pointcut = "+: **@simpleSqlSession")
+public class SimpleTxAspect extends SqlSessionAdvice {
+
+    @Autowired
+    public SimpleTxAspect(SqlSessionFactory sqlSessionFactory) {
+        super(sqlSessionFactory);
+    }
+
+    @Before
+    public void open() {
+        super.open();
+    }
+
+    @After
+    public void commit() {
+        super.commit();
+    }
+
+    @ExceptionThrown
+    public void rollback() {
+        super.rollback();
+    }
+
+    @Finally
+    public void close() {
+        super.close();
+    }
+}
+```
+
+**2. XML 기반 선언적 트랜잭션 구성:**
+어드바이스 빈과 애스펙트 규칙을 XML로 명확히 분리하여 정의합니다:
+
+```xml
+<!-- 1. MyBatis SqlSession 생명주기를 관리하는 어드바이스 빈 (요청별 독립 인스턴스를 위해 prototype 설정) -->
+<bean id="sqlSessionTxAdvice" class="com.aspectran.mybatis.SqlSessionAdvice" scope="prototype">
+    <argument>#{sqlSessionFactory}</argument>
+</bean>
+
+<!-- 2. 선언적 트랜잭션 Aspect (order="0"으로 최우선 순위 부여) -->
+<aspect id="simpleTxAspect" order="0">
+    <joinpoint>
+        pointcut: {
+            +: **@simpleSqlSession
+        }
+    </joinpoint>
+    <advice bean="sqlSessionTxAdvice">
+        <before>
+            <invoke method="open"/>
+        </before>
+        <after>
+            <invoke method="commit"/>
+        </after>
+        <finally>
+            <thrown>
+                <!-- 예외 발생 시 close 전에 롤백이 먼저 실행됨 -->
+                <invoke method="rollback"/>
+            </thrown>
+            <!-- 정상 완료 및 예외 시 항상 최종적으로 세션을 닫음 -->
+            <invoke method="close"/>
+        </finally>
+    </advice>
+</aspect>
+```
+
+**3. 비즈니스 서비스 계층:**
+```java
+@Component
+public class OrderService {
+
+    private final SimpleSqlSession sqlSession;
+
+    @Autowired
+    public OrderService(SimpleSqlSession sqlSession) {
+        this.sqlSession = sqlSession;
+    }
+
+    public void processOrder(Order order) {
+        // 메서드 실행 시 txAspect가 발동하여 트랜잭션이 자동으로 관리됩니다.
+        sqlSession.insert("app.demo.mapper.OrderMapper.insertOrder", order);
+        sqlSession.update("app.demo.mapper.ItemMapper.updateStock", order.getItemId());
+        // 정상 완료 시 after(commit) -> finally(close)
+        // 예외 발생 시 after는 건너뛰고 thrown(rollback) -> finally(close) 순으로 안전하게 완주됩니다.
+    }
+}
+```
+
+##### 패턴 2: Before + Finally 패턴을 이용한 성능 프로파일링
+
+Aspectran에서는 `@Before`와 `@Finally` 어드바이스의 협업과 프레임워크의 **자동 결과 바인딩(Automatic Result Binding)**을 통해 오버헤드 없는 정밀한 실행 시간 모니터링을 구현할 수 있습니다.
+
+```java
+package com.aspectran.demo.aspect;
+
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.Aspect;
+import com.aspectran.core.component.bean.annotation.Before;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Finally;
+import com.aspectran.core.component.bean.annotation.Joinpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Component
+@Aspect(id = "profilingAspect", order = 10, isolated = true)
+@Joinpoint(pointcut = "+: /api/**")
+public class ProfilingAspect {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProfilingAspect.class);
+
+    @Before
+    public long startProfiling(Translet translet) {
+        // @Before 메서드의 반환값은 현재 Activity의 beforeAdviceResult에 Aspect ID("profilingAspect")로 자동 저장됨
+        return System.currentTimeMillis();
+    }
+
+    @Finally
+    public void endProfiling(Translet translet) {
+        // translet.getBeforeAdviceResult()를 통해 간편하게 시작 시각 조회
+        Long startTime = translet.getBeforeAdviceResult("profilingAspect");
+        if (startTime != null) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            if (elapsedTime > 500) {
+                logger.warn("[SLOW API] {} {} 실행 소요 시간: {} ms (상태: {})",
+                        translet.getRequestMethod(),
+                        translet.getRequestName(),
+                        elapsedTime,
+                        (translet.isExceptionRaised() ? "ERROR" : "SUCCESS"));
             }
-        </joinpoint>
-        <advice bean="sqlSessionTxAdvice">
-            <before>
-                <invoke method="open"/>
-            </before>
-            <after>
-                <invoke method="commit"/>
-            </after>
-            <finally>
-                <invoke method="close"/>
-            </finally>
-        </advice>
-    </aspect>
-    ```
+        }
+    }
+}
+```
 
-이처럼 Aspectran의 AOP를 활용하면, 비즈니스 로직과 트랜잭션 처리 로직을 완벽하게 분리하여 코드의 가독성과 유지보수성을 크게 향상시킬 수 있습니다.
+*   **Before + Finally 패턴의 장점**:
+    *   **프레임워크 자동 결과 바인딩**: `@Before` 어드바이스 메서드가 값을 반환하면, Aspectran 엔진이 해당 실행 결과를 현재 `Activity`의 `beforeAdviceResult`에 애스펙트 ID(`"profilingAspect"`)를 키로 자동 보관합니다. 개발자가 별도로 요청 속성(Request Attribute)에 수동 저장할 필요가 없습니다.
+    *   **체이닝 오버헤드 제로**: 중첩된 인터셉터 호출을 거치지 않으므로 콜 스택 증가와 메모리 부담이 전혀 없습니다.
+    *   **완벽한 스레드 안전성**: 단일 요청 컨텍스트(`Activity`) 내에서 관리되므로 멀티스레드 환경에서도 동시성 이슈 없이 안전합니다.
+    *   **예외 발생 시에도 100% 측정 보장**: 예외가 발생하더라도 `Finally` 블록은 반드시 실행되므로, 에러 발생 시의 실행 시간까지 누락 없이 정밀하게 집계할 수 있습니다.
+
+##### 패턴 3: 전역 웹 보안 응답 헤더 및 환경 설정 자동화 (Activity 생명주기 AOP)
+
+개별 컨트롤러나 Translet마다 반복적으로 보안 헤더나 설정을 지정하지 않고, Activity 생명주기 AOP의 Non-Proxy Core Interception을 통해 일괄 적용합니다:
+
+```xml
+<aspect id="webSecurityAspect">
+    <joinpoint>
+        pointcut: {
+            +: /**
+        }
+    </joinpoint>
+    <settings>
+        <setting name="characterEncoding" value="utf-8"/>
+        <setting name="viewDispatcher" value="thymeleafViewDispatcher"/>
+    </settings>
+    <advice>
+        <before>
+            <headers>
+                <item name="X-Frame-Options">SAMEORIGIN</item>
+                <item name="X-Content-Type-Options">nosniff</item>
+                <item name="X-XSS-Protection">1; mode=block</item>
+                <item name="Referrer-Policy">strict-origin-when-cross-origin</item>
+            </headers>
+        </before>
+    </advice>
+</aspect>
+```
+
+프록시 객체 생성 없이 코어 엔진 레벨에서 모든 매칭 요청에 대해 보안 헤더와 인코딩 설정이 즉시 주입되므로 최고의 런타임 성능을 유지합니다.
+
+이처럼 Aspectran의 AOP는 프록시 오버헤드 없이 전역 웹 환경 설정을 제어하는 **Activity 생명주기 AOP**와, 필요한 비즈니스 메서드에만 선택적으로 적용되는 **Bean 프록시 AOP**, 그리고 명확한 **4대 표준 Advice**를 통해 가볍고 직관적이며 강력한 엔터프라이즈 아키텍처를 완성합니다.
 
 ### 3.4. AsEL (Aspectran Expression Language)
 

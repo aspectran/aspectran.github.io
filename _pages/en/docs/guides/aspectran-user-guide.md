@@ -438,136 +438,382 @@ Aspectran provides lifecycle callbacks to execute specific logic at the time of 
 
 ### 3.3. AOP (Aspect-Oriented Programming)
 
-AOP (Aspect-Oriented Programming) is a programming paradigm that modularizes common functionalities (cross-cutting concerns) that appear repeatedly throughout an application, such as logging, transaction management, security, and caching, by separating them from the core business logic. Aspectran's AOP has its own unique model that is deeply integrated with the framework's core execution model, the `Activity`'s execution flow, and Bean method calls.
+**AOP (Aspect-Oriented Programming)** is a core programming paradigm that modularizes **cross-cutting concerns**—such as logging, security, transaction management, exception handling, and response header injection—by decoupling them from core business logic.
+
+Unlike Spring AOP, which primarily relies on a single mechanism of intercepting bean method calls via proxies, **Aspectran** provides a highly optimized, **pragmatic AOP architecture** built upon two distinct foundational pillars: the **`Activity` Lifecycle (Translet Lifecycle)** and **`Bean` Method Interception**.
 
 #### 3.3.1. The Need for AOP
 
-When developing an application, you often find code that is repeated across multiple modules. For example, logging before every service method starts, or wrapping database operations in a transaction. Writing these common functionalities directly within the business logic code makes the code complex, difficult to change, and less reusable. AOP helps solve these problems by allowing you to keep the business logic clean and manage common functionalities in one place.
+When developing applications, common secondary functionalities are needed across multiple modules. Typical examples include parameter validation, authentication checks upon service method entry, database transaction commit and rollback, and security response header configuration.
 
-#### 3.3.2. Key Concepts of Aspectran AOP
+Writing these common functionalities directly inside business logic classes causes significant architectural problems:
+*   **Code Duplication and Increased Complexity**: The same or similar cross-cutting code is scattered across numerous classes and methods, reducing overall readability.
+*   **Degraded Maintainability**: If a common policy changes, every business method must be located and modified individually, introducing high risks of omissions and regression bugs.
+*   **Obscured Business Focus**: Pure business logic becomes cluttered with infrastructure boilerplate, making it difficult to understand the true intent of the code.
 
-*   **Join Point**: A specific point during the execution of an application where `Advice` can be applied. In Aspectran, the execution of a Translet (Activity execution) or a Bean method execution are the main Join Points.
-    *   **Activity Execution**: You can intervene in the entire flow of an `Activity` that processes a request according to a Translet rule, such as before/after execution or when an exception occurs. This allows for effective modularization of common functionalities needed throughout request processing, such as logging, transactions, and authentication.
-    *   **Bean Method Execution**: The execution of a specific Bean's method can be a Join Point.
+AOP encapsulates cross-cutting concerns into standalone modular units called **Aspects** and applies them declaratively to designated target execution points, thereby preserving the purity of business logic and significantly decoupling system architecture.
 
-*   **Pointcut**: An expression that precisely specifies the target where `Advice` will be applied. In Aspectran, Pointcuts are declaratively defined through the `<joinpoint>` element within an `<aspect>` rule in the configuration file.
-    *   **Pointcut Expression Structure**: It has the form `transletNamePattern[@beanOrClassPattern][^methodNamePattern]`.
-        *   `transletNamePattern`: Translet name pattern (e.g., `/user/*`)
-        *   `@beanOrClassPattern`: Bean ID or class name pattern (e.g., `@userService`)
-        *   `^methodNamePattern`: Method name pattern (e.g., `^get*`)
-    *   **Examples of Various Pattern Formats**:
-        *   Targeting a method of a specific Bean in all Translets: `*: @someService^execute*`
-        *   Targeting a specific Bean method of a specific Translet: `/user/list@userService^get*`
-        *   Targeting a specific Translet itself: `/user/*`
-    *   **Inclusion and Exclusion Rules**: More precise control is possible using the `+` prefix (include) and `-` prefix (exclude).
+#### 3.3.2. Two Architectural Pillars of Aspectran AOP
 
-*   **Advice**: The actual common functionality code to be executed at a Join Point. Aspectran supports the following Advice types:
-    *   `@Before`: Executed before the Join Point.
-    *   `@After`: Executed after the Join Point successfully completes.
-    *   `@Around`: Wraps around the Join Point execution and can control whether the Join Point is executed.
-    *   `@ExceptionThrown`: Executed when an exception occurs during the Join Point execution.
-    *   `@Finally`: Always executed regardless of the success or failure of the Join Point.
-    *   **Implementation of Advice**: The Advice logic is implemented as a method of a specific Bean. Aspectran executes the Advice at an optimized location depending on the Join Point target.
+Aspectran AOP provides two distinct execution dimensions tailored to specific operational targets:
 
-*   **Aspect**: A module that combines `Advice` and `Pointcut`. It is defined using an `<aspect>` rule in the configuration file or the `@Aspect` annotation. It allows for the encapsulation and management of multiple common functionalities as a single module.
+| Architectural Pillar | Target | Mechanism | Primary Use Cases |
+| :--- | :--- | :--- | :--- |
+| **Activity Lifecycle AOP**<br/>*(Translet Lifecycle)* | `Activity` (The entire Translet request execution flow) | No proxy is involved; the `CoreActivity` engine executes aspects directly and sequentially according to lifecycle stages (Non-Proxy Core Interception) | Web security response header injection, global character encoding and view dispatcher injection, pre/post-request processing, authentication/authorization, global exception handling |
+| **Bean Proxy AOP**<br/>*(Method Interception)* | Method execution on Beans (`target="method"`) | Runtime dynamic proxies (`AbstractBeanProxy`, Javassist/JDK) intercept method calls annotated with `@Advisable` to execute advice | Declarative database transactions, business method execution time measurement, method parameter audit logging |
 
-#### 3.3.3. Weaving Mechanism: Intelligent Dynamic Proxy
+##### 1) Activity Lifecycle AOP (Non-Proxy Core Interception)
+*   Every client request (Web, Shell, Daemon) is executed by a single `Activity` instance.
+*   The `Activity` engine traverses predetermined lifecycle stages from request dispatch to completion, executing matching aspects **directly and sequentially at the core engine level** without proxy instantiation or reflection overhead.
+*   **Zero Overhead**: Because no dynamic proxies or reflections are involved, execution achieves near-native speed while declaratively governing request-wide settings such as security response headers (`<headers>`), default character encodings and view dispatchers (`<settings>`), and global exception response mappings (`<exception>`).
 
-Aspectran uses a **runtime Dynamic Proxy** to apply AOP. This proxy operates very efficiently and intelligently.
+##### 2) Bean Proxy AOP (Selective Dynamic Proxying)
+*   When applying AOP at the individual business method level within the service layer, a dynamic proxy mechanism is utilized.
+*   Aspectran generates proxy objects using either Javassist (`JavassistBeanProxy`) or standard JDK Dynamic Proxies (`JdkBeanProxy`).
+*   **Selective Proxying via `@Advisable` (Key Performance Optimization)**: Aspectran's AOP proxy does not indiscriminately intercept every method invocation. Instead, it activates Pointcut evaluations and Advice chains **only for methods explicitly annotated with `@Advisable` or `@Async`**. Standard methods without these annotations bypass proxy logic entirely and invoke the target method directly, eliminating unnecessary proxy overhead at its source.
 
-*   **Performance Optimization with Selective Advice Application**: Aspectran's AOP proxy does not intercept all method calls unconditionally. Instead, it performs AOP logic only if the method is annotated with `@Advisable`. This fundamentally eliminates unnecessary proxy overhead, significantly improving system performance.
-*   **Proxy Creation Method**: By default, it uses Javassist to create proxy objects, and can create proxies for regular classes as well as interfaces. If the target Bean implements an interface, you can also choose to use the JDK dynamic proxy.
+#### 3.3.3. Core Components of Aspectran AOP
 
-#### 3.3.4. Annotation Support
+##### 1. Join Point
+A specific point in the application execution flow where Advice can be applied:
+*   **Activity Execution (`target="activity"`, Default)**: The entire request processing lifecycle of a Translet (Before, Translet Action, After, Thrown, Finally).
+*   **Bean Method Execution (`target="method"`)**: Before, after, and exceptional completion of specific Bean methods annotated with `@Advisable`.
 
-Through the `com.aspectran.core.component.bean.annotation` package, you can configure various Bean settings, including AOP, using only annotations without XML configuration. The main annotations are as follows:
+##### 2. Pointcut
+A filtering rule that precisely defines where Advice should be applied. Pointcuts are declaratively configured within the `<joinpoint>` element of an `<aspect>` rule or via the `@Joinpoint(pointcut = ...)` annotation.
 
-*   `@Component`, `@Bean`: Registers an Aspect as a Bean.
-*   `@Aspect`: Defines that the Bean is an Aspect. You can assign an ID with the `id` attribute and specify the application priority with the `order` attribute.
-*   `@Joinpoint`: Sets the Pointcut that specifies the target to apply the advice to.
-*   `@Before`, `@After`, `@Around`, `@Finally`, `@ExceptionThrown`: Used on methods that define each advice type.
-*   `@Advisable`: Explicitly declares that the method is one to which AOP advice will be applied.
-
-#### 3.3.5. Practical AOP Example: Declarative Transactions
-
-One of the most powerful use cases for AOP is **declarative transaction management**. Instead of writing transaction start, commit, and rollback code directly in the business logic code of the service layer, AOP is used to apply that logic transparently from outside the method.
-
-In Aspectran, you can create a flexible and reusable design by separating the **advice Bean** that contains the actual transaction logic and the **Aspect** that decides when and where to apply it.
-
-*   **Annotation-Based Example**: Define an Aspect by extending `SqlSessionAdvice` and specify the target with `@Joinpoint`.
-
-    ```java
-    // SimpleTxAspect.java (Example of defining a transaction Aspect)
-    @Component
-    @Aspect(order = 0)
-    @Joinpoint(pointcut = "+: **@simpleSqlSession") // Applies to all public methods of the simpleSqlSession bean
-    public class SimpleTxAspect extends SqlSessionAdvice {
-        @Autowired
-        public SimpleTxAspect(SqlSessionFactory sqlSessionFactory) {
-            super(sqlSessionFactory);
-        }
-
-        @Before
-        public void open() {
-            super.open();
-        }
-
-        @After
-        public void commit() {
-            super.commit();
-        }
-
-        @Finally
-        public void close() {
-            super.close();
-        }
-    }
-
-    // OrderService.java (Business logic)
-    @Component
-    @Bean(id = "simpleSqlSession") // Specify ID to be the target of the Aspect's Pointcut
-    public class OrderService extends DefaultSqlSessionAgent {
-        public OrderService() {
-            super("simpleTxAspect");
-        }
-
-        public void createOrder(Order order) {
-            // When this method is called, 'simpleTxAspect' will operate, and the transaction will be managed automatically.
-            insert("app.demo.mapper.OrderMapper.insertOrder", order);
-        }
-    }
+*   **Pointcut Expression Syntax**:
+    ```text
+    transletPattern[@beanOrClassPattern][^methodNamePattern]
     ```
+    Divided into three segments using delimiters (`@`, `^`), where each part is optional:
+    *   **Translet Pattern** (Before `@`): Target Translet name or URI request path pattern (e.g., `/user/**`, `/api/v1/*`). If omitted, all Translets are targeted.
+    *   **Bean ID Pattern** (After `@`, Before `^`): Target Bean ID pattern (e.g., `@userService`, `@*Service`).
+    *   **Class Pattern** (After `@class:`, Before `^`): Fully qualified package/class name pattern. When targeting class types, the **`class:` directive prefix is mandatory** (e.g., `@class:com.mycompany.service.*`, `@class:*.UserServiceImpl`).
+    *   **Method Pattern** (After `^`): Target method name pattern (e.g., `^get*`, `^save*`, `^execute*`).
 
-*   **XML-Based Example**: Clearly separate and define the advice Bean and the Aspect in XML.
+*   **Examples of Various Pattern Formats**:
+    *   `/order/**`: Targets the Activity lifecycle of all Translets under `/order/`
+    *   `@someService^execute*`: Targets methods starting with `execute` on the `someService` bean across all Translets
+    *   `/user/list@userService^get*`: Targets methods starting with `get` on the `userService` bean within the `/user/list` Translet
+    *   `@class:com.mycompany.service.*Service^process*`: Targets methods starting with `process` on all Service classes across all Translets
+    *   `@^execute*`: Targets methods starting with `execute` across all beans and all Translets
 
-    ```xml
-    <!-- 1. Define the advice Bean that contains the actual transaction logic -->
-    <bean id="sqlSessionTxAdvice" class="com.aspectran.mybatis.SqlSessionAdvice" scope="prototype">
-        <argument>#{sqlSessionFactory}</argument>
-    </bean>
+*   **Inclusion (`+:`) and Exclusion (`-:`) Rules with Sequential Evaluation**:
+    *   `+:` (Include): Matches and includes targets for AOP application.
+    *   `-:` (Exclude): Matches and excludes targets from AOP application.
+    *   Evaluated strictly in top-down sequential order, enabling fine-grained targeting by declaring broad inclusions first and carving out specific exclusions below.
 
-    <!-- 2. simpleTxAspect: Detects the Bean with ID 'simpleSqlSession' -->
-    <aspect id="simpleTxAspect" order="0">
-        <joinpoint>
-            pointcut: {
-                +: **@simpleSqlSession
+##### 3. Advice - 4 Standard Advice Types
+The actual secondary functionality code executed at a Join Point.
+
+> **💡 Clear Lifecycle Control with 4 Standard Advice Stages:**
+> Aspectran provides 4 declarative and well-defined lifecycle stages (Before, After, Thrown, Finally). This design cleanly separates transactional boundaries, performance telemetry, security checks, and resource cleanup without proxy chaining overhead or deep call stacks.
+
+| Advice Type | Annotation | Execution Timing | Primary Role & Characteristics |
+| :--- | :--- | :--- | :--- |
+| **`before`** | `@Before` | Prior to Join Point execution | Input validation, security verification, declarative response `<headers>` injection, recording start timestamps |
+| **`after`** | `@After` | After successful Join Point execution | Result data enrichment, success audit logging (skipped if an exception is raised) |
+| **`thrown`** | `@ExceptionThrown` | Upon exception during Join Point execution | Error logging, database transaction rollback, alert dispatching (**Invoked prior to Finally**) |
+| **`finally`** | `@Finally` | Always executed at the end | Resource cleanup (`close()`), session closing, ThreadLocal clearing, elapsed time calculation and profiling |
+
+##### 4. Aspect and Advanced Control Attributes
+A module encapsulating Pointcuts and Advice into an independent unit, defined via the `<aspect>` XML element or the `@Aspect` annotation.
+
+*   **`order` (Execution Priority)**:
+    *   Controls execution sequence when multiple Aspects match the same Join Point. Lower numerical values have higher priority (Default: `Integer.MAX_VALUE`).
+    *   Aspectran's `AdviceRuleRegistry` strictly manages general Advice and exception rules (`ExceptionRule`) in ascending `order` (0, 1, 2...).
+    *   Assigning `order="0"` to infrastructural Aspects (such as transaction management) guarantees that they are registered and executed prior to business Aspects, ensuring transaction rollbacks are never missed during exceptions.
+*   **`isolated` (Fault-Tolerant Isolation Mode)**:
+    *   When set to `true`, exceptions thrown inside the Aspect's Advice are logged without terminating the main request processing flow.
+    *   Ideal for non-critical Aspects such as telemetry, metrics collection, and external alerting.
+    *   Furthermore, the core framework engine isolates exceptions during error handling via dual `try-catch` guards, ensuring subsequent rollback rules and resource cleanup execute to completion.
+*   **`disabled`**: Setting this attribute to `true` deactivates the Aspect at runtime.
+
+#### 3.3.4. Lifecycle and Exception Handling Flow
+
+Aspectran AOP's 4 standard advice types follow strict and consistent sequences in both normal and exceptional flows.
+
+##### a. Normal Execution Flow
+1.  **Before Advice Execution**: Pre-processing, validation checks, `<settings>` and security `<headers>` injection.
+2.  **Core Business Logic Execution**: Translet Actions or target Bean method bodies execute.
+3.  **After Advice Execution**: Post-processing of results and success audit logging upon normal completion.
+4.  **Finally Advice Execution**: Safe resource cleanup and session closing.
+
+##### b. Exception Handling Flow
+When an exception occurs during business logic or Before execution, control shifts strictly in the following order to guarantee data integrity and resource release:
+1.  **After Advice Skipped**: After advice execution is immediately skipped.
+2.  **Thrown Advice and Exception Rules Executed (`<thrown>`, `<exception>`)**:
+    *   **Executes before the Finally stage**.
+    *   Performs transaction rollback, error logging, and administrative notifications safely before database sessions or connections are closed.
+    *   If matched against a global exception rule (`<exception>`), reserves error views (`<dispatch>`) or JSON error representations (`<transform>`) for client response.
+3.  **Finally Advice Execution**:
+    *   Always executes regardless of success or failure to safely release active resources such as `SqlSession.close()` and clean up ThreadLocal storage.
+4.  **Exception Response Dispatch or Rethrow**:
+    *   Sends the reserved error response to the client or rethrows unhandled exceptions to the container.
+
+> **💡 Core Principle of Transactional Integrity:**
+> Because Thrown (rollback) handling is always completed prior to Finally (resource release), transaction rollbacks succeed reliably without connection closure failures, preventing common resource leaks and data inconsistencies.
+
+#### 3.3.5. Java Annotation-Based AOP Configuration
+
+You can build complete Aspects using pure Java classes without XML configurations through the `com.aspectran.core.component.bean.annotation` package:
+
+*   `@Component`: Automatically registers the Aspect class as a Bean.
+*   `@Aspect(id = "...", order = 0, isolated = true)`: Declares that the class is an Aspect with a unique ID, execution priority, and isolation mode.
+*   `@Joinpoint(pointcut = "...", target = JoinpointTargetType.ACTIVITY)`: Specifies the target pointcut expression and join point target.
+*   `@Before`: Declares a method to be invoked before Join Point execution.
+*   `@After`: Declares a method to be invoked after successful Join Point completion.
+*   `@ExceptionThrown(Exception.class)`: Declares a method to be invoked upon exception, with optional target exception type filtering.
+*   `@Finally`: Declares a method to always be invoked at the end.
+*   `@Advisable`: Explicitly indicates that a Bean method is a target for Bean Proxy AOP.
+
+**Annotation-Based Logging Aspect Example:**
+```java
+package com.aspectran.demo.aspect;
+
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.After;
+import com.aspectran.core.component.bean.annotation.Aspect;
+import com.aspectran.core.component.bean.annotation.Before;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.ExceptionThrown;
+import com.aspectran.core.component.bean.annotation.Finally;
+import com.aspectran.core.component.bean.annotation.Joinpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Component
+@Aspect(id = "loggingAspect", order = 1, isolated = true)
+@Joinpoint(
+    pointcut = {
+        "+: /api/**",
+        "-: /api/health-check"
+    }
+)
+public class LoggingAspect {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+
+    @Before
+    public void beforeRequest(Translet translet) {
+        logger.info("[Request Start] {} {}", translet.getRequestMethod(), translet.getRequestName());
+    }
+
+    @After
+    public void afterRequest(Translet translet) {
+        logger.info("[Request Success] {}", translet.getRequestName());
+    }
+
+    @ExceptionThrown(Exception.class)
+    public void onError(Translet translet) {
+        Throwable e = translet.getRaisedException();
+        logger.error("[Request Error] {} - {}", translet.getRequestName(), e.getMessage(), e);
+    }
+
+    @Finally
+    public void onFinally(Translet translet) {
+        // Resource cleanup logic executed regardless of success or failure
+    }
+}
+```
+
+#### 3.3.6. Practical AOP Patterns
+
+##### Pattern 1: Declarative Transaction Management (`SqlSessionAdvice` + `@Advisable`)
+
+Transparently separates database transaction boundaries (open, commit, rollback, close) from business services using AOP.
+
+**1. Java Annotation-Based Transaction Aspect:**
+Define an Aspect extending `SqlSessionAdvice` and target the desired service with `@Joinpoint`:
+
+```java
+package com.aspectran.demo.aspect;
+
+import com.aspectran.core.component.bean.annotation.After;
+import com.aspectran.core.component.bean.annotation.Aspect;
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Before;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.ExceptionThrown;
+import com.aspectran.core.component.bean.annotation.Finally;
+import com.aspectran.core.component.bean.annotation.Joinpoint;
+import com.aspectran.mybatis.SqlSessionAdvice;
+import org.apache.ibatis.session.SqlSessionFactory;
+
+@Component
+@Aspect(order = 0)
+@Joinpoint(pointcut = "+: **@simpleSqlSession")
+public class SimpleTxAspect extends SqlSessionAdvice {
+
+    @Autowired
+    public SimpleTxAspect(SqlSessionFactory sqlSessionFactory) {
+        super(sqlSessionFactory);
+    }
+
+    @Before
+    public void open() {
+        super.open();
+    }
+
+    @After
+    public void commit() {
+        super.commit();
+    }
+
+    @ExceptionThrown
+    public void rollback() {
+        super.rollback();
+    }
+
+    @Finally
+    public void close() {
+        super.close();
+    }
+}
+```
+
+**2. XML-Based Declarative Transaction Configuration:**
+Clearly separate the advice bean and the aspect rule using XML:
+
+```xml
+<!-- 1. MyBatis SqlSession advice bean (prototype scope ensures a fresh instance per request) -->
+<bean id="sqlSessionTxAdvice" class="com.aspectran.mybatis.SqlSessionAdvice" scope="prototype">
+    <argument>#{sqlSessionFactory}</argument>
+</bean>
+
+<!-- 2. Declarative Transaction Aspect (order="0" grants highest priority) -->
+<aspect id="simpleTxAspect" order="0">
+    <joinpoint>
+        pointcut: {
+            +: **@simpleSqlSession
+        }
+    </joinpoint>
+    <advice bean="sqlSessionTxAdvice">
+        <before>
+            <invoke method="open"/>
+        </before>
+        <after>
+            <invoke method="commit"/>
+        </after>
+        <finally>
+            <thrown>
+                <!-- Rollback executes before session closure upon exception -->
+                <invoke method="rollback"/>
+            </thrown>
+            <!-- Session closes on both normal completion and exceptions -->
+            <invoke method="close"/>
+        </finally>
+    </advice>
+</aspect>
+```
+
+**3. Business Service Layer:**
+```java
+@Component
+public class OrderService {
+
+    private final SimpleSqlSession sqlSession;
+
+    @Autowired
+    public OrderService(SimpleSqlSession sqlSession) {
+        this.sqlSession = sqlSession;
+    }
+
+    public void processOrder(Order order) {
+        // When invoked, txAspect triggers to manage the transaction automatically
+        sqlSession.insert("app.demo.mapper.OrderMapper.insertOrder", order);
+        sqlSession.update("app.demo.mapper.ItemMapper.updateStock", order.getItemId());
+        // On success: after(commit) -> finally(close)
+        // On exception: after is skipped; thrown(rollback) -> finally(close) executes safely
+    }
+}
+```
+
+##### Pattern 2: Performance Profiling with the Before + Finally Pattern
+
+Aspectran combines `@Before` and `@Finally` advice with the framework's **Automatic Result Binding** mechanism to deliver precision elapsed-time monitoring without runtime overhead.
+
+```java
+package com.aspectran.demo.aspect;
+
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.Aspect;
+import com.aspectran.core.component.bean.annotation.Before;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Finally;
+import com.aspectran.core.component.bean.annotation.Joinpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Component
+@Aspect(id = "profilingAspect", order = 10, isolated = true)
+@Joinpoint(pointcut = "+: /api/**")
+public class ProfilingAspect {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProfilingAspect.class);
+
+    @Before
+    public long startProfiling(Translet translet) {
+        // The return value of @Before is automatically stored in the Activity's beforeAdviceResult under the aspect ID ("profilingAspect")
+        return System.currentTimeMillis();
+    }
+
+    @Finally
+    public void endProfiling(Translet translet) {
+        // Retrieve the start timestamp seamlessly via translet.getBeforeAdviceResult()
+        Long startTime = translet.getBeforeAdviceResult("profilingAspect");
+        if (startTime != null) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            if (elapsedTime > 500) {
+                logger.warn("[SLOW API] {} {} took {} ms (status: {})",
+                        translet.getRequestMethod(),
+                        translet.getRequestName(),
+                        elapsedTime,
+                        (translet.isExceptionRaised() ? "ERROR" : "SUCCESS"));
             }
-        </joinpoint>
-        <advice bean="sqlSessionTxAdvice">
-            <before>
-                <invoke method="open"/>
-            </before>
-            <after>
-                <invoke method="commit"/>
-            </after>
-            <finally>
-                <invoke method="close"/>
-            </finally>
-        </advice>
-    </aspect>
-    ```
+        }
+    }
+}
+```
 
-By leveraging Aspectran's AOP in this way, you can perfectly separate business logic from transaction processing logic, greatly improving code readability and maintainability.
+*   **Advantages of the Before + Finally Pattern**:
+    *   **Automatic Framework Result Binding**: When a `@Before` method returns a value, the Aspectran engine automatically caches the result in the current `Activity`'s `beforeAdviceResult` map under the aspect ID (`"profilingAspect"`). Developers do not need to manually manage request attributes.
+    *   **Zero Chaining Overhead**: Eliminates nested interceptor invocations, preventing call stack expansion and unnecessary memory overhead.
+    *   **Complete Thread Safety**: Managed within the scoped request context (`Activity`), ensuring thread safety without concurrency locks.
+    *   **Guaranteed Execution**: Because `Finally` blocks are guaranteed to execute even during unhandled exceptions, elapsed execution time is captured accurately under all circumstances.
+
+##### Pattern 3: Global Web Security Headers and Environment Configuration (Activity Lifecycle AOP)
+
+Instead of configuring security headers and view dispatchers redundantly across individual controllers or Translets, declare them globally using Activity Lifecycle AOP's Non-Proxy Core Interception:
+
+```xml
+<aspect id="webSecurityAspect">
+    <joinpoint>
+        pointcut: {
+            +: /**
+        }
+    </joinpoint>
+    <settings>
+        <setting name="characterEncoding" value="utf-8"/>
+        <setting name="viewDispatcher" value="thymeleafViewDispatcher"/>
+    </settings>
+    <advice>
+        <before>
+            <headers>
+                <item name="X-Frame-Options">SAMEORIGIN</item>
+                <item name="X-Content-Type-Options">nosniff</item>
+                <item name="X-XSS-Protection">1; mode=block</item>
+                <item name="Referrer-Policy">strict-origin-when-cross-origin</item>
+            </headers>
+        </before>
+    </advice>
+</aspect>
+```
+
+Settings and security response headers are injected directly at the core engine level without proxy generation, maintaining peak runtime performance.
+
+In summary, Aspectran AOP combines lightweight **Activity Lifecycle AOP** for global environment control with selective **Bean Proxy AOP** for targeted business methods, all backed by an unambiguous **4 Standard Advice lifecycle**, delivering an intuitive, performant, and resilient enterprise architecture.
 
 ### 3.4. AsEL (Aspectran Expression Language)
 

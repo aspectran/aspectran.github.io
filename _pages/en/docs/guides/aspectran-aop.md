@@ -237,8 +237,8 @@ Advice defines the concrete logic executed at a join point. Aspectran supports *
 | **`thrown`** | Upon exception | Error logging, transaction rollback, alerting (invoked prior to Finally) |
 | **`finally`** | Always executed at the end | Resource cleanup, session closing, ThreadLocal clearing, elapsed time profiling |
 
-> **💡 Why Aspectran Adopts 4 Standard Advice Stages over Around Advice:**
-> Layering nested Around proxies introduces deep call stacks, debugging ambiguity, and obscure exception propagation chains. Aspectran instead provides 4 declarative lifecycle stages (Before, After, Thrown, Finally). This design cleanly separates transactional boundaries, performance telemetry, security checks, and resource cleanup without proxy chaining overhead.
+> **💡 Clear Lifecycle Control with 4 Standard Advice Stages:**
+> Aspectran provides 4 declarative and well-defined lifecycle stages (Before, After, Thrown, Finally). This design cleanly separates transactional boundaries, performance telemetry, security checks, and resource cleanup without proxy chaining overhead or deep call stacks.
 
 Inside `<advice>`, you can configure bean method invocations (`<invoke>`), action routines (`<action>`), and **declarative response header injection (`<headers>`)**:
 
@@ -545,7 +545,7 @@ public class ProfilingAspect {
 
 * **Advantages of this Approach**:
   * **Automatic Framework Result Binding**: When a `@Before` advice method returns a value (e.g., `long`), the Aspectran engine automatically stores it in the current `Activity`'s `beforeAdviceResult` under the aspect's ID (`"profilingAspect"`). The `@Finally` method can effortlessly retrieve this value via `translet.getBeforeAdviceResult("profilingAspect")` without manual attribute management.
-  * Avoids the nested interceptor chaining overhead of Around advice.
+  * Avoids deep call stacks and proxy chaining overhead by eliminating nested interceptor invocations.
   * Preserves thread safety by storing state in the request context without concurrency issues.
   * Reliably captures elapsed time during `Finally` regardless of whether the request succeeded or failed.
 

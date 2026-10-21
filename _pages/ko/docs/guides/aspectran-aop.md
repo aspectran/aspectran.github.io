@@ -237,8 +237,8 @@ Advice는 대상 Joinpoint 시점에 실행할 구체적인 로직을 정의합�
 | **`thrown`** | 예외 발생 시 | 오류 로깅, 트랜잭션 롤백, 알림 발송 (Finally 실행 전에 호출됨) |
 | **`finally`** | 성공/실패 여부와 관계없이 항상 마지막 | 리소스 해제, 세션 정리, ThreadLocal 정리, 소요 시간 계산 및 프로파일링 |
 
-> **💡 Around Advice를 지양하고 4대 표준 Advice를 채택한 이유:**
-> 다중 프록시를 중첩 호출하는 Around Advice 방식은 호출 스택의 급격한 증가, 디버깅 복잡성, 예외 전파 추적의 어려움을 야기합니다. Aspectran은 선언적이고 명확한 4단계 생명주기(Before / After / Thrown / Finally)를 제공함으로써, 프록시 체이닝 오버헤드 없이도 트랜잭션 경계, 성능 프로파일링, 보안 검증, 리소스 정리를 완벽하고 명료하게 해결합니다.
+> **💡 4대 표준 Advice 기반의 명확한 생명주기 제어:**
+> Aspectran은 선언적이고 명확한 4단계 생명주기(Before / After / Thrown / Finally)를 제공함으로써, 복잡한 프록시 체이닝 오버헤드 없이도 트랜잭션 경계, 성능 프로파일링, 보안 검증, 리소스 정리를 완벽하고 명료하게 해결합니다.
 
 `<advice>` 내부에서는 Bean 메서드 호출(`<invoke>`), Action 실행(`<action>`), 그리고 **선언적 응답 헤더 주입(`<headers>`)**을 자유롭게 구성할 수 있습니다:
 
@@ -545,7 +545,7 @@ public class ProfilingAspect {
 
 * **이 방식의 장점**:
   * **프레임워크 자동 결과 바인딩**: `@Before` 어드바이스 메서드가 값을 반환하면(예: `long`), Aspectran 엔진이 해당 실행 결과를 현재 `Activity`의 `beforeAdviceResult`에 애스펙트 ID(`"profilingAspect"`) 키로 자동 보관합니다. 따라서 `@Finally` 메서드에서 `translet.getBeforeAdviceResult("profilingAspect")`를 호출하여 별도의 수동 속성 관리 없이도 즉시 시작 시각을 깔끔하게 조회할 수 있습니다.
-  * Around Advice의 중첩 인터셉터 체이닝 오버헤드가 전혀 발생하지 않습니다.
+  * 중첩된 인터셉터 호출을 거치지 않으므로 체이닝 오버헤드가 전혀 발생하지 않습니다.
   * 요청 컨텍스트에 안전하게 저장되므로 동시성 문제 없이 완벽한 스레드 세이프티를 유지합니다.
   * 성공/실패 여부와 상관없이 `Finally` 단계에서 소요 시간을 정밀하게 집계할 수 있습니다.
 
