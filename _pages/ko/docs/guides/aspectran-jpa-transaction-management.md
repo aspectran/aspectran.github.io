@@ -224,7 +224,7 @@ Aspectran JPA 환경을 구축하기 위해 `pom.xml`에 포함해야 할 주요
 <dependency>
     <groupId>org.eclipse.persistence</groupId>
     <artifactId>eclipselink</artifactId>
-    <version>5.0.0-B13</version>
+    <version>5.0.2</version>
 </dependency>
 ```
 

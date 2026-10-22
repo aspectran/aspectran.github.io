@@ -224,7 +224,7 @@ Choose one implementation that fits your project environment.
 <dependency>
     <groupId>org.eclipse.persistence</groupId>
     <artifactId>eclipselink</artifactId>
-    <version>5.0.0-B13</version>
+    <version>5.0.2</version>
 </dependency>
 ```
 
