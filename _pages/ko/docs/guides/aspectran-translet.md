@@ -5,7 +5,7 @@ subheadline: 핵심 가이드
 
 Aspectran 프레임워크에서 **트랜스렛(Translet)**은 그 이름만 보면 요청을 처리하는 주체처럼 보이지만, 실제로는 **"요청을 어떻게 처리할 것인가?"**에 대한 구체적인 **실행 계획서 또는 설계도**입니다. 실제 모든 실행은 `Activity`라는 엔진이 담당하며, Translet은 이 `Activity`와 사용자 코드(Action) 사이의 소통을 위한 **매개체** 역할을 합니다.
 
-웹 애플리케이션의 특정 URL 요청 처리, CLI 명령어 실행(Shell), 백그라운드 서비스(Daemon) 등 Aspectran에서 실행되는 모든 요청-응답 사이클(트랜잭션)은 하나의 Translet 규칙으로 정의되고 실행됩니다.
+콘솔/대화형 쉘(Shell) 명령어 실행, 백그라운드 서비스 및 배치(Daemon), 스케줄러(Quartz) 작업, 웹 애플리케이션의 HTTP 요청 등 Aspectran에서 실행되는 모든 요청-응답 사이클(트랜잭션)은 하나의 Translet 규칙으로 정의되고 실행됩니다.
 
 ## 1. Translet의 특징
 
@@ -44,8 +44,8 @@ Aspectran은 웹 전용 프레임워크가 아닌 범용 프레임워크입니�
 사용자의 요청이 들어오면, `Activity`는 이 레지스트리에서 가장 적합한 Translet 규칙(설계도)을 찾아냅니다. Aspectran은 명확한 우선순위에 따라 규칙을 검색하여 항상 가장 구체적인 규칙이 먼저 선택되도록 보장합니다.
 
 1.  **요청 이름 (Request Name)**: `/user/info`와 같이 정확히 일치하는 이름을 찾습니다.
-2.  **요청 메소드 (Request Method)**: 웹 환경에서는 `GET`, `POST`, `PUT`, `DELETE` 등의 HTTP 메소드가 여기에 해당하며, 같은 요청 이름이라도 이 요청 메소드에 따라 다른 Translet을 실행할 수 있습니다.
-3.  **와일드카드 및 경로 변수 패턴**: `/users/*`나 `/users/${userId}`와 같은 패턴을 지원하여 RESTful API를 매우 효율적으로 구현할 수 있습니다.
+2.  **요청 메소드 (Request Method)**: 요청의 성격이나 목적(조회, 등록, 수정, 삭제 등)을 나타내는 메소드(`GET`, `POST`, `PUT`, `DELETE` 등)를 기준으로 일치하는 Translet을 찾습니다. 동일한 요청 이름이라도 요청 메소드에 따라 다른 Translet을 실행할 수 있습니다. (웹 환경에서는 HTTP 요청 메소드와 1:1로 자연스럽게 대응됩니다.)
+3.  **와일드카드 및 경로 변수 패턴**: `/users/*`나 `/users/${userId}`와 같은 패턴을 지원하여 계층적 경로 매핑, RESTful API, 동적 인자 바인딩을 매우 유연하게 처리할 수 있습니다.
 
 `Activity`는 찾아낸 Translet 규칙에 따라 실제 요청 처리 작업을 수행합니다. 즉, **Translet은 '설계도'이고 Activity는 그 설계도를 보고 일하는 '건설 인부'**와 같습니다.
 
@@ -56,15 +56,15 @@ Translet을 찾을 때는 다음과 같은 우선순위가 적용됩니다.
 1.  **완전 일치 (Exact Match)가 최우선**: 와일드카드(`*`)나 경로 변수(`${...}`)가 없는, 이름이 완전히 일치하는 규칙이 가장 먼저 선택됩니다.
 2.  **더 구체적인 패턴이 우선**: 여러 와일드카드 패턴이 일치할 경우, 더 구체적인 패턴을 가진 규칙이 우선권을 갖습니다.
     -   **예시**: `GET /users/info` 요청이 들어왔을 때, `/users/*` 규칙과 `/users/info` 규칙이 모두 존재한다면, 더 구체적인 `/users/info` 규칙이 선택됩니다. 마찬가지로, `/users/${userId}/profile` 패턴은 `/users/${userId}/*` 패턴보다 더 구체적이므로 우선 선택됩니다.
-3.  **GET이 아닌 요청의 대체(Fallback) 규칙**: `POST`, `PUT` 등의 요청에 대해 정확히 일치하는 규칙이 없다면, Aspectran은 메소드가 지정되지 않은(암묵적 `GET`) 규칙을 차선책으로 찾습니다.
-    -   **예시**: `POST /users` 요청이 들어왔는데 `method="post"`로 명시된 `/users` 규칙이 없고, 메소드 지정 없이 정의된 `<translet name="/users">...</translet>` 규칙만 있다면, 이 규칙이 선택되어 처리됩니다.
+3.  **특정 메소드 미지정 규칙으로의 대체 (Fallback)**: `POST`, `PUT` 등 특정 메소드가 지정된 요청에 대해 정확히 일치하는 규칙이 없다면, Aspectran은 메소드가 지정되지 않은 기본 Translet 규칙(암묵적 `GET`)을 차선책으로 찾아 실행합니다.
+    -   **예시**: `POST /users` 요청이 들어왔는데 `method="post"`로 명시된 `/users` 규칙이 없고, 메소드 지정 없이 정의된 `<translet name="/users">...</translet>` 규칙만 있다면, 이 기본 규칙이 선택되어 처리됩니다.
 4.  **나중에 정의된 규칙이 우선 (규칙 덮어쓰기)**: 만약 동일한 요청 이름과 메소드를 가진 Translet 규칙이 여러 번 정의되면, **가장 나중에 정의(등록)된 규칙**이 이전에 정의된 규칙을 덮어쓰고 최종적으로 사용됩니다. 이는 Aspectran 설정 파일이 여러 개로 분리되어 있거나, include 기능으로 다른 파일의 설정을 가져올 때 특정 규칙을 오버라이드(override)하는 용도로 유용하게 사용될 수 있습니다.
 
 이러한 우선순위 덕분에 개발자는 일반적인 경우를 처리하는 규칙과 특정 경우를 처리하는 규칙을 함께 정의하여 코드를 유연하고 직관적으로 관리할 수 있습니다.
 
 ## 3. 동적 Translet 생성 (Scanning)
 
-Aspectran의 가장 강력한 기능 중 하나는 **동적 Translet 생성**입니다. 예를 들어, 수백 개의 JSP 파일을 각각 다른 Translet으로 서빙해야 할 때, 수백 개의 `<translet>` 규칙을 반복해서 정의하는 대신, 다음과 같이 단 하나의 규칙만 정의할 수 있습니다.
+Aspectran의 가장 강력한 기능 중 하나는 **동적 Translet 생성**입니다. 예를 들어, 수백 개의 뷰 템플릿(JSP, Thymeleaf 등)이나 정적 리소스 파일을 각각 별도의 Translet으로 서빙해야 할 때, 수백 개의 `<translet>` 규칙을 일일이 반복해서 정의하는 대신 다음과 같이 단 하나의 스캔 규칙만으로 자동 등록할 수 있습니다.
 
 ```xml
 <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
@@ -76,7 +76,7 @@ Aspectran의 가장 강력한 기능 중 하나는 **동적 Translet 생성**입
 </translet>
 ```
 
-위 규칙은 `/WEB-INF/jsp/` 디렉터리와 그 하위 경로에 있는 모든 `.jsp` 파일을 스캔하여, 파일 경로에 따라 동적으로 Translet을 생성하고 등록합니다. 예를 들어, `/WEB-INF/jsp/user/list.jsp` 파일이 발견되면 `user/list`라는 이름의 Translet이 생성됩니다. 이 기능은 정적인 뷰 파일을 대량으로 서빙할 때 매우 유용하며, 반복적인 Translet 정의를 획기적으로 줄여줍니다.
+위 규칙은 `/WEB-INF/jsp/` 디렉터리와 그 하위 경로에 있는 모든 `.jsp` 파일을 스캔하여, 파일 경로 규칙에 따라 동적으로 Translet을 일괄 생성하고 등록합니다. 예를 들어, `/WEB-INF/jsp/user/list.jsp` 파일이 발견되면 `user/list`라는 이름의 Translet이 자동으로 생성됩니다. 이 기능은 대량의 뷰 템플릿 파일이나 정적 리소스를 매핑할 때 매우 유용하며, 반복적인 Translet 정의 작업을 획기적으로 줄여줍니다.
 
 ## 4. 어노테이션 기반 Translet 정의: `@RequestTo*`
 
@@ -119,9 +119,9 @@ public class UserApiController {
 위 예제 코드의 **(1)**을 보면, 경로 변수 `${userId}`는 이름이 동일한 `userId` 매개변수에 자동으로 타입 변환되어 주입됩니다. Aspectran은 별도의 어노테이션 없이도 매개변수 이름과 타입을 기반으로 경로 변수, 요청 파라미터, 빈 인스턴스를 지능적으로 주입합니다. 또한 메소드 인자에 `Translet` 타입을 선언하면 `Activity`가 현재 실행 중인 `Translet` 인스턴스를 주입해 줍니다.
 
 > **💡 `@Required` 어노테이션의 Deprecation과 `@NonNull` 표준화**
->
+> 
 > 과거 Aspectran에서는 필수 의존성 및 non-null 매개변수를 명시하기 위해 자체 `@Required` 어노테이션(`com.aspectran.core.component.bean.annotation.Required`)을 사용했습니다.
->
+> 
 > 하지만 최신 Aspectran에서는 표준 사양을 준수하고 정적 분석 도구와의 호환성을 극대화하기 위해 `@Required`를 **`@Deprecated`** 처리하였으며, 현대적인 **JSpecify의 `@NonNull`(`org.jspecify.annotations.NonNull`)** 어노테이션을 표준으로 채택하여 필수 매개변수와 널 불허(Non-null) 조건을 명시하도록 권장합니다.
 
 ### 4.2. 비동기 요청 처리
@@ -153,7 +153,7 @@ public String generateReport(@NonNull Translet translet) {
 
 ### 5.1. 요청 메타데이터 및 실행 환경 정보
 
-현재 요청의 URI, HTTP 메소드, 실행 모드, 인코딩 및 환경 설정을 조회합니다.
+현재 요청의 이름(경로), 요청 메소드(`MethodType`), 실행 모드(`Activity.Mode`), 문자 인코딩 및 환경 설정을 조회합니다.
 
 | 메소드 | 설명 |
 | :--- | :--- |
@@ -182,7 +182,7 @@ public void logRequestInfo(@NonNull Translet translet) {
 
 ### 5.2. 어댑터 및 네이티브 객체 접근 (Adapters & Adaptees)
 
-Aspectran은 특정 플랫폼에 종속되지 않도록 요청/응답/세션을 `Adapter`로 추상화합니다. 필요 시 서블릿 등의 네이티브 객체(Adaptee)에도 안전하게 접근할 수 있습니다.
+Aspectran은 특정 플랫폼이나 실행 환경에 종속되지 않도록 요청/응답/세션을 `Adapter` 계층으로 완전하게 추상화합니다. 따라서 웹, 쉘, 데몬 등 어떤 환경에서도 동일한 어댑터 인터페이스를 통해 일관되게 요청 데이터나 세션을 제어할 수 있습니다. 만약 특정 환경의 고유 기능이 필요한 경우, `Adaptee` 메소드를 통해 기저 플랫폼의 네이티브 객체(웹 환경의 `HttpServletRequest` / `HttpSession`, 쉘 환경의 네이티브 객체 등)에도 타입 안전하게 접근할 수 있습니다.
 
 | 메소드 | 설명 |
 | :--- | :--- |
@@ -190,9 +190,9 @@ Aspectran은 특정 플랫폼에 종속되지 않도록 요청/응답/세션을 
 | `ResponseAdapter getResponseAdapter()` | 응답 헤더, 상태 코드 등을 제어하는 `ResponseAdapter`를 반환합니다. |
 | `boolean hasSessionAdapter()` | 세션 어댑터가 활성화되어 있는지 여부를 확인합니다. |
 | `SessionAdapter getSessionAdapter()` | 세션에 접근하고 제어하는 `SessionAdapter`를 반환합니다. |
-| `<V> V getRequestAdaptee()` | 기저 플랫폼의 네이티브 요청 객체(예: `HttpServletRequest`)를 반환합니다. |
-| `<V> V getResponseAdaptee()` | 기저 플랫폼의 네이티브 응답 객체(예: `HttpServletResponse`)를 반환합니다. |
-| `<V> V getSessionAdaptee()` | 기저 플랫폼의 네이티브 세션 객체(예: `HttpSession`)를 반환합니다. |
+| `<V> V getRequestAdaptee()` | 기저 플랫폼의 네이티브 요청 객체(예: 웹 환경의 `HttpServletRequest` 등)를 반환합니다. |
+| `<V> V getResponseAdaptee()` | 기저 플랫폼의 네이티브 응답 객체(예: 웹 환경의 `HttpServletResponse` 등)를 반환합니다. |
+| `<V> V getSessionAdaptee()` | 기저 플랫폼의 네이티브 세션 객체(예: 웹 환경의 `HttpSession` 등)를 반환합니다. |
 
 ```java
 public void handleAdapters(@NonNull Translet translet) {
@@ -206,7 +206,7 @@ public void handleAdapters(@NonNull Translet translet) {
         sessionAdapter.setAttribute("LAST_ACCESS", System.currentTimeMillis());
     }
 
-    // 웹 환경인 경우 네이티브 서블릿 객체 직접 활용
+    // 웹 환경인 경우 네이티브 서블릿 객체 직접 활용 (환경별 분기 예시)
     if (translet.getMode() == Activity.Mode.WEB) {
         HttpServletRequest req = translet.getRequestAdaptee();
         String remoteAddr = req.getRemoteAddr();
@@ -248,7 +248,7 @@ public void processUpload(@NonNull Translet translet) throws IOException {
 
 ### 5.4. 요청 속성(Attribute) 및 플래시 맵(FlashMap)
 
-요청 처리 과정에서 액션 간 또는 뷰(View) 템플릿으로 데이터를 전달할 때 사용하는 Request Scope 속성과, 리다이렉트 시 1회성 데이터 전달을 위한 FlashMap을 관리합니다.
+단일 요청(`Activity`) 실행 주기 동안 액션 간에 데이터를 공유하거나 뷰(View) 템플릿으로 모델 데이터를 전달할 때 사용하는 요청 스코프(Request Scope) 속성과, 리다이렉트 시 1회성 데이터 전달을 위한 FlashMap을 관리합니다.
 
 | 메소드 | 설명 |
 | :--- | :--- |
@@ -309,8 +309,8 @@ Translet 내에서 동적으로 뷰 템플릿을 디스패치하거나, 내부 �
 | `void dispatch(DispatchRule dispatchRule)` | 선언적 `DispatchRule` 규칙에 따라 디스패치합니다. |
 | `void forward(String transletName)` | 요청을 내부의 다른 Translet으로 포워딩합니다. |
 | `void forward(ForwardRule forwardRule)` | 선언적 `ForwardRule` 규칙에 따라 포워딩합니다. |
-| `void redirect(String path)` | 지정된 URL 경로로 클라이언트 리다이렉트를 수행합니다. |
-| `void redirect(String path, Map<String, String> params)` | 쿼리 파라미터를 추가하여 클라이언트 리다이렉트를 수행합니다. |
+| `void redirect(String path)` | 지정된 경로로 클라이언트 리다이렉트를 수행합니다. (주로 웹 환경에서 사용) |
+| `void redirect(String path, Map<String, String> params)` | 쿼리 파라미터를 추가하여 지정된 경로로 클라이언트 리다이렉트를 수행합니다. |
 | `void redirect(RedirectRule redirectRule)` | 선언적 `RedirectRule` 규칙에 따라 리다이렉트합니다. |
 | `void transform(TransformRule transformRule)` | 변환 규칙에 따라 콘텐츠를 즉시 변환(JSON, XML 등)하여 응답합니다. |
 | `void transform(CustomTransformer transformer)` | 커스텀 트랜스포머를 사용하여 즉시 변환 응답합니다. |
@@ -356,7 +356,7 @@ Aspectran IoC 컨테이너에 등록된 빈 인스턴스를 가져오거나 환�
 public void loadServiceDynamically(@NonNull Translet translet) {
     // 컨테이너에서 빈 동적 획득
     MailService mailService = translet.getBean(MailService.class);
-
+    
     // 환경 설정 프로퍼티 조회
     String adminEmail = translet.getProperty("app.admin.email");
     mailService.sendNotification(adminEmail, "서비스 작업 완료");

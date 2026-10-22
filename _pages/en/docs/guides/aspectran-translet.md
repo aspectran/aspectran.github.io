@@ -5,7 +5,7 @@ subheadline: Core Guides
 
 In the Aspectran framework, the **Translet**, by its name alone, might seem like the entity that processes requests. However, it is actually a specific **execution plan or blueprint** for **"how to handle a request?"** All actual execution is handled by an engine called `Activity`, and the Translet acts as a **medium** for communication between this `Activity` and the user code (Action).
 
-Everything that runs in Aspectran—from handling HTTP requests in web applications to executing interactive CLI commands (Shell) and running background services (Daemon)—is defined and executed as a single request-response cycle (transaction) governed by a Translet rule.
+From executing interactive CLI commands (Shell) and running scheduled background services (Daemon) to handling HTTP requests in web applications, everything that runs in Aspectran is defined and executed as a single request-response cycle (transaction) governed by a Translet rule.
 
 ## 1. Characteristics of a Translet
 
@@ -43,9 +43,9 @@ When the application starts, Aspectran parses all defined Translet rules and reg
 
 When a user request comes in, the `Activity` finds the most suitable Translet rule (blueprint) from this registry. Aspectran searches for rules based on a clear priority system, ensuring that the most specific rule is always chosen first.
 
-1.  **Request Name**: It looks for an exact match, like `/user/info`.
-2.  **Request Method**: In a web environment, this corresponds to HTTP methods like `GET`, `POST`, `PUT`, `DELETE`, etc. Even with the same request name, a different Translet can be executed based on this request method.
-3.  **Wildcard and Path Variable Patterns**: It supports patterns like `/users/*` or `/users/${userId}`, allowing for very efficient implementation of RESTful APIs.
+1.  **Request Name**: It looks for an exact matching name, like `/user/info`.
+2.  **Request Method**: It matches the Translet based on the request method (`GET`, `POST`, `PUT`, `DELETE`, etc.) that defines the action type (query, create, update, delete). Even with the same request name, a different Translet can be executed based on this request method. (In web environments, this corresponds naturally 1:1 with HTTP request methods.)
+3.  **Wildcard and Path Variable Patterns**: It supports patterns like `/users/*` or `/users/${userId}`, allowing for very flexible handling of hierarchical paths, RESTful APIs, and dynamic argument binding.
 
 The `Activity` performs the actual request processing task according to the found Translet rule. In other words, **the Translet is the 'blueprint', and the Activity is the 'construction worker'** that works by looking at that blueprint.
 
@@ -56,15 +56,15 @@ When finding a Translet, the following priorities are applied:
 1.  **Exact Match First**: Rules with a name that exactly matches the request, without any wildcards (`*`) or path variables (`${...}`), are always chosen first.
 2.  **More Specific Patterns Take Precedence**: If multiple wildcard patterns match a request, the rule with the more specific pattern wins.
     -   **Example**: For a `GET /users/info` request, if both a `/users/*` rule and a `/users/info` rule exist, the more specific `/users/info` rule will be selected. Similarly, a `/users/${userId}/profile` pattern is more specific than `/users/${userId}/*` and would be chosen first.
-3.  **Fallback for Non-GET Requests**: If no exact match is found for a `POST`, `PUT`, etc., request, Aspectran will look for a rule that has no method specified (implicitly a `GET` rule) as a fallback.
-    -   **Example**: If a `POST /users` request arrives, but there is no `/users` rule explicitly defined with `method="post"`, and only a `<translet name="/users">...</translet>` rule (with no method) exists, that rule will be selected to handle the request.
+3.  **Fallback to Method-Unspecified Rules**: If no exact matching rule is found for a request with a specific method like `POST` or `PUT`, Aspectran looks for a general Translet rule with no method specified (implicitly treated as `GET`) as a fallback.
+    -   **Example**: If a `POST /users` request arrives and there is no `/users` rule explicitly configured with `method="post"`, but a `<translet name="/users">...</translet>` rule defined without a method exists, that fallback rule will be chosen to handle the request.
 4.  **Later Definitions Override Earlier Ones**: If multiple Translet rules are defined with the same request name and method, the **last one defined (or registered)** will overwrite the previous ones. This can be useful for overriding specific rules when your Aspectran configuration is split across multiple files or when using the include feature to import settings from another file.
 
 This priority system allows developers to define general-purpose rules alongside specific ones, leading to flexible and intuitive code management.
 
 ## 3. Dynamic Translet Generation (Scanning)
 
-One of Aspectran's most powerful features is **dynamic Translet generation**. For example, if you need to serve hundreds of JSP files as different Translets, instead of repeatedly defining hundreds of `<translet>` rules, you can define just one rule as follows:
+One of Aspectran's most powerful features is **dynamic Translet generation**. For example, if you need to serve hundreds of view templates (JSP, Thymeleaf, etc.) or static resource files as individual Translets, instead of repeatedly defining hundreds of `<translet>` rules, you can define just a single scanning rule as follows:
 
 ```xml
 <translet name="*" scan="/WEB-INF/jsp/**/*.jsp">
@@ -76,7 +76,7 @@ One of Aspectran's most powerful features is **dynamic Translet generation**. Fo
 </translet>
 ```
 
-The rule above scans for all `.jsp` files in the `/WEB-INF/jsp/` directory and its subdirectories, and dynamically creates and registers Translets based on the file paths. For example, if a file `/WEB-INF/jsp/user/list.jsp` is found, a Translet named `user/list` is created. This feature is very useful for serving a large number of static view files and dramatically reduces repetitive Translet definitions.
+The rule above scans for all `.jsp` files in the `/WEB-INF/jsp/` directory and its subdirectories, and dynamically creates and registers Translets based on the file paths. For example, if a file `/WEB-INF/jsp/user/list.jsp` is found, a Translet named `user/list` is automatically created. This feature is very useful for mapping a large number of view templates and static files, dramatically reducing repetitive Translet definitions.
 
 ## 4. Annotation-based Translet Definition: `@RequestTo*`
 
@@ -119,9 +119,9 @@ public class UserApiController {
 In **(1)** of the example above, the path variable `${userId}` is automatically converted and injected into the method parameter named `userId`. Aspectran intelligently injects path variables, request parameters, and registered beans based on name and type matching without requiring boilerplate annotations. Furthermore, declaring a `Translet` parameter injects the active `Translet` instance currently executing the request.
 
 > **💡 Deprecation of `@Required` and Adoption of `@NonNull` Standard**
->
+> 
 > Previously, Aspectran provided its own `@Required` annotation (`com.aspectran.core.component.bean.annotation.Required`) to denote non-null parameters and mandatory dependencies.
->
+> 
 > In modern Aspectran development, `@Required` is **`@Deprecated`** in favor of the industry-standard **JSpecify `@NonNull` (`org.jspecify.annotations.NonNull`)** annotation, which ensures maximum compatibility with IDE static analysis tools and explicit nullability contracts.
 
 ### 4.2. Asynchronous Request Handling
@@ -153,7 +153,7 @@ The `Translet` interface passed to action methods and interceptors provides a ri
 
 ### 5.1. Request Metadata and Execution Environment
 
-Inspect the URI, HTTP method, execution mode, character encoding, and environment settings of the current request.
+Inspect the request name (path), request method (`MethodType`), execution mode (`Activity.Mode`), character encoding, and environment settings of the current request.
 
 | Method | Description |
 | :--- | :--- |
@@ -161,7 +161,7 @@ Inspect the URI, HTTP method, execution mode, character encoding, and environmen
 | `String getContextPath()` | Returns the context path of the application. |
 | `String getRequestName()` | Returns the request path excluding the context path (e.g., `/users/123`). |
 | `String getActualRequestName()` | Returns the full request URI as seen by the client (e.g., `/myapp/users/123`). |
-| `MethodType getRequestMethod()` | Returns the HTTP/activity request method (`GET`, `POST`, `PUT`, `DELETE`, etc.). |
+| `MethodType getRequestMethod()` | Returns the request method (`GET`, `POST`, `PUT`, `DELETE`, etc.). |
 | `String getTransletName()` | Returns the name (pattern) of the matched Translet rule. |
 | `String getDescription()` | Returns the description defined on the Translet rule. |
 | `Environment getEnvironment()` | Returns the `Environment` object for the current context. |
@@ -182,7 +182,7 @@ public void logRequestInfo(@NonNull Translet translet) {
 
 ### 5.2. Adapters & Native Adaptees Access
 
-Aspectran decouples request, response, and session handling from underlying runtime platforms using adapters. When native platform features are needed, you can access the underlying objects (e.g., `HttpServletRequest`).
+Aspectran decouples request, response, and session handling from underlying runtime platforms using an `Adapter` layer. User code can interact consistently with request data and sessions across web, shell, and daemon environments. When native platform features are needed, you can access the underlying objects (e.g., `HttpServletRequest` / `HttpSession` in web mode, shell command objects in shell mode) through the `Adaptee` methods in a type-safe manner.
 
 | Method | Description |
 | :--- | :--- |
@@ -190,9 +190,9 @@ Aspectran decouples request, response, and session handling from underlying runt
 | `ResponseAdapter getResponseAdapter()` | Returns the `ResponseAdapter` for status codes, headers, and output. |
 | `boolean hasSessionAdapter()` | Checks whether a session adapter is active in the current environment. |
 | `SessionAdapter getSessionAdapter()` | Returns the `SessionAdapter` for session state management. |
-| `<V> V getRequestAdaptee()` | Returns the native request object (e.g., `HttpServletRequest`). |
-| `<V> V getResponseAdaptee()` | Returns the native response object (e.g., `HttpServletResponse`). |
-| `<V> V getSessionAdaptee()` | Returns the native session object (e.g., `HttpSession`). |
+| `<V> V getRequestAdaptee()` | Returns the native request object (e.g., `HttpServletRequest` in web environments). |
+| `<V> V getResponseAdaptee()` | Returns the native response object (e.g., `HttpServletResponse` in web environments). |
+| `<V> V getSessionAdaptee()` | Returns the native session object (e.g., `HttpSession` in web environments). |
 
 ```java
 public void handleAdapters(@NonNull Translet translet) {
@@ -206,7 +206,7 @@ public void handleAdapters(@NonNull Translet translet) {
         sessionAdapter.setAttribute("LAST_ACCESS", System.currentTimeMillis());
     }
 
-    // Access native servlet request in web mode
+    // Access native servlet request in web mode (environment-specific branching example)
     if (translet.getMode() == Activity.Mode.WEB) {
         HttpServletRequest req = translet.getRequestAdaptee();
         String remoteAddr = req.getRemoteAddr();
@@ -248,7 +248,7 @@ public void processUpload(@NonNull Translet translet) throws IOException {
 
 ### 5.4. Request Attributes and FlashMap
 
-Manage request-scoped attributes to share data between actions and view templates, or use FlashMap to pass flash attributes across client redirects.
+Manage request-scoped attributes to share data between actions during a single request (`Activity`) lifecycle or pass model data to view templates, and use FlashMap to pass flash attributes across client redirects.
 
 | Method | Description |
 | :--- | :--- |
@@ -309,8 +309,8 @@ Programmatically alter the control flow by dispatching to view templates, forwar
 | `void dispatch(DispatchRule dispatchRule)` | Dispatches according to a declarative `DispatchRule`. |
 | `void forward(String transletName)` | Forwards execution internally to another Translet. |
 | `void forward(ForwardRule forwardRule)` | Forwards execution according to a declarative `ForwardRule`. |
-| `void redirect(String path)` | Initiates a client-side redirect to the specified URL. |
-| `void redirect(String path, Map<String, String> params)` | Initiates a client-side redirect with appended query parameters. |
+| `void redirect(String path)` | Initiates a client-side redirect to the specified path (primarily used in web environments). |
+| `void redirect(String path, Map<String, String> params)` | Initiates a client-side redirect with appended query parameters to the specified path. |
 | `void redirect(RedirectRule redirectRule)` | Initiates a redirect according to a declarative `RedirectRule`. |
 | `void transform(TransformRule transformRule)` | Immediately transforms content (JSON, XML, etc.) and completes the response. |
 | `void transform(CustomTransformer transformer)` | Immediately transforms content using a custom transformer instance. |
@@ -356,7 +356,7 @@ Look up beans from the Aspectran IoC container or resolve environment properties
 public void loadServiceDynamically(@NonNull Translet translet) {
     // Dynamic bean retrieval
     MailService mailService = translet.getBean(MailService.class);
-
+    
     // Resolve environment property
     String adminEmail = translet.getProperty("app.admin.email");
     mailService.sendNotification(adminEmail, "Service operation completed.");

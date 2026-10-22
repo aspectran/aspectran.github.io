@@ -447,7 +447,7 @@ public class MyAwareBean implements ActivityContextAware {
 
 ### 컴포넌트 스캔 활성화
 
-기본적으로 Aspectran 구성 설정 파일(`aspectran-config.apon`)에서 `context.scan` 파라메터에 스캔 대상 패키지의 경로를 배열로 추가해야 합니다.
+기본적으로 Aspectran 구성 설정 파일(`aspectran-config.apon`)에서 `context.scan` 파라미터에 스캔 대상 패키지의 경로를 배열로 추가해야 합니다.
 Aspectran 구동시에 `@Component`, `@Bean` 어노테이션이 붙은 클래스를 자동으로 스캔해서 빈으로 등록합니다.
 해당 애플리케이션의 기본 패키지의 경로를 우선적으로 추가하는 것이 좋습니다.
 

@@ -420,13 +420,13 @@ Bean scopes control the lifecycle and visibility of a Bean instance. They can be
 | :------------ | :------------------------------ | :----------------------- | :------------------------ |
 | **`singleton`** | Single instance in the container| Entire application       | Stateless services, DAOs  |
 | **`prototype`** | New instance per request        | Managed by GC            | Stateful objects, Builders|
-| **`request`**   | New instance per request        | Single `Activity` execution| Web request data handling |
-| **`session`**   | New instance per session        | Single user session      | User-specific data management|
+| **`request`**   | New instance per request        | Single `Activity` execution| Request-scoped data processing and state sharing |
+| **`session`**   | New instance per session        | Single session           | User/client-specific session state and data management |
 
 *   **`singleton` (default)**: Only one instance is created within the IoC container and shared throughout the application. Suitable for most service Beans.
 *   **`prototype`**: A new instance is created each time the Bean is injected or requested. The container does not manage the lifecycle after creation, so if a `prototype` Bean holds resources, the developer must release them manually.
-*   **`request`**: In a web environment, a new instance is created for each HTTP request and destroyed when the request is completed. Useful for holding request-related data.
-*   **`session`**: In a web environment, a new instance is created for each user session and destroyed when the session ends. Used for managing user-specific data.
+*   **`request`**: A new instance is created for each request (a single `Activity` execution) and destroyed when that request processing finishes and the `Activity` ends. Useful for holding state or sharing data across components during a single request lifecycle, whether in web HTTP requests, shell command executions, scheduled jobs, or daemon events.
+*   **`session`**: A new instance is created for each user or client session and destroyed when the session ends or expires. Used for managing user- or client-specific state, authentication data, and context across multiple requests (`Activity`), in both web environments and interactive shell/daemon environments that support sessions.
 
 #### 3.2.5. Bean Lifecycle Callbacks
 
