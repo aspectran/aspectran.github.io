@@ -29,7 +29,19 @@ The `ResponsePayload.toEntity()` method constructs a conditional entity map to a
 | **Failure (error code/message)** | `false` | Omitted (default) | Included (`ErrorPayload`) | `{"success": false, "error": {"code": "...", "message": "..."}}` |
 | **Failure (data + error)** | `false` | Included (`Object`) | Included (`ErrorPayload`) | `{"success": false, "data": {...}, "error": {...}}` |
 
-### 1.2 Class Hierarchy
+### 1.2 Data Protection Mechanism
+
+`RestResponse` and `ResponsePayload` include a built-in **data protection mechanism (`protect()`)** to ensure that sensitive information—such as authentication tokens, temporary passwords, personally identifiable information (PII), or financial payment details—is not exposed in plaintext within server logs or debugging strings (`toString()`).
+
+*   **Separation of HTTP Serialization and String Representation**:
+    *   Even when `protect()` is active, the `toEntity()` method invoked during actual HTTP transmission **preserves the original data completely without alteration**. Clients receive the intended business payload normally.
+    *   In contrast, `toString()` calls used for logging or debugging automatically mask the data field as **`data=[PROTECTED]`**.
+*   **Automatic State Propagation**:
+    *   Calling `.protect()` on `SuccessResponse` or `FailureResponse` instantly propagates the protection flag to the underlying `ResponsePayload`.
+    *   Subsequent calls to `setData()` maintain the protected state seamlessly.
+
+### 1.3 Class Hierarchy
+
 Aspectran's REST response architecture is designed with the following class hierarchy for flexible extensibility and consistent transformation logic:
 
 ```
@@ -54,7 +66,7 @@ There are two primary ways to deliver a response to a client using `RestResponse
 ### 2.1 Using as an Action Method Return Value (Recommended)
 This is the most recommended approach, where the return type of the action method is declared as `RestResponse` (or `SuccessResponse`, `FailureResponse`).
 
-**Key Feature: Self-Transformation**
+#### Self-Transformation
 `RestResponse` implements the `CustomTransformer` interface. When an action's result is of type `CustomTransformer`, the Aspectran engine allows the **object itself to execute its own defined transformation logic (`transform(Activity)`)**, even without an explicit `@Transform` annotation or `<transform>` configuration in XML. This delegates the responsibility of determining the response format and serialization to the response object itself.
 
 ```java
@@ -65,7 +77,19 @@ public RestResponse getData() {
 }
 ```
 
+#### Internal Mechanism
+Aspectran processes the returned `RestResponse` through a two-step mechanism:
+
+1.  **Configuration Parsing Time**:
+    *   During context initialization, `AnnotatedConfigParser` inspects the return type of the action method.
+    *   If the return type is a subtype of `CustomTransformer` (such as `RestResponse`), it automatically assigns `CustomTransformResponse` as the response rule for the corresponding Translet.
+2.  **Runtime Response Phase**:
+    *   When the action method completes and returns a `RestResponse` instance, this object is stored in the `ActionResult` of the current `ProcessResult`.
+    *   Subsequently, when `CustomTransformResponse.respond(Activity)` is invoked, `findTransformer()` traverses the execution results backwards to dynamically retrieve the `CustomTransformer` instance.
+    *   Finally, `RestResponse.transform(Activity)` is executed, completing the actual HTTP response serialization based on intelligent content negotiation.
+
 ### 2.2 Explicit Transformation via Translet
+
 In environments where the method return type is `void` or where the response cannot be directly controlled via a return value (such as in an Aspect, Interceptor, or Advice), call the `translet.transform(RestResponse)` method. Calling this immediately triggers the transformation and response process using the provided response object.
 
 ```java
@@ -77,6 +101,61 @@ public void checkAuth(Translet translet) {
     }
 }
 ```
+
+### 2.3 Response Lifecycle and Debug Logging
+
+Aspectran provides standardized debug logs for each stage of the framework lifecycle to facilitate consistent request flow tracing:
+
+*   `Translet {...}` : Request preparation and mapping phase
+*   `Advice {...}` : AOP interceptor and advice execution phase
+*   `Action {...}` : Business action method execution phase
+*   `Response {...}` : Final response transformation and transmission phase
+
+#### Framework Response Metadata Logging
+When responding via `RestResponse`, `CustomTransformResponse` outputs the following rule metadata at the DEBUG log level:
+
+```
+DEBUG [TOW task-2] Response {type=transform, format=custom, transformer=com.aspectran.web.support.rest.response.SuccessResponse} - c.a.c.a.r.t.CustomTransformResponse.respond(86)
+```
+
+The framework core safely records only metadata about **which response rule and Transformer class were executed**, rather than printing the response payload itself. This design serves several critical operational purposes:
+*   **Security and Privacy (PII Protection)**: Prevents sensitive data such as authentication tokens, passwords, and personally identifiable information from being permanently logged in plain text.
+*   **Performance and I/O Optimization**: Prevents massive string allocation overhead (GC pressure) and disk I/O bottlenecks when dealing with large datasets or binary responses.
+*   **Log Cleanliness (Noise Reduction)**: Prevents massive response bodies from flooding log streams and obscuring important error stack traces or operational diagnostics.
+
+#### Application-Level Response Logging Pattern
+When you need to inspect response payload data during API development or debugging, you can log it directly within the business action method or use a common Aspect.
+
+To avoid confusion with framework lifecycle logs (`Response {...}`), it is recommended to use the **`Result`** prefix, which pairs naturally with the input parameter log (`Parameters {...}`):
+
+```java
+@Request("/sample/api/v1/countingNumbers")
+public RestResponse countingNumbers(Translet translet) {
+    if (logger.isDebugEnabled()) {
+        logger.debug("Parameters {}", translet.getAllParameters());
+    }
+
+    // Business logic
+    Map<String, Object> data = Map.of("comment", "Counting numbers", "list", List.of(1, 2, 3));
+    RestResponse response = new SuccessResponse(data);
+
+    if (logger.isDebugEnabled()) {
+        // Use "Result" prefix to distinguish from framework "Response" logs
+        logger.debug("Result {}", response);
+    }
+    return response;
+}
+```
+
+Applying this pattern results in a clean, unambiguous log stream:
+```
+DEBUG ... Action {method=app.apigateway.server.api.sample.SampleActivity.countingNumbers(Translet)} - c.a.core.activity.CoreActivity.execute(654)
+DEBUG ... Parameters {start=1, end=3} - a.a.s.a.sample.SampleActivity.countingNumbers(40)
+DEBUG ... Result {success=true, data={comment=Counting numbers, list=[1, 2, 3]}} - a.a.s.a.sample.SampleActivity.countingNumbers(77)
+DEBUG ... Response {type=transform, format=custom, transformer=com.aspectran.web.support.rest.response.SuccessResponse} - c.a.c.a.r.t.CustomTransformResponse.respond(86)
+```
+
+If you need to log response payloads across multiple APIs centrally, you can implement an `@After` advice in a shared Aspect (such as `ApiCommonAspect`) to inspect `translet.getProcessResult()` and log selectively based on URL patterns or custom annotations.
 
 ## 3. Supported Content Types
 
@@ -152,6 +231,9 @@ In addition to status codes, methods are provided to finely control the response
 *   `stringifyContext(StringifyContext stringifyContext)`: Explicitly specifies advanced serialization configuration via `StringifyContext`.
 *   `defaultContentType(MediaType defaultContentType)`: Dynamically overrides the default media type for the instance.
 *   `favorPathExtension(boolean)` / `ignoreAcceptHeader(boolean)` / `ignoreUnknownPathExtensions(boolean)`: Overrides content negotiation settings per instance.
+*   `protect()`: Protects the response data payload from being exposed in logs or string representations (`toString()`). The actual HTTP payload sent to the client remains intact, while logs output `data=[PROTECTED]` to prevent plaintext leakage.
+*   `protect(boolean protect)`: Explicitly sets whether to protect the response data payload.
+*   `isProtected()`: Returns a boolean indicating whether the response data payload is currently protected.
 
 ## 6. Practical Examples
 
@@ -169,7 +251,7 @@ public RestResponse getUser(String userId) {
                 .notFound()
                 .setError("USER_NOT_FOUND", "User not found: " + userId);
     }
-
+    
     // Return data encapsulated in standard ResponsePayload with a 200 OK status code
     return new SuccessResponse(user);
 }
@@ -217,7 +299,7 @@ Informing the client of the location URI of a newly created resource.
 @RequestToPost("/api/orders")
 public RestResponse createOrder(Order order) {
     orderService.placeOrder(order);
-
+    
     // Set 201 Created status code and automatically add the Location header
     return new SuccessResponse(order)
             .created("/api/orders/" + order.getId());
@@ -251,7 +333,7 @@ public RestResponse register(User user) {
                 .badRequest() // Set HTTP 400 status code
                 .setError("REQUIRED_FIELD", "Email is a required field.");
     }
-
+    
     userService.register(user);
     return new SuccessResponse("Registered successfully");
 }
@@ -286,7 +368,7 @@ public RestResponse getAdminSettings(UserInfo userInfo) {
                 .forbidden()
                 .setError("ACCESS_DENIED", "Admin privileges are required.");
     }
-
+    
     return new SuccessResponse(configService.getAdminConfig());
 }
 ```
@@ -366,7 +448,46 @@ public RestResponse getSystemStats() {
 }
 ```
 
-### Example 7: Backend API Relay (Using RestRequest)
+### Example 7: Protecting Sensitive Data and Safe Logging (Using protect())
+When an endpoint returns sensitive data (such as security tokens, temporary passwords, or financial payment info) that should be sent to the client but must never be exposed as plaintext in server logs or common aspect loggers, chain the `protect()` method.
+
+```java
+@RequestToPost("/api/auth/token")
+public RestResponse issueToken(AuthRequest authRequest) {
+    TokenInfo tokenInfo = authService.generateToken(authRequest);
+
+    // Chain .protect() to mask the data payload during string representation/logging
+    RestResponse response = new SuccessResponse(tokenInfo).protect();
+
+    if (logger.isDebugEnabled()) {
+        // Calling response.toString() safely outputs data=[PROTECTED]
+        logger.debug("Result {}", response);
+    }
+    return response;
+}
+```
+
+**Actual HTTP Response Received by Client (JSON Body):**
+The client receives the intact business data serialized normally via `toEntity()`.
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcBQ...",
+    "tokenType": "Bearer",
+    "expiresIn": 3600
+  }
+}
+```
+
+**Server Log Stream (Debug Log):**
+In server action logs or common aspect loggers, the data payload is masked as `[PROTECTED]`, preventing plaintext exposure.
+```
+DEBUG ... Result {success=true, data=[PROTECTED]} - a.a.s.a.auth.AuthActivity.issueToken(52)
+DEBUG ... Response {type=transform, format=custom, transformer=com.aspectran.web.support.rest.response.SuccessResponse} - c.a.c.a.r.t.CustomTransformResponse.respond(86)
+```
+
+### Example 8: Backend API Relay (Using RestRequest)
 Using `RestRequest` to invoke external microservices or internal cluster node APIs and relaying the result directly as the current server's response. `RestRequest.retrieve()` returns either a `SuccessResponse` or `FailureResponse` based on the remote status code, providing seamless client-server symmetry.
 
 ```java
@@ -392,7 +513,7 @@ public RestResponse relayWeatherRequest(CloseableHttpClient httpClient) {
 }
 ```
 
-### Example 8: Global Exception Handling via Aspect
+### Example 9: Global Exception Handling via Aspect
 Intercepting exceptions thrown across the application and transforming them into standard `FailureResponse` objects ensures predictable and consistent error structures for API consumers.
 
 ```java
@@ -434,3 +555,5 @@ public class GlobalRestExceptionAdvice {
 3.  **Establish a Project-wide Error Code Convention**: Manage error codes (`ErrorPayload.code`) as centralized constants (enums or static constants) across the project for clear client-side error handling.
 4.  **Align Frontend Communication Contracts**: Web frontends and API consumers should inspect the top-level `res.success` boolean field (`if (res.success) { ... }`) to branch execution, and access `res.error.code` and `res.error.message` upon failure.
 5.  **Leverage Content Negotiation**: When clients append `.json`, `.apon`, or `.xml` extensions, Aspectran automatically performs format serialization, allowing a single action method to serve multi-format APIs effortlessly.
+6.  **Secure Response Logging and Separation of Concerns**: Framework `Response` logs safely output only metadata (`{type=transform, format=custom, transformer=...}`). When logging response payloads directly for application or API debugging, use the `Result` prefix to prevent ambiguity with framework logs, and ensure sensitive data such as PII or authentication tokens are masked or omitted from logs.
+7.  **Apply `protect()` for Sensitive Endpoints**: APIs issuing security tokens, one-time passwords (OTP), personal identifiers, or financial accounts should enable protection by calling `new SuccessResponse(data).protect()`. Even if the response object is printed in common aspect loggers or debug statements (`logger.debug("Result {}", response)`), the payload is automatically masked as `[PROTECTED]`, achieving both developer convenience and data protection.

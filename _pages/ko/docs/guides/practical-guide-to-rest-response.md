@@ -29,7 +29,19 @@ Aspectran의 REST 응답 처리는 단순히 원시 데이터를 반환하는 �
 | **실패 (에러 코드/메시지)** | `false` | 생략 (기본) | 포함 (`ErrorPayload`) | `{"success": false, "error": {"code": "...", "message": "..."}}` |
 | **실패 (데이터+에러)** | `false` | 포함 (`Object`) | 포함 (`ErrorPayload`) | `{"success": false, "data": {...}, "error": {...}}` |
 
-### 1.2 표준 클래스 계층 구조
+### 1.2 민감 데이터 보호 메커니즘 (Data Protection)
+
+`RestResponse` 및 `ResponsePayload`는 인증 토큰, 임시 비밀번호, 개인식별정보(PII), 금융 결제 데이터 등 민감한 정보가 서버 로그나 디버깅 문자열(`toString()`)에 평문으로 남지 않도록 보장하는 **데이터 보호 기능(`protect()`)**을 내장하고 있습니다.
+
+*   **HTTP 직렬화와 문자열 표현의 역할 분리**:
+    *   `protect()`가 활성화되더라도 실제 클라이언트에게 응답을 전송할 때 호출되는 `toEntity()`는 **원본 데이터를 손실 없이 온전하게 유지**합니다. 즉, 클라이언트는 정상적인 비즈니스 데이터를 수신할 수 있습니다.
+    *   반면, 로깅이나 디버깅 목적으로 호출되는 `toString()`에서는 데이터 필드가 자동으로 **`data=[PROTECTED]`**로 마스킹됩니다.
+*   **상태 자동 전파 (Propagation)**:
+    *   `SuccessResponse`나 `FailureResponse`에서 `.protect()`를 호출하면, 응답 객체 내부의 `ResponsePayload`에도 보호 설정이 즉시 동기화됩니다.
+    *   보호 설정 이후에 `setData()`를 통해 데이터를 갱신하거나 교체하더라도 보호 상태가 그대로 유지됩니다.
+
+### 1.3 표준 클래스 계층 구조
+
 Aspectran의 REST 응답 체계는 유연한 확장성과 일관된 변환 로직을 위해 다음과 같은 계층 구조로 설계되어 있습니다.
 
 ```
@@ -54,7 +66,7 @@ Aspectran에서 `RestResponse`를 사용하여 클라이언트에게 응답을 �
 ### 2.1 액션 메서드의 리턴값으로 사용 (추천)
 가장 권장되는 방식으로, 액션 메서드의 리턴 타입을 `RestResponse` (또는 `SuccessResponse`, `FailureResponse`)로 지정합니다.
 
-**핵심 특징: 자동 변환 (Self-Transformation)**
+#### 자동 변환 (Self-Transformation)
 `RestResponse`는 `CustomTransformer` 인터페이스를 구현하고 있습니다. Aspectran 엔진은 액션의 결과값이 `CustomTransformer` 타입인 경우, 별도의 `@Transform` 어노테이션이나 XML의 `<transform>` 설정이 없더라도 **객체 스스로가 정의한 변환 로직(`transform(Activity)`)을 실행**합니다. 즉, 응답 포맷 결정과 직렬화 로직을 프레임워크가 아닌 응답 객체에게 완전히 위임합니다.
 
 ```java
@@ -65,7 +77,19 @@ public RestResponse getData() {
 }
 ```
 
+#### 내부 동작 메커니즘 (Internal Mechanism)
+Aspectran은 다음과 같은 2단계 과정을 통해 리턴된 `RestResponse`를 처리합니다:
+
+1.  **어노테이션 파싱 시점 (Configuration Parsing)**:
+    *   컨텍스트 초기화 시 `AnnotatedConfigParser`가 액션 메서드의 반환 타입을 분석합니다.
+    *   반환 타입이 `CustomTransformer` 인터페이스의 하위 타입(`RestResponse`)인 경우, 해당 Translet의 응답 규칙으로 `CustomTransformResponse`를 자동으로 등록합니다.
+2.  **런타임 응답 처리 시점 (Runtime Response Phase)**:
+    *   액션 메서드가 실행되어 `RestResponse` 인스턴스를 반환하면, 이 객체는 `ProcessResult` 내의 `ActionResult`에 저장됩니다.
+    *   이어서 `CustomTransformResponse.respond(Activity)`가 실행될 때, `findTransformer()` 메서드가 실행 결과 목록을 역순으로 탐색하여 `CustomTransformer` 인스턴스를 동적으로 획득합니다.
+    *   최종적으로 획득한 `RestResponse.transform(Activity)`가 호출되어 지능형 콘텐츠 협상에 따른 실제 HTTP 응답 직렬화가 완료됩니다.
+
 ### 2.2 Translet을 통한 명시적 변환
+
 메서드의 리턴 타입이 `void`이거나, Aspect(Interceptor, Advice)와 같이 리턴값을 통해 응답을 직접 제어하기 어려운 환경에서는 `translet.transform(RestResponse)` 메서드를 호출합니다. 호출 즉시 해당 응답 객체를 사용하여 변환 및 응답 프로세스가 진행됩니다.
 
 ```java
@@ -77,6 +101,61 @@ public void checkAuth(Translet translet) {
     }
 }
 ```
+
+### 2.3 응답 라이프사이클과 디버그 로깅 (Response Lifecycle & Debug Logging)
+
+Aspectran은 일관된 요청 처리 흐름 추적을 위해 프레임워크 라이프사이클 단계별로 표준화된 디버그 로그를 제공합니다:
+
+*   `Translet {...}` : 요청 준비 및 매핑 단계
+*   `Advice {...}` : AOP 인터셉터 및 어드바이스 실행 단계
+*   `Action {...}` : 비즈니스 액션 메서드 실행 단계
+*   `Response {...}` : 최종 응답 변환 및 전송 단계
+
+#### 프레임워크의 Response 메타데이터 로그
+`RestResponse`를 통한 응답 처리 시, `CustomTransformResponse`는 다음과 같은 규칙 메타데이터를 디버그 로그로 출력합니다:
+
+```
+DEBUG [TOW task-2] Response {type=transform, format=custom, transformer=com.aspectran.web.support.rest.response.SuccessResponse} - c.a.c.a.r.t.CustomTransformResponse.respond(86)
+```
+
+프레임워크 코어는 응답 본문(페이로드) 자체를 로그에 출력하지 않고, **어떤 응답 규칙과 Transformer 클래스가 실행되었는가**에 대한 메타데이터만 안전하게 기록합니다. 이는 다음과 같은 운영상의 중요 이유 때문입니다:
+*   **보안 및 개인정보 보호 (PII)**: 로그인 토큰, 비밀번호, 개인 식별 정보 등 민감한 데이터가 로그 파일에 평문으로 영구 저장되는 것을 방지합니다.
+*   **성능 및 I/O 최적화**: 대용량 목록 조회나 바이너리 데이터 응답 시 발생하는 대규모 문자열 생성(GC 부하)과 디스크 I/O 병목을 차단합니다.
+*   **로그 가독성 (Noise 방지)**: 거대한 응답 데이터가 전체 로그를 뒤덮어 정작 중요한 장애 원인이나 에러 추적 로그를 가리는 현상을 방지합니다.
+
+#### 애플리케이션 레벨의 응답 본문 로깅 패턴
+특정 API를 개발하거나 디버깅하는 과정에서 응답 본문 데이터를 로그로 확인해야 할 경우, 비즈니스 액션 메서드 내에서 직접 출력하거나 공통 Aspect를 활용할 수 있습니다.
+
+이때 프레임워크의 라이프사이클 로그(`Response {...}`)와의 혼선을 방지하기 위해, 입력 파라미터 로그(`Parameters {...}`)와 짝을 이루는 **`Result`** 프리픽스를 사용하는 것을 권장합니다:
+
+```java
+@Request("/sample/api/v1/countingNumbers")
+public RestResponse countingNumbers(Translet translet) {
+    if (logger.isDebugEnabled()) {
+        logger.debug("Parameters {}", translet.getAllParameters());
+    }
+
+    // 비즈니스 로직 수행
+    Map<String, Object> data = Map.of("comment", "숫자 세기", "list", List.of(1, 2, 3));
+    RestResponse response = new SuccessResponse(data);
+
+    if (logger.isDebugEnabled()) {
+        // 프레임워크의 "Response" 로그와 명확히 구분되는 "Result" 프리픽스 사용
+        logger.debug("Result {}", response);
+    }
+    return response;
+}
+```
+
+이 패턴을 적용하면 로그 스트림에서 요청의 흐름과 입력, 결과 데이터가 완벽하게 일목요연해집니다:
+```
+DEBUG ... Action {method=app.apigateway.server.api.sample.SampleActivity.countingNumbers(Translet)} - c.a.core.activity.CoreActivity.execute(654)
+DEBUG ... Parameters {start=1, end=3} - a.a.s.a.sample.SampleActivity.countingNumbers(40)
+DEBUG ... Result {success=true, data={comment=숫자 세기, list=[1, 2, 3]}} - a.a.s.a.sample.SampleActivity.countingNumbers(77)
+DEBUG ... Response {type=transform, format=custom, transformer=com.aspectran.web.support.rest.response.SuccessResponse} - c.a.c.a.r.t.CustomTransformResponse.respond(86)
+```
+
+또한 여러 API에 대해 공통으로 응답 본문을 로깅해야 하는 경우에는 `ApiCommonAspect`와 같은 공통 Aspect에서 `@After` 어드바이스를 통해 `translet.getProcessResult()`를 조회하여 선택적(특정 URL 패턴 또는 로깅 어노테이션 기반)으로 처리할 수 있습니다.
 
 ## 3. 지원되는 컨텐츠 타입 (Supported Content Types)
 
@@ -152,6 +231,9 @@ Aspectran의 `DefaultRestResponse`는 별도의 서드파티 라이브러리 설
 *   `stringifyContext(StringifyContext stringifyContext)`: 직렬화 세부 옵션을 담고 있는 `StringifyContext`를 직접 지정합니다.
 *   `defaultContentType(MediaType defaultContentType)`: 인스턴스별 기본 미디어 타입을 동적으로 지정합니다.
 *   `favorPathExtension(boolean)` / `ignoreAcceptHeader(boolean)` / `ignoreUnknownPathExtensions(boolean)`: 콘텐츠 협상 옵션을 인스턴스별로 재정의합니다.
+*   `protect()`: 응답 데이터(본문)를 로깅 및 문자열 표현(`toString()`)에서 안전하게 보호합니다. 클라이언트에 전송되는 HTTP 본문은 정상 유지되지만, 로그에는 `data=[PROTECTED]`로 마스킹되어 평문 노출을 방지합니다.
+*   `protect(boolean protect)`: 응답 데이터의 보호 여부를 명시적으로 설정합니다.
+*   `isProtected()`: 현재 응답 데이터가 보호 설정되어 있는지 여부를 불리언(`boolean`)으로 반환합니다.
 
 ## 6. 실무 적용 예제 (Practical Examples)
 
@@ -169,7 +251,7 @@ public RestResponse getUser(String userId) {
                 .notFound()
                 .setError("USER_NOT_FOUND", "사용자를 찾을 수 없습니다: " + userId);
     }
-
+    
     // 200 OK 상태 코드와 함께 데이터를 표준 ResponsePayload로 캡슐화하여 반환
     return new SuccessResponse(user);
 }
@@ -217,7 +299,7 @@ data: {
 @RequestToPost("/api/orders")
 public RestResponse createOrder(Order order) {
     orderService.placeOrder(order);
-
+    
     // 201 Created 상태 코드를 설정하고 Location 헤더를 자동으로 추가
     return new SuccessResponse(order)
             .created("/api/orders/" + order.getId());
@@ -286,7 +368,7 @@ public RestResponse getAdminSettings(UserInfo userInfo) {
                 .forbidden()
                 .setError("ACCESS_DENIED", "관리자 권한이 필요합니다.");
     }
-
+    
     return new SuccessResponse(configService.getAdminConfig());
 }
 ```
@@ -356,7 +438,7 @@ public RestResponse createTodo(Parameters parameters) {
 @Request("/api/system/stats")
 public RestResponse getSystemStats() {
     Map<String, Object> stats = statsService.getGlobalStats();
-
+    
     return new SuccessResponse(stats)
             .prettyPrint(true) // 줄바꿈과 들여쓰기를 포함한 가독성 높은 출력
             .nullWritable(false) // null 값 필드 생략
@@ -366,22 +448,61 @@ public RestResponse getSystemStats() {
 }
 ```
 
-### 예제 7: 백엔드 API Relay (RestRequest 활용)
+### 예제 7: 민감 데이터 보호와 안전한 로깅 (protect() 활용)
+인증 토큰, 임시 비밀번호, 금융 결제 정보 등 보안상 민감한 데이터를 클라이언트에게 반환해야 하지만, 서버 내부의 공통 Aspect나 디버그 로그에는 해당 데이터가 평문으로 남지 않아야 하는 경우 `protect()` 메서드를 체이닝합니다.
+
+```java
+@RequestToPost("/api/auth/token")
+public RestResponse issueToken(AuthRequest authRequest) {
+    TokenInfo tokenInfo = authService.generateToken(authRequest);
+
+    // .protect()를 체이닝하여 로깅 시 데이터 마스킹 활성화
+    RestResponse response = new SuccessResponse(tokenInfo).protect();
+
+    if (logger.isDebugEnabled()) {
+        // response.toString() 호출 시 data=[PROTECTED]로 안전하게 출력됨
+        logger.debug("Result {}", response);
+    }
+    return response;
+}
+```
+
+**클라이언트가 수신하는 실제 HTTP 응답 (JSON Body):**
+클라이언트는 `toEntity()`를 통해 정상적으로 직렬화된 실제 비즈니스 데이터를 수신합니다.
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcBQ...",
+    "tokenType": "Bearer",
+    "expiresIn": 3600
+  }
+}
+```
+
+**서버 로그 스트림 (Debug Log):**
+서버 내부의 액션 로그 또는 공통 Aspect 로거에서는 데이터 필드가 안전하게 `[PROTECTED]`로 마스킹되어 평문 노출이 원천 차단됩니다.
+```
+DEBUG ... Result {success=true, data=[PROTECTED]} - a.a.s.a.auth.AuthActivity.issueToken(52)
+DEBUG ... Response {type=transform, format=custom, transformer=com.aspectran.web.support.rest.response.SuccessResponse} - c.a.c.a.r.t.CustomTransformResponse.respond(86)
+```
+
+### 예제 8: 백엔드 API Relay (RestRequest 활용)
 `RestRequest` 클래스를 사용하여 외부 마이크로서비스나 내부 클러스터 노드의 REST API를 호출하고, 그 결과를 가공 없이 현재 서버의 응답으로 바로 중계(Relay)하는 패턴입니다. `RestRequest.retrieve()`는 원격 응답 상태에 따라 이미 `SuccessResponse` 또는 `FailureResponse`를 구성하여 반환하므로 완벽한 대칭성을 가집니다.
 
 ```java
 @Request("/relay/weather")
 public RestResponse relayWeatherRequest(CloseableHttpClient httpClient) {
     String targetUrl = "https://internal-api.example.com/weather/today";
-
+    
     try {
         RestRequest restRequest = new RestRequest(httpClient);
-
+        
         // RestRequest.retrieve() 호출 결과는 이미 SuccessResponse 또는 FailureResponse 형태임
         RestResponse response = restRequest.get()
                                            .url(targetUrl)
                                            .retrieve();
-
+        
         // 반환받은 표준 응답 객체를 Translet의 응답으로 그대로 전달
         return response; 
     } catch (IOException e) {
@@ -392,7 +513,7 @@ public RestResponse relayWeatherRequest(CloseableHttpClient httpClient) {
 }
 ```
 
-### 예제 8: 전역 예외 처리(Exception Handling / Aspect)에서의 일관된 응답 변환
+### 예제 9: 전역 예외 처리(Exception Handling / Aspect)에서의 일관된 응답 변환
 애플리케이션 전역에서 발생하는 예외를 Aspect나 Exception Rule에서 가로채어 표준 `FailureResponse`로 변환하면, 클라이언트에게 항상 일관된 형식의 에러 응답을 보장할 수 있습니다.
 
 ```java
@@ -405,22 +526,22 @@ public class GlobalRestExceptionAdvice {
     @AfterThrown(target = "activity", thrown = "java.lang.IllegalArgumentException")
     public void handleIllegalArgument(Translet translet, Exception ex) {
         logger.warn("Invalid client argument: {}", ex.getMessage());
-
+        
         RestResponse response = new FailureResponse()
                 .badRequest()
                 .setError("INVALID_PARAMETER", ex.getMessage());
-
+        
         translet.transform(response);
     }
 
     @AfterThrown(target = "activity", thrown = "java.lang.Exception")
     public void handleGeneralException(Translet translet, Exception ex) {
         logger.error("Unhandled server exception occurred", ex);
-
+        
         RestResponse response = new FailureResponse()
                 .internalServerError()
                 .setError("INTERNAL_SERVER_ERROR", "서버 내부 오류가 발생했습니다.");
-
+        
         translet.transform(response);
     }
 
@@ -434,3 +555,5 @@ public class GlobalRestExceptionAdvice {
 3.  **일관된 에러 코드 체계 구축**: `FailureResponse`에서 사용하는 에러 코드(`ErrorPayload.code`)는 프로젝트 전반에서 식별 가능하고 고유하도록 상수(Enum 또는 Static Constants)로 관리하는 것이 좋습니다.
 4.  **프론트엔드 통신 규약 일치**: Aspectran 표준 응답을 수신하는 웹 프론트엔드나 클라이언트는 응답의 최상위 `success` 불리언 필드를 검사(`if (res.success) { ... }`)하여 성공 여부를 분기하고, 실패 시 `res.error.code`와 `res.error.message`를 활용하도록 설계하십시오.
 5.  **콘텐츠 협상 활용**: API 설계 시 클라이언트가 `.json`, `.apon`, `.xml` 등의 확장자를 붙여 요청하면 Aspectran이 해당 포맷으로 즉시 변환하므로, 동일한 비즈니스 로직으로 다중 포맷 API를 손쉽게 제공할 수 있습니다.
+6.  **안전한 응답 로깅과 라이프사이클 로그의 분리**: 프레임워크가 출력하는 `Response` 로그는 응답 처리 규칙의 메타데이터(`{type=transform, format=custom, transformer=...}`)만을 안전하게 기록합니다. 애플리케이션이나 API 디버깅을 위해 응답 페이로드를 직접 로깅할 때는 `Result` 프리픽스를 사용하여 프레임워크 로그와의 혼선을 방지하고, 개인정보(PII)나 인증 토큰 등 민감한 데이터가 로그에 평문으로 남지 않도록 주의하십시오.
+7.  **민감 데이터 응답의 `protect()` 적용**: 인증 토큰, 일회용 비밀번호(OTP), 주민등록번호, 계좌 정보 등을 반환하는 API는 액션 메서드에서 `new SuccessResponse(data).protect()`와 같이 보호 설정을 활성화하십시오. 공통 로깅 Aspect나 비즈니스 로그(`logger.debug("Result {}", response)`)에서 응답 객체를 출력하더라도 데이터 본문이 자동으로 `[PROTECTED]`로 마스킹되므로, 개발 및 운영 로깅의 편의성과 개인정보 보호를 완벽하게 양립할 수 있습니다.
