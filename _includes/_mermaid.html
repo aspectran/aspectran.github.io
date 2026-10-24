@@ -143,10 +143,11 @@
   }
 </style>
 <script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.0.0/+esm';
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.2.0/+esm';
   mermaid.initialize({
     startOnLoad: true,
-    theme: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'neo-dark' : 'neo'
+    theme: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'neo',
+    darkMode: document.documentElement.getAttribute('data-bs-theme') === 'dark'
   });
   await mermaid.run({
     querySelector: '.language-mermaid'
