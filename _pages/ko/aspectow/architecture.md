@@ -1,5 +1,5 @@
 ---
 layout: redirect
 sitemap: false
-redirect_to: /ko/docs/aspectow/architecture/
+redirect_to: /ko/docs/aspectow/overview/
 ---

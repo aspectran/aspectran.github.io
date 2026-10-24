@@ -1,5 +1,5 @@
 ---
 layout: redirect
 sitemap: false
-redirect_to: /en/docs/aspectow/architecture/
+redirect_to: /en/docs/aspectow/overview/
 ---

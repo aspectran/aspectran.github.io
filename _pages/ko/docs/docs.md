@@ -62,7 +62,7 @@ Aspectran 기반의 차세대 엔터프라이즈 애플리케이션 서버입니
 
 *   [Why Aspectow](/ko/why-aspectow/)
 *   [Aspectow 시작하기](/ko/docs/aspectow/getting-started/)
-*   [Aspectow 아키텍처](/ko/docs/aspectow/architecture/)
+*   [Aspectow 플랫폼 개요 및 시스템 아키텍처](/ko/docs/aspectow/overview/)
 *   [Aspectow Enterprise 구성 가이드](/ko/docs/aspectow/configuration-guide/)
 *   [Aspectow Edge 구성 가이드](/ko/docs/aspectow/edge-configuration-guide/)
 *   [Aspectow Node Manager 가이드](/ko/docs/aspectow/node-manager/)

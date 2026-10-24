@@ -109,11 +109,11 @@ Aspectow provides practical and powerful core competencies that differentiate it
 ### 1. Unified Management Web Console (Aspectow Console)
 
 Beyond server execution, Aspectow includes **Aspectow Console**, a unified web interface to visually control the entire cluster and applications:
-*   **Cluster Node Management**: Real-time monitoring of node statuses (Live, Paused, Dead) and bulk action controls (Pause, Resume, Restart).
-*   **Interactive Remote Command Center**: Dispatch interactive CLI/Shell commands to specific nodes or all nodes in real time with live console streaming.
+*   **Cluster Node Management**: Real-time monitoring of node statuses (Active, Paused, Inactive) and bulk action controls (Pause, Resume, Restart).
+*   **Interactive Remote Command Center**: Dispatch interactive CLI/Shell commands to specific nodes or all nodes in real time with live console streaming via WebSocket dark terminals.
 *   **Distributed Scheduler Manager**: Offers a Dashboard view for cluster-wide schedule overview and a Detail View for node-specific job dynamic control (Pause, Resume, Details).
 *   **Remote Build & Rollout Deployment Manager (Build & Deployment)**: Orchestrates Git source synchronization, Maven build packaging, configuration/web asset deployment, and process-independent safe server restarts (Detached Restart) directly from the web console with a single click—eliminating the need for external CI/CD tools or separate agents—while streaming real-time build and deployment logs through an interactive dark WebSocket terminal.
-*   **Security & Vault Management**: Securely manages PBE (Password-Based Encryption) security tokens and system encryption configurations.
+*   **Enterprise Token Security (Remember-Me)**: Features Spring Security-grade Persistent Token Rotation and token theft detection, client IP and User-Agent device binding, and PBE encrypted secure cookies alongside comprehensive Vault management for ironclad administrative security.
 *   **Runtime Diagnostic Tools**: Built-in developer utilities including Wildcard Pattern Tester, AsEL Expression Evaluator, and APON Data Converter.
 
 ### 2. High-Performance Cluster Architecture & Node Manager (Node Manager Control Plane)
@@ -155,11 +155,22 @@ Through the `aspectran-rss-lettuce` module, session data is managed directly usi
 
 ### 4. Built-in Real-Time AppMon Monitoring (Group - Node - App)
 
-Includes the `Aspectow AppMon` monitoring engine by default. Without complex external APM setups, observe Canvas-based traffic flow, JVM heap/thread metrics, active session tracking, and real-time/historical reverse log tailing via a 3-tier navigation (Group - Node - App).
+Includes the `Aspectow AppMon` monitoring engine by default. Without complex external APM setups, observe Canvas-based dynamic traffic flow (physics bullet rendering and Hot Core visualization), JVM heap/thread metrics with inline sparklines and modal popovers, always-on session tracking with ISO geolocation, real-time/historical reverse log tailing (`loadPrevious`), and a pre-aggregation 3-tier persistence architecture that guarantees sub-100ms chart queries across massive datasets via a 3-tier navigation (Group - Node - App).
 
 ### 5. Battle-Tested Enterprise Stack and Samples
 
 Through the `aspectow-demo` project, Aspectow provides a practical enterprise stack combining battle-tested libraries such as `HikariCP` (high-performance DB connection pool), `Querydsl` (type-safe queries), `JPetStore`, and `PetClinic`, allowing users to start development on a proven foundation.
+
+## Next Steps & Related Architecture Guides
+
+Explore Aspectow's internal mechanisms and configuration options in depth through the following guide documents:
+
+*   [Aspectow Platform Overview & System Architecture](/ko/docs/aspectow/overview/): Runtime stack, SiblingClassLoader safe reloading mechanism, Translet/AOP pipeline, and distributed deployment topologies.
+*   [Aspectow Configuration Guide](/ko/docs/aspectow/configuration-guide/): Detailed server and context rule configurations for the Enterprise Edition.
+*   [Aspectow Edge Configuration Guide](/ko/docs/aspectow/edge-configuration-guide/): Ultra-lightweight microservice setup powered by Netty and Virtual Threads.
+*   [Aspectow Node Manager Guide](/ko/docs/aspectow/node-manager/): Distributed clustering deployment with Gateway Mode and Direct Mode.
+*   [Aspectow AppMon Overview & Architecture Guide](/ko/docs/aspectow/appmon-overview/): Real-time observability engine and standalone operational setup.
+*   [Aspectow Console Overview & Architecture Guide](/ko/docs/aspectow/console-overview/): Centralized enterprise web operations center and security architecture.
 
 ## Project Templates and Samples
 

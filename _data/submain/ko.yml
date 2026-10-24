@@ -148,8 +148,8 @@ aspectow:
           url: /ko/docs/aspectow/deployment-and-operations/
           description: 애플리케이션을 배포하고 다양한 운영체제에서 데몬/서비스로 관리하는 방법을 배웁니다.
       tags:
-        - title: Aspectow 아키텍처
-          url: /ko/docs/aspectow/architecture/
+        - title: Aspectow 개요
+          url: /ko/docs/aspectow/overview/
         - title: 세션 관리자
           url: /ko/docs/guides/aspectran-session-manager/
         - title: 멀티 컨텍스트 세션

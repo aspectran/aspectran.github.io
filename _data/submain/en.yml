@@ -148,8 +148,8 @@ aspectow:
           url: /en/docs/aspectow/deployment-and-operations/
           description: Learn how to deploy and manage applications as services across different operating systems.
       tags:
-        - title: Aspectow Architecture
-          url: /en/docs/aspectow/architecture/
+        - title: Aspectow Overview
+          url: /en/docs/aspectow/overview/
         - title: Session Manager
           url: /en/docs/guides/aspectran-session-manager/
         - title: Multi-context Sessions

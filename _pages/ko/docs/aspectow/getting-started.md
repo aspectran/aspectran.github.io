@@ -166,5 +166,5 @@ IDE(예: IntelliJ IDEA, Eclipse)를 사용하는 경우, 특정 클래스(예: `
 ## 11. 다음 단계
 
 *   **시각적 관제 콘솔 체험**: 웹 브라우저에서 `http://localhost:8080/console`에 접속하여 [Aspectow Console 주요 화면 및 기능 가이드](/ko/docs/aspectow/console/feature-guide/)를 체험해 보세요.
-*   **핵심 아키텍처 학습**: [Aspectow 아키텍처](/ko/docs/aspectow/architecture/) 및 [Aspectow Console 아키텍처](/ko/docs/aspectow/console-overview/)를 읽고 노드 내장형 관제 시스템과 WAS 특징을 파악해 보세요.
+*   **핵심 아키텍처 학습**: [Aspectow 개요](/ko/docs/aspectow/overview/) 및 [Aspectow Console 개요](/ko/docs/aspectow/console-overview/)를 읽고 노드 내장형 관제 시스템과 WAS 특징을 파악해 보세요.
 *   **나만의 애플리케이션 개발**: Aspectow [스타터 프로젝트](/ko/projects/)를 기반으로 자신만의 애플리케이션 개발을 시작해 보세요.

@@ -109,11 +109,11 @@ Aspectow는 다른 WAS 및 플랫폼과 차별화되는, 실질적이고 강력�
 ### 1. 통합 관제 웹 콘솔 (Aspectow Console)
 
 Aspectow는 서버 구동을 넘어 전체 클러스터와 애플리케이션을 시각적으로 통제하는 **Aspectow Console**을 기본 제공합니다.
-*   **클러스터 노드 관리**: 클러스터 내 모든 활성 노드의 생존 상태(Live, Paused, Dead)를 실시간 감시하고, 일괄 제어(Pause, Resume, Restart) 명령을 실행합니다.
-*   **대화형 원격 명령 센터**: 클러스터 내 특정 노드 또는 전체 노드로 원격 CLI/Shell 명령을 발송하고 실시간 콘솔 출력을 확인합니다.
+*   **클러스터 노드 관리**: 클러스터 내 모든 활성 노드의 생존 상태(Active, Paused, Inactive)를 실시간 감시하고, 일괄 제어(Pause, Resume, Restart) 명령을 실행합니다.
+*   **대화형 원격 명령 센터**: 클러스터 내 특정 노드 또는 전체 노드로 원격 CLI/Shell 명령을 발송하고 WebSocket 다크 터미널을 통해 실시간 콘솔 출력을 스트리밍합니다.
 *   **분산 스케줄러 관리자**: 전체 노드의 스케줄러 상태와 통합 로그를 관찰하는 Dashboard 뷰 및 특정 노드의 잡(Job)을 집중 동적 제어(Pause, Resume, Details)하는 Detail View를 지원합니다.
 *   **원격 빌드 및 롤아웃 배포 관리자 (Build & Deployment)**: 외부 CI/CD 도구나 별도 에이전트 없이도 웹 콘솔에서 원클릭으로 Git 소스 동기화, Maven 빌드 패키징, 설정/웹 자산 배포, 그리고 프로세스 독립적 안전 재시작(Detached Restart)을 오케스트레이션하며, WebSocket 기반 대화형 다크 터미널을 통해 실시간 빌드/배포 로그를 스트리밍합니다.
-*   **보안 및 Vault 관리**: PBE(Password-Based Encryption) 암호화 기반 보안 토큰 발급 및 시스템 암호화 구성을 안전하게 관리합니다.
+*   **엔터프라이즈 보안 및 토큰 회전 (Remember-Me)**: Spring Security 스타일의 Persistent Token Rotation 및 토큰 탈취 감지(Theft Detection), 클라이언트 IP/User-Agent 디바이스 바인딩, PBE 암호화 보안 쿠키 및 Vault 관리 기능을 완비하여 최고 수준의 관리자 보안을 제공합니다.
 *   **런타임 진단 도구**: 와일드카드 패턴 검증기, AsEL 표현식 평가기, APON 데이터 변환기 등 개발자 유틸리티를 내장 제공합니다.
 
 ### 2. 고성능 분산 클러스터링 아키텍처 및 노드 관리자 (Node Manager Control Plane)
@@ -155,11 +155,22 @@ flowchart TD
 
 ### 4. 내장된 실시간 AppMon 모니터링 (Group - Node - App)
 
-`Aspectow AppMon` 엔진을 내장 통합하여 제공합니다. 별도의 복잡한 외부 모니터링 설치 없이, Canvas 기반 트래픽 시각화, JVM 힙/스레드 풀 메트릭, 세션 이력 및 실시간/역방향 로그 테일링 콘솔을 3계층(Group - Node - App) 내비게이션으로 관찰할 수 있습니다.
+`Aspectow AppMon` 엔진을 내장 통합하여 제공합니다. 별도의 복잡한 외부 모니터링 설치 없이, Canvas 기반 동역학 트래픽 플로우(Bullet 물리 엔진 및 Hot Core 시각화), JVM 힙/스레드 풀 메트릭 및 인라인 스파크라인/팝오버 차트, 상시 세션 추적(Always-On GeoIP), 실시간 및 역방향 무한스크롤 로그 테일링 콘솔(`loadPrevious`), 그리고 대규모 데이터 환경에서도 쿼리 속도를 보장하는 사전 집계(Pre-aggregation) 3계층 영속성 아키텍처를 3계층(Group - Node - App) 내비게이션으로 관찰할 수 있습니다.
 
 ### 5. 실증된 엔터프라이즈 스택과 예제
 
 `aspectow-demo` 프로젝트를 통해 `HikariCP`(고성능 DB 커넥션 풀), `Querydsl`(타입-세이프 쿼리), `JPetStore`, `PetClinic` 등 업계 검증 라이브러리와 애플리케이션이 결합된 실전 스택을 제공하여 신뢰할 수 있는 기반 위에서 개발을 시작할 수 있습니다.
+
+## 다음 단계 및 관련 아키텍처 가이드
+
+Aspectow의 상세한 내부 메커니즘과 설정 방법은 다음 가이드 문서들을 통해 더욱 깊이 있게 탐색할 수 있습니다.
+
+*   [Aspectow 플랫폼 개요 및 시스템 아키텍처](/ko/docs/aspectow/overview/): 런타임 스택, SiblingClassLoader 안전 리로딩 메커니즘, Translet/AOP 파이프라인 및 분산 배포 토폴로지
+*   [Aspectow 설정 가이드](/ko/docs/aspectow/configuration-guide/): Enterprise 에디션 서버 및 컨텍스트 규칙 상세 설정
+*   [Aspectow Edge 설정 가이드](/ko/docs/aspectow/edge-configuration-guide/): Netty 및 가상 스레드 기반 초경량 마이크로서비스 설정
+*   [Aspectow Node Manager 가이드](/ko/docs/aspectow/node-manager/): Gateway 모드 및 Direct 모드 분산 클러스터링 구축
+*   [Aspectow AppMon 개요 및 아키텍처 가이드](/ko/docs/aspectow/appmon-overview/): 실시간 관찰성 엔진 및 단독(Standalone) 구동 가이드
+*   [Aspectow Console 개요 및 아키텍처 가이드](/ko/docs/aspectow/console-overview/): 전사 통합 웹 관제 센터 및 보안 아키텍처
 
 ## 프로젝트 템플릿 및 샘플
 

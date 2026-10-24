@@ -62,7 +62,7 @@ Next-generation enterprise application server built on Aspectran.
 
 *   [Why Aspectow](/en/why-aspectow/)
 *   [Aspectow Getting Started](/en/docs/aspectow/getting-started/)
-*   [Aspectow Architecture](/en/docs/aspectow/architecture/)
+*   [Aspectow Platform Overview & System Architecture](/en/docs/aspectow/overview/)
 *   [Aspectow Enterprise Configuration Guide](/en/docs/aspectow/configuration-guide/)
 *   [Aspectow Edge Configuration Guide](/en/docs/aspectow/edge-configuration-guide/)
 *   [Aspectow Node Manager Guide](/en/docs/aspectow/node-manager/)
