@@ -1,9 +1,10 @@
 ---
 title: Aspectow AppMon 개요 및 아키텍처 가이드
-teaser: Aspectow AppMon은 Aspectran 프레임워크 기반 애플리케이션의 실시간 이벤트, 시스템 메트릭, 세션 및 로그 스트리밍을 정밀하게 관찰하고 시각화하는 고성능 경량 모니터링 솔루션입니다.
 subheadline: Aspectow AppMon
 mermaid: true
 ---
+
+Aspectow AppMon은 Aspectran 프레임워크 기반 애플리케이션의 실시간 이벤트, 시스템 메트릭, 세션 및 로그 스트리밍을 정밀하게 관찰하고 시각화하는 고성능 경량 모니터링 솔루션입니다.
 
 ## 1. 개요
 

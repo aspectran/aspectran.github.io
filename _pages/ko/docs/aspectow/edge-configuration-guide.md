@@ -1,6 +1,5 @@
 ---
 title: Aspectow Edge 구성 가이드
-teaser: Netty 이벤트 루프와 Java 21 가상 스레드(Virtual Threads), 그리고 멀티 컨텍스트 기반의 Headless 관제 아키텍처를 결합한 Aspectow Edge의 서버 구성 가이드.
 subheadline: Aspectow Edge
 ---
 

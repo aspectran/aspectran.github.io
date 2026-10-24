@@ -3,11 +3,6 @@ title: "Aspectran에서 CORS(Cross-Origin Resource Sharing) 활용하기"
 subheadline: 실용 가이드
 ---
 
-{% capture info_message %}
-Aspectran 프레임워크에서 CORS(Cross-Origin Resource Sharing)를 설정하여 다른 도메인의 웹 애플리케이션과 안전하게 리소스를 공유하는 방법을 알아봅니다.
-{% endcapture %}
-{% include alert.liquid info=info_message %}
-
 웹 애플리케이션을 개발할 때, 특히 RESTful API를 구축하는 경우 다른 도메인에서 리소스를 요청하는 상황이 자주 발생합니다. 이때 브라우저의 동일 출처 정책(Same-Origin Policy)으로 인해 요청이 차단될 수 있는데, 이를 해결하기 위해 CORS(교차 출처 리소스 공유) 표준을 사용합니다.
 
 Aspectran은 CORS를 손쉽게 적용할 수 있도록 `DefaultCorsProcessor`를 비롯한 관련 컴포넌트를 기본적으로 제공합니다. 이 가이드에서는 제공된 예제를 바탕으로 Aspectran 설정 파일에서 CORS를 구성하는 방법을 단계별로 설명합니다.

@@ -1,6 +1,5 @@
 ---
 title: Aspectow Console Screen & Feature Guide
-teaser: A detailed screen-by-screen guide covering cluster node management, remote command center, distributed scheduler, real-time AppMon monitoring, security Vault, and developer utilities provided by Aspectow Console.
 subheadline: Aspectow Console
 ---
 

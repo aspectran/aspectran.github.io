@@ -1,9 +1,10 @@
 ---
 title: Aspectow Platform Overview & System Architecture
-teaser: Aspectow is a next-generation enterprise application platform built upon the Aspectran framework, unifying a high-performance WAS engine, distributed cluster control plane, real-time observability, and an integrated web operations console into a single cohesive ecosystem.
 subheadline: Aspectow
 mermaid: true
 ---
+
+Aspectow is a next-generation enterprise application platform built upon the Aspectran framework, unifying a high-performance WAS engine, distributed cluster control plane, real-time observability, and an integrated web operations console into a single cohesive ecosystem.
 
 ## 1. Platform Overview
 

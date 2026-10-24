@@ -1,6 +1,5 @@
 ---
 title: Aspectow Console 운영 보안 아키텍처 및 보안 강화 가이드
-teaser: 엔터프라이즈 및 소규모 서버 환경에서 Aspectow Console을 안전하게 운용하기 위한 전용 관리 노드 배포 아키텍처, IP 통제 방안, 내장 보안 메커니즘 및 보안 체크리스트 안내서입니다.
 subheadline: Aspectow Console
 ---
 

@@ -1,9 +1,10 @@
 ---
 title: Aspectow 플랫폼 개요 및 시스템 아키텍처
-teaser: Aspectow는 Aspectran 프레임워크를 기반으로 고성능 WAS 엔진, 분산 클러스터 제어 평면, 실시간 관찰성(Observability) 및 웹 운영 콘솔을 완벽하게 통합한 차세대 엔터프라이즈 애플리케이션 플랫폼입니다.
 subheadline: Aspectow
 mermaid: true
 ---
+
+Aspectow는 Aspectran 프레임워크를 기반으로 고성능 WAS 엔진, 분산 클러스터 제어 평면, 실시간 관찰성(Observability) 및 웹 운영 콘솔을 완벽하게 통합한 차세대 엔터프라이즈 애플리케이션 플랫폼입니다.
 
 ## 1. 플랫폼 종합 개요 (Platform Overview)
 

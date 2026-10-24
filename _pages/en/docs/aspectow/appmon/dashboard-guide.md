@@ -1,13 +1,10 @@
 ---
 title: "Aspectow AppMon: Real-time Dashboard Guide"
-teaser: Aspectow AppMon provides a powerful real-time dashboard that allows you to grasp the operating status of node groups, server nodes, and application instances at a glance and observe them intuitively.
 subheadline: Aspectow AppMon
 ---
 
-{% capture info_message %}
+Aspectow AppMon provides a powerful real-time dashboard that allows you to grasp the operating status of node groups, server nodes, and application instances at a glance and observe them intuitively.
 Beyond a simple listing of metrics, this guide introduces the key components and usage methods of the AppMon dashboard, which visually and dynamically expresses activities occurring within the system.
-{% endcapture %}
-{% include alert.liquid info=info_message %}
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v4-dashboard-dark.png" alt="AppMon Dashboard Screenshot" %}
 

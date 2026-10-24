@@ -532,7 +532,7 @@ sequenceDiagram
     Client->>Proxy: 1. 메서드 호출
 
     activate Proxy
-    Proxy->>+Aspect: 2. @Around 또는 @Before 어드바이스 실행
+    Proxy->>+Aspect: 2. @Before 어드바이스 실행
 
     note right of Aspect: 횡단 관심사 로직 수행 (e.g., 트랜잭션 시작, 로깅)
 
@@ -542,7 +542,7 @@ sequenceDiagram
 
     Target-->>-Aspect: 4. 비즈니스 로직 결과 반환
 
-    Aspect->>Aspect: 5. @Around 또는 @After 어드바이스 실행
+    Aspect->>Aspect: 5. @After 어드바이스 실행
 
     note right of Aspect: 후처리 로직 수행 (e.g., 트랜잭션 커밋/롤백)
 

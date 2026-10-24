@@ -73,7 +73,7 @@ The `com.aspectran.core.activity.process.action` package includes various built-
 
 -   **`MethodAction`**: An Action that directly executes action methods on components mapped via Aspectran annotations such as `@RequestToGet` or `@Action`. It automatically handles parameter binding and type conversion using data from the current Activity context, enabling Convention over Configuration (CoC) based on annotations rather than XML rules.
 
--   **`MethodAdviceAction`**: A specialized `MethodAction` that executes advice methods annotated with AOP annotations such as `@Before`, `@After`, `@Around`, `@Finally`, or `@ExceptionThrown`. It is used internally by the framework to execute advice logic within an AOP Aspect context.
+-   **`MethodAdviceAction`**: A specialized `MethodAction` that executes advice methods annotated with AOP annotations such as `@Before`, `@After`, `@Finally`, or `@ExceptionThrown`. It is used internally by the framework to execute advice logic within an AOP Aspect context.
 
 ## 3. Structure and Utilization of Action Processing Results
 

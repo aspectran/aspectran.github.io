@@ -530,7 +530,7 @@ sequenceDiagram
     Client->>Proxy: 1. Method Call
 
     activate Proxy
-    Proxy->>+Aspect: 2. Execute @Around or @Before advice
+    Proxy->>+Aspect: 2. Execute @Before advice
 
     note right of Aspect: Execute cross-cutting concern logic (e.g., start transaction, logging)
 
@@ -540,7 +540,7 @@ sequenceDiagram
 
     Target-->>-Aspect: 4. Return business logic result
 
-    Aspect->>Aspect: 5. Execute @Around or @After advice
+    Aspect->>Aspect: 5. Execute @After advice
 
     note right of Aspect: Execute post-processing logic (e.g., commit/rollback transaction)
 

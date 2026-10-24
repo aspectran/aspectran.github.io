@@ -1,10 +1,11 @@
 ---
 title: "AppMon Event Count Data Structure and Architecture"
-teaser: "Detailed specification of Aspectow AppMon's 3-tier (Group - Node - App) data model and pre-aggregation architecture."
 subheadline: "Aspectow AppMon"
 ---
 
-Aspectow AppMon is designed to monitor application metrics occurring across large-scale distributed environments in real time, efficiently aggregating and visualizing vast amounts of telemetry data. This document details AppMon's core data model and pre-aggregation architecture optimized for high performance.
+Aspectow AppMon is designed to monitor application metrics occurring across large-scale distributed environments in real time, efficiently aggregating and visualizing vast amounts of telemetry data.
+
+This document details AppMon's core data model and pre-aggregation architecture optimized for high performance.
 
 ## 1. Core Metadata Columns
 

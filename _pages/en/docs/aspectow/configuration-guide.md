@@ -1,6 +1,5 @@
 ---
 title: Aspectow Enterprise Configuration Guide
-teaser: Systematically covers project structure, build, and all advanced embedded WAS server configuration elements for the Aspectow Enterprise Edition equipped with JBoss Undertow and a Servlet/JSP engine.
 subheadline: Aspectow Enterprise
 ---
 

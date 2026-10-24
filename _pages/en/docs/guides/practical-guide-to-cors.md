@@ -3,11 +3,6 @@ title: "Using CORS (Cross-Origin Resource Sharing) in Aspectran"
 subheadline: Practical Guides
 ---
 
-{% capture info_message %}
-Learn how to configure CORS (Cross-Origin Resource Sharing) in the Aspectran framework to securely share resources with web applications from different domains.
-{% endcapture %}
-{% include alert.liquid info=info_message %}
-
 When developing web applications, especially when building RESTful APIs, it is common to request resources from a different domain. By default, these requests can be blocked by the browser's Same-Origin Policy. To solve this, the CORS (Cross-Origin Resource Sharing) standard is used.
 
 Aspectran provides built-in components, including `DefaultCorsProcessor`, to easily apply CORS. This guide explains step-by-step how to configure CORS in an Aspectran configuration file based on the provided example.

@@ -1,8 +1,9 @@
 ---
 title: Aspectow 시작하기
-teaser: 이 가이드를 통해 Aspectow 기반의 웹 애플리케이션을 실행하고 관리하는 방법을 알아볼 수 있습니다.
 subheadline: Aspectow
 ---
+
+이 가이드를 통해 Aspectow 기반의 웹 애플리케이션을 실행하고 관리하는 방법을 알아볼 수 있습니다.
 
 ## 1. 준비물
 

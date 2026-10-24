@@ -3,7 +3,9 @@ title: Aspectran에서의 MyBatis 트랜잭션 관리 가이드
 subheadline: 실용 가이드
 ---
 
-Aspectran은 **MyBatis**를 활용하여 SQL 쿼리와 자바 객체를 효율적으로 매핑하고, **AOP(Aspect-Oriented Programming)**를 통해 트랜잭션의 시작부터 종료까지 모든 생명주기를 자동으로 관리합니다. 이 가이드에서는 MyBatis의 핵심 구성 요소인 **SqlSession**과 **SqlSessionFactory**, 그리고 Aspectran의 **트랜잭션 어드바이스** 및 **ExecutorType별 고도화된 관리 기법**에 대해 상세히 설명합니다.
+Aspectran은 **MyBatis**를 활용하여 SQL 쿼리와 자바 객체를 효율적으로 매핑하고, **AOP(Aspect-Oriented Programming)**를 통해 트랜잭션의 시작부터 종료까지 모든 생명주기를 자동으로 관리합니다.
+
+이 가이드에서는 MyBatis의 핵심 구성 요소인 **SqlSession**과 **SqlSessionFactory**, 그리고 Aspectran의 **트랜잭션 어드바이스** 및 **ExecutorType별 고도화된 관리 기법**에 대해 상세히 설명합니다.
 
 ## 1. 배경 및 작동 원리
 

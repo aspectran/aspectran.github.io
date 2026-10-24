@@ -3,7 +3,9 @@ title: MyBatis Transaction Management in Aspectran
 subheadline: Practical Guides
 ---
 
-Aspectran leverages **MyBatis** to efficiently map SQL queries to Java objects and automatically manages the entire transaction lifecycle—from start to finish—through **Aspect-Oriented Programming (AOP)**. This guide provides a detailed explanation of core MyBatis components, such as **SqlSession** and **SqlSessionFactory**, as well as Aspectran's **transaction advice** and **advanced management techniques for different ExecutorTypes**.
+Aspectran leverages **MyBatis** to efficiently map SQL queries to Java objects and automatically manages the entire transaction lifecycle—from start to finish—through **Aspect-Oriented Programming (AOP)**.
+
+This guide provides a detailed explanation of core MyBatis components, such as **SqlSession** and **SqlSessionFactory**, as well as Aspectran's **transaction advice** and **advanced management techniques for different ExecutorTypes**.
 
 ## 1. Background and How It Works
 

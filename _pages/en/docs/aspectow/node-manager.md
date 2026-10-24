@@ -1,6 +1,5 @@
 ---
 title: Aspectow Node Manager Guide
-teaser: A detailed guide to the core Control Plane library that organically binds distributed multi-node clusters and controls routing and relay packets.
 subheadline: Aspectow
 mermaid: true
 ---

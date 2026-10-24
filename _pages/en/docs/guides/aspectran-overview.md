@@ -1,6 +1,5 @@
 ---
-title: "Aspectran Overview"
-teaser: "Get an overview of Aspectran and understand its core concepts at a glance."
+title: Aspectran Overview
 subheadline: Core Guides
 mermaid: true
 ---

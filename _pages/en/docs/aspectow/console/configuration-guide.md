@@ -1,6 +1,5 @@
 ---
 title: Aspectow Console Configuration Guide
-teaser: A comprehensive configuration guide detailing cluster communication modes, APON configuration specifications, DB and Redis setups, embedded AppMon monitoring settings, and Aspectran Bean definitions for Aspectow Console and Node Manager.
 subheadline: Aspectow Console
 ---
 

@@ -1,9 +1,10 @@
 ---
 title: Aspectow Console 개요 및 통합 아키텍처
-teaser: Aspectow Console은 Aspectran 기반 애플리케이션 서버 생태계의 분산 노드 클러스터, 스케줄러, 실시간 모니터링, 빌드 및 배포 파이프라인, 보안 Vault 및 런타임 진단 도구를 중앙에서 통합 제어하는 차세대 엔터프라이즈 관제 플랫폼입니다.
 subheadline: Aspectow Console
 mermaid: true
 ---
+
+Aspectow Console은 Aspectran 기반 애플리케이션 서버 생태계의 분산 노드 클러스터, 스케줄러, 실시간 모니터링, 빌드 및 배포 파이프라인, 보안 Vault 및 런타임 진단 도구를 중앙에서 통합 제어하는 차세대 엔터프라이즈 관제 플랫폼입니다.
 
 ## 1. Aspectow Console의 탄생 배경과 핵심 비전
 

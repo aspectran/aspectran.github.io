@@ -1,6 +1,5 @@
 ---
 title: Aspectow Console Operational Security Architecture & Hardening Guide
-teaser: A comprehensive security guide for operating Aspectow Console safely in enterprise and small-scale server environments, covering management node deployment architecture, IP restrictions, built-in security mechanisms, and operational checklists.
 subheadline: Aspectow Console
 ---
 

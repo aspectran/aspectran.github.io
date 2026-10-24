@@ -1,10 +1,11 @@
 ---
 title: Nginx Reverse Proxy and Clustering Guide
-teaser: This guide provides instructions on how to configure Nginx for reverse proxying, load balancing, SSL application, and performance optimization for Aspectow applications.
 subheadline: Aspectow
 ---
 
-When deploying Aspectow/Aspectran-based web applications to a production environment, it is common to place a reverse proxy web server like Nginx at the front. This guide provides instructions on how to configure Nginx for reverse proxying, load balancing, SSL application, and performance optimization for Aspectow applications.
+When deploying Aspectow/Aspectran-based web applications to a production environment, it is common to place a reverse proxy web server like Nginx at the front.
+
+This guide provides instructions on how to configure Nginx for reverse proxying, load balancing, SSL application, and performance optimization for Aspectow applications.
 
 ## 1. Why Use a Reverse Proxy?
 

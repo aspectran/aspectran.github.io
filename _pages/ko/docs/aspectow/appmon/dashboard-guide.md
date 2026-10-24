@@ -1,13 +1,10 @@
 ---
 title: "Aspectow AppMon: 실시간 대시보드 가이드"
-teaser: Aspectow AppMon은 노드 그룹, 서버 노드, 애플리케이션 인스턴스의 가동 상태를 한눈에 파악하고 직관적으로 관찰할 수 있는 강력한 실시간 대시보드를 제공합니다.
 subheadline: Aspectow AppMon
 ---
 
-{% capture info_message %}
+Aspectow AppMon은 노드 그룹, 서버 노드, 애플리케이션 인스턴스의 가동 상태를 한눈에 파악하고 직관적으로 관찰할 수 있는 강력한 실시간 대시보드를 제공합니다.
 단순한 지표 나열을 넘어, 시스템 내부에서 발생하는 활동을 시각적이고 역동적으로 표현하는 AppMon 대시보드의 주요 구성 요소와 활용 방법을 소개합니다.
-{% endcapture %}
-{% include alert.liquid info=info_message %}
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-v4-dashboard-dark.png" alt="AppMon Dashboard Screenshot" %}
 

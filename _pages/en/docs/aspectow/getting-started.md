@@ -1,8 +1,9 @@
 ---
 title: Getting Started with Aspectow
-teaser: This guide will walk you through running and managing an Aspectow-based web application from an interactive shell.
 subheadline: Aspectow
 ---
+
+This guide will walk you through running and managing an Aspectow-based web application from an interactive shell.
 
 ## 1. Prerequisites
 

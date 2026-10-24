@@ -1,13 +1,10 @@
 ---
-title: "Aspectran Beans: The Official Guide"
+title: "Aspectran Beans: 공식 가이드"
 subheadline: 핵심 가이드
 ---
 
-{% capture info_message %}
 Aspectran Beans는 Aspectran 프레임워크의 핵심에 내장된 강력한 IoC(Inversion of Control) 컨테이너입니다.
-Spring Beans의 견고한 개념(IoC, DI 등)에서 영감을 받았지만, POJO 기반, 단순함, 그리고 빠른 개발 및 구동 속도라는 Aspectran의 핵심 철학에 맞춰 처음부터 다시 설계되었습니다.
-{% endcapture %}
-{% include alert.liquid info=info_message %}
+Spring Beans의 견고한 개념(IoC, DI 등)에서 영감을 받았지만, **POJO 기반, 단순함, 그리고 빠른 개발 및 구동 속도**라는 Aspectran의 핵심 철학에 맞춰 처음부터 다시 설계되었습니다.
 
 ## 1. 핵심 개념: IoC와 DI
 

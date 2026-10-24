@@ -1,5 +1,6 @@
 ---
 title: Guide to Integrating Legacy Systems with Modern Aspectran Application Servers
+subheadline: Other Projects & Libraries
 ---
 
 ## Introduction

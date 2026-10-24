@@ -1,9 +1,10 @@
 ---
 title: Aspectow Console Overview & Integrated Architecture
-teaser: Aspectow Console is a next-generation enterprise control platform that centrally integrates distributed node clusters, schedulers, real-time observability, build and deployment pipelines, security Vault, and runtime diagnostics across the Aspectran application server ecosystem.
 subheadline: Aspectow Console
 mermaid: true
 ---
+
+Aspectow Console is a next-generation enterprise control platform that centrally integrates distributed node clusters, schedulers, real-time observability, build and deployment pipelines, security Vault, and runtime diagnostics across the Aspectran application server ecosystem.
 
 ## 1. Background and Core Vision of Aspectow Console
 

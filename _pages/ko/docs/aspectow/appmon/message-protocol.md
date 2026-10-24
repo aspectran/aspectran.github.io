@@ -1,13 +1,11 @@
 ---
 title: AppMon 메시지 프로토콜 명세
-teaser: AppMon 서버와 클라이언트 간의 실시간 데이터 통신 및 제어 패킷을 위한 메시지 형식과 프로토콜 규격을 정의합니다.
+teaser:
 subheadline: Aspectow Aspectow AppMon
 ---
 
-{% capture info_message %}
+AppMon 서버와 클라이언트 간의 실시간 데이터 통신 및 제어 패킷을 위한 메시지 형식과 프로토콜 규격을 정의합니다.
 본 프로토콜은 가독성이 높은 텍스트 기반 구조와 선언적 APON(Aspectran Parameter Object Notation) 포맷을 채택하여 디버깅이 용이하면서도, 게이트웨이 브릿지 및 멀티 노드 환경에서 뛰어난 확장성을 제공합니다.
-{% endcapture %}
-{% include alert.liquid info=info_message %}
 
 ## 1. 서버-클라이언트 데이터 메시지 구조 (Push/Broadcast)
 

@@ -1,6 +1,5 @@
 ---
 title: Aspectow Enterprise 구성 가이드
-teaser: JBoss Undertow와 서블릿/JSP 엔진을 탑재한 Aspectow Enterprise 에디션의 프로젝트 구조, 빌드, 그리고 내장 WAS 서버의 모든 고급 설정 요소를 체계적으로 안내합니다.
 subheadline: Aspectow Enterprise
 ---
 

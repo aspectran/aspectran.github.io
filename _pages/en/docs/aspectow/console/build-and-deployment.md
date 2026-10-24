@@ -1,9 +1,10 @@
 ---
 title: Aspectow Console Build & Deployment Guide
-teaser: A comprehensive guide on remotely orchestrating Git source synchronization, Maven compilation, configuration/web application deployment, process-independent safe server restarts (Detached Restart), and compliance audit trails across distributed clusters via Aspectow Console.
 subheadline: Aspectow Console
 mermaid: true
 ---
+
+A comprehensive guide on remotely orchestrating Git source synchronization, Maven compilation, configuration/web application deployment, process-independent safe server restarts (Detached Restart), and compliance audit trails across distributed clusters via Aspectow Console.
 
 ## 1. Overview & Remote Build and Deployment Architecture
 

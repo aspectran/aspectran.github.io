@@ -1,8 +1,9 @@
 ---
 title: Aspectow Deployment and Operations Guide
-teaser: This guide provides detailed instructions on how to deploy and manage Aspectow applications as services in Linux/Unix and Windows environments.
 subheadline: Aspectow
 ---
+
+This guide provides detailed instructions on how to deploy and manage Aspectow applications as services in Linux/Unix and Windows environments. You can build an efficient operational environment by utilizing the provided scripts.
 
 There are two main execution methods described in this guide:
 1.  **Automated Deployment and Service Management**: The standard operational method using scripts in the `setup` directory to install the application on a server, build/deploy it, and manage it as a system service. **(Recommended)**

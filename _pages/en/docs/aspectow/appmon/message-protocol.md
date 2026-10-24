@@ -1,13 +1,11 @@
 ---
 title: AppMon Message Protocol Specification
-teaser: Defines message formats and communication protocols for real-time telemetry data transmission and control packets between AppMon server and client.
+teaser:
 subheadline: Aspectow AppMon
 ---
 
-{% capture info_message %}
+Defines message formats and communication protocols for real-time telemetry data transmission and control packets between AppMon server and client.
 This protocol adopts a human-readable text-based structure and declarative APON (Aspectran Parameters Object Notation) inline format, ensuring easy debugging and high scalability across Gateway bridges and multi-node environments.
-{% endcapture %}
-{% include alert.liquid info=info_message %}
 
 ## 1. Server-to-Client Data Message Structure (Push/Broadcast)
 

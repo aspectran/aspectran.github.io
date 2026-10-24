@@ -1,6 +1,5 @@
 ---
 title: Aspectow Console 주요 화면 및 기능 가이드
-teaser: Aspectow Console이 제공하는 클러스터 노드 관리, 원격 명령 센터, 분산 스케줄러, 실시간 AppMon 모니터링, 보안 Vault 및 개발자 유틸리티의 화면별 상세 기능 안내서입니다.
 subheadline: Aspectow Console
 ---
 

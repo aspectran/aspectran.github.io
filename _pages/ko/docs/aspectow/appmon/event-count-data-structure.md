@@ -1,10 +1,11 @@
 ---
 title: "AppMon 이벤트 카운트 데이터 구조 및 아키텍처"
-teaser: "Aspectow AppMon의 3계층(Group - Node - App) 데이터 모델과 사전 집계(Pre-aggregation) 아키텍처를 상세히 설명합니다."
 subheadline: "Aspectow AppMon"
 ---
 
-Aspectow AppMon은 대규모 분산 환경에서 발생하는 애플리케이션 지표를 실시간으로 모니터링하고, 방대한 데이터를 효율적으로 집계 및 시각화하기 위해 설계되었습니다. 이 문서는 AppMon의 핵심 데이터 모델과 성능 최적화를 위한 사전 집계(Pre-aggregation) 아키텍처를 상세히 설명합니다.
+Aspectow AppMon은 대규모 분산 환경에서 발생하는 애플리케이션 지표를 실시간으로 모니터링하고, 방대한 데이터를 효율적으로 집계 및 시각화하기 위해 설계되었습니다.
+
+이 문서는 AppMon의 핵심 데이터 모델과 성능 최적화를 위한 사전 집계(Pre-aggregation) 아키텍처를 상세히 설명합니다.
 
 ## 1. 핵심 메타데이터 컬럼
 

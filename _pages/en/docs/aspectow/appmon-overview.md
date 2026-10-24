@@ -1,9 +1,10 @@
 ---
 title: Aspectow AppMon Overview & Architecture Guide
-teaser: Aspectow AppMon is a high-performance, lightweight monitoring solution for observing, tracking, and visualizing real-time events, system metrics, sessions, and log streams in Aspectran framework-based applications.
 subheadline: Aspectow AppMon
 mermaid: true
 ---
+
+Aspectow AppMon is a high-performance, lightweight monitoring solution for observing, tracking, and visualizing real-time events, system metrics, sessions, and log streams in Aspectran framework-based applications.
 
 ## 1. Overview
 

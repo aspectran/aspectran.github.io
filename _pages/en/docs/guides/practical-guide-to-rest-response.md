@@ -3,7 +3,9 @@ title: Guide to Standard REST Response Handling in Aspectran
 subheadline: Practical Guides
 ---
 
-Aspectran provides a standardized response model to maintain consistency in RESTful web services and to allow developers to intuitively and precisely control HTTP status codes, headers, and data transformation. This guide covers all aspects of designing APIs that comply with Aspectran's standard specifications using `RestResponse` and its implementations.
+Aspectran provides a standardized response model to maintain consistency in RESTful web services and to allow developers to intuitively and precisely control HTTP status codes, headers, and data transformation.
+
+This guide covers all aspects of designing APIs that comply with Aspectran's standard specifications using `RestResponse` and its implementations.
 
 ## 1. Core Concepts
 
@@ -251,7 +253,7 @@ public RestResponse getUser(String userId) {
                 .notFound()
                 .setError("USER_NOT_FOUND", "User not found: " + userId);
     }
-    
+
     // Return data encapsulated in standard ResponsePayload with a 200 OK status code
     return new SuccessResponse(user);
 }
@@ -299,7 +301,7 @@ Informing the client of the location URI of a newly created resource.
 @RequestToPost("/api/orders")
 public RestResponse createOrder(Order order) {
     orderService.placeOrder(order);
-    
+
     // Set 201 Created status code and automatically add the Location header
     return new SuccessResponse(order)
             .created("/api/orders/" + order.getId());
@@ -333,7 +335,7 @@ public RestResponse register(User user) {
                 .badRequest() // Set HTTP 400 status code
                 .setError("REQUIRED_FIELD", "Email is a required field.");
     }
-    
+
     userService.register(user);
     return new SuccessResponse("Registered successfully");
 }
@@ -368,7 +370,7 @@ public RestResponse getAdminSettings(UserInfo userInfo) {
                 .forbidden()
                 .setError("ACCESS_DENIED", "Admin privileges are required.");
     }
-    
+
     return new SuccessResponse(configService.getAdminConfig());
 }
 ```
@@ -438,7 +440,7 @@ Formatting response data for readability and setting cache-control alongside cus
 @Request("/api/system/stats")
 public RestResponse getSystemStats() {
     Map<String, Object> stats = statsService.getGlobalStats();
-    
+
     return new SuccessResponse(stats)
             .prettyPrint(true) // Enable indentation and line breaks for readability
             .nullWritable(false) // Omit null fields
@@ -494,17 +496,17 @@ Using `RestRequest` to invoke external microservices or internal cluster node AP
 @Request("/relay/weather")
 public RestResponse relayWeatherRequest(CloseableHttpClient httpClient) {
     String targetUrl = "https://internal-api.example.com/weather/today";
-    
+
     try {
         RestRequest restRequest = new RestRequest(httpClient);
-        
+
         // The result of RestRequest.retrieve() is already a SuccessResponse or FailureResponse
         RestResponse response = restRequest.get()
                                            .url(targetUrl)
                                            .retrieve();
-        
+
         // Return the received standard response directly as the Translet response
-        return response; 
+        return response;
     } catch (IOException e) {
         return new FailureResponse()
                 .internalServerError()
@@ -526,22 +528,22 @@ public class GlobalRestExceptionAdvice {
     @AfterThrown(target = "activity", thrown = "java.lang.IllegalArgumentException")
     public void handleIllegalArgument(Translet translet, Exception ex) {
         logger.warn("Invalid client argument: {}", ex.getMessage());
-        
+
         RestResponse response = new FailureResponse()
                 .badRequest()
                 .setError("INVALID_PARAMETER", ex.getMessage());
-        
+
         translet.transform(response);
     }
 
     @AfterThrown(target = "activity", thrown = "java.lang.Exception")
     public void handleGeneralException(Translet translet, Exception ex) {
         logger.error("Unhandled server exception occurred", ex);
-        
+
         RestResponse response = new FailureResponse()
                 .internalServerError()
                 .setError("INTERNAL_SERVER_ERROR", "An internal server error occurred.");
-        
+
         translet.transform(response);
     }
 

@@ -1,6 +1,5 @@
 ---
 title: Aspectow Console 구성 가이드
-teaser: Aspectow Console 및 노드 관리자(Node Manager)의 클러스터 통신 모드, APON 설정 파일 명세, DB 및 Redis 환경 구성, AppMon 모니터링 설정 및 Aspectran 빈 설정 방법을 다루는 종합 구성 안내서입니다.
 subheadline: Aspectow Console
 ---
 

@@ -3,7 +3,9 @@ title: Aspectran의 표준 REST 응답 처리 가이드
 subheadline: 실용 가이드
 ---
 
-Aspectran은 RESTful 웹 서비스를 구축할 때 응답의 일관성을 유지하고, 개발자가 HTTP 상태 코드, 헤더, 데이터 변환을 직관적이고 세밀하게 제어할 수 있도록 표준화된 응답 모델을 제공합니다. 이 가이드는 `RestResponse`와 그 구현체들을 활용하여 Aspectran의 표준 규격에 맞는 API를 설계하는 모든 방법을 상세히 다룹니다.
+Aspectran은 RESTful 웹 서비스를 구축할 때 응답의 일관성을 유지하고, 개발자가 HTTP 상태 코드, 헤더, 데이터 변환을 직관적이고 세밀하게 제어할 수 있도록 표준화된 응답 모델을 제공합니다.
+
+이 가이드는 `RestResponse`와 그 구현체들을 활용하여 Aspectran의 표준 규격에 맞는 API를 설계하는 모든 방법을 상세히 다룹니다.
 
 ## 1. 핵심 개념 (Core Concepts)
 
@@ -251,7 +253,7 @@ public RestResponse getUser(String userId) {
                 .notFound()
                 .setError("USER_NOT_FOUND", "사용자를 찾을 수 없습니다: " + userId);
     }
-    
+
     // 200 OK 상태 코드와 함께 데이터를 표준 ResponsePayload로 캡슐화하여 반환
     return new SuccessResponse(user);
 }
@@ -299,7 +301,7 @@ data: {
 @RequestToPost("/api/orders")
 public RestResponse createOrder(Order order) {
     orderService.placeOrder(order);
-    
+
     // 201 Created 상태 코드를 설정하고 Location 헤더를 자동으로 추가
     return new SuccessResponse(order)
             .created("/api/orders/" + order.getId());
@@ -333,7 +335,7 @@ public RestResponse register(User user) {
                 .badRequest() // HTTP 400 상태 코드 지정
                 .setError("REQUIRED_FIELD", "이메일은 필수 항목입니다.");
     }
-    
+
     userService.register(user);
     return new SuccessResponse("Registered successfully");
 }
@@ -368,7 +370,7 @@ public RestResponse getAdminSettings(UserInfo userInfo) {
                 .forbidden()
                 .setError("ACCESS_DENIED", "관리자 권한이 필요합니다.");
     }
-    
+
     return new SuccessResponse(configService.getAdminConfig());
 }
 ```
@@ -438,7 +440,7 @@ public RestResponse createTodo(Parameters parameters) {
 @Request("/api/system/stats")
 public RestResponse getSystemStats() {
     Map<String, Object> stats = statsService.getGlobalStats();
-    
+
     return new SuccessResponse(stats)
             .prettyPrint(true) // 줄바꿈과 들여쓰기를 포함한 가독성 높은 출력
             .nullWritable(false) // null 값 필드 생략
@@ -494,17 +496,17 @@ DEBUG ... Response {type=transform, format=custom, transformer=com.aspectran.web
 @Request("/relay/weather")
 public RestResponse relayWeatherRequest(CloseableHttpClient httpClient) {
     String targetUrl = "https://internal-api.example.com/weather/today";
-    
+
     try {
         RestRequest restRequest = new RestRequest(httpClient);
-        
+
         // RestRequest.retrieve() 호출 결과는 이미 SuccessResponse 또는 FailureResponse 형태임
         RestResponse response = restRequest.get()
                                            .url(targetUrl)
                                            .retrieve();
-        
+
         // 반환받은 표준 응답 객체를 Translet의 응답으로 그대로 전달
-        return response; 
+        return response;
     } catch (IOException e) {
         return new FailureResponse()
                 .internalServerError()
@@ -526,22 +528,22 @@ public class GlobalRestExceptionAdvice {
     @AfterThrown(target = "activity", thrown = "java.lang.IllegalArgumentException")
     public void handleIllegalArgument(Translet translet, Exception ex) {
         logger.warn("Invalid client argument: {}", ex.getMessage());
-        
+
         RestResponse response = new FailureResponse()
                 .badRequest()
                 .setError("INVALID_PARAMETER", ex.getMessage());
-        
+
         translet.transform(response);
     }
 
     @AfterThrown(target = "activity", thrown = "java.lang.Exception")
     public void handleGeneralException(Translet translet, Exception ex) {
         logger.error("Unhandled server exception occurred", ex);
-        
+
         RestResponse response = new FailureResponse()
                 .internalServerError()
                 .setError("INTERNAL_SERVER_ERROR", "서버 내부 오류가 발생했습니다.");
-        
+
         translet.transform(response);
     }
 

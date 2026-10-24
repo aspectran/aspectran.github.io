@@ -1,6 +1,5 @@
 ---
 title: Aspectow Edge Configuration Guide
-teaser: Server configuration guide for Aspectow Edge, combining the Netty event loop, Java 21 Virtual Threads, and a multi-context-based Headless control plane architecture.
 subheadline: Aspectow Edge
 ---
 
