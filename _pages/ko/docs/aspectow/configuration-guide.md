@@ -6,7 +6,7 @@ subheadline: Aspectow Enterprise
 
 ## 1. 서론
 
-이 문서는 Aspectow Enterprise 에디션을 사용하는 개발자 및 시스템 엔지니어를 위한 종합 기술 가이드입니다. Aspectow Enterprise는 JBoss의 고성능 논블로킹 I/O 웹 서버인 [Undertow](https://undertow.io)와 Apache Tomcat의 검증된 JSP 엔진인 [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp)를 기반으로 구축된 기함(Flagship) 애플리케이션 서버입니다. 서블릿(Jakarta Servlet) 사양을 충실히 준수하며, 기업용 대규모 웹 애플리케이션과 통합 관제 웹 콘솔([Aspectow Console](/ko/docs/aspectow/console/))을 안정적으로 구동할 수 있습니다.
+이 문서는 Aspectow Enterprise 에디션을 사용하는 개발자 및 시스템 엔지니어를 위한 종합 기술 가이드입니다. Aspectow Enterprise는 JBoss의 고성능 논블로킹 I/O 웹 서버인 [Undertow](https://undertow.io)와 Apache Tomcat의 검증된 JSP 엔진인 [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp)를 기반으로 구축된 기함(Flagship) 애플리케이션 서버입니다. 서블릿(Jakarta Servlet) 사양을 충실히 준수하며, 기업용 대규모 웹 애플리케이션과 통합 관제 웹 콘솔([Aspectow Console](/ko/docs/aspectow/console-overview/))을 안정적으로 구동할 수 있습니다.
 
 이 가이드에서는 표준 프로젝트 구조와 Maven 빌드 구성부터 시작하여, 내장 Undertow 서버의 네트워크 리스너, I/O 및 워커 스레드 옵션, 미들웨어 핸들러 체인(인코딩, 로깅 그룹, Access 로그), 서블릿 컨텍스트 배포, 정적 리소스 핸들러, JSP 및 커스텀 태그 라이브러리(TLD), 웹소켓(WebSocket), 그리고 분산 세션 클러스터링에 이르는 모든 구성 요소를 상세하게 다룹니다.
 
@@ -901,7 +901,7 @@ app/config/logging/
 
 ### 6.2. Aspectow Console 설정 (`/config/console/`)
 
-Aspectow Enterprise 에디션에는 클러스터 노드 감시, 원격 명령 실행, 스케줄러 동적 제어를 수행하는 **통합 관제 웹 콘솔([Aspectow Console](/ko/docs/aspectow/console/))이 기본 내장**되어 있습니다.
+Aspectow Enterprise 에디션에는 클러스터 노드 감시, 원격 명령 실행, 스케줄러 동적 제어를 수행하는 **통합 관제 웹 콘솔([Aspectow Console](/ko/docs/aspectow/console-overview/))이 기본 내장**되어 있습니다.
 * `/config/console/node-config.apon`: 클러스터 내 노드 식별자, 그룹, Heartbeat 주기 설정
 * `/config/console/node-rules.xml`: 노드 관리자 컴포넌트(`NodeManagerFactoryBean`) 등록
 * 상세한 운영 구성은 [Aspectow Console 구성 가이드](/ko/docs/aspectow/console/configuration-guide/)를 참조하십시오.

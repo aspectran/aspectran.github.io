@@ -233,7 +233,7 @@ Console and worker nodes parse this URI via `RedisConnectionPoolConfig` to dynam
 
 ## 6. Console Database Connection & Profile Configuration (`aspectow-console.db-*.properties`)
 
-Aspectow Console stores administrator accounts, RBAC permissions, Vault security tokens, cluster audit logs (Audit Trail), distributed build/deployment execution histories, and embedded AppMon pre-aggregated statistics (minute, hour, day, month, year) in the database.
+Aspectow Console stores administrator accounts, RBAC permissions, Vault security tokens, Remember-Me persistent login tokens (`asc_persistent_login`), cluster audit logs (Audit Trail), distributed build/deployment execution histories, and embedded AppMon pre-aggregated statistics (minute, hour, day, month, year) in the database.
 
 ### 6.1. Database Architectural Principles in Cluster Environments (Shared Database Architecture)
 
@@ -298,13 +298,23 @@ In the Aspectow Console environment, Aspectran XML rule files are modularized ar
 
 ### 7.1. Top-level Console Master Rules (`console-rules.xml`)
 
-`console-rules.xml` is the primary master rule file providing unified control rules for the Console environment. It encapsulates `node-rules.xml` and `appmon-rules.xml` via sub-appends (`<append>`).
+`console-rules.xml` is the primary master rule file providing unified control rules and global environment properties for the Console environment. It encapsulates `node-rules.xml` and `appmon-rules.xml` via sub-appends (`<append>`) and declaratively configures global environment properties through an `<environment>` block.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
         "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
+
+    <!-- Console Global Environment Properties -->
+    <environment>
+        <!-- Enables or disables Remember-Me authentication (supports boolean or string, default: false) -->
+        <property name="aspectow.console.auth.rememberMe.enabled" valueType="boolean">true</property>
+        <!-- Token validity period (supports integer seconds or duration expressions like "30d", "7d", "24h", default: 30 days) -->
+        <property name="aspectow.console.auth.rememberMe.tokenValiditySeconds">30d</property>
+        <!-- Target URL for the "Back to Main" link on the login view -->
+        <property name="aspectow.console.portalUrl">%{system:aspectow.console.portalUrl}</property>
+    </environment>
 
     <!-- Include Node Management & Control Rules -->
     <append file="/config/console/node-rules.xml"/>
@@ -315,7 +325,26 @@ In the Aspectow Console environment, Aspectran XML rule files are modularized ar
 </aspectran>
 ```
 
-By declaring only `/config/console/console-rules.xml` inside `aspectran-config.apon`, both node management and AppMon monitoring components are loaded automatically.
+#### Detailed Specifications for Console Environment Properties
+
+*   **`aspectow.console.auth.rememberMe.enabled`** (`boolean` or `string`, optional):
+    *   **Description**: Determines whether the persistent Remember-Me (stay signed in) authentication feature is enabled on the login screen.
+    *   **Type Support**: Can be specified either with explicit boolean typing via `<property ... valueType="boolean">true</property>` or as a standard string literal `<property ...>true</property>`.
+    *   **Default Behavior**:
+        *   When unconfigured (default): Automatically disabled (**`false`**) in standard production environments for defense-in-depth security.
+        *   In environments where the `demo` profile is active, it automatically defaults to **`true`** for demonstration and testing convenience even if not explicitly defined.
+    *   **Security Characteristics**: When enabled, it activates database-backed Persistent Token Rotation, token theft detection, and strict IP/User-Agent binding mechanisms (`asc_persistent_login`) rather than insecure static cookie hashes.
+*   **`aspectow.console.auth.rememberMe.tokenValiditySeconds`** (`integer` or `string`, optional):
+    *   **Description**: Configures the validity duration for Remember-Me authentication tokens. Applied both as the `Max-Age` attribute on browser cookies and as the database expiration threshold. (The alias `aspectow.console.auth.rememberMe.tokenValidity` is also recognized.)
+    *   **Flexible Format Support (`DurationUtils`)**:
+        *   **Human-Friendly Duration Expressions**: Supports intuitive duration strings via Aspectran's `DurationUtils`, such as `"30d"` (30 days), `"7d"` (7 days), `"24h"` (24 hours), or `"1800s"` (1800 seconds).
+        *   **Integer Seconds**: Plain numeric values (`2592000`) or typed integers (`valueType="int"`) are automatically interpreted in seconds.
+    *   **Default Value**: Defaults to **`30d`** (30 days = `2,592,000` seconds) when unconfigured.
+*   **`aspectow.console.portalUrl`** (`string`, optional):
+    *   **Description**: In environments featuring an external dashboard or corporate portal, this property defines the target URL for the "Back to Main" link rendered at the bottom of the login page.
+    *   **Expression Support**: Supports system property and environment variable resolution expressions like `%{system:aspectow.console.portalUrl}`. If empty or absent, the return link is automatically omitted from the UI.
+
+By declaring only `/config/console/console-rules.xml` inside `aspectran-config.apon`, node management, AppMon monitoring components, and global console environment properties are loaded together seamlessly.
 
 ### 7.2. Node Management & Control Rules (`node-rules.xml`)
 

@@ -6,7 +6,7 @@ subheadline: Aspectow Enterprise
 
 ## 1. Introduction
 
-This document is a comprehensive technical guide for developers and system engineers building and operating applications with the Aspectow Enterprise Edition. Aspectow Enterprise is Aspectran's flagship application server platform built upon JBoss's high-performance non-blocking I/O web server [Undertow](https://undertow.io) and Apache Tomcat's battle-tested JSP engine [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp). Faithfully adhering to the Jakarta Servlet specification, it delivers rock-solid stability for large-scale enterprise web applications and centralized management dashboards ([Aspectow Console](/en/docs/aspectow/console/)).
+This document is a comprehensive technical guide for developers and system engineers building and operating applications with the Aspectow Enterprise Edition. Aspectow Enterprise is Aspectran's flagship application server platform built upon JBoss's high-performance non-blocking I/O web server [Undertow](https://undertow.io) and Apache Tomcat's battle-tested JSP engine [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp). Faithfully adhering to the Jakarta Servlet specification, it delivers rock-solid stability for large-scale enterprise web applications and centralized management dashboards ([Aspectow Console](/en/docs/aspectow/console-overview/)).
 
 This guide walks through every operational aspect of Aspectow Enterprise—from standard project directory layout and Maven builds to embedded Undertow listeners, I/O and worker thread pools, middleware handler chains (compression, logging groups, access logging), servlet context deployments, static resource managers, JSP and custom tag libraries (TLD), WebSockets, and distributed session clustering.
 
@@ -901,7 +901,7 @@ app/config/logging/
 
 ### 6.2. Aspectow Console Configuration (`/config/console/`)
 
-The Aspectow Enterprise Edition comes with a **built-in centralized management web console ([Aspectow Console](/en/docs/aspectow/console/))** for cluster node monitoring, remote command execution, and dynamic scheduler control.
+The Aspectow Enterprise Edition comes with a **built-in centralized management web console ([Aspectow Console](/en/docs/aspectow/console-overview/))** for cluster node monitoring, remote command execution, and dynamic scheduler control.
 * `/config/console/node-config.apon`: Node identification, group, and heartbeat intervals within the cluster
 * `/config/console/node-rules.xml`: Registers cluster control plane components (`NodeManagerFactoryBean`)
 * For operational and architectural details, consult the [Aspectow Console Configuration Guide](/en/docs/aspectow/console/configuration-guide/).

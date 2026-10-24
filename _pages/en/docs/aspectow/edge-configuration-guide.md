@@ -10,7 +10,7 @@ Aspectow Edge is a next-generation lightweight runtime platform engineered to ov
 
 By completely stripping away the legacy overhead of traditional servlet specifications, Aspectow Edge organically combines the asynchronous, event-driven [Netty](https://netty.io) networking engine at the network I/O tier with **Java 21 Virtual Threads** at the business execution tier. This enables developers to write intuitive, familiar synchronous Aspectran Translet code while concurrently servicing tens of thousands of connections at lightning speed without thread pool exhaustion.
 
-Furthermore, Aspectow Edge natively supports a **complete Multi-Context Architecture** in Netty, mirroring Undertow's multi-context isolation. Alongside the main business service context, the **Console Management Context (`/console`)** is mounted as an independent Netty context, integrating seamlessly with [Aspectow Console](/en/docs/aspectow/console/) via identical communication pipelines and configuration files. Depending on your cluster deployment strategy, every service node can directly host the full Console web UI, or if dedicated console nodes are separated, each service node can run a Headless context omitting the UI assets for extreme resource efficiency.
+Furthermore, Aspectow Edge natively supports a **complete Multi-Context Architecture** in Netty, mirroring Undertow's multi-context isolation. Alongside the main business service context, the **Console Management Context (`/console`)** is mounted as an independent Netty context, integrating seamlessly with [Aspectow Console](/en/docs/aspectow/console-overview/) via identical communication pipelines and configuration files. Depending on your cluster deployment strategy, every service node can directly host the full Console web UI, or if dedicated console nodes are separated, each service node can run a Headless context omitting the UI assets for extreme resource efficiency.
 
 This guide provides an end-to-end walkthrough of Aspectow Edge—from standard project layout and Maven builds to Netty embedded server listeners, virtual thread dispatchers, compression encoding, logging groups, access logs, static resource handlers, WebSockets, sessions, and multi-context Headless Console federation.
 
@@ -966,7 +966,7 @@ node: {
 
 #### 6.2.2. Remote Governance via Aspectow Console
 
-Centralized [Aspectow Console](/en/docs/aspectow/console/) provides unified control over all Edge nodes from a single glass pane:
+Centralized [Aspectow Console](/en/docs/aspectow/console-overview/) provides unified control over all Edge nodes from a single glass pane:
 * **Real-time Health Monitoring**: Inspect live operational states (Live, Paused, Dead) and dispatch immediate Pause, Resume, or Restart signals.
 * **Interactive Remote Command Center**: Inject CLI commands directly into remote Edge instances from the web console and stream execution output live.
 * **Dynamic Distributed Scheduler Control**: Pause or resume Translet scheduler jobs running inside Edge instances without server restarts.

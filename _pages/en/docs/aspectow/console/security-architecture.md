@@ -114,6 +114,32 @@ Aspectow Console comes equipped with core security mechanisms at the codebase le
 * **Password Hash Clearing**: Clears (`null`s) the `password` hash field of `User` objects during user list queries at the server response stage, blocking DOM and JSON data exposure at the source.
 * **Data Masking Utilities**: Protects sensitive information on UI screens using masking helpers for email (`maskEmail`), IP addresses (`maskIpAddress`), and secret keys (`maskSecret`) in `ConsoleWebUtils`.
 
+### 4.7 Persistent Token-based Remember-Me Architecture (Token Rotation & Theft Detection)
+While Aspectow Console supports persistent Remember-Me authentication allowing administrators to maintain login state across browser restarts, it incorporates an **enterprise-grade four-tier defense architecture** to safeguard sensitive infrastructure management privileges:
+
+* **Environment-Based Opt-In Control (Disabled by Default)**:
+  * In standard enterprise production environments, Remember-Me is completely disabled (**`false`**) by default for defense in depth.
+  * It is activated declaratively only when the `demo` profile is active or explicitly enabled in `console-rules.xml` via `<property name="aspectow.console.auth.rememberMe.enabled" valueType="boolean">true</property>`.
+  * When disabled, the "Stay signed in" checkbox is not rendered on the login view, and server-side persistent token issuance is blocked at the source.
+* **Series & Token Rotation Mechanism**:
+  * Overcoming the vulnerabilities of naive static cookie hashing, Aspectow Console utilizes a dual-key (`series`, `token`) persistence model backed by the `asc_persistent_login` table.
+  * `series`: A persistent unique UUID (Primary Key) identifying a specific browser or device instance.
+  * `token`: A single-use cryptographic token refreshed upon every successful auto-login.
+  * Each time a client authenticates via a valid Remember-Me cookie, **the server immediately rotates the token, updates the database, and issues a freshly minted cookie**.
+* **Theft Detection & Global Invalidation**:
+  * If an attacker steals an administrator's cookie, the moment the legitimate administrator logs in, the token is rotated and the stolen token becomes stale.
+  * When the attacker subsequently attempts access with the stale cookie, the server matches the `series` but discovers a `token` mismatch, immediately triggering a **Token Theft Detected** alert.
+  * In response, the server **purges all persistent login records for that user across the entire database** and logs a critical security audit event (`REMEMBER_ME_THEFT_DETECTED`) to `asc_audit_log`, preventing further unauthorized access.
+* **Multi-Factor Environment Context Binding (IP & User-Agent Verification)**:
+  * The client's remote IP address and browser `User-Agent` are persisted alongside the token upon issuance.
+  * During auto-login verification, if the requesting IP address or `User-Agent` differs from the persisted values, auto-login is denied immediately, audit events (`REMEMBER_ME_IP_MISMATCH`, `REMEMBER_ME_DEVICE_MISMATCH`) are recorded, and the cookie is purged.
+  * Configured user `allowedIps` restrictions are also enforced strictly.
+* **PBE Encrypted Cookies & HTTP Transport Hardening**:
+  * The cookie payload (`series:token`) is never transmitted or stored in plaintext; it is strongly encrypted using Aspectran's password-based encryption utility (`PBEncryptionUtils.encrypt`).
+  * Cookies enforce `HttpOnly: true`, `SameSite: Lax`, and `Path: /` attributes to prevent XSS script access and mitigate cross-site request forgery (CSRF).
+* **Complete Revocation on Explicit Logout**:
+  * When an administrator clicks [Logout], the server invalidates the active HTTP session, permanently deletes the corresponding `series` record from the database, and expires the browser cookie immediately (`Max-Age=0`).
+
 ## 5. Customer Operational Security Checklist
 
 When deploying Aspectow Console in production environments, customer security administrators must verify the following items:
@@ -124,3 +150,4 @@ When deploying Aspectow Console in production environments, customer security ad
 4. **Regular Audit Log Database Backups**: Periodically back up data in the `asc_audit_log` table and block unauthorized modifications to audit logs.
 5. **External CDN & Domain Policy Verification**: When new static libraries are required, place them in the local static resource directory (`/assets/`), or inspect allowed domains in `web-security.xml`'s `Content-Security-Policy` when using external CDNs.
 6. **Reverse Proxy Integration & Header Deduplication**: If an upstream reverse proxy (e.g., Nginx, HAProxy) globally manages security headers, activate the `console.no-web-security` profile or configure `proxy_hide_header` in the proxy to prevent duplicate response headers.
+7. **Remember-Me Operational Policy Verification**: In production environments with sensitive server control privileges, verify that `aspectow.console.auth.rememberMe.enabled` is `false` (or unconfigured) to prevent the issuance of unnecessary long-lived authentication tokens.

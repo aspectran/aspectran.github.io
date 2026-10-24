@@ -161,7 +161,7 @@ aspectow:
       anchor: aspectow-console
       cards:
         - title: Console 개요 및 아키텍처
-          url: /ko/docs/aspectow/console/
+          url: /ko/docs/aspectow/console-overview/
           description: 노드 내장형 관제 아키텍처, Direct 및 Gateway (Redis Pub/Sub) 통신 파이프라인과 주요 구성을 소개합니다.
         - title: 주요 화면 및 기능 가이드
           url: /ko/docs/aspectow/console/feature-guide/
@@ -189,7 +189,7 @@ aspectow:
       anchor: aspectow-appmon
       cards:
         - title: Aspectow AppMon
-          url: /ko/docs/aspectow/appmon/
+          url: /ko/docs/aspectow/appmon-overview/
           description: Canvas 트래픽 시각화, JVM 리소스 메트릭 및 역방향 로그 테일링을 제공하는 실시간 관제 솔루션입니다.
       tags:
         - title: 대시보드 가이드

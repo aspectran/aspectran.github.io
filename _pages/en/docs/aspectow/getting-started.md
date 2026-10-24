@@ -165,6 +165,6 @@ To effectively check the application's debug logs, you need to adjust the loggin
 
 ## 11. Next Steps
 
-*   **Experience Visual Management Console**: Open your browser at `http://localhost:8080/console` to explore the [Aspectow Console Overview & Architecture](/en/docs/aspectow/console/).
-*   **Learn Core Concepts**: Read [Aspectow Architecture](/en/docs/aspectow/architecture/) and [Aspectow Console Architecture](/en/docs/aspectow/console/) to understand the self-contained node control system.
+*   **Experience Visual Management Console**: Open your browser at `http://localhost:8080/console` to explore the [Aspectow Console Overview & Architecture](/en/docs/aspectow/console-overview/).
+*   **Learn Core Concepts**: Read [Aspectow Architecture](/en/docs/aspectow/architecture/) and [Aspectow Console Architecture](/en/docs/aspectow/console-overview/) to understand the self-contained node control system.
 *   **Develop Your Own Application**: Start developing your own application based on an Aspectow [starter project](/en/projects/).

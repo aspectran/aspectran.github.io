@@ -10,7 +10,7 @@ Aspectow Edge는 리액티브 프로그래밍(Mono/Flux)이 초래한 코드 복
 
 전통적인 서블릿(Servlet) 사양의 레거시 오버헤드를 완전히 털어내고, 네트워크 I/O 계층에는 비동기 이벤트 주도 엔진인 [Netty](https://netty.io)를, 비즈니스 실행 계층에는 **Java 21 가상 스레드(Virtual Threads)**를 유기적으로 결합했습니다. 이를 통해 개발자는 친숙하고 직관적인 동기식 Aspectran Translet 코드를 작성하면서도, 수만 개의 동시 연결을 스레드 고갈 없이 번개처럼 처리할 수 있습니다.
 
-특히 Aspectow Edge는 Netty 환경에서도 Undertow와 동일한 **완전한 멀티 컨텍스트(Multi-Context) 아키텍처**를 기본 지원합니다. 메인 서비스 컨텍스트와 함께 **Console 관제 컨텍스트(`/console`)**를 Netty 멀티 컨텍스트로 마운트하여, [Aspectow Console](/ko/docs/aspectow/console/)과 동일한 통신 파이프라인과 설정 파일 체계로 유기적으로 연동되어 제어됩니다. 클러스터 구성 전략에 따라 콘솔 노드를 분리하지 않고 모든 서비스 노드가 직접 Console 웹 UI를 제공할 수도 있고, 콘솔 노드를 분리할 경우 각 서비스 노드에는 웹 UI를 제외한 Headless 컨텍스트를 추가하여 극단적인 리소스 경량화를 달성할 수도 있습니다.
+특히 Aspectow Edge는 Netty 환경에서도 Undertow와 동일한 **완전한 멀티 컨텍스트(Multi-Context) 아키텍처**를 기본 지원합니다. 메인 서비스 컨텍스트와 함께 **Console 관제 컨텍스트(`/console`)**를 Netty 멀티 컨텍스트로 마운트하여, [Aspectow Console](/ko/docs/aspectow/console-overview/)과 동일한 통신 파이프라인과 설정 파일 체계로 유기적으로 연동되어 제어됩니다. 클러스터 구성 전략에 따라 콘솔 노드를 분리하지 않고 모든 서비스 노드가 직접 Console 웹 UI를 제공할 수도 있고, 콘솔 노드를 분리할 경우 각 서비스 노드에는 웹 UI를 제외한 Headless 컨텍스트를 추가하여 극단적인 리소스 경량화를 달성할 수도 있습니다.
 
 이 가이드에서는 Aspectow Edge의 표준 프로젝트 구조와 빌드 방법부터 Netty 내장 서버의 네트워크 리스너, 가상 스레드 디스패처, 압축 인코딩, 로깅 그룹, Access 로그, 정적 리소스 핸들러, 웹소켓(WebSocket), 세션, 그리고 멀티 컨텍스트 기반의 Headless Console 연동에 이르는 모든 설정 요소를 상세히 다룹니다.
 
@@ -966,7 +966,7 @@ node: {
 
 #### 6.2.2. Aspectow Console에서의 원격 통제
 
-중앙의 [Aspectow Console](/ko/docs/aspectow/console/)을 통해 모든 Edge 노드를 한 화면에서 통제할 수 있습니다:
+중앙의 [Aspectow Console](/ko/docs/aspectow/console-overview/)을 통해 모든 Edge 노드를 한 화면에서 통제할 수 있습니다:
 * **실시간 헬스체크**: 모든 Edge 노드의 생존 상태(Live, Paused, Dead)를 확인하고 Pause, Resume, Restart 명령을 즉시 전파합니다.
 * **대화형 원격 명령 센터**: Console 웹 화면에서 특정 Edge 노드로 직접 CLI 명령을 주입하고 실시간 콘솔 스트리밍 출력을 확인합니다.
 * **분산 스케줄러 동적 제어**: Edge 노드 내부에서 실행되는 Translet 스케줄러 Job의 동작을 일시 중단하거나 재개할 수 있습니다.

@@ -1,5 +1,5 @@
 ---
 layout: redirect
 sitemap: false
-redirect_to: /ko/docs/aspectow/appmon/
+redirect_to: /ko/docs/aspectow/appmon-overview/
 ---

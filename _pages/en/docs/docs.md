@@ -75,7 +75,7 @@ Next-generation enterprise application server built on Aspectran.
 
 Real-time web control console for centrally managing and observing Aspectran application server environments.
 
-*   [Aspectow Console Overview & Architecture](/en/docs/aspectow/console/)
+*   [Aspectow Console Overview & Architecture](/en/docs/aspectow/console-overview/)
 *   [Aspectow Console Feature & Screen Guide](/en/docs/aspectow/console/feature-guide/)
 *   [Aspectow Console Build & Deployment Guide](/en/docs/aspectow/console/build-and-deployment/)
 *   [Aspectow Console Configuration Guide](/en/docs/aspectow/console/configuration-guide/)
@@ -86,7 +86,7 @@ Real-time web control console for centrally managing and observing Aspectran app
 
 Lightweight monitoring solution for real-time monitoring of system resources and application activities. Runs integrated within Aspectow Console or can be deployed independently.
 
-*   [Aspectow AppMon Overview & Features](/en/docs/aspectow/appmon/)
+*   [Aspectow AppMon Overview & Features](/en/docs/aspectow/appmon-overview/)
 *   [AppMon Dashboard Guide](/en/docs/aspectow/appmon/dashboard-guide/)
 *   [AppMon Message Protocol Specification](/en/docs/aspectow/appmon/message-protocol/)
 *   [AppMon Event Count Data Structure and Architecture](/en/docs/aspectow/appmon/event-count-data-structure/)

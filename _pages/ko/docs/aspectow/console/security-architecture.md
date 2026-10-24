@@ -114,6 +114,31 @@ Aspectow Console에는 고객사의 안전한 운용을 위해 핵심 보안 메
 * **비밀번호 해시 소거**: 사용자 목록 조회 시 `User` 객체의 `password` 해시 필드를 서버 응답 단계에서 소거(`null` 처리)하여 DOM 및 JSON 데이터 노출을 원천 차단합니다.
 * **데이터 마스킹 유틸리티**: `ConsoleWebUtils` 내 이메일(`maskEmail`), IP 주소(`maskIpAddress`), 시크릿 키(`maskSecret`) 마스킹 헬퍼를 활용하여 UI 화면 상에 민감 정보가 안전하게 표출되도록 보호합니다.
 
+### 4.7 영속적 토큰 기반 Remember-Me 보안 아키텍처 (Persistent Token Rotation & Theft Detection)
+Aspectow Console은 세션 만료 후에도 로그인을 유지할 수 있는 Remember-Me 기능을 제공하지만, 일반 B2C 서비스와 달리 서버 프로세스 제어 및 원격 명령 실행 등 고권한을 다루므로 **엔터프라이즈급 4중 보안 방어선**을 기본 내장하고 있습니다.
+
+* **환경 기반 Opt-In 제어 (기본값: 완전 비활성화)**:
+  * 일반 운영(Production) 환경에서는 보안을 위해 기능이 기본적으로 비활성화(`false`)됩니다.
+  * `demo` 프로파일이 활성화된 환경이거나, `console-rules.xml`에 `<property name="aspectow.console.auth.rememberMe.enabled" valueType="boolean">true</property>`를 명시한 경우에만 선언적으로 활성화됩니다.
+  * 비활성화 시 로그인 화면에 "Stay signed in" 체크박스 자체가 노출되지 않으며 서버 측 토큰 발급이 원천 차단됩니다.
+* **Series & Token 순환 메커니즘 (Token Rotation)**:
+  * 단순 해시 쿠키의 한계를 극복하기 위해 `asc_persistent_login` 테이블 기반의 이중 키(`series`, `token`) 모델을 사용합니다.
+  * `series`: 특정 브라우저/기기 인스턴스를 식별하는 고유 UUID(PK)입니다.
+  * `token`: 매 자동 로그인 성공 시마다 새롭게 갱신되는 일회용(Single-Use) 암호화 난수입니다.
+  * 사용자가 세션 없이 자동 로그인할 때마다 **서버는 즉시 새로운 `token`을 발급하여 DB를 업데이트하고 브라우저 쿠키를 새로 교체(Rotation)**합니다.
+* **토큰 탈취 감지 및 전역 세션 강제 무효화 (Theft Detection & Global Invalidation)**:
+  * 공격자가 사용자의 Remember-Me 쿠키를 훔치더라도, 정상 사용자가 접속하는 순간 새 토큰으로 순환되어 이전 토큰은 무효화됩니다.
+  * 이후 탈취자가 훔친 이전 토큰으로 접속을 시도하면 `series`는 존재하지만 DB의 `token`과 일치하지 않는 **토큰 탈취 이상 징후**가 즉시 감지됩니다.
+  * 탈취 감지 시 해당 사용자의 **모든 Persistent Login 토큰을 DB에서 일괄 강제 삭제**하고 보안 감사 로그(`asc_audit_log`)에 `REMEMBER_ME_THEFT_DETECTED` 이벤트를 기록하여 추가 피해를 원천 봉쇄합니다.
+* **다중 환경 컨텍스트 바인딩 (IP & User-Agent Verification)**:
+  * 토큰 발급 시점의 접속 IP와 브라우저 `User-Agent`를 DB에 함께 기록합니다.
+  * 자동 로그인 시도시 현재 클라이언트의 IP 또는 `User-Agent`가 발급 시점과 다를 경우 자동 로그인을 즉시 차단하고, 감사 로그(`REMEMBER_ME_IP_MISMATCH`, `REMEMBER_ME_DEVICE_MISMATCH`)를 남긴 후 쿠키를 파기합니다.
+* **PBE 암호화 쿠키 및 HTTP 전송 보안**:
+  * 쿠키 값(`series:token`)은 평문 노출 없이 Aspectran 내장 암호화 유틸리티(`PBEncryptionUtils.encrypt`)를 통해 강력하게 암호화되어 클라이언트에 저장됩니다.
+  * 쿠키에 `HttpOnly: true`, `SameSite: Lax`, `Path: /` 속성을 강제 적용하여 XSS 스크립트에 의한 쿠키 탈취 및 CSRF 공격을 차단합니다.
+* **명시적 로그아웃 시 완전 폐기**:
+  * 사용자가 콘솔에서 [Logout]을 실행하면 활성 세션 무효화뿐만 아니라 DB에 등록된 해당 `series` 레코드를 영구 삭제하고 쿠키를 즉시 만료(`Max-Age=0`)시킵니다.
+
 ## 5. 고객사 운영 보안 체크리스트
 
 Aspectow Console을 운영 환경에 배치할 때 고객사 보안 담당자는 다음 항목을 반드시 점검해야 합니다.
@@ -124,3 +149,4 @@ Aspectow Console을 운영 환경에 배치할 때 고객사 보안 담당자는
 4. **감사 로그 DB 주기적 백업**: `asc_audit_log` 테이블 데이터를 정기적으로 백업하고 권한 없는 자에 의한 감사 로그 수정을 차단합니다.
 5. **외부 CDN 및 도메인 정책 점검**: 신규 정적 라이브러리가 필요한 경우 사내 자체 정적 자원 디렉터리(`/assets/`)로 배치하거나, 외부 CDN 사용 시 `web-security.xml`의 `Content-Security-Policy` 허용 도메인을 점검합니다.
 6. **리버스 프록시 연동 및 보안 헤더 중복 점검**: Nginx, HAProxy 등 상위 리버스 프록시에서 보안 헤더를 전역 관리하는 경우, `console.no-web-security` 프로필을 활성화하거나 프록시 설정에서 `proxy_hide_header`를 지정하여 헤더 중복을 방지합니다.
+7. **Remember-Me 자동 로그인 활성화 정책 점검**: 서버 제어 권한을 포함하는 프로덕션 운영 환경에서는 `aspectow.console.auth.rememberMe.enabled`가 `false`(또는 미설정) 상태인지 점검하여 불필요한 장기 인증 토큰 발급을 차단합니다.

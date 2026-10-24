@@ -161,7 +161,7 @@ aspectow:
       anchor: aspectow-console
       cards:
         - title: Console Overview & Architecture
-          url: /en/docs/aspectow/console/
+          url: /en/docs/aspectow/console-overview/
           description: Introduces the embedded console architecture, Direct & Gateway (Redis Pub/Sub) pipelines, and key configurations.
         - title: Screen & Feature Guide
           url: /en/docs/aspectow/console/feature-guide/
@@ -189,7 +189,7 @@ aspectow:
       anchor: aspectow-appmon
       cards:
         - title: Aspectow AppMon
-          url: /en/docs/aspectow/appmon/
+          url: /en/docs/aspectow/appmon-overview/
           description: Real-time monitoring solution providing Canvas traffic flow visualization, JVM resource metrics, and reverse log tailing.
       tags:
         - title: Dashboard Guide

@@ -233,7 +233,7 @@ Console 및 워커 노드는 `RedisConnectionPoolConfig`를 통해 이 URI를 �
 
 ## 6. Console 데이터베이스 접속 및 프로필 설정 (`aspectow-console.db-*.properties`)
 
-Aspectow Console은 관리자 계정, RBAC 권한, Vault 보안 토큰, 클러스터 감사 이력(Audit Trail), 빌드 및 배포 실행 이력, 그리고 내장 AppMon의 5분/시간/일/월/년 사전 집계(Pre-aggregation) 통계를 데이터베이스에 보관합니다.
+Aspectow Console은 관리자 계정, RBAC 권한, Vault 보안 토큰, Remember-Me 자동 로그인 영속 토큰(`asc_persistent_login`), 클러스터 감사 이력(Audit Trail), 빌드 및 배포 실행 이력, 그리고 내장 AppMon의 5분/시간/일/월/년 사전 집계(Pre-aggregation) 통계를 데이터베이스에 보관합니다.
 
 ### 6.1. 클러스터 환경에서의 데이터베이스 아키텍처 원칙 (Shared Database Architecture)
 
@@ -298,13 +298,23 @@ Aspectow Console 환경에서는 모듈화된 규칙 구성을 위해 최상위 
 
 ### 7.1. 최상위 콘솔 통합 룰 (`console-rules.xml`)
 
-`console-rules.xml`은 Console 환경의 제어 룰들을 하나로 묶어 제공하는 대표 규칙 파일입니다. `node-rules.xml`과 `appmon-rules.xml`을 하위로 어펜드(`<append>`)하여 포함합니다.
+`console-rules.xml`은 Console 환경의 제어 룰들과 전역 환경 프로퍼티를 하나로 묶어 제공하는 대표 규칙 파일입니다. 노드 제어 규칙(`node-rules.xml`)과 AppMon 모니터링 규칙(`appmon-rules.xml`)을 하위로 어펜드(`<append>`)하여 포함하며, 콘솔 전역 환경 변수를 `<environment>` 블록을 통해 선언적으로 구성합니다.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 9.0//EN"
         "https://aspectran.com/dtd/aspectran-9.dtd">
 <aspectran>
+
+    <!-- 콘솔 전역 환경 프로퍼티 구성 -->
+    <environment>
+        <!-- 자동 로그인(Remember-Me) 활성화 여부 (boolean 또는 string 지원, 기본값: false) -->
+        <property name="aspectow.console.auth.rememberMe.enabled" valueType="boolean">true</property>
+        <!-- 자동 로그인 토큰 유효 기간 (초 단위 정수 또는 "30d", "7d", "24h" 등의 기간 문자열 지원, 기본값: 30일) -->
+        <property name="aspectow.console.auth.rememberMe.tokenValiditySeconds">30d</property>
+        <!-- 로그인 화면에서 메인 포털로 복귀할 링크 URL -->
+        <property name="aspectow.console.portalUrl">%{system:aspectow.console.portalUrl}</property>
+    </environment>
 
     <!-- 노드 관리 및 제어 룰 포함 -->
     <append file="/config/console/node-rules.xml"/>
@@ -315,7 +325,26 @@ Aspectow Console 환경에서는 모듈화된 규칙 구성을 위해 최상위 
 </aspectran>
 ```
 
-`aspectran-config.apon`에는 `/config/console/console-rules.xml` 하나만 명시하면 노드 관리와 AppMon 모니터링 컴포넌트가 함께 일괄 로드됩니다.
+#### 콘솔 환경 프로퍼티 상세 명세
+
+*   **`aspectow.console.auth.rememberMe.enabled`** (`boolean` 또는 `string`, 선택 사항):
+    *   **설명**: 로그인 화면에서 사용자의 로그인 상태를 장기 유지하는 Remember-Me(자동 로그인) 기능의 활성화 여부를 결정합니다.
+    *   **타입 지원**: `valueType="boolean"`을 지정하여 `<property ... valueType="boolean">true</property>` 형태로 지정하거나, 일반 문자열 `<property ...>true</property>` 형태로 지정할 수 있습니다.
+    *   **기본 동작**:
+        *   속성이 지정되지 않은 경우(기본값): 일반 프로덕션 환경에서는 보안을 위해 자동으로 **`false`**로 비활성화됩니다.
+        *   단, 시연 및 테스트 편의를 위해 `demo` 프로파일이 활성화된 환경에서는 별도 설정이 없더라도 자동으로 **`true`**로 동작합니다.
+    *   **보안 특성**: 활성화 시 단순 쿠키 방식이 아닌 데이터베이스 기반 Persistent Token Rotation(토큰 순환) 및 토큰 탈취 감지, IP/User-Agent 바인딩 메커니즘(`asc_persistent_login`)이 작동합니다.
+*   **`aspectow.console.auth.rememberMe.tokenValiditySeconds`** (`integer` 또는 `string`, 선택 사항):
+    *   **설명**: Remember-Me 인증 토큰의 유효 기간을 설정합니다. 브라우저 쿠키의 `Max-Age` 속성 및 DB 토큰 만료 판정 기준 시간으로 함께 적용됩니다. (별칭 `aspectow.console.auth.rememberMe.tokenValidity`도 함께 인식됩니다.)
+    *   **유연한 포맷 지원 (`DurationUtils`)**:
+        *   **기간 표현식 문자열**: Aspectran의 `DurationUtils` 유틸리티를 통해 `"30d"`(30일), `"7d"`(7일), `"24h"`(24시간), `"1800s"`(1800초)와 같이 사람이 읽기 쉬운 직관적인 기간 문자열을 직접 지정할 수 있습니다.
+        *   **초 단위 정수**: 단위 없이 숫자만 입력(`2592000`)하거나 `valueType="int"`로 정수형을 지정할 경우 초(Seconds) 단위로 자동 해석됩니다.
+    *   **기본값**: 미설정 시 **`30d`** (30일 = `2,592,000`초)가 기본 적용됩니다.
+*   **`aspectow.console.portalUrl`** (`string`, 선택 사항):
+    *   **설명**: 독립 포털이나 외부 대시보드가 존재하는 환경에서, 로그인 화면 하단에 표시되는 "Back to Main" 링크의 대상 URL을 지정합니다.
+    *   **표현식 지원**: `%{system:aspectow.console.portalUrl}`과 같이 시스템 프로퍼티나 환경 변수 표현식을 사용하여 배포 환경별로 동적 주입할 수 있습니다. 설정값이 비어 있거나 누락된 경우 해당 링크는 UI 화면에 노출되지 않습니다.
+
+`aspectran-config.apon`에는 `/config/console/console-rules.xml` 하나만 명시하면 노드 관리와 AppMon 모니터링 컴포넌트, 그리고 콘솔 전역 환경 프로퍼티가 함께 일괄 로드됩니다.
 
 ### 7.2. 노드 관리 및 제어 룰 (`node-rules.xml`)
 
