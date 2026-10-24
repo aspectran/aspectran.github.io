@@ -7,6 +7,7 @@
     <head>
       <title><xsl:value-of select="/rss/channel/title"/></title>
       <link rel="stylesheet" href="https://assets.aspectran.com/bootstrap@5.3.8/css/rss.css"/>
+      <!--<link rel="stylesheet" href="http://localhost:8090/assets/bootstrap@5.3.8/css/rss.css"/>-->
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     </head>
     <body>
