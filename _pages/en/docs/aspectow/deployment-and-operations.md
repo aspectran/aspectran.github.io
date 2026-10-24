@@ -3,11 +3,21 @@ title: Aspectow Deployment and Operations Guide
 subheadline: Aspectow
 ---
 
-This guide provides detailed instructions on how to deploy and manage Aspectow applications as services in Linux/Unix and Windows environments. You can build an efficient operational environment by utilizing the provided scripts.
+This guide provides detailed instructions on how to reliably deploy, operate, and manage Aspectow applications as system services in Linux/Unix and Windows environments. Aspectow delivers a lightweight, high-performance embedded web application environment, complete with robust automated deployment scripts and system daemon integration tools to help you seamlessly establish an enterprise-grade operational environment.
 
-There are two main execution methods described in this guide:
-1.  **Automated Deployment and Service Management**: The standard operational method using scripts in the `setup` directory to install the application on a server, build/deploy it, and manage it as a system service. **(Recommended)**
-2.  **Manual Execution and Management**: A method for running the application directly for development or testing purposes using scripts in the `app/bin` directory.
+Depending on operational requirements and desired control levels, Aspectow's deployment and operations architecture is categorized into two primary approaches:
+
+1.  **Automated Deployment and Service Management (Using the `setup` Toolkit)**:
+    The standard approach designed for production and staging environments. Utilizing the script toolkit in the `setup` directory, it automates the entire lifecycle—from initial server environment configuration, source repository cloning, and Maven builds to component deployments and OS system service (`systemd`, Windows Service) registration. It incorporates essential enterprise operational capabilities such as isolated build workspaces (`.build`), post-deployment configuration restoration (`app-restore`), multi-node atomic build locks, and branch/tag-targeted deployments. **(Recommended)**
+2.  **Manual Execution and Process Control (Using `app/bin` Scripts)**:
+    Designed for local development, testing, debugging, or specialized custom operational scenarios. Without registering system services, you can directly launch and monitor the application using scripts in the `app/bin` directory, including the interactive shell (`shell.sh`), background daemon (`daemon.sh`), or Apache Commons Daemon native binary (`jsvc-daemon.sh`).
+
+This guide is structured into the following sections. If you are setting up the system for the first time, we recommend proceeding sequentially starting from the prerequisites:
+
+*   **1. Prerequisites**: Verification of required software (JDK, Git, Maven, jsvc, etc.) for smooth builds and daemon execution
+*   **2. Automated Deployment and Service Management**: Initial installation, build/deployment, service registration, Git-targeted deployment, and multi-instance cluster configuration via the `setup` toolkit
+*   **3. Manual Execution and Management**: Direct execution, interactive shell usage, and JVM option tuning via `app/bin` scripts
+*   **4. Failure Recovery and Process Management**: High-availability process protection mechanisms including stale lock auto-cleanup and fallback kill
 
 ## 1. Prerequisites
 
