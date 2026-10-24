@@ -6,21 +6,31 @@ subheadline: Architecture
 mermaid: true
 ---
 
-These are diagrams that represent Aspectran's architecture from various perspectives. Each diagram emphasizes a specific aspect of the system to help understand the overall structure.
+Aspectran is a lightweight, high-performance JVM framework that provides a single, unified programming model across diverse execution environments—including Web, Command-Line Shell, Background Daemon, and Embedded systems—based on a Request-Oriented Architecture and environment abstraction mechanisms.
 
-- **Adapters**: Abstract the differences in execution environments (e.g., web, shell, daemon) and deliver requests to the `Activity` in a consistent manner.
-- **Activity**: The execution engine that manages the lifecycle of a request. It executes the processing steps defined in a `Translet` in sequence.
-- **Translet**: A set of rules for processing a request. It defines which `Action` to execute and how to send the result to a `View`.
-- **Actions**: The units that perform the actual business logic. They call `Bean`s or interact with databases.
-- **Core Components**: Provide core functionalities such as the `Bean` container, AOP engine, AsEL (Aspectran Expression Language), session manager, and scheduler.
-- **View**: The part that displays the processing result of an `Action` to the user. It supports various template engines like `JSP`, `Thymeleaf`, etc.
-- **Services**: Modules that encapsulate a specific execution environment or functionality and are organically integrated with the core.
+This document brings together diagrams that visualize Aspectran's internal architecture and core operating principles across nine complementary perspectives (layered structures, request processing pipelines, conceptual models, package dependencies, runtime lifecycles, and AOP mechanisms). Each diagram focuses on specific architectural facets, helping developers and system architects develop a comprehensive understanding of the framework's design philosophy and component interactions.
 
----
+## Overview of Core Components
 
-### 1. Modular Layered Architecture
+*   **Adapters**: Standardize inputs and outputs across disparate execution environments—Web, CLI Shell, Background Daemon, and Embedded API—into uniform interfaces, delivering incoming requests to the `Activity` and returning responses in a consistent manner.
+*   **Activity**: The execution engine that governs the entire lifecycle of an individual request. It manages the whole process from entry point, context resolution, and translet lookup/execution to view rendering, response delivery, and resource cleanup.
+*   **Translet**: A declarative unit of execution rules for handling a request. It specifies under what conditions and in what sequence `Action`s are executed, as well as which `View` template or format receives the final results.
+*   **Actions**: The atomic units that carry out concrete business operations. Actions invoke methods on Java Beans (InvokeAction), branch execution conditionally (ChooseAction), or dispatch control to another translet or view.
+*   **Core Components**: Foundational infrastructure services powering the framework, including the IoC/DI Bean Container, AOP Proxy Engine, AsEL (Aspectran Expression Language), Session Manager, and Scheduler.
+*   **View & Response**: Represents and delivers the outcome of executed actions into user-facing responses:
+    *   **View Dispatcher**: Integrates with template engines (FreeMarker, Pebble, Thymeleaf, JSP) to render dynamic server-side UI views (`<dispatch>`).
+    *   **Data Transformation**: Automatically serializes results into modern REST API and data exchange formats including JSON, XML, APON, and Plain Text (`<transform>`).
+    *   **Redirect & Forward**: Supports client-side HTTP redirects (`RedirectResponse`) and internal server-side forwarding (`ForwardResponse`).
+*   **Services**: Lifecycle-managed (`ServiceLifeCycle`) containers that bootstrap the framework within specific runtime environments. Rooted in `CoreService`, specialized implementations like `WebService`, `ShellService`, and `DaemonService` assemble and run the system.
 
-This diagram shows all the components of Aspectran divided by layer. It illustrates how external requests connect to core functionalities through adapters.
+## 1. Modular Layered Architecture
+
+This diagram shows all the components of Aspectran divided into functional layers. External requests (HTTP, CLI, Daemon Trigger, Embed API) enter and become standardized through the Adapter Layer, initiate request lifecycles and pipeline orchestration within the integrated Activity & Translet Layer, and organically connect to Core Layer infrastructure (ActivityContext) and the View & Response Layer in a cohesive 4-layer architecture.
+
+*   **Adapter Layer**: Abstracts environment and protocol differences (Web, Shell, Daemon, Embedded) into unified request specifications.
+*   **Activity & Translet Layer**: Harmoniously integrates the execution engine (`Activity`) that governs request lifecycles with `Translet` blueprints that encapsulate processing rules, orchestrating and managing the execution of business actions (`Actions`).
+*   **Core Layer (ActivityContext)**: Centered on `ActivityContext`—the heart of the framework—providing foundational infrastructure including the IoC/DI Bean Container, AOP Engine, AsEL expression language, Session Manager, and Scheduler.
+*   **View & Response Layer**: The output tier that delivers business logic outcomes to clients. It encompasses template-driven dynamic UI rendering (`ViewDispatcher`), data format serialization for RESTful APIs (`TransformResponse` - JSON, XML, APON, Plain Text), and response flow control (`Redirect & Forward`).
 
 ```mermaid
 flowchart TB
@@ -41,66 +51,63 @@ flowchart TB
 
   %% Adapter Layer
   subgraph Adapters[Adapter Layer]
-    Web["Web Adapter (Servlet/Undertow)"]:::adapter
+    Web["Web Adapter"]:::adapter
     Shell["Shell Adapter"]:::adapter
     DaemonAdp["Daemon Adapter"]:::adapter
     Embed["Embed Adapter"]:::adapter
   end
 
-  %% Activity Layer
-  subgraph ActivityLayer[Activity Layer]
-    Activity["Activity"]
-    ActCtx["ActivityContext"]
-    Activity --> ActCtx
-  end
-
-  %% Translet Layer
-  subgraph TransletLayer[Translet Layer]
-    Translet["Translet"]
-    Actions["Actions (Invoke, Choose, Dispatch, ...)"]
-    Activity -->|select & execute| Translet
-    Translet -->|orchestrate| Actions
+  %% Activity & Translet Layer
+  subgraph ActivityProcessing[Activity & Translet Layer]
+    Activity["Activity (Lifecycle & Execution Engine)"]
+    Translet["Translet (Request / Content / Response Rules)"]
+    Actions["Actions (Invoke, Choose, Transform, ...)"]
+    Activity -->|orchestrates & executes| Translet
+    Translet -->|executes steps| Actions
   end
 
   %% Core Capabilities
-  subgraph Core[Bean Container / Core Capabilities]
+  subgraph Core[Core Layer / ActivityContext]
+    ActCtx["ActivityContext (Central Hub)"]:::core
     Beans["IoC/DI Bean Container"]:::core
     AOP["AOP Engine"]:::core
     AsEL["AsEL"]:::core
     SessionMgr["Session Manager"]:::core
     Sched["Scheduler"]:::core
+    ActCtx --- Beans & AOP & AsEL & SessionMgr & Sched
   end
 
-  %% View Layer
-  subgraph ViewLayer[View Layer]
-    ViewDispatcher["ViewDispatcher"]:::layer
-    TemplateEngines["Template Engines (FreeMarker, Pebble, Thymeleaf, etc.)"]:::layer
-    ViewDispatcher --> TemplateEngines
+  %% View & Response Layer
+  subgraph ViewLayer[View & Response Layer]
+    ViewDispatcher["View Dispatcher<br>(Thymeleaf, FreeMarker, Pebble, JSP)"]:::layer
+    TransformResponse["Data Transformer<br>(JSON, XML, APON, Plain Text)"]:::layer
+    RedirectForward["Flow Controller<br>(Redirect, Forward)"]:::layer
   end
 
   %% Wiring
-  Adapters --> ActivityLayer
+  Adapters -->|dispatch request| Activity
+  Activity -.->|accesses context| ActCtx
   Actions --> Beans
   Actions --> AsEL
   Actions --> AOP
   Actions --> SessionMgr
   Actions --> Sched
-  Actions -->|dispatch| ViewDispatcher
+  Actions -->|dispatch view| ViewDispatcher
+  Actions -->|serialize data| TransformResponse
+  Actions -->|redirect / forward| RedirectForward
 
   %% Notes
   Note1["Adapter: Abstracts execution environments"]:::note
-  Note2["Translet: Declaratively designs processing steps"]:::note
-  Note3["ViewDispatcher: Renders through a template engine"]:::note
+  Note2["Activity & Translet: Orchestrates request lifecycles and execution pipelines"]:::note
+  Note3["View & Response: UI templates, REST API data serialization, flow control"]:::note
   Note1 --> Adapters
-  Note2 --> TransletLayer
+  Note2 --> ActivityProcessing
   Note3 --> ViewLayer
 ```
 
----
+## 2. Detailed Layered Structure
 
-### 2. Detailed Layered Structure
-
-A diagram that shows in more detail the main component groups within the `Aspectran Runtime` and their interactions.
+A comprehensive view of the subsystem groups within the `Aspectran Runtime` container and their runtime interactions. The `Services` tier bootstraps and supervises environment-specific services (`CoreServices`, `SchedulerServices`, `WebServices`, `DaemonServices`, `ShellServices`, `EmbedServices`). Incoming requests channeled through adapters transition through Activity -> Translet -> Actions, tapping into core capabilities (Beans, AOP, AsEL, Session, Scheduler) before being routed to various response channels such as view dispatching, data transformations, and redirects.
 
 ```mermaid
 flowchart TB
@@ -119,13 +126,14 @@ flowchart TB
       Actions["Actions (Invoke, Choose, Dispatch, ...)"]
     end
 
-    subgraph ViewLayer["View / Template"]
-      ViewDispatcher["ViewDispatcher (JSP/Thymeleaf/FreeMarker/Pebble)"]
-      TemplateEngine["TemplateEngine"]
+    subgraph ViewLayer["View & Response"]
+      ViewDispatcher["ViewDispatcher (Thymeleaf/FreeMarker/Pebble/JSP)"]
+      TransformResponse["TransformResponse (JSON/XML/APON/Text)"]
+      RedirectForward["Redirect & Forward"]
     end
 
     subgraph Adapters["Execution Adapters"]
-      Web["Web Adapter (Servlet/Undertow)"]
+      Web["Web Adapter"]
       Shell["Shell Adapter"]
       DaemonAdp["Daemon Adapter"]
       Embed["Embed Adapter"]
@@ -135,7 +143,7 @@ flowchart TB
       ServicesHub["Services"]
       CoreSvc["Core Services"]
       SchedSvc["Scheduler Services"]
-      WebSvc["Web/Undertow Services"]
+      WebSvc["Web Services"]
       DaemonSvc["Daemon Services"]
       ShellSvc["Shell Services"]
       EmbedSvc["Embed Services"]
@@ -166,7 +174,8 @@ flowchart TB
   Actions --> Scheduler
 
   Actions -->|dispatch| ViewDispatcher
-  ViewDispatcher -->|render| TemplateEngine
+  Actions -->|transform| TransformResponse
+  Actions -->|redirect/forward| RedirectForward
 
   ServicesHub -.-> CoreSvc
   ServicesHub -.-> SchedSvc
@@ -181,11 +190,12 @@ flowchart TB
   class Runtime title
 ```
 
----
+## 3. Pipeline-Centric View
 
-### 3. Pipeline-Centric View
+A data-flow-oriented diagram illustrating how requests traverse the processing pipeline until a final response is generated. Requests originating from diverse entrypoints (HTTP, CLI, Daemon, Embedded, Scheduler) pass through dedicated adapters (WebActivity, ShellActivity, DaemonActivity, etc.) into an integrated pipeline (`RequestAdapter` → `Activity` → `Translet` → `Advice/Actions` → `ResponseAdapter`).
 
-This diagram represents the process from when a request comes in until a response goes out in a pipeline format. It shows the architecture focusing on data flow and major processing steps.
+*   `DefaultCoreService` instantiates `ActivityContext`, feeding beans, AOP aspects, translet rules, messages, and profile configurations into the pipeline.
+*   The Scheduler service drives scheduled/periodic executions through `ActivityLauncherJob` directly into the activity pipeline.
 
 ```mermaid
 flowchart LR
@@ -201,7 +211,6 @@ flowchart LR
   %% Environment Adapters -> Activities
   subgraph Adapters[Execution Adapters]
     WA[WebActivity]
-    TA[TowActivity]
     SA[ShellActivity]
     DA[DaemonActivity]
     EA[EmbeddedActivity]
@@ -234,14 +243,14 @@ flowchart LR
   end
 
   %% Flows from entrypoints to adapters
-  HTTP --> WA & TA
+  HTTP --> WA
   CLI --> SA
   Daemon --> DA
   Embedded --> EA
   Scheduler --> Sch
 
   %% Adapters run pipeline
-  WA & TA & SA & DA & EA --> Req
+  WA & SA & DA & EA --> Req
 
   %% Core service builds context
   DCS --> AC
@@ -264,15 +273,13 @@ flowchart LR
 
   class DCS,AC,Beans,AOP,Translets,Msg,Env core
   class Req,Act,TL,Adv,Res pipe
-  class WA,TA,SA,DA,EA adapt
+  class WA,SA,DA,EA adapt
   class Sch,AJ ext
 ```
 
----
+## 4. Simplified Pipeline View
 
-### 4. Simplified Pipeline View
-
-A more concise representation of the pipeline view. It is useful for quickly grasping the core processing flow.
+A streamlined diagram focusing on the core request processing flow, abstracting away secondary details. It presents the four foundational pillars (`Entrypoints` → `Execution Adapters` → `Request Pipeline` → `Core Context`), allowing developers to build an intuitive mental model of Aspectran's request-response lifecycle.
 
 ```mermaid
 flowchart LR
@@ -321,62 +328,68 @@ flowchart LR
   Act --> Res
 ```
 
----
+## 5. Core Concept Map
 
-### 5. Core Concept Map
+A structured map visualizing the five foundational pillars of Aspectran (`Activity`, `Translet`, `Bean`, `Action`, `Aspect`) alongside the presentation tier (`Template / View`), highlighting their relationships and individual responsibilities.
 
-A diagram that illustrates the relationships between the five most important concepts that make up Aspectran (Activity, Translet, Bean, Action, Aspect) and the View (Template).
+*   **Activity**: The execution engine and lifecycle management context for every request.
+*   **Translet**: The declarative blueprint specifying request processing rules.
+*   **Bean**: Components whose lifecycles and dependency graphs are managed by the IoC/DI container.
+*   **Action**: Concrete business logic units executed in sequence or conditionally within a Translet.
+*   **Aspect**: Modular cross-cutting concern logic applied transparently across Activities and Beans.
+*   **Template / View**: The output tier that dynamically renders action results for presentation.
 
 ```mermaid
 flowchart TB
   A[Aspectran Core Concepts]
 
   A --> ACT[Activity]
-  ACT --> ACT1[Execution engine for all requests]
-  ACT --> ACT2[Request lifecycle management context]
-  ACT --> ACT3[Consistent handling of all requests]
+  ACT --> ACT1[모든 요청의 실행 엔진]
+  ACT --> ACT2[요청 생명주기 관리 컨텍스트]
+  ACT --> ACT3[웹/셸 등 모든 요청 일관 처리]
 
   A --> TR[Translet]
-  TR --> TR1["Blueprint of processing rules (request, response, etc.)"]
-  TR --> TR2[Referenced and executed by Activity]
-  TR --> TR3[Reusable service unit]
+  TR --> TR1["처리 규칙의 설계도 (요청, 응답, 액션 등)"]
+  TR --> TR2[Activity가 참조하여 실행]
+  TR --> TR3[재사용 가능한 서비스 단위]
 
   A --> BEAN["Bean (IoC/DI)"]
-  BEAN --> BEAN1[Lifecycle managed by the container]
-  BEAN --> BEAN2["Dependency Injection (DI)"]
-  BEAN --> BEAN3[Scopes: singleton, prototype, request, session]
+  BEAN --> BEAN1[컨테이너가 생명주기 관리]
+  BEAN --> BEAN2["의존성 주입 (DI)"]
+  BEAN --> BEAN3[스코프: singleton, prototype, request, session]
 
   A --> ACTN[Action]
-  ACTN --> ACTN1[Defined as part of a Translet's rules]
-  ACTN --> ACTN2[Performs business logic]
-  ACTN --> ACTN3["Hierarchical results determine follow-up actions and view rendering"]
+  ACTN --> ACTN1[Translet의 일부로 규칙 정의]
+  ACTN --> ACTN2[비즈니스 로직 수행]
+  ACTN --> ACTN3["계층적 결과로 후속 처리 및 뷰 렌더링 결정"]
 
   A --> ASP["Aspect (AOP)"]
-  ASP --> ASP1["Separation of cross-cutting concerns (logging, tx, security)"]
-  ASP --> ASP2[AOP proxy performance optimization]
-  ASP --> ASP3[Asynchronous execution support]
+  ASP --> ASP1["횡단 관심사 분리 (로깅, 트랜잭션, 보안)"]
+  ASP --> ASP2[AOP 프록시 성능 최적화]
+  ASP --> ASP3[비동기 실행 지원]
 
   A --> TPL[Template / View]
-  TPL --> TPL1[Renders the result of Translet processing]
-  TPL --> TPL2[Supports FreeMarker, Pebble, Thymeleaf, etc.]
-  TPL --> TPL3[Dynamic UI/UX composition]
+  TPL --> TPL1[Translet 처리 결과 렌더링]
+  TPL --> TPL2[FreeMarker, Pebble, Thymeleaf 등 지원]
+  TPL --> TPL3[동적인 UI/UX 구성]
 
-  ACT -- references --> TR
-  TR -- execution plan --> ACTN
-  ACTN -- depends on/uses --> BEAN
-  ASP -- applies to --> ACT
-  ASP -- applies to --> BEAN
-  ACTN -- passes result to --> TPL
+  ACT -- 참조 --> TR
+  TR -- 실행 계획 --> ACTN
+  ACTN -- 의존성 주입/사용 --> BEAN
+  ASP -- 적용 --> ACT
+  ASP -- 적용 --> BEAN
+  ACTN -- 결과 전달 --> TPL
 
   classDef concept stroke:#ff5544,stroke-width:3px
   class ACT,TR,BEAN,ACTN,ASP,TPL concept
 ```
 
----
+## 6. Core Package Relationships
 
-### 6. Core Package Relationships
+Shows package-level dependency hierarchies and runtime interactions among primary classes. Execution environment modules (`daemon`, `shell`, `web`) and service extensions (`scheduler`) depend on the core service package (`core.service`), which coordinates the activity (`core.activity`) and context (`core.context`) modules.
 
-This diagram shows the dependency relationships between major packages. It helps to understand the structure of how high-level execution environments depend on the core packages.
+*   `CoreService` creates `Activity` instances to process requests.
+*   `Activity` utilizes `ActivityContext` resources to execute configured `Translet`s.
 
 ```mermaid
 graph TD
@@ -384,7 +397,7 @@ graph TD
     direction LR
     DAEMON[com.aspectran.daemon]
     SHELL[com.aspectran.shell]
-    WEB[com.aspectran.web/undertow]
+    WEB[com.aspectran.web]
   end
 
   subgraph SvcExt [Service Extensions]
@@ -425,15 +438,18 @@ graph TD
   CORE_ACT -.-> act & tr
   CORE_CTX -.-> ac
 
-  classDef pkg fill:#f2f2f2,stroke:#555,stroke-width:1px,color:#333
   class DAEMON,SHELL,WEB,SCHED,CORE_SVC,CORE_ACT,CORE_CTX pkg
 ```
 
----
+## 7. Request Lifecycle Sequence
 
-### 7. Request Lifecycle Sequence
+A step-by-step sequence diagram tracing chronological interactions among major components from initial request arrival to final response delivery:
 
-This diagram shows the interaction between major components in chronological order, from when a user request occurs until the final response is delivered.
+1.  **Request Entry (Steps 1–3)**: The client request arrives at the execution adapter (Web/Shell, etc.), requests activity processing from CoreService, and initializes an `Activity` instance.
+2.  **Rule Resolution & Execution (Steps 4–5)**: The `Activity` resolves the matching `Translet` rule for the request path and initiates execution.
+3.  **Action & Bean Invocation (Steps 6–9)**: Actions defined within the Translet execute, invoking business bean methods and aggregating execution results (`ActionResult`).
+4.  **View Dispatching (Steps 10–12)**: When response dispatching (`dispatch`) is configured, control passes to `ViewDispatcher` to select and execute the appropriate template engine.
+5.  **Completion & Response (Steps 13–15)**: Upon translet completion, the `Activity` finalizes the response and delivers it back to the client via the adapter.
 
 ```mermaid
 sequenceDiagram
@@ -449,75 +465,93 @@ sequenceDiagram
     participant ViewDispatcher as "View Dispatcher"
 
     Client->>Adapter: 1. Request
-    Adapter->>CoreService: 2. Request to perform activity
-    CoreService->>Activity: 3. Create and initialize Activity
+    Adapter->>CoreService: 2. Request activity execution
+    CoreService->>Activity: 3. Create & initialize Activity
 
     activate Activity
-    Activity->>Activity: 4. Find Translet for the request
+    Activity->>Activity: 4. Resolve Translet for request
     Activity->>+Translet: 5. Execute Translet
 
-    Translet->>+Action: 6. Execute Action
+    Translet->>+Action: 6. Execute Actions
     Action->>+Bean: 7. Invoke business logic
-    Bean-->>-Action: 8. Return result of logic
-    Action-->>-Translet: 9. Return Action Result
+    Bean-->>-Action: 8. Return business logic result
+    Action-->>-Translet: 9. Return Action result (ActionResult)
 
-    alt If view rendering is needed (dispatch)
+    alt When view rendering is required (dispatch)
         Translet->>+ViewDispatcher: 10. Delegate view rendering
-        ViewDispatcher->>ViewDispatcher: 11. Select and execute template engine
+        ViewDispatcher->>ViewDispatcher: 11. Select & execute template engine
         ViewDispatcher-->>-Translet: 12. Return rendered view (response)
     end
 
-    Translet-->>-Activity: 13. Translet processing complete
+    Translet-->>-Activity: 13. Translet execution completed
 
-    Activity->>Adapter: 14. Generate final response
+    Activity->>Adapter: 14. Build final response
     deactivate Activity
 
-    Adapter->>Client: 15. Send final response
+    Adapter->>Client: 15. Deliver final response
 ```
 
----
+## 8. Bean Lifecycle & Scopes
 
-### 8. Bean Lifecycle & Scopes
+Details how the Aspectran IoC container creates, manages, and destroys Beans, outlining scope lifecycle policies across the application lifetime:
 
-This shows the entire process of how the IoC container creates and manages beans. It explains the lifecycle of a `singleton` bean and when `request`, `session`, and `prototype` scope beans are created and destroyed.
+*   **Application Startup**: During container boot, bean definitions and metadata are registered via XML, APON configuration files, and annotation-driven component scanning.
+*   **Singleton Bean Lifecycle**: Singleton beans progress through `Instantiation` → `Dependency Injection (DI)` → `Initialization Callbacks (InitializableBean, @Initialize)` and remain available for reuse throughout the runtime.
+*   **Application Runtime Scopes**:
+    *   `request` scope: Created when an `Activity` starts and destroyed when the request completes.
+    *   `session` scope: Created alongside user sessions and destroyed when sessions expire.
+    *   `prototype` scope: Instantiated anew each time requested from the container.
+*   **Application Shutdown**: On shutdown signals, `Destruction Callbacks (DisposableBean, @Destroy)` execute to cleanly release managed resources.
 
 ```mermaid
 graph TD
     subgraph "Application Startup"
-        A[Application Start] --> B{IoC Container Initialization};
-        B --> C["Scan Bean Definitions<br>(XML/APON) and<br>Component Auto-Scan"];
+        A[Application Startup] --> B{IoC Container Init};
+        B --> C["Scan Bean Metadata<br>(XML/APON) and<br>Auto Component Scan"];
     end
 
     subgraph "Singleton Bean Lifecycle"
-        C --> D{Singleton Bean Creation};
+        C --> D{Create Singleton Beans};
         D --> E["1. Instantiation"];
         E --> F["2. Dependency Injection (DI)"];
-        F --> G["3. Execute Initialization Callbacks<br>(e.g., InitializableBean, @Initialize)"];
-        G --> H((Ready for use));
+        F --> G["3. Execute Init Callbacks<br>(e.g., InitializableBean, @Initialize)"];
+        G --> H((Ready for Use));
     end
 
     subgraph "Application Runtime"
         H --> I{Application Running};
-        I -- "On Request" --> J{"'request' scope bean<br>Create & Destroy"};
-        I -- "On Session Creation" --> K{"'session' scope bean<br>Create & Destroy"};
-        I -- "On every call" --> L{"'prototype' scope bean<br>Create (destruction not managed)"};
+        I -- "On Request" --> J{"'request' scoped beans<br>created & destroyed"};
+        I -- "On Session" --> K{"'session' scoped beans<br>created & destroyed"};
+        I -- "On Invocation" --> L{"'prototype' scoped beans<br>created (destruction not managed)"};
     end
 
     subgraph "Application Shutdown"
         I --> M{Application Shutdown};
-        M --> N["4. Execute Destruction Callbacks<br>(e.g., DisposableBean, @Destroy)"];
-        N --> O((Singleton Bean Destroyed));
+        M --> N["4. Execute Destroy Callbacks<br>(e.g., DisposableBean, @Destroy)"];
+        N --> O((Singleton Beans Destroyed));
     end
 
     style H stroke:#155724
     style O stroke:#721c24
 ```
 
----
+## 9. AOP Mechanism
 
-### 9. AOP Mechanism
+A sequence diagram detailing how Aspectran's AOP proxy intercepts method invocations to transparently inject cross-cutting concerns (e.g., transactions, logging, security). It comprehensively depicts both the normal execution path and the exception handling (Exception Thrown) flow.
 
-This shows the process where a method call is intercepted by an AOP proxy to execute advice that handles cross-cutting concerns like transactions and logging.
+### Execution Flow Overview
+
+1.  **Pre-Processing (Before Advice)**: When a client calls a target bean, the dynamic proxy intercepts the invocation and executes matching `Before` advice on the Aspect first (e.g., initiating transactions, validating parameters, logging request start).
+2.  **Target Method Execution**: Upon successful pre-processing, the proxy delegates execution to the actual target bean method to perform core business logic.
+3.  **Branch 1: Normal Execution (Normal Flow)**
+    *   **After Advice**: When business logic completes successfully, `After` advice executes to perform post-processing tasks or commit transactions.
+    *   **Finally Advice**: Always executes regardless of success or failure to safely release managed resources (e.g., closing database sessions).
+    *   The final result returns to the client.
+4.  **Branch 2: Exception Handling (Exception Thrown Flow)**
+    *   **After Skipped**: If an exception occurs during business logic execution, `After` advice is immediately skipped.
+    *   **Thrown Advice**: Runs **before the Finally stage** to safely handle transaction rollbacks, log error details, and issue administrative alerts while resources remain open.
+    *   **Finally Advice**: Runs after rollback handling to ensure database connections and session resources are reliably closed.
+    *   Propagates the exception up the call stack (Exception Re-throw) or returns a designated error response.
 
 ```mermaid
 sequenceDiagram
@@ -527,27 +561,33 @@ sequenceDiagram
     participant Aspect as "Aspect"
     participant Target as "Target Bean"
 
-    Client->>Proxy: 1. Method Call
-
+    Client->>Proxy: Method Call
     activate Proxy
-    Proxy->>+Aspect: 2. Execute @Before advice
+    Proxy->>Aspect: Execute Before Advice
+    note right of Aspect: Pre-processing logic (e.g., start transaction, validation, logging)
 
-    note right of Aspect: Execute cross-cutting concern logic (e.g., start transaction, logging)
-
-    Aspect->>+Target: 3. Invoke original method
-
+    Aspect->>Target: Invoke original method
     note right of Target: Execute core business logic
 
-    Target-->>-Aspect: 4. Return business logic result
-
-    Aspect->>Aspect: 5. Execute @After advice
-
-    note right of Aspect: Execute post-processing logic (e.g., commit/rollback transaction)
-
-    Aspect-->>-Proxy: 6. Return final result
-
-    Proxy-->>Client: 7. Return final result
+    alt Normal Execution Flow
+        Target-->>Aspect: Return business logic result
+        Aspect->>Aspect: Execute After Advice
+        note right of Aspect: Post-processing logic (e.g., commit transaction, format result)
+        Aspect->>Aspect: Execute Finally Advice
+        note right of Aspect: Resource cleanup (e.g., close session/connection)
+        Aspect-->>Proxy: Return final result
+        Proxy-->>Client: Return final result
+    else Exception Thrown Flow
+        Target-->>Aspect: Exception Thrown
+        note over Aspect: After Advice is skipped
+        Aspect->>Aspect: Execute Thrown Advice
+        note right of Aspect: Exception handling (e.g., rollback transaction, error logging)
+        Aspect->>Aspect: Execute Finally Advice
+        note right of Aspect: Resource cleanup (e.g., safe close of connection/session after rollback)
+        Aspect-->>Proxy: Propagate exception or return error response
+        Proxy-->>Client: Propagate exception or return error response
+    end
     deactivate Proxy
 ```
 
-These diagrams will be a useful guide to understanding Aspectran's design philosophy and internal workings.
+These diagrams will be a useful guide to understanding Aspectran's design philosophy and internal workings, serving as a dependable reference for architecting robust, scalable systems.
