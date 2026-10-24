@@ -171,7 +171,7 @@ The `app/bin/procrun/procrun.options` file defines the detailed settings for whe
 *   `DESCRIPTION`: A brief description of the service.
 *   `JAVA_HOME`, `JVM_MS`, `JVM_MX`, `JVM_SS`: JVM settings that serve the same role as in `run.options`.
 
-### 2.4. Deployment Script Details (`setup/scripts`)
+### 2.5. Deployment Script Details (`setup/scripts`)
 
 The `setup/scripts` directory is divided by platform (`linux`/`windows`) and contains various scripts for deployment automation. These scripts are copied to `[BASE_DIR]` and are used for the initial deployment and continuous updates of the application.
 
@@ -231,7 +231,7 @@ In production operations, you often need to deploy an immutable release version 
     *   If a nonexistent branch or tag name is provided (such as a typo), the script aborts immediately with exit code `1` (`[ERROR] Branch, tag, or commit '...' not found in repository.`) without touching or corrupting the existing working tree.
     *   The failure status and detailed error message are instantly reported to the Aspectow Console web interface, preventing accidental downtime due to invalid deployment requests.
 
-### 2.5. Deployment Directory Structure and Build Workspace
+### 2.6. Deployment Directory Structure and Build Workspace
 
 The installed `BASE_DIR` has the following structure. In particular, the `.build` directory plays an important role when troubleshooting build problems or manually checking source code during operations.
 
@@ -259,7 +259,7 @@ BASE_DIR
     *   Runtime directories such as `app/lib`, `app/logs`, `app/temp`, `app/work`, and `app/cmd/*` are kept in Git without `.gitignore` or dummy placeholder files.
     *   Build tools (`mvn package`) and the Aspectran framework/scripts create missing directories on-demand (`mkdirs`) during build and startup, keeping production runtime directories 100% clean and free of unnecessary auxiliary files.
 
-### 2.6. Running Multiple Instances
+### 2.7. Running Multiple Instances
 
 In some environments, you may need to run multiple independent application instances (e.g., `node1`, `node2`) on a single server or from a single deployment directory (`BASE_DIR`). For example, configuring a multi-node cluster where instances share the same binary and libraries but run on different HTTP ports, log directories, and active profiles.
 
