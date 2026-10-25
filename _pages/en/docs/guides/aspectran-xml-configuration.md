@@ -613,7 +613,8 @@ The body of the `<filter>` element is written in Aspectran's APON (Aspectran Par
 -   `+:` (Include pattern): Specifies a wildcard pattern for class names to include in scanning. For multiple patterns, repeat individual entries or write them as an array using brackets (`[...]`).
 -   `-:` (Exclude pattern): Specifies a wildcard pattern for class names to exclude from scanning. For multiple patterns, repeat individual entries or write them as an array using brackets (`[...]`).
 
-> **Note:** When `+:` (Include) and `-:` (Exclude) are used together within `<filter>`, a candidate class is registered as a bean only if it matches the include pattern and does not match any exclude pattern. If no include pattern is specified, all scanned classes are included by default, and only classes matching the exclude patterns are filtered out.
+>   📌 **Note**\
+>   When `+:` (Include) and `-:` (Exclude) are used together within `<filter>`, a candidate class is registered as a bean only if it matches the include pattern and does not match any exclude pattern. If no include pattern is specified, all scanned classes are included by default, and only classes matching the exclude patterns are filtered out.
 
 #### 1) Example: Excluding Classes by Pattern
 The following example scans the `com.example.app` package and all its sub-packages, but excludes any classes whose names end with `Repository` or `Test`:
