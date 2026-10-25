@@ -132,7 +132,7 @@ graph TD
         SessionAdapter["HttpSessionAdapter"]
     end
 
-    SRV -->|service(req, res)| WebService
+    SRV -->|"service(req, res)"| WebService
     WebService -->|Delegate static assets| ResourceHandler
     WebService -->|Instantiate for dynamic requests| WebActivity
     WebActivity --> ReqAdapter

@@ -132,7 +132,7 @@ graph TD
         SessionAdapter["HttpSessionAdapter"]
     end
 
-    SRV -->|service(req, res)| WebService
+    SRV -->|"service(req, res)"| WebService
     WebService -->|정적 자원 요청 시 위임| ResourceHandler
     WebService -->|동적 트랜슬릿 요청 시 생성| WebActivity
     WebActivity --> ReqAdapter
