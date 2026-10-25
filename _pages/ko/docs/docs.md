@@ -51,7 +51,7 @@ permalink: /ko/docs/
 ### 아키텍처
 {: #아키텍처-architecture}
 *   [지속 가능한 단순성을 위한 설계: Aspectran 아키텍처 철학](/ko/why-aspectran/)
-*   [Aspectran 아키텍처: 통합 심층 분석](/ko/docs/guides/aspectran-architecture/)
+*   [Aspectran 아키텍처: 통합 아키텍처 청사진](/ko/docs/guides/aspectran-architecture/)
 *   [Aspectran 아키텍처 다이어그램](/ko/docs/guides/aspectran-architecture-diagrams/)
 *   **[Aspectran 세부 메커니즘 및 패키지 명세 전체 보기 →](/ko/docs/mechanisms/)**
 

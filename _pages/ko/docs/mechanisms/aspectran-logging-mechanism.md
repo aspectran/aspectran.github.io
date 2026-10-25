@@ -1,17 +1,17 @@
 ---
-title: Aspectran 로깅 메커니즘 심층 분석
+title: "Aspectran 로깅 메커니즘 심층 분석"
 subheadline: 메커니즘
+mermaid: true
 ---
 
-Aspectran은 유연하고 강력한 로깅 시스템을 구축하기 위해 체계적인 접근 방식을 사용합니다. 이 문서는 Aspectran의 로깅 메커니즘을 분석하고 예제를 통해 설명합니다.
+Aspectran은 단일 서버 프로세스 내에서 다양한 애플리케이션 모듈, REST API 경로, 백그라운드 스케줄러 등이 독립적인 로그 파일을 유지할 수 있도록 정교하고 강력한 로깅 아키텍처를 제공합니다. 본 문서는 Aspectran의 로깅 추상화 기반과 `LoggingGroupDiscriminator`, 그리고 Netty, Undertow, Jetty 등 다중 서버 엔진과 결합된 동적 경로 기반 로깅 그룹(Logging Group) 분리 메커니즘을 심층 분석합니다.
 
 ## 1. 표준 로깅 기술 채택: SLF4J와 Logback
 
-Aspectran은 로깅 추상화 라이브러리로 **SLF4J (Simple Logging Facade for Java)**를 사용하며, 기본 구현체로는 **Logback**을 채택하고 있습니다. 이를 통해 애플리케이션 코드가 특정 로깅 구현체에 직접 의존하지 않도록 하여 유연성을 확보하고, `java.util.logging`, `log4j`, `commons-logging` 등 다양한 라이브러리의 로그를 일관되게 관리합니다.
+Aspectran은 로깅 추상화 라이브러리로 **SLF4J (Simple Logging Facade for Java)**를 사용하며, 기본 구현체로는 **Logback**을 채택하고 있습니다. 이를 통해 애플리케이션 코드가 특정 로깅 구현체에 직접 결합되지 않도록 방지하고, 타사 라이브러리들이 사용하는 다양한 로깅 API를 단일 통로로 일원화합니다.
 
-### 의존성 설정 (`aspectran-logging/pom.xml`)
-
-`aspectran-logging` 모듈은 Logback 및 다양한 SLF4J 브릿지에 대한 의존성을 포함하여, 다른 로깅 프레임워크의 로그까지 모두 SLF4J를 통해 제어할 수 있도록 합니다.
+### 1.1. 통합 브릿지 의존성 구성 (`aspectran-logging`)
+`aspectran-logging` 모듈은 Logback 핵심 라이브러리와 함께 주요 레거시 로깅 프레임워크에 대한 SLF4J 리다이렉션 브릿지들을 기본 내장하고 있습니다:
 
 ```xml
 <dependencies>
@@ -25,7 +25,7 @@ Aspectran은 로깅 추상화 라이브러리로 **SLF4J (Simple Logging Facade 
         <artifactId>logback-classic</artifactId>
         <version>${logback.version}</version>
     </dependency>
-    <!-- 다른 로깅 프레임워크의 로그를 SLF4J로 전달하기 위한 브릿지들 -->
+    <!-- 타 로깅 프레임워크의 로그를 SLF4J로 전달하는 브릿지 라이브러리들 -->
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
@@ -53,36 +53,60 @@ Aspectran은 로깅 추상화 라이브러리로 **SLF4J (Simple Logging Facade 
 </dependencies>
 ```
 
-## 2. 핵심 기능: `LoggingGroupDiscriminator`
+이 구성 덕분에 Spring, Apache Commons, Java Util Logging, Log4j 1/2 등을 사용하는 서드파티 라이브러리의 로그까지 Aspectran의 통합 로깅 정책에 따라 일관되게 제어됩니다.
 
-Aspectran 로깅의 가장 핵심적인 특징은 `com.aspectran.logging.logback.LoggingGroupDiscriminator`라는 사용자 정의 Logback `Discriminator`(구분자)입니다. 이 클래스는 로그 이벤트가 발생했을 때, 해당 로그를 어떤 논리적인 "그룹"에 포함시킬지 결정하여 로그를 동적으로 분리하는 역할을 합니다.
+## 2. 핵심 분별 엔진: `LoggingGroupDiscriminator`
 
-그룹명은 다음 우선순위에 따라 결정됩니다.
+Aspectran 로깅 시스템의 핵심 혁신은 `com.aspectran.logging.LoggingGroupDiscriminator` 클래스입니다. 이 클래스는 Logback의 `Discriminator`(구분자) 인터페이스를 구현하여, 로그 이벤트가 발생하는 순간 해당 이벤트가 어떤 논리적인 **로깅 그룹(Logging Group)**에 속하는지를 동적으로 판별합니다.
 
-1.  **SLF4J MDC**: 현재 스레드의 MDC(Mapped Diagnostic Context)에 `LOGGING_GROUP`이라는 키로 저장된 값을 최우선으로 사용합니다. MDC는 스레드-로컬(thread-local) 저장소로, 요청 처리와 같은 특정 컨텍스트 내에서만 유효한 정보를 담는 데 사용됩니다.
-2.  **ActivityContext 이름**: MDC에 `LOGGING_GROUP` 키가 없을 경우, 현재 실행 중인 Aspectran의 `ActivityContext` 이름을 그룹명으로 사용합니다. 이는 여러 Aspectran 인스턴스가 하나의 JVM에서 실행될 때 각 인스턴스의 로그를 분리하는 데 유용합니다.
-3.  **기본값**: 위 두 가지 방법으로 값을 찾지 못하면 Logback 설정 파일에 지정된 기본값(defaultValue)을 사용합니다.
+### 2.1. 그룹명 결정 우선순위 메커니즘
+`LoggingGroupDiscriminator`는 로그 이벤트가 들어올 때 다음 3단계 우선순위에 따라 그룹명을 결정합니다:
 
-## 3. Logback 설정 및 동작 원리
+1.  **SLF4J MDC (Mapped Diagnostic Context) - 최우선 순위**:
+    *   현재 요청을 처리 중인 스레드의 MDC에서 `LOGGING_GROUP` 키 값을 조회합니다.
+    *   MDC는 스레드-로컬(Thread-Local) 저장소이므로, 웹 요청이나 백그라운드 작업 단위로 로깅 그룹을 즉각 분기시키는 데 사용됩니다.
+2.  **`ActivityContext` 이름**:
+    *   MDC에 `LOGGING_GROUP` 값이 설정되어 있지 않다면, 현재 스레드에 바인딩된 `ActivityContext`의 고유 이름을 그룹명으로 채택합니다.
+    *   단일 JVM 프로세스 내에서 여러 개의 Aspectran 컨텍스트가 독립 구동될 때 유용합니다.
+3.  **Logback 설정 파일 기본값 (`defaultValue`)**:
+    *   위의 두 조건에서 그룹명을 찾지 못하면, `logback.xml`에 지정된 기본값(보통 `root` 또는 `aspectran`)을 최종 그룹명으로 사용합니다.
 
-`LoggingGroupDiscriminator`는 Logback의 `SiftingAppender`와 함께 사용될 때 그 강력함을 발휘합니다. `SiftingAppender`는 구분자(`discriminator`)가 반환한 값에 따라 동적으로 하위 Appender를 생성하고 로그 이벤트를 해당 Appender로 전달하는 역할을 합니다.
+### 2.2. 컨텍스트 헬퍼: `LoggingGroupHelper`
+애플리케이션이나 프레임워크 내부에서 안전하게 로깅 그룹을 제어할 수 있도록 `com.aspectran.utils.logging.LoggingGroupHelper` 유틸리티를 제공합니다:
 
-다음은 `logback-default.xml`의 설정 예제입니다.
+```java
+// 로깅 그룹 진입 시 설정
+LoggingGroupHelper.set("petclinic");
+
+try {
+    // 해당 블록 내에서 발생하는 모든 로그는 petclinic.log로 격리 기록됨
+    doBusinessLogic();
+} finally {
+    // 작업 완료 후 안전하게 MDC 컨텍스트 해제
+    LoggingGroupHelper.clear();
+}
+```
+
+## 3. Logback `SiftingAppender` 기반의 동적 로그 분리 원리
+
+`LoggingGroupDiscriminator`는 Logback의 `SiftingAppender`와 결합될 때 강력한 시너지를 발휘합니다. `SiftingAppender`는 구분자가 반환한 그룹명에 따라 동적으로 새로운 하위 Appender를 메모리에 생성하고 로그 이벤트를 라우팅합니다.
+
+### 3.1. `logback-default.xml` 표준 구성 예제
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
 
     <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
-        <!-- 1. LoggingGroupDiscriminator를 사용하여 로깅 그룹을 식별 -->
+        <!-- 1. LoggingGroupDiscriminator를 통해 로깅 그룹 키 추출 -->
         <discriminator class="com.aspectran.logging.LoggingGroupDiscriminator">
             <key>LOGGING_GROUP</key>
             <defaultValue>root</defaultValue>
         </discriminator>
         <sift>
-            <!-- 2. 식별된 그룹명(${LOGGING_GROUP})에 따라 동적으로 Appender 생성 -->
+            <!-- 2. 식별된 그룹명(${LOGGING_GROUP})에 따라 롤링 파일 Appender 동적 생성 -->
             <appender name="FILE-${LOGGING_GROUP}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <!-- 3. 그룹명 및 프로퍼티에 따라 로그 파일 경로가 동적으로 결정됨 -->
+                <!-- 3. 그룹별로 분리된 로그 파일 경로 -->
                 <file>${aspectran.logsDir:-${aspectran.basePath:-app}/logs}/${LOGGING_GROUP}.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
                     <fileNamePattern>${aspectran.archivedLogsDir:-${aspectran.logsDir:-${aspectran.basePath:-app}/logs}/archived}/${LOGGING_GROUP}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
@@ -104,38 +128,73 @@ Aspectran 로깅의 가장 핵심적인 특징은 `com.aspectran.logging.logback
 
     <logger name="com.aspectran" level="debug"/>
     <logger name="org.quartz" level="info"/>
-    <logger name="org.apache.ibatis" level="error"/>
 
 </included>
 ```
 
-## 4. 유연한 경로 및 캐릭터셋 구성
+새로운 로깅 그룹(예: `petclinic`, `jpetstore`)이 감지되면 사전 정의 없이도 런타임에 즉시 `logs/petclinic.log`, `logs/jpetstore.log` 파일이 생성되고 각각 독립된 파일 로테이션 정책이 적용됩니다.
 
-Aspectran은 로그 파일 경로와 캐릭터셋을 유연하게 구성할 수 있는 방법을 제공하여, 필요한 경우 로그를 애플리케이션의 기본 경로(`basePath`) 외부에 저장할 수 있도록 합니다. 이는 Logback 설정에서 중첩된 Fallback 메커니즘을 사용하여 구현됩니다.
+## 4. 유연한 경로 및 캐릭터셋 구성 전략
 
-### 시스템 프로퍼티
+운영 환경에 따라 로그 파일을 애플리케이션 루트(`basePath`) 외부에 보관해야 하거나 별도의 고속 스토리지 볼륨에 마운트해야 할 수 있습니다. Aspectran은 중첩 Fallback 패턴을 통해 유연한 경로 구성을 지원합니다.
 
-*   **`aspectran.logsDir`**: 로그가 저장될 디렉토리를 지정합니다. 절대 경로 또는 상대 경로(`ApplicationAdapter.getRealPath()`를 통해 해소됨)를 사용할 수 있습니다.
-*   **`aspectran.archivedLogsDir`**: 보관 및 로테이션된 로그가 저장될 디렉토리를 지정합니다.
-*   **`aspectran.logCharset`**: 로그 파일에 사용할 캐릭터셋을 지정합니다. (예: UTF-8)
+*   **시스템 프로퍼티**:
+    *   `aspectran.logsDir`: 활성 로그가 기록될 디렉토리.
+    *   `aspectran.archivedLogsDir`: 일자별/용량별로 로테이션된 압축 아카이브 로그 디렉토리.
+    *   `aspectran.logCharset`: 로그 인코딩 캐릭터셋 (기본값: UTF-8).
+*   **중첩 Fallback 표현식**:
+    `${aspectran.logsDir:-${aspectran.basePath:-app}/logs}`
+    1.  시스템 프로퍼티 `aspectran.logsDir`이 명시되어 있으면 해당 절대/상대 경로를 최우선 사용합니다.
+    2.  설정되지 않은 경우 `${aspectran.basePath}` 하위의 `/logs` 디렉토리를 사용합니다.
+    3.  `basePath`조차 지정되지 않은 경우 `app/logs` 디렉토리를 기본값으로 안전하게 채택합니다.
 
-### 중첩 Fallback 패턴
+## 5. 다중 서버 엔진별 경로 기반 로깅 그룹(Logging Group) 연동
 
-설정 파일은 경로 해소를 위해 다음과 같은 패턴을 사용합니다:
-`${aspectran.logsDir:-${aspectran.basePath:-app}/logs}`
+단일 서버 인스턴스에서 다수의 마이크로서비스 모듈이나 엔드포인트 군(예: `/petclinic/**`, `/jpetstore/**`)을 호스팅할 때, 유입되는 HTTP 요청 URI 경로 패턴을 분석하여 로그를 물리적으로 분리 기록하는 전용 핸들러를 제공합니다.
 
-1.  시스템 프로퍼티 `aspectran.logsDir`이 설정되어 있으면 해당 값을 사용합니다 (이때 절대 경로를 사용하면 기본 경로로부터의 "탈출"이 가능합니다).
-2.  설정되어 있지 않으면 `${aspectran.basePath}` 하위의 `/logs` 디렉토리를 사용합니다.
-3.  `${aspectran.basePath}`조차 설정되어 있지 않으면 `app/logs` 디렉토리를 기본값으로 사용합니다.
+Aspectran은 지원하는 3대 주요 웹/네트워크 서버 엔진(Netty, Undertow, Jetty) 모두에 대해 동일한 와일드카드 패턴 규칙(`+:`, `-:`)을 지원하는 전용 `PathBasedLoggingGroupHandler`를 완비하고 있습니다.
 
-이러한 메커니즘을 통해 로깅 시스템은 합리적인 기본값으로 작동하면서도, 로그를 별도의 스토리지 볼륨에 저장해야 하는 운영 환경 등에서 극대화된 유연성을 제공합니다.
+### 5.1. Netty 환경: `com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler`
+서블릿 없는 고성능 Netty 서버 파이프라인에서 인바운드 HTTP 요청을 가로채 로깅 그룹을 바인딩합니다:
 
-## 5. 웹 애플리케이션 연동 예제
+*   **설정 예제 (`netty-server.xml` / `netty-config.apon`)**:
+```xml
+<bean id="netty.server.handler.loggingGroupHandler"
+      class="com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler"
+      scope="prototype">
+    <properties>
+        <item name="pathPatternsByGroupName" type="map">
+            <entry name="petclinic">
+                +: /petclinic/**
+            </entry>
+            <entry name="jpetstore">
+                +: /jpetstore/**
+            </entry>
+            <entry name="api">
+                +: /api/**
+                -: /api/health-check
+            </entry>
+        </item>
+    </properties>
+</bean>
+```
 
-이 로깅 메커니즘은 특히 여러 웹 애플리케이션을 하나의 서버 인스턴스에서 서비스할 때 강력한 기능을 발휘합니다. `com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper`는 요청 URI에 따라 로깅 그룹을 동적으로 설정하는 Undertow 핸들러입니다.
+*   **동작 원리**: Netty의 `ChannelInboundHandlerAdapter`를 상속하여 구현되었습니다. HTTP 요청이 인입되면 URI 경로를 파싱하여 매칭되는 그룹명(`petclinic` 등)을 추출하고, 채널 속성 및 MDC에 바인딩한 후 다음 핸들러로 넘깁니다. 요청 처리가 완료되면 채널 비활성화 시점에 컨텍스트를 안전하게 정리합니다.
 
-### `tow-server.xml` 설정 예제
+### 5.2. Jetty 환경: `com.aspectran.jetty.server.handler.PathBasedLoggingGroupHandler`
+임베디드 Jetty 서블릿 서버 환경에서 핸들러 체인을 래핑하여 동작합니다:
 
+*   **클래스 구조**: Jetty의 `Handler.Wrapper`를 확장하여 구현되었습니다.
+*   **동작 원리**:
+    1.  클라이언트 요청이 Jetty 서버로 진입하면 `handle(Request, Response, Callback)` 메서드가 가로챕니다.
+    2.  `pathPatternsByGroupName`에 설정된 와일드카드 패턴과 요청 경로를 비교하여 그룹명을 결정합니다.
+    3.  `LoggingGroupHelper.set(loggingGroup)`을 통해 MDC에 등록한 뒤 하위 서블릿 핸들러로 위임합니다.
+    4.  요청 처리가 완료되어 `Callback`이 호출되면 `LoggingGroupHelper.clear()`로 MDC를 해제합니다.
+
+### 5.3. Undertow 환경: `PathBasedLoggingGroupHandlerWrapper` 및 `PathBasedLoggingGroupHandler`
+Undertow의 고성능 핸들러 체인과 완벽히 연동됩니다 (`com.aspectran.undertow.server.handler.logging` 패키지):
+
+*   **설정 예제 (`tow-server.xml`)**:
 ```xml
 <bean id="tow.server.handler.loggingGroupHandlerWrapper"
       class="com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper"
@@ -148,24 +207,26 @@ Aspectran은 로그 파일 경로와 캐릭터셋을 유연하게 구성할 수 
             <entry name="petclinic">
                 +: /petclinic/**
             </entry>
-            <entry name="demo">
-                +: /demo/**
-                -: /demo/examples/gs-rest-service/**
-            </entry>
         </item>
     </properties>
 </bean>
 ```
 
-### 동작 흐름
+*   **동작 원리**: Undertow의 `HttpServerExchange`에서 `RequestPath`를 추출하고, 설정된 규칙에 매칭되는 그룹명을 찾아 MDC에 바인딩합니다. `ExchangeCompletionListener`를 등록하여 익스체인지 라이프사이클이 종료되는 시점에 MDC를 자동으로 안전하게 회수합니다.
 
-1.  HTTP 요청 (예: `/jpetstore/shop.do`)이 들어옵니다.
-2.  `PathBasedLoggingGroupHandlerWrapper`가 요청을 가로채 URI(`/jpetstore/shop.do`)와 설정된 패턴(`/jpetstore/**`)을 비교합니다.
-3.  매칭되는 그룹명 `jpetstore`를 찾아 SLF4J의 MDC에 `MDC.put("LOGGING_GROUP", "jpetstore")` 코드를 통해 값을 저장합니다.
-4.  이후 해당 요청을 처리하는 스레드에서 발생하는 모든 로그 이벤트는 `LoggingGroupDiscriminator`에 의해 `jpetstore` 그룹으로 식별됩니다.
-5.  `SiftingAppender`는 `jpetstore`라는 값을 기반으로 `FILE-jpetstore`라는 이름의 `RollingFileAppender`를 (아직 없다면) 동적으로 생성하고, 해당 로그 이벤트를 이 Appender로 보냅니다.
-6.  결과적으로 `/jpetstore`로 들어온 모든 요청의 로그는 `logs/jpetstore.log` 파일에 기록됩니다.
+## 6. 스케줄러 및 데몬 환경에서의 로깅 그룹 연동
 
-## 5. 결론
+웹 요청 외에 백그라운드에서 주기적으로 도는 스케줄러나 데몬 프로세스에서도 일관된 로깅 분리가 지원됩니다:
 
-Aspectran의 로깅 메커니즘은 SLF4J와 Logback이라는 표준 기술을 기반으로 하면서, `LoggingGroupDiscriminator`와 `PathBasedLoggingGroupHandlerWrapper`라는 독자적인 아이디어를 접목하여 매우 유연하고 확장성 높은 시스템을 구현했습니다. 이를 통해 개발자는 복잡한 멀티-테넌트 또는 마이크로서비스 환경에서도 서비스나 기능 단위로 로그를 완벽하게 분리하고 관리할 수 있는 강력한 기능을 제공받게 됩니다.
+*   **스케줄러 작업 (`SchedulerService`)**:
+    *   [`ActivityLauncherJob`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/scheduler/activity/ActivityLauncherJob.java)이 Quartz 트리거를 수신하여 작업을 시작할 때, 등록된 `SchedulerService.getLoggingGroup()` 값을 조회하여 `LoggingGroupHelper.set()`으로 즉시 주입합니다.
+    *   덕분에 웹 요청 로그와 스케줄러 배치 작업 로그가 뒤섞이지 않고 별도의 로그 파일(예: `scheduler.log`)로 깔끔하게 격리됩니다.
+*   **데몬 프로세스 (`DaemonService`)**:
+    *   데몬 서비스 구성 시 지정된 고유 로깅 그룹명을 기반으로 프로세스 전반의 시스템 로그와 개별 커맨드 실행 로그를 분리 기록합니다.
+
+## 7. 결론 및 아키텍처적 의의
+
+Aspectran의 로깅 아키텍처는 표준 SLF4J/Logback 환경의 단순한 활용을 넘어, 현대적인 멀티 테넌트 및 마이크로서비스 운영 환경이 요구하는 **지능형 다중 엔진 로그 분리 시스템**을 완성했습니다.
+
+*   `LoggingGroupDiscriminator`와 Logback `SiftingAppender`의 유기적 결합을 통해, 별도의 코드 수정 없이 선언적 설정만으로 로그를 무한히 분기할 수 있습니다.
+*   **Netty, Jetty, Undertow** 3대 핵심 서버 런타임 전반에 걸쳐 일관된 경로 기반 로깅 핸들러를 제공함으로써, 어떤 런타임을 선택하더라도 동일한 로그 분할 전략과 모니터링 가시성을 완벽하게 보장합니다.

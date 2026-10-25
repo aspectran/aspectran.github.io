@@ -1,62 +1,197 @@
 ---
-title: "Aspectran AOP Proxy Mechanism: `AbstractBeanProxy` and `ProxyActivity`"
+title: "Aspectran AOP Proxy Mechanism: AbstractBeanProxy and ProxyActivity"
 subheadline: Mechanisms
+mermaid: true
 ---
 
-## 1. Overview
 
-Aspectran framework's AOP (Aspect-Oriented Programming) proxy mechanism is designed with a focus on **performance optimization** and **flexible context management in asynchronous (`@Async`) execution environments**. At the core of this mechanism are two components: `AbstractBeanProxy` and `ProxyActivity`. This document analyzes the roles and interactions of these two components to explain how the new AOP proxy operates more efficiently and stably.
+Aspectran's Aspect-Oriented Programming (AOP) proxy mechanism is engineered to achieve **maximum runtime performance**, **flawless context propagation**, and **strict thread isolation** in asynchronous (`@Async`) execution environments.
 
-## 2. Core Component Analysis
+Traditional AOP frameworks incur noticeable runtime overhead by inspecting interceptor chains, evaluating pointcuts, and assembling context frames on every method call across proxied beans. Aspectran eliminates this penalty by combining static pre-analysis at bootstrap ([`BeanRuleAnalyzer`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/BeanRuleAnalyzer.java)), selective runtime interception ([`AbstractBeanProxy`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/proxy/AbstractBeanProxy.java)), and a dedicated lightweight advice execution container ([`ProxyActivity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/ProxyActivity.java)), delivering a near zero-overhead AOP runtime.
 
-### 2.1. `AbstractBeanProxy`: Intelligent AOP Execution Control
+## 1. Proxy Generation Architecture: `ProxyBeanFactory`
 
-`AbstractBeanProxy` is an abstract class that serves as the base for all proxy objects that apply AOP advice. The most important feature of this class is that it eliminates unnecessary overhead through **selective advice application logic**.
+When a bean requires AOP aspects or the `@Async` annotation, the IoC container delegates to [`ProxyBeanFactory`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/proxy/ProxyBeanFactory.java) to instantiate the optimal proxy representation.
 
--   **Performance Optimization (`isAdvisableMethod`)**: When a method of a proxied bean is called, `AbstractBeanProxy` first checks if the method has the `@Advisable` or `@Async` annotation. If neither annotation is present, it **skips all** complex logic for applying AOP advice (e.g., looking up advice rules, creating contexts) and immediately executes the original method. This fundamentally eliminates unnecessary overhead from numerous internal method calls that do not require advice, significantly improving overall application performance.
+```mermaid
+graph TD
+    BeanDef[BeanRule<br/>AOP Target or @Async Declared] --> Factory[ProxyBeanFactory]
 
--   **Synchronous/Asynchronous Execution Branching**: If the method has an annotation, it branches the execution path as follows:
-    -   If the `@Async` annotation is detected, it calls the `invokeAsync()` method for asynchronous execution.
-    -   If only the `@Advisable` annotation is present, it calls the `invokeSync()` method for synchronous execution to perform the existing AOP advice logic.
+    Factory --> Check{Is Interface Based?}
+    Check -->|Interface / JDK Proxy / Lambda| JDK[JdkBeanProxy<br/>* Standard java.lang.reflect.Proxy<br/>* Implements InvocationHandler]
+    Check -->|Concrete Class| JavaAssist[JavassistBeanProxy<br/>* Javassist Bytecode Engineering<br/>* Dynamic Subclass Proxy]
 
-### 2.2. `ProxyActivity`: Lightweight Context for Advice Execution
+    JDK --> ProxyInst[Create AOP Proxy Instance]
+    JavaAssist --> ProxyInst
+    ProxyInst --> AbstractProxy[AbstractBeanProxy Execution Control]
+```
 
-`ProxyActivity` is a lightweight `Activity` designed for the specific purpose of executing AOP advice. Unlike `ServletWebActivity` or `ShellActivity`, which handle general request-response cycles, it operates very lightly by providing only the minimum functionality required for advice execution.
+### 1) Dual Proxy Generation Strategy
+- **Interface-Based Beans**: If the target class is an interface, an existing JDK proxy, or a lambda class, the container creates a reflection-based [`JdkBeanProxy`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/proxy/JdkBeanProxy.java).
+- **Concrete Class-Based Beans**: For classes lacking interfaces, the container generates a dynamic subclass proxy ([`JavassistBeanProxy`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/proxy/JavassistBeanProxy.java)) utilizing high-performance Javassist bytecode manipulation.
+- **[`SuperInvoker`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/proxy/SuperInvoker.java)**: A unified callback contract abstracting original (`super`) method invocation across both Javassist and JDK dynamic proxies.
 
--   **Two Creation Modes**:
-    1.  **Independent Mode (`new ProxyActivity(context)`)**: Created when there is no `Activity` running in the current thread (e.g., when an `@Async` method is called for the first time). This `ProxyActivity` has its own independent `ActivityData` and executes advice in a completely isolated context.
-    2.  **Wrapping Mode (`new ProxyActivity(activity)`)**: Created by wrapping an existing `Activity` when an `Activity` already exists in the current thread. The most significant feature of this mode is that it **shares the `ActivityData` of the original `Activity`**. This allows the asynchronous worker thread to read or write request parameters or attributes from the caller thread.
+### 2) Pre-Determination of Proxies at Bootstrap ([`BeanRuleAnalyzer`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/BeanRuleAnalyzer.java))
+During context building, `BeanRuleAnalyzer.determineProxyBean()` statically checks registered `AspectRule` pointcuts against candidate bean methods. Only beans matched by at least one aspect rule have their proxy flag activated ([`beanRule.setProxied(true)`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/BeanRule.java#L113)). Beans unaffected by aspects operate as pure POJOs without proxy wrappers or overhead.
 
--   **Limited Role**: Most methods unrelated to advice execution, such as `getTranslet()` and `getDeclaredResponse()`, throw `UnsupportedOperationException`, enforcing the clear role of this class. Its core role is to register itself as the `CurrentActivity` in the current thread via the `perform()` method, execute the given logic (advice and original method), and then cleanly remove itself from the thread in the `finally` block.
+## 2. Core Execution Controller: `AbstractBeanProxy`
 
-## 3. Asynchronous (`@Async`) Processing and Context Sharing Mechanism
+[`AbstractBeanProxy`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/proxy/AbstractBeanProxy.java) is the top-level abstract class shared by both JDK and Javassist proxies, governing method interception and advice dispatching.
 
-The advantage of this design is clearly evident in how context is shared in an asynchronous environment. When multiple advice-applied methods are called in a chain within a single asynchronous task, the context (`Activity`) is shared efficiently as follows:
+```mermaid
+sequenceDiagram
+    participant Caller as Caller
+    participant Proxy as AbstractBeanProxy
+    participant Check as isAdvisableMethod()
+    participant Target as Target Business Method
+    participant PA as ProxyActivity
+    participant Advice as AOP Advice
 
-1.  **First `@Async` Method Call**:
-    -   The task starts in a new Worker thread by `AsyncTaskExecutor`.
-    -   At this point, the Worker thread has no `CurrentActivity`, so `AbstractBeanProxy` **creates a new `ProxyActivity` in independent mode** (hereinafter `PA_1`).
+    Caller->>Proxy: method() invoked
+    Proxy->>Check: Is method advisable or @Async?
+    alt Non-Advisable Method (Normal Call)
+        Check-->>Proxy: false
+        Proxy->>Target: superInvoker.invoke() (Direct execution)
+        Target-->>Proxy: Return value
+        Proxy-->>Caller: Return value (0% AOP Overhead)
+    else Advisable or @Async Method
+        Check-->>Proxy: true
+        Proxy->>PA: Prepare ProxyActivity (Share or Create)
+        Proxy->>Advice: Execute Before Advices
+        Proxy->>Target: superInvoker.invoke()
+        Target-->>Proxy: Business result
+        Proxy->>Advice: Execute After / Finally Advices
+        Proxy-->>Caller: Final return value
+    end
+```
 
-2.  **Context Registration**:
-    -   The created `PA_1` is registered as the `CurrentActivity` in the current Worker thread's `ThreadLocal` via its `perform()` method.
+### 1) Zero-Overhead Selective Interception ([`isAdvisableMethod`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/proxy/AbstractBeanProxy.java#L105))
+When any method on a proxied bean is invoked, `AbstractBeanProxy` first verifies whether the method is advisable:
+- If the method is not matched by an `AdviceRule` and lacks `@Async`, the proxy immediately delegates to [`superInvoker.invoke()`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/proxy/AbstractBeanProxy.java#L132) without context switching or rule evaluations.
+- This design completely eliminates proxy penalties from getters, setters, and auxiliary helper methods inside the proxied class.
 
-3.  **Chained Internal Method Calls**:
-    -   If another `@Advisable` method (`methodA`) is called inside the `@Async` method, `AbstractBeanProxy` operates again.
-    -   The proxy checks `context.hasCurrentActivity()` and receives `true` because `PA_1` is already registered in the thread.
-    -   Therefore, it **reuses the existing `PA_1` instance without creating a new `Activity`** to execute the advice for `methodA`.
-    -   Even if `methodA` calls another advice-applied method later, the `PA_1` context continues to be shared as long as it runs in that Worker thread.
+### 2) Synchronous & Asynchronous Dispatching
+- When `@Async` is detected: The call routes to the asynchronous pipeline (`invokeAsync`), submitting the task to [`AsyncTaskExecutor`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/async/AsyncTaskExecutor.java).
+- When standard `@Advisable` is present: The call routes to the synchronous pipeline (`invokeSync`), executing advice chains inline on the caller's thread.
 
-4.  **Context Cleanup**:
-    -   When the execution of the initial `@Async` method is complete, the `finally` block of `PA_1.perform()` executes, safely removing the `CurrentActivity` from the thread's `ThreadLocal`.
+### 3) Method Hint Scanner ([`ProxyHintScanner`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/proxy/ProxyHintScanner.java))
+Scans `@Hint` annotations on bean methods to construct parameter hint structures ([`HintParameters`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/HintParameters.java)). Before invocation, hints (such as MyBatis SQL query hints or cache keys) are pushed onto the active activity stack (`activity.pushHint(hints)`) and reliably popped in the finally block (`popHint()`).
 
-Thanks to this mechanism, a single logical asynchronous task unit **shares a single `ProxyActivity` instance**, allowing it to maintain a consistent context while preventing unnecessary context object creation.
+## 3. Lightweight Advice Execution Engine: `ProxyActivity`
 
-## 4. Expected Effects and Conclusion
+[`ProxyActivity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/ProxyActivity.java) is a specialized execution engine stripped of heavy web routing and response rendering overhead, focused strictly on **AOP advice dispatching and asynchronous context isolation**.
 
-The new AOP proxy mechanism offers the following clear advantages:
+```mermaid
+classDiagram
+    direction TB
+    class Activity {
+        <<interface>>
+    }
+    class AbstractActivity {
+        <<abstract>>
+        #saveCurrentActivity()
+        #removeCurrentActivity()
+    }
+    class AdviceActivity {
+        <<abstract>>
+        +executeAdvice(AdviceRule)
+        +executeAdvice(List~AdviceRule~)
+    }
+    class ProxyActivity {
+        -Activity actualActivity
+        -ActivityData activityData
+        +getMode() Mode.PROXY
+        +getActualActivity() Activity
+        +perform(InstantAction)
+    }
 
--   **Performance Improvement**: Eliminates the overhead of unnecessary method calls that do not require advice, improving overall system performance.
--   **Flexible Context Management**: With `ProxyActivity`'s independent and wrapping modes, flexible and stable context management is possible in both synchronous and asynchronous environments.
--   **Code Clarity**: Through `@Advisable` and `@Async` annotations, developers can clearly express which methods are subject to AOP.
+    Activity <|.. AbstractActivity
+    AbstractActivity <|-- AdviceActivity
+    AdviceActivity <|-- ProxyActivity
+```
 
-In conclusion, Aspectran has further evolved into a lighter, faster, and modern AOP framework that perfectly supports complex asynchronous environments through `AbstractBeanProxy` and `ProxyActivity`.
+### 1) Two Instantiation Modes: Independent vs. Wrapping
+`ProxyActivity` dynamically adapts to its calling environment via two constructors:
+- **Independent Mode (`new ProxyActivity(context)`)**:
+  - Instantiated when no active `Activity` exists on the current thread (e.g., standalone worker threads or background tasks).
+  - Initializes its own isolated [`ActivityData`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/ActivityData.java) frame, executing advice in complete isolation.
+- **Wrapping Mode (`new ProxyActivity(actualActivity)`)**:
+  - Instantiated when an active `Activity` (e.g., `ServletWebActivity`) already exists on the caller thread.
+  - Wraps the active activity ([`actualActivity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/ProxyActivity.java#L35)) and **directly shares its `ActivityData` and execution context**. AOP advice methods can seamlessly inspect incoming HTTP request parameters, session attributes, or request scopes.
+
+### 2) Explicit Role Boundaries
+Because `ProxyActivity` does not perform HTTP routing or template rendering, calls to irrelevant methods (`getTranslet()`, `getDeclaredResponse()`) immediately throw `UnsupportedOperationException`, strictly enforcing architectural boundaries.
+
+## 4. Asynchronous (`@Async`) Execution & Worker Thread Context Propagation
+
+During `@Async` invocations, `AbstractBeanProxy` and `ProxyActivity` coordinate asynchronous context propagation and resource teardown across worker thread pools.
+
+```mermaid
+sequenceDiagram
+    participant MainThread as Main Thread (TCCL)
+    participant Proxy as AbstractBeanProxy
+    participant Executor as AsyncTaskExecutor
+    participant Worker as Worker Thread
+    participant PA as ProxyActivity
+
+    MainThread->>Proxy: @Async method invoked
+    Proxy->>Executor: submit(task)
+    alt Return Type is Future
+        Proxy-->>MainThread: Return Future instance immediately
+    else Return Type is void
+        Proxy-->>MainThread: Return null immediately
+    end
+
+    Executor->>Worker: Execute background task
+    Note over Worker: 1. Isolate ClassLoader via ThreadContextHelper
+    Worker->>PA: Create new ProxyActivity(context)
+    Worker->>PA: Execute perform(task)
+    Note over PA: 2. Register into ThreadLocal via saveCurrentActivity()
+    PA->>PA: Before Advice -> Target Method -> After Advice
+    Note over PA: 3. Clean up ThreadLocal in finally: removeCurrentActivity()
+    Worker-->>Executor: Task completed
+```
+
+1. **Return Type Validation**:
+   Methods marked with `@Async` must return `void` or implement `java.util.concurrent.Future`. Any other return type results in an immediate [`AsyncExecutionException`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/async/AsyncExecutionException.java).
+2. **Context Creation in Worker Threads**:
+   Because the worker thread possesses no prior activity, an independent-mode `ProxyActivity` is created.
+3. **Context Reuse on Chained Calls**:
+   If the asynchronous method internally invokes other `@Advisable` methods on the same or other beans, the proxy detects the existing `ProxyActivity` in the worker thread's `ThreadLocal` and reuses it without allocating redundant context objects.
+4. **Guaranteed ThreadLocal Teardown**:
+   When the asynchronous execution completes, the `finally` block of `perform()` invokes `removeCurrentActivity()`, cleanly detaching the activity and preventing thread-pool memory leaks.
+
+## 5. Four-Stage AOP Joinpoint Processing Lifecycle
+
+When an advisable method executes, `AbstractBeanProxy` drives the following deterministic four-stage lifecycle:
+
+```mermaid
+graph TD
+    Start[Method Invocation] --> Before[1. BEFORE Advice<br/>* Start transaction<br/>* Authorization checks]
+    Before --> Exec[2. Target Business Method Execution<br/>superInvoker.invoke()]
+    Exec --> Success{Exception Occurred?}
+
+    Success -->|Normal Execution| After[3. AFTER Advice<br/>* Commit transaction<br/>* Audit log generation]
+    Success -->|Exception Thrown| Thrown[3. THROWN Advice<br/>* Rollback transaction<br/>* Exception logging & recovery]
+
+    After --> Finally[4. FINALLY Advice<br/>* Pop hint stack<br/>* Resource cleanup]
+    Thrown --> Finally
+    Finally --> End[Return result or rethrow exception]
+```
+
+1. **Before Advice**: Runs prior to business logic, performing authorization checks, input validation, or distributed lock acquisition. Throws [`AdviceConstraintViolationException`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/aspect/AdviceConstraintViolationException.java) to abort execution if constraints are violated.
+2. **Target Method Invocation**: Invokes original business logic through `superInvoker.invoke()`.
+3. **After Advice**: Executes immediately following successful method execution to post-process results or emit events.
+4. **Thrown Advice**: Invoked if an exception occurs during business execution, triggering transaction rollbacks or wrapping root causes into domain exceptions.
+5. **Finally Advice**: Runs unconditionally after normal completion or exception handling, guaranteeing invocation of `activity.popHint()` and resource teardown.
+
+> **Related Detailed Mechanisms**:
+> - For the overarching advice execution engine, see [Aspectran Activity Architecture](/en/docs/mechanisms/aspectran-activities/).
+> - For the IoC container model that registers and wires proxy beans, see [ActivityContext: The Heart of the Aspectran Container](/en/docs/mechanisms/activity-context/).
+> - For how aspects and joinpoints are declared, see [Aspectran Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/).
+
+## 6. Next Steps: Exploring Detailed Mechanisms
+
+To examine the memory management models governing the lifecycle scopes (Singleton, Prototype, Request, Session) of proxied beans, refer to the [Aspectran Bean Scopes Architecture](/en/docs/mechanisms/aspectran-bean-scopes/) guide.
+
+To inspect how all mechanisms and packages interconnect across the entire framework, refer to the **[Aspectran Detailed Mechanisms Index](/en/docs/mechanisms/)**.

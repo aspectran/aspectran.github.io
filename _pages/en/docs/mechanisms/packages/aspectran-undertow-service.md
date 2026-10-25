@@ -1,63 +1,145 @@
 ---
-title: In-Depth Analysis of the `com.aspectran.undertow.service` Package
+title: "In-Depth Analysis of `com.aspectran.undertow.service` Package"
 subheadline: Package Specifications
+mermaid: true
 ---
 
-## 1. Design Goals and Key Roles
+## 1. Design Goals and Primary Roles
 
-This package provides specialized service implementations for **running Aspectran directly on Undertow**, a high-performance, lightweight web server. This is an alternative to the `web-service` package, which uses the standard Servlet API.
+The `com.aspectran.undertow.service` package provides specialized service layer implementations that enable Aspectran to run directly on JBoss Undertow—an ultra-lightweight, high-performance asynchronous web server—**without requiring a servlet container (Servlet-less Embedded Web Server)**.
 
-The design goals of this package are as follows:
+The core architectural objectives of this package are:
 
--   **Provide a Servlet-less Web Environment**: Completely bypasses traditional servlet containers and APIs, interacting directly with Undertow's native I/O objects (`HttpServerExchange`) to provide better performance and a lighter deployment environment.
--   **Support for High-Performance Embedded Servers**: Optimizes the environment for microservice architectures by packaging Aspectran applications as independently executable JAR files that can be launched with an embedded Undertow server.
--   **Maintain Configuration Compatibility**: Reuses the standard web configuration (`WebConfig`) used by servlet-based web applications, making it easy for developers to switch to Undertow-based deployments with minimal changes to existing web application configurations.
+*   **Servlet-Free Ultra-Fast Web Runtime**: Eliminates the overhead of traditional servlet specifications (`jakarta.servlet`) and container hierarchies by interacting directly with Undertow's native I/O construct, `HttpServerExchange`, delivering maximum throughput and minimal memory footprint in microservice environments.
+*   **Inheritance of Pure Web Interface (`WebService`)**: Extends the root web service interface `WebService` from the `aspectran-web` module, fully reusing standard web configurations (`WebConfig`)—including session configuration (`sessionConfig`), URI decoding, and trailing slash redirection (`trailingSlashRedirect`)—with 100% compatibility.
+*   **Seamless Integration with Undertow Handler Chains**: `DefaultTowService` can operate as an Undertow `HttpHandler` or serve as the terminal endpoint of a handler chain, coordinating smoothly with static resource serving (`ResourceManager`), access logging (`AccessLogHandler`), and content compression encoding handlers.
+*   **Thread Context ClassLoader Switching**: Wraps request processing with `ThreadContextHelper.overrideClassLoader()` to bind the `SiblingClassLoader` context to the active thread, avoiding runtime class-loading collisions.
 
-In conclusion, this package aims to provide Aspectran with a modern, high-performance web environment option, making it suitable for building lightweight, standalone microservices.
+## 2. Key Classes and Interfaces In-Depth Analysis
 
-## 2. Detailed Analysis of Key Classes and Interfaces
+```mermaid
+classDiagram
+    class CoreService {
+        <<interface>>
+    }
+
+    class WebService {
+        <<interface>>
+        +getUriDecoding() String
+        +isTrailingSlashRedirect() bool
+    }
+
+    class TowService {
+        <<interface>>
+        +getResourceManager() ResourceManager
+        +isLegacyHeadHandling() bool
+        +service(HttpServerExchange exchange) bool
+    }
+
+    class AbstractTowService {
+        <<abstract>>
+        -ResourceManager resourceManager
+        -boolean legacyHeadHandling
+    }
+
+    class DefaultTowService {
+        +handleRequest(HttpServerExchange)
+        +service(HttpServerExchange exchange) bool
+        -perform(TowActivity)
+        -transletNotFound(TowActivity)
+    }
+
+    class DefaultTowServiceBuilder {
+        +build(TowServer, AspectranConfig) TowService
+    }
+
+    CoreService <|-- WebService
+    WebService <|-- TowService
+    TowService <|.. AbstractTowService
+    AbstractTowService <|-- DefaultTowService
+    DefaultTowServiceBuilder ..> DefaultTowService : builds
+```
 
 ### `TowService` (Interface)
 
-The specification for Aspectran services based on Undertow. (Tow is presumed to be short for "The Other Web.")
+The core specification for Undertow-based web services in Aspectran. (`Tow` is derived from the suffix of Undertow.)
 
-**Key Responsibilities:**
--   Inherits `CoreService` to possess all core service functionalities.
--   Defines `service(HttpServerExchange exchange)`, the core entry point for processing all web requests coming from the Undertow server. This directly corresponds to `WebService.service(HttpServletRequest, ...)` in a servlet environment.
+*   **Core Responsibilities**:
+    *   Extends `WebService` to share common web configurations and lifecycles.
+    *   `service(HttpServerExchange exchange)`: Declares the web entry-point method that accepts a single HTTP exchange object from Undertow's I/O channels and executes the corresponding translet.
+    *   `getResourceManager()`: Exposes an Undertow-specific resource manager for serving static assets (HTML, CSS, JS, images).
 
-### `DefaultTowService` (Implementation Class)
+### `AbstractTowService` (Abstract Class)
 
-The final implementation of `TowService`, responsible for receiving Undertow's `HttpServerExchange` and handling the entire process of creating and executing `TowActivity`.
+An abstract base class implementing shared web infrastructure logic for `TowService`.
 
-**Key Responsibilities:**
--   Inherits `DefaultCoreService` to act as a fully functional core service.
--   Designed to be connected as an `HttpHandler` implementation in Undertow's handler chain.
--   Reuses the same `<web>` configuration (`WebConfig`) used by the standard `WebService`, enhancing configuration portability.
+*   Parses injected `WebConfig` settings to configure URI string decoding strategies, trailing slash automatic redirection policies, and static resource managers.
+*   Oversees Undertow session management and background resource cleanup across service lifecycles (`doStart`, `doStop`).
 
-**Key Method Analysis:**
--   `service(HttpServerExchange exchange)`: This class's core execution method. It is called directly by Undertow's I/O thread.
-    1.  Checks if the service is in a paused state.
-    2.  Extracts the request URI and method from the `HttpServerExchange` object.
-    3.  Checks if Aspectran can handle the request; if not, it sends a 404 Not Found response.
-    4.  Creates a `TowActivity` instance specialized for the Undertow environment and passes the `HttpServerExchange` object.
-    5.  Calls `activity.prepare()` and `activity.perform()` to drive Aspectran's standard request processing pipeline.
-    6.  If an exception occurs during execution, it directly sends appropriate HTTP status codes (e.g., 404, 500) to the client via `HttpServerExchange`.
+### `DefaultTowService` (Concrete Implementation Class)
+
+The primary concrete implementation of `TowService`, responsible for receiving Undertow's `HttpServerExchange`, instantiating `TowActivity`, and driving the full execution pipeline.
+
+*   **Core Execution Pipeline (`service(HttpServerExchange)`)**:
+    1.  **Service Pause Check**: If the service is in a `paused` state, immediately returns a `503 Service Unavailable` response and halts processing.
+    2.  **Request Identifier and Method Resolution**: Reads `exchange.getRequestURI()`, safely decodes it according to `getUriDecoding()`, and maps the HTTP method from `exchange.getRequestMethod()` to a virtual `MethodType` (`GET`, `POST`, etc.).
+    3.  **Authorization Check (`isRequestAcceptable`)**: Verifies through `RequestAcceptor` whether the target URI represents an authorized translet eligible for execution by Aspectran.
+    4.  **`TowActivity` Instantiation**: Constructs a dedicated `TowActivity` injected with the `exchange` object and the resolved context path.
+    5.  **`prepare()` and Trailing Slash Redirection**:
+        *   If the translet is not found (`TransletNotFoundException`), checks if appending a trailing slash (`/`) matches an existing translet rule, automatically issuing an HTTP 301/302 redirect if valid.
+    6.  **`perform()` Execution and ClassLoader Isolation**:
+        ```java
+        ClassLoader origClassLoader = ThreadContextHelper.overrideClassLoader(getServiceClassLoader());
+        try {
+            activity.perform();
+        } finally {
+            ThreadContextHelper.restoreClassLoader(origClassLoader);
+        }
+        ```
+        Temporarily swaps the thread context classloader with the Aspectran service classloader, then executes the standard pipeline of AOP advice, actions, and template transformations.
 
 ### `DefaultTowServiceBuilder` (Builder Class)
 
-A factory class that creates and configures `DefaultTowService` instances. It is used when programmatically configuring an embedded Undertow server and adding Aspectran as a handler.
+A factory builder that constructs fully initialized `DefaultTowService` instances from embedded Undertow server instances (`TowServer`) and `AspectranConfig` definitions.
 
-## 3. Interaction with Other Packages
+*   Assembles port bindings, listener definitions, SSL/TLS contexts, web session configurations, and Undertow handler chains into an operational service instance.
 
--   **`com.aspectran.core.service`**: Directly inherits `DefaultCoreService` to reuse all of Aspectran's core functionalities (lifecycle, `ActivityContext` management, etc.).
--   **`com.aspectran.undertow.activity`**: `DefaultTowService` creates a `TowActivity` for every valid request. `TowActivity` acts as an adapter between Undertow's native I/O objects and the core engine.
--   **`io.undertow.server`**: This package is responsible for direct integration with the Undertow server. `DefaultTowService` implements the `HttpHandler` interface to be connected to Undertow's handler chain.
--   **`com.aspectran.core.context.config`**: Reuses the `WebConfig` configuration class, maintaining configuration compatibility between servlet and Undertow environments.
+## 3. Interactions with Other Packages and Undertow Engine
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Client as Web Browser / HTTP Client
+    participant UT as Undertow Native I/O Thread
+    participant Service as DefaultTowService
+    participant Act as TowActivity
+    participant Trans as CoreTranslet (Business Action)
+
+    Client->>UT: Send HTTP Request
+    UT->>Service: service(HttpServerExchange)
+    activate Service
+    Service->>Act: new TowActivity(this, exchange)
+    Service->>Act: prepare()
+    activate Act
+    Act->>Act: Bind TowRequestAdapter & ResponseAdapter
+    Service->>Act: perform()
+    Act->>Trans: Execute actions and render template
+    Trans-->>Act: Return execution result
+    Act->>UT: Stream response data directly to HttpServerExchange
+    deactivate Act
+    Service-->>UT: Processing complete (return true)
+    deactivate Service
+    UT-->>Client: Send HTTP Response
+```
+
+*   **`com.aspectran.web.service`**: Extends the root interface `WebService`, ensuring strict compliance with web specifications.
+*   **`com.aspectran.undertow.activity`**: Instantiates `TowActivity` for each HTTP request exchange, bridging it directly into the core engine's standard lifecycle.
+*   **`io.undertow.server`**: Communicates directly with Undertow's native `HttpServerExchange` APIs to govern headers, status codes, and buffer streams.
 
 ## 4. Package Summary and Architectural Significance
 
-The `com.aspectran.undertow.service` package is a **high-performance, servlet-less web adapter** for Aspectran. The greatest architectural significance of this package is that it demonstrates Aspectran's ability to bypass the traditional Servlet API abstraction layer and integrate directly with modern asynchronous I/O-based web servers like Undertow.
+The `com.aspectran.undertow.service` package serves as a **prime adapter layer demonstrating how the Aspectran framework breaks free from traditional servlet constraints to evolve into a modern, ultra-fast asynchronous microservice web server**:
 
-The approach where `TowActivity` directly wraps and processes `HttpServerExchange` can reduce potential overhead that occurs when using the Servlet API and lead to better performance. This is particularly well-suited for microservice environments that need to handle a large volume of requests.
-
-Furthermore, thanks to the clever design of reusing `WebConfig`, developers can easily switch deployment environments from a servlet container to an embedded Undertow server with almost no modifications to existing Aspectran web applications. This proves that Aspectran has a robust and extensible architecture that can flexibly adapt to changing technology trends.
+1.  **Zero Servlet Overhead**: Bypasses `HttpServletRequest`/`HttpServletResponse` wrappers and servlet filter chains, operating directly on Undertow native `HttpServerExchange` channels to achieve maximum I/O throughput.
+2.  **Configuration Reusability and Portability**: Allows deployment infrastructure to be switched immediately to an embedded Undertow server without altering `<web>` configuration blocks or translet business code written for servlet environments.
+3.  **Intelligent Routing and Redirection**: Combines URI decoding, automated trailing slash correction, and smooth coordination with static resource managers to provide a comprehensive enterprise web feature set within a lightweight footprint.

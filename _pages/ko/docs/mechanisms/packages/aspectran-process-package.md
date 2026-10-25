@@ -1,70 +1,152 @@
 ---
 title: "`com.aspectran.core.activity.process` 패키지 상세 분석"
 subheadline: 패키지 명세
+mermaid: true
 ---
 
 ## 1. 설계 목표 및 주요 역할
 
-이 패키지는 `Activity`의 실행 파이프라인 내에서, `<contents>`와 `<response>` 블록에 정의된 **실행 가능한 액션(Action)들을 구조화하고 실행하는 책임**을 가집니다. 이 패키지의 설계 목표는 다음과 같습니다.
+`com.aspectran.core.activity.process` 패키지는 `Activity`의 실행 파이프라인 내에서 `<contents>`와 `<response>` 블록에 선언된 **실행 가능한 액션(Action)들을 구조화된 트리 형태로 조립하고, 이를 순차적으로 디스패치하여 결과를 체계적으로 수집하는 책임**을 가집니다.
 
--   **액션의 표준화**: 모든 구체적인 동작(빈 메소드 호출, 다른 트랜슬릿 포함 등)을 `Executable`이라는 공통 인터페이스(명령 패턴, Command Pattern)로 추상화하여, `Activity`가 일관된 방식으로 모든 종류의 액션을 실행할 수 있도록 합니다.
--   **구조화된 실행 흐름**: 액션들을 담는 컨테이너인 `ActionList`와 `ContentList`를 통해, 설정 파일에 정의된 중첩되고 구조화된 실행 흐름을 메모리 상에서 동일한 트리 구조로 표현합니다. (컴포지트 패턴, Composite Pattern)
--   **실행 결과의 구조화**: 액션 실행 결과를 담는 `ProcessResult` 모델을 두어, 실행된 액션의 구조와 동일한 계층 구조로 결과값을 저장합니다. 이를 통해 후속 액션이나 최종 응답 단계에서 특정 액션의 결과를 ID를 통해 쉽게 참조할 수 있습니다.
+이 패키지의 핵심 설계 목표는 다음과 같습니다.
 
-결론적으로, 이 패키지는 트랜슬릿의 동적인 처리 로직을 **실행 가능한 객체들의 트리**로 모델링하고, 그 실행 결과를 **예측 가능한 데이터 구조**로 남기는 역할을 수행합니다.
+*   **명령 패턴(Command Pattern) 기반의 표준화**: 모든 구체적인 비즈니스 동작(빈 메서드 호출, 서브 트랜슬릿 포함, 조건 분기, 헤더 조작, 문자열 에코 등)을 `Executable`이라는 공통 명령 인터페이스로 추상화하여, 실행 엔진이 일관된 방식으로 모든 종류의 액션을 구동할 수 있도록 합니다.
+*   **컴포지트 패턴(Composite Pattern) 기반의 구조적 실행 컨테이너**: 액션들을 담는 `ActionList`와 이름있는 논리 단위를 형성하는 `ContentList`를 통해, 설정 파일에 선언된 중첩 블록을 메모리 상에서 동일한 트리 구조로 모델링합니다.
+*   **지능형 파라미터 바인딩 (`ActionMethodInvoker`)**: 액션 메서드 실행 시 필요한 인자(`Activity`, `Translet`, 요청 파라미터, 속성, 세션 등)를 리플렉션과 ASEL 토큰 평가기를 통해 자동으로 분석하고 주입합니다.
+*   **실행 구조와 1:1 대칭을 이루는 결과 모델 (`result` 패키지)**: 액션 실행 결과를 담는 `ProcessResult` -> `ContentResult` -> `ActionResult` 계층을 두어, 실행된 액션의 트리 구조와 동일한 데이터 구조로 결과값을 보존하고 후속 액션이나 뷰 템플릿에서 ID를 통해 손쉽게 참조할 수 있도록 합니다.
 
 ## 2. 주요 클래스 및 인터페이스 상세 분석
 
-### `process` 하위 패키지: 액션 컨테이너
+```mermaid
+classDiagram
+    class ContentList {
+        -String name
+        -List~ActionList~ actionLists
+        +getName() String
+        +addActionList(ActionList)
+    }
 
--   **`ActionList` (클래스):**
-    -   **한마디로:** `Executable` 액션들의 순서 있는 리스트입니다.
-    -   **주요 책임:** 트랜슬릿 내에서 순차적으로 실행되어야 할 일련의 작업 단위를 표현합니다. `<contents>`나 `<when>` 블록처럼, 여러 액션을 자식으로 포함하는 컨테이너 역할을 합니다.
+    class ActionList {
+        -List~Executable~ actionList
+        +add(Executable)
+        +execute(Activity)
+    }
 
--   **`ContentList` (클래스):**
-    -   **한마디로:** `ActionList`들을 담는 한 단계 더 상위의 컨테이너입니다.
-    -   **주요 책임:** 트랜슬릿의 `<contents>`나 `<response>`와 같이 이름(name)을 가질 수 있는 논리적인 최상위 실행 블록을 표현합니다. `ProcessResult` 내에서 `ContentResult`와 1:1로 매칭됩니다.
+    class Executable {
+        <<interface>>
+        +getActionId() String
+        +execute(Activity activity) Object
+    }
 
-### `process.action` 하위 패키지: 구체적인 액션 구현체
+    class InvokeAction {
+        -String beanId
+        -Method method
+        -ActionMethodInvoker invoker
+        +execute(Activity) Object
+    }
 
--   **`Executable` (인터페이스):**
-    -   **한마디로:** 모든 '액션'이 구현해야 하는 **'명령(Command)'** 계약입니다.
-    -   **핵심 메서드 분석:**
-        -   `execute(Activity activity)`: 액션의 실제 로직을 수행하는 메서드입니다. 현재 실행중인 `Activity`를 인자로 받아, 필요한 모든 컨텍스트 정보(빈, 파라미터 등)에 접근할 수 있습니다. 반환값은 `ActionResult`에 저장됩니다.
-        -   `getActionId()`: 액션의 고유 ID를 반환합니다. 이 ID는 `ProcessResult`에서 결과값을 찾는 키로 사용됩니다.
+    class IncludeAction {
+        -String transletName
+        +execute(Activity) Object
+    }
 
--   **`InvokeAction` (클래스):**
-    -   **한마디로:** 지정된 빈(Bean)의 특정 메서드를 호출하는 가장 기본적이고 중요한 액션입니다.
-    -   **다른 클래스와의 상호작용:** `execute()` 메서드가 호출되면, `Activity`를 통해 `BeanRegistry`에 접근하여 `beanId`에 해당하는 빈 인스턴스를 찾습니다. 그 후, Java의 리플렉션(Reflection)을 사용하여 `methodName`에 해당하는 메서드를 찾아 인자(`arguments`)와 함께 실행합니다.
+    class ChooseAction {
+        -List~WhenRule~ whenRules
+        -ActionList otherwiseActionList
+        +execute(Activity) Object
+    }
 
--   **`IncludeAction` (클래스):**
-    -   **한마디로:** 다른 트랜슬릿의 처리 내용을 현재 위치에 '포함'시키는 액션입니다.
-    -   **핵심 메서드 분석:** `execute()`가 호출되면, `transletName`에 해당하는 `TransletRule`을 찾은 후, 현재 `Activity`의 자식으로 새로운 `Activity`를 생성하여 실행합니다. 이를 통해 트랜슬릿의 공통 로직을 모듈화하고 재사용할 수 있습니다.
+    class EchoAction {
+        -ItemRuleMap attributeItemRuleMap
+        +execute(Activity) Object
+    }
 
--   **`ChooseAction` (클래스):**
-    -   **한마디로:** `<choose>`-`<when>`-`<otherwise>` 구문을 실행하는 조건부 액션입니다.
-    -   **핵심 메서드 분석:** `execute()`는 `ChooseRule`에 정의된 여러 `WhenRule`들을 순차적으로 평가합니다. 각 `WhenRule`의 `test` 표현식(AsEL)을 실행하여 처음으로 `true`가 되는 `ActionList`를 찾아 실행합니다. 모든 `when` 조건이 거짓이면 `otherwise`에 정의된 `ActionList`를 실행합니다.
+    class HeaderAction {
+        -ItemRuleMap headerItemRuleMap
+        +execute(Activity) Object
+    }
 
--   **`EchoAction` / `HeaderAction` (클래스):**
-    -   **한마디로:** 각각 응답 본문(body)과 헤더(header)에 직접 내용을 출력하는 액션입니다.
-    -   **다른 클래스와의 상호작용:** `EchoAction`은 `Activity`의 `ResponseAdapter`를 통해 응답 스트림에 직접 데이터를 씁니다. `HeaderAction` 역시 `ResponseAdapter`를 통해 응답 헤더를 추가하거나 수정합니다.
+    ContentList *-- ActionList
+    ActionList o-- Executable
+    Executable <|.. InvokeAction
+    Executable <|.. IncludeAction
+    Executable <|.. ChooseAction
+    Executable <|.. EchoAction
+    Executable <|.. HeaderAction
+```
 
-### `process.result` 하위 패키지: 액션 결과 모델
+### 최상위 액션 컨테이너: `ContentList` 및 `ActionList`
 
--   **`ProcessResult` (클래스):**
-    -   **한마디로:** 단일 `Activity` 생명주기 동안 실행된 모든 액션의 결과를 담는 최상위 컨테이너입니다.
-    -   **주요 책임:** 내부에 `ContentResult`의 맵(`contentResultMap`)을 가집니다. `ActivityData`는 이 `ProcessResult`를 참조하여, 개발자가 `#{actionId}` 같은 표현식으로 액션 결과에 접근할 수 있도록 합니다.
+트랜슬릿 설정에 정의된 액션 블록들을 메모리에 트리 구조로 배치하는 컴포넌트입니다.
 
--   **`ContentResult` / `ActionResult` (클래스):**
-    -   `ContentResult`는 이름있는 `<contents>` 블록의 실행 결과를 담으며, 내부에 `ActionResult`의 리스트를 가집니다.
-    -   `ActionResult`는 개별 `Executable` 액션 하나의 실행 결과를 캡슐화합니다. `actionId`와 실제 반환된 값(`resultValue`)을 저장합니다.
+*   **`ContentList` (클래스)**:
+    *   `<contents>` 또는 `<content>` 태그에 대응되는 최상위 실행 블록 컨테이너입니다.
+    *   블록의 고유한 이름(`name`)을 가질 수 있으며, 여러 개의 `ActionList`를 자식으로 포함합니다.
+    *   실행 결과 레벨에서 `ContentResult`와 1:1로 직접 매핑됩니다.
+*   **`ActionList` (클래스)**:
+    *   순차적으로 실행되어야 할 `Executable` 액션들의 순서 있는 리스트 컨테이너입니다.
+    *   `<content>` 내부뿐만 아니라 `<when>`, `<otherwise>` 블록처럼 조건부로 실행되는 액션 그룹을 캡슐화합니다.
+    *   `execute(Activity activity)`를 통해 내부에 보관된 액션들을 순서대로 실행하고, 각 액션의 반환값을 `ContentResult`에 기록합니다.
 
-## 3. 패키지 요약 및 아키텍처적 의미
+### 구체적인 액션 구현체: `com.aspectran.core.activity.process.action`
 
-`com.aspectran.core.activity.process` 패키지는 트랜슬릿의 동적인 실행 로직을 구체화하는 핵심적인 부분입니다. 이 패키지의 아키텍처적 의미는 다음과 같습니다.
+*   **`Executable` (인터페이스)**:
+    *   모든 액션 클래스가 반드시 구현해야 하는 명령(Command) 인터페이스입니다.
+    *   `execute(Activity activity)`: 액션의 실제 비즈니스 로직을 구동합니다. 현재 실행 중인 `Activity`를 인자로 받아 컨텍스트, 빈 레지스트리, 요청/세션 데이터에 자유롭게 접근할 수 있습니다.
+    *   `getActionId()`: 액션의 고유 식별자(ID)를 반환합니다. 이 ID는 `ProcessResult`에서 결과값을 검색하는 키로 사용됩니다.
+*   **`InvokeAction` (클래스)**:
+    *   지정된 빈(Bean)의 메서드를 호출하는 가장 핵심적인 액션입니다.
+    *   `ActionMethodInvoker`를 내장하여, 메서드 시그니처에 선언된 파라미터 타입에 맞추어 `Translet`, `Activity`, 요청 속성, HTTP 파라미터를 지능적으로 주입합니다.
+*   **`MethodAction` (클래스)**:
+    *   빈 인스턴스화 없이 정적 메서드(Static Method)나 특정 인스턴스 메서드를 직접 호출할 때 사용하는 액션입니다.
+*   **`IncludeAction` (클래스)**:
+    *   다른 트랜슬릿의 실행 내용을 현재 위치에 포함(Include)시키는 액션입니다.
+    *   대상 트랜슬릿 규칙을 탐색한 후, 현재 `Activity`의 하위 파생 활동을 생성하여 실행함으로써 트랜슬릿 공통 로직을 모듈화합니다.
+*   **`ChooseAction` (클래스)**:
+    *   선언적 조건 분기(`<choose>-<when>-<otherwise>`)를 수행하는 액션입니다.
+    *   각 `<when>` 블록의 `test` 표현식(AsEL)을 순차 평가하여 처음으로 참(`true`)이 되는 `ActionList`를 실행하며, 모두 거짓일 경우 `<otherwise>` 블록을 실행합니다.
+*   **`EchoAction` 및 `HeaderAction` (클래스)**:
+    *   `EchoAction`: 속성 데이터를 응답 본문(Body) 스트림에 직접 출력합니다.
+    *   `HeaderAction`: `ResponseAdapter`를 통해 응답 헤더(HTTP Header)를 동적으로 추가하거나 변경합니다.
+*   **`AdviceAction` 및 `MethodAdviceAction` (클래스)**:
+    *   AOP 애스펙트 어드바이스(`BEFORE`, `AFTER`, `THROWN`, `FINALLY`) 로직을 `Executable` 형태로 래핑하여 액션 파이프라인과 완벽하게 통합합니다.
 
--   **명령 패턴(Command Pattern)의 적극적인 활용**: 모든 실행 단위를 `Executable` 인터페이스로 추상화함으로써, `CoreActivity`의 실행 파이프라인은 어떤 종류의 액션이 오는지 전혀 신경 쓸 필요 없이 일관된 `execute()` 메서드만 호출하면 됩니다. 이는 새로운 종류의 액션을 추가하기 매우 쉬운 유연하고 확장성 높은 구조를 만듭니다.
+### 액션 실행 결과 모델: `com.aspectran.core.activity.process.result`
 
--   **실행과 결과의 분리**: 액션의 실행 로직(`action` 패키지)과 그 결과를 저장하는 데이터 모델(`result` 패키지)을 명확하게 분리했습니다. 이 덕분에 액션들은 서로 직접 의존할 필요 없이, `ProcessResult`라는 공유된 결과 저장소를 통해 느슨하게 결합(loosely coupled)됩니다. 한 액션이 결과를 `ProcessResult`에 저장하면, 후속 액션은 그 결과를 ID로 꺼내 쓰는 방식으로 데이터 파이프라인을 구성할 수 있습니다.
+```mermaid
+graph TD
+    PR["ProcessResult (최상위 컨테이너)"]
+    CR1["ContentResult (name: content1)"]
+    CR2["ContentResult (name: content2)"]
+    AR1["ActionResult (actionId: orderAction)"]
+    AR2["ActionResult (actionId: paymentAction)"]
 
-결론적으로, 이 패키지는 Aspectran의 선언적인 설정이 실제 실행 가능한 객체들의 동적인 트리 구조로 변환되고, 그 결과가 다시 예측 가능한 데이터 구조로 기록되는 과정을 책임지는 정교한 메커니즘이라 할 수 있습니다.
+    PR --> CR1
+    PR --> CR2
+    CR1 --> AR1
+    CR1 --> AR2
+```
+
+*   **`ProcessResult` (클래스)**:
+    *   단일 `Activity` 라이프사이클 동안 실행된 모든 액션의 최종 결과물들을 보관하는 최상위 컨테이너입니다.
+    *   `Map<String, ContentResult>` 형태로 여러 콘텐츠 블록의 결과를 관리하며, `ActivityData`와 결합하여 `#{orderAction}` 같은 AsEL 표현식으로 결과 객체에 즉시 접근할 수 있도록 지원합니다.
+*   **`ContentResult` (클래스)**:
+    *   단일 `ContentList` 블록의 실행 결과를 표현합니다.
+    *   내부에 `List<ActionResult>`를 유지하며, 블록 내에서 실행된 각 액션의 순서와 반환값을 보존합니다.
+*   **`ActionResult` (클래스)**:
+    *   개별 `Executable` 액션 하나의 실행 결과를 캡슐화합니다.
+    *   액션의 고유 식별자인 `actionId`와 메서드가 실제로 반환한 객체인 `resultValue`를 안전하게 보관합니다.
+
+## 3. 다른 패키지와의 상호작용
+
+*   **`com.aspectran.core.activity`**: `CoreActivity.dispatchContent()`는 이 패키지의 `ContentList`를 순회하며 `ActionList.execute()`를 호출하고, 반환된 결과를 `ProcessResult`에 차곡차곡 누적합니다.
+*   **`com.aspectran.core.context.rule`**: `<action>`, `<invoke>`, `<include>`, `<choose>` 등의 설정 규칙 객체(`ActionRule`, `InvokeActionRule`, `IncludeActionRule`, `ChooseRule` 등)가 빌드 타임에 파싱되어 이 패키지의 구체적인 `Executable` 구현체로 인스턴스화됩니다.
+*   **`com.aspectran.core.component.bean`**: `InvokeAction`은 `Activity`를 통해 빈 레지스트리에 접근하여 대상 빈 인스턴스를 획득하고 메서드를 호출합니다.
+
+## 4. 패키지 요약 및 아키텍처적 의미
+
+`com.aspectran.core.activity.process` 패키지는 선언적인 XML/APON 비즈니스 규칙이 **런타임에 동적으로 동작하는 실행 가능한 객체 트리와 결과 데이터 모델로 실체화되는 핵심 메커니즘**입니다.
+
+1.  **명령 및 컴포지트 패턴의 완벽한 융합**: 액션들을 `Executable`로 추상화하고 `ActionList`와 `ContentList`로 중첩 구성하여, 복잡하고 계층적인 비즈니스 워크플로우를 매우 직관적이고 유연하게 처리합니다.
+2.  **실행과 데이터의 완벽한 디커플링**: 액션 간에 데이터를 직접 파라미터로 넘겨 결합도를 높이지 않고, `ProcessResult`라는 공유된 구조화 결과 저장소를 매개로 하여 느슨하게 결합된 데이터 파이프라인을 구축합니다.
+3.  **뛰어난 확장성**: 새로운 유형의 비즈니스 액션이 필요할 경우 `Executable` 인터페이스만 구현하여 액션 트리에 추가하면, 기존 실행 엔진의 코드 수정 없이 무한히 확장할 수 있는 개방-폐쇄 원칙(OCP)을 실현합니다.

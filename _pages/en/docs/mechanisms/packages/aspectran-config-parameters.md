@@ -1,67 +1,191 @@
 ---
-title: In-Depth Analysis of the `com.aspectran.core.context.config` Package
+title: "In-Depth Analysis of `com.aspectran.core.context.config` Package"
 subheadline: Package Specifications
+mermaid: true
 ---
 
-## 1. Design Goals and Key Roles
+## 1. Design Goals and Primary Roles
 
-This package is a **collection of type-safe data container classes** that hold all configuration values for the Aspectran framework. The design goals of this package are as follows:
+The `com.aspectran.core.context.config` package provides a **cohesive set of type-safe APON parameter container classes** that encapsulate all configuration properties across every execution environment and functional subsystem of the Aspectran framework.
 
--   **Objectification of Configuration**: Parses the content of external configuration files in XML or APON format and converts them into an object model that can be easily accessed and used in Java code.
--   **Hierarchical Structure**: With `AspectranConfig` as the top-level root, objects containing settings for each function and environment form a hierarchical structure. This allows for a clear understanding of the relationships within the overall configuration.
--   **Modularity and Separation**: Separates settings specific to each execution environment (web, daemon, shell, etc.) into separate classes (`WebConfig`, `DaemonConfig`, etc.), reducing dependencies on specific environments and increasing the modularity of the configuration.
--   **Immutability-Oriented**: Configuration classes are designed with the premise that they will not be changed once the context is built by `ActivityContextBuilder`. This ensures the consistency and predictability of configuration values at runtime.
+The core architectural objectives of this package are:
 
-In conclusion, this package **converts text-based configuration files into a structured object model** that the framework can understand and use, and is responsible for decoupling the configuration source (XML/APON) from the components that use the configuration.
+*   **Object Modeling and Strong Type Safety for Configurations**: Parses text-based configuration declarations (APON, XML) directly into strongly typed Java object models, allowing validated access via compile-time verification and intuitive getter/setter methods.
+*   **Deep Integration with APON (Aspectran Parameters Object Notation) Engine**: All configuration classes extend `com.aspectran.utils.apon.DefaultParameters`, forming a hierarchical parameter tree that maps 1:1 with concise, human-readable APON syntax.
+*   **Maximum Modularity Across Execution Environments**: Strictly decouples configuration scopes into functional modules—web (`WebConfig`), daemon (`DaemonConfig`), interactive shell (`ShellConfig`), embedded (`EmbedConfig`), scheduler (`SchedulerConfig`), asynchronous executor (`AsyncConfig`), and system properties (`SystemConfig`)—eliminating unwanted coupling.
+*   **Commitment to Configuration Immutability**: Objects populated by `ActivityContextBuilder` during the bootstrap phase remain effectively immutable throughout application runtime, guaranteeing predictable state and system consistency.
 
-## 2. Detailed Analysis of Key Classes
+## 2. Key Classes and Configuration Parameter Hierarchy
 
-### `AspectranConfig` (Class)
+```mermaid
+graph TD
+    Root["AspectranConfig (Root Container)"]
 
-The top-level root container for all Aspectran configurations.
+    Context["ContextConfig (context)"]
+    Web["WebConfig (web)"]
+    Daemon["DaemonConfig (daemon)"]
+    Shell["ShellConfig (shell)"]
+    Embed["EmbedConfig (embed)"]
+    Scheduler["SchedulerConfig (scheduler)"]
+    Async["AsyncConfig (async)"]
+    System["SystemConfig (system)"]
 
-**Key Responsibilities:**
--   Maintains references to all child configuration objects (`ContextConfig`, `WebConfig`, `DaemonConfig`, etc.).
--   Can hold global default values such as the application's default encoding (`encoding`) or auto-reload scan interval (`scanIntervalSeconds`).
+    Profiles["ContextProfilesConfig (profiles)"]
+    AutoReload["ContextAutoReloadConfig (autoReload)"]
+    Session["SessionManagerConfig (session)"]
+    Polling["DaemonPollingConfig (polling)"]
+    Executor["DaemonExecutorConfig (executor)"]
+    Style["ShellStyleConfig (style)"]
 
-**Interaction with Other Classes:**
--   Created and populated by parsers like `AspectranConfigReader`.
--   Passed as an argument to the constructor when `DefaultCoreService` is created, becoming the starting point for all configuration information needed by `ActivityContextBuilder` to build the context.
+    Root --> Context
+    Root --> Web
+    Root --> Daemon
+    Root --> Shell
+    Root --> Embed
+    Root --> Scheduler
+    Root --> Async
+    Root --> System
 
-### `ContextConfig` (Class)
+    Context --> Profiles
+    Context --> AutoReload
+    Web --> Session
+    Daemon --> Session
+    Daemon --> Polling
+    Daemon --> Executor
+    Shell --> Style
+```
 
-Contains the most essential configurations that apply commonly to all Aspectran applications, regardless of the execution environment.
+### `AspectranConfig` (Top-Level Root Class)
 
-**Key Responsibilities:**
--   Manages essential information that defines the core behavior of `ActivityContext`.
+The top-level root parameter container representing an Aspectran configuration file (`aspectran-config.apon`).
 
-**Key Attribute Analysis:**
--   `basePath`: Specifies the base path of the application. All relative paths are interpreted based on this path.
--   `contextRules`: Specifies the paths of configuration files or resources where Aspectran's core rules (`bean`, `translet`, etc.) are defined. Multiple paths can be specified.
--   `basePackages`: Specifies the base packages to start scanning for classes annotated with `@Component` to automatically register them as beans.
--   `profiles`: Specifies the profiles to activate. Divided into `activeProfiles` and `defaultProfiles`, with `activeProfiles` taking precedence.
--   `autoReload`: If set to `true`, it enables the hot-reloading feature, which automatically reflects changes when configuration files specified in `contextRules` are modified, without restarting the application.
+*   **Core Responsibilities and Parameter Blocks**:
+    *   `system`: Injects JVM-global system properties (`System.setProperty`) via a `SystemConfig` block.
+    *   `context`: Core context configuration block (`ContextConfig`) essential to all Aspectran applications.
+    *   `web` / `daemon` / `shell` / `embed`: Environment-specific configuration blocks for respective runtimes.
+    *   `scheduler`: Background Quartz scheduler runtime options block (`SchedulerConfig`).
+    *   `async`: Worker thread pool settings block (`AsyncConfig`) for `@Async` asynchronous methods.
 
-### `WebConfig` / `DaemonConfig` / `ShellConfig` / `EmbedConfig` (Classes)
+### `ContextConfig` (Core Context Configuration)
 
-Classes that contain settings specific to each execution environment.
+Defines fundamental information required to construct the `ActivityContext`, independent of the target runtime environment.
 
-**Key Responsibilities:**
--   **`WebConfig`**: Manages settings required when running as a web application. It allows detailed configuration of session management via `sessionConfig`, specifies URI character encoding with `uriDecoding`, and defines how to handle trailing slashes (`/`) in URLs with `trailingSlashRedirect`.
--   **`DaemonConfig`**: Manages settings required when running as a background daemon. It can define command scripts for the daemon to execute via `commandExecutor` or configure tasks to run at specific intervals via `polling` settings.
--   **`ShellConfig`**: Manages settings required when running as an interactive shell (CLI). It includes settings related to the user interface, such as `greetings` for the startup message, `prompt` for the prompt appearance, and `historyFile` for the command history file location.
--   **`EmbedConfig`**: Manages settings when running embedded within another Java application. Similar to `WebConfig` and `DaemonConfig`, it supports session management (`sessionConfig`) even in an embedded environment.
+*   **Key Parameter Breakdown**:
+    *   `basePath`: Root base directory path of the application. All relative resource paths resolve against this base path.
+    *   `rules`: List of XML/APON resource paths (`String[]`) defining primary business rules (Beans, Translets, Aspects, Schedules).
+    *   `basePackages`: Base packages (`String[]`) scanned automatically for annotations such as `@Component`, `@Bean`, and `@Aspect`.
+    *   `resources`: Dynamic class and JAR resource locations (`resourceLocations`) dynamically loaded by `SiblingClassLoader`.
+    *   `profiles`: `ContextProfilesConfig` block defining active environment profiles.
+    *   `autoReload`: `ContextAutoReloadConfig` block configuring automatic context reloads upon file modifications.
 
-### `SessionConfig` / `SchedulerConfig` (Classes)
+### `ContextProfilesConfig` and `ContextAutoReloadConfig`
 
-Contain detailed settings for specific functional modules such as sessions and schedulers.
+*   **`ContextProfilesConfig`**:
+    *   `baseProfiles`: Baseline profiles unconditionally active across all environments.
+    *   `defaultProfiles`: Fallback profiles activated only when no active profiles are specified.
+    *   `activeProfiles`: Profiles explicitly activated for the current runtime (e.g., `dev`, `prod`, `qa`).
+*   **`ContextAutoReloadConfig`**:
+    *   `enabled`: Toggles automated file reloading (`true` / `false`).
+    *   `scanIntervalSeconds`: Resource timestamp scan interval in seconds.
+    *   `reloadMode`: Classloader update policy (`soft` for cache refresh / `hard` for `SiblingClassLoader` recreation).
 
-**Key Responsibilities:**
--   **`SessionConfig`**: Defines HTTP session management in detail. It allows setting `timeout` (session expiration time) and `maxSessions` (maximum number of sessions), and provides an option to persist sessions to files via `FileBasedSessionStoreConfig`.
--   **`SchedulerConfig`**: Defines the behavior of the scheduler. It allows setting `startDelaySeconds` (delay before scheduler execution after service start) and `waitOnShutdown` (whether to wait for ongoing tasks on shutdown).
+### `WebConfig` (Web Runtime Configuration)
 
-## 3. Package Summary and Architectural Significance
+Common web configuration referenced identically across all web runtimes: Servlet (`aspectran-web-servlet`), Undertow (`aspectran-undertow`), and Netty (`aspectran-netty`).
 
-The `com.aspectran.core.context.config` package forms the foundation of Aspectran's flexible and powerful configuration management capabilities. By abstracting all configurations into type-safe Java objects, it ensures that other components using the configuration do not need to know the specific format of the configuration source (XML, APON, etc.).
+*   `uriDecoding`: Character encoding used to decode incoming HTTP request URIs (e.g., `UTF-8`).
+*   `trailingSlashRedirect`: Toggles automatic HTTP 301/302 redirects when resolving translet mappings with or without trailing slashes (`/`).
+*   `proxyAddressForwarding`: Enables trust for reverse proxy headers (`X-Forwarded-For`, `X-Forwarded-Proto`) to resolve client IP addresses and protocols accurately.
+*   `session`: `SessionManagerConfig` block configuring HTTP session behavior.
 
-In particular, modularizing configurations into multiple classes based on function and environment is a good example of Aspectran's highly extensible architecture. If a new execution environment needs to be added, it can be extended relatively easily by defining a new `*Config` class for that environment and adding it to `AspectranConfig`. This design adheres well to the SOLID principles, where each component focuses solely on its own responsibility.
+### `SessionManagerConfig` and `SessionFileStoreConfig`
+
+Granular configuration governing Aspectran session managers.
+
+*   `timeout`: Session expiration interval (in seconds or minutes).
+*   `maxActiveSessions`: Maximum active sessions retained in memory.
+*   `evictionIdleSeconds`: Idle duration before inactive sessions are evicted from memory.
+*   `fileStore`: `SessionFileStoreConfig` block configuring session state serialization to disk during server restarts.
+
+### `DaemonConfig`, `ShellConfig`, and `EmbedConfig`
+
+Specialized configuration classes for non-web environments.
+
+*   **`DaemonConfig`**:
+    *   `executor`: Asynchronous thread pool settings (`DaemonExecutorConfig`) for daemon command processing.
+    *   `polling`: `DaemonPollingConfig` establishing polling intervals and work directories for file-based command monitoring (`FileCommander`).
+*   **`ShellConfig`**:
+    *   `greetings`: Greeting banner displayed in the terminal upon shell launch.
+    *   `prompt`: Terminal prompt string format (e.g., `aspectran> `).
+    *   `historyFile`: File path persisting command-line history.
+    *   `style`: `ShellStyleConfig` block defining ANSI colors and text formatting styles.
+*   **`EmbedConfig`**:
+    *   Manages session timeouts and virtual execution options when embedded within third-party host applications.
+
+### `SchedulerConfig` and `AsyncConfig`
+
+*   **`SchedulerConfig`**:
+    *   `startDelaySeconds`: Delay interval (in seconds) before triggering Quartz jobs after service startup.
+    *   `waitOnShutdown`: Governs graceful shutdown, waiting for active batch jobs to terminate before shutting down.
+*   **`AsyncConfig`**:
+    *   `corePoolSize`, `maxPoolSize`, `queueCapacity`: Thread pool boundaries and queue capacities for `@Async` background execution.
+
+### `SystemConfig`
+
+*   Key-value map of global system properties injected via `System.setProperty(key, value)` during the earliest stage of application bootstrapping.
+
+## 3. Configuration Mapping Example via APON
+
+```apon
+system: {
+    properties: {
+        file.encoding: "UTF-8"
+        sun.stdout.encoding: "UTF-8"
+    }
+}
+context: {
+    basePath: "/app"
+    rules: [
+        /config/app-context.xml
+    ]
+    basePackages: [
+        com.example.app
+    ]
+    profiles: {
+        active: [ dev ]
+    }
+    autoReload: {
+        reloadMode: "hard"
+        scanIntervalSeconds: 5
+        enabled: true
+    }
+}
+web: {
+    uriDecoding: "UTF-8"
+    trailingSlashRedirect: true
+    proxyAddressForwarding: true
+    session: {
+        timeout: 1800
+        maxActiveSessions: 10000
+    }
+}
+scheduler: {
+    startDelaySeconds: 5
+    waitOnShutdown: true
+}
+async: {
+    corePoolSize: 10
+    maxPoolSize: 50
+    queueCapacity: 1000
+}
+```
+
+During bootstrap, this declarative APON configuration is parsed into an `AspectranConfig` object tree by `AspectranConfigReader`, then delivered to service builders (`DefaultCoreService`, `DefaultServletWebService`, `DefaultTowService`, `DefaultNettyService`, etc.) to initialize all subsystems.
+
+## 4. Package Summary and Architectural Significance
+
+The `com.aspectran.core.context.config` package is the **quintessential abstraction bridging declarative configuration and runtime execution components**:
+
+1.  **Type Safety and Defect Prevention**: Encapsulating string configurations into strongly typed parameter keys (`ParameterKey`) and dedicated classes allows runtime syntax errors and misconfigurations to be identified and prevented early.
+2.  **Modular Environment Hierarchy**: The clear separation between shared context configuration (`ContextConfig`) and distinct runtime scopes (`WebConfig`, `DaemonConfig`, `ShellConfig`) simplifies multi-runtime hosting and facilitates frictionless environment extensions.
+3.  **Comprehensive Utilization of the APON Model**: Forms the technical foundation that makes complex, deeply nested enterprise configurations expressive, clean, and intuitive.

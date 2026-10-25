@@ -1,6 +1,7 @@
 ---
 title: "Aspectran 구성 로딩 메커니즘: `nodelet` 엔진 심층 분석"
 subheadline: 메커니즘
+mermaid: true
 ---
 
 Aspectran은 XML 또는 APON(Aspectran Parameters Object Notation) 형식의 설정 파일을 파싱하여 애플리케이션의 핵심 컴포넌트(Bean, Translet, Aspect 등)의 설계도인 `*Rule` 객체 트리를 생성합니다. 이 과정의 핵심에는 `com.aspectran.utils.nodelet` 패키지에 구현된, Aspectran을 위해 특별히 설계된 고성능 이벤트 기반 파싱 엔진 **`nodelet`**이 있습니다.
@@ -148,7 +149,7 @@ AOP 규칙은 여러 컴포넌트가 복합적으로 관계를 맺기 때문에 
 </aspect>
 ```
 
-이 XML은 이름이 `/example/hello`인 Translet에서 `helloAction` 빈의 `say`로 시작하는 모든 메소드(`joinpoint`)가 실행되기 전(`before`)에 `loggingAdvice` 빈의 `start()` 메소드를 실행하라는 AOP 규칙을 정의합니다.
+이 XML은 이름이 `/example/hello`인 Translet에서 `helloAction` 빈의 `say`로 시작하는 모든 메소드(`joinpoint`)가 실행되기 전(`before`)에 `loggingAdvice` 빈의 `start()` 메소드 실행하라는 AOP 규칙을 정의합니다.
 
 포인트컷 문자열에서 `@` 구분자 앞은 Translet의 이름, 뒤는 Bean의 ID를 나타내며, `^` 구분자 뒤는 호출할 메소드명을 의미합니다. 각 부분에는 와일드카드를 사용할 수 있습니다. 만약 특정 Translet을 지정하지 않고 모든 Translet을 대상으로 하려면 `@` 구분자로 패턴을 시작해야 합니다 (예: `+ "@helloAction^say*"`).
 

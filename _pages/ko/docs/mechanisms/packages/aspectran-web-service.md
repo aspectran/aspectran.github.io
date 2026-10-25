@@ -1,69 +1,154 @@
 ---
-title: "`com.aspectran.web.service` 패키지 상세 분석"
+title: "`com.aspectran.web.servlet.service` 패키지 상세 분석"
 subheadline: 패키지 명세
+mermaid: true
 ---
 
 ## 1. 설계 목표 및 주요 역할
 
-이 패키지는 Aspectran 프레임워크를 **표준 Java 서블릿(Servlet) 컨테이너 환경**에서 실행하기 위한 핵심 서비스 구현을 제공합니다. 이 패키지의 설계 목표는 다음과 같습니다.
+`com.aspectran.web.servlet.service` 패키지는 Aspectran 프레임워크를 **표준 Java/Jakarta EE 서블릿(Servlet) 컨테이너(Tomcat, Jetty 등) 환경에서 실행**하기 위한 핵심 서비스 계층 구현체를 제공합니다. 순수 웹 추상화 모듈인 `aspectran-web`의 `WebService` 인터페이스를 계승하여, 표준 서블릿 명세(`jakarta.servlet`)와 Aspectran 코어 엔진 사이의 완벽한 다리 역할을 수행합니다.
 
--   **서블릿 API와의 통합**: `HttpServletRequest`, `HttpServletResponse`, `ServletContext` 등 서블릿 API와 Aspectran의 프로토콜에 독립적인 코어 엔진 사이의 완벽한 가교 역할을 합니다.
--   **반응형 요청 처리 모델**: 스스로 작업을 시작하는 데몬 서비스와 달리, 외부(웹 브라우저 등)로부터의 HTTP 요청을 수신하고 이에 반응하여 동작하는 수동적(Reactive) 요청 처리 모델을 구현합니다.
--   **단일 진입점(Single Entry Point) 제공**: 모든 웹 요청을 받아 처리하는 단일 진입점, 즉 프론트 컨트롤러(Front Controller) 역할을 하는 `WebService.service(...)` 메서드를 제공합니다.
--   **정적/동적 자원 처리 분리**: 동적인 요청(트랜슬릿 실행)은 Aspectran이 직접 처리하고, CSS/JS/이미지 등 정적인 자원에 대한 요청은 서블릿 컨테이너의 기본 서블릿(Default Servlet)으로 위임하여 효율성을 높입니다.
+이 패키지의 핵심 설계 목표는 다음과 같습니다.
 
-결론적으로, 이 패키지는 Aspectran 코어 서비스를 웹 환경에 맞게 확장하고 조정하여, 일반적인 웹 애플리케이션 서버(WAS) 위에서 완벽한 기능을 갖춘 웹 프레임워크로 동작할 수 있도록 하는 것을 목표로 합니다.
+*   **표준 Jakarta Servlet API와의 완벽한 융합**: `HttpServletRequest`, `HttpServletResponse`, `ServletContext` 등 서블릿 표준 객체들과 프로토콜에 독립적인 Aspectran 코어 엔진 사이의 정교한 어댑테이션을 수행합니다.
+*   **프론트 컨트롤러(Front Controller) 패턴의 단일 진입점**: 모든 웹 요청을 수신하는 `service(HttpServletRequest, HttpServletResponse)` 진입점을 제공하여, 요청 인가(`RequestAcceptor`), 트랜슬릿 매핑, 예외 처리 및 응답 전송을 일원화합니다.
+*   **정적 리소스와 동적 요청의 지능형 분리**: Aspectran 규칙에 매핑된 동적 트랜슬릿 요청은 코어 파이프라인으로 처리하고, 정적 자원(CSS, JS, 이미지, HTML 등)에 대한 요청은 `DefaultServletHttpRequestHandler`를 통해 서블릿 컨테이너의 기본 서블릿(Default Servlet)으로 투명하게 위임하여 최상의 서빙 효율을 달성합니다.
+*   **서블릿 스코프 기반 서비스 바인딩 및 서비스 로케이터**: `ServletContext` 및 `ServletRequest` 속성에 루트 웹 서비스(`ROOT_WEB_SERVICE_ATTR_NAME`)와 파생 웹 서비스(`DERIVED_WEB_SERVICE_ATTR_NAME`)를 바인딩하여, 필터, 리스너, JSP 커스텀 태그 등 외부 서블릿 컴포넌트가 Aspectran 컨텍스트에 안전하게 접근할 수 있도록 지원합니다.
 
 ## 2. 주요 클래스 및 인터페이스 상세 분석
 
-### `WebService` (인터페이스)
+```mermaid
+classDiagram
+    class CoreService {
+        <<interface>>
+    }
 
-웹 환경에 특화된 Aspectran 서비스의 명세입니다.
+    class WebService {
+        <<interface>>
+        +getUriDecoding() String
+        +isTrailingSlashRedirect() bool
+    }
 
-**주요 책임 (Key Responsibilities):**
--   `CoreService`를 상속하여 모든 핵심 서비스 기능을 가집니다.
--   웹 요청을 처리하는 단일 진입점인 `service(HttpServletRequest, HttpServletResponse)` 메서드를 정의합니다.
--   `ServletContext`에 접근할 수 있는 `getServletContext()` 메서드를 제공합니다.
--   다른 웹 컴포넌트(JSP, 서블릿 필터 등)가 `ServletContext`를 통해 `WebService` 인스턴스에 쉽게 접근할 수 있도록, 속성 이름으로 사용될 상수를 정의합니다.
+    class ServletWebService {
+        <<interface>>
+        +ROOT_WEB_SERVICE_ATTR_NAME$ String
+        +DERIVED_WEB_SERVICE_ATTR_NAME$ String
+        +getServletContext() ServletContext
+        +service(HttpServletRequest, HttpServletResponse)
+        +bind(ServletContext, WebService)$
+        +bind(ServletWebActivity, WebService)$
+        +findWebService(ServletContext)$ DefaultServletWebService
+    }
+
+    class AbstractServletWebService {
+        <<abstract>>
+        -ServletContext servletContext
+        -DefaultServletHttpRequestHandler defaultServletHttpRequestHandler
+    }
+
+    class DefaultServletWebService {
+        +service(HttpServletRequest, HttpServletResponse)
+        -perform(ServletWebActivity)
+        -transletNotFound(ServletWebActivity)
+    }
+
+    class DefaultServletWebServiceBuilder {
+        +build(ServletContext) DefaultServletWebService
+    }
+
+    CoreService <|-- WebService
+    WebService <|-- ServletWebService
+    ServletWebService <|.. AbstractServletWebService
+    AbstractServletWebService <|-- DefaultServletWebService
+    DefaultServletWebServiceBuilder ..> DefaultServletWebService : builds
+```
+
+### `ServletWebService` (인터페이스)
+
+서블릿 환경에 특화된 Aspectran 웹 서비스의 최상위 명세입니다. `WebService`를 상속합니다.
+
+*   **주요 책임 및 상수**:
+    *   `ROOT_WEB_SERVICE_ATTR_NAME`: `ServletContext`에 최상위 루트 웹 서비스 인스턴스를 저장하기 위한 속성 키입니다.
+    *   `DERIVED_WEB_SERVICE_ATTR_NAME`: 요청 단위로 생성된 파생 웹 서비스를 보관하기 위한 `ServletRequest` 속성 키입니다.
+    *   `getServletContext()`: 서블릿 컨테이너와의 통신을 위한 `ServletContext` 참조를 반환합니다.
+    *   `service(HttpServletRequest, HttpServletResponse)`: 모든 HTTP 웹 요청이 유입되는 단일 프론트 컨트롤러 진입점입니다.
+    *   `bind(...)` / `findWebService(...)`: 서블릿 컨텍스트 또는 활동 객체에 웹 서비스를 바인딩하고 탐색하는 정적 헬퍼 메서드를 제공합니다.
+
+### `AbstractServletWebService` (추상 클래스)
+
+`ServletWebService`의 서블릿 인프라 연동 공통 로직을 캡슐화한 추상 클래스입니다.
+
+*   `WebConfig` 설정을 주입받아 URI 인코딩, 세션 타임아웃, 트레일링 슬래시 리다이렉트 정책을 수립합니다.
+*   서블릿 컨테이너가 제공하는 `DefaultServlet`(Tomcat의 `default`, Jetty의 `org.eclipse.jetty.servlet.DefaultServlet` 등)을 식별하여 `DefaultServletHttpRequestHandler`를 초기화합니다.
+*   서비스 수명주기(`doStart`, `doStop`) 동안 서블릿 세션 매니저 및 웹소켓 엔드포인트 익스포터(`ServerEndpointExporter`)를 안전하게 초기화하고 정리합니다.
 
 ### `DefaultServletWebService` (구현 클래스)
 
-`WebService`의 최종 구현체로, HTTP 요청을 받아 `ServletWebActivity`를 생성하고 실행하는 모든 과정을 담당합니다.
+`ServletWebService`의 최종 핵심 구현체로, 서블릿 컨테이너로부터 유입된 모든 요청을 처리합니다.
 
-**주요 책임 (Key Responsibilities):**
--   `DefaultCoreService`를 상속하여 완전한 기능을 갖춘 핵심 서비스의 역할을 합니다.
--   `ServletContext`에 대한 참조를 유지하며, 웹 환경에 필요한 설정을 `WebConfig`로부터 읽어들입니다.
--   `DefaultServletHttpRequestHandler`를 통해 정적 자원 요청을 효율적으로 처리합니다.
-
-**핵심 메서드 분석:**
--   `service(HttpServletRequest request, HttpServletResponse response)`: 이 클래스의 심장부입니다. 서블릿 컨테이너로부터의 모든 요청이 이 메서드를 통해 들어옵니다.
-    1.  서비스가 일시 정지 상태인지 확인합니다.
-    2.  요청 URI를 파싱하여 실행할 트랜슬릿의 이름(`requestName`)을 결정합니다.
-    3.  `RequestAcceptor`를 통해 해당 요청을 Aspectran이 처리해야 하는지 확인합니다. 만약 처리 대상이 아니라면, 정적 리소스일 가능성을 염두에 두고 `DefaultServletHttpRequestHandler`로 처리를 위임합니다.
-    4.  처리 대상인 경우, `ServletWebActivity` 인스턴스를 생성합니다. 이 `ServletWebActivity`는 `request`와 `response` 객체를 감싸는 어댑터 역할을 합니다.
-    5.  `activity.prepare()`를 호출하여 `requestName`에 해당하는 트랜슬릿 규칙을 찾습니다.
-    6.  `activity.perform()`을 호출하여 Aspectran의 표준 요청 처리 파이프라인(어드바이스, 액션 실행 등)을 구동합니다.
-    7.  실행 중 예외가 발생하면 404, 500 등 적절한 HTTP 오류 코드를 전송하는 예외 처리 로직을 수행합니다.
+*   **핵심 실행 파이프라인 (`service(HttpServletRequest, HttpServletResponse)`)**:
+    1.  **서비스 활성화 검사**: 서비스가 일시정지(`isPaused`) 상태인 경우 503 Service Unavailable 응답을 보냅니다.
+    2.  **요청 URI 파싱 및 디코딩**: 요청 URI에서 컨텍스트 경로를 제외한 트랜슬릿 이름(`requestName`)을 추출하고 설정된 문자 인코딩으로 안전하게 디코딩합니다.
+    3.  **인가 검사 및 정적 리소스 위임**:
+        *   `isRequestAcceptable(requestName)`을 검사합니다.
+        *   Aspectran이 처리할 대상이 아니라면, CSS/JS/이미지 등의 정적 리소스일 가능성을 감안하여 `defaultServletHttpRequestHandler.handle(request, response)`를 호출해 서블릿 컨테이너의 기본 서블릿으로 처리를 넘깁니다.
+    4.  **`ServletWebActivity` 인스턴스화**: `request`와 `response` 객체를 주입하여 전용 활동 객체인 `ServletWebActivity`를 생성합니다.
+    5.  **`prepare()` 및 트레일링 슬래시 리다이렉트**:
+        *   트랜슬릿이 발견되지 않으면(`TransletNotFoundException`), 끝에 슬래시(`/`)를 보정한 트랜슬릿이 존재하는지 확인하여 자동으로 301/302 리다이렉트를 처리합니다.
+    6.  **`perform()` 실행 및 클래스로더 격리**:
+        `ThreadContextHelper.overrideClassLoader()`를 통해 서비스 클래스로더로 전환한 뒤, 표준 AOP 어드바이스, 비즈니스 액션 실행, 응답 변환(JSON, XML, JSP, Thymeleaf 등)을 수행합니다.
 
 ### `DefaultServletWebServiceBuilder` (빌더 클래스)
 
-`DefaultServletWebService` 인스턴스를 생성하고 설정하는 팩토리 클래스입니다.
+`ServletContextListener`의 `contextInitialized()` 또는 `WebActivityServlet.init()` 시점에 호출되어 `DefaultServletWebService`를 조립하는 빌더입니다.
 
-**주요 책임 (Key Responsibilities):**
--   `ServletContextListener`의 `contextInitialized()` 메서드나, `WebActivityServlet`의 `init()` 메서드와 같이 서블릿 컨테이너의 시작 시점에 호출되도록 설계되었습니다.
--   `web.xml`에 정의된 `<context-param>`이나 `<init-param>`으로부터 Aspectran 설정 파일의 위치(`aspectran.config.file`)를 읽어올 수 있습니다.
--   `WebService` 인스턴스를 생성한 후, `ServiceStateListener`를 통해 `CoreServiceHolder`에 등록하고, 웹소켓(`ServerEndpointExporter`) 지원을 초기화하는 등 웹 환경에 필요한 부가적인 설정 작업을 수행합니다.
+*   `web.xml`의 `<context-param>`이나 서블릿 `<init-param>`에 정의된 설정 파일 위치(`aspectran.config.file`)를 읽어와 `AspectranConfig`를 로드합니다.
+*   웹 서비스 인스턴스를 빌드한 후 `ServletWebService.bind(servletContext, webService)`를 호출하여 전역 속성으로 등록하고, `CoreServiceHolder`에 등록하여 클래스로더 기반 서비스 로케이터를 활성화합니다.
+
+### `DefaultServletHttpRequestHandler` (정적 리소스 핸들러)
+
+Aspectran에 매핑되지 않은 URL 요청을 서블릿 컨테이너의 Default Servlet으로 포워딩하는 컴포넌트입니다.
+
+*   컨테이너 종류(Tomcat, Jetty, Resin 등)에 따라 기본 서블릿 이름(`default`)을 자동으로 감지하고, `RequestDispatcher`를 통해 리소스 서빙을 효율적으로 위임합니다.
 
 ## 3. 다른 패키지와의 상호작용
 
--   **`com.aspectran.core.service`**: `DefaultCoreService`를 직접 상속하여 Aspectran의 모든 핵심 기능(생명주기, `ActivityContext` 관리 등)을 재사용합니다.
--   **`com.aspectran.web.activity`**: `DefaultServletWebService`는 모든 유효한 요청에 대해 `ServletWebActivity`를 생성합니다. `ServletWebActivity`는 서블릿 API와 코어 엔진 사이의 어댑터 역할을 수행하는 가장 중요한 협력 객체입니다.
--   **`javax.servlet`**: 이 패키지는 서블릿 API와의 직접적인 연동을 담당합니다. `HttpServletRequest`를 받아 `ServletWebActivity`를 생성하고, 그 결과를 `HttpServletResponse`로 출력합니다.
+```mermaid
+graph TD
+    subgraph Container ["서블릿 컨테이너 (Tomcat, Jetty 등)"]
+        SRV["WebActivityServlet / Filter"]
+        Ctx["ServletContext"]
+    end
+
+    subgraph ServiceLayer ["com.aspectran.web.servlet.service"]
+        WebService["DefaultServletWebService"]
+        ResourceHandler["DefaultServletHttpRequestHandler"]
+    end
+
+    subgraph ActivityLayer ["com.aspectran.web.servlet.activity"]
+        WebActivity["ServletWebActivity"]
+        ReqAdapter["HttpServletRequestAdapter"]
+        ResAdapter["HttpServletResponseAdapter"]
+        SessionAdapter["HttpSessionAdapter"]
+    end
+
+    SRV -->|service(req, res)| WebService
+    WebService -->|정적 자원 요청 시 위임| ResourceHandler
+    WebService -->|동적 트랜슬릿 요청 시 생성| WebActivity
+    WebActivity --> ReqAdapter
+    WebActivity --> ResAdapter
+    WebActivity --> SessionAdapter
+    WebService -.->|bind| Ctx
+```
+
+*   **`com.aspectran.web.service`**: 순수 웹 추상화 인터페이스 `WebService`를 구현하여 웹 서비스 표준 계약을 충족합니다.
+*   **`com.aspectran.web.servlet.activity`**: 유효한 모든 웹 요청에 대해 `ServletWebActivity`를 생성하여 코어 요청 처리 파이프라인으로 연결합니다.
+*   **`jakarta.servlet`**: 최신 Jakarta EE 서블릿 API(`HttpServletRequest`, `HttpServletResponse`, `ServletContext`, `AsyncContext`)와 직접 연동됩니다.
 
 ## 4. 패키지 요약 및 아키텍처적 의미
 
-`com.aspectran.web.service` 패키지는 Aspectran을 위한 **서블릿 API 어댑터 계층**이라 할 수 있습니다. 이 패키지 덕분에 프로토콜에 독립적으로 설계된 Aspectran의 코어 엔진이, 특정 기술(서블릿)과 환경(웹 컨테이너)에 종속적인 HTTP 프로토콜과 통신할 수 있게 됩니다.
+`com.aspectran.web.servlet.service` 패키지는 Aspectran 프레임워크가 **표준 서블릿 컨테이너 환경에서 가장 안정적이고 최적화된 엔터프라이즈 웹 애플리케이션으로 작동하도록 보장하는 핵심 어댑터 계층**입니다.
 
-가장 중요한 아키텍처적 특징은 **`ServletWebActivity`를 통한 추상화**입니다. `ServletWebActivity`가 서블릿의 `request`, `response` 객체를 감싸서 Aspectran 코어가 이해하는 표준 `Activity` 모델로 변환해줍니다. 이로 인해 `CoreActivity`의 실행 파이프라인은 자신이 처리하는 요청이 서블릿으로부터 온 것인지, 셸로부터 온 것인지 전혀 알 필요 없이 동일한 로직을 수행할 수 있습니다. 이는 **환경에 대한 의존성을 완벽하게 분리**하는, 매우 잘 설계된 어댑터 패턴의 예시입니다.
-
-결론적으로, 이 패키지는 Aspectran이 Tomcat, Jetty 등 모든 표준 서블릿 컨테이너 위에서 완전한 기능을 갖춘 엔터프라이즈 웹 프레임워크로 동작할 수 있도록 하는 필수적인 기반을 제공합니다.
+1.  **완전한 환경 분리와 추상화**: 프로토콜에 독립적인 Aspectran 코어 엔진 위에 서블릿 API를 결합하여, 비즈니스 액션과 트랜슬릿 규칙이 특정 서블릿 기술에 결합되지 않도록 합니다.
+2.  **정적/동적 자원의 효율적 하이브리드 라우팅**: 모든 요청을 무조건 프레임워크 파이프라인으로 태우지 않고, 정적 자원은 컨테이너의 고속 기본 서블릿으로 바이패스하여 런타임 성능을 극대화합니다.
+3.  **Jakarta EE 최신 표준 완벽 지원**: `javax.servlet`을 탈피하고 최신 `jakarta.servlet` 스펙을 완전히 준수하여 최신 WAS 환경 및 컨테이너와의 완벽한 호환성을 제공합니다.

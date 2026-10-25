@@ -1,78 +1,229 @@
 ---
-title: In-Depth Analysis of Aspectran Configuration Rule Architecture
+title: "Deep Dive into Aspectran Rule Architecture"
 subheadline: Mechanisms
+mermaid: true
 ---
 
-Aspectran's `com.aspectran.core.context.rule` package is a collection of Java objects representing all of the framework's **configuration information**. Configuration files in XML or APON format are converted into these `Rule` objects by a parser (`NodeletParser`) and loaded into memory. In essence, these are pure data objects (POJOs) that serve as the **Blueprint** of the application.
 
-## 1. Core Component Rules (Top-Level Rules)
+The [`com.aspectran.core.context.rule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule) package in the Aspectran framework represents the comprehensive **blueprint** object model that declaratively defines every application building block: Beans, Translets, Aspects, Schedules, Templates, Environments, and dynamic properties.
 
-These rules define the most important top-level components of the application.
+Aspectran strictly enforces the principle of **Separation of Declarative Definition from Runtime Execution**. Configurations authored in diverse representations—XML documents, APON (Aspectran Parameters Object Notation) text, or Java annotations—are parsed during the bootstrap phase into type-safe, plain Java objects (`*Rule` instances) and staged into memory. Downstream runtime engines, namely [`Activity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/Activity.java) and [`CoreService`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/service/CoreService.java), interpret these immutable rule structures to drive application behavior.
 
--   **`TransletRule`**: Defines a 'translet', the basic unit of request processing. It acts as a **container** for all rules related to a single request-response cycle, including what requests (`name`, `method`) to respond to, how to process the request (`RequestRule`), what business logic (Action) to execute (`ContentList`), how to respond (`ResponseRule`), and how to handle exceptions (`ExceptionRule`).
--   **`BeanRule`**: Defines a 'bean' to be managed by the IoC container. It contains all the information needed to create and manage a single bean, such as its ID, class, scope (`ScopeType`), constructor arguments (`arguments`), properties (`properties`), and lifecycle methods (`initMethod`, `destroyMethod`).
--   **`AspectRule`**: Defines an 'aspect' for AOP (Aspect-Oriented Programming). It includes a `JoinpointRule` that defines where to intervene (Joinpoint) and `AdviceRule`s that define the logic to be executed at each point (Before, After, Around, etc.).
--   **`ScheduleRule`**: Defines a scheduling task. It defines which Scheduler to use, when to execute (`Trigger`), and what tasks (`ScheduledJobRule`) to perform.
--   **`TemplateRule`**: Defines a view template to be used when generating a response. It includes the template's ID, the `engine` to use, the location (`file`, `resource`, `url`) or content (`content`) of the template file.
+## 1. Rule Hierarchy and Core Object Tree
 
-## 2. Action & Response Rules
+Aspectran's rule architecture forms a strict composite hierarchy spanning from top-level container rules down to atomic item rules.
 
-These rules define the actual logic to be executed and the response method within a `TransletRule` or `AdviceRule`. They play a key role in the `Activity`'s processing pipeline.
+```mermaid
+classDiagram
+    direction TB
+    class TransletRule {
+        -String name
+        -RequestRule requestRule
+        -ContentList contentList
+        -ResponseRule responseRule
+        -ExceptionRule exceptionRule
+    }
+    class BeanRule {
+        -String id
+        -Class targetType
+        -ScopeType scopeType
+        -ItemRuleMap propertyItemRuleMap
+    }
+    class AspectRule {
+        -String id
+        -JoinpointRule joinpointRule
+        -List~AdviceRule~ adviceRuleList
+    }
+    class ScheduleRule {
+        -String id
+        -TriggerRule triggerRule
+        -List~ScheduledJobRule~ scheduledJobRuleList
+    }
+    class TemplateRule {
+        -String id
+        -String engine
+        -String templateSource
+    }
+    class ItemRule {
+        -String name
+        -ItemType itemType
+        -ItemValueType valueType
+        -List~Token~ tokens
+    }
 
-### 2.1. Action Rules
+    TransletRule *-- ItemRule : parameters / attributes
+    BeanRule *-- ItemRule : properties / constructor arguments
+    AspectRule *-- ItemRule : settings / advice arguments
+    ScheduleRule *-- ScheduledJobRule
+    TemplateRule *-- ItemRule : template parameters
+```
 
-Action rules define commands that perform actual business logic or control data flow.
+### 1) 5 Top-Level Component Rules
+- **[`TransletRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/TransletRule.java)**: Core container encapsulating the complete request processing lifecycle for a single translet.
+- **[`BeanRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/BeanRule.java)**: Defines component metadata for beans instantiated, wired, and managed by the IoC container.
+- **[`AspectRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/AspectRule.java)**: AOP aspect rule specifying joinpoint targeting criteria and advice execution chains.
+- **[`ScheduleRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ScheduleRule.java)**: Defines trigger recurrence rules and target translet jobs integrated with the Quartz engine.
+- **[`TemplateRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/TemplateRule.java)**: Defines template engines, template resource locations, and inline template scripts for view rendering.
 
--   **`InvokeActionRule`**: The most core action, it calls a specific method of a designated bean.
--   **`IncludeActionRule`**: Executes another translet and includes it at the current location. Very useful for modularizing and reusing common logic.
--   **`EchoActionRule`**: Creates `ActionResult` from the current context's data and includes it in the result. Mainly used to construct model data to be passed to a view template.
--   **`HeaderActionRule`**: Sets HTTP response headers. Only meaningful in a web environment.
--   **`ChooseRule`**: Branches the execution flow based on conditions. It contains one or more `<when>` and an optional `<otherwise>`.
+### 2) Data Unit Rule: [`ItemRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ItemRule.java)
+- The atomic data representation model configuring all request parameters, attributes, constructor arguments, and bean properties.
 
-### 2.2. Response Rules
+## 2. "Ability" Interface System for Composable Design
 
-Response rules determine how the `Activity`'s processing result is returned to the client.
+The [`com.aspectran.core.context.rule.ability`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ability) package defines contract interfaces that modularize capabilities across rule implementations. Through these interfaces, the framework composes, traverses, and statically validates rules like Lego building blocks.
 
--   **`TransformRule`**: Transforms the result of an Action into a specific data format and responds. This is the core of REST API implementation.
--   **`DispatchRule`**: Forwards the processing result to a view template to render the UI. This corresponds to the View in the MVC pattern.
--   **`ForwardRule`**: Forwards the current request to another translet internally on the server. The client's URL does not change, and the request and response objects are preserved.
--   **`RedirectRule`**: Sends an HTTP redirect (3xx status code) response to the client, instructing it to re-request a specified URL.
+```mermaid
+classDiagram
+    direction TB
+    class Replicable~T~ {
+        <<interface>>
+        +replicate() T
+    }
+    class BeanReferenceable {
+        <<interface>>
+        +getBeanId() String
+        +getTargetType() Class
+    }
+    class HasActionRules {
+        <<interface>>
+        +getActionRuleList() ActionRuleList
+    }
+    class HasResponseRules {
+        <<interface>>
+        +getResponseRuleList() ResponseRuleList
+    }
+    class HasPropertyRules {
+        <<interface>>
+        +getPropertyItemRuleMap() ItemRuleMap
+    }
+    class HasParameterRules {
+        <<interface>>
+        +getParameterItemRuleMap() ItemRuleMap
+    }
+    class HasAttributeRules {
+        <<interface>>
+        +getAttributeItemRuleMap() ItemRuleMap
+    }
+    class HasArgumentRules {
+        <<interface>>
+        +getArgumentItemRuleMap() ItemRuleMap
+    }
 
-## 3. Data & Parameter Rules
+    TransletRule ..|> Replicable~TransletRule~
+    TransletRule ..|> HasActionRules
+    TransletRule ..|> HasResponseRules
+    TransletRule ..|> HasParameterRules
+    TransletRule ..|> HasAttributeRules
+    BeanRule ..|> Replicable~BeanRule~
+    BeanRule ..|> BeanReferenceable
+    BeanRule ..|> HasPropertyRules
+    BeanRule ..|> HasArgumentRules
+    AspectRule ..|> Replicable~AspectRule~
+```
 
-These rules define and handle the most basic units of configuration: 'values'.
+### 1) Immutable Prototype Replication: [`Replicable<T>`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ability/Replicable.java)
+- **The Cornerstone of Thread Safety**:
+  Parsed rule instances staged during bootstrap are retained in shared memory as **immutable prototypes**.
+- When concurrent requests arrive in a multi-threaded environment, `Replicable.replicate()` clones an isolated rule instance for the active thread, fundamentally preventing race conditions or cross-request state corruption.
 
--   **`ItemRule`**: The basic unit for all parameters, attributes, arguments, and properties. It has a `name` and `value`, and can define the type of value (`ItemType`: `SINGLE`, `ARRAY`, `LIST`, `MAP`, etc.) and how the value is interpreted (`ItemValueType`: `STRING`, `INT`, `BEAN`, etc.). This supports type conversion.
--   **`ItemRuleMap` / `ItemRuleList`**: Collections of `ItemRule`s, managing multiple parameters or attributes as a group.
+### 2) Bean Reference Integrity Tracking: [`BeanReferenceable`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ability/BeanReferenceable.java)
+- A marker contract implemented by rules that reference other beans in property setters or constructor arguments.
+- During context building, [`BeanReferenceInspector`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/validation/BeanReferenceInspector.java) gathers all `BeanReferenceable` instances to comprehensively verify bean existence and catch circular dependencies before application startup.
 
-## 4. Structural & Helper Rules
+### 3) Child Rule Ownership Ability Interfaces
+- [`HasActionRules`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ability/HasActionRules.java): Indicates that the rule can contain action rules (`<action>`, `<echo>`, `<headers>`, `<include>`) as children (`TransletRule`, `AdviceRule`, `ChooseWhenRule`).
+- [`HasResponseRules`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ability/HasResponseRules.java): Indicates that the rule can own response rules (`<transform>`, `<dispatch>`, `<redirect>`, `<forward>`) as children (`TransletRule`, `ExceptionThrownRule`).
+- [`HasParameterRules`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ability/HasParameterRules.java) / [`HasAttributeRules`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ability/HasAttributeRules.java) / [`HasPropertyRules`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ability/HasPropertyRules.java) / [`HasArgumentRules`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ability/HasArgumentRules.java): Designate that the rule owns `ItemRule` maps representing parameters, attributes, properties, or arguments, respectively.
 
-These rules define the structure of the configuration and additional functionalities.
+## 3. Deep Dive into 5 Top-Level Core Rules
 
--   **`AppendRule`**: Instructs to import an external configuration file (XML, APON) and merge it into the current configuration. This is a powerful feature that allows for managing configurations by separating them by function or module.
--   **`EnvironmentRule`**: Defines properties that will only be applied when a specific `profile` is active. (e.g., separating development/production DB information)
--   **`ExceptionRule`**: Groups exception handling logic and defines how to handle specific exceptions (`ExceptionThrownRule`) when they occur.
--   **`DescriptionRule`**: Adds a description to each rule to improve the readability of the configuration.
+### 1) Heart of Request-Response: [`TransletRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/TransletRule.java)
+Encapsulates the complete execution pathway for a single web endpoint, CLI command, or scheduled task:
+- **Routing Metadata**: Translet name (`name`), allowed HTTP methods (`allowedMethod`), asynchronous execution flags (`async`).
+- **Request Rule ([`RequestRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/RequestRule.java))**: Character encoding, parameter and attribute validation constraints, request body parser rules.
+- **Content and Action Pipeline ([`ContentList`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/process/ContentList.java))**: Ordered sequence of business action invocations.
+- **Response Rule ([`ResponseRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ResponseRule.java))**: Strategy executed upon successful action completion (Transform, Dispatch, Redirect, Forward).
+- **Exception Mapping Rules ([`ExceptionRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ExceptionRule.java))**: Declarative mappings routing specific exceptions to dedicated error responses or fallback views.
 
-## 5. Ability Interfaces: Key to Composable Design
+### 2) IoC Component Blueprint: [`BeanRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/BeanRule.java)
+- **Identifier and Type**: Bean ID, target class ([`targetType`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/BeanRule.java#L87)), factory method ([`factoryMethodName`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/BeanRule.java#L93)).
+- **Lifecycle Scope ([`ScopeType`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/type/ScopeType.java))**: `SINGLETON`, `PROTOTYPE`, `REQUEST`, `SESSION`.
+- **Lifecycle Callbacks**: `initMethodName`, `destroyMethodName`.
+- **Dependency Definitions**: Constructor argument list (`constructorArgumentList`), property injection map (`propertyItemRuleMap`).
+- **AOP Proxy Marking ([`isProxied`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/BeanRule.java#L113))**: Activated at build time by `BeanRuleAnalyzer` when the bean is matched against AOP pointcuts.
 
-The interfaces in the `com.aspectran.core.context.rule.ability` package are a core design that demonstrates why Aspectran's `Rule` architecture is flexible and extensible. These interfaces act as a **Contract** that specifies what kind of child rules each `Rule` class can have.
+### 3) AOP Cross-Cutting Concerns: [`AspectRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/AspectRule.java)
+- **Joinpoint Rule ([`JoinpointRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/JoinpointRule.java))**: Target translet name patterns, bean method signature patterns, method type constraints.
+- **Advice Rules ([`AdviceRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/AdviceRule.java))**: Interception phase (`BEFORE`, `AFTER`, `THROWN`, `FINALLY`) and target advice beans/methods.
+- **Execution Order (`order`)**: Integer determining relative precedence when multiple aspects match the same joinpoint.
 
--   **`HasActionRules`**: Rules implementing this interface (`TransletRule`, `AdviceRule`, etc.) can contain action rules like `InvokeActionRule`, `EchoActionRule`.
--   **`HasResponseRules`**: Rules implementing this interface (`TransletRule`, `ExceptionThrownRule`, etc.) can contain response rules like `TransformRule`, `DispatchRule`.
--   **`HasParameters`, `HasAttributes`, `HasProperties`, `HasArguments`**: Indicate that they can have parameters, attributes, properties, and arguments (`ItemRule`) as children, respectively.
--   **`BeanReferenceable`**: A marker interface indicating that the rule can reference other 'beans'. It is used by `BeanReferenceInspector` during context loading to verify that all bean references are valid.
--   **`Replicable`**: Indicates that it can replicate itself through the `replicate()` method. For thread safety, Aspectran keeps the original rules loaded as they are and uses replicated versions of these rules during actual request processing.
+### 4) Batch and Scheduling: [`ScheduleRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ScheduleRule.java)
+- Scheduler identifier, initial startup delay (`startDelaySeconds`), Quartz Cron expressions or recurrence intervals.
+- Ordered list of [`ScheduledJobRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ScheduledJobRule.java) instances designating target translets to execute.
 
-This 'Ability' interface-based design utilizes the **Composite Pattern**, allowing features to be assembled like Lego blocks. This gives the framework a very flexible and easy-to-extend structure.
+### 5) View Templates: [`TemplateRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/TemplateRule.java)
+- Template engine name (`pebble`, `thymeleaf`, `freemarker`), resource location (`file`, `resource`, `url`), or inline template body.
 
-## 6. Conclusion
+## 4. Data Representation Unit: `ItemRule` and ASEL Token System
 
-Aspectran's `rule` package expresses all of the framework's configuration through a **hierarchical and Composable object model**. Each `*Rule.java` file is a data object that corresponds one-to-one to a specific tag or attribute in the configuration file, and their combination defines the structure and behavior of complex applications.
+[`ItemRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ItemRule.java) is the atomic building block for dynamic data expression and parameter binding across all Aspectran configuration models.
 
-This design has the following advantages:
+### 1) Structural & Value Type Support
+- **Structure Type ([`ItemType`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/type/ItemType.java))**:
+  - `SINGLE`: Scalar object
+  - `ARRAY`: Array structure
+  - `LIST`: Java `List` collection
+  - `MAP`: Key-value `Map` collection
+  - `PROPERTIES`: `java.util.Properties`
+  - `SET`: Java `Set` collection
+- **Value Type ([`ItemValueType`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/type/ItemValueType.java))**:
+  - `STRING`, `INT`, `LONG`, `FLOAT`, `DOUBLE`, `BOOLEAN`, `PARAMETERS`
 
--   **Clarity**: The XML tag structure maps directly to the Java object structure, making it easy to understand the configuration through code.
--   **Type Safety**: All configurations are converted into type-safe objects, making it easy to validate configuration errors at load time.
--   **Flexibility and Extensibility**: The `ability` interfaces and composite pattern make it easy to add new types of rules or extend existing ones.
--   **Separation of Execution and Definition**: `Rule` objects only 'define' behavior; the actual 'execution' is handled by runtime engines like `Activity` reading these rules. This clearly separates the framework's core logic from user configurations.
+### 2) ASEL Token Parsing and Runtime Lazy Evaluation
+`ItemRule` can embed dynamic expressions parsed into runtime tokens ([`Token`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/asel/token/Token.java)):
+- `#{beanId^property}`: Property value of a registered container bean
+- `${paramName}`: Active request parameter value
+- `@{attributeName}`: Active activity attribute value
+- `%{propertyName}`: Dynamic environment property value
+- `${ENV:VAR_NAME}`: Operating system environment variable
+- `${SYS:sys.prop}`: JVM system property
+
+## 5. Bi-Directional Rule Conversion Engine (`converter`)
+
+Aspectran incorporates a robust bi-directional conversion engine capable of translating rule object hierarchies into APON parameter trees and vice versa.
+
+- **[`RulesToParameters`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/converter/RulesToParameters.java)**:
+  Serializes in-memory `TransletRule`, `BeanRule`, and `AspectRule` hierarchies into standard APON text syntax, facilitating configuration dumps or debugging console exports.
+- **[`ParametersToRules`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/converter/ParametersToRules.java)**:
+  Deserializes structured APON text hierarchies directly back into Java `*Rule` trees.
+
+This bi-directional capability guarantees 100% lossless interoperability between XML configurations and APON configurations.
+
+## 6. Large-Scale Modular Decomposition and Composition: `RuleAppender` Subsystem
+
+To avoid monolithic configuration files, the [`RuleAppender`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/appender/RuleAppender.java) subsystem allows breaking configurations into domain- or feature-specific modules:
+
+- **[`FileRuleAppender`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/appender/FileRuleAppender.java)**: Imports configuration files via relative or absolute paths on the local filesystem.
+- **[`ResourceRuleAppender`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/appender/ResourceRuleAppender.java)**: Imports configuration files directly from classpath resources.
+- **[`UrlRuleAppender`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/appender/UrlRuleAppender.java)**: Dynamically downloads and imports remote configurations over HTTP/HTTPS URLs.
+- **[`ParametersRuleAppender`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/appender/ParametersRuleAppender.java)**: Directly merges in-memory `AspectranParameters` objects into the rule parsing pipeline.
+
+```xml
+<!-- Modular configuration example for enterprise applications -->
+<aspectran>
+    <append file="config/aspectran-common.xml"/>
+    <append resource="com/aspectran/demo/user-translets.apon"/>
+    <append resource="com/aspectran/demo/order-translets.apon"/>
+</aspectran>
+```
+
+> **Related Detailed Mechanisms**:
+> - For how rule objects are parsed and assembled into the live IoC container, see [ActivityContext Building Process](/en/docs/mechanisms/activity-context-building/).
+> - For the runtime lifecycle where assembled rules are executed per request, see [Aspectran Activity Architecture](/en/docs/mechanisms/aspectran-activities/).
+> - For the execution model of actions declared within translet rules, see [Aspectran Action Architecture](/en/docs/mechanisms/aspectran-actions/).
+
+## 7. Next Steps: Exploring Detailed Mechanisms
+
+To examine how declared rule objects are processed through the builder pipeline and indexed into the final `ActivityContext`, refer to the [ActivityContext Building Process](/en/docs/mechanisms/activity-context-building/) guide.
+
+To inspect how all mechanisms and packages interconnect across the entire framework, refer to the **[Aspectran Detailed Mechanisms Index](/en/docs/mechanisms/)**.

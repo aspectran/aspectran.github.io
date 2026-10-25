@@ -1,66 +1,145 @@
 ---
-title: In-Depth Analysis of the `com.aspectran.daemon.service` Package
+title: "Detailed Analysis of the com.aspectran.daemon.service Package"
 subheadline: Package Specifications
+mermaid: true
 ---
 
 ## 1. Design Goals and Key Roles
 
-This package provides specialized service implementations for running Aspectran as an **independent background process (daemon)** without a web server. The design goals of this package are as follows:
+The `com.aspectran.daemon.service` package provides the **service layer implementation required to run Aspectran as an autonomous background daemon or operating system service** without web servers or GUI environments.
 
--   **Provide an Independent Execution Environment**: Provides a foundation for building standalone applications that have their own lifecycle, without relying on a web container.
--   **Proactive Request Execution Model**: Unlike `WebService`, which reacts to external HTTP requests, it implements a **proactive execution model** where specific internal logic or a scheduler directly triggers translet execution.
--   **Programmatic Entry Point**: Provides clear and controllable entry points through `translate()` methods, allowing translets to be called programmatically from within the code.
--   **Session Functionality Support in Non-Web Environments**: Optionally provides session management functionality to allow long-running applications like daemons to maintain state across multiple `translate()` calls.
+The primary architectural objectives of this package are:
 
-In conclusion, this package aims to enable the full utilization of Aspectran's powerful features (AOP, DI, etc.) in UI-less server applications such as background tasks, batch processes, and message queue listeners.
+*   **Complete Standalone Runtime**: Operates completely independently of web containers or application servers, integrating directly with operating system service managers (Linux `systemd`, Apache Commons Daemon `jsvc`, Windows Service `procrun`) to manage autonomous lifecycles.
+*   **Proactive Execution Model**: Unlike reactive web architectures that wait passively for external HTTP requests, daemons drive a proactive execution model where internal schedulers, message queue consumers, and file pollers ([`FileCommander`](https://github.com/aspectran/aspectran/blob/master/daemon/src/main/java/com/aspectran/daemon/command/polling/FileCommander.java)) directly trigger business translets.
+*   **Programmatic Standard Entry Point (`translate`)**: Exposes an intuitive API gateway allowing application code to programmatically dispatch translets with virtual parameters and receive outcomes synchronously.
+*   **In-Memory Session Management in Non-Web Contexts**: Incorporates [`DefaultSessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/DefaultSessionManager.java) to provide virtual session state across sequential `translate()` calls in long-running processes.
+*   **Integrated Command Control Subsystem**: Couples with [`DaemonCommandRegistry`](https://github.com/aspectran/aspectran/blob/master/daemon/src/main/java/com/aspectran/daemon/command/DaemonCommandRegistry.java) to enable runtime administrative commands (restart, component reloading, status inspections) via file-based command drops or internal consoles.
 
-## 2. Detailed Analysis of Key Classes and Interfaces
+## 2. Key Classes and Interfaces
+
+```mermaid
+classDiagram
+    class CoreService {
+        <<interface>>
+    }
+
+    class AbstractCoreService {
+        <<abstract>>
+    }
+
+    class DaemonService {
+        <<interface>>
+        +translate(String transletName) Translet
+        +translate(String transletName, Map attributes) Translet
+        +translate(String transletName, Map attributes, Map parameters) Translet
+        +getCommandRegistry() CommandRegistry
+        +getSessionManager() SessionManager
+        +newSessionAdapter() SessionAdapter
+    }
+
+    class AbstractDaemonService {
+        <<abstract>>
+        -DaemonConfig daemonConfig
+        -SessionManager sessionManager
+        -CommandRegistry commandRegistry
+        #doStart()
+        #doStop()
+    }
+
+    class DefaultDaemonService {
+        +translate(Translet translet)
+        #service(Activity activity)
+    }
+
+    class DefaultDaemonServiceBuilder {
+        +build(AspectranConfig) DaemonService
+    }
+
+    CoreService <|-- DaemonService
+    AbstractCoreService <|-- AbstractDaemonService
+    DaemonService <|.. AbstractDaemonService
+    AbstractDaemonService <|-- DefaultDaemonService
+    DefaultDaemonServiceBuilder ..> DefaultDaemonService : creates
+```
 
 ### `DaemonService` (Interface)
 
-The specification for Aspectran services specialized for the daemon environment.
+The top-level specification for daemon-specific services in Aspectran. Extends `CoreService`:
 
-**Key Responsibilities:**
--   Inherits `CoreService` to possess all core service functionalities.
--   Defines `translate(...)` methods, which are the core entry points for programmatically executing translets. These methods are the primary way for daemon applications to call internal services.
--   Defines the `newSessionAdapter()` method for creating a session adapter (`SessionAdapter`) for the daemon environment.
+*   **Key Responsibilities**:
+    *   `translate(...)`: The primary overloaded entry point executing translets programmatically. Accepts translet names, attribute maps, parameter maps, and virtual HTTP methods, executing the pipeline and returning the completed `Translet` instance.
+    *   `getCommandRegistry()`: Returns the `CommandRegistry` managing commands runnable within the daemon process.
+    *   `getSessionManager()`: Exposes the `SessionManager` maintaining in-memory session state across translet invocations.
+    *   `newSessionAdapter()`: Instantiates a daemon-specific `SessionAdapter` for session virtualization.
+
+### `AbstractDaemonService` (Abstract Class)
+
+The abstract template encapsulating core infrastructure wiring for `DaemonService`:
+
+*   **Implementation Mechanics**:
+    *   **Session Manager Lifecycle**: Instantiates `DefaultSessionManager` configured via `DaemonConfig` (`sessionConfig`), binding its start and stop routines to `doStart()` and `doStop()`.
+    *   **Command Registry Configuration**: Populates `DaemonCommandRegistry` with built-in commands (`restart`, `quit`, `sysinfo`, `translet`, `pollingInterval`).
+    *   **File Poller Integration**: Launches background monitoring threads when external file command pollers (`FileCommander`) are activated.
 
 ### `DefaultDaemonService` (Implementation Class)
 
-The final implementation of `DaemonService`, responsible for receiving programmatic translet calls and handling the entire process of creating and executing `DaemonActivity`.
+The primary concrete implementation of `DaemonService`, translating programmatic calls into `DaemonActivity` instances and driving execution:
 
-**Key Responsibilities:**
--   Inherits `DefaultCoreService` to act as a fully functional core service.
--   Creates and manages `DefaultSessionManager` according to the `DaemonConfig` settings, allowing session simulation even in a daemon environment.
--   Provides security features through `RequestAcceptor`, which can limit the list of translets that can be called by `translate()` methods.
-
-**Key Method Analysis:**
--   `translate(String transletName, ...)`: This class's core execution method. It plays a role equivalent to `WebService.service()` in a web environment.
-    1.  Checks if the service is in a paused state.
-    2.  Checks if the requested `transletName` is allowed by `RequestAcceptor`.
-    3.  Creates a `DaemonActivity` instance specialized for the daemon environment.
-    4.  Sets the translet name, virtual HTTP method, attributes, parameters, etc., received by the `translate()` method into `DaemonActivity`.
-    5.  Calls `activity.prepare()` and `activity.perform()` to drive Aspectran's standard request processing pipeline.
-    6.  Returns the `Translet` object containing the execution result.
+*   **Execution Pipeline (`translate`)**:
+    1.  **Availability Verification**: Ensures the service is active and not paused (`isPaused`). Rejects requests if suspended.
+    2.  **Access Control Inspection (`RequestAcceptor`)**: Validates requested translet names against configured `RequestAcceptor` rule constraints.
+    3.  **`DaemonActivity` Instantiation**: Creates a dedicated [`DaemonActivity`](https://github.com/aspectran/aspectran/blob/master/daemon/src/main/java/com/aspectran/daemon/activity/DaemonActivity.java), injecting supplied parameters, attributes, and virtual methods.
+    4.  **Pipeline Dispatching**: Calls `service(activity)` -> `activity.prepare()` -> `activity.perform()`, executing AOP advice chains, business actions, and response transformers.
+    5.  **Outcome Delivery**: Returns the completed `Translet` object housing accumulated `ProcessResult` data and serialized output.
 
 ### `DefaultDaemonServiceBuilder` (Builder Class)
 
-A factory class that creates and configures `DefaultDaemonService` instances.
+Factory builder that constructs and initializes `DefaultDaemonService` from [`AspectranConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/AspectranConfig.java):
 
-**Key Responsibilities:**
--   Receives an `AspectranConfig` object, instantiates `DefaultDaemonService`, and injects the necessary configurations.
--   Configures `ServiceStateListener` to ensure that the service's lifecycle (start, stop, pause, etc.) is correctly integrated with `CoreServiceHolder` and `SessionManager`.
+*   Parses encoding settings, session timeouts, and command registry configurations from the `daemon` configuration block.
+*   Registers `ServiceStateListener` handlers to register the daemon service with `CoreServiceHolder` upon startup.
 
-## 3. Interaction with Other Packages
+## 3. Interactions with Other Packages and Subsystems
 
--   **`com.aspectran.core.service`**: Directly inherits `DefaultCoreService` to reuse all of Aspectran's core functionalities (lifecycle, `ActivityContext` management, etc.).
--   **`com.aspectran.daemon.activity`**: `DefaultDaemonService` creates a `DaemonActivity` for every `translate()` call. `DaemonActivity` acts as an adapter that converts programmatic calls into a form that the core engine can understand.
--   **`com.aspectran.core.context.config`**: Reads daemon-specific configurations (session management, polling settings, etc.) from the `DaemonConfig` configuration object and applies them to the service.
+```mermaid
+graph TD
+    subgraph Host ["OS Service Host Bridges"]
+        Jsvc["JsvcDaemon (Linux jsvc)"]
+        Procrun["ProcrunDaemon (Windows Service)"]
+        Simple["SimpleDaemon (Standalone Process)"]
+        DefaultD["DefaultDaemon (FileCommander Bundled)"]
+    end
+
+    subgraph ServiceLayer ["com.aspectran.daemon.service"]
+        DService["DefaultDaemonService"]
+        Registry["DaemonCommandRegistry"]
+    end
+
+    subgraph ActivityLayer ["com.aspectran.daemon.activity"]
+        DActivity["DaemonActivity"]
+        ReqAdapter["DaemonRequestAdapter (Map-based)"]
+        ResAdapter["DaemonResponseAdapter (Writer-based)"]
+    end
+
+    Jsvc --> DService
+    Procrun --> DService
+    Simple --> DService
+    DefaultD --> DService
+    DService --> Registry
+    DService -->|Created on translate()| DActivity
+    DActivity --> ReqAdapter
+    DActivity --> ResAdapter
+```
+
+*   **Four Daemon Host Bridges**: [`JsvcDaemon`](https://github.com/aspectran/aspectran/blob/master/daemon/src/main/java/com/aspectran/daemon/JsvcDaemon.java) (Apache Commons Daemon), [`ProcrunDaemon`](https://github.com/aspectran/aspectran/blob/master/daemon/src/main/java/com/aspectran/daemon/ProcrunDaemon.java) (Windows Service), [`SimpleDaemon`](https://github.com/aspectran/aspectran/blob/master/daemon/src/main/java/com/aspectran/daemon/SimpleDaemon.java) (main entry point), and [`DefaultDaemon`](https://github.com/aspectran/aspectran/blob/master/daemon/src/main/java/com/aspectran/daemon/DefaultDaemon.java) (bundled with `FileCommander`) own a `DaemonService` instance, delegating OS service commands (`init`, `start`, `stop`, `destroy`) to `ServiceLifeCycle`.
+*   **`com.aspectran.daemon.command.polling`**: [`FileCommander`](https://github.com/aspectran/aspectran/blob/master/daemon/src/main/java/com/aspectran/daemon/command/polling/FileCommander.java) monitors incoming `.command` files in designated polling directories, dispatching tasks to `DaemonService.translate()`.
+*   **`com.aspectran.daemon.activity`**: `DaemonService` transforms programmatic invocations into `DaemonActivity` instances, executing them within Aspectran's core pipeline.
 
 ## 4. Package Summary and Architectural Significance
 
-The `com.aspectran.daemon.service` package plays a crucial role in transforming a reactive web framework into a **proactive application container**. While `WebService` waits for external requests, `DaemonService` provides a structure where the application itself can call its own logic (translets) as needed.
+The `com.aspectran.daemon.service` package expands Aspectran from a reactive web framework into an **autonomous enterprise batch and background worker container**:
 
-The `translate()` method is an **internal API call gateway** that architecturally performs the same role as a web request. All translets called through this method can receive all of Aspectran's features, such as aspects (transactions, security, etc.) and dependency injection, just like web requests.
-
-Furthermore, providing session management functionality in a non-web environment is one of the unique features of this package. This allows for the effective construction of complex background applications that need to maintain state across multiple `translate()` calls.
+1.  **Multi-Purpose Business Logic Reuse**: Translets written for web controllers can be invoked directly as background batch jobs or administration commands via `translate()` without altering business logic.
+2.  **OS-Native Lifecycle Support**: Integrates cleanly with standard Linux and Windows service wrappers, supporting resilient, long-running production daemon workloads.
+3.  **In-Memory Session Virtualization**: Simulates virtual sessions and in-memory I/O streams in network-less environments, preserving a uniform programming model across all application domains.

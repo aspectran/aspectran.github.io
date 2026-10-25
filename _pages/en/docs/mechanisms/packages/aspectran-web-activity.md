@@ -1,46 +1,145 @@
 ---
-title: In-Depth Analysis of the `com.aspectran.web.activity` Package
+title: "In-Depth Analysis of `com.aspectran.web.servlet.activity` Package"
 subheadline: Package Specifications
+mermaid: true
 ---
 
-## 1. Design Goals and Key Roles
+## 1. Design Goals and Primary Roles
 
-This package acts as an **adapter that adjusts Aspectran's core execution engine (`CoreActivity`) to the standard Java Servlet environment**. The design goals of this package are as follows:
+The `com.aspectran.web.servlet.activity` package provides the **specialized execution engine and adapter layer** that adapts Aspectran's core execution engine (`CoreActivity`) to standard Java/Jakarta EE servlet environments.
 
--   **Concretizing the Execution Environment**: Inherits from the protocol-independent `CoreActivity` to provide `ServletWebActivity`, which integrates with specific technologies like the Servlet API (`HttpServletRequest`, `HttpServletResponse`).
--   **Encapsulation of the Servlet API**: Instead of directly handling servlet request/response objects, it encapsulates them behind Aspectran's standard adapter interfaces (`RequestAdapter`, `ResponseAdapter`). This ensures that the `CoreActivity` execution pipeline does not have a direct dependency on the Servlet API.
--   **Handling Web-Specific Features**: It is responsible for handling features required only in a web environment, such as multipart request (file upload) parsing, request encoding processing, and asynchronous request processing (Servlet 3.0+ `AsyncContext`).
+The core architectural objectives of this package are:
 
-In conclusion, this package aims to provide a **specialized executor** that performs all necessary conversions and adaptations to enable the general execution engine to operate within the specific context of the web.
+*   **Concretization of the Servlet Web Execution Context**: Inherits from protocol-independent `CoreActivity` to provide `ServletWebActivity`, interfacing directly with modern Jakarta Servlet APIs (`jakarta.servlet.http.HttpServletRequest`, `HttpServletResponse`).
+*   **Total Adapter Encapsulation**: Avoids exposing raw servlet objects directly by encapsulating them behind standard Aspectran interfaces—`HttpServletRequestAdapter`, `HttpServletResponseAdapter`, and `HttpSessionAdapter`—guaranteeing total independence of the core pipeline.
+*   **Complete Support for Advanced Web Specifications**: Provides activity-level handling of HTTP method overrides (`X-HTTP-Method-Override`), reverse proxy forwarding headers (`X-Forwarded-For`), HTTP `Accept` header content negotiation (`isHeaderAcceptable`), and maximum request payload limits (`maxRequestSize`).
+*   **Web-Specific Request Parsing and Asynchronous Processing**: Seamlessly coordinates large multipart file uploads (`multipart/form-data`) and URL-encoded forms via `WebRequestBodyParser`, alongside native Servlet 3.0+ asynchronous request processing (`isAsync()`, `AsyncContext`).
 
-## 2. Detailed Class Analysis
+## 2. Key Classes In-Depth Analysis
 
-### `ServletWebActivity` (Implementation Class)
+```mermaid
+classDiagram
+    class CoreActivity {
+        <<abstract>>
+        #adapt()
+        #parseRequest()
+        #isHeaderAcceptable()
+    }
 
-The final implementation of `Activity` for the servlet-based web environment. A new instance is created for each incoming `HttpServletRequest` by `WebService`.
+    class ServletWebActivity {
+        -WebService webService
+        -HttpServletRequest request
+        -HttpServletResponse response
+        -String effectiveContextPath
+        -String requestName
+        -MethodType requestMethod
+        -boolean async
+        -Long timeout
+        +getMode() Mode
+        +prepare()
+        #adapt()
+        #parseRequest()
+        #isHeaderAcceptable()
+    }
 
-**Key Responsibilities:**
--   Inherits `CoreActivity`, thus inheriting all of Aspectran's standard request processing pipeline (advice, action execution, etc.).
--   Maintains references to `HttpServletRequest` and `HttpServletResponse` objects and manages them throughout the entire request processing lifecycle.
--   Integrates web-related features (multipart parsing, asynchronous processing, etc.) into `CoreActivity`'s execution flow.
+    class HttpServletRequestAdapter {
+        -HttpServletRequest request
+        +getMaxRequestSize() long
+        +setMaxRequestSize(long)
+    }
 
-**Key Method Analysis:**
--   `adapt()`: The **core implementation of the Adapter Pattern**. It is called at the beginning of `CoreActivity`'s `perform()` method and creates and configures adapters that convert Servlet API objects into Aspectran's standard interfaces.
-    -   `HttpServletRequestAdapter`: Wraps `HttpServletRequest` to act as a `RequestAdapter`. It provides a standardized way to read request parameters, attributes, headers, etc.
-    -   `HttpServletResponseAdapter`: Wraps `HttpServletResponse` to act as a `ResponseAdapter`. It provides a standardized way to write data to the response stream or set headers.
-    -   `HttpSessionAdapter`: Wraps `HttpSession` obtained via `HttpServletRequest.getSession()` to act as a `SessionAdapter`.
--   `parseRequest()`: Performs web-specific logic for parsing the HTTP request body. In particular, if the `Content-Type` is `multipart/form-data`, it uses `MultipartFormDataParser` to handle multipart requests, including file uploads. This method is called during the `prepare()` stage.
--   `isAsync()` / `getAsyncContext()`: Methods to support Servlet 3.0's asynchronous processing (`AsyncContext`). If a translet is configured with `async="true"`, these methods are used to switch to asynchronous mode and manage the `AsyncContext`.
+    class HttpServletResponseAdapter {
+        -HttpServletResponse response
+        +getWriter() Writer
+        +getOutputStream() OutputStream
+    }
 
-**Interaction with Other Classes:**
--   `WebService`: Within its `service()` method, it creates a `ServletWebActivity` for every valid request and calls `prepare()` and `perform()`.
--   `CoreActivity`: `ServletWebActivity` inherits `CoreActivity` and uses its execution pipeline as is. The role of `ServletWebActivity` is to 'connect' the input/output to the Servlet API so that this pipeline can run in a web environment.
--   Classes in `com.aspectran.web.adapter` package: `HttpServletRequestAdapter`, `HttpServletResponseAdapter`, etc., included in this package are directly created and used within the `adapt()` method.
+    class HttpSessionAdapter {
+        -HttpSession session
+    }
 
-## 3. Package Summary and Architectural Significance
+    CoreActivity <|-- ServletWebActivity
+    ServletWebActivity ..> HttpServletRequestAdapter : instantiates
+    ServletWebActivity ..> HttpServletResponseAdapter : instantiates
+    ServletWebActivity ..> HttpSessionAdapter : instantiates
+```
 
-The `com.aspectran.web.activity` package and its core, the `ServletWebActivity` class, are the **clearest examples of the Adapter Pattern** in Aspectran's architecture.
+### `ServletWebActivity` (Concrete Implementation Class)
 
-The greatest architectural significance of this package is the **separation of core logic from specific environment technology**. `CoreActivity` only defines an abstract pipeline of 'how to process a request', while `ServletWebActivity` handles the concrete role of 'how to fit the request and response from a servlet environment into that pipeline'. Thanks to this separation, Aspectran's core engine can remain stable and unaffected by changes or limitations of the Servlet API.
+The final concrete `Activity` class tailored for servlet-based web environments. It is newly instantiated per incoming `HttpServletRequest` on each invocation of `ServletWebService.service()`.
 
-Furthermore, other `Activity` implementations for different environments, such as `DaemonActivity` and `ShellActivity`, also inherit `CoreActivity` and implement their own adapters in the same way as `ServletWebActivity`. This is good evidence of how Aspectran supports various execution environments based on consistent and highly reusable design principles.
+*   **Core Responsibilities and Attributes**:
+    *   `webService`: References the parent `ServletWebService` to retrieve session activation policies, proxy forwarding configurations, flash map managers, and locale resolvers.
+    *   `request` / `response`: Jakarta Servlet standard request and response instances.
+    *   `effectiveContextPath`: The resolved context path used to build accurate relative and absolute URLs across reverse proxies or virtual hosts.
+    *   `async` / `timeout`: Asynchronous execution flags and timeout metadata declared in the active translet rule.
+    *   `getMode()`: Always returns `Mode.WEB`, activating web-specific AOP advice and view dispatchers.
+
+*   **Deep Dive into Core Methods**:
+    *   `prepare()` and Hidden Method Override:
+        ```java
+        @Override
+        public void prepare(@NonNull String requestName, MethodType requestMethod)
+                throws TransletNotFoundException, ActivityPrepareException {
+            if (requestMethod == MethodType.POST) {
+                String method = request.getHeader(HttpHeaders.X_HTTP_METHOD_OVERRIDE);
+                if (method == null) {
+                    method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
+                }
+                if (method != null) {
+                    MethodType hiddenRequestMethod = MethodType.resolve(method);
+                    if (hiddenRequestMethod != null) {
+                        requestMethod = hiddenRequestMethod;
+                    }
+                }
+            }
+            super.prepare(requestName, requestMethod);
+        }
+        ```
+        When firewalls or legacy HTTP clients cannot issue `PUT` or `DELETE` requests directly, inspects the `X-HTTP-Method-Override` header to safely elevate the virtual HTTP method.
+    *   `adapt()`: **The core implementation of servlet adaptation**.
+        ```java
+        @Override
+        protected void adapt() throws AdapterException {
+            if (webService.isSessionAdaptable()) {
+                SessionAdapter sessionAdapter = new HttpSessionAdapter(request);
+                setSessionAdapter(sessionAdapter);
+            }
+
+            HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(getTranslet().getRequestMethod(), request);
+            requestAdapter.setProxyAddressForwarding(webService.isProxyAddressForwarding());
+            // Configure maxRequestSize and requestEncoding
+            setRequestAdapter(requestAdapter);
+
+            ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
+            // Configure responseEncoding
+            setResponseAdapter(responseAdapter);
+
+            setFlashMapManager(webService.getFlashMapManager());
+            setLocaleResolver(webService.getLocaleResolver());
+
+            super.adapt();
+        }
+        ```
+        1.  Attaches `HttpSessionAdapter` wrapping `request.getSession()`, transparently bridging the servlet session to the Aspectran session subsystem.
+        2.  Instantiates `HttpServletRequestAdapter` to bind parameters, headers, attributes, and payload limits (`maxRequestSize`).
+        3.  Constructs `HttpServletResponseAdapter`, integrating standard output streams via `response.getOutputStream()` and `response.getWriter()`.
+    *   `parseRequest()`:
+        Drives `WebRequestBodyParser` to parse uploaded files into `FileParameter` instances for `multipart/form-data` requests, while decoding URL-encoded form parameters.
+    *   `isHeaderAcceptable(String headerRule)`:
+        Compares client HTTP `Accept` headers against allowed media types defined in translet rules, performing strict content negotiation for desired representation formats (JSON, XML, HTML, etc.).
+
+## 3. Interactions with Other Packages
+
+*   **`com.aspectran.web.servlet.service`**: `DefaultServletWebService` instantiates `ServletWebActivity` for each HTTP request and delegates execution via `prepare()` and `perform()`.
+*   **`com.aspectran.web.servlet.adapter`**: `ServletWebActivity` instantiates `HttpServletRequestAdapter`, `HttpServletResponseAdapter`, and `HttpSessionAdapter` to encapsulate Jakarta Servlet objects behind standard interfaces.
+*   **`com.aspectran.web.activity.request`**: Coordinates with `WebRequestBodyParser` to handle large multipart uploads and URL-encoded forms.
+*   **`com.aspectran.core.activity`**: `ServletWebActivity` extends `CoreActivity`, fully reusing its built-in AOP advice chains (`BEFORE`, `AFTER`, `THROWN`, `FINALLY`), action dispatching (`dispatchContent`), and response transformation pipeline without modification.
+
+## 4. Package Summary and Architectural Significance
+
+The `com.aspectran.web.servlet.activity` package and `ServletWebActivity` represent the **canonical paradigm of technical isolation provided by Aspectran's Adapter Pattern**:
+
+1.  **Immaculate Integration with Enterprise Servlet Standards**: Operates reliably on top of standard Jakarta EE servlet APIs while completely insulating core business actions and translet rules from servlet specifications.
+2.  **Modern REST and Mobile Optimization**: Essential capabilities for modern web services—such as HTTP Method Override, proxy client IP resolution, and Accept header negotiation—are handled automatically during initial activity phases.
+3.  **Total Symmetry Across Multi-Runtimes**: Conforms to the exact same adapter contracts as Undertow's `TowActivity` or Netty's `NettyActivity`, ensuring developers build and maintain business logic identically regardless of underlying server infrastructure.

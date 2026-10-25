@@ -1,69 +1,154 @@
 ---
-title: In-Depth Analysis of the `com.aspectran.shell.service` Package
+title: "In-Depth Analysis of `com.aspectran.shell.service` Package"
 subheadline: Package Specifications
+mermaid: true
 ---
 
-## 1. Design Goals and Key Roles
+## 1. Design Goals and Primary Roles
 
-This package provides specialized service implementations for running Aspectran as an **interactive command-line shell**. The design goals of this package are as follows:
+The `com.aspectran.shell.service` package provides specialized service layer implementations for running the Aspectran framework as an **interactive, feature-rich command-line shell powered by JLine3**.
 
--   **Provide an Interactive CLI Environment**: Provides a foundation for building complete interactive CLI applications where users can directly input commands and view results in the console.
--   **User Input-Based Execution Model**: Implements an execution model driven by **direct user command input** via the console, rather than external HTTP requests or internal programmatic calls.
--   **Abstraction of Console I/O**: Through the `ShellConsole` interface, it abstracts interaction with the actual console (JLine, system console, etc.), ensuring that service logic is not dependent on specific console technologies.
--   **Support for User-Friendly Shell Features**: Provides various convenience features expected in a typical shell environment, such as command history, welcome/help messages, and output redirection (`>`).
+The core architectural objectives of this package are:
 
-In conclusion, this package aims to create an interactive management tool that can manage or test Aspectran's powerful backend features.
+*   **User-Driven Interactive Runtime**: Implements an interactive human-in-the-loop interaction model that reads, parses, and executes commands typed directly into a terminal console by the operator, in contrast to passive HTTP request processing or automated schedulers.
+*   **High-Level Terminal Console Abstraction (`ShellConsole`)**: Encapsulates advanced terminal features—such as ANSI color styling, tab completion, multiline editing, and persistent command history management (`historyFile`)—behind the `ShellConsole` interface, decoupling service business logic from low-level JLine3 complexities.
+*   **Command-Line Parsing and Output Redirection**: Decomposes raw command-line strings into translet names, options, parameters, and attributes, providing transparent support for standard UNIX shell output redirection (`>` file overwrite, `>>` file append).
+*   **Asynchronous Background Execution Mode**: Supports an asynchronous execution pipeline combined with the `--async` flag, enabling long-running batch translets or compute-intensive jobs to execute in the background without blocking the interactive shell session.
+*   **Integration with Rich Built-in Administrative Commands**: Equips the runtime with `ShellCommandRegistry` to execute not only translet invocations, but also over 14 built-in administrative commands such as system diagnostics (`sysinfo`), aspect inspection (`aspect`), job scheduling control (`job`), encryption token generation (`pbencrypt`/`pbdecrypt`), and hot restarts (`restart`).
 
-## 2. Detailed Analysis of Key Classes and Interfaces
+## 2. Key Classes and Interfaces In-Depth Analysis
+
+```mermaid
+classDiagram
+    class CoreService {
+        <<interface>>
+    }
+
+    class AbstractCoreService {
+        <<abstract>>
+    }
+
+    class ShellService {
+        <<interface>>
+        +getConsole() ShellConsole
+        +getCommandRegistry() ShellCommandRegistry
+        +translate(CommandLine commandLine)
+        +printGreetings()
+        +printHelp()
+    }
+
+    class AbstractShellService {
+        <<abstract>>
+        -ShellConfig shellConfig
+        -ShellConsole console
+        -ShellCommandRegistry commandRegistry
+        -DefaultShellCommander shellCommander
+        #doStart()
+        #doStop()
+    }
+
+    class DefaultShellService {
+        +translate(TransletCommandLine commandLine)
+        #service(Activity activity)
+    }
+
+    class DefaultShellServiceBuilder {
+        +build(AspectranConfig, ShellConsole) ShellService
+    }
+
+    CoreService <|-- ShellService
+    AbstractCoreService <|-- AbstractShellService
+    ShellService <|.. AbstractShellService
+    AbstractShellService <|-- DefaultShellService
+    DefaultShellServiceBuilder ..> DefaultShellService : builds
+```
 
 ### `ShellService` (Interface)
 
-The specification for Aspectran services specialized for the interactive shell environment.
+The top-level specification for Aspectran services operating within interactive shell environments, extending `CoreService`.
 
-**Key Responsibilities:**
--   Inherits `CoreService` to possess all core service functionalities.
--   Provides access (`getConsole()`) to `ShellConsole`, which handles console I/O.
--   Defines methods related to the shell's UI, such as welcome messages and help output.
--   Defines the `translate(...)` method, which is the core entry point for executing a translet by receiving a parsed command line (`TransletCommandLine`).
+*   **Core Responsibilities**:
+    *   `getConsole()`: Exposes the `ShellConsole` interface governing ANSI styling, prompt rendering, and keystroke capture.
+    *   `getCommandRegistry()`: Provides access to the `ShellCommandRegistry` containing all available shell commands.
+    *   `translate(CommandLine commandLine)`: Accepts a structured command-line representation of user input and executes the corresponding business pipeline.
+    *   `printGreetings()` / `printHelp()`: Renders startup greeting messages (ASCII art banners) and command help guides to the console.
 
-### `DefaultShellService` (Implementation Class)
+### `AbstractShellService` (Abstract Class)
 
-The final implementation of `ShellService`, responsible for receiving commands from the user and handling the entire process of creating and executing `ShellActivity`.
+The abstract foundation encapsulating common terminal infrastructure and command routing mechanisms for `ShellService`.
 
-**Key Responsibilities:**
--   Inherits `DefaultCoreService` to act as a fully functional core service.
--   Maintains a reference to `ShellConsole` and uses it for all user interactions.
--   Reads and applies shell-specific configurations (welcome message, prompt, etc.) from `ShellConfig`.
+*   **Core Responsibilities and Implementation Details**:
+    *   Applies terminal configurations defined in `ShellConfig`, including prompt formatting, greeting banners, history file paths, and default encoding.
+    *   Instantiates `DefaultShellCommander` to inspect incoming user input and dispatch it appropriately: distinguishing framework built-in commands (`sysinfo`, `restart`, etc.) from translet execution requests.
+    *   Opens and closes console I/O streams in alignment with the service lifecycle (`doStart`, `doStop`), while initializing the shell session manager.
 
-**Key Method Analysis:**
--   `translate(TransletCommandLine tcl)`: This class's core execution method. The shell's main loop parses user input to create a `TransletCommandLine` object, and then calls this method.
-    1.  Extracts the translet name, virtual HTTP method, parameters, attributes, etc., to be executed from the `TransletCommandLine` object.
-    2.  Checks for output redirection specified by the user in the command (e.g., `> output.log`) and determines the `Writer` to which the result will be output. (If no redirection, it uses the console `Writer`.)
-    3.  Creates a `ShellActivity` instance specialized for the shell environment.
-    4.  Sets the request information and the determined output `Writer` into `ShellActivity`.
-    5.  Calls `activity.prepare()` and `activity.perform()` to drive Aspectran's standard request processing pipeline.
-    6.  Supports asynchronous execution (`--async` option), in which case it uses `CompletableFuture` to process the task in the background.
+### `DefaultShellService` (Concrete Implementation Class)
+
+The primary concrete implementation of `ShellService`, responsible for converting parsed command-line requests into `ShellActivity` executions and displaying output to the console.
+
+*   **Core Execution Pipeline (`translate`)**:
+    1.  **Command-Line Analysis**: Extracts translet identifiers, virtual HTTP methods, option lists, request parameters, and attributes from the incoming `TransletCommandLine`.
+    2.  **Target Writer Resolution**:
+        *   If the user specified an output redirection operator (`> /tmp/out.txt` or `>> /tmp/out.txt`), opens a file stream `Writer` directed at the target file path.
+        *   If no redirection is specified, binds `console.getWriter()` as the primary output stream.
+    3.  **`ShellActivity` Instantiation**: Constructs a dedicated `ShellActivity` injected with parsed parameters and the resolved output `Writer`.
+    4.  **Synchronous vs. Asynchronous Execution Branching**:
+        *   Standard Execution: Sequentially triggers `service(activity)` -> `activity.prepare()` -> `activity.perform()`, rendering output immediately to the console.
+        *   Asynchronous Execution (`--async` flag): Dispatches execution to a background thread pool via `CompletableFuture.runAsync()`, returning an immediate acknowledgment message to the interactive terminal.
 
 ### `DefaultShellServiceBuilder` (Builder Class)
 
-A factory class that creates and configures `DefaultShellService` instances.
+A factory class that configures and constructs instances of `DefaultShellService` from `AspectranConfig` and console objects.
 
-**Key Responsibilities:**
--   Receives an `AspectranConfig` and a `ShellConsole` implementation to instantiate `DefaultShellService`.
--   Configures `ServiceStateListener` to ensure that the service lifecycle is correctly integrated with `CoreServiceHolder`.
--   Responsible for configuring the initial console environment at service startup, including clearing the screen, displaying welcome messages, and help.
+*   Provisions `DefaultShellConsole` backed by JLine3's `Terminal` and `LineReader`, configuring the console styler (`DefaultConsoleStyler`) and prompt builder (`DefaultPromptStringBuilder`).
+*   Upon startup completion, registers the service with `CoreServiceHolder` and prints the configured greeting banner to the active terminal.
 
-## 3. Interaction with Other Packages
+## 3. Interactions with Other Packages and Shell Subsystems
 
--   **`com.aspectran.core.service`**: Directly inherits `DefaultCoreService` to reuse all of Aspectran's core functionalities (lifecycle, `ActivityContext` management, etc.).
--   **`com.aspectran.shell.activity`**: `DefaultShellService` creates a `ShellActivity` for every valid command. `ShellActivity` acts as an adapter between console I/O and the core engine.
--   **`com.aspectran.shell.console`**: Handles all console I/O through the `ShellConsole` interface. This means `DefaultShellService` does not need to know about the actual console implementation (e.g., `JLineShellConsole`).
--   **`com.aspectran.shell.command`**: The shell's main loop uses the `CommandParser` in this package to convert the user input string into a `TransletCommandLine` object.
+```mermaid
+graph TD
+    subgraph UI ["Terminal Console Layer (com.aspectran.shell.console)"]
+        Console["DefaultShellConsole (JLine3-backed)"]
+        Styler["DefaultConsoleStyler (ANSI Styling)"]
+        Prompt["PromptStringBuilder"]
+    end
+
+    subgraph CommandLayer ["Command Parsing & Dispatch (com.aspectran.shell.command)"]
+        Commander["DefaultShellCommander"]
+        Parser["CommandLineParser"]
+        Redir["OutputRedirection (>, >>)"]
+        Builtins["14 Built-in Commands (restart, job, aspect, etc.)"]
+    end
+
+    subgraph ServiceLayer ["com.aspectran.shell.service"]
+        SService["DefaultShellService"]
+    end
+
+    subgraph ActivityLayer ["com.aspectran.shell.activity"]
+        SActivity["ShellActivity"]
+        ReqAdapter["ShellRequestAdapter"]
+        ResAdapter["ShellResponseAdapter"]
+    end
+
+    Console -->|User typed input| Commander
+    Commander --> Parser
+    Parser --> Redir
+    Commander -.->|Built-in match| Builtins
+    Commander ==>|Translet request| SService
+    SService -->|Invoke translate| SActivity
+    SActivity --> ReqAdapter
+    SActivity --> ResAdapter
+    ResAdapter -->|Render output| Console
+```
+
+*   **`com.aspectran.shell.console`**: All user interactions traverse `ShellConsole`, which provides tab completion and real-time syntax highlighting.
+*   **`com.aspectran.shell.command`**: Input parsed by `CommandLineParser` is packaged into a `TransletCommandLine`, while file redirection streams are managed transparently by `OutputRedirection`.
+*   **`com.aspectran.shell.activity`**: `ShellService` delegates translet execution to `ShellActivity`, which executes interactive console callbacks if required parameters are missing.
 
 ## 4. Package Summary and Architectural Significance
 
-The `com.aspectran.shell.service` package transforms the Aspectran framework into an **interactive CLI application framework**. This demonstrates the flexibility of the architecture by implementing a **user-driven interaction model**, which is different from the reactive web service model or the proactive daemon service model.
+The `com.aspectran.shell.service` package delivers **one of the most robust and modern interactive CLI management environments** available in enterprise Java frameworks:
 
-The `TransletCommandLine` object acts as a DTO (Data Transfer Object) that holds request information for the shell environment, separating command parsing logic from execution logic. Additionally, the `ShellConsole` interface abstracts the external I/O device, the console, ensuring that service logic is not dependent on specific console technologies.
-
-Through this package, developers can easily build powerful management tools or test clients that can directly call and control all beans and business logic (translets) managed by Aspectran from the terminal.
+1.  **User-Driven Interaction Model**: Distinct from passive web request handling or automated daemon tasks, it establishes an interactive CLI model that provides administrators and engineers with an intuitive operational interface.
+2.  **Comprehensive Console Abstraction and UNIX Shell Capabilities**: Tightly integrated with JLine3, it seamlessly incorporates tab completion, history tracking, ANSI color formatting, and file redirection operators (`>`, `>>`) directly into the framework core.
+3.  **Unified Control Center for Administration and Testing**: Offers an unrivaled productivity tool that allows developers to verify beans, execute translets, and trigger scheduled batch jobs on the fly without relying on external HTTP clients or REST testing tools.

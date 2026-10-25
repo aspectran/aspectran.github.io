@@ -1,6 +1,6 @@
 ---
 title: Aspectran Architecture
-teaser: An Integrated Deep Dive (Full-Text Version)
+teaser: Integrated Architecture Blueprint (Full-Text Blueprint)
 subheadline: Architecture
 ---
 
@@ -9,277 +9,271 @@ subheadline: Architecture
 ## 1. Introduction
 
 ### 1.1. Aspectran Framework Overview
-Aspectran is a lightweight, high-performance framework based on the JVM, designed to efficiently build a wide range of applications, from simple command-line applications to complex enterprise web services. This document provides an in-depth analysis of Aspectran's internal architecture from a framework developer's perspective, helping to understand its core components, design principles, and extension points.
+Aspectran is a lightweight, high-performance application framework built on the JVM, meticulously engineered to span a wide spectrum of computing workloads—from simple command-line tools (CLI) to high-throughput asynchronous microservices and traditional enterprise web applications.
 
-### 1.2. Core Design Principles
-Aspectran's architecture is based on the following core design principles:
-*   **POJO-Centric**: Actively utilizes Plain Old Java Objects (POJOs) to hide the complexity of the framework and allow focus on business logic.
-*   **IoC (Inversion of Control) and DI (Dependency Injection)**: The framework manages the creation and lifecycle of objects and automatically injects dependencies to increase modularity and testability.
-*   **AOP (Aspect-Oriented Programming)**: Separates cross-cutting concerns from business logic to increase code cohesion and maximize reusability.
-*   **Environment Abstraction**: Abstracts the differences of various execution environments (web, shell, daemon, etc.) through the Adapter pattern, allowing the same business logic to run independently of the environment.
-*   **Modularity and Extensibility**: Supports flexible extension and customization through fine-grained modules and a layered architecture.
+This document presents the overarching system architecture blueprint of Aspectran. Moving beyond isolated descriptions of individual components, it provides a holistic perspective on how the framework's layered components synergistically assemble to process requests, guarantee environmental independence, and establish an end-to-end execution model.
 
-## 2. Top-Level Architecture: Services and Execution Environments
+### 1.2. Core Design Philosophy and Principles
+Aspectran's architecture is anchored in the following foundational design principles:
 
-### 2.1. Aspectran Service Architecture
+*   **POJO (Plain Old Java Object) Centric**: Ensures business logic remains uncontaminated by framework-specific interfaces. Developers implement business functionality as pure Java objects, while the framework composes them through declarative rules.
+*   **IoC (Inversion of Control) and DI (Dependency Injection)**: The framework engine governs the instantiation, configuration, and lifecycle of objects, utilizing constructor, field, and method injection to minimize coupling and maximize unit testability.
+*   **Seamless AOP (Aspect-Oriented Programming) Integration**: Cross-cutting concerns (security, transactions, logging, profiling, etc.) are physically decoupled from core business logic. Runtime dynamic proxies intelligently weave advice with minimal overhead.
+*   **Complete Environment Abstraction**: Extensively adopts the Adapter pattern to isolate technological differences across diverse execution environments (servlet web, non-servlet network servers, console shells, background daemons). Business logic operates completely unaware of its underlying runtime.
+*   **Micro-Modular Architecture and Diverse Runtimes**: Assembles only necessary capabilities (Servlet, Netty, Undertow, Jetty, session stores, etc.) as modular plug-ins on top of a minimal core, delivering an ultra-lightweight and fast runtime footprint.
 
-Aspectran's `Service` is a core container that manages the framework's lifecycle and acts as an entry point for a specific execution environment. The appropriate service implementation is used depending on the environment (web, shell, daemon, etc.) in which the application will run. This service architecture provides high flexibility and extensibility through a hierarchical and modular structure.
+### 1.3. Layered System Architecture Model
+The entire Aspectran architecture is organized into five distinct logical layers with well-defined responsibilities:
 
-#### 2.1.1. The Foundation of All Services: `CoreService`
+1.  **Service & Server Runtimes Layer**: Acts as the entry point for external requests and manages the lifecycle of the host execution environment (Servlet, Netty, Undertow, Jetty, Shell, Daemon, Embed).
+2.  **Environment Abstraction Layer (Adapters)**: Normalizes runtime-specific I/O constructs (`HttpServletRequest`, Netty channels, Undertow `HttpServerExchange`, console streams, etc.) into unified Aspectran standard interfaces.
+3.  **Execution Engine Layer (Activities & Translets)**: Orchestrates the request processing flow, executes business actions and translet rules, and collects execution results.
+4.  **Core Container Layer (Context & Rules)**: Centered around `ActivityContext`, this layer oversees bean lifecycles, AOP rules, translet blueprints, and system environment configurations.
+5.  **Infrastructure & Utilities Layer**: The foundational utility suite supporting the entire framework, including `SiblingClassLoader` (dynamic reloading), `nodelet` (lightweight streaming parser), PBE encryption, and unified logging (SLF4J/Logback).
 
-Located in the `com.aspectran.core.service` package, `CoreService` is the top-level abstraction that forms the basis of all Aspectran services.
+## 2. Service Architecture and Diverse Execution Environments
 
--   **Role**: `CoreService` is the **standard Bootstrapper** that manages the entire lifecycle (`ServiceLifeCycle`) of the service, including starting, stopping, and restarting, and creates and initializes the `ActivityContext`, which contains all of Aspectran's settings and components (Bean, Translet, Aspect, etc.).
--   **Implementation**: `DefaultCoreService` is the standard implementation of `CoreService` and includes all the core logic for parsing configuration files and building the `ActivityContext`.
--   **Relationship**: All environment-specific services to be described later are implemented by either directly inheriting from this `DefaultCoreService` or by containing it internally to extend its functionality. In other words, all services share the core mechanism of `CoreService`.
+### 2.1. Foundation of the Service Container: `CoreService`
+
+In Aspectran, a `Service` is the fundamental operational unit that governs the framework engine's lifecycle and serves as the container for a specific execution environment.
+
+#### 2.1.1. Top-Level Abstraction: `CoreService` and `DefaultCoreService`
+The `CoreService` interface in `com.aspectran.core.service` defines the top-level contract for all Aspectran services.
+
+*   **Role**: Controls the entire lifecycle (`ServiceLifeCycle`), including starting (`start`), stopping (`stop`), pausing (`pause`), and resuming (`resume`). It acts as the standard bootstrapper responsible for instantiating and initializing `ActivityContext`—the central hub of all framework components.
+*   **Standard Implementation**: `DefaultCoreService` loads configuration files (`AspectranConfig`), builds the context via `ActivityContextBuilder`, registers a singleton file lock (`FileLocker`) to prevent duplicate process instances, and hooks into JVM shutdown (`ShutdownHook`).
+*   **Service Registry**: Every active service is safely registered in the global `CoreServiceHolder`, allowing context and service lookups from anywhere across the application.
 
 #### 2.1.2. Feature Extension Module: `SchedulerService`
+`SchedulerService` is a sub-service that operates subordinately to the lifecycle of its parent service (`CoreService`).
 
-`SchedulerService` is a good example of Aspectran's modular architecture. It is not an independent service, but a **Sub-service** that adds **scheduling functionality** to `CoreService`.
+*   **Scheduling Abstraction**: Reads `ScheduleRule` definitions from the Aspectran configuration and drives a Quartz scheduler instance in the background.
+*   **Execution Integration**: When a schedule interval triggers, the Quartz job `ActivityLauncherJob` executes `JobActivity`, a specialized activity dedicated to background scheduled tasks.
+*   **Distributed Locking Support**: Integrates `ScheduledJobLockProvider` to enforce precise distributed execution locks, preventing duplicate task executions in multi-node clusters.
 
--   **Operation**: It is dependent on the lifecycle of the parent service (`CoreService`) and starts and stops along with it.
--   **Abstraction**: It reads the schedule rules (`ScheduleRule`) defined in the Aspectran configuration file and automatically configures and runs the Quartz scheduler. Developers can define scheduling in Aspectran's way without having to deal with the complex Quartz API directly.
--   **Context Integration**: When a scheduled job is executed, it runs Aspectran's `Activity` through `ActivityLauncherJob`. Thanks to this, even within a scheduled job, you can inject all the Beans registered in the application or apply AOP Aspects, just like in any other web request or shell command.
+### 2.2. Analysis of Diverse Runtime Environments
 
-### 2.2. Analysis of Aspectran's Execution Environments
+Aspectran employs a granular, modular structure on top of a single core engine, allowing developers to flexibly select the ideal runtime matching infrastructure requirements.
 
-Aspectran is designed to be highly adaptable, supporting various execution environments by providing specialized modules built upon its core service and activity concepts. This modularity allows developers to deploy Aspectran applications in a manner that best suits their specific use case, whether it be a long-running background process, an interactive command-line tool, an embedded library, or a traditional web application.
+#### 2.2.1. Modern Separation of Web Environments: `aspectran-web` vs `aspectran-web-servlet`
+Aspectran's web architecture is cleanly bifurcated into a pure web abstraction module and a servlet specification binding layer:
 
-Here is an analysis of each environment:
+*   **Pure Web Abstraction Layer (`aspectran-web`)**:
+    *   A pure web module completely independent of servlet APIs (`jakarta.servlet.*`).
+    *   Provides foundational infrastructure common to all web environments, including HTTP request parsing and parameter binding (`WebRequestBodyParser`, `RequestHeaderParser`), internationalization (`AcceptHeaderLocaleResolver`), standardized REST response encapsulation (`RestResponse`, `ResponsePayload`), and CORS processing (`DefaultCorsProcessor`).
+*   **Standard Servlet Integration Layer (`aspectran-web-servlet`)**:
+    *   Integrates Aspectran into standard Java Servlet/Jakarta Servlet container environments (Tomcat, Jetty, external WAS deployments).
+    *   **Primary Entry Points**: Servlet lifecycle listener `WebServiceListener` and HTTP routing servlet `WebActivityServlet`.
+    *   **Core Components**: `ServletWebService` (implemented by `DefaultServletWebService`), servlet request executor `ServletWebActivity`, and servlet request wrapper `ActivityRequestWrapper`.
 
-#### 2.2.1. Daemon Environment (`com.aspectran.daemon`)
+#### 2.2.2. Servlet-Free High-Performance Network Engine: Netty Environment (`with-netty`)
+A servlet-free runtime engineered for modern high-performance microservices and asynchronous event-driven networking.
 
-*   **Purpose:** To run an Aspectran application as a long-running background process without a direct user or web interface. Ideal for batch processing, scheduled tasks (if not using the built-in scheduler service), or inter-service communication.
-*   **Main Entry Points:**
-    *   `com.aspectran.daemon.DefaultDaemon` (and `SimpleDaemon`): Provides a `main` method to bootstrap the daemon from the command line. It handles loading the Aspectran configuration and starting the `DaemonService`.
-    *   `com.aspectran.daemon.Daemon`: The core interface defining the contract for an Aspectran daemon process, including access to the `DaemonService` and command handling capabilities.
-*   **Key Components:**
-    *   `DaemonService`: A `CoreService` specialized for daemon tasks, allowing for programmatic `translate()` calls.
-    *   `DaemonActivity`: An `Activity` implementation tailored for the daemon's internal request/response model.
-    *   `CommandExecutor`, `CommandRegistry`, `FileCommander`: Components for handling administrative commands and polling-based tasks.
-*   **Characteristics:** Proactive (initiates its own work), background execution, robust lifecycle management (including JVM shutdown hooks), optional session support for stateful background tasks.
+*   **Purpose**: Eliminates servlet container overhead by connecting Aspectran's translet processing engine directly onto Netty's non-blocking I/O (NIO) pipeline, delivering minimal memory footprints and ultra-low latency. It is also optimized for Java Virtual Threads.
+*   **Primary Entry Points and Components**:
+    *   `NettyServer` (implemented by `DefaultNettyServer`): Bootstraps Netty's `ServerBootstrap` and channel pipelines.
+    *   `NettyService` (implemented by `DefaultNettyService`): The specialized `CoreService` coordinating with the Netty server.
+    *   `NettyActivity`: Dedicated `Activity` handling inbound Netty HTTP requests.
 
-#### 2.2.2. Embedded Environment (`com.aspectran.embed`)
+#### 2.2.3. Lightweight Embedded Web Server: Undertow (`with-undertow`)
+An execution environment based on JBoss Undertow, a high-performance, lightweight web server.
 
-*   **Purpose:** To integrate Aspectran's powerful features as a library or component within an existing Java application (standalone, desktop, or another web framework). It provides a simplified facade for interacting with Aspectran without exposing its internal complexities.
-*   **Main Entry Point:**
-    *   `com.aspectran.embed.service.EmbeddedAspectran`: The primary interface for embedding. It provides static `run()` methods that act as convenient factory methods for starting an embedded Aspectran instance from various configuration sources (file, reader, `AspectranConfig`).
-*   **Key Components:**
-    *   `EmbeddedAspectran` (Interface): A high-level facade over `CoreService` that provides methods like `translate()`, `render()`, `execute()`, `getBean()`, and `getMessage()`.
-    *   `com.aspectran.embed.service.DefaultEmbeddedAspectran`: The concrete implementation of `EmbeddedAspectran`, which manages a `DefaultCoreService` internally.
-    *   `com.aspectran.embed.activity.AspectranActivity`: An `Activity` implementation for the embedded context, adapting programmatic calls to Aspectran's processing pipeline.
-*   **Characteristics:** Facade pattern, easy bootstrapping, use-case-oriented API, provides all of Aspectran's features with a simplified interface, optional session support.
+*   **Purpose**: Delivers a high-throughput embedded web runtime allowing flexible composition of blocking and non-blocking handler chains.
+*   **Key Components**:
+    *   `TowService` (implemented by `DefaultTowService`): Service governing the Undertow runtime.
+    *   `TowActivity`: Directly wraps Undertow's native `HttpServerExchange` to dispatch requests at maximum speed.
 
-#### 2.2.3. Shell Environment (`com.aspectran.shell`)
+#### 2.2.4. Embedded Servlet Web Server: Jetty (`with-jetty`)
+Embeds a standard servlet container directly into the application for familiar and lightweight operations.
 
-*   **Purpose:** To provide an interactive command-line interface (CLI) for an Aspectran application. It allows users to execute commands (translets) directly from a terminal and interact with the application.
-*   **Main Entry Point:**
-    *   `com.aspectran.shell.AspectranShell`: Contains the `main` method to bootstrap the interactive shell. It uses a `DefaultShellCommander` to manage the shell's lifecycle.
-*   **Key Components:**
-    *   `com.aspectran.shell.service.ShellService`: A `CoreService` specialized for the shell environment, providing access to the `ShellConsole` and a `translate()` method for command execution.
-    *   `com.aspectran.shell.activity.ShellActivity`: An `Activity` implementation tailored for console I/O, handling features like procedural prompts and output redirection.
-    *   `ShellConsole`: An abstraction for console interaction (reading input, writing output).
-*   **Characteristics:** Interactive, command-line based, user-facing features (greetings, help, verbose mode), optional session support for maintaining state between commands.
+*   **Purpose**: Bootstraps Eclipse Jetty as an embedded servlet engine, maintaining standard servlet compatibility within standalone (fat JAR) web deployments.
+*   **Key Components**: Configures `ServletContextHandler` via `JettyServer` and mounts `WebServiceListener` for bootstrapping.
 
-#### 2.2.4. Web Environments (`com.aspectran.web` and `com.aspectran.undertow`)
+#### 2.2.5. Interactive Console (CLI) Environment: Shell (`aspectran-shell`)
+An interactive command-line interface environment interacting with users via terminal consoles.
 
-Aspectran supports web environments through two primary modules: one for generic servlet containers and another for the Undertow web server.
+*   **Primary Entry Point**: `AspectranShell.main()`, which internally governs the console lifecycle via `DefaultShellCommander`.
+*   **Key Components**:
+    *   `ShellService` (implemented by `DefaultShellService`)
+    *   `ShellActivity`: Maps command-line arguments and standard I/O streams to activity executions.
+    *   `ShellConsole`: Abstraction layer managing JLine terminals and standard console I/O.
 
-*   **Generic Servlet Environment (`com.aspectran.web`)**
-    *   **Purpose:** To run an Aspectran application within any standard Java Servlet container (e.g., Tomcat, Jetty, WildFly). It acts as a bridge between Aspectran's core and the Servlet API.
-    *   **Main Entry Points:** `com.aspectran.web.servlet.listener.WebServiceListener`, `com.aspectran.web.servlet.WebActivityServlet`
-    *   **Key Components:** `WebService`, `ServletWebActivity`, `DefaultServletHttpRequestHandler`
-    *   **Characteristics:** Reactive (responds to HTTP requests), Servlet API-based, supports all web features (sessions, encoding, multipart, async), traditional WAR deployment.
+#### 2.2.6. Background Process Environment: Daemon (`aspectran-daemon`)
+A headless background server process environment designed for continuous execution without a direct user interface.
 
-*   **Undertow Environment (`com.aspectran.undertow`)**
-    *   **Purpose:** To run an Aspectran application on top of the high-performance, embedded Undertow web server. This provides a servlet-less alternative to the generic web environment, enabling a more lightweight and potentially faster deployment.
-    *   **Main Entry Point:** Started by programmatically embedding Undertow and wiring up Aspectran's `TowService` as a handler.
-    *   **Key Components:** `TowService`, `TowActivity`
-    *   **Characteristics:** Servlet-less web, direct Undertow API interaction, high performance, reusable web configuration (`WebConfig`), ideal for building lightweight microservices with an embedded web server.
+*   **Primary Entry Points**: `DefaultDaemon`, `ProcrunDaemon` (for Windows Services), `JsvcDaemon` (for Linux/Unix Daemons).
+*   **Key Components**:
+    *   `DaemonService` (implemented by `DefaultDaemonService`)
+    *   `DaemonActivity`
+    *   `CommandExecutor`, `FileCommander`: Asynchronously receives external control commands via file watching or polling queues to trigger translets.
+
+#### 2.2.7. Embedded Library Environment: Embed (`aspectran-embed`)
+Embeds the Aspectran engine as an in-process library within existing Java applications or unit tests.
 
-## 3. Environment Abstraction: The Adapter Architecture
+*   **Key Components**:
+    *   `EmbeddedAspectran` (implemented by `DefaultEmbeddedAspectran`): A high-level facade API providing intuitive calls to `translate()`, `render()`, `execute()`, and `getBean()`.
+    *   `AspectranActivity`: Specialized lightweight `Activity` designed for programmatic invocations.
+
+> **Related Detailed Mechanisms**: For deeper insights into service lifecycles, bootstrapping sequences, and runtime entry points, refer to [Aspectran Service Architecture In-Depth](/en/docs/mechanisms/aspectran-services/) and [Aspectran Execution Environments In-Depth](/en/docs/mechanisms/aspectran-execution-environments/).
+
+## 3. Environment Abstraction: Adapter Architecture
+
+One of the most distinctive strengths of Aspectran's architecture is its **thorough adoption of the Adapter pattern**. Adapters abstract the distinct I/O and session mechanisms of diverse runtimes, completely decoupling business logic (Translets and Beans) from physical execution platforms.
+
+### 3.1. Core Contract Interfaces: `com.aspectran.core.adapter`
+Aspectran's core execution engine depends strictly on the four foundational contract interfaces defined in `com.aspectran.core.adapter`:
+
+*   `ApplicationAdapter`: Abstracts baseline environment properties such as the application's root path, classloader, and application-scoped attributes.
+*   `RequestAdapter`: Normalizes external request data, providing standard access to parameters, headers, attributes, body input streams, and uploaded files.
+*   `ResponseAdapter`: Abstracts response output, providing unified APIs for character streams (`Writer`), binary streams (`OutputStream`), encoding definitions, and response headers.
+*   `SessionAdapter`: Generalizes user session state. It extends beyond web `HttpSession` to provide identical session abstractions across console shells and daemon processes.
+
+### 3.2. Runtime Implementation Adapter Mapping
+The table below illustrates how the four core contract interfaces are symmetrically implemented across each runtime environment:
+
+| Execution Environment | Module & Package | RequestAdapter | ResponseAdapter | SessionAdapter |
+| :--- | :--- | :--- | :--- | :--- |
+| **Servlet Web** | `aspectran-web-servlet`<br>`com.aspectran.web.servlet.adapter` | `HttpServletRequestAdapter` | `HttpServletResponseAdapter` | `HttpSessionAdapter` |
+| **Netty** | `with-netty`<br>`com.aspectran.netty.adapter` | `NettyRequestAdapter` | `NettyResponseAdapter` | `NettySessionAdapter` |
+| **Undertow** | `with-undertow`<br>`com.aspectran.undertow.adapter` | `TowRequestAdapter` | `TowResponseAdapter` | `TowSessionAdapter` |
+| **Shell (CLI)** | `aspectran-shell`<br>`com.aspectran.shell.adapter` | `ShellRequestAdapter` | `ShellResponseAdapter` | `ShellSessionAdapter` |
+| **Daemon** | `aspectran-daemon`<br>`com.aspectran.daemon.adapter` | `DaemonRequestAdapter` | `DaemonResponseAdapter` | `DaemonSessionAdapter` |
+| **Embedded** | `aspectran-embed`<br>`com.aspectran.embed.adapter` | `AspectranRequestAdapter` | `AspectranResponseAdapter` | `AspectranSessionAdapter` |
+| **Scheduler** | `aspectran-core`<br>`com.aspectran.core.scheduler.adapter` | `QuartzJobRequestAdapter` | `QuartzJobResponseAdapter` | *(Stateless)* |
+
+### 3.3. Core Values of the Adapter Architecture
+1.  **Ultimate Business Code Reusability**: The exact same business actions and translet definitions run without altering a single line of code across servlet web servers, Netty asynchronous servers, CLI consoles, and background schedulers.
+2.  **Isolated and Fast Testing**: Rapid, fully isolated unit tests can be executed in memory using `AspectranRequestAdapter` and `AspectranResponseAdapter` without launching external servlet containers or binding network sockets.
+3.  **Frictionless Adaptation of New Runtimes**: When emerging protocols or transports arise (e.g., gRPC, RSocket), implementing the four core adapter contracts immediately integrates Aspectran's rich framework assets.
 
-One of the most powerful architectural features of the Aspectran framework is the **Adapter**. Adapters play a key role in abstracting the differences of the runtime environment (web, console, daemon, etc.), allowing the same business logic to run without modification in any environment.
+> **Related Detailed Mechanisms**: For adapter lifecycles, the `adapt()` orchestration sequence, and environment-specific translation logic, refer to [Adapter Architecture: The Core of Environmental Independence](/en/docs/mechanisms/aspectran-adapters/).
+
+## 4. Core Container and Rule Pipeline
 
-### 3.1. Core Interfaces: `com.aspectran.core.adapter`
-This package defines the **core interfaces** that all adapters must implement. Aspectran's core engine depends only on these abstract interfaces, so it does not need to know at all whether the actual execution environment is a web server, a console, or any other environment.
+### 4.1. IoC/DI Container: `ActivityContext`
+`ActivityContext` serves as the **central hub** and core IoC container of an Aspectran application.
 
-*   `ApplicationAdapter`: Abstracts the application's overall lifecycle and environment (base path, classloader, etc.).
-*   `SessionAdapter`: Abstracts the user's session. It corresponds to `HttpSession` in a web environment but is generalized so that the concept of a session can be used in other environments as well.
-*   `RequestAdapter`: Abstracts the user's request information. It includes parameters, attributes, etc.
-*   `ResponseAdapter`: Abstracts the response to a request. It provides a stream for outputting response data, etc.
+*   **Comprehensive Component Registries**:
+    *   `BeanRegistry`: Manages dependency injection and lifecycles for singleton and prototype beans.
+    *   `AspectRuleRegistry`: Stores AOP pointcut definitions and advice rules.
+    *   `TransletRuleRegistry`: Maps request URL patterns to translet execution blueprints.
+    *   `ScheduleRuleRegistry`, `TemplateRuleRegistry`: Manages task schedules and template rendering definitions.
+*   **Build Pipeline (`HybridActivityContextBuilder`)**:
+    1.  **Configuration**: Defines configuration paths, component scanning packages, and active profiles (`ActiveProfiles`).
+    2.  **Declarative Parsing**: Employs `HybridActivityContextRuleParser` to parse XML/APON configurations into pure POJO `Rule` instances.
+    3.  **Creation & Validation**: Instantiates `DefaultActivityContext` after verifying bean references (`BeanReferenceInspector`) and validating AOP rules (`AspectRuleValidator`).
+    4.  **Initialization**: Instantiates and injects dependencies for all eager-init singleton beans, optionally activating file-watching hot reloads via `ContextReloadingTimer`.
 
-In addition, abstract classes in the form of `Abstract*Adapter` serve as templates that help to more easily create implementation adapters for each environment by pre-implementing common functionalities.
+### 4.2. Configuration Loading Engine: `nodelet` (`com.aspectran.utils.nodelet`)
+To eliminate the memory and performance overheads of traditional DOM-based XML parsing, Aspectran implements a proprietary lightweight streaming parser called **`nodelet`**:
 
-### 3.2. Environment-specific Implementation Adapters
-The packages below contain classes that specifically implement the abstract interfaces of `com.aspectran.core.adapter` to fit their respective execution environments.
+*   **XPath-Based Callback Mapping**: Avoids loading heavy DOM trees into memory by registering lambda callbacks (`Nodelet`) directly against specific XPaths on top of a SAX event stream, rapidly populating `Rule` objects.
+*   **Dynamic `mount` Feature**: Dynamically connects and reuses sub-rule sets (`NodeletGroup`) when processing nested XML structures, minimizing parser allocations and supporting unlimited structural nesting.
 
-*   **Web Environment Adapters**
-    *   **`com.aspectran.web.adapter` (Standard Servlet-based)**: `WebApplicationAdapter`, `HttpSessionAdapter`, `HttpRequestAdapter`, etc., wrap `ServletContext`, `HttpSession`, and `HttpServletRequest` respectively to operate in a standard servlet container environment.
-    *   **`com.aspectran.undertow.adapter` (Native Undertow-based)**: Operates by directly wrapping the native objects (`HttpServerExchange`) of the high-performance web server Undertow, without going through the standard Servlet API.
+### 4.3. Configuration Rule Architecture (`com.aspectran.core.context.rule`)
+All application behavior blueprints are modeled as pure data objects (POJOs) known as `Rule` classes:
 
-*   **Console (CLI) Environment Adapter (`com.aspectran.shell.adapter`)**
-    *   `ShellRequestAdapter` treats the user's input command and arguments as a 'request', and `ShellResponseAdapter` treats `System.out` as a 'response'.
+*   **Top-Level Entity Rules**: `TransletRule`, `BeanRule`, `AspectRule`, `ScheduleRule`, `TemplateRule`.
+*   **Execution & Control Rules**: `InvokeActionRule`, `TransformRule`, `DispatchRule`.
+*   **Ability Interfaces (`com.aspectran.core.context.rule.ability`)**: Contracts such as `HasActionRules` and `HasResponseRules` allow composite rules to be assembled in a type-safe manner.
 
-*   **Daemon Environment Adapter (`com.aspectran.daemon.adapter`)**
-    *   `DaemonRequestAdapter` treats a task triggered by a scheduler or an internal event as a 'request'.
+> **Related Detailed Mechanisms**: For detailed algorithms on the 4-stage build pipeline, refer to [ActivityContext Building Process: An In-Depth Analysis](/en/docs/mechanisms/activity-context-building/) and [ActivityContext: The Heart of Aspectran](/en/docs/mechanisms/activity-context/). For advanced streaming parsing, refer to [Aspectran Configuration Loading Mechanism](/en/docs/mechanisms/aspectran-loading-mechanism/) and [In-Depth Analysis of Aspectran Configuration Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/).
 
-*   **Embedded Environment Adapter (`com.aspectran.embed.adapter`)**
-    *   Used when embedding Aspectran in another Java application, everything is implemented simply in memory, making it very useful for unit testing.
+## 5. Execution Engine and End-to-End Request Processing Pipeline
 
-### 3.3. Advantages of the Adapter Architecture
-1.  **Perfect Environment Separation**: The business logic (Translet, Bean, etc.) does not need to know at all in which environment it is running.
-2.  **Highest Level of Code Reusability**: Code containing the same business logic can be reused in web, CLI, and background services without a single line of modification.
-3.  **Testability**: Business logic can be tested quickly and simply using `com.aspectran.embed.adapter` without having to run a web server or a complex environment.
-4.  **Extensibility**: Even if a new execution environment (e.g., gRPC, WebSocket, etc.) emerges, all existing Aspectran assets can be utilized as is, just by implementing an adapter for that environment.
+### 5.1. Activity Execution Model
+The execution engine controls the entire lifecycle of a request from arrival to completion:
 
-## 4. Core Container and Processing Flow
+*   `Activity`: The central coordinator for a single request-response lifecycle. It leverages `ThreadLocal` storage to bind request state and adapters safely in multi-threaded environments.
+*   `Translet`: Serves as the **communication medium and public API** between the internal processing engine and user business code, unifying request parameters, attributes, action outputs, and session access.
+*   **Specialized Activity Variants**:
+    *   `CoreActivity`: Standard activity executing the full translet rule pipeline.
+    *   `InstantActivity`: Lightweight activity for executing programmatic Aspectran context tasks directly within business code.
+    *   `JobActivity`: Activity dedicated to scheduled background tasks.
+    *   `ProxyActivity`: Lightweight activity tailored for executing AOP advice.
 
-### 4.1. ActivityContext: The Heart of Aspectran
-The `ActivityContext` is the **core container (IoC Container)** of an Aspectran application and a central hub that oversees and manages all configurations, components, and execution states.
+### 5.2. Action Pipeline and Result Aggregation
+Processing steps inside a translet are executed as a sequence of actions implementing the `Executable` interface:
 
-*   **Key Responsibilities and Roles**:
-    *   **Lifecycle Management**: Manages the creation, initialization, and destruction of all registered core components.
-    *   **Core Component Registry**: Provides an access point to registries that store and manage all rules and components, such as `BeanRegistry`, `AspectRuleRegistry`, `TransletRuleRegistry`, and `ScheduleRuleRegistry`.
-    *   **Environment Information Access**: Provides access to the `Environment` object for active profiles, property values, etc.
-    *   **Activity Management**: Manages the lifecycle of `Activity` objects and ensures stability in a multi-threaded environment by managing each thread's `Activity` independently using `ThreadLocal`.
-    *   **Resource Loading and Internationalization**: Provides access to `ClassLoader` and `MessageSource`.
+*   **Diverse Built-in Actions**:
+    *   `InvokeAction`: Invokes registered bean methods via reflection or proxies.
+    *   `MethodAction`: Executes declared methods with automatic argument binding.
+    *   `IncludeAction`: Includes and executes other translets as subroutines.
+    *   `EchoAction`, `HeaderAction`, `ChooseAction`, etc.
+*   **Hierarchical Result Collection Structure (`com.aspectran.core.activity.process.result`)**:
+    *   `ActionResult`: Encapsulates the return value of an individual action.
+    *   `ContentResult`: Aggregates results of an action group (`<contents>`).
+    *   `ProcessResult`: Top-level container holding all execution outputs of an activity, serving as the direct data source for view rendering and REST serializers.
 
-*   **Build Process (`ActivityContextBuilder`)**: `HybridActivityContextBuilder` builds the `ActivityContext` in four stages: **configuration, parsing, creation, and initialization**.
-    1.  **Configuration**: The builder is configured through methods like `setContextRules()` (configuration file paths), `setBasePackages()` (component scanning), and `setActiveProfiles()` (profile activation).
-    2.  **Parsing**: When the `build()` method is called, `HybridActivityContextRuleParser` reads the configuration files (XML/APON), converts them into internal `Rule` objects like `AspectRule` and `BeanRule`, and also creates `BeanRule`s for scanned classes, temporarily storing them in `RuleParsingContext`.
-    3.  **Creation**: A `DefaultActivityContext` instance is created based on the parsed rules, and all registries are set up. The validity of bean references and aspect rules is verified through `BeanReferenceInspector` and `AspectRuleValidator`.
-    4.  **Initialization**: The `initialize()` method of `ActivityContext` is called to complete the instantiation and dependency injection of all singleton beans. The **auto-reloading (Hot-Reloading)** feature is activated through `ContextReloadingTimer` according to the configuration.
+### 5.3. Response Handling and View Strategies
+The `com.aspectran.core.activity.response` package provides flexible output strategies:
 
-### 4.2. Activity Architecture
-Aspectran's Activity architecture is the **core of its request processing model**, a hierarchical and modular structure designed to handle requests consistently across various execution environments.
+*   **View Dispatching (`DispatchResponse`)**: Delegates data to view template engines (JSP, Thymeleaf, FreeMarker, Pebble, etc.) via the `ViewDispatcher` interface to render HTML.
+*   **Data Transformation (`TransformResponse`)**: Automatically serializes `ProcessResult` data into standard formats:
+    *   `JsonTransformResponse`: High-performance JSON serialization.
+    *   `AponTransformResponse`: Serialization into Aspectran's proprietary APON format.
+    *   `XmlTransformResponse`, `TextTransformResponse`, etc.
+*   **REST-Specific Responses (`RestResponse`)**: Finely controls HTTP status codes, headers, and payloads (`ResponsePayload`) tailored for RESTful architectures.
 
-*   **Core Foundation (`com.aspectran.core.activity`)**: This package is the **execution engine** of Aspectran. It defines the fundamental concepts and pipeline needed to handle all kinds of requests.
-    *   **`Activity`**: The central execution object for a single request-response lifecycle. It accesses the `ActivityContext`, abstracts the environment through adapters, and is responsible for exception handling and flow control.
-    *   **`Translet`**: A **medium for communication between the `Activity` that actually processes the request and the user code**. It encapsulates the rules and data for a single request and serves as the main API for the business logic to interact with the execution state.
-    *   **`CoreActivity`**: Provides the core logic to **process a request according to the rules defined in a `Translet`** and orchestrates the entire processing pipeline.
-    *   **`InstantActivity`**: A lightweight `Activity` variant that can be executed from user code, useful for short-term programmatic tasks that leverage the Aspectran context.
+### 5.4. End-to-End Request Processing Flow
+The chronological sequence of component interactions from external request arrival to response transmission unfolds as follows:
 
-### 4.3. Actions and Processing Results
-The `com.aspectran.core.activity.process` package plays a key role in defining and executing the processing flow within an `Activity`.
+1.  **Request Arrival**: A client request arrives at the host environment (`WebActivityServlet` in a servlet container, Netty channel handler, Undertow handler, or shell console).
+2.  **Adapter Wrapping**: Instantiates standard `RequestAdapter`, `ResponseAdapter`, and `SessionAdapter` instances wrapping runtime-specific I/O constructs.
+3.  **Activity Instantiation**: The host service instantiates an `Activity` for the request, injects the adapters, and binds the activity to the active thread (`ThreadLocal`).
+4.  **Translet Rule Matching**: Locates the matching `TransletRule` from `TransletRuleRegistry` based on the request URI and HTTP method.
+5.  **AOP Before Advice Execution**: If Before advice is declared for the translet, the proxy engine executes it prior to business actions.
+6.  **Action Chain Dispatching**: Sequentially executes configured actions according to the `ActionList`, accumulating return values into `ProcessResult`.
+7.  **Response Generation**: Executes `DispatchResponse` (view rendering) or `TransformResponse` (JSON/XML serialization) to write data directly into the `ResponseAdapter` output stream.
+8.  **AOP After/Finally Advice and Teardown**: Executes After and Finally advice, commits or rolls back transactions, updates sessions, clears `ThreadLocal` context, and cleans up logging group bindings.
 
-*   **Concept of Action**: An Action refers to any command that implements the `com.aspectran.core.activity.process.action.Executable` interface. They are organized hierarchically within `ActionList` and `ContentList` to define the entire processing flow of a translet.
-*   **Types of Actions**: Various built-in Actions are provided, such as `InvokeAction`, `MethodAction`, `ChooseAction`, `EchoAction`, `HeaderAction`, and `IncludeAction`.
-*   **Structure of Action Processing Results**: The results of Action execution are managed hierarchically through the classes in the `com.aspectran.core.activity.process.result` package.
-    *   **`ActionResult`**: Encapsulates the result of a single `Executable` Action execution.
-    *   **`ContentResult`**: A container for the results of a logical group of Actions (e.g., a `<contents>` block).
-    *   **`ProcessResult`**: The top-level container for all execution results within a single `Activity` lifecycle.
-*   **Utilization of Result Values**: This structured result value plays a crucial role in various key functions such as **view rendering**, **response generation (e.g., REST API)**, **inter-translet communication**, **conditional logic and flow control**, and **debugging and logging**.
+> **Related Detailed Mechanisms**: For state machine transitions and translet pipeline internals, refer to [Activity Architecture: The Execution Engine of Request Processing](/en/docs/mechanisms/aspectran-activities/), [Aspectran Actions: Concepts, Types, and Processing Results](/en/docs/mechanisms/aspectran-actions/), and [Request and Response Handling Mechanisms](/en/docs/mechanisms/aspectran-request-response/).
 
-## 5. Request and Response Handling Mechanism
+## 6. Advanced System Services
 
-Aspectran provides a robust and flexible mechanism for processing incoming requests and generating appropriate responses during the lifecycle of an `Activity`.
+### 6.1. High-Performance Dynamic AOP Proxy Mechanism
+Aspectran's AOP employs an intelligent proxy architecture that fundamentally eliminates unnecessary overhead:
 
-### 5.1. Request Handling
-*   **Core Request Handling (`com.aspectran.core.activity.request`)**: Provides core abstractions for capturing, parsing, and managing request data through `AbstractRequest`, `ParameterMap`, `FileParameter`, `PathVariableMap`, and `RequestBodyParser`.
-*   **Web-specific Request Handling (`com.aspectran.web.activity.request`)**: Handles complex HTTP requests such as multipart form data and header parsing by integrating with the `jakarta.servlet` API through `ActivityRequestWrapper` (a servlet request wrapper), `MultipartFormDataParser`, and `WebRequestBodyParser`.
+*   `AbstractBeanProxy`: Foundation class built on Javassist or standard JDK dynamic proxies.
+*   **Annotation-Based Targeting Optimization**: Inspects pointcut registries only for methods annotated with `@Advisable` or `@Async`, ensuring regular internal method calls experience zero performance degradation.
+*   `ProxyActivity`: Lightweight executor that propagates contexts thread-safely when executing independent advice or `@Async` thread pool tasks.
 
-### 5.2. Response Handling
-Supports various response strategies centered around the `com.aspectran.core.activity.response` package.
+### 6.2. Environment-Independent Session Manager (`com.aspectran.core.component.session`)
+A high-performance distributed session engine maintaining state across Servlet, Netty, Undertow, and Shell environments without servlet dependencies:
 
-*   **Basic Response Types**: Based on the `Response` interface, it supports the following:
-    *   `ForwardResponse`: Performs a server-side forward.
-    *   `RedirectResponse`: Sends an HTTP redirect to the client.
-    *   `ResponseTemplate`: Programmatically generates a dynamic response.
+*   **Core Components**: `SessionManager` (lifecycle management), `SessionCache` (in-memory caching), `SessionStore` (persistence), and `HouseKeeper` (automated eviction of expired sessions).
+*   **Redis-Based Clustering**: Fully supports non-disruptive clustered session synchronization via `LettuceSessionStore`.
+*   **Granular Persistence Control**: Selectively prevents sensitive or non-serializable objects from being persisted using the `NonPersistent` marker interface, `NonPersistentValue` wrappers, or `nonPersistentAttributes` configuration.
 
-*   **View Dispatching (`...response.dispatch`)**: Dispatches a request to a specific view technology (JSP, Thymeleaf, etc.) to render the UI through the `ViewDispatcher` interface and `DispatchResponse`. `DispatchResponse` acts as a mediator that finds the `ViewDispatcher` bean and delegates the rendering task.
+### 6.3. Dynamic Hot-Reloading ClassLoader: `SiblingClassLoader`
+A proprietary classloader architecture enabling immediate hot-reloading of classes and resources without restarting the JVM:
 
-*   **Data Transformation (`...response.transform`)**: Transforms the processing result of an `Activity` (`ProcessResult`) into various output formats based on the `TransformResponse` abstract class.
-    *   **Implementations**: `AponTransformResponse`, `JsonTransformResponse`, `XmlTransformResponse`, `TextTransformResponse`, etc.
-    *   **Factory**: `TransformResponseFactory` creates the appropriate `TransformResponse` object according to the `TransformRule`.
+*   **Sibling-First Delegation Model**: Unlike Java's standard parent-first model, `SiblingClassLoader` searches resource paths managed by itself and its sibling loaders first before delegating to parent loaders.
+*   **Module Isolation and Hot Reloading**: When a specific module or resource updates, its corresponding `SiblingClassLoader` is selectively discarded and recreated (`reload()`), achieving seamless zero-downtime hot reloads.
 
-*   **Web-specific Response Handling (`com.aspectran.web.activity.response`)**: Finely controls HTTP responses (status code, headers, data format) specialized for RESTful services through the `RestResponse` interface.
+### 6.4. Multi-Engine Logging Group Architecture
+Integrated with SLF4J and Logback, Aspectran provides an advanced logging architecture that dynamically routes and isolates log files based on request URI paths or service groups:
 
-## 6. Settings and Configuration
+*   `LoggingGroupDiscriminator`: Coordinates with Logback's `SiftingAppender` to dynamically resolve logging group identifiers configured in SLF4J MDC and context environments.
+*   **Unified Path-Based Handlers Across Multi-Engines**:
+    *   **Netty Environment**: `com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler`
+    *   **Jetty Environment**: `com.aspectran.jetty.server.handler.PathBasedLoggingGroupHandler`
+    *   **Undertow Environment**: `com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper` (and `PathBasedLoggingGroupHandler`)
+*   **Architectural Benefits**: Enables physical separation of log files for distinct applications or API path groups (e.g., `/petclinic/**`, `/jpetstore/**`) running within a single server instance.
 
-### 6.1. Configuration Rule Architecture (`com.aspectran.core.context.rule`)
-All configuration information (XML/APON) of an Aspectran application is converted into `Rule` objects by a parser and loaded into memory. These are pure data objects (POJOs) that act as the **Blueprint** of the application.
+> **Related Detailed Mechanisms**: For AOP proxy creation, refer to [Aspectran AOP Proxy Mechanism](/en/docs/mechanisms/new-aop-proxy-mechanism/). For dynamic class loading and hot reloading, refer to [SiblingClassLoader In-Depth Analysis](/en/docs/mechanisms/aspectran-classloader/) and [Aspectran Automatic Reloading Mechanism In-Depth](/en/docs/mechanisms/aspectran-reloading-mechanism/). For multi-environment logging segregation, refer to [Aspectran Logging Mechanism](/en/docs/mechanisms/aspectran-logging-mechanism/).
 
-*   **Core Component Rules**: Define top-level components like `TransletRule`, `BeanRule`, `AspectRule`, `ScheduleRule`, and `TemplateRule`.
-*   **Behavior and Response Rules**: Define the actual logic to be executed and the response method, such as `InvokeActionRule`, `TransformRule`, and `DispatchRule`.
-*   **Data and Parameter Rules**: `ItemRule` is the basic unit for all parameters, attributes, and arguments.
-*   **Ability Interfaces (`...rule.ability`)**: Interfaces like `HasActionRules` and `HasResponseRules` act as a **Contract** that specifies what kind of child rules each `Rule` class can have, creating a flexible and type-safe structure.
+## 7. Conclusion
 
-### 6.2. Configuration Loading Mechanism (`com.aspectran.utils.nodelet`)
-Aspectran loads configuration files using its own lightweight parsing framework, **`nodelet`**.
+Aspectran's architecture firmly rests upon three foundational pillars: **Simplicity, Environment Independence, and High Performance**.
 
-*   **How it works**: It works on an event basis similar to a SAX parser, but it processes complex XML documents intuitively and structurally by directly mapping callbacks (`Nodelet`/`EndNodelet`) to specific XPath paths.
-*   **`NodeletGroup`**: Manages XPaths and callbacks in groups and defines parsing rules declaratively through a Fluent API.
-*   **Innovative `mount` feature**: When a specific element appears, it dynamically activates a pre-defined set of rules from another `NodeletGroup`, providing advantages such as **memory efficiency, rule reusability, and removal of nesting level limits**.
-*   **State Management**: Manages the state for handling parent-child relationships during XML parsing in a thread-safe manner using `AspectranNodeParsingContext` and `ObjectStack`.
+*   By decoupling layers around `CoreService` and `ActivityContext`, complex enterprise capabilities are governed through consistent, predictable patterns.
+*   Through the `Adapter` pattern, business logic is completely isolated from physical execution platforms, achieving unmatched portability: identical source code executes flawlessly across Servlet containers, Netty asynchronous servers, Undertow, Jetty, console shells, and background daemons.
+*   With the clear separation of `aspectran-web` and `aspectran-web-servlet`, the native integration of non-servlet Netty runtimes, and multi-engine logging groups, Aspectran continues to evolve as a robust, agile framework capable of mastering both traditional enterprise architectures and cutting-edge asynchronous microservices.
 
-### 6.3. Environment Configuration (`com.aspectran.core.context.config`)
-This package is a collection of data container (POJO) classes that define the various settings of an Aspectran application.
+## 8. Next Steps: Exploring Detailed Mechanisms and Package Specifications
 
-*   **Hierarchical/Modular Configuration**: `AspectranConfig` is the top-level configuration object, and it contains detailed configuration objects for each execution environment, such as `ContextConfig`, `WebConfig`, `DaemonConfig`, `ShellConfig`, and `EmbedConfig`, allowing you to configure only the necessary environment's settings.
-*   **Main Feature Configuration**: The activation and detailed behavior of features such as environment profiles, auto-reloading, session management, and task scheduling are managed through the configuration classes here.
+This blueprint document provided a top-level architectural overview and highlighted how framework components synergize. For source-code level implementation algorithms, deep mechanism specifications, and granular package details, explore the official documentation index:
 
-## 7. Advanced Features like AOP, Session, and ClassLoader
-
-### 7.1. AOP Mechanism
-
-Aspectran's AOP has its own unique model that is deeply integrated with the execution flow of its core execution model, the `Activity`, and Bean method calls.
-
-*   **Weaving Mechanism: Intelligent Dynamic Proxy**: It uses a **runtime Dynamic Proxy** to apply AOP.
-    *   **`AbstractBeanProxy`**: The base class for all AOP proxy objects. It first checks if a method has the `@Advisable` or `@Async` annotation when it is called, thereby **optimizing performance** by fundamentally eliminating the overhead of numerous internal method calls that do not require advice.
-    *   **`ProxyActivity`**: A lightweight `Activity` solely for executing AOP advice. It enables flexible and stable context management in both synchronous and asynchronous environments through **independent mode** and **wrapping mode**. In particular, it shares the context through `ProxyActivity` when an `@Async` method is called.
-
-### 7.2. Session Management (`com.aspectran.core.component.session`)
-
-Aspectran Session Manager provides a **high-performance, environment-independent session management component** to maintain state consistently across various execution environments such as web, shell, and daemon.
-
-*   **Core Architecture**: Composed of `SessionManager`, `Session`, `SessionCache` (memory cache), `SessionStore` (persistent storage), `HouseKeeper` (expired session cleanup), and `SessionIdGenerator`.
-*   **Pluggable Session Store (`SessionStore`)**: You can choose to use `FileSessionStore` (file system) or `LettuceSessionStore` (Redis-based, **supports clustering**) depending on the configuration.
-*   **Sophisticated Session Lifecycle Management**: To quickly remove unnecessary sessions created by bots or crawlers, it supports sophisticated timeout policies and automatic cleanup (`HouseKeeper`), such as applying a short timeout (`maxIdleSecondsForNew`) to "new sessions" without attributes.
-*   **Operation Mode Comparison: Single Server vs. Cluster**
-    *   **Single Server Mode (`clusterEnabled: false`)**: Aims for the best performance by trusting `SessionCache` (memory) as the primary source.
-    *   **Cluster Mode (`clusterEnabled: true`)**: Ensures data consistency across multiple server nodes by trusting `SessionStore` (Redis) as the sole **Single Source of Truth**.
-*   **Persistence Control**: You can use the `NonPersistent` marker interface, the `NonPersistentValue` wrapper, or the `nonPersistentAttributes` configuration to prevent objects that cannot be serialized or are security-sensitive from being stored in the session store.
-
-### 7.3. Class Loading Mechanism (`SiblingClassLoader`)
-
-Aspectran goes beyond Java's standard class loading mechanism by implementing its own `SiblingClassLoader` to support dynamic reloading (Hot Reloading) and a modular application structure.
-
-*   **"Sibling-First" Delegation Model**: Unlike the standard "parent-first" model, when a class loading request is made, it first looks for the class in the resource paths managed by itself and its sibling `SiblingClassLoader`s, and delegates to the parent only as a last resort. This enables class sharing and dynamic replacement between modules.
-*   **Key Features**:
-    *   **Dynamic Hot Reloading**: You can reload application components or classes without a JVM restart through the `reload()` method.
-    *   **Hierarchical Sibling Structure**: A structure composed of a `root` loader and several `siblings` allows for managing multiple resource locations as a single logical group.
-    *   **Selective Class Exclusion**: Prevents class conflicts by avoiding duplicate loading of core JRE classes or shared libraries through `excludePackage()` and `excludeClass()`.
-
-### 7.4. Logging Mechanism (`com.aspectran.logging`)
-
-Aspectran uses **SLF4J** as its logging abstraction library and **Logback** as its default implementation.
-*   **Core Feature (`LoggingGroupDiscriminator`)**: Identifies the logical "group" where a log occurs through a custom Logback `Discriminator`. The group name is determined by the priority of SLF4J MDC, `ActivityContext` name, etc.
-*   **Dynamic Log Separation**: When used with `SiftingAppender`, in the case of a web application, it can dynamically separate and record logs into separate files (e.g., `jpetstore.log`, `petclinic.log`) based on the request URI through `PathBasedLoggingGroupHandlerWrapper`.
-
-## 8. Conclusion
-
-Aspectran's architecture is designed with **modularity, flexibility, extensibility, and performance** as its core values. Core components are organically combined around the `ActivityContext` to form a request processing pipeline, and environment abstraction through the Adapter pattern, efficient configuration loading through the `nodelet` engine, and an intelligent dynamic proxy-based AOP mechanism enable Aspectran to effectively respond to various application requirements.
-
-Through this architectural blueprint, framework developers can gain a deep understanding of Aspectran's internal workings and contribute to developing new feature modules or extending and optimizing existing features as needed.
-
-## 9. Reference Documents
-
-This document was created by consolidating the following individual architecture documents. For more detailed information on each topic, please refer to the documents below.
-
-*   [ActivityContext Build Process: An In-Depth Analysis](/en/docs/mechanisms/activity-context-building/)
-*   [ActivityContext: The Heart of Aspectran](/en/docs/mechanisms/activity-context/)
-*   [Environment: Controlling Environments with Profiles and Properties](/en/docs/mechanisms/activity-environment/)
-*   [Aspectran Actions: Concepts, Types, and Processing Results](/en/docs/mechanisms/aspectran-actions/)
-*   [Activity Architecture: The Execution Engine of Request Processing](/en/docs/mechanisms/aspectran-activities/)
-*   [Adapter Architecture: The Core of Environmental Independence](/en/docs/mechanisms/aspectran-adapters/)
-*   [In-Depth Analysis of Bean Scopes in Aspectran](/en/docs/mechanisms/aspectran-bean-scopes/)
-*   [SiblingClassLoader: The Key to Dynamic and Flexible Class Loading](/en/docs/mechanisms/aspectran-classloader/)
-*   [In-Depth Analysis of Aspectran Execution Environments](/en/docs/mechanisms/aspectran-execution-environments/)
-*   [Aspectran Configuration Loading Mechanism](/en/docs/mechanisms/aspectran-loading-mechanism/)
-*   [Aspectran Logging Mechanism](/en/docs/mechanisms/aspectran-logging-mechanism/)
-*   [Request and Response Handling Mechanism](/en/docs/mechanisms/aspectran-request-response/)
-*   [In-Depth Analysis of Aspectran Configuration Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/)
-*   [In-Depth Analysis of Aspectran Service Architecture](/en/docs/mechanisms/aspectran-services/)
-*   [Aspectran Session Manager](/en/docs/mechanisms/aspectran-session-manager/)
-*   [Aspectran AOP Proxy Mechanism](/en/docs/mechanisms/new-aop-proxy-mechanism/)
+*   **[Aspectran Detailed Mechanisms and Package Specifications Index](/en/docs/mechanisms/)**: Offers in-depth analyses covering the execution engine, build pipelines, classloaders, AOP proxies, and technical specifications across core, daemon, shell, embed, session, and web packages.
+*   **[Aspectran User Guide](/en/docs/guides/aspectran-user-guide/)**: A practical guide for configuring and building real-world enterprise applications with Aspectran.

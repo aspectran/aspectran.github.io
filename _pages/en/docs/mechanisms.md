@@ -31,7 +31,7 @@ In-depth technical specifications covering Aspectran's execution engine, resourc
 ## <i class="bi bi-box"></i> Package Specifications
 {: #package-specifications}
 
-Detailed component and configuration specifications for key Aspectran modules including Core, Daemon, Shell, Embed, Undertow, and Web services.
+Detailed component and configuration specifications for key Aspectran modules including Core, Daemon, Shell, Embed, Undertow, Web, and Netty services.
 
 *   [Aspectran Core Service](/en/docs/mechanisms/packages/aspectran-core-service/)
 *   [Aspectran Scheduler Service](/en/docs/mechanisms/packages/aspectran-scheduler-service/)
@@ -44,5 +44,9 @@ Detailed component and configuration specifications for key Aspectran modules in
 *   [Aspectran Shell Activity](/en/docs/mechanisms/packages/aspectran-shell-activity/)
 *   [Aspectran Undertow Service](/en/docs/mechanisms/packages/aspectran-undertow-service/)
 *   [Aspectran Undertow Activity](/en/docs/mechanisms/packages/aspectran-undertow-activity/)
-*   [Aspectran Web Service](/en/docs/mechanisms/packages/aspectran-web-activity/)
+*   [Aspectran Web Service](/en/docs/mechanisms/packages/aspectran-web-service/)
+*   [Aspectran Web Activity](/en/docs/mechanisms/packages/aspectran-web-activity/)
+*   [Aspectran Netty Service](/en/docs/mechanisms/packages/aspectran-netty-service/)
+*   [Aspectran Netty Activity](/en/docs/mechanisms/packages/aspectran-netty-activity/)
 *   [Aspectran Config Parameters](/en/docs/mechanisms/packages/aspectran-config-parameters/)
+*   [Aspectran Process Package](/en/docs/mechanisms/packages/aspectran-process-package/)

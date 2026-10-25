@@ -51,7 +51,7 @@ permalink: /en/docs/
 ### Architecture
 {: #architecture}
 *   [Designing for Sustainable Simplicity: Architectural Philosophy](/en/why-aspectran/)
-*   [Aspectran Architecture: An Integrated Deep Dive](/en/docs/guides/aspectran-architecture/)
+*   [Aspectran Architecture: Integrated Architecture Blueprint](/en/docs/guides/aspectran-architecture/)
 *   [Aspectran Architecture Diagrams](/en/docs/guides/aspectran-architecture-diagrams/)
 *   **[View All Aspectran Internal Mechanisms & Package Specifications →](/en/docs/mechanisms/)**
 

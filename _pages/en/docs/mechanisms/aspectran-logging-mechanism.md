@@ -1,17 +1,18 @@
 ---
-title: In-Depth Analysis of the Aspectran Logging Mechanism
+title: "Deep Dive into the Aspectran Logging Mechanism"
 subheadline: Mechanisms
+mermaid: true
 ---
 
-Aspectran uses a systematic approach to build a flexible and powerful logging system. This document analyzes and explains Aspectran's logging mechanism with examples.
 
-## 1. Adoption of Standard Logging Technologies: SLF4J and Logback
+Aspectran provides a sophisticated and robust logging architecture designed to maintain isolated log files for various application modules, REST API route prefixes, and background schedulers within a single server JVM process. This document provides an in-depth analysis of Aspectran's logging abstraction foundation, the `LoggingGroupDiscriminator`, and the dynamic path-based logging group routing mechanism integrated across multiple server engines including Netty, Undertow, and Jetty.
 
-Aspectran uses **SLF4J (Simple Logging Facade for Java)** as its logging abstraction library and adopts **Logback** as its default implementation. This ensures flexibility by preventing application code from directly depending on a specific logging implementation and consistently manages logs from various libraries such as `java.util.logging`, `log4j`, and `commons-logging`.
+## 1. Standard Logging Technology: SLF4J and Logback
 
-### Dependency Configuration (`aspectran-logging/pom.xml`)
+Aspectran adopts **SLF4J (Simple Logging Facade for Java)** as its logging abstraction layer and defaults to **Logback** as its primary implementation. This ensures application code remains completely decoupled from any specific logging library while funneling logs from diverse third-party libraries through a single unified logging pipeline.
 
-The `aspectran-logging` module includes dependencies for Logback and various SLF4J bridges, allowing logs from other logging frameworks to be controlled through SLF4J.
+### 1.1. Integrated Bridge Dependency Architecture (`aspectran-logging`)
+The `aspectran-logging` module bundles Logback core libraries alongside essential SLF4J bridge adapters for legacy logging frameworks:
 
 ```xml
 <dependencies>
@@ -25,7 +26,7 @@ The `aspectran-logging` module includes dependencies for Logback and various SLF
         <artifactId>logback-classic</artifactId>
         <version>${logback.version}</version>
     </dependency>
-    <!-- Bridges to forward logs from other logging frameworks to SLF4J -->
+    <!-- Bridge libraries routing third-party logging into SLF4J -->
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
@@ -53,36 +54,60 @@ The `aspectran-logging` module includes dependencies for Logback and various SLF
 </dependencies>
 ```
 
-## 2. Core Feature: `LoggingGroupDiscriminator`
+Thanks to this configuration, log statements originating from third-party libraries using Spring, Apache Commons Logging, Java Util Logging (JUL), or Log4j 1/2 are consistently governed by Aspectran's centralized logging policies.
 
-The most core feature of Aspectran logging is a custom Logback `Discriminator` called `com.aspectran.logging.logback.LoggingGroupDiscriminator`. This class determines which logical "group" a log event belongs to when it occurs, thereby dynamically separating logs.
+## 2. Core Discrimination Engine: `LoggingGroupDiscriminator`
 
-The group name is determined according to the following priority:
+The core innovation of Aspectran's logging system is the `com.aspectran.logging.LoggingGroupDiscriminator` class. Implementing Logback's `Discriminator` interface, this class dynamically determines which logical **Logging Group** a log event belongs to at the exact millisecond the event occurs.
 
-1.  **SLF4J MDC**: The value stored with the key `LOGGING_GROUP` in the current thread's MDC (Mapped Diagnostic Context) is used with the highest priority. MDC is a thread-local storage used to hold information that is valid only within a specific context, such as request processing.
-2.  **ActivityContext Name**: If the `LOGGING_GROUP` key is not present in the MDC, the name of the currently running Aspectran `ActivityContext` is used as the group name. This is useful for separating the logs of each instance when multiple Aspectran instances are running in a single JVM.
-3.  **Default Value**: If a value cannot be found by the two methods above, the default value specified in the Logback configuration file is used.
+### 2.1. Three-Tier Group Name Decision Precedence
+When a log event arrives, `LoggingGroupDiscriminator` determines the logging group key using the following 3-tier hierarchy:
 
-## 3. Logback Configuration and How It Works
+1.  **SLF4J MDC (Mapped Diagnostic Context) - Highest Priority**:
+    *   Inspects the `LOGGING_GROUP` key from the MDC of the thread processing the current request.
+    *   Because MDC is thread-local storage, it is used to dynamically route logging groups per web request or background task execution.
+2.  **`ActivityContext` Name**:
+    *   If no `LOGGING_GROUP` key is found in the MDC, it queries the unique name of the active `ActivityContext` bound to the current thread.
+    *   This is particularly useful when multiple independent Aspectran application contexts run side-by-side within a single JVM process.
+3.  **Logback Configuration Default (`defaultValue`)**:
+    *   If neither of the above yields a group name, the default value specified in `logback.xml` (typically `root` or `aspectran`) is used as the fallback group name.
 
-`LoggingGroupDiscriminator` demonstrates its power when used with Logback's `SiftingAppender`. `SiftingAppender` is responsible for dynamically creating child Appenders based on the value returned by the `discriminator` and forwarding log events to the corresponding Appender.
+### 2.2. Context Helper: `LoggingGroupHelper`
+To safely manipulate logging groups programmatically, the framework provides the `com.aspectran.utils.logging.LoggingGroupHelper` utility:
 
-Here is a configuration example from `logback-default.xml`.
+```java
+// Enter logging group
+LoggingGroupHelper.set("petclinic");
+
+try {
+    // All logs emitted within this block are isolated into petclinic.log
+    doBusinessLogic();
+} finally {
+    // Safely clear MDC context upon completion
+    LoggingGroupHelper.clear();
+}
+```
+
+## 3. Dynamic Log Sifting via Logback `SiftingAppender`
+
+`LoggingGroupDiscriminator` achieves its full power when paired with Logback's `SiftingAppender`. The `SiftingAppender` creates separate subordinate appenders on-the-fly based on the key returned by the discriminator and routes log events accordingly.
+
+### 3.1. Standard `logback-default.xml` Configuration
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
 
     <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
-        <!-- 1. Identify the logging group using LoggingGroupDiscriminator -->
+        <!-- 1. Extract logging group key via LoggingGroupDiscriminator -->
         <discriminator class="com.aspectran.logging.LoggingGroupDiscriminator">
             <key>LOGGING_GROUP</key>
             <defaultValue>root</defaultValue>
         </discriminator>
         <sift>
-            <!-- 2. Dynamically create an Appender based on the identified group name (${LOGGING_GROUP}) -->
+            <!-- 2. Dynamically create a RollingFileAppender based on the resolved group (${LOGGING_GROUP}) -->
             <appender name="FILE-${LOGGING_GROUP}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <!-- 3. The log file path is dynamically determined by the group name and properties -->
+                <!-- 3. Dynamic group-isolated log file path -->
                 <file>${aspectran.logsDir:-${aspectran.basePath:-app}/logs}/${LOGGING_GROUP}.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
                     <fileNamePattern>${aspectran.archivedLogsDir:-${aspectran.logsDir:-${aspectran.basePath:-app}/logs}/archived}/${LOGGING_GROUP}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
@@ -104,38 +129,73 @@ Here is a configuration example from `logback-default.xml`.
 
     <logger name="com.aspectran" level="debug"/>
     <logger name="org.quartz" level="info"/>
-    <logger name="org.apache.ibatis" level="error"/>
 
 </included>
 ```
 
-## 4. Flexible Path and Charset Configuration
+When a new logging group (e.g., `petclinic`, `jpetstore`) is first encountered at runtime, separate rolling files (`logs/petclinic.log`, `logs/jpetstore.log`) are generated dynamically without requiring prior static XML declarations, each with independent rotation policies.
 
-Aspectran provides a flexible way to configure log file paths and character sets, allowing logs to be stored outside the application's base path if necessary. This is achieved using a nested fallback mechanism in the Logback configuration.
+## 4. Flexible Path and Charset Resolution Strategy
 
-### System Properties
+Production deployments often require log files to be stored outside the application root directory (`basePath`) or mounted to high-speed NVMe storage volumes. Aspectran supports nested fallback property expansion in Logback configurations:
 
-*   **`aspectran.logsDir`**: Specifies the directory where logs will be stored. It can be an absolute path or a relative path (resolved via `ApplicationAdapter.getRealPath()`).
-*   **`aspectran.archivedLogsDir`**: Specifies the directory where archived/rotated logs will be stored.
-*   **`aspectran.logCharset`**: Specifies the character set to be used for log files. (e.g., UTF-8)
+*   **System Properties**:
+    *   `aspectran.logsDir`: Directory where active log files are written.
+    *   `aspectran.archivedLogsDir`: Directory where rolled and compressed archived logs are stored.
+    *   `aspectran.logCharset`: Character encoding charset for log output (defaults to `UTF-8`).
+*   **Nested Fallback Expression**:
+    `${aspectran.logsDir:-${aspectran.basePath:-app}/logs}`
+    1.  If the system property `aspectran.logsDir` is explicitly defined, its absolute/relative path takes highest precedence.
+    2.  If unset, it resolves to `${aspectran.basePath}/logs`.
+    3.  If `aspectran.basePath` is also unset, it safely falls back to `app/logs`.
 
-### Nested Fallback Pattern
+## 5. Path-Based Logging Group Integration Across Server Engines
 
-The configuration uses the following pattern for path resolution:
-`${aspectran.logsDir:-${aspectran.basePath:-app}/logs}`
+When hosting multiple microservice modules or API endpoint clusters (e.g., `/petclinic/**`, `/jpetstore/**`) inside a single server instance, Aspectran provides dedicated path-based handlers that inspect incoming HTTP request URI paths and physically isolate logs.
 
-1.  If the system property `aspectran.logsDir` is set, its value is used (allowing for an absolute path "escape" from the base path).
-2.  If not set, it falls back to the `/logs` directory under `${aspectran.basePath}`.
-3.  If `${aspectran.basePath}` is also not set, it defaults to the `app/logs` directory.
+Aspectran provides dedicated `PathBasedLoggingGroupHandler` implementations across all three major web/network server engines (Netty, Undertow, Jetty) supporting identical wildcard pattern syntax (`+:`, `-:`).
 
-This mechanism ensures that the logging system remains functional with sensible defaults while providing the ultimate flexibility for production environments where logs might need to be stored on dedicated storage volumes.
+### 5.1. Netty Environment: `com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler`
+Intercepts inbound HTTP requests in Netty's channel pipeline to bind logging groups:
 
-## 5. Web Application Integration Example
+*   **Configuration Example (`netty-server.xml` / `netty-config.apon`)**:
+```xml
+<bean id="netty.server.handler.loggingGroupHandler"
+      class="com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler"
+      scope="prototype">
+    <properties>
+        <item name="pathPatternsByGroupName" type="map">
+            <entry name="petclinic">
+                +: /petclinic/**
+            </entry>
+            <entry name="jpetstore">
+                +: /jpetstore/**
+            </entry>
+            <entry name="api">
+                +: /api/**
+                -: /api/health-check
+            </entry>
+        </item>
+    </properties>
+</bean>
+```
 
-This logging mechanism is particularly powerful when serving multiple web applications from a single server instance. `com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper` is an Undertow handler that dynamically sets the logging group based on the request URI.
+*   **How it Works**: Extending Netty's `ChannelInboundHandlerAdapter`, when an HTTP request arrives, the handler parses the URI path, matches it against declared patterns, extracts the target group name (e.g., `petclinic`), binds it to the channel attributes and MDC, and passes execution down the pipeline. When channel processing concludes, the context is safely released.
 
-### `tow-server.xml` Configuration Example
+### 5.2. Jetty Environment: `com.aspectran.jetty.server.handler.PathBasedLoggingGroupHandler`
+Wraps the handler chain in embedded Jetty servlet environments:
 
+*   **Class Structure**: Extends Jetty's `Handler.Wrapper`.
+*   **How it Works**:
+    1.  When a client request reaches Jetty, `handle(Request, Response, Callback)` intercepts it.
+    2.  Compares the request path against wildcard patterns defined in `pathPatternsByGroupName`.
+    3.  Sets the logging group into the MDC via `LoggingGroupHelper.set(loggingGroup)` and delegates to downstream servlet handlers.
+    4.  When processing completes and the `Callback` fires, it clears the MDC via `LoggingGroupHelper.clear()`.
+
+### 5.3. Undertow Environment: `PathBasedLoggingGroupHandlerWrapper` and `PathBasedLoggingGroupHandler`
+Seamlessly integrates with Undertow's native handler chain (`com.aspectran.undertow.server.handler.logging` package):
+
+*   **Configuration Example (`tow-server.xml`)**:
 ```xml
 <bean id="tow.server.handler.loggingGroupHandlerWrapper"
       class="com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper"
@@ -148,24 +208,26 @@ This logging mechanism is particularly powerful when serving multiple web applic
             <entry name="petclinic">
                 +: /petclinic/**
             </entry>
-            <entry name="demo">
-                +: /demo/**
-                -: /demo/examples/gs-rest-service/**
-            </entry>
         </item>
     </properties>
 </bean>
 ```
 
-### Operational Flow
+*   **How it Works**: Extracts `RequestPath` from Undertow's `HttpServerExchange`, resolves matching group names, and registers an `ExchangeCompletionListener` to automatically clear the MDC when the exchange lifecycle ends.
 
-1.  An HTTP request (e.g., `/jpetstore/shop.do`) comes in.
-2.  `PathBasedLoggingGroupHandlerWrapper` intercepts the request and compares the URI (`/jpetstore/shop.do`) with the configured patterns (`/jpetstore/**`).
-3.  It finds the matching group name `jpetstore` and stores the value in SLF4J's MDC via `MDC.put("LOGGING_GROUP", "jpetstore")`.
-4.  Subsequently, all log events that occur in the thread processing that request are identified as belonging to the `jpetstore` group by `LoggingGroupDiscriminator`.
-5.  `SiftingAppender` dynamically creates a `RollingFileAppender` named `FILE-jpetstore` (if it doesn't already exist) based on the value `jpetstore` and sends the log event to this Appender.
-6.  As a result, all logs for requests coming in to `/jpetstore` are recorded in the `logs/jpetstore.log` file.
+## 6. Logging Group Integration in Scheduler and Daemon Runtimes
 
-## 5. Conclusion
+Log isolation is supported equally for background scheduler tasks and daemon processes:
 
-Aspectran's logging mechanism implements a very flexible and extensible system by combining its own unique ideas, `LoggingGroupDiscriminator` and `PathBasedLoggingGroupHandlerWrapper`, with standard technologies like SLF4J and Logback. This provides developers with a powerful feature to perfectly separate and manage logs by service or function unit, even in complex multi-tenant or microservice environments.
+*   **Scheduled Tasks (`SchedulerService`)**:
+    *   When [`ActivityLauncherJob`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/scheduler/activity/ActivityLauncherJob.java) is triggered by Quartz, it queries `SchedulerService.getLoggingGroup()` and injects it via `LoggingGroupHelper.set()`.
+    *   This ensures scheduled batch logs never contaminate web request logs and are cleanly segregated into dedicated files (e.g., `scheduler.log`).
+*   **Daemon Processes (`DaemonService`)**:
+    *   The unique logging group configured for the daemon isolates overall process lifecycle logs and individual command executions.
+
+## 7. Conclusion and Architectural Significance
+
+Aspectran's logging architecture transcends simple SLF4J/Logback usage to deliver an **intelligent multi-engine log segregation system** essential for modern multi-tenant and microservice operations.
+
+*   By coupling `LoggingGroupDiscriminator` with Logback's `SiftingAppender`, developers can dynamically partition logs through declarative configuration alone without code modifications.
+*   By providing consistent path-based logging group handlers across **Netty, Jetty, and Undertow**, Aspectran ensures uniform log partitioning strategies and monitoring observability regardless of the underlying runtime engine.

@@ -1,53 +1,181 @@
 ---
-title: "ActivityContext Build Process: An In-Depth Analysis"
+title: "Deep Dive into ActivityContext Building Process"
 subheadline: Mechanisms
+mermaid: true
 ---
 
-`ActivityContext`, the heart of an Aspectran application, is created through a systematic process by the `ActivityContextBuilder`. This build process is largely divided into four stages: **Configuration, Parsing, Creation, and Initialization**, and the entire process is led by the `com.aspectran.core.context.builder.HybridActivityContextBuilder` class.
 
-## 1. Builder Creation & Configuration
+[`ActivityContext`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/ActivityContext.java), the core IoC/DI container of an Aspectran application, is not instantiated directly at runtime. Instead, it is systematically assembled through the rigorous and disciplined pipeline of [`ActivityContextBuilder`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/builder/ActivityContextBuilder.java).
 
-Everything starts with creating an instance of `ActivityContextBuilder`. After the builder is created, the developer provides the core information needed to configure the context through various `setter` methods.
+The build process goes far beyond simple configuration parsing: it is a comprehensive engineering workflow encompassing **dedicated classloader isolation, environment profile resolution, XML/APON/annotation hybrid parsing, bean reference integrity inspection ([`BeanReferenceInspector`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/validation/BeanReferenceInspector.java)), AOP proxy pre-analysis ([`BeanRuleAnalyzer`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/BeanRuleAnalyzer.java)), aspect validation ([`AspectRuleValidator`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/validation/AspectRuleValidator.java)), and real-time reloading monitor timer binding**.
 
--   **`setBasePath(String basePath)`**: Specifies the root directory of the application. It serves as the base point for relative paths.
--   **`setContextRules(String[] contextRules)`**: Passes the paths of Aspectran's core configuration files (in XML or APON format) as an array. This allows for managing multiple configuration files like modules.
--   **`setBasePackages(String... basePackages)`**: Specifies the packages to be used for annotation-based component scanning. The builder finds annotations like `@Component`, `@Bean`, and `@Aspect` under these packages and automatically generates rules.
--   **`setActiveProfiles(String... activeProfiles)`**: Specifies the application's execution environment profiles (e.g., `dev`, `prod`). Only configurations that match the specified profiles are activated.
--   **`setResourceLocations(String... resourceLocations)`**: Allows for dynamically adding resource paths to be included in the classpath.
--   **`setAponWriter(AponWriter aponWriter)`**: Used for debugging by outputting the parsed rules in APON format.
+The entire build process is orchestrated by the [`HybridActivityContextBuilder`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/builder/HybridActivityContextBuilder.java) class.
 
-## 2. Build & Parsing
+## 1. End-to-End Build Pipeline Architecture
 
-Once the configuration is complete, the `build()` method is called to start the actual build process. The substantive work of this stage is handled by `com.aspectran.core.context.rule.parser.HybridActivityContextRuleParser`.
+The construction of an `ActivityContext` progresses through five deterministic, sequential phases.
 
-1.  **Parser Initialization**: `HybridActivityContextRuleParser` internally creates a core helper object called `RuleParsingContext`. `RuleParsingContext` temporarily stores all parsed rules (`*Rule` objects), sets up relationships between rules, and is ultimately responsible for configuring the registries.
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Svc as CoreService / Host App
+    participant Builder as HybridActivityContextBuilder
+    participant Loader as SiblingClassLoader
+    participant Context as RuleParsingContext
+    participant Parser as HybridActivityContextRuleParser
+    participant Validator as BeanReferenceInspector & AspectRuleValidator
+    participant AC as DefaultActivityContext
 
-2.  **Rule Parsing**: The parser performs its work based on the configured `contextRules` and `basePackages`.
-    *   **File-based Parsing**: It iterates through the configuration files specified in `contextRules` and parses their content using `XmlActivityContextParser` or `AponActivityContextParser` depending on the file extension. The parsed result is converted into a tree of rule objects defined in the `com.aspectran.core.context.rule` package, such as `AspectRule`, `BeanRule`, and `TransletRule`.
-    *   **Annotation-based Parsing**: It scans the package paths specified in `basePackages` to find classes annotated with `@Component`, `@Bean`, `@Aspect`, etc. `AnnotatedClassParser` analyzes these classes and creates equivalent `BeanRule` and `AspectRule` objects.
+    Svc->>Builder: build() invoked
 
-3.  **Rule Registration**: All created `*Rule` objects are added to the appropriate internal collections by `RuleParsingContext`. At this point, the rules are only loaded into memory; no actual instances have been created yet.
+    rect rgb(240, 245, 255)
+    Note over Builder,Loader: Phase 1: Infrastructure Provisioning
+    Builder->>Loader: createSiblingClassLoader() (Create isolated classloader)
+    Builder->>Builder: createEnvironmentProfiles() (Determine active profiles)
+    Builder->>Context: new RuleParsingContext(classLoader, adapter, profiles)
+    end
 
-## 3. Context Creation
+    rect rgb(245, 255, 240)
+    Note over Builder,Parser: Phase 2: Declarative Rule Parsing & Component Scanning
+    Builder->>Context: beanRuleRegistry.scanConfigurableBeans(basePackages)
+    Builder->>Parser: parse(contextRules / parameters)
+    Parser->>Context: Register BeanRule, AspectRule, TransletRule
+    Parser-->>Builder: Collect monitored files (appendedRuleFiles)
+    end
 
-This is the stage where the actual `ActivityContext` instance is created based on the parsed rules.
+    rect rgb(255, 250, 240)
+    Note over Builder,Validator: Phase 3: Static Analysis & Strict Validation
+    Builder->>Validator: beanReferenceInspector.inspect(beanRuleRegistry)
+    Note over Validator: Verify bean reference integrity & prevent circular dependencies
+    Builder->>Validator: BeanRuleAnalyzer.determineProxyBean() (Pre-determine AOP proxies)
+    Builder->>Validator: aspectRuleValidator.validate(ruleParsingContext)
+    end
 
-1.  **`DefaultActivityContext` Creation**: The `createActivityContext()` method creates an instance of `com.aspectran.core.context.DefaultActivityContext`.
+    rect rgb(255, 245, 245)
+    Note over Builder,AC: Phase 4: Context Assembly & Instantiation
+    Builder->>AC: new DefaultActivityContext(...)
+    Builder->>AC: setEnvironment(ActivityEnvironment)
+    Builder->>AC: Inject 5 Subsystem Registries & TemplateRenderer
+    end
 
-2.  **Registry Injection**: `RuleParsingContext` categorizes all the temporarily stored rules and creates final registry objects like `AspectRuleRegistry`, `BeanRuleRegistry`, and `TransletRuleRegistry`, which are then injected into `DefaultActivityContext`.
+    rect rgb(250, 240, 255)
+    Note over Builder,Svc: Phase 5: Initialization & Lifecycle Binding
+    alt MasterService Present (Standard Runtime)
+        Builder->>Builder: startContextReloadingTimer(appendedRuleFiles)
+        Builder-->>Svc: Return ActivityContext (Service calls initialize in doStart)
+    else Standalone Environment
+        Builder->>AC: component.initialize() invoked immediately
+        Builder->>Builder: registerDestroyTask() (Register JVM ShutdownHook)
+        Builder-->>Svc: Return fully initialized ActivityContext
+    end
+    end
+```
 
-3.  **Validation**: The validity of the rules is checked to ensure that the context can operate correctly.
-    *   **`BeanReferenceInspector`**: It tracks all relationships that reference other beans from `@Autowired` or configuration files and checks for errors such as referencing a non-existent bean or circular references.
-    *   **`AspectRuleValidator`**: It verifies whether the AOP rules are valid, for example, whether the bean and method specified by the advice actually exist.
+## 2. Phase 1: Builder Configuration and Infrastructure Provisioning
 
-## 4. Initialization & Completion
+The first phase isolates and configures the physical resources and runtime environment required for context execution.
 
-This is the final stage of activating the created context so that it can be used by the application.
+### 1) ClassLoader Isolation ([`createSiblingClassLoader`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/builder/AbstractActivityContextBuilder.java#L396))
+- Instantiates a dedicated [`SiblingClassLoader`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/resource/SiblingClassLoader.java) isolated from the host application's system classloader.
+- Dynamically binds external directories or JAR paths configured in `<resourceLocations>` to the classpath, facilitating clean teardown and regeneration of classloader hierarchies during dynamic hot-reloading.
 
-1.  **`ActivityContext.initialize()` Call**: When this method is called, the initialization of the context begins.
-    *   **Singleton Bean Instantiation**: All singleton-scoped beans registered in the `BeanRegistry` are actually instantiated. During this process, constructor injection occurs, and dependency injection for fields and methods annotated with `@Autowired` is completed.
-    *   **Initialization Callback Execution**: The initialization methods of beans that are annotated with `@Initialize` or implement the `InitializableBean` interface are called.
+### 2) Environment Profile Resolution ([`createEnvironmentProfiles`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/builder/AbstractActivityContextBuilder.java#L430))
+- Evaluates system properties, environment variables, and configuration settings to determine `activeProfiles` and `defaultProfiles`, instantiating an [`EnvironmentProfiles`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/env/EnvironmentProfiles.java) descriptor.
+- Subsequent component definitions and property blocks are activated only if they satisfy these profile predicates.
 
-2.  **Auto-Reloading Activation (Optional)**: If the `autoReload` setting is enabled, `ContextReloadingTimer` is started. This timer monitors the configuration files for changes at a specified interval (`scanInterval`), and if a change is detected, it calls `serviceLifeCycle.restart()` to perform the build process described above from the beginning. This allows for dynamically reflecting configuration changes without restarting the application.
+### 3) Rule Parsing Context Initialization ([`RuleParsingContext`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/parsing/RuleParsingContext.java))
+- Instantiates and prepares (`prepare()`) a dedicated parsing session object, `RuleParsingContext`, to stage parsed intermediate rule objects (`*Rule`) and establish inter-rule relationships.
 
-3.  **Context Return**: After all processes are successfully completed, the fully activated `ActivityContext` object is provided as the final return value of the `build()` method.
+## 3. Phase 2: Declarative Rule Parsing and Component Scanning
+
+In this phase, component metadata from diverse sources (Java annotations, XML, APON) is collected and transformed into a unified rule object tree.
+
+### 1) Annotation-Based Component Scanning
+- Scans package paths designated in `basePackages` to identify classes annotated with `@Component`, `@Bean`, `@Aspect`, `@Service`, or `@Controller`.
+- Discovered classes are converted into equivalent [`BeanRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/BeanRule.java) and [`AspectRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/AspectRule.java) definitions and registered into `RuleParsingContext`.
+
+### 2) XML / APON Hybrid Parsing ([`HybridActivityContextRuleParser`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/parser/HybridActivityContextRuleParser.java))
+- Automatically selects the appropriate parser engine based on file extensions and configurations:
+  - XML Configurations: [`XmlActivityContextParser`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/parser/xml/XmlActivityContextParser.java) (Nodelet-based high-speed XML parser)
+  - APON Configurations: [`AponActivityContextParser`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/parser/apon/AponActivityContextParser.java) (Aspectran's proprietary lightweight object notation parser)
+- External configuration files imported during parsing via `<append file="..." />` are captured dynamically by [`RuleFileAppendedListener`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/builder/HybridActivityContextBuilder.java#L173) and registered into the file monitoring set (`appendedRuleFiles`) for automatic reloading.
+
+## 4. Phase 3: Static Analysis and Strict Validation
+
+To guarantee that parsed rules operate seamlessly at runtime without unexpected failures, the builder conducts rigorous static analysis and validation.
+
+### 1) Post-Processing (`BeanRuleRegistry.postProcess`)
+- Resolves aliases, evaluates parent bean inheritance hierarchies, and sets autowiring candidate flags to ensure complete metadata resolution.
+
+### 2) Bean Reference Integrity and Circular Dependency Inspection ([`BeanReferenceInspector`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/validation/BeanReferenceInspector.java))
+- Verifies that target bean IDs and types referenced in constructor arguments, field injections, and property setters actually exist.
+- When running under a parent service, links lookups into the parent context's bean registry.
+- **Circular Dependency Prevention**: Identifies cyclic constructor references between beans and raises explicit errors during bootstrapping, fundamentally preventing runtime deadlocks and stack overflows.
+
+### 3) AOP Proxy Pre-Determination ([`BeanRuleAnalyzer.determineProxyBean`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/BeanRuleAnalyzer.java))
+- Analyzes pointcut expressions declared across all `AspectRule` definitions against candidate bean method signatures.
+- Pre-determines whether a bean is advisable at build time and marks its `BeanRule` accordingly, completely eliminating the runtime overhead of inspecting AOP applicability on every invocation.
+
+### 4) Aspect Rule Validation ([`AspectRuleValidator.validate`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/validation/AspectRuleValidator.java))
+- Rigorously validates that advice beans and advice methods referenced in aspect rules exist and that method signatures comply with advice specifications.
+
+## 5. Phase 4: `ActivityContext` Assembly and Instantiation
+
+Validated rule definitions are converted into operational service registry instances and assembled into a [`DefaultActivityContext`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/DefaultActivityContext.java).
+
+```mermaid
+graph LR
+    RPC[RuleParsingContext<br/>Parsed & Validated] --> Build{AbstractActivityContextBuilder<br/>createActivityContext}
+
+    Build --> AC[DefaultActivityContext]
+    Build --> ENV[ActivityEnvironment]
+    Build --> BR[DefaultBeanRegistry]
+    Build --> AR[AspectRuleRegistry]
+    Build --> SR[ScheduleRuleRegistry]
+    Build --> TR[DefaultTemplateRenderer]
+    Build --> TLR[TransletRuleRegistry]
+    Build --> ATE[SimpleAsyncTaskExecutor]
+
+    ENV --> AC
+    BR --> AC
+    AR --> AC
+    SR --> AC
+    TR --> AC
+    TLR --> AC
+    ATE --> AC
+```
+
+1. **`DefaultActivityContext` Instantiation**: Establishes the context skeleton with the dedicated classloader, application adapter, and master service reference.
+2. **`ActivityEnvironment` Construction**: Aggregates active profiles and declared `<properties>`, interpolating system environment variables and evaluating encrypted values.
+3. **Assembly of 5 Core Subsystem Registries**:
+   - `DefaultBeanRegistry`: Bean instantiation pool created from `BeanRuleRegistry` metadata.
+   - `AspectRuleRegistry`: Pre-compiled pointcut rule lookup indexes.
+   - `ScheduleRuleRegistry`: Scheduled task configurations.
+   - `DefaultTemplateRenderer`: Template rule registry.
+   - `TransletRuleRegistry`: Translet routing tree.
+4. **Asynchronous Task Executor Configuration**: If `contextConfig.asyncConfig.enabled` is active, instantiates and binds [`SimpleAsyncTaskExecutor`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/async/SimpleAsyncTaskExecutor.java) equipped with a dedicated thread pool.
+
+## 6. Phase 5: Initialization and Lifecycle Binding
+
+The assembled context undergoes distinct initialization and lifecycle management workflows depending on host environment configuration:
+
+### 1) Master Service Integrated Environment (Standard Web, Daemon, Shell, etc.)
+- The builder defers invoking `ActivityContext.initialize()`, returning the assembled context instance to the master service ([`DefaultCoreService`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/service/DefaultCoreService.java)).
+- In the master service's `doStart()` lifecycle hook, `component.initialize()` is called to trigger singleton instantiation and dependency injection.
+- **Context Reloading Timer Startup**: Registers all tracked configuration files (`appendedRuleFiles`) and launches [`ContextReloadingTimer`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/builder/reload/ContextReloadingTimer.java) for zero-downtime hot-reloading.
+
+### 2) Standalone Builder Execution Environment
+- When the builder is used independently without a master service (e.g., unit tests or standalone utilities):
+  - The builder immediately calls `((Component)activityContext).initialize()` to fully activate the context.
+  - Registers a JVM shutdown hook via [`ShutdownHook.Manager`](https://github.com/aspectran/aspectran/blob/master/utils/src/main/java/com/aspectran/utils/ShutdownHook.java) to ensure graceful teardown upon process termination.
+
+> **Related Detailed Mechanisms**:
+> - For the runtime architecture and operational mechanics of the assembled context, see [ActivityContext: The Heart of the Aspectran Container](/en/docs/mechanisms/activity-context/).
+> - For how configuration changes trigger zero-downtime reloads, see [Aspectran Reloading Mechanism](/en/docs/mechanisms/aspectran-reloading-mechanism/).
+> - For environment profile resolution and property evaluation rules, see [ActivityEnvironment Architecture](/en/docs/mechanisms/activity-environment/).
+
+## 7. Next Steps: Exploring Detailed Mechanisms
+
+To examine how dynamic configuration properties, active profiles, and encrypted variables are evaluated within the context, proceed to the [ActivityEnvironment Architecture](/en/docs/mechanisms/activity-environment/) guide.
+
+To inspect how all mechanisms and packages interconnect across the entire framework, refer to the **[Aspectran Detailed Mechanisms Index](/en/docs/mechanisms/)**.

@@ -1,90 +1,183 @@
 ---
-title:
+title: "Detailed Analysis of the com.aspectran.core.activity Package"
 subheadline: Package Specifications
-permalink: /en/docs/mechanisms/packages/aspectran-core-activity/
+mermaid: true
 ---
-
-# In-Depth Analysis of the `com.aspectran.core.activity` Package
 
 ## 1. Design Goals and Key Roles
 
-This package forms the core of Aspectran's **request processing execution engine**. The design goals of this package are as follows:
+The `com.aspectran.core.activity` package represents the **heart of Aspectran's single request-response execution engine**. All abstractions and concrete mechanics required to coordinate inbound web HTTP requests, socket buffers, terminal CLI commands, or background scheduler triggers under a unified rule-based pipeline reside within this package.
 
--   **Standardization of Request Processing**: Defines a standard execution model (`Activity`) to process any type of request, whether it's a web request, a shell command, or a daemon call, through a consistent pipeline.
--   **Separation from Execution Environment**: Uses the Adapter Pattern to ensure that the core logic (`CoreActivity`) for processing requests operates independently, without dependencies on specific execution environments like servlets or shell consoles.
--   **Single Request Lifecycle Management**: An `Activity` instance acts as a central control object that manages the entire lifecycle from the moment a single request occurs until the response is completed.
--   **Clear Boundary with User Code**: Ensures that business logic written by developers does not directly handle the complex internal structure of the framework, but rather interacts with the request context through a simplified facade called `Translet`.
+The core architectural objectives of this package are:
 
-In conclusion, this package aims to process various types of requests in a consistent manner, separate the framework's core execution logic from the external environment, and provide an easy-to-use API to developers.
+*   **Complete Standardization of Request Processing**: Defines a uniform activity model ([`Activity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/Activity.java)) to process any request type through a deterministic pipeline regardless of origin (HTTP, TCP, CLI, batch).
+*   **Decoupled Engine vs. User Facade**: Complex framework internals (AOP advice queues, exception routing, adapter handshakes) are managed by `Activity`, while business code interacts exclusively through the clean [`Translet`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/Translet.java) facade, minimizing cognitive overhead.
+*   **Environment-Independent Adapter Coupling**: Maximizes the Adapter pattern, ensuring the execution engine core operates completely independently of host environments (servlets, Netty pipelines, terminal streams) via standardized [`RequestAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/RequestAdapter.java), [`ResponseAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/ResponseAdapter.java), and [`SessionAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) interfaces.
+*   **Declarative AOP Advice Integration**: Intercepts and executes matching Aspect advices (`BEFORE`, `AFTER`, `THROWN`, `FINALLY`) dynamically at designated joinpoints throughout the request lifecycle.
+*   **Flexible Derived Activity Models**: Provides specialized activity implementations, such as [`ProxyActivity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/ProxyActivity.java) for asynchronous worker threads and [`InstantActivity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/InstantActivity.java) for programmatic template rendering.
 
-## 2. Detailed Analysis of Key Classes and Interfaces
+## 2. Key Classes and Interfaces
+
+```mermaid
+classDiagram
+    class Activity {
+        <<interface>>
+        +getActivityContext() ActivityContext
+        +getRequestAdapter() RequestAdapter
+        +getResponseAdapter() ResponseAdapter
+        +getSessionAdapter() SessionAdapter
+        +getTranslet() Translet
+        +prepare()
+        +perform()
+        +terminate()
+    }
+
+    class AbstractActivity {
+        <<abstract>>
+        -ActivityContext context
+        -SessionAdapter sessionAdapter
+        -RequestAdapter requestAdapter
+        -ResponseAdapter responseAdapter
+        #adapt()
+        #parseRequest()
+    }
+
+    class AdviceActivity {
+        <<abstract>>
+        -List~AspectAdviceRule~ beforeAdviceList
+        -List~AspectAdviceRule~ afterAdviceList
+        -List~AspectAdviceRule~ finallyAdviceList
+        #executeAdvice(AspectAdviceRule)
+    }
+
+    class CoreActivity {
+        <<abstract>>
+        -Translet translet
+        -ActivityData activityData
+        -ProcessResult processResult
+        +prepare()
+        +perform()
+        #dispatchContent()
+    }
+
+    class DefaultActivity {
+        +DefaultActivity(ActivityContext)
+    }
+
+    class Translet {
+        <<interface>>
+        +getParameter(String)
+        +getAttribute(String)
+        +transform(TransformRule)
+        +dispatch(DispatchRule)
+        +forward(ForwardRule)
+        +redirect(RedirectRule)
+    }
+
+    class CoreTranslet {
+        -CoreActivity activity
+        +getParameter(String)
+        +getAttribute(String)
+    }
+
+    Activity <|.. AbstractActivity
+    AbstractActivity <|-- AdviceActivity
+    AdviceActivity <|-- CoreActivity
+    CoreActivity <|-- DefaultActivity
+    Translet <|.. AbstractTranslet
+    AbstractTranslet <|-- CoreTranslet
+    CoreActivity --> CoreTranslet : provides
+```
 
 ### `Activity` (Interface)
 
-The specification for the central execution engine that governs all processing during a single request-response lifecycle.
+The top-level specification governing the central execution controller for a single request-response lifecycle:
 
-**Key Responsibilities:**
--   Provides access to `ActivityContext`, the global context of the application.
--   Defines methods to access adapters (`RequestAdapter`, `ResponseAdapter`, `SessionAdapter`) that abstract the execution environment.
--   Manages exceptions (`raisedException`) that occur during request processing and controls the processing flow (`terminate`).
--   Provides access to AsEL expression evaluators (`TokenEvaluator`, `ItemEvaluator`).
+*   **Core Responsibilities**:
+    *   Grants access to the global application context ([`ActivityContext`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/ActivityContext.java)).
+    *   Exposes environment adapters (`RequestAdapter`, `ResponseAdapter`, `SessionAdapter`) encapsulating native I/O channels.
+    *   Provides the developer-facing [`Translet`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/Translet.java) facade.
+    *   Declares lifecycle pipeline hooks (`prepare()`, `perform()`).
+    *   Provides early-termination control (`terminate()`) to abort pipelines and flush responses immediately.
+    *   Exposes ASEL expression evaluation engines (`TokenEvaluator`, `ItemEvaluator`).
+
+### `AbstractActivity` (Abstract Class)
+
+The abstract template managing core infrastructure binding and thread-local state:
+
+*   **Key Responsibilities**:
+    *   Maintains binding to `ActivityContext` and registers the executing activity into thread-local storage via `ActivityContext.setCurrentActivity(this)`.
+    *   Declares `adapt()` and `parseRequest()` template hooks for concrete subclasses to wrap native I/O streams into standard adapters.
+
+### `AdviceActivity` (Abstract Class)
+
+Extends `AbstractActivity`, integrating Aspectran's **declarative AOP advice interception engine**:
+
+*   **Key Responsibilities**:
+    *   Collects aspect rules matching the active request URI and method, ordering them by declared precedence (`order`).
+    *   Maintains execution queues for `BEFORE`, `AFTER`, `THROWN`, and `FINALLY` advice stages.
+    *   Controls context frames when advice methods invoke nested beans or secondary actions.
 
 ### `CoreActivity` (Abstract Class)
 
-The core implementation of `Activity`, defining the standard pipeline for executing `Translet` rules.
+Extends `AdviceActivity`, providing the complete implementation of Aspectran's standard translet execution pipeline:
 
-**Key Responsibilities:**
--   Prepares (`prepare`) and performs (`perform`) the entire process for handling a request.
--   Manages core objects needed during request processing, such as `Translet` instances, `ActivityData`, and `Response` objects.
--   Supports passing attributes during redirects by integrating with `FlashMapManager`.
+*   **End-to-End Pipeline Execution (`perform()`)**:
+    1.  **Adaptation (`adapt`)**: Subclass hook converts native objects (Servlet, Netty, Terminal) into `RequestAdapter`, `ResponseAdapter`, and `SessionAdapter`.
+    2.  **`BEFORE` Advices**: Executes security checks, initiates transactions, and performs audit authorization before business actions run.
+    3.  **Content Action Dispatching (`dispatchContent`)**: Iterates through `<contents>` blocks, executing actions (`InvokeAction`, `IncludeAction`, `ChooseAction`) and accumulating results into `ProcessResult`.
+    4.  **Response Processing (`response`)**: Evaluates declared response strategies (`TransformRule` for JSON/XML, `DispatchRule` for templates, `RedirectRule` for HTTP redirects, `ForwardRule` for internal chaining).
+    5.  **`AFTER` Advices**: Post-processes results and logs transaction metrics upon successful completion.
+    6.  **`THROWN` Advices**: Catches exceptions (`ActivityException`), rolling back transactions and routing to declarative error views.
+    7.  **`FINALLY` Advices**: Executes mandatory teardown and resource release regardless of outcome.
+    8.  **Stream Finalization (`response.end()`)**: Flushes buffers and closes output streams.
 
-**Key Method Analysis:**
--   `perform()`: Aspectran's **core request processing pipeline**. When this method is called, the following processes occur sequentially:
-    1.  Standardizes request/response objects through adapters.
-    2.  Executes `BEFORE` advice.
-    3.  Sequentially executes actions defined in `<contents>` (`dispatchContent()`).
-    4.  Processes the response according to the `<response>` rule. (Forward, Redirect, Transform, Dispatch, etc.)
-    5.  Executes `AFTER` advice.
-    6.  If an exception occurred, executes `THROWN` advice.
-    7.  Executes `FINALLY` advice regardless of success or failure.
-    8.  Finally completes the response (`response.end()`).
+### `Translet` (Interface) & `CoreTranslet` (Implementation Class)
 
-### `Translet` (Interface)
+The **developer-facing facade** injected into action methods and controllers:
 
-From the perspective of the action code written by developers, it is a **simplified API facade** for interacting with the currently processed request.
-
-**Key Responsibilities:**
--   Provides easy access to request parameters (`getParameter`), attributes (`getAttribute`), file parameters (`getFileParameter`), etc.
--   Exposes methods to control the response flow (`transform`, `dispatch`, `forward`, `redirect`), allowing dynamic determination of the response method within the action code.
--   Provides access to the results (`ProcessResult`) of executed actions.
--   Delegates and provides key functionalities of `ActivityContext` such as `getBean()` and `getMessage()`.
-
-### `CoreTranslet` (Implementation Class)
-
-A concrete implementation of `Translet` used within `CoreActivity`. It operates by delegating all method calls of the `Translet` interface to the `CoreActivity` instance that created it or to related adapters.
+*   **Key Responsibilities**:
+    *   Provides intuitive access to request parameters (`getParameter`, `getParameterValues`), attributes (`getAttribute`, `setAttribute`), and uploaded files (`getFileParameter`).
+    *   Exposes dynamic programmatic flow-control methods (`transform()`, `dispatch()`, `redirect()`, `forward()`).
+    *   Grants access to accumulated action outputs via `ProcessResult`.
+    *   `CoreTranslet` safely delegates all calls to the underlying `CoreActivity` and adapters.
 
 ### `ActivityData` (Class)
 
-A map-like facade that integrates and provides all data accessible during request processing into a single view.
+A lazy-loading map facade providing a consolidated, single-namespace view over all request-scoped data:
 
-**Key Responsibilities:**
--   Allows retrieval of scattered data from various sources (request parameters, request attributes, session attributes, action results (`ProcessResult`)) through a single object.
--   When accessing data through `#{...}` AsEL expressions, this `ActivityData` becomes the primary search target.
--   Uses a lazy loading approach where actual data is retrieved from the original source (Request, Session, etc.) at the time of request.
+*   Unifies request parameters, request attributes, session attributes, and `ProcessResult` action values into a single view.
+*   Acts as the primary resolution target during ASEL expression evaluation (`#{user.name}`, `#{actionResult.orderId}`).
 
-### `FlashMap` and `FlashMapManager`
+### `InstantActivity` & `InstantActivitySupport`
 
-A mechanism to pass attributes from the current request to the next request when a redirect occurs, supporting the Post/Redirect/Get (PRG) pattern. `FlashMapManager` temporarily stores `FlashMap` objects in the session, etc., reads them in the next request, and integrates them into `ActivityData`.
+Lightweight, specialized activity models designed for executing ad-hoc tasks (such as on-the-fly template rendering or programmatic action calls) outside regular translet routes:
 
-### `InstantActivity` (Class)
+*   Inherits session and context state from parent activities when nested, or initializes minimal adapters for rapid execution when invoked standalone.
 
-A lightweight `Activity` for immediately executing short-lived tasks within an existing `Activity` flow. For example, it is used internally when handling programmatic calls like `render()` or `execute()`. It can be executed by inheriting the state (session, etc.) of the parent `Activity`.
+### `ProxyActivity` (Class)
 
-## 3. Package Summary and Architectural Significance
+A proxy activity designed to propagate security and request contexts to worker threads during `@Async` asynchronous method invocations:
 
-The `com.aspectran.core.activity` package is Aspectran's **execution engine** itself. The most important architectural decision of this package is the **separation of roles between `Activity` and `Translet`**.
+*   Clones parent activity adapters and contexts in a thread-safe manner, enabling asynchronous code to safely invoke `ActivityContext.getCurrentActivity()`.
 
--   **`Activity`**: Handles the role of a powerful but complex 'engine' within the framework, including complex execution flows, advice integration, exception handling, and lifecycle management.
--   **`Translet`**: Acts as a simple and intuitive 'API' exposed to developers.
+### `FlashMap` & `FlashMapManager`
 
-Thanks to this separation, developers can utilize all of Aspectran's features with just the simple `Translet` interface, without needing to know the complex internal workings of the framework. Furthermore, by perfectly abstracting the execution environment through `RequestAdapter` and `ResponseAdapter`, the same `CoreActivity` pipeline gains the flexibility to be reused in any environment, whether web, shell, or daemon. This forms the basis of Aspectran's high modularity and extensibility.
+Infrastructure components supporting the Post/Redirect/Get (PRG) pattern in web applications:
+
+*   Temporarily stages transient flash attributes inside user sessions during redirects, automatically restoring them into `ActivityData` and purging them on the subsequent GET request.
+
+## 3. Interactions with Other Packages
+
+*   **`com.aspectran.core.service`**: Activates request execution via `CoreService.service(Activity)`.
+*   **`com.aspectran.core.adapter`**: `Activity` owns `RequestAdapter`, `ResponseAdapter`, and `SessionAdapter`, driving all physical I/O through adapter contracts.
+*   **`com.aspectran.core.activity.process`**: `CoreActivity.dispatchContent()` executes `ContentList` and `Executable` action pipelines, collecting outcomes into `ProcessResult`.
+*   **Runtime Activity Packages (`web.servlet`, `netty`, `undertow`, `shell`, `daemon`, `embed`)**: Concrete activity classes (`ServletWebActivity`, `NettyActivity`, `TowActivity`, `ShellActivity`) extend `CoreActivity` to bind runtime-specific adapters.
+
+## 4. Package Summary and Architectural Significance
+
+The `com.aspectran.core.activity` package embodies Aspectran's core architectural strengths:
+
+1.  **Engine vs. Facade Decoupling**: `Activity` manages complex orchestration, while `Translet` exposes a clean, developer-friendly facade.
+2.  **Universal Adapter Pattern**: Decoupling the execution engine from networking protocols ensures business logic remains 100% portable across web, socket, console, and daemon runtimes.
+3.  **Seamless AOP Integration**: Intercepts execution stages natively without external dependencies, embedding enterprise capabilities cleanly into the core request lifecycle.

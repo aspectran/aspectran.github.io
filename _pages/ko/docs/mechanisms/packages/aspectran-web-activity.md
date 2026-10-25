@@ -1,46 +1,145 @@
 ---
-title: "`com.aspectran.web.activity` 패키지 상세 분석"
+title: "`com.aspectran.web.servlet.activity` 패키지 상세 분석"
 subheadline: 패키지 명세
+mermaid: true
 ---
 
 ## 1. 설계 목표 및 주요 역할
 
-이 패키지는 Aspectran의 코어 실행 엔진(`CoreActivity`)을 **표준 Java 서블릿(Servlet) 환경에 맞게 조정하는 어댑터(Adapter)** 역할을 합니다. 이 패키지의 설계 목표는 다음과 같습니다.
+`com.aspectran.web.servlet.activity` 패키지는 Aspectran의 코어 실행 엔진(`CoreActivity`)을 **표준 Java/Jakarta EE 서블릿(Servlet) 환경에 맞게 조정하는 특화된 실행기 및 어댑터 계층**을 제공합니다.
 
--   **실행 환경의 구체화**: 프로토콜에 독립적인 `CoreActivity`를 상속받아, 서블릿 API(`HttpServletRequest`, `HttpServletResponse`)라는 구체적인 기술과 연동하는 `ServletWebActivity`를 제공합니다.
--   **서블릿 API의 캡슐화**: 서블릿의 요청/응답 객체를 직접 다루는 대신, Aspectran의 표준 어댑터 인터페이스(`RequestAdapter`, `ResponseAdapter`) 뒤로 캡슐화합니다. 이를 통해 `CoreActivity`의 실행 파이프라인은 서블릿 API에 대한 직접적인 의존성을 갖지 않게 됩니다.
--   **웹 전용 기능 처리**: 멀티파트 요청(파일 업로드) 파싱, 요청 인코딩 처리, 비동기 요청 처리(Servlet 3.0+ `AsyncContext`) 등 웹 환경에서만 필요한 기능들을 처리하는 책임을 가집니다.
+이 패키지의 핵심 설계 목표는 다음과 같습니다.
 
-결론적으로, 이 패키지는 일반적인 실행 엔진을 웹이라는 특정 컨텍스트에서 동작할 수 있도록, 필요한 모든 변환과 적응을 수행하는 **특화된 실행기**를 제공하는 것을 목표로 합니다.
+*   **서블릿 웹 실행 환경의 구체화**: 프로토콜에 독립적인 `CoreActivity`를 상속받아, 최신 Jakarta Servlet API(`jakarta.servlet.http.HttpServletRequest`, `HttpServletResponse`)와 직접 연동하는 `ServletWebActivity`를 제공합니다.
+*   **완벽한 어댑터 캡슐화**: 서블릿 표준 객체들을 직접 다루지 않고, Aspectran 표준 인터페이스인 `HttpServletRequestAdapter`, `HttpServletResponseAdapter`, `HttpSessionAdapter` 뒤로 은폐하여 코어 파이프라인의 독립성을 보장합니다.
+*   **고급 HTTP 웹 명세 지원**: 가상 HTTP 메서드 오버라이드(`X-HTTP-Method-Override`), 프록시 포워딩 헤더(`X-Forwarded-For`), HTTP `Accept` 헤더 기반 콘텐츠 협상(`isHeaderAcceptable`), 최대 요청 본문 크기 제한(`maxRequestSize`) 등을 활동 레벨에서 지원합니다.
+*   **웹 전용 요청 파싱 및 비동기 처리**: `WebRequestBodyParser`를 통한 대용량 멀티파트 파일 업로드(`multipart/form-data`) 파싱, URL 인코딩 폼 처리, 그리고 서블릿 3.0+ 비동기 요청 처리(`isAsync()`, `AsyncContext`)를 매끄럽게 통합합니다.
 
 ## 2. 주요 클래스 상세 분석
 
+```mermaid
+classDiagram
+    class CoreActivity {
+        <<abstract>>
+        #adapt()
+        #parseRequest()
+        #isHeaderAcceptable()
+    }
+
+    class ServletWebActivity {
+        -WebService webService
+        -HttpServletRequest request
+        -HttpServletResponse response
+        -String effectiveContextPath
+        -String requestName
+        -MethodType requestMethod
+        -boolean async
+        -Long timeout
+        +getMode() Mode
+        +prepare()
+        #adapt()
+        #parseRequest()
+        #isHeaderAcceptable()
+    }
+
+    class HttpServletRequestAdapter {
+        -HttpServletRequest request
+        +getMaxRequestSize() long
+        +setMaxRequestSize(long)
+    }
+
+    class HttpServletResponseAdapter {
+        -HttpServletResponse response
+        +getWriter() Writer
+        +getOutputStream() OutputStream
+    }
+
+    class HttpSessionAdapter {
+        -HttpSession session
+    }
+
+    CoreActivity <|-- ServletWebActivity
+    ServletWebActivity ..> HttpServletRequestAdapter : instantiates
+    ServletWebActivity ..> HttpServletResponseAdapter : instantiates
+    ServletWebActivity ..> HttpSessionAdapter : instantiates
+```
+
 ### `ServletWebActivity` (구현 클래스)
 
-서블릿 기반 웹 환경을 위한 `Activity`의 최종 구현체입니다. 들어오는 모든 `HttpServletRequest`에 대해 `WebService`에 의해 하나씩 생성됩니다.
+서블릿 기반 웹 환경을 위한 `Activity`의 최종 구현체입니다. `ServletWebService.service()`가 호출될 때마다 유입된 `HttpServletRequest` 단위로 새롭게 인스턴스화됩니다.
 
-**주요 책임 (Key Responsibilities):**
--   `CoreActivity`를 상속하여, Aspectran의 표준 요청 처리 파이프라인(어드바이스, 액션 실행 등)을 모두 상속받습니다.
--   `HttpServletRequest`와 `HttpServletResponse` 객체에 대한 참조를 유지하며, 전체 요청 처리 생명주기 동안 이들을 관리합니다.
--   웹 관련 기능(멀티파트 파싱, 비동기 처리 등)을 `CoreActivity`의 실행 흐름에 통합합니다.
+*   **주요 책임 및 속성**:
+    *   `webService`: 상위 `ServletWebService`를 참조하여 세션 활성화 여부, 프록시 포워딩, 플래시맵 매니저, 로케일 리졸버를 인출합니다.
+    *   `request` / `response`: Jakarta Servlet 표준 요청 및 응답 인스턴스입니다.
+    *   `effectiveContextPath`: 리버스 프록시나 가상 호스트 환경에서 올바른 상대/절대 URL 링크를 생성하기 위한 유효 컨텍스트 경로입니다.
+    *   `async` / `timeout`: 트랜슬릿 규칙에 정의된 비동기 처리 여부 및 타임아웃 메타데이터입니다.
+    *   `getMode()`: 항상 `Mode.WEB`을 반환하여 웹 전용 어드바이스 및 뷰 디스패처가 활성화되도록 합니다.
 
-**핵심 메서드 분석:**
--   `adapt()`: **어댑터 패턴의 핵심 구현부**입니다. `CoreActivity`의 `perform()` 메서드 초반에 호출되며, 서블릿 API 객체들을 Aspectran의 표준 인터페이스로 변환하는 어댑터들을 생성하고 설정합니다.
-    -   `HttpServletRequestAdapter`: `HttpServletRequest`를 감싸 `RequestAdapter` 역할을 합니다. 요청 파라미터, 속성, 헤더 등을 읽는 표준화된 방법을 제공합니다.
-    -   `HttpServletResponseAdapter`: `HttpServletResponse`를 감싸 `ResponseAdapter` 역할을 합니다. 응답 스트림에 데이터를 쓰거나 헤더를 설정하는 표준화된 방법을 제공합니다.
-    -   `HttpSessionAdapter`: `HttpServletRequest.getSession()`을 통해 얻은 `HttpSession`을 감싸 `SessionAdapter` 역할을 합니다.
--   `parseRequest()`: HTTP 요청의 본문(body)을 파싱하는 웹 전용 로직을 수행합니다. 특히 `Content-Type`이 `multipart/form-data`일 경우, `MultipartFormDataParser`를 사용하여 파일 업로드를 포함한 멀티파트 요청을 처리합니다. 이 메서드는 `prepare()` 단계에서 호출됩니다.
--   `isAsync()` / `getAsyncContext()`: 서블릿 3.0의 비동기 처리(`AsyncContext`)를 지원하기 위한 메서드입니다. 트랜슬릿이 `async="true"`로 설정된 경우, 이 메서드들을 통해 비동기 모드로 전환하고 `AsyncContext`를 관리합니다.
+*   **핵심 메서드 심층 분석**:
+    *   `prepare()` 및 메서드 오버라이드:
+        ```java
+        @Override
+        public void prepare(@NonNull String requestName, MethodType requestMethod)
+                throws TransletNotFoundException, ActivityPrepareException {
+            if (requestMethod == MethodType.POST) {
+                String method = request.getHeader(HttpHeaders.X_HTTP_METHOD_OVERRIDE);
+                if (method == null) {
+                    method = request.getHeader(HttpHeaders.X_METHOD_OVERRIDE);
+                }
+                if (method != null) {
+                    MethodType hiddenRequestMethod = MethodType.resolve(method);
+                    if (hiddenRequestMethod != null) {
+                        requestMethod = hiddenRequestMethod;
+                    }
+                }
+            }
+            super.prepare(requestName, requestMethod);
+        }
+        ```
+        방화벽이나 구형 클라이언트로 인해 `PUT`, `DELETE`를 전송하지 못하는 경우, `X-HTTP-Method-Override` 헤더를 통해 요청 메서드를 안전하게 동적 변환합니다.
+    *   `adapt()`: **서블릿 환경을 위한 어댑테이션의 핵심 구현부**입니다.
+        ```java
+        @Override
+        protected void adapt() throws AdapterException {
+            if (webService.isSessionAdaptable()) {
+                SessionAdapter sessionAdapter = new HttpSessionAdapter(request);
+                setSessionAdapter(sessionAdapter);
+            }
 
-**다른 클래스와의 상호작용:**
--   `WebService`: `service()` 메서드 내에서 모든 유효한 요청에 대해 `ServletWebActivity`를 생성하고 `prepare()`와 `perform()`을 호출합니다.
--   `CoreActivity`: `ServletWebActivity`는 `CoreActivity`를 상속하여 그 실행 파이프라인을 그대로 사용합니다. `ServletWebActivity`의 역할은 이 파이프라인이 웹 환경에서 돌아갈 수 있도록 입/출력을 서블릿 API에 맞게 '연결'해주는 것입니다.
--   `com.aspectran.web.adapter` 패키지의 클래스들: `adapt()` 메서드 내에서 이 패키지에 포함된 `HttpServletRequestAdapter`, `HttpServletResponseAdapter` 등을 직접 생성하여 사용합니다.
+            HttpServletRequestAdapter requestAdapter = new HttpServletRequestAdapter(getTranslet().getRequestMethod(), request);
+            requestAdapter.setProxyAddressForwarding(webService.isProxyAddressForwarding());
+            // maxRequestSize 및 requestEncoding 설정
+            setRequestAdapter(requestAdapter);
 
-## 3. 패키지 요약 및 아키텍처적 의미
+            ResponseAdapter responseAdapter = new HttpServletResponseAdapter(response, this);
+            // responseEncoding 설정
+            setResponseAdapter(responseAdapter);
 
-`com.aspectran.web.activity` 패키지와 그 핵심인 `ServletWebActivity` 클래스는 Aspectran 아키텍처에서 **어댑터 패턴(Adapter Pattern)의 가장 명확한 예시**입니다.
+            setFlashMapManager(webService.getFlashMapManager());
+            setLocaleResolver(webService.getLocaleResolver());
 
-이 패키지의 가장 큰 아키텍처적 의미는 **코어 로직과 특정 환경 기술의 분리**입니다. `CoreActivity`는 '어떻게 요청을 처리할 것인가'라는 추상적인 파이프라인만 정의하고, `ServletWebActivity`는 '서블릿 환경에서 들어온 요청과 응답을 어떻게 그 파이프라인에 맞게 끼워넣을 것인가'라는 구체적인 역할을 담당합니다. 이 분리 덕분에 Aspectran의 핵심 엔진은 서블릿 API의 변경이나 제약에 영향을 받지 않고 안정적으로 유지될 수 있습니다.
+            super.adapt();
+        }
+        ```
+        1.  `request.getSession()`을 래핑하는 `HttpSessionAdapter`를 결속하여 서블릿 세션과 Aspectran 세션을 투명하게 연결합니다.
+        2.  `HttpServletRequestAdapter`를 생성하여 파라미터, 헤더, 속성, 최대 요청 크기(`maxRequestSize`)를 바인딩합니다.
+        3.  `HttpServletResponseAdapter`를 구성하여 `response.getOutputStream()` 및 `response.getWriter()`를 통한 표준 응답 출력을 결합합니다.
+    *   `parseRequest()`:
+        `WebRequestBodyParser`를 구동하여 HTTP 요청 본문이 `multipart/form-data`인 경우 업로드된 파일들을 파싱하여 `FileParameter`로 변환하고, 폼 데이터는 요청 파라미터로 매핑합니다.
+    *   `isHeaderAcceptable(String headerRule)`:
+        HTTP `Accept` 헤더와 트랜슬릿 규칙의 허용 미디어 타입을 비교하여 클라이언트가 원하는 표현 형식(JSON, XML, HTML 등)에 부합하는지 콘텐츠 협상을 수행합니다.
 
-또한, `DaemonActivity`, `ShellActivity` 등 다른 환경의 `Activity` 구현체들도 모두 `ServletWebActivity`와 동일한 방식으로 `CoreActivity`를 상속하고 자신만의 어댑터를 구현합니다. 이는 Aspectran이 얼마나 일관되고 재사용성 높은 설계 원칙 위에서 다양한 실행 환경을 지원하는지를 보여주는 좋은 증거입니다.
+## 3. 다른 패키지와의 상호작용
+
+*   **`com.aspectran.web.servlet.service`**: `DefaultServletWebService`는 모든 HTTP 요청에 대해 `ServletWebActivity`를 생성하고, `prepare()` 및 `perform()`을 호출하여 실행을 위임합니다.
+*   **`com.aspectran.web.servlet.adapter`**: `ServletWebActivity`는 `HttpServletRequestAdapter`, `HttpServletResponseAdapter`, `HttpSessionAdapter`를 생성하여 Jakarta Servlet 객체들을 표준 인터페이스 뒤로 캡슐화합니다.
+*   **`com.aspectran.web.activity.request`**: `WebRequestBodyParser`를 통해 대용량 멀티파트 파일 업로드와 URL 인코딩 폼 데이터를 처리합니다.
+*   **`com.aspectran.core.activity`**: `ServletWebActivity`는 `CoreActivity`를 상속받아 그 안에 구현된 AOP 어드바이스 체인(`BEFORE`, `AFTER`, `THROWN`, `FINALLY`), 액션 디스패치(`dispatchContent`), 응답 변환 로직을 일체 변경 없이 100% 재사용합니다.
+
+## 4. 패키지 요약 및 아키텍처적 의미
+
+`com.aspectran.web.servlet.activity` 패키지와 `ServletWebActivity`는 Aspectran의 **어댑터 패턴(Adapter Pattern)이 제공하는 완벽한 기술 격리의 표준 모델**입니다.
+
+1.  **엔터프라이즈 서블릿 표준과의 무결한 통합**: Jakarta EE 표준 서블릿 API 위에서 동작하면서도, 코어 비즈니스 액션과 트랜슬릿 파이프라인이 서블릿 스펙에 직접 종속되지 않도록 완벽하게 보호합니다.
+2.  **모바일 및 REST 친화적 아키텍처**: HTTP Method Override, 클라이언트 IP 포워딩 해석, Accept 헤더 콘텐츠 협상 등 현대적인 웹 API 서비스에 필수적인 기능들이 활동 단계 초반에 자동화되어 제공됩니다.
+3.  **다중 런타임 간의 완전한 대칭성**: Undertow의 `TowActivity`나 Netty의 `NettyActivity`와 완전히 동일한 어댑터 인터페이스 계약을 준수하므로, 개발자는 런타임 서버가 바뀌더라도 동일한 방식으로 비즈니스 로직을 개발하고 유지보수할 수 있습니다.

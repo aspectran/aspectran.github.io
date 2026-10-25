@@ -1,47 +1,136 @@
 ---
-title: In-Depth Analysis of the `com.aspectran.undertow.activity` Package
+title: "In-Depth Analysis of `com.aspectran.undertow.activity` Package"
 subheadline: Package Specifications
+mermaid: true
 ---
 
-## 1. Design Goals and Key Roles
+## 1. Design Goals and Primary Roles
 
-This package provides the **`Activity` implementation that actually processes** Undertow's native web requests (`HttpServerExchange`) received via `TowService`. This package plays almost the same role as the `web-activity` package, but the target technology is the Undertow API instead of the Servlet API.
+The `com.aspectran.undertow.activity` package provides the **dedicated `Activity` implementation and adapter layer** that processes HTTP requests incoming from an embedded Undertow web server natively via `HttpServerExchange`, completely bypassing the traditional servlet API.
 
-The design goals of this package are as follows:
+The core architectural objectives of this package are:
 
--   **Concretizing the Undertow Execution Environment**: Inherits from the abstract `CoreActivity` to provide `TowActivity`, which can process HTTP requests in an Undertow web server environment.
--   **Encapsulation of the Undertow API**: Encapsulates Undertow's core I/O object, `HttpServerExchange`, behind Aspectran's standard adapter interfaces (`RequestAdapter`, `ResponseAdapter`, etc.). This ensures that the `CoreActivity` execution pipeline does not have a direct dependency on Undertow's native API.
--   **Handling Undertow-based Web Features**: It is responsible for handling web-specific functionalities, such as parsing multipart requests (file uploads), using Undertow's API.
+*   **Concretization of the Servlet-less Web Execution Context**: Inherits from standard `CoreActivity` to provide `TowActivity`, wrapping Undertow's ultra-fast native I/O construct (`HttpServerExchange`) directly without an intermediate servlet container (`jakarta.servlet`) layer.
+*   **Complete Support for Advanced Web Features**: Handles HTTP method overrides (`X-HTTP-Method-Override`, `X-Method-Override`), reverse proxy IP forwarding (`X-Forwarded-For`), maximum entity size limits (`maxRequestSize`), and character encoding resolutions at the native exchange level.
+*   **Transparent Integration with Undertow Session Manager**: Wraps Undertow's native session structures within `TowSessionAdapter` via channel attachment keys (`SessionManager.ATTACHMENT_KEY`, `SessionConfig.ATTACHMENT_KEY`), providing seamless in-memory and clustered session functionality.
+*   **Web Request Body and Multipart Form Parsing**: Coordinates with `WebRequestBodyParser` to parse large file uploads (`multipart/form-data`) and URL-encoded form data (`application/x-www-form-urlencoded`) non-blockingly and efficiently.
 
-In conclusion, this package aims to provide a **specialized executor** that performs all necessary conversions and adaptations to enable the general execution engine to operate within the specific web server context of Undertow.
+## 2. Key Classes In-Depth Analysis
 
-## 2. Detailed Class Analysis
+```mermaid
+classDiagram
+    class CoreActivity {
+        <<abstract>>
+        #adapt()
+        #parseRequest()
+    }
 
-### `TowActivity` (Implementation Class)
+    class TowActivity {
+        -TowService towService
+        -HttpServerExchange exchange
+        -String effectiveContextPath
+        -String requestName
+        -MethodType requestMethod
+        +getMode() Mode
+        +prepare()
+        #adapt()
+        #parseRequest()
+    }
 
-The final implementation of `Activity` for the Undertow web server environment. A new instance is created for each incoming `HttpServerExchange` by `TowService`.
+    class TowRequestAdapter {
+        -HttpServerExchange exchange
+        +getMaxRequestSize() long
+        +setMaxRequestSize(long)
+    }
 
-**Key Responsibilities:**
--   Inherits `CoreActivity`, thus inheriting all of Aspectran's standard request processing pipeline (advice, action execution, etc.).
--   Maintains a reference to the `HttpServerExchange` object and uses this object to read requests and send responses throughout the entire request processing lifecycle.
+    class TowResponseAdapter {
+        -HttpServerExchange exchange
+        +getWriter() Writer
+        +getOutputStream() OutputStream
+    }
 
-**Key Method Analysis:**
--   `adapt()`: The **core of adaptation for the Undertow environment**. It is called at the beginning of `CoreActivity`'s `perform()` method and creates and configures adapters that convert the `HttpServerExchange` object into Aspectran's standard interfaces.
-    -   `TowRequestAdapter`: Wraps `HttpServerExchange` to act as a `RequestAdapter`. It provides a standardized way to read request parameters, attributes, headers, etc., through the `HttpServerExchange` API.
-    -   `TowResponseAdapter`: Similarly wraps `HttpServerExchange` to act as a `ResponseAdapter`. It provides a standardized way to send response data to `HttpServerExchange`'s response channel or set headers.
-    -   `TowSessionAdapter`: Wraps Undertow's session management functionality to act as a `SessionAdapter`.
-    -   *Design Note*: In a servlet environment, `request` and `response` are separate objects, but in Undertow, `HttpServerExchange` manages both request and response states. Therefore, all adapters essentially refer to the same `HttpServerExchange` object.
--   `parseRequest()`: Similar to `ServletWebActivity`, it performs the logic for parsing the HTTP request body. If the `Content-Type` is `multipart/form-data`, it uses Undertow's built-in parser to handle file uploads.
+    class TowSessionAdapter {
+        -HttpServerExchange exchange
+        -Session session
+    }
 
-**Interaction with Other Classes:**
--   `TowService`: Creates a `TowActivity` for every valid request within its `service()` method and calls `prepare()` and `perform()`.
--   `CoreActivity`: `TowActivity` inherits `CoreActivity` and uses its execution pipeline as is.
--   Classes in `com.aspectran.undertow.adapter` package: `TowRequestAdapter`, `TowResponseAdapter`, etc., included in this package are directly created and used within the `adapt()` method.
+    CoreActivity <|-- TowActivity
+    TowActivity ..> TowRequestAdapter : instantiates
+    TowActivity ..> TowResponseAdapter : instantiates
+    TowActivity ..> TowSessionAdapter : instantiates
+```
 
-## 3. Package Summary and Architectural Significance
+### `TowActivity` (Concrete Implementation Class)
 
-The `com.aspectran.undertow.activity` package and its core, the `TowActivity` class, are representative examples of **Aspectran's environment-adaptive architecture** alongside `ServletWebActivity`.
+The final concrete `Activity` class tailored for Undertow environments. It is newly instantiated per incoming `HttpServerExchange` on each invocation of `DefaultTowService.service()`.
 
-The greatest architectural significance of this package is that it once again proves the **perfect separation of core logic from specific environment technology**. `CoreActivity` does not need to know whether the request it is processing came via the Servlet API or via Undertow's `HttpServerExchange`. This is because `TowActivity` acts as an adapter that absorbs all technical differences and provides a standardized interface.
+*   **Core Responsibilities and Attributes**:
+    *   `towService`: References the parent `TowService` instance to retrieve resource managers, flash maps, locale resolvers, and session activation policies.
+    *   `exchange`: Undertow's native HTTP exchange object, owning request headers, query strings, and I/O buffer streams.
+    *   `effectiveContextPath`: Retains the resolved context path to properly prefix generated absolute URLs and links.
+    *   `getMode()`: Always returns `Mode.WEB`, activating web-specific AOP advice and view dispatchers.
 
-This design gives Aspectran the flexibility to not be dependent on a specific web server technology. If in the future it needs to support Netty or another new high-performance server, it can be extended relatively easily by simply adding new `activity` and `service` packages for that server. This demonstrates that Aspectran has a robust and extensible structure that can adapt to long-term technological changes.
+*   **Deep Dive into Core Methods**:
+    *   `prepare()` and Hidden Method Override:
+        ```java
+        @Override
+        public void prepare(@NonNull String requestName, MethodType requestMethod)
+                throws TransletNotFoundException, ActivityPrepareException {
+            if (requestMethod == MethodType.POST) {
+                String method = exchange.getRequestHeaders().getFirst(HttpHeaders.X_HTTP_METHOD_OVERRIDE);
+                if (method == null) {
+                    method = exchange.getRequestHeaders().getFirst(HttpHeaders.X_METHOD_OVERRIDE);
+                }
+                if (method != null) {
+                    MethodType hiddenRequestMethod = MethodType.resolve(method);
+                    if (hiddenRequestMethod != null) {
+                        requestMethod = hiddenRequestMethod;
+                    }
+                }
+            }
+            super.prepare(requestName, requestMethod);
+        }
+        ```
+        When RESTful API clients or restrictive firewalls cannot dispatch `PUT` or `DELETE` requests directly and fall back to `POST`, inspects the `X-HTTP-Method-Override` header to dynamically elevate the virtual request method.
+    *   `adapt()`: **The core implementation of Undertow adaptation**.
+        ```java
+        @Override
+        protected void adapt() throws AdapterException {
+            if (towService.isSessionAdaptable()) {
+                SessionManager sessionManager = exchange.getAttachment(SessionManager.ATTACHMENT_KEY);
+                SessionConfig sessionConfig = exchange.getAttachment(SessionConfig.ATTACHMENT_KEY);
+                if (sessionManager != null && sessionConfig != null) {
+                    setSessionAdapter(new TowSessionAdapter(exchange));
+                }
+            }
+
+            TowRequestAdapter requestAdapter = new TowRequestAdapter(getTranslet().getRequestMethod(), exchange);
+            requestAdapter.setProxyAddressForwarding(towService.isProxyAddressForwarding());
+            // maxRequestSize and encoding binding
+            setRequestAdapter(requestAdapter);
+
+            ResponseAdapter responseAdapter = new TowResponseAdapter(exchange, this);
+            setResponseAdapter(responseAdapter);
+            super.adapt();
+        }
+        ```
+        1.  Verifies the active session manager via Undertow attachments and attaches `TowSessionAdapter`.
+        2.  Instantiates `TowRequestAdapter`, configuring reverse proxy IP forwarding (`isProxyAddressForwarding`) and maximum request entity limits (`setMaxEntitySize`).
+        3.  Constructs `TowResponseAdapter`, binding Undertow's native `OutputStream` and `Writer` directly for streaming response output.
+    *   `parseRequest()`:
+        Drives `WebRequestBodyParser` to parse incoming payloads according to their `MediaType`: extracting files from `multipart/form-data` uploads or decoding `application/x-www-form-urlencoded` form parameters.
+
+## 3. Interactions with Other Packages
+
+*   **`com.aspectran.undertow.service`**: `DefaultTowService` constructs `TowActivity` for each incoming HTTP exchange and delegates processing via `prepare()` and `perform()`.
+*   **`com.aspectran.undertow.adapter`**: `TowActivity` internally instantiates `TowRequestAdapter`, `TowResponseAdapter`, and `TowSessionAdapter` to abstract interactions with Undertow native objects.
+*   **`com.aspectran.web.activity.request`**: Leverages `WebRequestBodyParser` to process large multipart uploads and URL-encoded form data.
+*   **`com.aspectran.core.activity`**: `TowActivity` extends `CoreActivity`, fully inheriting its AOP advice chains (`BEFORE`, `AFTER`, `THROWN`, `FINALLY`), action dispatching (`dispatchContent`), and response transformation logic without modification.
+
+## 4. Package Summary and Architectural Significance
+
+The `com.aspectran.undertow.activity` package and `TowActivity` illustrate **how Aspectran's adapter architecture transcends servlet limitations to master high-performance, native asynchronous web environments**:
+
+1.  **Direct Native I/O Binding**: Operates directly on Undertow's `HttpServerExchange` without wrapping overhead from servlet specifications, maximizing HTTP header parsing speed and streaming throughput.
+2.  **Mobile and REST Friendly Architecture**: Essential capabilities for enterprise REST APIs—including HTTP Method Override, proxy forwarding, and payload size restriction—are handled seamlessly during early activity phases.
+3.  **Comprehensive Nested Activity (`pendingActivity`) Support**: When executing internal forwards or include actions, it safely inherits the previous `TowActivity`'s session and adapter contexts, guaranteeing complete data consistency throughout complex web workflows.

@@ -1,68 +1,172 @@
 ---
-title: In-Depth Analysis of the `com.aspectran.core.scheduler.service` Package
+title: "Detailed Analysis of the com.aspectran.core.scheduler.service Package"
 subheadline: Package Specifications
+mermaid: true
 ---
 
 ## 1. Design Goals and Key Roles
 
-This package is responsible for **perfectly integrating Quartz**, a powerful open-source scheduling library, **into the Aspectran framework**. The design goals of this package are as follows:
+The `com.aspectran.core.scheduler.service` package is dedicated to **seamlessly integrating Quartz, the industry-standard enterprise scheduling engine, into Aspectran's service lifecycle and rule architecture**.
 
--   **Provide Declarative Scheduling**: Allows developers to implement scheduling simply by declaring `<schedule>` rules in the Aspectran configuration file, instead of writing complex scheduling code directly using the Quartz API.
--   **Execute Tasks within Aspectran Context**: Ensures that scheduled tasks (translets) operate within the full context of Aspectran. This allows scheduled tasks to utilize all framework features, such as using beans through DI (Dependency Injection) or applying AOP (Aspect-Oriented Programming).
--   **Act as a Bridge to Quartz**: Performs the role of an adapter or bridge, bridging the gap between Aspectran's service lifecycle and configuration model and Quartz's scheduling model, which is an external library.
+The primary architectural objectives of this package are:
 
-In conclusion, this package aims to make scheduling a first-class citizen of Aspectran, allowing developers to easily define and manage scheduled tasks as part of the application's core configuration.
+*   **Declarative Scheduling**: Eliminates low-level Quartz boilerplate (`SchedulerFactory`, `JobDetail`, `TriggerBuilder`), allowing developers to schedule sophisticated batch jobs simply by declaring `<schedule>` rules in configuration files (XML/APON).
+*   **Fully Context-Bound Task Execution**: Ensures scheduled tasks execute within Aspectran's complete `ActivityContext`. Batch jobs benefit from dependency injection (DI), declarative transactions, AOP advice interception, and template transformations identically to web requests.
+*   **Complete Service Lifecycle Synchronization**: `SchedulerService` operates as a subordinate child service (`subServices`) bound to the root `CoreService`. When the root service starts (`start`), pauses (`pause`), resumes (`resume`), or stops (`stop`), Quartz schedulers transition atomically in tandem.
+*   **Transparent Adapter/Bridge Architecture**: Bridges the gap between Quartz's execution model (`JobExecutionContext`, `JobDataMap`) and Aspectran's standard execution contracts ([`Activity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/Activity.java), `RequestAdapter`, `ResponseAdapter`).
 
-## 2. Detailed Analysis of Key Classes and Interfaces
+## 2. Key Classes and Components
+
+```mermaid
+classDiagram
+    class ServiceLifeCycle {
+        <<interface>>
+    }
+
+    class SchedulerService {
+        <<interface>>
+        +pause()
+        +pause(scheduleId)
+        +resume()
+        +resume(scheduleId)
+        +pauseAll()
+        +resumeAll()
+        +getScheduler() Scheduler
+    }
+
+    class AbstractSchedulerService {
+        <<abstract>>
+        -SchedulerConfig schedulerConfig
+        -boolean waitOnShutdown
+        -int startDelaySeconds
+    }
+
+    class DefaultSchedulerService {
+        -Map~String, Scheduler~ schedulerMap
+        #doStart()
+        #doStop()
+        #doPause()
+        #doResume()
+        -buildScheduler(ScheduleRule)
+    }
+
+    class ActivityLauncherJob {
+        <<Quartz Job>>
+        +execute(JobExecutionContext)
+    }
+
+    class JobActivity {
+        -JobExecutionContext jobExecutionContext
+        #adapt()
+    }
+
+    ServiceLifeCycle <|-- SchedulerService
+    SchedulerService <|.. AbstractSchedulerService
+    AbstractSchedulerService <|-- DefaultSchedulerService
+    DefaultSchedulerService ..> ActivityLauncherJob : schedules
+    ActivityLauncherJob ..> JobActivity : instantiates & runs
+```
 
 ### `SchedulerService` (Interface)
 
-The specification for scheduling services within Aspectran.
+The top-level specification governing scheduling services in Aspectran. Extends `ServiceLifeCycle`:
 
-**Key Responsibilities:**
--   Inherits `ServiceLifeCycle`, operating as a sub-service whose lifecycle is managed by the parent `CoreService`.
--   Defines methods to control the scheduler's operation, such as `pauseAll()`, `resumeAll()`, and `pause(scheduleId)`.
--   Provides access to the `ActivityContext` where scheduled tasks will be executed.
+*   **Key Responsibilities**:
+    *   Registers as a child service under parent `CoreService`, sharing the application service tree lifecycle.
+    *   Provides granular pause (`pause(String scheduleId)`) and resume (`resume(String scheduleId)`) operations for specific schedule rules.
+    *   Supports bulk suspension (`pauseAll()`) and resumption (`resumeAll()`) across all managed tasks.
+    *   Exposes secure access to the underlying Quartz `org.quartz.Scheduler` instance.
+
+### `AbstractSchedulerService` (Abstract Class)
+
+The abstract template implementing common infrastructure and lifecycle handling for `SchedulerService`:
+
+*   **Key Responsibilities & Properties**:
+    *   Holds [`SchedulerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SchedulerConfig.java) configurations.
+    *   `startDelaySeconds`: Controls an initial startup delay in seconds before Quartz triggers begin firing, allowing background caches and singleton beans to warm up completely before batch workloads start.
+    *   `waitOnShutdown`: Governs graceful shutdown behavior, determining whether `stop()` blocks until running batch tasks finish executing.
 
 ### `DefaultSchedulerService` (Implementation Class)
 
-The final implementation of `SchedulerService`, responsible for reading Aspectran's `ScheduleRule` and handling all logic for registering and managing tasks in the actual Quartz scheduler.
+The primary concrete implementation of `SchedulerService`, binding Aspectran's `ScheduleRule` definitions to Quartz schedulers and coordinating execution:
 
-**Key Responsibilities:**
--   Inherits `AbstractServiceLifeCycle` to follow the standard service lifecycle.
--   Manages Quartz `Scheduler` instances internally.
-
-**Key Method Analysis:**
--   `doStart()`: A core initialization method called when `CoreService` starts.
-    1.  Retrieves all `ScheduleRule` lists from `ActivityContext`.
-    2.  For each `ScheduleRule`, it retrieves the Quartz `Scheduler` instance by referencing the `schedulerBean` specified in the configuration. (If `schedulerBean` is not present, it creates a default scheduler via `SchedulerFactoryBean`.)
-    3.  For each scheduled job (`ScheduledJobRule`) defined in `ScheduleRule`, it creates a Quartz `JobDetail`. At this point, the actual Quartz Job class to be executed is always fixed as **`ActivityLauncherJob`**.
-    4.  It sets the `JobDetail` with information needed when `ActivityLauncherJob` is executed (e.g., the name of the translet to execute, `CoreService` instance) in a `JobDataMap`.
-    5.  It creates a `CronTrigger` or `SimpleTrigger` according to the `<trigger>` setting in `ScheduleRule`.
-    6.  It registers the created `JobDetail` and `Trigger` with the Quartz `Scheduler` (`scheduler.scheduleJob()`) to start scheduling.
--   `doStop()`: When the service stops, it safely shuts down (`shutdown()`) all managed Quartz `Scheduler` instances.
+*   **Operational Pipeline (`doStart()`)**:
+    1.  Queries the `ScheduleRuleRegistry` inside `ActivityContext` to retrieve all registered [`ScheduleRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ScheduleRule.java) descriptors.
+    2.  Resolves designated `schedulerBean` instances, or provisions default schedulers via `QuartzSchedulerFactoryBean`.
+    3.  Instantiates a Quartz `JobDetail` for each [`ScheduledJobRule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule/ScheduledJobRule.java), designating Aspectran's universal bridge class—**[`ActivityLauncherJob`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/scheduler/service/ActivityLauncherJob.java)**—as the target job class.
+    4.  Packs target translet names (`transletName`) and the `CoreService` reference into the Quartz `JobDataMap`.
+    5.  Builds a `CronTrigger` (Cron expressions) or `SimpleTrigger` (interval-based) based on the `<trigger>` configuration.
+    6.  Registers the job and trigger into the Quartz scheduler via `scheduler.scheduleJob(jobDetail, trigger)`.
+    7.  Launches the scheduler via `scheduler.startDelayed(startDelaySeconds)` or `scheduler.start()`.
+*   **Lifecycle Control (`doStop`, `doPause`, `doResume`)**:
+    *   `doStop()`: Calls `shutdown(waitOnShutdown)` on all active Quartz schedulers, gracefully terminating jobs and reclaiming thread pool resources.
+    *   `doPause()` / `doResume()`: Toggles schedulers between `standby()` and `start()` states.
 
 ### `ActivityLauncherJob` (Quartz Job Implementation)
 
-This class is located in the `com.aspectran.core.scheduler.job` package, but it is the most crucial class for understanding the scheduler service's operation.
+Implements Quartz's `org.quartz.Job` interface, acting as the **core callback bridge** between Quartz worker threads and Aspectran's execution engine:
 
-**Key Responsibilities:**
--   Implements Quartz's `org.quartz.Job` interface, acting as a **bridge** between Aspectran and Quartz.
--   It is a general-purpose job executor promised to be executed at the time specified by the Quartz scheduler.
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Q as Quartz Worker Thread
+    participant Job as ActivityLauncherJob
+    participant Act as JobActivity
+    participant Trans as CoreTranslet (Business Action)
 
-**Key Method Analysis:**
--   `execute(JobExecutionContext context)`: The Quartz scheduler calls this method when the job execution time arrives.
-    1.  It retrieves the `CoreService` instance and the `transletName` to execute from the `JobDataMap` contained in `JobExecutionContext`.
-    2.  It uses the obtained `CoreService` to create and execute a new `Activity` for the given `transletName`. (Internally, it operates similarly to `DaemonService.translate()`)
+    Q->>Job: execute(JobExecutionContext)
+    activate Job
+    Job->>Job: Extract CoreService & transletName from JobDataMap
+    Job->>Act: new JobActivity(coreService, jobExecutionContext)
+    activate Act
+    Act->>Act: Bind QuartzJobRequestAdapter & ResponseAdapter
+    Act->>Act: prepare() -> Load TransletRule & execute BEFORE Advices
+    Act->>Trans: perform() -> Execute business action pipeline
+    Trans-->>Act: Return execution results
+    Act->>Act: Execute AFTER & FINALLY Advices
+    Act-->>Job: Task completed
+    deactivate Act
+    Job-->>Q: Report successful execution
+    deactivate Job
+```
 
-## 3. Interaction with Other Packages
+*   **Execution Mechanics**:
+    *   Invoked by Quartz worker threads via `execute(JobExecutionContext)` when a trigger fires.
+    *   Retrieves the parent `CoreService` reference and target `transletName` from `JobExecutionContext`.
+    *   Instantiates a dedicated [`JobActivity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/scheduler/activity/JobActivity.java) and runs the translet execution pipeline (`prepare()`, `perform()`).
+    *   Catches exceptions and wraps them into `JobExecutionException` to alert Quartz monitoring listeners.
 
--   **`com.aspectran.core.service`**: `SchedulerService` is managed as a sub-service of `CoreService`. The `doStart()` method of `CoreService` creates and starts `SchedulerService`.
--   **`com.aspectran.core.context.rule`**: It reads `ScheduleRule` and `ScheduledJobRule` objects registered in `ActivityContext` to determine what tasks to execute and when.
--   **`org.quartz`**: This package is responsible for direct integration with the Quartz library. It implements actual scheduling functionality using Quartz's core APIs such as `Scheduler`, `JobDetail`, and `Trigger`.
+### `JobActivity` & Dedicated Adapters
+
+Concrete activity and adapter classes optimized for batch execution:
+
+*   **[`JobActivity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/scheduler/activity/JobActivity.java)**: Specialized activity running on Quartz worker threads, safely binding contexts to thread-local storage and tearing them down upon completion.
+*   **[`QuartzJobRequestAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/scheduler/adapter/QuartzJobRequestAdapter.java)**: Exposes `JobDataMap` parameters and job context attributes through the standard `RequestAdapter` interface.
+*   **[`QuartzJobResponseAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/scheduler/adapter/QuartzJobResponseAdapter.java)**: Dedicated response adapter capturing batch outcomes and execution logs.
+
+### `ActivityJobListener` & `ActivityJobReporter`
+
+Monitoring listeners implementing Quartz's `JobListener`:
+
+*   Intercepts job startup, completion, and exceptions to log elapsed times and record audit reports.
+
+### `QuartzSchedulerFactoryBean`
+
+A factory bean allowing developers to declare and customize Quartz `Scheduler` instances inside the IoC container:
+
+*   Supports declarative configuration of clustered database job stores (`JobStoreTX`, `JobStoreCMT`), distributed locking, and DataSource connection pools.
+
+## 3. Interactions with Other Packages
+
+*   **`com.aspectran.core.service`**: `SchedulerService` registers as a child service under `CoreService`, synchronizing with parent lifecycle states.
+*   **`com.aspectran.core.activity`**: `ActivityLauncherJob` instantiates `JobActivity`, executing the standard `CoreActivity` pipeline (AOP advices, action chains, transactions).
+*   **`com.aspectran.core.context.rule`**: Parses `<schedule>` and `<job>` tags into `ScheduleRule` and `ScheduledJobRule` descriptors.
+*   **`org.quartz`**: Directly integrates with the Quartz core library APIs (`Scheduler`, `JobDetail`, `Trigger`).
 
 ## 4. Package Summary and Architectural Significance
 
-The `com.aspectran.core.scheduler.service` package is an excellent example of the **Adapter/Bridge Pattern**. It perfectly integrates a powerful but potentially complex external library (Quartz) into Aspectran's declarative configuration model (`<schedule>` rule) and lifecycle, allowing users to use scheduling features very easily and consistently.
+The `com.aspectran.core.scheduler.service` package establishes enterprise batch scheduling as a first-class citizen in Aspectran:
 
-The key design of this integration is **`ActivityLauncherJob`**. This general-purpose Job class acts as a 'Callback' that transitions from Quartz's execution context to Aspectran's execution context. Thanks to this bridge, tasks executed by the scheduler are not just simple Java code, but full translets where all Aspectran context features, such as DI and AOP, are applied. This is a very powerful architecture that maximizes the reusability and extensibility of scheduling tasks.
+1.  **Exemplary Adapter/Bridge Architecture**: Transforms Quartz thread pool execution into Aspectran's unified execution model via `ActivityLauncherJob` and `JobActivity`.
+2.  **Declarative Batch Development**: Developers author scheduled jobs as standard translets using familiar business actions, binding them to schedules via simple `<schedule>` tags without thread-management boilerplate.
+3.  **Unified Service Lifecycle**: Unifies background schedulers with the master application lifecycle (`ServiceLifeCycle`), providing predictable pausing, resuming, and graceful shutdowns.
