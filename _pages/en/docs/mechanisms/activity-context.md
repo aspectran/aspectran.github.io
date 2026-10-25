@@ -4,7 +4,6 @@ subheadline: Mechanisms
 mermaid: true
 ---
 
-
 [`ActivityContext`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/ActivityContext.java) is the heart of the Aspectran framework and the top-level IoC/DI (Inversion of Control & Dependency Injection) container governing all application components.
 
 Unlike traditional framework containers that focus solely on object (Bean) lifecycles and dependency injection, Aspectran's `ActivityContext` is a central orchestrator that seamlessly integrates and controls metadata and runtime execution for all framework subsystems: **Bean Registry, Translets, Aspects, Schedules, Template Renderers, Type Converters, Async Task Executors, and Internationalized Message Sources**.

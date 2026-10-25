@@ -4,7 +4,6 @@ subheadline: Mechanisms
 mermaid: true
 ---
 
-
 The [`com.aspectran.core.context.rule`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/rule) package in the Aspectran framework represents the comprehensive **blueprint** object model that declaratively defines every application building block: Beans, Translets, Aspects, Schedules, Templates, Environments, and dynamic properties.
 
 Aspectran strictly enforces the principle of **Separation of Declarative Definition from Runtime Execution**. Configurations authored in diverse representations—XML documents, APON (Aspectran Parameters Object Notation) text, or Java annotations—are parsed during the bootstrap phase into type-safe, plain Java objects (`*Rule` instances) and staged into memory. Downstream runtime engines, namely [`Activity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/Activity.java) and [`CoreService`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/service/CoreService.java), interpret these immutable rule structures to drive application behavior.

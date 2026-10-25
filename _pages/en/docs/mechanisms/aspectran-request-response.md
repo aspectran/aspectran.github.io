@@ -4,7 +4,6 @@ subheadline: Mechanisms
 mermaid: true
 ---
 
-
 Aspectran's request-response processing pipeline is the core I/O orchestration subsystem of the framework. It absorbs heterogeneous inbound inputs from diverse runtimes—servlet containers, Netty non-blocking event loops, Undertow native handlers, OS daemons, and interactive CLI shells—into a unified standard contract, executes business actions, and transforms results into the optimal delivery format demanded by clients (RESTful JSON/XML, template-rendered HTML, HTTP redirects, or internal server-side forwarding).
 
 Aspectran cleanly decouples its pure HTTP web abstraction layer (`aspectran-web`) from its servlet-specific module (`aspectran-web-servlet`), delivering identical request parsing and response rendering mechanisms across both standard servlet and high-performance servlet-less environments.

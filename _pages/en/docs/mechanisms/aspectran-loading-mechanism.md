@@ -1,7 +1,6 @@
 ---
 title: "Aspectran Configuration Loading Mechanism: In-Depth Analysis of the `nodelet` Engine"
 subheadline: Mechanisms
-mermaid: true
 ---
 
 Aspectran parses configuration files in XML or APON (Aspectran Parameters Object Notation) format to create a tree of `*Rule` objects—the blueprints for the application's core components (Beans, Translets, Aspects, etc.). At the heart of this process lies **`nodelet`**, a high-performance event-driven parsing engine specially designed for Aspectran, implemented in the `com.aspectran.utils.nodelet` package.

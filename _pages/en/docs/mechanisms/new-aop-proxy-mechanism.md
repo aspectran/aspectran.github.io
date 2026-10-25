@@ -4,7 +4,6 @@ subheadline: Mechanisms
 mermaid: true
 ---
 
-
 Aspectran's Aspect-Oriented Programming (AOP) proxy mechanism is engineered to achieve **maximum runtime performance**, **flawless context propagation**, and **strict thread isolation** in asynchronous (`@Async`) execution environments.
 
 Traditional AOP frameworks incur noticeable runtime overhead by inspecting interceptor chains, evaluating pointcuts, and assembling context frames on every method call across proxied beans. Aspectran eliminates this penalty by combining static pre-analysis at bootstrap ([`BeanRuleAnalyzer`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/BeanRuleAnalyzer.java)), selective runtime interception ([`AbstractBeanProxy`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/proxy/AbstractBeanProxy.java)), and a dedicated lightweight advice execution container ([`ProxyActivity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/ProxyActivity.java)), delivering a near zero-overhead AOP runtime.

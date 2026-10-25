@@ -4,7 +4,6 @@ subheadline: Mechanisms
 mermaid: true
 ---
 
-
 To overcome the static class-loading limitations of the standard Java Virtual Machine (JVM) and deliver robust zero-downtime hot reloading alongside modular application design, the Aspectran framework incorporates a proprietary classloader: [`SiblingClassLoader`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/resource/SiblingClassLoader.java).
 
 The strict "Parent-First Delegation" model enforced by standard JVM classloaders guarantees stability by preventing duplicate class loading, but fundamentally prohibits replacing class bytecode dynamically at runtime once loaded. Aspectran resolves this bottleneck by pioneering an innovative **"Sibling-First" delegation strategy** coupled with a high-performance resource indexing manager ([`ResourceManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/resource/ResourceManager.java)).

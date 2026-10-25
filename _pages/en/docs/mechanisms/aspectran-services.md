@@ -4,7 +4,6 @@ subheadline: Mechanisms
 mermaid: true
 ---
 
-
 Aspectran's `Service` layer is the top-level orchestration container that manages the framework's lifecycle and acts as the entry point for diverse execution environments. From web application servers, high-performance asynchronous servlet-less networking engines, and background daemon processes, to interactive command-line shells and embedded libraries loaded into existing Java applications, every application entry point is bootstrapped and driven through dedicated service implementations.
 
 The Aspectran service architecture shares a common core container ([`ActivityContext`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/ActivityContext.java)) and lifecycle contracts, while being precisely designed under hierarchical abstraction and modularity principles to fully accommodate the unique characteristics of each runtime environment.

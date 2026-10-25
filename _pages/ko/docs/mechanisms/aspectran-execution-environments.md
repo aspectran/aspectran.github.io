@@ -1,7 +1,6 @@
 ---
 title: "Aspectran 실행 환경 심층 분석"
 subheadline: 메커니즘
-mermaid: true
 ---
 
 ## 1. 아키텍처 개요: 다중 런타임 지원 사상

@@ -1,7 +1,6 @@
 ---
 title: "Adapter 아키텍처: 환경 독립성의 핵심"
 subheadline: 메커니즘
-mermaid: true
 ---
 
 ## 1. 아키텍처 개요 및 설계 철학

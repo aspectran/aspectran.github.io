@@ -4,7 +4,6 @@ subheadline: Mechanisms
 mermaid: true
 ---
 
-
 Aspectran's IoC/DI container supports a comprehensive **Bean Scopes** architecture that governs the instantiation timing, lifecycle boundaries, and memory residency of managed Bean components.
 
 Scopes define whether a component is shared globally across the entire application (Singleton), instantiated freshly upon every retrieval (Prototype), or strictly isolated to a single HTTP/CLI request (Request) or user session (Session).

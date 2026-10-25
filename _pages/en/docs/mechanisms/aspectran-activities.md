@@ -4,7 +4,6 @@ subheadline: Mechanisms
 mermaid: true
 ---
 
-
 In Aspectran, an **Activity ([`Activity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/Activity.java))** is the framework's core runtime execution engine orchestrating a single request-response lifecycle. Every unit of execution arriving from the external world—an HTTP request from a web browser, a non-blocking network event loop, a background scheduler trigger, an interactive CLI command, or an internal method invocation—is encapsulated and processed within a dedicated `Activity` instance.
 
 The `Activity` architecture completely decouples business logic (Actions, Beans) from the underlying execution environment (Servlet, Netty, Undertow, etc.), enforcing a uniform, standard lifecycle for AOP advices, parameter parsing, translet rule evaluation, response rendering, and exception handling pipelines.

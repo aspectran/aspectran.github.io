@@ -4,7 +4,6 @@ subheadline: Mechanisms
 mermaid: true
 ---
 
-
 [`Environment`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/env/Environment.java) and [`ActivityEnvironment`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/env/ActivityEnvironment.java) form the core subsystem governing the runtime execution environment of an Aspectran application.
 
 Modern enterprise applications demand deploying identical codebases across diverse infrastructure targets, from local development and automated testing to staging and production. Aspectran delivers a robust environment control architecture through **multidimensional Profiles** and **declarative dynamic Properties**, allowing teams to seamlessly toggle component activation states and runtime parameters using environment variables or system properties without code modifications or rebuilds.

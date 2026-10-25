@@ -1,9 +1,7 @@
 ---
 title: "Deep Dive into the Aspectran Logging Mechanism"
 subheadline: Mechanisms
-mermaid: true
 ---
-
 
 Aspectran provides a sophisticated and robust logging architecture designed to maintain isolated log files for various application modules, REST API route prefixes, and background schedulers within a single server JVM process. This document provides an in-depth analysis of Aspectran's logging abstraction foundation, the `LoggingGroupDiscriminator`, and the dynamic path-based logging group routing mechanism integrated across multiple server engines including Netty, Undertow, and Jetty.
 
@@ -159,6 +157,7 @@ Aspectran provides dedicated `PathBasedLoggingGroupHandler` implementations acro
 Intercepts inbound HTTP requests in Netty's channel pipeline to bind logging groups:
 
 *   **Configuration Example (`netty-server.xml` / `netty-config.apon`)**:
+
 ```xml
 <bean id="netty.server.handler.loggingGroupHandler"
       class="com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler"
@@ -196,6 +195,7 @@ Wraps the handler chain in embedded Jetty servlet environments:
 Seamlessly integrates with Undertow's native handler chain (`com.aspectran.undertow.server.handler.logging` package):
 
 *   **Configuration Example (`tow-server.xml`)**:
+
 ```xml
 <bean id="tow.server.handler.loggingGroupHandlerWrapper"
       class="com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper"

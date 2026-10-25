@@ -1,7 +1,6 @@
 ---
 title: "Aspectran 로깅 메커니즘 심층 분석"
 subheadline: 메커니즘
-mermaid: true
 ---
 
 Aspectran은 단일 서버 프로세스 내에서 다양한 애플리케이션 모듈, REST API 경로, 백그라운드 스케줄러 등이 독립적인 로그 파일을 유지할 수 있도록 정교하고 강력한 로깅 아키텍처를 제공합니다. 본 문서는 Aspectran의 로깅 추상화 기반과 `LoggingGroupDiscriminator`, 그리고 Netty, Undertow, Jetty 등 다중 서버 엔진과 결합된 동적 경로 기반 로깅 그룹(Logging Group) 분리 메커니즘을 심층 분석합니다.
@@ -158,6 +157,7 @@ Aspectran은 지원하는 3대 주요 웹/네트워크 서버 엔진(Netty, Unde
 서블릿 없는 고성능 Netty 서버 파이프라인에서 인바운드 HTTP 요청을 가로채 로깅 그룹을 바인딩합니다:
 
 *   **설정 예제 (`netty-server.xml` / `netty-config.apon`)**:
+
 ```xml
 <bean id="netty.server.handler.loggingGroupHandler"
       class="com.aspectran.netty.server.handler.logging.PathBasedLoggingGroupHandler"
@@ -195,6 +195,7 @@ Aspectran은 지원하는 3대 주요 웹/네트워크 서버 엔진(Netty, Unde
 Undertow의 고성능 핸들러 체인과 완벽히 연동됩니다 (`com.aspectran.undertow.server.handler.logging` 패키지):
 
 *   **설정 예제 (`tow-server.xml`)**:
+
 ```xml
 <bean id="tow.server.handler.loggingGroupHandlerWrapper"
       class="com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper"

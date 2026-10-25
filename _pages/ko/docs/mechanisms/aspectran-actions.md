@@ -190,10 +190,10 @@ graph TD
 
 ```mermaid
 graph LR
-    PR[ProcessResult] --> View[1. 뷰 템플릿 모델 주입<br/>* Pebble / Thymeleaf / JSP<br/>* {% raw %}{{ userInfo.name }}{% endraw %}]
-    PR --> Rest[2. RESTful 응답 직렬화<br/>* JsonTransformResponse<br/>* {"userInfo": {"name": "Alice"}}]
-    PR --> Inter[3. 후속 액션 및 트랜슬릿 간 전달<br/>* ASEL 참조: @{userInfo.userId}<br/>* Forward 시 ProcessResult 인계]
-    PR --> Cond[4. 조건부 흐름 제어<br/>* ChooseAction 평가: @{userInfo^active}]
+    PR["ProcessResult"] --> View["1. 뷰 템플릿 모델 주입<br/>* Pebble / Thymeleaf / JSP<br/>* &#123;&#123; userInfo.name &#125;&#125;"]
+    PR --> Rest["2. RESTful 응답 직렬화<br/>* JsonTransformResponse<br/>* {'userInfo': {'name': 'Alice'}}"]
+    PR --> Inter["3. 후속 액션 및 트랜슬릿 간 전달<br/>* ASEL 참조: @{userInfo.userId}<br/>* Forward 시 ProcessResult 인계"]
+    PR --> Cond["4. 조건부 흐름 제어<br/>* ChooseAction 평가: @{userInfo^active}"]
 ```
 
 ### 1) 뷰 템플릿(SSR) 모델 데이터 바인딩

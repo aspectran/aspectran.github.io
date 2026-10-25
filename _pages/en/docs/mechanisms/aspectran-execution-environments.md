@@ -1,7 +1,6 @@
 ---
 title: "Deep Dive into Aspectran Execution Environments"
 subheadline: Mechanisms
-mermaid: true
 ---
 
 ## 1. Architectural Overview: Multi-Runtime Philosophy

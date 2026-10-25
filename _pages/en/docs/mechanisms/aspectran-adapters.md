@@ -1,7 +1,6 @@
 ---
 title: "Adapter Architecture: The Core of Environment Independence"
 subheadline: Mechanisms
-mermaid: true
 ---
 
 ## 1. Architectural Overview and Design Philosophy
