@@ -114,25 +114,21 @@ command:{commandName};nodeId:{nodeId};{optionKey1}:{value1};{optionKey2}:{value2
     ```
     *(Description: Sends periodic ping packets to keep connection alive and refresh security tokens)*
 
-## 4. Control Messages & Gateway Bridge Packets
-
-When exchanging heartbeat liveness checks, subscription confirmations, and node cluster events between server and client, system control messages prefixed with a control indicator (`:`) are used. Appended to the node identifier, actual runtime packets are transmitted in the **`{nodeId}::...`** format.
-
 ### 4.1 Actual Control Packet Transmission Traces
 
 *   **Ping / Pong Packets**:
     *   **Client Request (`Ping`)**: `command:ping`
     *   **Server Response (`Pong`)**: `node1::pong:J5qdjrezDfBoF7xjTihK_RLBDeeNHzxlFMsnpg2_czbcqyhVNiq3FaQI7ewzTLesyUmrdjjfUM0`
-    *(Description: Pong response returned from node1 containing an updated security session token)*
+    *   Description: Pong response returned from node1 containing an updated security session token
 
 *   **Subscription Confirmation (`Subscribed`)**:
     *   **Server Response**: `node1::subscribed:alive`
-    *(Description: Confirms monitoring subscription for node1 is complete and the node is active)*
+    *   Description: Confirms monitoring subscription for node1 is complete and the node is active
 
 *   **Cluster Dynamic Node Join Event (`Node Joined`)**:
     *   **Server Broadcast**: `node1::node:joined:{"id":"node2","group":"group1","title":"Node 2"}`
-    *(Description: Event broadcast to clients when a new node joins dynamically in Gateway mode)*
+    *   Description: Event broadcast to clients when a new node joins dynamically in Gateway mode
 
 *   **Node Status Change Event (`Node Status Changed`)**:
     *   **Server Broadcast**: `node1::node:statusChanged:{"id":"node2","alive":false}`
-    *(Description: Notification packet broadcast when a node terminates or changes lock status)*
+    *   Description: Notification packet broadcast when a node terminates or changes lock status

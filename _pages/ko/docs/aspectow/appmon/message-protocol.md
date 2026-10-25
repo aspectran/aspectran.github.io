@@ -118,21 +118,21 @@ command:{commandName};nodeId:{nodeId};{optionKey1}:{value1};{optionKey2}:{value2
 
 서버와 클라이언트 간의 하트비트 생존 확인, 구독 확정, 노드 이벤트를 주고받을 때는 제어 패킷 식별자(`:`)로 시작하는 시스템 메시지를 사용합니다. 노드 식별자 뒤에 제어 식별자가 붙어 실제 송수신 시 **`{nodeId}::...`** 형태로 전달됩니다.
 
-### 4.1 실제 제어 패킷 송수신 트레이스 예시
+### 4.1 실제 제어 패킷 송수신 예시
 
 *   **핑/퐁 통신 패킷 (Ping / Pong)**:
     *   **클라이언트 송신 (`Ping`)**: `command:ping`
     *   **서버 생존 응답 (`Pong`)**: `node1::pong:J5qdjrezDfBoF7xjTihK_RLBDeeNHzxlFMsnpg2_czbcqyhVNiq3FaQI7ewzTLesyUmrdjjfUM0`
-    *(설명: node1 노드로부터 갱신된 보안 세션 토큰이 포함된 퐁 응답이 반환됨)*
+    *   설명: node1 노드로부터 갱신된 보안 세션 토큰이 포함된 퐁 응답이 반환됨
 
 *   **구독 완료 및 활성 상태 응답 (`Subscribed`)**:
     *   **서버 응답**: `node1::subscribed:alive`
-    *(설명: node1 노드의 모니터링 수집 구독이 정상 완료되었고 노드가 활성 상태임을 확인)*
+    *   설명: node1 노드의 모니터링 수집 구독이 정상 완료되었고 노드가 활성 상태임을 확인
 
 *   **클러스터 동적 노드 추가 이벤트 (`Node Joined`)**:
     *   **서버 브로드캐스트**: `node1::node:joined:{"id":"node2","group":"group1","title":"Node 2"}`
-    *(설명: Gateway 모드에서 신규 노드가 자율 조인(Autoscaling)되었을 때 클라이언트로 전달되는 이벤트)*
+    *   설명: Gateway 모드에서 신규 노드가 자율 조인(Autoscaling)되었을 때 클라이언트로 전달되는 이벤트
 
 *   **노드 상태 변경 이벤트 (`Node Status Changed`)**:
     *   **서버 브로드캐스트**: `node1::node:statusChanged:{"id":"node2","alive":false}`
-    *   *(설명: 특정 노드의 비정상 종료 또는 락 상태 변경 시 전달되는 클러스터 통지 패킷)*
+    *   설명: 특정 노드의 비정상 종료 또는 락 상태 변경 시 전달되는 클러스터 통지 패킷
