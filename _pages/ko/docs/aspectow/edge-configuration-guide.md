@@ -731,8 +731,8 @@ Aspectow Edge는 서블릿 컨테이너를 거치지 않고 Netty 인바운드 �
 ##### 핵심 내부 동작 및 성능 최적화 메커니즘
 
 * **Zero-Copy 전송과 청크 스트리밍의 하이브리드 지원**:
-  * **일반 비암호화 HTTP (파일시스템)**: OS 커널 수준의 `sendfile` 시스템 콜을 활용하는 [`DefaultFileRegion`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L475)을 사용하여 사용자 공간 메모리 복사 없이 디스크에서 소켓 버퍼로 다이렉트 전송합니다.
-  * **클래스패스 리소스 및 TLS/SSL/압축 환경**: JAR 내부 리소스 서빙 또는 파이프라인에 `SslHandler`/`HttpContentCompressor`가 활성화된 경우, [`HttpChunkedInput`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L471)과 `ChunkedFile` 또는 `ChunkedStream`을 통한 8KB 청크 스트리밍으로 자동 전환되어 안전하게 서빙됩니다.
+  * **일반 비암호화 HTTP (파일시스템)**: OS 커널 수준의 `sendfile` 시스템 콜을 활용하는 [`DefaultFileRegion`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L495)을 사용하여 사용자 공간 메모리 복사 없이 디스크에서 소켓 버퍼로 다이렉트 전송합니다.
+  * **클래스패스 리소스 및 TLS/SSL/압축 환경**: JAR 내부 리소스 서빙 또는 파이프라인에 `SslHandler`/`HttpContentCompressor`가 활성화된 경우, [`HttpChunkedInput`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L492)과 `ChunkedFile` 또는 `ChunkedStream`을 통한 8KB 청크 스트리밍으로 자동 전환되어 안전하게 서빙됩니다.
 * **디렉터리 순회(Directory Traversal) 공격 원천 방어**:
   * `sanitizePath` 메서드를 통해 `..` 상대 경로 이동이나 숨김 세그먼트(`.`)가 포함된 경로 조작을 즉시 무효화합니다.
   * 실제 파일시스템 서빙 시 정규 경로(`getCanonicalPath()`)가 `baseDir` 하위에 위치하는지 엄격히 검증하여 파일시스템 외부 디렉터리로의 탈출을 원천 방어합니다.

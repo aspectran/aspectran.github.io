@@ -731,8 +731,8 @@ For self-contained microservices where static UI assets are packaged directly wi
 ##### Internal Operations & Performance Mechanisms
 
 * **Hybrid Zero-Copy & Chunked Streaming Transfer**:
-  * **Cleartext HTTP (Filesystem)**: Uses [`DefaultFileRegion`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L475) leveraging the OS kernel `sendfile` system call to stream data directly from disk to network socket buffers without copying into user-space memory.
-  * **Classpath Resources & TLS/Compression**: When serving from JAR archives or when `SslHandler`/`HttpContentCompressor` is present in the pipeline, the handler automatically transitions to 8KB chunked streaming via [`HttpChunkedInput`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L471) and `ChunkedFile` or `ChunkedStream` for safe encryption and compression.
+  * **Cleartext HTTP (Filesystem)**: Uses [`DefaultFileRegion`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L495) leveraging the OS kernel `sendfile` system call to stream data directly from disk to network socket buffers without copying into user-space memory.
+  * **Classpath Resources & TLS/Compression**: When serving from JAR archives or when `SslHandler`/`HttpContentCompressor` is present in the pipeline, the handler automatically transitions to 8KB chunked streaming via [`HttpChunkedInput`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/handler/resource/NettyResourceHandler.java#L492) and `ChunkedFile` or `ChunkedStream` for safe encryption and compression.
 * **Directory Traversal Defense**:
   * Sanitizes request paths via `sanitizePath`, rejecting relative navigation (`..`) and hidden segments (`.`).
   * For filesystem serving, enforces `file.getCanonicalPath().startsWith(baseDir.getCanonicalPath())` to prevent path traversal attacks escaping the designated root.
