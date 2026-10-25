@@ -1,8 +1,9 @@
 ---
 title: Getting Started with Aspectran
-teaser: This guide will walk you through how to start an Aspectran project by creating a simple "Hello, World" command-line application.
 subheadline: Core Guides
 ---
+
+This guide will walk you through how to start an Aspectran project by creating a simple "Hello, World" command-line application.
 
 ## 1. Development Environment Setup
 
@@ -203,14 +204,14 @@ Now you are ready to build and run the project.
    To run the 'hello' command, type 'hello'.
    To exit, type 'quit'.
 
-   hello-aspectran> 
+   hello-aspectran>
    ```
    * You can check the list of all Translets defined in the current application using the `translet -l` command.
      ```text
      ------+-------------------------------------------------------------+-------
-       No. | Translet Name                                               | Async 
+       No. | Translet Name                                               | Async
      ------+-------------------------------------------------------------+-------
-         1 | hello                                                       | false 
+         1 | hello                                                       | false
      ------+-------------------------------------------------------------+-------
      ```
    * Type `hello` and press Enter to output `Hello, World!`.

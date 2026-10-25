@@ -1,8 +1,9 @@
 ---
 title: Aspectran 시작하기
-teaser: 이 가이드에서는 간단한 "Hello, World" 커맨드 라인 애플리케이션을 만들어보면서 Aspectran 프로젝트를 시작하는 방법을 안내합니다.
 subheadline: 핵심 가이드
 ---
+
+이 가이드에서는 간단한 "Hello, World" 커맨드 라인 애플리케이션을 만들어보면서 Aspectran 프로젝트를 시작하는 방법을 안내합니다.
 
 ## 1. 개발 환경 설정
 
@@ -18,7 +19,7 @@ mkdir hello-aspectran
 cd hello-aspectran
 ```
 
-이제 이 디렉토리 안에 다음 세 개의 파일을 생성합니다: 
+이제 이 디렉토리 안에 다음 세 개의 파일을 생성합니다:
 * `pom.xml`
 * `aspectran-config.apon`
 * `src/main/java/com/example/App.java`
@@ -45,7 +46,7 @@ cd hello-aspectran
         which is critical for Aspectran's runtime argument mapping. -->
         <maven.compiler.release>21</maven.compiler.release>
         <maven.compiler.parameters>true</maven.compiler.parameters>
-        
+
         <aspectran.version>9.8.1</aspectran.version>
     </properties>
 
@@ -203,14 +204,14 @@ public class App {
    To run the 'hello' command, type 'hello'.
    To exit, type 'quit'.
 
-   hello-aspectran> 
+   hello-aspectran>
    ```
    * `translet -l` 명령어를 사용하면 현재 애플리케이션에 정의된 모든 Translet의 목록을 확인할 수 있습니다.
      ```text
      ------+-------------------------------------------------------------+-------
-       No. | Translet Name                                               | Async 
+       No. | Translet Name                                               | Async
      ------+-------------------------------------------------------------+-------
-         1 | hello                                                       | false 
+         1 | hello                                                       | false
      ------+-------------------------------------------------------------+-------
      ```
    * `hello`를 입력하고 Enter를 누르면 `Hello, World!`가 출력됩니다.
