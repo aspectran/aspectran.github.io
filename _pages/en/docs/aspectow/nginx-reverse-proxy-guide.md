@@ -157,7 +157,7 @@ You can run multiple independent web applications (contexts) in a single Aspecto
 
 #### Use Case
 
-This approach is very useful in resource-constrained environments, such as when a server has less than 1GB of memory, making it difficult to run multiple JVM instances. Instead of launching each application as a separate server instance, you can run multiple contexts (`demo`, `jpetstore`, `petclinic`, etc.) together in a single instance to use resources efficiently.
+This approach is very useful in resource-constrained environments, such as when a server has less than 1GB of memory, making it difficult to run multiple JVM instances. Instead of launching each application as a separate server instance, you can run multiple contexts (`examples`, `jpetstore`, `petclinic`, etc.) together in a single instance to use resources efficiently.
 
 #### Nginx Configuration Example
 
@@ -198,9 +198,8 @@ server {
 }
 ```
 
-> **Note: Considerations for MSA Environments**
->
-> This configuration, as shown in `aspectow-demo`, is a practical example for resource-constrained environments.
+> **Note: Considerations for MSA Environments**\
+> This configuration, as shown in [aspectow-demo](https://github.com/aspectran/aspectow-demo), is a practical example for resource-constrained environments.
 > In a real enterprise environment aiming for a Microservices Architecture (MSA), the standard principle is to configure each service (context) as a separate instance to be deployed, scaled, and managed independently.
 
 ## 9. Complete Configuration Example
