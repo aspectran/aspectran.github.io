@@ -140,7 +140,8 @@ public void setResources(Enumeration<URL> resources) {
 
 When a JAR URL (`jar:file:/app/lib/my-plugin.jar!/META-INF/...`) is supplied, it extracts the URI of the physical host file `my-plugin.jar`—rather than the internal entry—and converts it to a `File` object. Through this, simply overwriting a new version of the JAR externally allows the reloading timer to capture changes in the JAR file's modification timestamp.
 
-> **Note**: When running tests in IDE development environments (Eclipse, IntelliJ, etc.), if `ActivityContext.class` is loaded from a regular directory (e.g., `target/classes`) rather than a JAR, the builder is designed to automatically bypass `resourceLocations` specifications to prevent duplicate class loading conflicts.
+> 💡 **Note**\
+> When running tests in IDE development environments (Eclipse, IntelliJ, etc.), if `ActivityContext.class` is loaded from a regular directory (e.g., `target/classes`) rather than a JAR, the builder is designed to automatically bypass `resourceLocations` specifications to prevent duplicate class loading conflicts.
 
 ## 4. Quiet Period 2-Pass Monitoring Algorithm
 

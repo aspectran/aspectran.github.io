@@ -140,7 +140,8 @@ public void setResources(Enumeration<URL> resources) {
 
 JAR URL(`jar:file:/app/lib/my-plugin.jar!/META-INF/...`)이 입력되면, 내부 엔트리가 아닌 물리적 호스트 파일인 `my-plugin.jar` 파일의 URI를 추출하여 `File` 객체로 변환합니다. 이를 통해 외부에서 새 버전의 JAR를 덮어쓰기만 해도 리로딩 타이머가 JAR 파일의 수정 시각 변화를 포착하게 됩니다.
 
-> **참고**: IDE 개발 환경(Eclipse, IntelliJ 등)에서 테스트를 실행할 때 `ActivityContext.class`가 JAR가 아닌 일반 디렉터리(`target/classes` 등)에서 로드되면, 클래스 중복 로딩 충돌을 방지하기 위해 빌더가 `resourceLocations` 지정을 자동으로 바이패스하도록 설계되어 있습니다.
+> 💡 **참고**\
+> IDE 개발 환경(Eclipse, IntelliJ 등)에서 테스트를 실행할 때 `ActivityContext.class`가 JAR가 아닌 일반 디렉터리(`target/classes` 등)에서 로드되면, 클래스 중복 로딩 충돌을 방지하기 위해 빌더가 `resourceLocations` 지정을 자동으로 바이패스하도록 설계되어 있습니다.
 
 ## 4. 고요한 기간(Quiet Period) 2-Pass 감시 알고리즘
 
