@@ -54,15 +54,11 @@ location /console/nodes/node1/ {
     proxy_set_header    Upgrade             $http_upgrade;
     proxy_set_header    Connection          $http_connection;
     proxy_set_header    Host                $host;
-    proxy_set_header    X-Real-IP           $remote_addr;
-    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-For     $remote_addr;
     proxy_set_header    X-Forwarded-Proto   $scheme;
     proxy_set_header    X-Forwarded-Host    $host;
     proxy_set_header    X-Forwarded-Port    $server_port;
     proxy_set_header    X-NginX-Proxy       true;
-
-    # This is necessary to pass the correct IP to be hashed
-    real_ip_header X-Real-IP;
 }
 
 location /console/nodes/node2/ {
@@ -74,17 +70,16 @@ location /console/nodes/node2/ {
     proxy_set_header    Upgrade             $http_upgrade;
     proxy_set_header    Connection          $http_connection;
     proxy_set_header    Host                $host;
-    proxy_set_header    X-Real-IP           $remote_addr;
-    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-For     $remote_addr;
     proxy_set_header    X-Forwarded-Proto   $scheme;
     proxy_set_header    X-Forwarded-Host    $host;
     proxy_set_header    X-Forwarded-Port    $server_port;
     proxy_set_header    X-NginX-Proxy       true;
-
-    # This is necessary to pass the correct IP to be hashed
-    real_ip_header X-Real-IP;
 }
 ```
+
+> 💡 **팁**\
+> 최전방(Edge) Nginx 프록시 환경에서는 외부 클라이언트의 임의 헤더 조작(IP Spoofing) 공격을 원천 차단하기 위해 `X-Forwarded-For` 헤더에 `$proxy_add_x_forwarded_for` 대신 실제 접속 소켓 주소인 `$remote_addr`를 전달하는 것을 권장합니다. 비표준인 `X-Real-IP`는 제거하고 업계 표준인 `X-Forwarded-For`로 일원화합니다. 상세한 역방향 프록시 구성 및 보안 가이드는 [Nginx 역방향 프록시 연동 가이드](nginx-reverse-proxy-guide_ko.md)를 참고하세요.
 
 ## 4. 클러스터 노드 통신 프로토콜 및 메시징 아키텍처 (Cluster Messaging Protocol)
 
@@ -230,7 +225,7 @@ node: {
 }
 ```
 
-> **설정 가이드:**
+> 📌 **설정 가이드**
 > * `pulseInterval`: 노드가 자신의 생존 타임스탬프를 Redis에 갱신하는 주기입니다. 10초 설정을 통해 Redis 트래픽 부하를 최소화하면서 안정적인 상태 갱신을 유지합니다.
 > * `pulseTimeout`: 노드 펄스가 수신되지 않을 때 좀비 노드로 판정하는 만료 기준 시간입니다. 기본값 60초는 일시적인 GC 지연이나 네트워크 순단 상황에서 오탐(Flapping)을 방지할 수 있는 충분한 유예 시간을 제공합니다.
 > * `console`: 관리 콘솔 전용 인스턴스인 경우 `console: true`를 지정하거나 `-Daspectow.node.console=true`를 부여합니다.

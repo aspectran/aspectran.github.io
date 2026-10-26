@@ -3,6 +3,8 @@ title: Aspectow Enterprise Configuration Guide
 subheadline: Aspectow Enterprise
 ---
 
+Systematically covers project structure, build, and all advanced embedded WAS server configuration elements for the Aspectow Enterprise Edition equipped with JBoss Undertow and a Servlet/JSP engine.
+
 ## 1. Introduction
 
 This document is a comprehensive technical guide for developers and system engineers building and operating applications with the Aspectow Enterprise Edition. Aspectow Enterprise is Aspectran's flagship application server platform built upon JBoss's high-performance non-blocking I/O web server [Undertow](https://undertow.io) and Apache Tomcat's battle-tested JSP engine [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp). Faithfully adhering to the Jakarta Servlet specification, it delivers rock-solid stability for large-scale enterprise web applications and centralized management dashboards ([Aspectow Console](/en/docs/aspectow/console-overview/)).
@@ -476,8 +478,7 @@ server {
 
         # Forward proxy headers (Interoperates with Aspectow proxyAddressForwarding)
         proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
     }

@@ -3,6 +3,8 @@ title: Aspectow Enterprise 구성 가이드
 subheadline: Aspectow Enterprise
 ---
 
+JBoss Undertow와 서블릿/JSP 엔진을 탑재한 Aspectow Enterprise 에디션의 프로젝트 구조, 빌드, 그리고 내장 WAS 서버의 모든 고급 설정 요소를 체계적으로 안내합니다.
+
 ## 1. 서론
 
 이 문서는 Aspectow Enterprise 에디션을 사용하는 개발자 및 시스템 엔지니어를 위한 종합 기술 가이드입니다. Aspectow Enterprise는 JBoss의 고성능 논블로킹 I/O 웹 서버인 [Undertow](https://undertow.io)와 Apache Tomcat의 검증된 JSP 엔진인 [Apache Jasper](https://mvnrepository.com/artifact/org.mortbay.jasper/apache-jsp)를 기반으로 구축된 기함(Flagship) 애플리케이션 서버입니다. 서블릿(Jakarta Servlet) 사양을 충실히 준수하며, 기업용 대규모 웹 애플리케이션과 통합 관제 웹 콘솔([Aspectow Console](/ko/docs/aspectow/console-overview/))을 안정적으로 구동할 수 있습니다.
@@ -476,8 +478,7 @@ server {
 
         # 프록시 헤더 전달 (Aspectow proxyAddressForwarding과 연동)
         proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
     }

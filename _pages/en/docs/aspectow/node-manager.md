@@ -54,15 +54,11 @@ location /console/nodes/node1/ {
     proxy_set_header    Upgrade             $http_upgrade;
     proxy_set_header    Connection          $http_connection;
     proxy_set_header    Host                $host;
-    proxy_set_header    X-Real-IP           $remote_addr;
-    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-For     $remote_addr;
     proxy_set_header    X-Forwarded-Proto   $scheme;
     proxy_set_header    X-Forwarded-Host    $host;
     proxy_set_header    X-Forwarded-Port    $server_port;
     proxy_set_header    X-NginX-Proxy       true;
-
-    # This is necessary to pass the correct IP to be hashed
-    real_ip_header X-Real-IP;
 }
 
 location /console/nodes/node2/ {
@@ -74,17 +70,16 @@ location /console/nodes/node2/ {
     proxy_set_header    Upgrade             $http_upgrade;
     proxy_set_header    Connection          $http_connection;
     proxy_set_header    Host                $host;
-    proxy_set_header    X-Real-IP           $remote_addr;
-    proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-For     $remote_addr;
     proxy_set_header    X-Forwarded-Proto   $scheme;
     proxy_set_header    X-Forwarded-Host    $host;
     proxy_set_header    X-Forwarded-Port    $server_port;
     proxy_set_header    X-NginX-Proxy       true;
-
-    # This is necessary to pass the correct IP to be hashed
-    real_ip_header X-Real-IP;
 }
 ```
+
+> 💡 **TIP**\
+> In an edge Nginx reverse proxy environment, setting `X-Forwarded-For $remote_addr;` instead of `$proxy_add_x_forwarded_for` is recommended to prevent IP spoofing attacks from untrusted external clients. Redundant, non-standard headers like `X-Real-IP` are eliminated in favor of the industry-standard `X-Forwarded-For`. For comprehensive reverse proxy configuration and security best practices, refer to the [Nginx Reverse Proxy Guide](nginx-reverse-proxy-guide_en.md).
 
 ## 4. Cluster Node Messaging Protocol & Architecture
 
@@ -230,7 +225,7 @@ node: {
 }
 ```
 
-> **Configuration Guide:**
+> 📌 **Configuration Guide**
 > * `pulseInterval`: The interval at which a node refreshes its heartbeat timestamp in Redis. The 10-second default minimizes Redis I/O overhead while ensuring responsive state updates.
 > * `pulseTimeout`: The timeout threshold before an unresponsive node is declared a zombie. The 60-second default provides ample tolerance against transient GC pauses and network jitter to prevent flapping.
 > * `console`: Set to `true` or pass `-Daspectow.node.console=true` for dedicated management console instances.
