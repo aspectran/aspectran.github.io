@@ -159,7 +159,7 @@ Aspectran evaluates pointcut rules sequentially in **top-down declaration order*
 * **`+:` (Include)**: Includes matched targets into the AOP execution scope.
 * **`-:` (Exclude)**: Excludes matched targets from the AOP execution scope.
 
-> **💡 Note (Order-based Granular Control):**
+> 💡 **Note (Order-based Granular Control)**\
 > You can easily define complex filtering by including a broad range at the top (`+:`) and excluding specific exceptions underneath (`-:`).
 
 **Wildcard Pointcut Example (`type: wildcard`):**

@@ -55,7 +55,8 @@ Aspectran의 실행 엔진은 `com.aspectran.core.adapter` 패키지에 정의�
 *   `AbstractResponseAdapter<T>`: 응답 커밋 상태 추적, 스트림 닫기 및 버퍼 관리 공통 처리.
 *   `AbstractSessionAdapter<T>`: 세션 유효성 검사 및 `SessionScope` 바인딩 처리.
 
-> **참고**: 제네릭 파라미터 `<T>`는 어댑터가 내부적으로 래핑하는 원본 네이티브 객체(Adaptee)의 타입(예: `HttpServletRequest`, Netty 채널, Undertow `HttpServerExchange` 등)을 의미하며, `getAdaptee()`를 통해 타입 세이프하게 원본 객체에 접근할 수도 있습니다.
+> 💡 **참고**\
+> 제네릭 파라미터 `<T>`는 어댑터가 내부적으로 래핑하는 원본 네이티브 객체(Adaptee)의 타입(예: `HttpServletRequest`, Netty 채널, Undertow `HttpServerExchange` 등)을 의미하며, `getAdaptee()`를 통해 타입 세이프하게 원본 객체에 접근할 수도 있습니다.
 
 ## 3. 7대 실행 환경별 구체적 어댑터 구현 심층 분석
 

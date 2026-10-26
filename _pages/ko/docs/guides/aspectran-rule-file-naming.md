@@ -16,7 +16,8 @@ Aspectran 프로젝트의 설정(규칙) 파일은 그 역할과 계층에 따�
 *   **`web-rules.xml`**: 웹 환경을 위한 활동 컨텍스트(Activity Context) 설정 진입점 (기존 `web-context.xml` 대체)
 *   **`shell-rules.xml`**, **`daemon-rules.xml`**: 각 실행 환경별 전용 규칙 진입점
 
-> **참고**: 규칙 파일은 APON 형식(`*-rules.apon`)으로도 작성이 가능합니다. 다만, 복잡한 규칙 정의 시에는 XML의 구조적 가독성이 더 뛰어날 수 있으므로 프로젝트의 성격에 맞게 선택합니다.
+> 💡 **참고**\
+> 규칙 파일은 APON 형식(`*-rules.apon`)으로도 작성이 가능합니다. 다만, 복잡한 규칙 정의 시에는 XML의 구조적 가독성이 더 뛰어날 수 있으므로 프로젝트의 성격에 맞게 선택합니다.
 
 ### 나. 서블릿 컨텍스트 정의 (Servlet Context): `*-context.xml`
 웹 서버(Undertow, Jetty 등) 수준의 **서블릿 컨텍스트(Servlet Context)**를 정의하는 파일에 사용합니다. 이는 Aspectran의 활동 규칙(Activity Rules)과는 다른, 웹 서버 수준의 웹 애플리케이션 환경 정의를 의미하므로 명확히 구분하기 위해 `context` 단어를 유지합니다.

@@ -16,7 +16,8 @@ These files serve as the backbone of the configuration, composing other modules 
 *   **`web-rules.xml`**: The entry point for Activity Context settings in a web environment (replaces the old `web-context.xml`).
 *   **`shell-rules.xml`**, **`daemon-rules.xml`**: Dedicated rule entry points for each execution environment.
 
-> **Note**: While rule files can be written in APON format (`*-rules.apon`), XML is often preferred for complex rule definitions due to its superior structural readability.
+> 💡 **Note**\
+> While rule files can be written in APON format (`*-rules.apon`), XML is often preferred for complex rule definitions due to its superior structural readability.
 
 ### B. Servlet Context Definitions: `*-context.xml`
 These files define the **Servlet Context** at the web server level (e.g., Undertow, Jetty). Since this represents the web application environment as defined by the Jakarta Servlet standard—distinct from Aspectran's Activity Rules—the term `context` is retained to prevent conceptual confusion.

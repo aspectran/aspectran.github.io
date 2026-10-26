@@ -124,7 +124,8 @@ Now let's examine the power of the `mount` feature using the nestable `<choose>`
 
 What this means is:
 
-> When the parser enters inside a `<when>` or `<otherwise>` element, the rules of the mounted `ChooseNodeletGroup` are **dynamically activated**. In other words, even if another `<choose>` element is encountered inside `<when>` and `<otherwise>`, the parser can process the parsing recursively in the exact same manner as the first time.
+*   When the parser enters inside a `<when>` or `<otherwise>` element, the rules of the mounted `ChooseNodeletGroup` are **dynamically activated**.
+*   In other words, even if another `<choose>` element is encountered inside `<when>` and `<otherwise>`, the parser can process the parsing recursively in the exact same manner as the first time.
 
 In this way, the `mount` capability allows parsing rules for complex and recursive XML structures to be defined only once and reused wherever needed, eliminating code duplication and optimizing memory usage.
 

@@ -466,6 +466,7 @@ When parsing a multipart request, the `MultipartFormDataParser` bean is resolved
 
 In most web applications, only a single multipart parser bean is registered, so omitting the parser name and simply using `@Multipart` or declaring a `FileParameter` argument is sufficient.
 
+> 💡 **Note**\
 > For security reasons, if a request does not have a `@Multipart` annotation, a `FileParameter` argument, or an Aspect `multipartFormDataParser` setting, the multipart request body will not be parsed and a warning will be logged.
 
 ### 8.4. Startup-Time Bean Reference Validation

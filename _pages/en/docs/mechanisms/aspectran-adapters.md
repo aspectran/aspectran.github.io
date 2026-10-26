@@ -55,7 +55,8 @@ Abstract template classes applying the Template Method Pattern are provided to p
 *   `AbstractResponseAdapter<T>`: Handles common logic for tracking response commit status, stream closure, and buffer management.
 *   `AbstractSessionAdapter<T>`: Handles session validation and `SessionScope` binding.
 
-> **Note**: The generic parameter `<T>` represents the type of the original native object (Adaptee) that the adapter wraps internally (e.g., `HttpServletRequest`, Netty channel, Undertow `HttpServerExchange`, etc.), allowing type-safe access to the underlying native object via `getAdaptee()`.
+> 💡 **Note**\
+> The generic parameter `<T>` represents the type of the original native object (Adaptee) that the adapter wraps internally (e.g., `HttpServletRequest`, Netty channel, Undertow `HttpServerExchange`, etc.), allowing type-safe access to the underlying native object via `getAdaptee()`.
 
 ## 3. In-Depth Analysis of Concrete Adapter Implementations Across 7 Execution Environments
 

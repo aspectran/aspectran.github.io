@@ -4,7 +4,9 @@ subheadline: Practical Guides
 ---
 
 {% raw %}
-Greeting messages in Aspectran Shell are a key element for communicating your application's identity and status. This guide covers how to compose greetings, use text styling, and leverage dynamic tokens for a rich terminal experience.
+Greeting messages in Aspectran Shell are a key element for communicating your application's identity and status.
+
+This guide covers how to compose greetings, use text styling, and leverage dynamic tokens for a rich terminal experience.
 
 ## 1. Components of Greeting Messages
 

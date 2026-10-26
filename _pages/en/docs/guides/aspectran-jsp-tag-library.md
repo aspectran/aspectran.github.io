@@ -16,7 +16,7 @@ To use Aspectran tags, include the following directive at the top of your JSP fi
 ```
 
 ### Backward Compatibility (Legacy URI Support)
-The legacy namespace `http://aspectran.com/tags`, widely used in earlier projects, remains fully supported through bidirectional alias mapping in both Undertow ([`TowTldScanner`](file:///home/aspectran/projects/public/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/servlet/TowTldScanner.java)) and Jetty ([`JettyTldScanner`](file:///home/aspectran/projects/public/aspectran/with-jetty/src/main/java/com/aspectran/jetty/server/servlet/JettyTldScanner.java)). Existing JSP code functions properly on the latest Aspectran runtime without any code modifications.
+The legacy namespace `http://aspectran.com/tags`, widely used in earlier projects, remains fully supported through bidirectional alias mapping in both Undertow ([`TowTldScanner`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/servlet/TowTldScanner.java)) and Jetty ([`JettyTldScanner`](https://github.com/aspectran/aspectran/blob/master/with-jetty/src/main/java/com/aspectran/jetty/server/servlet/JettyTldScanner.java)). Existing JSP code functions properly on the latest Aspectran runtime without any code modifications.
 
 ```jsp
 <%-- Legacy taglib directives continue to work seamlessly --%>
@@ -36,19 +36,19 @@ In modern Jakarta EE 10 environments, standard JSTL tags use the new `jakarta.ta
 
 ## 2. Complete Tag Reference
 
-The Aspectran JSP Tag Library ([`aspectran.tld`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/resources/com/aspectran/web/servlet/support/tags/aspectran.tld)) provides the following tags:
+The Aspectran JSP Tag Library ([`aspectran.tld`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/resources/com/aspectran/web/servlet/support/tags/aspectran.tld)) provides the following tags:
 
 | Tag Name | Description | Tag Handler Class |
 | :--- | :--- | :--- |
-| `<aspectran:eval>` | Evaluates an AsEL expression and either outputs the result or assigns it to a variable | [`EvalTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/HtmlEscapeTag.java) |
-| `<aspectran:message>` | Retrieves localized messages from the configured `MessageSource` by message code | [`MessageTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/MessageTag.java) |
-| `<aspectran:argument>` | Passes dynamic arguments to an enclosing `<aspectran:message>` tag | [`ArgumentTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ArgumentTag.java) |
-| `<aspectran:url>` | Generates URLs with automatic context path resolution and URL template parameter support | [`UrlTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/UrlTag.java) |
-| `<aspectran:param>` | Passes query or path template parameters to an enclosing `<aspectran:url>` tag | [`ParamTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ParamTag.java) |
-| `<aspectran:profile>` | Conditionally renders enclosed content based on active environment profile expressions | [`ProfileTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ProfileTag.java) |
-| `<aspectran:token>` | Directly evaluates an individual Aspectran token (bean, parameter, property, etc.) | [`TokenTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/TokenTag.java) |
-| `<aspectran:htmlEscape>` | Sets the page-wide default HTML escape behavior for subsequent tags | [`HtmlEscapeTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/HtmlEscapeTag.java) |
-| `<aspectran:escapeBody>` | Escapes its enclosed body content using HTML and/or JavaScript escaping rules | [`EscapeBodyTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/EscapeBodyTag.java) |
+| `<aspectran:eval>` | Evaluates an AsEL expression and either outputs the result or assigns it to a variable | [`EvalTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/HtmlEscapeTag.java) |
+| `<aspectran:message>` | Retrieves localized messages from the configured `MessageSource` by message code | [`MessageTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/MessageTag.java) |
+| `<aspectran:argument>` | Passes dynamic arguments to an enclosing `<aspectran:message>` tag | [`ArgumentTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ArgumentTag.java) |
+| `<aspectran:url>` | Generates URLs with automatic context path resolution and URL template parameter support | [`UrlTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/UrlTag.java) |
+| `<aspectran:param>` | Passes query or path template parameters to an enclosing `<aspectran:url>` tag | [`ParamTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ParamTag.java) |
+| `<aspectran:profile>` | Conditionally renders enclosed content based on active environment profile expressions | [`ProfileTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ProfileTag.java) |
+| `<aspectran:token>` | Directly evaluates an individual Aspectran token (bean, parameter, property, etc.) | [`TokenTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/TokenTag.java) |
+| `<aspectran:htmlEscape>` | Sets the page-wide default HTML escape behavior for subsequent tags | [`HtmlEscapeTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/HtmlEscapeTag.java) |
+| `<aspectran:escapeBody>` | Escapes its enclosed body content using HTML and/or JavaScript escaping rules | [`EscapeBodyTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/EscapeBodyTag.java) |
 
 ### 2.1. `<aspectran:eval>`
 Evaluates an AsEL (Aspectran Expression Language) expression and prints the result or assigns it to a scoped variable. Powered by `AselExpressionPreprocessor`, it supports safe navigation, Elvis operators, collection projections, and selection filters.

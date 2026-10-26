@@ -167,7 +167,7 @@ When an advisable method executes, `AbstractBeanProxy` drives the following dete
 ```mermaid
 graph TD
     Start[Method Invocation] --> Before[1. BEFORE Advice<br/>* Start transaction<br/>* Authorization checks]
-    Before --> Exec[2. Target Business Method Execution<br/>superInvoker.invoke()]
+    Before --> Exec["2. Target Business Method Execution<br/>superInvoker.invoke()"]
     Exec --> Success{Exception Occurred?}
 
     Success -->|Normal Execution| After[3. AFTER Advice<br/>* Commit transaction<br/>* Audit log generation]

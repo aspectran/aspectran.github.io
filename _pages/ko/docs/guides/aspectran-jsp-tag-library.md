@@ -16,7 +16,7 @@ JSP 페이지 상단에 다음과 같이 지시자를 선언하여 사용합니�
 ```
 
 ### 하위 호환성 (Legacy URI 지원)
-기존 프로젝트에서 널리 사용되던 레거시 네임스페이스 `http://aspectran.com/tags` 역시 Undertow([`TowTldScanner`](file:///home/aspectran/projects/public/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/servlet/TowTldScanner.java)) 및 Jetty([`JettyTldScanner`](file:///home/aspectran/projects/public/aspectran/with-jetty/src/main/java/com/aspectran/jetty/server/servlet/JettyTldScanner.java))의 양방향 Alias 매핑을 통해 완벽하게 지원됩니다. 기존 코드를 일일이 수정하지 않고도 최신 Aspectran 런타임에서 오류 없이 그대로 동작합니다.
+기존 프로젝트에서 널리 사용되던 레거시 네임스페이스 `http://aspectran.com/tags` 역시 Undertow([`TowTldScanner`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/servlet/TowTldScanner.java)) 및 Jetty([`JettyTldScanner`](https://github.com/aspectran/aspectran/blob/master/with-jetty/src/main/java/com/aspectran/jetty/server/servlet/JettyTldScanner.java))의 양방향 Alias 매핑을 통해 완벽하게 지원됩니다. 기존 코드를 일일이 수정하지 않고도 최신 Aspectran 런타임에서 오류 없이 그대로 동작합니다.
 
 ```jsp
 <%-- 레거시 선언도 그대로 호환됩니다 --%>
@@ -36,19 +36,19 @@ Jakarta EE 10 표준 환경에서는 JSTL 표준 태그 라이브러리도 최�
 
 ## 2. 전체 태그 레퍼런스
 
-Aspectran JSP Tag Library([`aspectran.tld`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/resources/com/aspectran/web/servlet/support/tags/aspectran.tld))는 다음 8개의 태그를 제공합니다.
+Aspectran JSP Tag Library([`aspectran.tld`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/resources/com/aspectran/web/servlet/support/tags/aspectran.tld))는 다음 8개의 태그를 제공합니다.
 
 | 태그명 | 설명 | 태그 핸들러 클래스 |
 | :--- | :--- | :--- |
-| `<aspectran:eval>` | AsEL 표현식을 평가하여 결과를 출력하거나 변수에 할당 | [`EvalTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/HtmlEscapeTag.java) |
-| `<aspectran:message>` | 다국어 메시지 소스(MessageSource)로부터 코드에 해당하는 메시지를 조회 | [`MessageTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/MessageTag.java) |
-| `<aspectran:argument>` | `<aspectran:message>` 내부에서 인자를 전달하는 서브 태그 | [`ArgumentTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ArgumentTag.java) |
-| `<aspectran:url>` | 컨텍스트 경로 자동 처리 및 URL 템플릿 파라미터를 지원하는 URL 생성 | [`UrlTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/UrlTag.java) |
-| `<aspectran:param>` | `<aspectran:url>` 내부에서 쿼리 및 경로 파라미터를 전달하는 서브 태그 | [`ParamTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ParamTag.java) |
-| `<aspectran:profile>` | 활성화된 프로필(Profile) 조건식에 따라 내부 콘텐츠를 조건부 렌더링 | [`ProfileTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ProfileTag.java) |
-| `<aspectran:token>` | Aspectran 고유의 개별 토큰(bean, parameter, property 등)을 직접 평가 | [`TokenTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/TokenTag.java) |
-| `<aspectran:htmlEscape>` | 현재 페이지 또는 요청 컨텍스트의 기본 HTML 이스케이프 여부 설정 | [`HtmlEscapeTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/HtmlEscapeTag.java) |
-| `<aspectran:escapeBody>` | 태그 바디 내부의 텍스트에 대해 HTML 및/또는 JavaScript 이스케이프 적용 | [`EscapeBodyTag`](file:///home/aspectran/projects/public/aspectran/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/EscapeBodyTag.java) |
+| `<aspectran:eval>` | AsEL 표현식을 평가하여 결과를 출력하거나 변수에 할당 | [`EvalTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/HtmlEscapeTag.java) |
+| `<aspectran:message>` | 다국어 메시지 소스(MessageSource)로부터 코드에 해당하는 메시지를 조회 | [`MessageTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/MessageTag.java) |
+| `<aspectran:argument>` | `<aspectran:message>` 내부에서 인자를 전달하는 서브 태그 | [`ArgumentTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ArgumentTag.java) |
+| `<aspectran:url>` | 컨텍스트 경로 자동 처리 및 URL 템플릿 파라미터를 지원하는 URL 생성 | [`UrlTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/UrlTag.java) |
+| `<aspectran:param>` | `<aspectran:url>` 내부에서 쿼리 및 경로 파라미터를 전달하는 서브 태그 | [`ParamTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ParamTag.java) |
+| `<aspectran:profile>` | 활성화된 프로필(Profile) 조건식에 따라 내부 콘텐츠를 조건부 렌더링 | [`ProfileTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/ProfileTag.java) |
+| `<aspectran:token>` | Aspectran 고유의 개별 토큰(bean, parameter, property 등)을 직접 평가 | [`TokenTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/TokenTag.java) |
+| `<aspectran:htmlEscape>` | 현재 페이지 또는 요청 컨텍스트의 기본 HTML 이스케이프 여부 설정 | [`HtmlEscapeTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/HtmlEscapeTag.java) |
+| `<aspectran:escapeBody>` | 태그 바디 내부의 텍스트에 대해 HTML 및/또는 JavaScript 이스케이프 적용 | [`EscapeBodyTag`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/support/tags/EscapeBodyTag.java) |
 
 ### 2.1. `<aspectran:eval>`
 AsEL(Aspectran Expression Language)을 평가하고 결과를 화면에 직접 출력하거나 지정된 스코프 변수에 할당합니다. `AselExpressionPreprocessor`가 적용되어 세이프 네비게이션, 엘비스 연산자, 컬렉션 프로젝션/셀렉션 등 최신 연산자를 폭넓게 지원합니다.

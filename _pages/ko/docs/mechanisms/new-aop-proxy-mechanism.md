@@ -167,7 +167,7 @@ AOP 대상 메서드가 실행될 때 `AbstractBeanProxy`는 다음과 같은 4�
 ```mermaid
 graph TD
     Start[메서드 호출] --> Before[1. BEFORE 어드바이스<br/>* 트랜잭션 시작<br/>* 권한 인가 검증]
-    Before --> Exec[2. 원본 비즈니스 메서드 실행<br/>superInvoker.invoke()]
+    Before --> Exec["2. 원본 비즈니스 메서드 실행<br/>superInvoker.invoke()"]
     Exec --> Success{예외 발생 여부}
 
     Success -->|정상 실행| After[3. AFTER 어드바이스<br/>* 트랜잭션 커밋<br/>* 감사 로그 기록]

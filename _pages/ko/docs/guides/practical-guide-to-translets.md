@@ -466,6 +466,7 @@ public class ArticleActivity {
 
 대부분의 웹 애플리케이션에서는 하나의 멀티파트 파서 빈만 등록하여 사용하므로, 파서 이름을 생략하고 `@Multipart`를 사용하거나 `FileParameter` 인자를 선언하는 것만으로 충분합니다.
 
+> 💡 **참고**\
 > 보안상의 이유로 `@Multipart` 어노테이션, `FileParameter` 인자, 또는 Aspect의 `multipartFormDataParser` 설정이 전혀 없는 요청에 대해서는 멀티파트 요청 바디를 파싱하지 않고 경고 로그를 남깁니다.
 
 ### 8.4. 시작 시점 빈 참조 검증

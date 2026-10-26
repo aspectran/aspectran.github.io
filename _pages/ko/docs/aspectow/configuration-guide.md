@@ -754,7 +754,7 @@ Undertow의 `PathResourceManager`를 상속 및 확장한 컴포넌트로, [`App
 * **`TowServlet`**: Aspectran의 메인 서블릿인 `WebActivityServlet`을 루트 매핑(`/`)으로 등록하여, 모든 수신 요청을 Aspectran Translet 엔진으로 전달합니다.
 
 #### 5.5.3. JSP 태그 라이브러리(TLD) 설정 (`TowJasperInitializer`)
-[`TowJasperInitializer`](file:///home/aspectran/projects/public/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/servlet/TowJasperInitializer.java)는 Undertow 서블릿 환경에서 Apache Jasper JSP 엔진을 초기화하고, 화면 구성에 필요한 TLD(Tag Library Descriptor) 메타데이터를 스캔하여 로드합니다.
+[`TowJasperInitializer`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/servlet/TowJasperInitializer.java)는 Undertow 서블릿 환경에서 Apache Jasper JSP 엔진을 초기화하고, 화면 구성에 필요한 TLD(Tag Library Descriptor) 메타데이터를 스캔하여 로드합니다.
 
 ##### 1) 기본 동작: 클래스패스 TLD 자동 스캔 (Auto-Scanning)
 Aspectow는 개발 편의성을 극대화하기 위해 클래스패스 상에 위치한 프레임워크 표준 TLD 및 JSTL 라이브러리를 **자동으로 감지**합니다:

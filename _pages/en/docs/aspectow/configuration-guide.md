@@ -754,7 +754,7 @@ For modular application architectures where static web assets are packaged insid
 * **`TowServlet`**: Registers Aspectran's core `WebActivityServlet` at the root mapping (`/`), dispatching all incoming web requests into the Aspectran Translet engine.
 
 #### 5.5.3. JSP Tag Library (TLD) Configuration (`TowJasperInitializer`)
-[`TowJasperInitializer`](file:///home/aspectran/projects/public/aspectran/with-undertow/src/main/java/com/aspectran/undertow/server/servlet/TowJasperInitializer.java) initializes the Apache Jasper JSP compilation engine within the Undertow servlet environment and scans and loads the required TLD (Tag Library Descriptor) metadata for view rendering.
+[`TowJasperInitializer`](https://github.com/aspectran/aspectran/blob/master/with-undertow/src/main/java/com/aspectran/undertow/server/servlet/TowJasperInitializer.java) initializes the Apache Jasper JSP compilation engine within the Undertow servlet environment and scans and loads the required TLD (Tag Library Descriptor) metadata for view rendering.
 
 ##### 1) Default Behavior: Classpath TLD Auto-Scanning
 To maximize development productivity, Aspectow **automatically detects** framework-provided standard TLDs and JSTL libraries located on the classpath:
