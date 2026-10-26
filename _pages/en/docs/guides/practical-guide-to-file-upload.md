@@ -75,7 +75,8 @@ Each parser provides granular security and operational properties:
 | `deniedFileExtensions` | String | Comma-delimited list of disallowed file extensions (blacklist) | `"exe,sh,jsp,bat"` |
 | `temporaryFilePath` / `tempFileDir` | String | Server directory path where temporary files are written (defaults to system temp dir if omitted) | `"/var/app/tmp"` |
 
-> **Tip:** Values for `maxRequestSize`, `maxFileSize`, and `tempFileThreshold` (or `maxInMemorySize`) accept intuitive unit suffixes such as `B`, `K`, `M`, and `G` (e.g., `10M` = 10 Megabytes).
+> 💡 **Tip**\
+> Values for `maxRequestSize`, `maxFileSize`, and `tempFileThreshold` (or `maxInMemorySize`) accept intuitive unit suffixes such as `B`, `K`, `M`, and `G` (e.g., `10M` = 10 Megabytes).
 
 ### 2.4. Parser Bean Definition Examples
 
@@ -261,7 +262,8 @@ When a multipart request arrives, Aspectran resolves the parser bean according t
 3.  **Priority 3 (Default Bean ID)**: A bean registered in the container with ID `"multipartFormDataParser"`
 4.  **Priority 4 (Single Bean by Type)**: Auto-resolved if exactly one bean implementing `MultipartFormDataParser` exists in the container
 
-> **Note:** In typical web applications where a single default parser bean is registered, you do not need to specify parser names; using `@Multipart` without arguments or simply declaring `FileParameter` works out of the box.
+> 💡 **Note**\
+> In typical web applications where a single default parser bean is registered, you do not need to specify parser names; using `@Multipart` without arguments or simply declaring `FileParameter` works out of the box.
 
 ### 4.4. Pre-Validation at Application Startup
 

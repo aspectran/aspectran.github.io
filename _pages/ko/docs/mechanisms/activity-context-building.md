@@ -168,7 +168,7 @@ graph LR
   - 빌더가 즉시 `((Component)activityContext).initialize()`를 호출하여 컨텍스트를 완전 활성화합니다.
   - JVM 종료 시 컨텍스트가 안전하게 소멸될 수 있도록 [`ShutdownHook.Manager`](https://github.com/aspectran/aspectran/blob/master/utils/src/main/java/com/aspectran/utils/ShutdownHook.java)를 통해 프로세스 종료 훅을 등록합니다.
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - 빌드된 컨텍스트가 런타임에 동작하는 상세 구조는 [ActivityContext: Aspectran 컨테이너의 심장부](/ko/docs/mechanisms/activity-context/) 문서를 참고하십시오.
 > - 파일 변경 감지 시 컨텍스트를 무중단으로 재빌드하는 원리는 [Aspectran 자동 리로딩 메커니즘](/ko/docs/mechanisms/aspectran-reloading-mechanism/) 문서를 참고하십시오.
 > - 환경 프로필 및 프로퍼티 치환 규칙은 [ActivityEnvironment 아키텍처](/ko/docs/mechanisms/activity-environment/) 문서를 참고하십시오.

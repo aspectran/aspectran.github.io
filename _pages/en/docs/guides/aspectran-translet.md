@@ -118,7 +118,7 @@ public class UserApiController {
 
 In **(1)** of the example above, the path variable `${userId}` is automatically converted and injected into the method parameter named `userId`. Aspectran intelligently injects path variables, request parameters, and registered beans based on name and type matching without requiring boilerplate annotations. Furthermore, declaring a `Translet` parameter injects the active `Translet` instance currently executing the request.
 
-> **💡 Deprecation of `@Required` and Adoption of `@NonNull` Standard**
+> 💡 **Deprecation of `@Required` and Adoption of `@NonNull` Standard**
 > 
 > Previously, Aspectran provided its own `@Required` annotation (`com.aspectran.core.component.bean.annotation.Required`) to denote non-null parameters and mandatory dependencies.
 > 

@@ -168,7 +168,7 @@ The assembled context undergoes distinct initialization and lifecycle management
   - The builder immediately calls `((Component)activityContext).initialize()` to fully activate the context.
   - Registers a JVM shutdown hook via [`ShutdownHook.Manager`](https://github.com/aspectran/aspectran/blob/master/utils/src/main/java/com/aspectran/utils/ShutdownHook.java) to ensure graceful teardown upon process termination.
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For the runtime architecture and operational mechanics of the assembled context, see [ActivityContext: The Heart of the Aspectran Container](/en/docs/mechanisms/activity-context/).
 > - For how configuration changes trigger zero-downtime reloads, see [Aspectran Reloading Mechanism](/en/docs/mechanisms/aspectran-reloading-mechanism/).
 > - For environment profile resolution and property evaluation rules, see [ActivityEnvironment Architecture](/en/docs/mechanisms/activity-environment/).

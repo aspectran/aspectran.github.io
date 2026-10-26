@@ -215,7 +215,7 @@ POJO beans managed by the Aspectran IoC container can directly receive core fram
 | [`ApplicationAdapterAware`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/aware/ApplicationAdapterAware.java) | `ApplicationAdapter` | Injects host environment adapters such as `ServletContext` |
 | [`ClassLoaderAware`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/aware/ClassLoaderAware.java) | `ClassLoader` | Injects the dedicated classloader used by the context |
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For the detailed build process that parses configuration files and constructs `ActivityContext`, see [ActivityContext Building Process](/en/docs/mechanisms/activity-context-building/).
 > - For the lifecycle and request execution pipelines managed by the context, see [Aspectran Activity Architecture](/en/docs/mechanisms/aspectran-activities/).
 > - For how profiles and properties are resolved within the context, see [ActivityEnvironment Architecture](/en/docs/mechanisms/activity-environment/).

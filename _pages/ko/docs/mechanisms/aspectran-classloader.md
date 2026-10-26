@@ -187,7 +187,7 @@ graph TD
 - **리로딩 카운터 ([`reloadedCount`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/resource/SiblingClassLoader.java#L87))**:
   해당 클래스로더 그룹이 몇 번 갱신되었는지를 추적하여 모니터링 메트릭으로 제공합니다.
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - 클래스로더의 `reload()`를 주기적으로 트리거하는 전체 감시 메커니즘은 [Aspectran 자동 리로딩 메커니즘](/ko/docs/mechanisms/aspectran-reloading-mechanism/) 문서를 참고하십시오.
 > - 클래스로더가 생성되어 `ActivityContext`에 바인딩되는 과정은 [ActivityContext 빌드 과정](/ko/docs/mechanisms/activity-context-building/) 문서를 참고하십시오.
 > - 서비스 계층에서 클래스로더를 격리하고 라우팅하는 방식은 [Aspectran 서비스 아키텍처](/ko/docs/mechanisms/aspectran-services/) 문서를 참고하십시오.

@@ -216,7 +216,7 @@ Aspectran은 규칙 객체 모델을 APON 파라미터 트리로 변환하거나
 </aspectran>
 ```
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - 규칙 객체들이 파싱되어 IoC 컨테이너로 완성되는 과정은 [ActivityContext 빌드 과정](/ko/docs/mechanisms/activity-context-building/) 문서를 참고하십시오.
 > - 완성된 규칙 객체들이 요청 시점에 실행되는 라이프사이클은 [Aspectran 활동(Activities) 아키텍처](/ko/docs/mechanisms/aspectran-activities/) 문서를 참고하십시오.
 > - 트랜슬릿 규칙 내부의 액션 실행 모델은 [Aspectran 액션(Actions) 아키텍처](/ko/docs/mechanisms/aspectran-actions/) 문서를 참고하십시오.

@@ -200,7 +200,7 @@ public class UserCart {
 | **`REQUEST`** | [`RequestScope`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/scope/RequestScope.java) | 단일 요청 ([`Activity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/Activity.java)) | 단일 스레드 격리 | 완전 관리 (요청 완료 시) | 요청 단위 트레이서, 폼 데이터 커맨드 객체 | `RequestAdapter` 필수 |
 | **`SESSION`** | [`SessionScope`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/scope/SessionScope.java) | 단일 사용자 세션 | 높음 (`ReadWriteLock`) | 완전 관리 (세션 언바인딩 시) | 로그인 세션 객체, 장바구니, 사용자 개인화 설정 | `SessionAdapter` 필수 |
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - 빈들이 등록되고 인스턴스화되는 전체 컨테이너 구조는 [ActivityContext: Aspectran 컨테이너의 심장부](/ko/docs/mechanisms/activity-context/) 문서를 참고하십시오.
 > - 빈 메서드 호출 시 AOP 어드바이스를 결합하는 프록시 메커니즘은 [Aspectran AOP 프록시 메커니즘](/ko/docs/mechanisms/new-aop-proxy-mechanism/) 문서를 참고하십시오.
 > - 요청 스코프와 세션 스코프가 결속되는 환경별 인터페이스는 [Aspectran 어댑터 아키텍처](/ko/docs/mechanisms/aspectran-adapters/) 문서를 참고하십시오.

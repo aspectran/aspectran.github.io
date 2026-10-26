@@ -43,7 +43,8 @@ Aspectran follows these principles when setting system properties:
 2.  **First-started Wins**: When multiple services (e.g., DaemonService, WebService) are started sequentially, the values set by the first-started service (typically the root service) are locked into the system environment. Subsequent services cannot overwrite these established values.
 3.  **Intelligent Encryption Reloading**: When encryption-related properties like `aspectran.encryption.password` are first injected into the system, `PBEncryptionUtils.reload()` is automatically called. This ensures that the framework's encryption utility is immediately synchronized with the latest configuration.
 
-> **Note:** It is recommended that all services within a single JVM process share the same encryption settings. If different settings are configured for different services, the system will operate based on the settings of the first service that was started.
+> 📌 **Note**\
+> It is recommended that all services within a single JVM process share the same encryption settings. If different settings are configured for different services, the system will operate based on the settings of the first service that was started.
 
 ## 2. Context Settings (`context`)
 

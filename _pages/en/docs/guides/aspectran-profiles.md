@@ -40,7 +40,7 @@ When working in a multi-context environment where parent (`root`) and child cont
     *   **Syntax**: `-Daspectran.profiles.base.{contextName}={profileName}`
     *   **Example**: `-Daspectran.profiles.base.appmon=gateway` (Activates `gateway` as the base profile for the `appmon` context)
 
-> **WARNING: Overriding Behavior via System Properties**
+> ⚠️ **WARNING: Overriding Behavior via System Properties**
 >
 > Even if base profiles are pre-configured in your `aspectran-config.apon`, injecting profiles via JVM system properties (`-Daspectran.profiles.base.{contextName}`) will **completely override (ignore and overwrite)** the pre-configured APON base profiles instead of appending to them.
 >

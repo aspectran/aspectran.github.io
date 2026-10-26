@@ -635,7 +635,7 @@ A filtering rule that precisely defines where Advice should be applied. Pointcut
 ##### 3. Advice - 4 Standard Advice Types
 The actual secondary functionality code executed at a Join Point.
 
-> **💡 Clear Lifecycle Control with 4 Standard Advice Stages:**
+> 💡 **Clear Lifecycle Control with 4 Standard Advice Stages**\
 > Aspectran provides 4 declarative and well-defined lifecycle stages (Before, After, Thrown, Finally). This design cleanly separates transactional boundaries, performance telemetry, security checks, and resource cleanup without proxy chaining overhead or deep call stacks.
 
 | Advice Type | Annotation | Execution Timing | Primary Role & Characteristics |

@@ -187,7 +187,7 @@ graph TD
 - **Reload Counter Metric ([`reloadedCount`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/resource/SiblingClassLoader.java#L87))**:
   Tracks the total number of reload events performed, exposing operational observability metrics.
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For the periodic filesystem monitoring pipeline triggering `reload()`, see [Aspectran Reloading Mechanism](/en/docs/mechanisms/aspectran-reloading-mechanism/).
 > - For how classloaders are instantiated and bound into containers, see [ActivityContext Building Process](/en/docs/mechanisms/activity-context-building/).
 > - For how services isolate and look up classloaders, see [Aspectran Service Architecture](/en/docs/mechanisms/aspectran-services/).

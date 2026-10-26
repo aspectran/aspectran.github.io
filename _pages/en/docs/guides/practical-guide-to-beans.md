@@ -438,7 +438,7 @@ public class MyAwareBean implements ActivityContextAware {
 }
 ```
 
-> **Tip: Using `InstantActivitySupport`**
+> 💡 **Using `InstantActivitySupport`**\
 > Instead of implementing `ActivityContextAware` manually, extending `com.aspectran.core.activity.InstantActivitySupport` provides convenient shortcuts like `getEnvironment()`, `getApplicationAdapter()`, `getBeanRegistry()`, and `instantActivity(...)`.
 
 ## 7. Bean-related Configuration

@@ -40,11 +40,10 @@ Used to enable or disable configuration blocks based on the environment.
 ### 2.2. Context-based Base Profiles
 In a multi-context environment, you can specify a base profile to be applied only to a specific context.
 
-> **NOTE**
->
+> 💡 **NOTE**
 > The profiles of the parent (Root) context are not automatically inherited or applied to child contexts; the environment of each context is completely isolated. The `base` profile concept exists to inject specific profiles into child contexts so they build with them active by default.
 
-> **WARNING: Overriding Profiles with System Properties**
+> ⚠️ **WARNING: Overriding Profiles with System Properties**
 >
 > Even if certain profiles are pre-configured in the `profiles.base` section of `aspectran-config.apon`, providing a JVM system property (`-Daspectran.profiles.base.{contextName}`) will **completely override (overwrite and ignore)** the existing APON configuration instead of appending to it.
 >

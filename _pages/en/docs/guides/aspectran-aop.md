@@ -237,7 +237,7 @@ Advice defines the concrete logic executed at a join point. Aspectran supports *
 | **`thrown`** | Upon exception | Error logging, transaction rollback, alerting (invoked prior to Finally) |
 | **`finally`** | Always executed at the end | Resource cleanup, session closing, ThreadLocal clearing, elapsed time profiling |
 
-> **💡 Clear Lifecycle Control with 4 Standard Advice Stages:**
+> 💡 **Clear Lifecycle Control with 4 Standard Advice Stages**\
 > Aspectran provides 4 declarative and well-defined lifecycle stages (Before, After, Thrown, Finally). This design cleanly separates transactional boundaries, performance telemetry, security checks, and resource cleanup without proxy chaining overhead or deep call stacks.
 
 Inside `<advice>`, you can configure bean method invocations (`<invoke>`), action routines (`<action>`), and **declarative response header injection (`<headers>`)**:

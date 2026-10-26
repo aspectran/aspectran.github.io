@@ -263,7 +263,7 @@ User user = (User)processResult.getResultValue("user");
 String city = (String)processResult.getResultValue("user.address.city");
 ```
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For the overarching lifecycle pipeline that executes actions, see [Aspectran Activity Architecture](/en/docs/mechanisms/aspectran-activities/).
 > - For how action results are transformed into responses and streamed to clients, see [Aspectran Request & Response Architecture](/en/docs/mechanisms/aspectran-request-response/).
 > - For declarative XML and APON syntax rules governing actions, see [Aspectran Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/).

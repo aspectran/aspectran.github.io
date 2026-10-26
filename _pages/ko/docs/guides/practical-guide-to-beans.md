@@ -438,7 +438,7 @@ public class MyAwareBean implements ActivityContextAware {
 }
 ```
 
-> **Tip: `InstantActivitySupport` 활용**
+> 💡 **`InstantActivitySupport` 활용**\
 > `ActivityContext`나 현재 `Activity`에 접근할 때 `ActivityContextAware`를 직접 구현하는 대신, `com.aspectran.core.activity.InstantActivitySupport` 클래스를 상속하면 `getEnvironment()`, `getApplicationAdapter()`, `getBeanRegistry()`, `instantActivity(...)` 등 다양한 헬퍼 메소드를 바로 활용할 수 있어 더욱 편리합니다.
 
 ## 7. 빈 관련 구성 설정

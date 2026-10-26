@@ -215,7 +215,7 @@ Aspectran IoC 컨테이너에 등록된 일반 Bean은 특정 `*Aware` 인터페
 | [`ApplicationAdapterAware`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/aware/ApplicationAdapterAware.java) | `ApplicationAdapter` | 서블릿 컨텍스트 등 호스트 환경 어댑터 주입 |
 | [`ClassLoaderAware`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/aware/ClassLoaderAware.java) | `ClassLoader` | 컨텍스트가 사용하는 전용 클래스로더 주입 |
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - `ActivityContext`를 생성하고 설정 파일을 파싱하는 상세 빌드 프로세스는 [ActivityContext 빌드 과정](/ko/docs/mechanisms/activity-context-building/) 문서를 참고하십시오.
 > - 컨텍스트가 관리하는 각 요청 단위의 라이프사이클과 실행 흐름은 [Aspectran 활동(Activities) 아키텍처](/ko/docs/mechanisms/aspectran-activities/) 문서를 참고하십시오.
 > - 컨텍스트의 프로필 및 환경 변수 처리 원리는 [ActivityEnvironment 아키텍처](/ko/docs/mechanisms/activity-environment/) 문서를 참고하십시오.

@@ -203,7 +203,7 @@ graph LR
 | **Forward** | [`ForwardResponse`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/response/ForwardResponse.java) | Result of targeted translet | None | In-memory `ProcessResult` passing | Chained business logic reuse, internal error routing |
 | **REST (Content Negotiation)** | [`DefaultRestResponse`](https://github.com/aspectran/aspectran/blob/master/web/src/main/java/com/aspectran/web/activity/response/DefaultRestResponse.java) | Client-requested format | None | Resolved via `Accept` header / URI extension | Public APIs serving JSON and XML simultaneously from a single endpoint |
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For the overarching execution lifecycle governing request and response phases, see [Aspectran Activity Architecture](/en/docs/mechanisms/aspectran-activities/).
 > - For how native environment objects are unified into adapter interfaces, see [Aspectran Adapter Architecture](/en/docs/mechanisms/aspectran-adapters/).
 > - For the structure of action components that produce business results, see [Aspectran Action Architecture](/en/docs/mechanisms/aspectran-actions/).

@@ -256,7 +256,7 @@ Aspectran은 웹 요청 등 멀티스레드 환경에서 동시성을 안전하�
   - [`CurrentActivityAware`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/aware/CurrentActivityAware.java) 인터페이스를 구현한 Bean은 인스턴스화 또는 메서드 호출 시 현재 활성 `Activity`를 자동 주입받습니다.
   - [`CurrentActivityDataFactoryBean`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/support/CurrentActivityDataFactoryBean.java)을 통해 현재 요청의 `ActivityData`를 Bean 속성으로 주입받을 수 있습니다.
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - 활동 객체가 입출력 데이터를 격리하는 어댑터 인터페이스 상세는 [Aspectran 어댑터 아키텍처](/ko/docs/mechanisms/aspectran-adapters/) 문서를 참고하십시오.
 > - 서비스 계층이 활동을 생성하고 제어하는 상위 컨테이너 구조는 [Aspectran 서비스 아키텍처](/ko/docs/mechanisms/aspectran-services/) 문서를 참고하십시오.
 > - 활동이 해석하는 트랜슬릿 규칙 및 액션의 상세 구조는 [Aspectran 규칙 아키텍처](/ko/docs/mechanisms/aspectran-rule-architecture/) 문서를 참고하십시오.

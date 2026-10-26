@@ -340,7 +340,7 @@ graph LR
 | **Embed** | [`DefaultEmbeddedAspectran`](https://github.com/aspectran/aspectran/blob/master/embed/src/main/java/com/aspectran/embed/service/DefaultEmbeddedAspectran.java) | 기존 Java 앱/테스트 코드 내장 | `translate(...)` / `execute(...)` / `getBean(...)` | `AspectranActivity`, `InstantActivity` | 인메모리 세션 | 간결한 고수준 퍼사드 API, `run()` 팩토리 제공 |
 | **Scheduler** | [`DefaultSchedulerService`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/scheduler/service/DefaultSchedulerService.java) | 주기적/배치 작업 엔진 | `ActivityLauncherJob.execute()` | Quartz `JobExecutionContext` | 비세션 환경 | `CoreService`에 결속된 자식 서비스, 분산 락 지원 |
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - 서비스가 요청을 받아 생성하는 개별 실행 단위의 세부 구조와 라이프사이클은 [Aspectran 활동(Activities) 아키텍처](/ko/docs/mechanisms/aspectran-activities/) 문서를 참고하십시오.
 > - 이기종 네이티브 환경을 단일 프로토콜로 감싸는 어댑터 계층의 상세 내용은 [Aspectran 어댑터 아키텍처](/ko/docs/mechanisms/aspectran-adapters/) 문서를 참고하십시오.
 > - 다양한 런타임의 상세 부트스트래핑과 서버 구성 방식은 [Aspectran 다중 실행 환경 아키텍처](/ko/docs/mechanisms/aspectran-execution-environments/) 문서를 참고하십시오.

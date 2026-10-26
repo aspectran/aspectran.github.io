@@ -200,7 +200,7 @@ public class UserCart {
 | **`REQUEST`** | [`RequestScope`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/scope/RequestScope.java) | Single request ([`Activity`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/Activity.java)) | Single-thread isolation | Fully Managed (Request completion) | Request tracers, form command binding objects | Requires `RequestAdapter` |
 | **`SESSION`** | [`SessionScope`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/scope/SessionScope.java) | Single user session | High (`ReadWriteLock`) | Fully Managed (Session unbind / invalidation) | Login credentials, shopping carts, user preferences | Requires `SessionAdapter` |
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For the overarching IoC container model that manages bean registrations and lifecycles, see [ActivityContext: The Heart of the Aspectran Container](/en/docs/mechanisms/activity-context/).
 > - For proxy interception mechanisms applied to scoped beans, see [Aspectran AOP Proxy Mechanism](/en/docs/mechanisms/new-aop-proxy-mechanism/).
 > - For how request and session scopes bind into runtime adapters, see [Aspectran Adapter Architecture](/en/docs/mechanisms/aspectran-adapters/).

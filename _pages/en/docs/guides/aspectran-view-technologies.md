@@ -318,7 +318,8 @@ The `format` attribute of `<transform>` accepts valid identifier aliases defined
 | **`custom`** | (Custom) | Executes custom transformation logic via a `CustomTransformer` implementation. |
 | **`none`** | `text/plain` | Sends raw string output without transformation. |
 
-> **⚠️ Warning:** Always specify the format name (e.g., `text`, `json`, `xml`) in the `format` attribute. Standard MIME types (e.g., `text/plain`, `text/html`) must be configured separately in the `contentType` attribute.
+> ⚠️ **Warning**\
+> Always specify the format name (e.g., `text`, `json`, `xml`) in the `format` attribute. Standard MIME types (e.g., `text/plain`, `text/html`) must be configured separately in the `contentType` attribute.
 
 **Java Annotation Example (`@Transform`):**
 ```java

@@ -87,9 +87,9 @@ Aspectran 9.0부터는 컴파일을 위해 Java 21 이상이 필요하지만, Ja
 </context-param>
 ```
 
-설정 파일의 내용은 APON(Aspectran Parameters Object Notation) 형식으로 작성합니다.
+설정 파일의 내용은 [APON(Aspectran Parameters Object Notation)](/ko/docs/guides/introduce-apon/) 형식으로 작성합니다.
 
-> **APON (Aspectran Parameters Object Notation)**
+> 💡 **APON (Aspectran Parameters Object Notation)**\
 > JSON과 유사한 표기법으로, 설정 값을 쉽게 작성하고 읽을 수 있도록 Aspectran을 위해 개발되었습니다.
 
 ### 3.2. 주요 설정 파라미터

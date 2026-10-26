@@ -256,7 +256,7 @@ To ensure thread safety and concurrency isolation in multi-threaded environments
   - Beans implementing [`CurrentActivityAware`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/bean/aware/CurrentActivityAware.java) receive the current active `Activity` automatically upon instantiation or method invocation.
   - [`CurrentActivityDataFactoryBean`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/support/CurrentActivityDataFactoryBean.java) can be used to inject the current request's `ActivityData` directly into bean properties.
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For how activities isolate input/output data using adapter interfaces, see [Aspectran Adapter Architecture](/en/docs/mechanisms/aspectran-adapters/).
 > - For how the service layer creates and orchestrates activities, see [Aspectran Service Architecture](/en/docs/mechanisms/aspectran-services/).
 > - For the structural details of translet rules and actions parsed by activities, see [Aspectran Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/).

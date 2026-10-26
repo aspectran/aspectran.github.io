@@ -184,7 +184,7 @@ graph TD
 4. **Thrown Advice**: Invoked if an exception occurs during business execution, triggering transaction rollbacks or wrapping root causes into domain exceptions.
 5. **Finally Advice**: Runs unconditionally after normal completion or exception handling, guaranteeing invocation of `activity.popHint()` and resource teardown.
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For the overarching advice execution engine, see [Aspectran Activity Architecture](/en/docs/mechanisms/aspectran-activities/).
 > - For the IoC container model that registers and wires proxy beans, see [ActivityContext: The Heart of the Aspectran Container](/en/docs/mechanisms/activity-context/).
 > - For how aspects and joinpoints are declared, see [Aspectran Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/).

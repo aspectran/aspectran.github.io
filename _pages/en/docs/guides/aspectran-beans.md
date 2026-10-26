@@ -823,7 +823,8 @@ You can also enable component scanning in XML using `<bean scan="...">`.
 
 You can define an anonymous inner bean that will only be used as a property of another bean. Thanks to a flexible parsing architecture, there is no arbitrary limit on the nesting depth of inner beans, but it is recommended to keep the structure simple for readability.
 
-> **Note on AOP and Inner Beans:** Inner beans are generally not recommended for beans that require AOP proxying. Specifically, "self-registering" beans (like `DefaultSqlSessionAgent`) that register their own Aspects during initialization cannot be proxied when used as inner beans. This is because the Aspect registration occurs during the `initialize()` phase, which is after the instance has been created and passed to the outer bean. For such beans, always define them as top-level beans.
+> ⚠️ **Note on AOP and Inner Beans**\
+> Inner beans are generally not recommended for beans that require AOP proxying. Specifically, "self-registering" beans (like `DefaultSqlSessionAgent`) that register their own Aspects during initialization cannot be proxied when used as inner beans. This is because the Aspect registration occurs during the `initialize()` phase, which is after the instance has been created and passed to the outer bean. For such beans, always define them as top-level beans.
 
 ```xml
 <bean id="outerBean" class="com.example.OuterBean">

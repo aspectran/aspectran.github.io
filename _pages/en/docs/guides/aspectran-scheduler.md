@@ -251,7 +251,7 @@ public String count() {
 The success log will include the `response` field:
 `DEBUG ... SUCCESS {group=countSchedule, name=test/schedule/count.job, ..., response=Count: 1}`
 
-> **Tip for Log Readability**
+> 💡 **Tip for Log Readability**\
 > While Translets support various response formats, using a concise format like **`FormatType.TEXT`** is highly recommended for log messages to ensure the logs remain readable and efficient.
 
 ### Logback Configuration Example
@@ -318,7 +318,7 @@ Scheduling rules have an `isolated` attribute that determines whether the task i
 -   **`isolated="false"` (Default)**: Only **one node** in the entire cluster performs the task. (Distributed lock applied)
 -   **`isolated="true"`**: **Every node** performs the task at its scheduled time, regardless of the cluster state. This is suitable for tasks like system log collection or refreshing local caches.
 
-> **Trigger Type Constraints with Distributed Locking (Important)**
+> ⚠️ **Trigger Type Constraints with Distributed Locking (Important)**
 >
 > In a clustered environment, distributed locking (`isolated="false"`) works reliably only with **`cron` triggers**, where all nodes fire tasks at identical absolute timestamps based on the calendar (e.g., exactly at 00 seconds). This allows all nodes to share the exact same scheduled fire time (`scheduledFireTime`) to compete for the same distributed lock key.
 >

@@ -75,7 +75,8 @@ Aspectran은 서블릿 기반 엔터프라이즈 환경뿐만 아니라 Netty �
 | `deniedFileExtensions` | String | 업로드를 차단할 파일 확장자 목록 (콤마 구분, 블랙리스트) | `"exe,sh,jsp,bat"` |
 | `temporaryFilePath` / `tempFileDir` | String | 임시 파일이 저장될 서버의 디렉토리 경로 (생략 시 시스템 임시 디렉토리) | `"/var/app/tmp"` |
 
-> **팁:** `maxRequestSize`, `maxFileSize`, `tempFileThreshold`(또는 `maxInMemorySize`) 값에는 `B`, `K`, `M`, `G` 단위를 직관적인 문자열로 지정할 수 있습니다 (예: `10M` = 10 메가바이트).
+> 💡 **팁**\
+> `maxRequestSize`, `maxFileSize`, `tempFileThreshold`(또는 `maxInMemorySize`) 값에는 `B`, `K`, `M`, `G` 단위를 직관적인 문자열로 지정할 수 있습니다 (예: `10M` = 10 메가바이트).
 
 ### 2.4. 파서 빈 정의 예제
 
@@ -261,7 +262,8 @@ public class AdminReleaseActivity {
 3.  **3순위 (기본 빈 ID)**: 컨테이너에 ID가 `"multipartFormDataParser"`로 등록된 빈
 4.  **4순위 (타입 기반 단일 빈)**: 컨테이너에 `MultipartFormDataParser` 타입의 빈이 단 1개만 등록되어 있을 때 자동 주입
 
-> **참고:** 일반적인 웹 서비스에서는 하나의 기본 파서 빈만 등록해두고 사용하므로, 복잡한 설정 없이 파서 이름을 생략한 `@Multipart` 또는 `FileParameter` 선언만으로 완벽하게 동작합니다.
+> 💡 **참고**\
+> 일반적인 웹 서비스에서는 하나의 기본 파서 빈만 등록해두고 사용하므로, 복잡한 설정 없이 파서 이름을 생략한 `@Multipart` 또는 `FileParameter` 선언만으로 완벽하게 동작합니다.
 
 ### 4.4. 애플리케이션 시작 시점 사전 검증
 

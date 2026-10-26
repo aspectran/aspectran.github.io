@@ -114,7 +114,8 @@ Aspectran의 웹 지원 아키텍처는 순수 웹 추상화와 서블릿 스펙
     *   `EmbeddedAspectran` (구현체 `DefaultEmbeddedAspectran`): 간결한 퍼사드(Facade) API를 제공하여 `translate()`, `render()`, `getBean()` 등을 손쉽게 호출할 수 있도록 지원합니다.
     *   `AspectranActivity`: 프로그래밍적 호출을 위한 전용 경량 `Activity`.
 
-> **관련 세부 메커니즘**: 서비스 수명주기와 부트스트랩 과정 및 각 환경별 진입점의 상세한 내부 구현은 [Aspectran 서비스 아키텍처 심층 분석](/ko/docs/mechanisms/aspectran-services/)과 [Aspectran 실행 환경 심층 분석](/ko/docs/mechanisms/aspectran-execution-environments/)을 참조하십시오.
+> 🔍 **관련 세부 메커니즘**\
+> 서비스 수명주기와 부트스트랩 과정 및 각 환경별 진입점의 상세한 내부 구현은 [Aspectran 서비스 아키텍처 심층 분석](/ko/docs/mechanisms/aspectran-services/)과 [Aspectran 실행 환경 심층 분석](/ko/docs/mechanisms/aspectran-execution-environments/)을 참조하십시오.
 
 ## 3. 환경 추상화: Adapter 아키텍처
 
@@ -146,7 +147,8 @@ Aspectran의 핵심 실행 엔진은 `com.aspectran.core.adapter` 패키지에 �
 2.  **격리된 테스트 환경 제공**: 외부 서블릿 컨테이너나 네트워크 소켓을 띄우지 않고도 메모리 기반의 `AspectranRequestAdapter`와 `AspectranResponseAdapter`를 사용하여 완벽한 단위 테스트를 순식간에 수행할 수 있습니다.
 3.  **새로운 런타임 수용의 유연성**: gRPC, RSocket 등 새로운 네트워크 프로토콜이 등장하더라도, 4대 어댑터 계약만 구현하면 기존 Aspectran의 방대한 자산을 즉시 연동할 수 있습니다.
 
-> **관련 세부 메커니즘**: 어댑터 객체의 생명주기와 `adapt()` 호출 메커니즘, 각 환경별 내부 변환 로직에 대한 상세 내용은 [Adapter 아키텍처: 환경 독립성의 핵심](/ko/docs/mechanisms/aspectran-adapters/)을 참조하십시오.
+> 🔍 **관련 세부 메커니즘**\
+> 어댑터 객체의 생명주기와 `adapt()` 호출 메커니즘, 각 환경별 내부 변환 로직에 대한 상세 내용은 [Adapter 아키텍처: 환경 독립성의 핵심](/ko/docs/mechanisms/aspectran-adapters/)을 참조하십시오.
 
 ## 4. 핵심 컨테이너 및 룰 파이프라인
 
@@ -177,7 +179,8 @@ Aspectran은 XML 파싱의 메모리 및 성능 오버헤드를 극복하기 위
 *   **실행 및 제어 규칙**: `InvokeActionRule`, `TransformRule`, `DispatchRule`.
 *   **능력 인터페이스 (`com.aspectran.core.context.rule.ability`)**: `HasActionRules`, `HasResponseRules` 등의 계약 인터페이스를 통해 복합 규칙을 타입-세이프하게 조립합니다.
 
-> **관련 세부 메커니즘**: `ActivityContext`의 4단계 빌드 세부 알고리즘은 [ActivityContext 빌드 과정: 심층 분석](/ko/docs/mechanisms/activity-context-building/) 및 [ActivityContext: Aspectran의 심장부](/ko/docs/mechanisms/activity-context/)를, XML/APON 스트리밍 파싱의 고급 활용법은 [Aspectran 구성 로딩 메커니즘](/ko/docs/mechanisms/aspectran-loading-mechanism/)과 [Aspectran 설정 규칙 아키텍처 심층 분석](/ko/docs/mechanisms/aspectran-rule-architecture/)을 참조하십시오.
+> 🔍 **관련 세부 메커니즘**\
+> `ActivityContext`의 4단계 빌드 세부 알고리즘은 [ActivityContext 빌드 과정: 심층 분석](/ko/docs/mechanisms/activity-context-building/) 및 [ActivityContext: Aspectran의 심장부](/ko/docs/mechanisms/activity-context/)를, XML/APON 스트리밍 파싱의 고급 활용법은 [Aspectran 구성 로딩 메커니즘](/ko/docs/mechanisms/aspectran-loading-mechanism/)과 [Aspectran 설정 규칙 아키텍처 심층 분석](/ko/docs/mechanisms/aspectran-rule-architecture/)을 참조하십시오.
 
 ## 5. 실행 엔진과 엔드투엔드 요청 처리 파이프라인
 
@@ -227,7 +230,8 @@ Translet 내부의 처리 단계는 `Executable` 인터페이스를 구현한 �
 7.  **응답 생성**: `DispatchResponse`(뷰 렌더링) 또는 `TransformResponse`(JSON/XML 변환)를 실행하여 `ResponseAdapter`의 출력 스트림에 데이터를 씁니다.
 8.  **AOP After/Finally Advice 실행 및 정리**: After/Finally 어드바이스를 수행하고, 트랜잭션 커밋/롤백, 세션 갱신, `ThreadLocal` 정리 및 로깅 그룹 컨텍스트를 안전하게 해제합니다.
 
-> **관련 세부 메커니즘**: 요청 처리 실행 엔진의 내부 상태 머신과 트랜슬릿 처리 파이프라인은 [Activity 아키텍처: 요청 처리의 실행 엔진](/ko/docs/mechanisms/aspectran-activities/), [Aspectran Actions: 개념, 종류 및 처리 결과](/ko/docs/mechanisms/aspectran-actions/), 그리고 [요청(Request) 및 응답(Response) 처리 메커니즘](/ko/docs/mechanisms/aspectran-request-response/)을 참조하십시오.
+> 🔍 **관련 세부 메커니즘**\
+> 요청 처리 실행 엔진의 내부 상태 머신과 트랜슬릿 처리 파이프라인은 [Activity 아키텍처: 요청 처리의 실행 엔진](/ko/docs/mechanisms/aspectran-activities/), [Aspectran Actions: 개념, 종류 및 처리 결과](/ko/docs/mechanisms/aspectran-actions/), 그리고 [요청(Request) 및 응답(Response) 처리 메커니즘](/ko/docs/mechanisms/aspectran-request-response/)을 참조하십시오.
 
 ## 6. 고급 시스템 서비스
 
@@ -261,7 +265,8 @@ Aspectran은 SLF4J 및 Logback과 결합하여, 요청 URI 경로나 서비스 �
     *   **Undertow 환경**: `com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper` (및 `PathBasedLoggingGroupHandler`)
 *   **효과**: 단일 서버 인스턴스 내에서 여러 애플리케이션이나 특정 API 경로군(예: `/petclinic/**`, `/jpetstore/**`)별로 각각 독립된 로그 파일에 트래픽 로그를 물리적으로 분리 기록할 수 있습니다.
 
-> **관련 세부 메커니즘**: AOP 프록시 생성 및 바인딩 원리는 [Aspectran AOP 프록시 메커니즘](/ko/docs/mechanisms/new-aop-proxy-mechanism/)을, 동적 클래스 로딩과 무중단 핫 리로딩은 [SiblingClassLoader 심층 분석](/ko/docs/mechanisms/aspectran-classloader/) 및 [Aspectran 자동 리로딩 메커니즘 심층 분석](/ko/docs/mechanisms/aspectran-reloading-mechanism/)을, 다중 환경 로깅 분리 기법은 [Aspectran 로깅 메커니즘](/ko/docs/mechanisms/aspectran-logging-mechanism/)을 참조하십시오.
+> 🔍 **관련 세부 메커니즘**\
+> AOP 프록시 생성 및 바인딩 원리는 [Aspectran AOP 프록시 메커니즘](/ko/docs/mechanisms/new-aop-proxy-mechanism/)을, 동적 클래스 로딩과 무중단 핫 리로딩은 [SiblingClassLoader 심층 분석](/ko/docs/mechanisms/aspectran-classloader/) 및 [Aspectran 자동 리로딩 메커니즘 심층 분석](/ko/docs/mechanisms/aspectran-reloading-mechanism/)을, 다중 환경 로깅 분리 기법은 [Aspectran 로깅 메커니즘](/ko/docs/mechanisms/aspectran-logging-mechanism/)을 참조하십시오.
 
 ## 7. 결론
 

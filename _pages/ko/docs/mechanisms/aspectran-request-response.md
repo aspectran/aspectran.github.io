@@ -203,7 +203,7 @@ graph LR
 | **Forward** | [`ForwardResponse`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/activity/response/ForwardResponse.java) | 내부 트랜슬릿 처리 결과 | 유지 | 서버 메모리 (`ProcessResult` 인계) | 공통 비즈니스 로직 재사용, 내부 에러 페이지 라우팅 |
 | **REST (Content Negotiation)** | [`DefaultRestResponse`](https://github.com/aspectran/aspectran/blob/master/web/src/main/java/com/aspectran/web/activity/response/DefaultRestResponse.java) | 클라이언트 요구 포맷 | 유지 | `Accept` 헤더 / 확장자 기반 결정 | 단일 엔드포인트에서 JSON과 XML을 동시 지원하는 고도화된 공개 API |
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - 요청을 받아 응답 전략을 결정하는 상위 실행 엔진의 전체 흐름은 [Aspectran 활동(Activities) 아키텍처](/ko/docs/mechanisms/aspectran-activities/) 문서를 참고하십시오.
 > - 환경별 요청 및 응답 어댑터의 세부 구현 클래스는 [Aspectran 어댑터 아키텍처](/ko/docs/mechanisms/aspectran-adapters/) 문서를 참고하십시오.
 > - 비즈니스 데이터를 생산하는 액션 컴포넌트의 상세 구조는 [Aspectran 액션(Actions) 아키텍처](/ko/docs/mechanisms/aspectran-actions/) 문서를 참고하십시오.

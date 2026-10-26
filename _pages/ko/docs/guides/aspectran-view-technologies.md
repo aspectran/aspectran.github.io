@@ -318,7 +318,8 @@ public class UserController {
 | **`custom`** | (사용자 지정) | 사용자 정의 `CustomTransformer`를 통해 임의의 직렬화 로직을 수행합니다. |
 | **`none`** | `text/plain` | 별도의 변환 없이 원본 문자열을 그대로 전송합니다. |
 
-> **⚠️ 주의:** `format` 속성에는 `text`, `json`, `xml` 등의 정확한 형식명을 지정해야 합니다. MIME 타입(예: `text/plain`, `text/html`)은 `contentType` 속성에 별도로 지정합니다.
+> ⚠️ **주의**\
+> `format` 속성에는 `text`, `json`, `xml` 등의 정확한 형식명을 지정해야 합니다. MIME 타입(예: `text/plain`, `text/html`)은 `contentType` 속성에 별도로 지정합니다.
 
 **Java 어노테이션 예시 (`@Transform`):**
 ```java

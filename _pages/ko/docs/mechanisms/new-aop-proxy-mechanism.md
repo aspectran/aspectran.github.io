@@ -184,7 +184,7 @@ graph TD
 4. **Thrown 어드바이스**: 비즈니스 로직 수행 중 예외 발생 시 호출되어 롤백을 수행하거나 사용자 친화적인 예외로 변환합니다.
 5. **Finally 어드바이스**: 성공/실패 여부와 무관하게 항상 실행되어 `activity.popHint()` 및 자원 해제를 보장합니다.
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - 프록시가 사용하는 어드바이스 실행 엔진의 전체 구조는 [Aspectran 활동(Activities) 아키텍처](/ko/docs/mechanisms/aspectran-activities/) 문서를 참고하십시오.
 > - 프록시 빈이 등록되고 관리되는 IoC 컨테이너 모델은 [ActivityContext: Aspectran 컨테이너의 심장부](/ko/docs/mechanisms/activity-context/) 문서를 참고하십시오.
 > - AOP 애스펙트와 조인포인트를 선언하는 메타데이터 스키마는 [Aspectran 규칙 아키텍처](/ko/docs/mechanisms/aspectran-rule-architecture/) 문서를 참고하십시오.

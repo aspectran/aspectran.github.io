@@ -245,7 +245,7 @@ Aspectran incorporates a password-based encryption ([`PBEncryptionUtils`](https:
   -Daspectran.encryption.password=MyMasterSecretKey!
   ```
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For the container architecture where the environment object is bound, see [ActivityContext: The Heart of the Aspectran Container](/en/docs/mechanisms/activity-context/).
 > - For how profiles are evaluated during bootstrap time, see [ActivityContext Building Process](/en/docs/mechanisms/activity-context-building/).
 > - For expression token parsing rules utilized during dynamic property evaluation, see [Aspectran Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/).

@@ -340,7 +340,7 @@ graph LR
 | **Embed** | [`DefaultEmbeddedAspectran`](https://github.com/aspectran/aspectran/blob/master/embed/src/main/java/com/aspectran/embed/service/DefaultEmbeddedAspectran.java) | Embedded in Java apps / tests | `translate(...)` / `execute(...)` / `getBean(...)` | `AspectranActivity`, `InstantActivity` | In-Memory Session | Clean high-level facade API, `run()` factory methods |
 | **Scheduler** | [`DefaultSchedulerService`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/scheduler/service/DefaultSchedulerService.java) | Recurring / Batch execution engine | `ActivityLauncherJob.execute()` | Quartz `JobExecutionContext` | Non-session | Bound child service to `CoreService`, distributed job locking |
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For the detailed structure and lifecycle of the individual execution unit instantiated when a service receives a request, see [Aspectran Activity Architecture](/en/docs/mechanisms/aspectran-activities/).
 > - For how heterogeneous native environments are wrapped into unified contracts, see [Aspectran Adapter Architecture](/en/docs/mechanisms/aspectran-adapters/).
 > - For detailed bootstrapping mechanics and multi-runtime server setups, see [Aspectran Execution Environments Architecture](/en/docs/mechanisms/aspectran-execution-environments/).

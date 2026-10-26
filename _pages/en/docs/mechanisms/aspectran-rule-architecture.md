@@ -216,7 +216,7 @@ To avoid monolithic configuration files, the [`RuleAppender`](https://github.com
 </aspectran>
 ```
 
-> **Related Detailed Mechanisms**:
+> 🔍 **Related Detailed Mechanisms**
 > - For how rule objects are parsed and assembled into the live IoC container, see [ActivityContext Building Process](/en/docs/mechanisms/activity-context-building/).
 > - For the runtime lifecycle where assembled rules are executed per request, see [Aspectran Activity Architecture](/en/docs/mechanisms/aspectran-activities/).
 > - For the execution model of actions declared within translet rules, see [Aspectran Action Architecture](/en/docs/mechanisms/aspectran-actions/).

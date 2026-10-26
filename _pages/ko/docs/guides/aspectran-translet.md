@@ -118,7 +118,7 @@ public class UserApiController {
 
 위 예제 코드의 **(1)**을 보면, 경로 변수 `${userId}`는 이름이 동일한 `userId` 매개변수에 자동으로 타입 변환되어 주입됩니다. Aspectran은 별도의 어노테이션 없이도 매개변수 이름과 타입을 기반으로 경로 변수, 요청 파라미터, 빈 인스턴스를 지능적으로 주입합니다. 또한 메소드 인자에 `Translet` 타입을 선언하면 `Activity`가 현재 실행 중인 `Translet` 인스턴스를 주입해 줍니다.
 
-> **💡 `@Required` 어노테이션의 Deprecation과 `@NonNull` 표준화**
+> 💡 **`@Required` 어노테이션의 Deprecation과 `@NonNull` 표준화**
 > 
 > 과거 Aspectran에서는 필수 의존성 및 non-null 매개변수를 명시하기 위해 자체 `@Required` 어노테이션(`com.aspectran.core.component.bean.annotation.Required`)을 사용했습니다.
 > 

@@ -263,7 +263,7 @@ User user = (User)processResult.getResultValue("user");
 String city = (String)processResult.getResultValue("user.address.city");
 ```
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - 액션들이 실행되는 상위 수명주기 파이프라인은 [Aspectran 활동(Activities) 아키텍처](/ko/docs/mechanisms/aspectran-activities/) 문서를 참고하십시오.
 > - 액션 결과를 직렬화하여 클라이언트에 전송하는 방식은 [요청 및 응답 처리 메커니즘](/ko/docs/mechanisms/aspectran-request-response/) 문서를 참고하십시오.
 > - 액션을 구성하는 선언적 문법과 XML/APON 스키마 구조는 [Aspectran 규칙 아키텍처](/ko/docs/mechanisms/aspectran-rule-architecture/) 문서를 참고하십시오.

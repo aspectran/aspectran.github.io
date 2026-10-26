@@ -245,7 +245,7 @@ Aspectran은 패스워드 기반 암호화([`PBEncryptionUtils`](https://github.
   -Daspectran.encryption.password=MyMasterSecretKey!
   ```
 
-> **관련 세부 메커니즘**:
+> 🔍 **관련 세부 메커니즘**
 > - 환경 객체가 주입되는 전체 컨테이너 구조는 [ActivityContext: Aspectran 컨테이너의 심장부](/ko/docs/mechanisms/activity-context/) 문서를 참고하십시오.
 > - 환경 프로필이 컨텍스트 빌드 시점에 평가되는 절차는 [ActivityContext 빌드 과정](/ko/docs/mechanisms/activity-context-building/) 문서를 참고하십시오.
 > - 동적 속성 평가에 사용되는 표현식 및 토큰 시스템은 [Aspectran 규칙 아키텍처](/ko/docs/mechanisms/aspectran-rule-architecture/) 문서를 참고하십시오.

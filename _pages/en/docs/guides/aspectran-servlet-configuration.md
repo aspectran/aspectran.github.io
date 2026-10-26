@@ -86,9 +86,9 @@ The `param-value` specifies the path to the Aspectran configuration file. The pa
 </context-param>
 ```
 
-The content of the configuration file is written in APON (Aspectran Parameters Object Notation) format.
+The content of the configuration file is written in [APON (Aspectran Parameters Object Notation)](/en/docs/guides/introduce-apon/) format.
 
-> **APON (Aspectran Parameters Object Notation)**
+> 💡 **APON (Aspectran Parameters Object Notation)**\
 > A notation similar to JSON, developed for Aspectran to make it easy to write and read configuration values.
 
 ### 3.2. Main Configuration Parameters

@@ -114,7 +114,8 @@ Embeds the Aspectran engine as an in-process library within existing Java applic
     *   `EmbeddedAspectran` (implemented by `DefaultEmbeddedAspectran`): A high-level facade API providing intuitive calls to `translate()`, `render()`, `execute()`, and `getBean()`.
     *   `AspectranActivity`: Specialized lightweight `Activity` designed for programmatic invocations.
 
-> **Related Detailed Mechanisms**: For deeper insights into service lifecycles, bootstrapping sequences, and runtime entry points, refer to [Aspectran Service Architecture In-Depth](/en/docs/mechanisms/aspectran-services/) and [Aspectran Execution Environments In-Depth](/en/docs/mechanisms/aspectran-execution-environments/).
+> 🔍 **Related Detailed Mechanisms**\
+> For deeper insights into service lifecycles, bootstrapping sequences, and runtime entry points, refer to [Aspectran Service Architecture In-Depth](/en/docs/mechanisms/aspectran-services/) and [Aspectran Execution Environments In-Depth](/en/docs/mechanisms/aspectran-execution-environments/).
 
 ## 3. Environment Abstraction: Adapter Architecture
 
@@ -146,7 +147,8 @@ The table below illustrates how the four core contract interfaces are symmetrica
 2.  **Isolated and Fast Testing**: Rapid, fully isolated unit tests can be executed in memory using `AspectranRequestAdapter` and `AspectranResponseAdapter` without launching external servlet containers or binding network sockets.
 3.  **Frictionless Adaptation of New Runtimes**: When emerging protocols or transports arise (e.g., gRPC, RSocket), implementing the four core adapter contracts immediately integrates Aspectran's rich framework assets.
 
-> **Related Detailed Mechanisms**: For adapter lifecycles, the `adapt()` orchestration sequence, and environment-specific translation logic, refer to [Adapter Architecture: The Core of Environmental Independence](/en/docs/mechanisms/aspectran-adapters/).
+> 🔍 **Related Detailed Mechanisms**\
+> For adapter lifecycles, the `adapt()` orchestration sequence, and environment-specific translation logic, refer to [Adapter Architecture: The Core of Environmental Independence](/en/docs/mechanisms/aspectran-adapters/).
 
 ## 4. Core Container and Rule Pipeline
 
@@ -177,7 +179,8 @@ All application behavior blueprints are modeled as pure data objects (POJOs) kno
 *   **Execution & Control Rules**: `InvokeActionRule`, `TransformRule`, `DispatchRule`.
 *   **Ability Interfaces (`com.aspectran.core.context.rule.ability`)**: Contracts such as `HasActionRules` and `HasResponseRules` allow composite rules to be assembled in a type-safe manner.
 
-> **Related Detailed Mechanisms**: For detailed algorithms on the 4-stage build pipeline, refer to [ActivityContext Building Process: An In-Depth Analysis](/en/docs/mechanisms/activity-context-building/) and [ActivityContext: The Heart of Aspectran](/en/docs/mechanisms/activity-context/). For advanced streaming parsing, refer to [Aspectran Configuration Loading Mechanism](/en/docs/mechanisms/aspectran-loading-mechanism/) and [In-Depth Analysis of Aspectran Configuration Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/).
+> 🔍 **Related Detailed Mechanisms**\
+> For detailed algorithms on the 4-stage build pipeline, refer to [ActivityContext Building Process: An In-Depth Analysis](/en/docs/mechanisms/activity-context-building/) and [ActivityContext: The Heart of Aspectran](/en/docs/mechanisms/activity-context/). For advanced streaming parsing, refer to [Aspectran Configuration Loading Mechanism](/en/docs/mechanisms/aspectran-loading-mechanism/) and [In-Depth Analysis of Aspectran Configuration Rule Architecture](/en/docs/mechanisms/aspectran-rule-architecture/).
 
 ## 5. Execution Engine and End-to-End Request Processing Pipeline
 
@@ -227,7 +230,8 @@ The chronological sequence of component interactions from external request arriv
 7.  **Response Generation**: Executes `DispatchResponse` (view rendering) or `TransformResponse` (JSON/XML serialization) to write data directly into the `ResponseAdapter` output stream.
 8.  **AOP After/Finally Advice and Teardown**: Executes After and Finally advice, commits or rolls back transactions, updates sessions, clears `ThreadLocal` context, and cleans up logging group bindings.
 
-> **Related Detailed Mechanisms**: For state machine transitions and translet pipeline internals, refer to [Activity Architecture: The Execution Engine of Request Processing](/en/docs/mechanisms/aspectran-activities/), [Aspectran Actions: Concepts, Types, and Processing Results](/en/docs/mechanisms/aspectran-actions/), and [Request and Response Handling Mechanisms](/en/docs/mechanisms/aspectran-request-response/).
+> 🔍 **Related Detailed Mechanisms**\
+> For state machine transitions and translet pipeline internals, refer to [Activity Architecture: The Execution Engine of Request Processing](/en/docs/mechanisms/aspectran-activities/), [Aspectran Actions: Concepts, Types, and Processing Results](/en/docs/mechanisms/aspectran-actions/), and [Request and Response Handling Mechanisms](/en/docs/mechanisms/aspectran-request-response/).
 
 ## 6. Advanced System Services
 
@@ -261,7 +265,8 @@ Integrated with SLF4J and Logback, Aspectran provides an advanced logging archit
     *   **Undertow Environment**: `com.aspectran.undertow.server.handler.logging.PathBasedLoggingGroupHandlerWrapper` (and `PathBasedLoggingGroupHandler`)
 *   **Architectural Benefits**: Enables physical separation of log files for distinct applications or API path groups (e.g., `/petclinic/**`, `/jpetstore/**`) running within a single server instance.
 
-> **Related Detailed Mechanisms**: For AOP proxy creation, refer to [Aspectran AOP Proxy Mechanism](/en/docs/mechanisms/new-aop-proxy-mechanism/). For dynamic class loading and hot reloading, refer to [SiblingClassLoader In-Depth Analysis](/en/docs/mechanisms/aspectran-classloader/) and [Aspectran Automatic Reloading Mechanism In-Depth](/en/docs/mechanisms/aspectran-reloading-mechanism/). For multi-environment logging segregation, refer to [Aspectran Logging Mechanism](/en/docs/mechanisms/aspectran-logging-mechanism/).
+> 🔍 **Related Detailed Mechanisms**\
+> For AOP proxy creation, refer to [Aspectran AOP Proxy Mechanism](/en/docs/mechanisms/new-aop-proxy-mechanism/). For dynamic class loading and hot reloading, refer to [SiblingClassLoader In-Depth Analysis](/en/docs/mechanisms/aspectran-classloader/) and [Aspectran Automatic Reloading Mechanism In-Depth](/en/docs/mechanisms/aspectran-reloading-mechanism/). For multi-environment logging segregation, refer to [Aspectran Logging Mechanism](/en/docs/mechanisms/aspectran-logging-mechanism/).
 
 ## 7. Conclusion
 

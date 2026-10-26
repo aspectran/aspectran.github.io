@@ -40,7 +40,7 @@ java -Daspectran.profiles.active=prod,metrics -jar my-application.jar
     *   **구문**: `-Daspectran.profiles.base.{contextName}={profileName}`
     *   **예시**: `-Daspectran.profiles.base.appmon=gateway` (`appmon` 콘텍스트의 베이스 프로필로 `gateway`를 활성화)
 
-> **경고: 시스템 속성에 의한 덮어쓰기 동작**
+> ⚠️ **경고: 시스템 속성에 의한 덮어쓰기 동작**
 >
 > 만약 `aspectran-config.apon` 등에 베이스 프로필이 미리 정의되어 있더라도, 시스템 속성(`-Daspectran.profiles.base.{contextName}`)을 통해 프로필이 주입되면 기존 APON에 설정되어 있던 베이스 프로필 정보는 추가(Union)되는 것이 아니라 **완전히 무시되고 시스템 속성값으로 덮어쓰기(Override)** 됩니다.
 >
