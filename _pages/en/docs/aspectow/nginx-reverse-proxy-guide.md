@@ -34,7 +34,7 @@ This approach involves deploying each application as an independent server insta
 
 ## 3. Basic Reverse Proxy Setup (Single Server)
 
-First, here is a simple reverse proxy setup that connects to a single WAS instance.
+First, here is a basic reverse proxy setup that connects to a single WAS instance.
 
 ```nginx
 server {
@@ -47,12 +47,37 @@ server {
 
         # Standard proxy headers
         proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
     }
 }
 ```
+
+### Proxy Header Configuration and Defending Against IP Spoofing
+
+Proxy headers must be configured properly so that the WAS accurately recognizes the client's original request details (domain, protocol, and real IP address).
+
+- **`Host $host`**: Forwards the original host domain requested by the client.
+- **`X-Forwarded-For $remote_addr`**: Passes the client's actual remote IP address.
+- **`X-Forwarded-Proto $scheme`**: Passes the original protocol (`http` or `https`) used by the client. This is essential for the backend to generate secure redirects and absolute URLs.
+- **`X-Forwarded-Host $host` / `X-Forwarded-Port $server_port`**: Passes the original host and port number accessed by the client.
+
+#### Why `$remote_addr` is Recommended over `$proxy_add_x_forwarded_for`
+
+In older Nginx templates, `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;` was commonly used by convention. However, in an edge reverse proxy environment where Nginx directly receives external internet traffic, this creates a serious security vulnerability:
+
+1. **Client-Side IP Spoofing**: Malicious scanners or attackers can inject arbitrary headers into their requests, such as `X-Forwarded-For: 127.0.0.1` or internal private network IPs.
+2. **Deceptive Header Accumulation**: `$proxy_add_x_forwarded_for` appends the real socket IP after any existing client-supplied header, passing `127.0.0.1, [real_public_ip]` to the backend. If the backend WAS evaluates the first IP in the chain as the client IP, **the attacker can completely bypass IP-whitelist access controls (e.g., admin consoles) with a single forged header**.
+3. **Prevention via `$remote_addr`**: In an edge proxy environment, overwriting any incoming header with `$remote_addr` (the actual socket IP observed by Nginx) completely neutralizes header injection attacks.
+
+> 💡 **Note: When Behind Cloudflare, CDNs, or L7 Load Balancers**\
+> In a multi-hop architecture where a trusted upstream proxy (CDN/WAF) sits in front of Nginx, Nginx's socket `$remote_addr` will naturally be the upstream proxy's IP.
+> In this case, you should use Nginx's `ngx_http_realip_module` to register the trusted proxy CIDR ranges with `set_real_ip_from` and set `real_ip_header CF-Connecting-IP;` (or `X-Forwarded-For`). This restores Nginx's `$remote_addr` variable to the true visitor IP before forwarding `$remote_addr` to the backend.
+
+> 💡 **Note: Concerning the `X-Real-IP` Header**\
+> `X-Real-IP` is a non-standard header coined by the Nginx community. Most Java/WAS ecosystems (Aspectran, Undertow, Tomcat, Spring) adhere to the industry standard `X-Forwarded-For`. Passing `X-Forwarded-For $remote_addr;` alone is completely sufficient and eliminates redundant header overhead.
 
 ## 4. Core Setting for Aspectran: `X-Forwarded-Path`
 
@@ -66,11 +91,12 @@ location / {
     # Make the Aspectran app recognize the context path as if it were empty
     proxy_set_header X-Forwarded-Path /;
 
-    # --- Other standard headers ---
+    # Standard proxy headers
     proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Port $server_port;
 }
 ```
 
@@ -123,7 +149,7 @@ The choice of load balancing algorithm is directly related to Aspectran's sessio
 
 - **ip_hash**: A 'Sticky Session' method that sends requests from a specific client IP to the same server every time. If you are not using session clustering (`clusterEnabled: false`), you **must** use this method to maintain session integrity. Otherwise, sessions will be lost when `round-robin` forwards requests to a different server.
 
-> **Summary:**
+> 📌 **Summary**
 > - **`clusterEnabled: true` (Recommended):** Use `round-robin`.
 > - **`clusterEnabled: false`:** `ip_hash` is mandatory.
 
@@ -198,7 +224,7 @@ server {
 }
 ```
 
-> **Note: Considerations for MSA Environments**\
+> 💡 **Note: Considerations for MSA Environments**\
 > This configuration, as shown in [aspectow-demo](https://github.com/aspectran/aspectow-demo), is a practical example for resource-constrained environments.
 > In a real enterprise environment aiming for a Microservices Architecture (MSA), the standard principle is to configure each service (context) as a separate instance to be deployed, scaled, and managed independently.
 
@@ -238,11 +264,12 @@ server {
         # Core header for Aspectran
         proxy_set_header    X-Forwarded-Path    /;
 
-        # Standard proxy headers
+        # Standard proxy headers (overwriting with $remote_addr to prevent IP spoofing)
         proxy_set_header    Host                $host;
-        proxy_set_header    X-Real-IP           $remote_addr;
-        proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-For     $remote_addr;
         proxy_set_header    X-Forwarded-Proto   $scheme;
+        proxy_set_header    X-Forwarded-Host    $host;
+        proxy_set_header    X-Forwarded-Port    $server_port;
     }
 
     # Example of handling static resources directly

@@ -34,7 +34,7 @@ Nginx를 구성하기 전에, 어떤 배포 전략을 사용할지 결정해야 
 
 ## 3. 기본 리버스 프록시 설정 (단일 서버)
 
-가장 먼저, 단일 WAS 인스턴스에 연결하는 간단한 리버스 프록시 설정입니다.
+가장 먼저, 단일 WAS 인스턴스에 연결하는 기본 리버스 프록시 설정입니다.
 
 ```nginx
 server {
@@ -47,12 +47,37 @@ server {
 
         # 표준 프록시 헤더 설정
         proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Port $server_port;
     }
 }
 ```
+
+### 프록시 헤더 설정과 IP 스푸핑(Spoofing) 방어
+
+WAS가 클라이언트의 원본 요청 정보(도메인, 프로토콜, 실제 IP)를 정확하게 인지할 수 있도록 프록시 헤더를 올바르게 구성해야 합니다.
+
+- **`Host $host`**: 클라이언트가 요청한 원본 호스트 도메인을 백엔드로 전달합니다.
+- **`X-Forwarded-For $remote_addr`**: 클라이언트의 실제 IP 주소를 전달합니다.
+- **`X-Forwarded-Proto $scheme`**: 클라이언트가 요청에 사용한 프로토콜(`http` 또는 `https`)을 전달합니다. 백엔드에서 보안 리다이렉트나 절대 경로 URL을 생성할 때 필수적입니다.
+- **`X-Forwarded-Host $host` / `X-Forwarded-Port $server_port`**: 클라이언트가 접속한 원래의 호스트 및 포트 번호를 전달합니다.
+
+#### `$proxy_add_x_forwarded_for` 대신 `$remote_addr`를 권장하는 이유
+
+인터넷에 널리 퍼진 예전 Nginx 템플릿에서는 관행적으로 `proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;`를 사용해 왔습니다. 하지만 Nginx가 인터넷 최전방(Edge)에서 외부 접속을 직접 수신하는 단독 서버 환경에서는 심각한 보안 문제를 일으킬 수 있습니다:
+
+1. **외부 클라이언트의 IP 위조(Spoofing)**: 악의적인 스캐너나 공격자가 HTTP 요청 시 임의로 `X-Forwarded-For: 127.0.0.1` 또는 사내망 IP를 조작하여 전송할 수 있습니다.
+2. **헤더 누적으로 인한 오인**: `$proxy_add_x_forwarded_for`는 클라이언트가 보낸 기존 헤더 뒤에 실제 접속 IP를 덧붙여 `127.0.0.1, [실제공인IP]` 형태로 백엔드에 전달합니다. 백엔드(WAS)가 첫 번째 IP를 클라이언트 IP로 간주할 경우, **헤더 조작만으로 관리자 페이지 IP 화이트리스트 접근 제어가 무력화**될 수 있습니다.
+3. **`$remote_addr`로 원천 차단**: 최전방 프록시 환경에서는 외부 요청 헤더를 덮어쓰고 Nginx 소켓의 실제 연결 IP인 `$remote_addr`만 전달함으로써 가짜 IP 헤더 주입 공격을 완벽하게 방어할 수 있습니다.
+
+> 💡 **참고: Cloudflare, CDN 또는 L7 로드밸런서가 앞단에 있는 경우**\
+> Nginx 앞단에 신뢰할 수 있는 상위 프록시(CDN/WAF)가 위치한 다단 프록시 구조라면, Nginx 소켓의 `$remote_addr`는 상위 프록시 IP가 됩니다.
+> 이 경우에는 Nginx의 `ngx_http_realip_module`을 사용하여 상위 프록시 IP 대역을 `set_real_ip_from`에 등록하고, `real_ip_header CF-Connecting-IP;` (또는 `X-Forwarded-For`)를 설정하여 Nginx의 `$remote_addr` 변수를 실제 방문자 IP로 복원한 뒤 백엔드에 전달하는 것이 정석입니다.
+
+> 💡 **참고: `X-Real-IP` 헤더에 대하여**\
+> `X-Real-IP`는 Nginx 커뮤니티에서 만들어 쓴 비표준 헤더입니다. Aspectran, Undertow, Tomcat, Spring 등 대부분의 Java/WAS 생태계는 글로벌 표준인 `X-Forwarded-For`를 기본으로 인식하므로, `X-Forwarded-For $remote_addr;` 하나만 전달하면 충분하며 불필요한 헤더 중복을 제거할 수 있습니다.
 
 ## 4. Aspectran을 위한 핵심 설정: `X-Forwarded-Path`
 
@@ -66,11 +91,12 @@ location / {
     # Aspectran 앱에게는 컨텍스트 경로가 없는 것처럼 인식시킴
     proxy_set_header X-Forwarded-Path /;
 
-    # --- 기타 표준 헤더 ---
+    # 표준 프록시 헤더
     proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-For $remote_addr;
     proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Port $server_port;
 }
 ```
 
@@ -123,7 +149,7 @@ server {
 
 - **ip_hash**: 클라이언트의 IP 주소를 기반으로 특정 서버에만 요청을 보내는 'Sticky Session' 방식입니다. 만약 `clusterEnabled: false`로 세션 클러스터링을 사용하지 않는다면, 세션 유지를 위해 반드시 이 방식을 사용해야 합니다. 그렇지 않으면 `round-robin`으로 요청이 다른 서버에 전달될 때 세션을 잃게 됩니다.
 
-> **요약:**
+> 📌 **요약**
 > - **`clusterEnabled: true` (권장):** `round-robin` 사용.
 > - **`clusterEnabled: false`:** `ip_hash` 사용 필수.
 
@@ -198,7 +224,7 @@ server {
 }
 ```
 
-> **참고: MSA 환경에서의 고려사항**\
+> 💡 **참고: MSA 환경에서의 고려사항**\
 > [aspectow-demo](https://github.com/aspectran/aspectow-demo)에서 보여주는 이 구성은 리소스 제약 환경을 위한 실용적인 예시입니다.
 > 실제 엔터프라이즈 환경에서 마이크로서비스 아키텍처(MSA)를 지향한다면, 각 서비스(컨텍스트)는 독립적으로 배포, 확장, 관리될 수 있도록 별도의 인스턴스로 구성하는 것이 일반적인 원칙입니다.
 
@@ -238,11 +264,12 @@ server {
         # Aspectran을 위한 핵심 헤더
         proxy_set_header    X-Forwarded-Path    /;
 
-        # 표준 프록시 헤더
+        # 표준 프록시 헤더 (IP 스푸핑 방지를 위해 $remote_addr 로 덮어쓰기)
         proxy_set_header    Host                $host;
-        proxy_set_header    X-Real-IP           $remote_addr;
-        proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-For     $remote_addr;
         proxy_set_header    X-Forwarded-Proto   $scheme;
+        proxy_set_header    X-Forwarded-Host    $host;
+        proxy_set_header    X-Forwarded-Port    $server_port;
     }
 
     # 정적 리소스 직접 처리 예시
