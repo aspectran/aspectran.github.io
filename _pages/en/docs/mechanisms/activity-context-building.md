@@ -27,14 +27,14 @@ sequenceDiagram
 
     Svc->>Builder: build() invoked
 
-    rect rgb(240, 245, 255)
+    rect rgba(0, 122, 255, 0.15)
     Note over Builder,Loader: Phase 1: Infrastructure Provisioning
     Builder->>Loader: createSiblingClassLoader() (Create isolated classloader)
     Builder->>Builder: createEnvironmentProfiles() (Determine active profiles)
     Builder->>Context: new RuleParsingContext(classLoader, adapter, profiles)
     end
 
-    rect rgb(245, 255, 240)
+    rect rgba(40, 167, 69, 0.15)
     Note over Builder,Parser: Phase 2: Declarative Rule Parsing & Component Scanning
     Builder->>Context: beanRuleRegistry.scanConfigurableBeans(basePackages)
     Builder->>Parser: parse(contextRules / parameters)
@@ -42,7 +42,7 @@ sequenceDiagram
     Parser-->>Builder: Collect monitored files (appendedRuleFiles)
     end
 
-    rect rgb(255, 250, 240)
+    rect rgba(245, 158, 11, 0.15)
     Note over Builder,Validator: Phase 3: Static Analysis & Strict Validation
     Builder->>Validator: beanReferenceInspector.inspect(beanRuleRegistry)
     Note over Validator: Verify bean reference integrity & prevent circular dependencies
@@ -50,14 +50,14 @@ sequenceDiagram
     Builder->>Validator: aspectRuleValidator.validate(ruleParsingContext)
     end
 
-    rect rgb(255, 245, 245)
+    rect rgba(239, 68, 68, 0.15)
     Note over Builder,AC: Phase 4: Context Assembly & Instantiation
     Builder->>AC: new DefaultActivityContext(...)
     Builder->>AC: setEnvironment(ActivityEnvironment)
     Builder->>AC: Inject 5 Subsystem Registries & TemplateRenderer
     end
 
-    rect rgb(250, 240, 255)
+    rect rgba(139, 92, 246, 0.15)
     Note over Builder,Svc: Phase 5: Initialization & Lifecycle Binding
     alt MasterService Present (Standard Runtime)
         Builder->>Builder: startContextReloadingTimer(appendedRuleFiles)

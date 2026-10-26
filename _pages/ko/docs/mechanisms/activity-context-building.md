@@ -27,14 +27,14 @@ sequenceDiagram
 
     Svc->>Builder: build() 호출
 
-    rect rgb(240, 245, 255)
+    rect rgba(0, 122, 255, 0.15)
     Note over Builder,Loader: 1단계: 인프라 프로비저닝
     Builder->>Loader: createSiblingClassLoader() (격리 클래스로더 생성)
     Builder->>Builder: createEnvironmentProfiles() (활성 프로필 결정)
     Builder->>Context: new RuleParsingContext(classLoader, adapter, profiles)
     end
 
-    rect rgb(245, 255, 240)
+    rect rgba(40, 167, 69, 0.15)
     Note over Builder,Parser: 2단계: 선언적 규칙 파싱 & 컴포넌트 스캔
     Builder->>Context: beanRuleRegistry.scanConfigurableBeans(basePackages)
     Builder->>Parser: parse(contextRules / parameters)
@@ -42,7 +42,7 @@ sequenceDiagram
     Parser-->>Builder: 감시 대상 파일 목록(appendedRuleFiles) 수집
     end
 
-    rect rgb(255, 250, 240)
+    rect rgba(245, 158, 11, 0.15)
     Note over Builder,Validator: 3단계: 정적 분석 & 엄격한 유효성 검증
     Builder->>Validator: beanReferenceInspector.inspect(beanRuleRegistry)
     Note over Validator: 빈 참조 정합성 검사 및 순환 의존성(Circular Dependency) 방지
@@ -50,14 +50,14 @@ sequenceDiagram
     Builder->>Validator: aspectRuleValidator.validate(ruleParsingContext)
     end
 
-    rect rgb(255, 245, 245)
+    rect rgba(239, 68, 68, 0.15)
     Note over Builder,AC: 4단계: 컨텍스트 조립 & 인스턴스화
     Builder->>AC: new DefaultActivityContext(...)
     Builder->>AC: setEnvironment(ActivityEnvironment)
     Builder->>AC: 레지스트리 5종 및 TemplateRenderer 주입
     end
 
-    rect rgb(250, 240, 255)
+    rect rgba(139, 92, 246, 0.15)
     Note over Builder,Svc: 5단계: 초기화 & 라이프사이클 결속
     alt MasterService 존재 시 (표준 런타임)
         Builder->>Builder: startContextReloadingTimer(appendedRuleFiles)
