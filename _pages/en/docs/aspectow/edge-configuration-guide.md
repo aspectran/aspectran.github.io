@@ -813,7 +813,8 @@ Calling `sessionListenerRegistration.register(listener)` in Java code registers 
 
 Retrieve the target [`SessionManager`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionManager.java) from the `NettyServer` bean (`SessionManagerProvider`) via `nettyServer.getSessionManager()` and attach the listener directly with `sessionManager.addSessionListener(listener)`.
 
-> **Note:** For complete details on `SessionManagerConfig` lifecycle tuning, crawler/bot phantom session mitigation, `NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
+> 💡 **Note**\
+> For complete details on `SessionManagerConfig` lifecycle tuning, crawler/bot phantom session mitigation, `NonPersistent` attributes, and distributed Redis failover, consult the **[`Aspectran Session Manager Guide`](/en/docs/guides/aspectran-session-manager/)**.
 
 ### 5.5. Console Management Context (`netty-context-console.xml`)
 
