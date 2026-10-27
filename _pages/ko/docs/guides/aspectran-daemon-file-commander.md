@@ -101,7 +101,7 @@ public class MaintenanceModeCommand extends AbstractCommand {
 ```
 
 ### Step 2: 데몬 설정 등록
-`aspectran-config.apon` 파일에 구현한 클래스를 등록합니다. 데몬 설정에 대한 상세 내용은 [데몬 애플리케이션 설정 (daemon)](https://aspectran.com/ko/docs/guides/aspectran-configuration/) 섹션을 참고하시기 바랍니다.
+`aspectran-config.apon` 파일에 구현한 클래스를 등록합니다. 데몬 설정에 대한 상세 내용은 [데몬 애플리케이션 설정 (daemon)](/ko/docs/guides/aspectran-configuration/) 섹션을 참고하시기 바랍니다.
 
 ```apon
 daemon: {

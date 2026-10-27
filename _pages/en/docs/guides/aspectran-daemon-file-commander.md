@@ -101,7 +101,7 @@ public class MaintenanceModeCommand extends AbstractCommand {
 ```
 
 ### Step 2: Registration
-Register the implemented class in the `aspectran-config.apon` file. For details on daemon configuration, please refer to the [Daemon Application Configuration (daemon)](https://aspectran.com/en/docs/guides/aspectran-configuration/) section.
+Register the implemented class in the `aspectran-config.apon` file. For details on daemon configuration, please refer to the [Daemon Application Configuration (daemon)](/en/docs/guides/aspectran-configuration/) section.
 
 ```apon
 daemon: {

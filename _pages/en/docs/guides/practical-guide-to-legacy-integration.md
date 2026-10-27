@@ -11,7 +11,8 @@ Existing legacy systems often face challenges when integrating with applications
 
 The `aspectran-utils-legacy` module acts as a Compatibility Layer to support seamless API calls and response processing between legacy systems using Java versions from JDK 1.6 to JDK 17, and modern Aspectran application servers running on JDK 21 or higher. This module provides utility functions necessary for communication with modern Aspectran servers in a legacy environment, helping to integrate without extensive modifications to existing code.
 
-**Note:** For systems using JDK 21 or higher, there is no need to use the separate `aspectran-utils-legacy` module; you can directly use the standard `aspectran-utils` module.
+> 💡 **Note**\
+> For systems using JDK 21 or higher, there is no need to use the separate `aspectran-utils-legacy` module; you can directly use the standard `aspectran-utils` module.
 
 ## Key Features and Benefits
 

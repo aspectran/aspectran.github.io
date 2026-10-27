@@ -48,7 +48,8 @@ timeout: 30 # 30 seconds
 color: "#FF5733"
 ```
 
-**Note:** APON comments are **line-end comments**. When listing multiple items on one line, such as in the `SINGLE_LINE` style, if a `#` is inserted, all content following it is considered a comment and ignored.
+> 💡 **Note**\
+> APON comments are **line-end comments**. When listing multiple items on one line, such as in the `SINGLE_LINE` style, if a `#` is inserted, all content following it is considered a comment and ignored.
 
 ### Parameter (Single Value)
 
@@ -281,7 +282,7 @@ public class TransletParameters extends DefaultParameters {
         action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
                 ActionParameters.class, true, true);
     }
-    
+
     // ...
 }
 ```

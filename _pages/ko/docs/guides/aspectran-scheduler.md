@@ -15,8 +15,8 @@ Aspectran Scheduler의 가장 중요한 특징은 **Quartz 스케줄러 기반�
 
 Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합니다.
 
-1.  **XML/APON 기반 설정**: 전통적이고 명시적인 방법으로, 모든 규칙을 설정 파일에 정의합니다.
-2.  **어노테이션 기반 설정**: Java 클래스 내에서 어노테이션을 사용하여 스케줄링 규칙을 직접 정의하는 현대적인 방법입니다.
+1. **XML/APON 기반 설정**: 전통적이고 명시적인 방법으로, 모든 규칙을 설정 파일에 정의합니다.
+2. **어노테이션 기반 설정**: Java 클래스 내에서 어노테이션을 사용하여 스케줄링 규칙을 직접 정의하는 현대적인 방법입니다.
 
 ### 방법 1: XML/APON 기반 설정
 
@@ -36,8 +36,9 @@ Aspectran은 스케줄러를 설정하는 두 가지 주요 방법을 제공합�
 </bean>
 ```
 
-> **Quartz 속성 설정**
-> 스레드 풀(threadPool), 잡 스토어(jobStore) 등 Quartz 스케줄러의 세부 동작은 매우 다양한 속성을 통해 제어할 수 있습니다. 모든 속성에 대한 자세한 내용은 **[Quartz 공식 설정 문서](http://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/)**를 참고하시기 바랍니다.
+> 💡 **Quartz 속성 설정**
+>
+> 스레드 풀(`threadPool`), 잡 스토어(`jobStore`) 등 Quartz 스케줄러의 세부 동작은 매우 다양한 속성을 통해 제어할 수 있습니다. 모든 속성에 대한 자세한 내용은 [Quartz 공식 설정 문서](http://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/)를 참고하시기 바랍니다.
 
 #### 2단계: `<schedule>` 규칙 정의하기
 
@@ -103,10 +104,10 @@ public class AnnotatedScheduledTasks {
 }
 ```
 
--   **`@Schedule`**: 클래스 레벨에 붙여 스케줄 규칙을 정의합니다. `id`, `scheduler` 빈 이름, 트리거(`cronTrigger` 또는 `simpleTrigger`), 그리고 실행할 `jobs` 배열을 속성으로 가집니다.
--   **`@Job`**: `@Schedule`의 `jobs` 속성 내에서 실행할 Translet을 지정합니다.
--   **`@Request`**: `@Job`에 지정된 `translet` 이름을 처리하는 실제 메소드를 정의합니다. 즉, 이 메소드가 스케줄링된 작업의 본체가 됩니다.
--   **`@Bean` 메소드**: `@Schedule`의 `scheduler` 속성에서 참조할 Quartz `Scheduler` 인스턴스를 생성하여 빈으로 등록합니다.
+- **`@Schedule`**: 클래스 레벨에 붙여 스케줄 규칙을 정의합니다. `id`, `scheduler` 빈 이름, 트리거(`cronTrigger` 또는 `simpleTrigger`), 그리고 실행할 `jobs` 배열을 속성으로 가집니다.
+- **`@Job`**: `@Schedule`의 `jobs` 속성 내에서 실행할 Translet을 지정합니다.
+- **`@Request`**: `@Job`에 지정된 `translet` 이름을 처리하는 실제 메소드를 정의합니다. 즉, 이 메소드가 스케줄링된 작업의 본체가 됩니다.
+- **`@Bean` 메소드**: `@Schedule`의 `scheduler` 속성에서 참조할 Quartz `Scheduler` 인스턴스를 생성하여 빈으로 등록합니다.
 
 ### 트리거(Trigger) 타입 상세 설명
 
@@ -116,56 +117,64 @@ public class AnnotatedScheduledTasks {
 
 `simple` 트리거는 "지금부터 10초 후에 시작해서, 1시간마다, 총 5번 실행"과 같이 단순한 간격으로 작업을 반복할 때 사용합니다. 특정 간격으로 정해진 횟수만큼 또는 무한히 작업을 반복하는 데 가장 적합합니다.
 
--   **주요 속성:**
-    -   `startDelaySeconds`: 스케줄러가 시작된 후, 첫 실행을 지연할 시간 (초 단위)
-    -   `intervalInSeconds`, `intervalInMinutes`, `intervalInHours`: 반복할 시간 간격
-    -   `repeatCount`: 첫 실행 후 추가로 반복할 횟수 (`-1`은 무한 반복)
-    -   `repeatForever`: `true`로 설정 시 무한 반복
+**주요 속성:**
 
--   **예제 (XML):** 1시간마다 무한히 반복
-    ```xml
-    <trigger type="simple">
-        startDelaySeconds: 10
-        intervalInHours: 1
-        repeatForever: true
-    </trigger>
-    ```
+| 속성명 | 설명 |
+| :--- | :--- |
+| `startDelaySeconds` | 스케줄러가 시작된 후, 첫 실행을 지연할 시간 (초 단위) |
+| `intervalInSeconds` | 초 단위 반복 시간 간격 |
+| `intervalInMinutes` | 분 단위 반복 시간 간격 |
+| `intervalInHours` | 시간 단위 반복 시간 간격 |
+| `repeatCount` | 첫 실행 후 추가로 반복할 횟수 (`-1`은 무한 반복) |
+| `repeatForever` | `true`로 설정 시 무한 반복 |
 
--   **예제 (어노테이션):** 5분 후에 시작하여, 30초 간격으로 총 10번 실행
-    ```java
-    @Schedule(
-        // ...
-        simpleTrigger = @SimpleTrigger(
-            startDelaySeconds = 300,
-            intervalInSeconds = 30,
-            repeatCount = 9 // 최초 1회 실행 + 9회 반복 = 총 10회
-        )
-        // ...
-    )
-    ```
+- **예제 (XML):** 1시간마다 무한히 반복
+  ```xml
+  <trigger type="simple">
+      startDelaySeconds: 10
+      intervalInHours: 1
+      repeatForever: true
+  </trigger>
+  ```
+
+- **예제 (어노테이션):** 5분 후에 시작하여, 30초 간격으로 총 10번 실행
+  ```java
+  @Schedule(
+      // ...
+      simpleTrigger = @SimpleTrigger(
+          startDelaySeconds = 300,
+          intervalInSeconds = 30,
+          repeatCount = 9 // 최초 1회 실행 + 9회 반복 = 총 10회
+      )
+      // ...
+  )
+  ```
 
 #### `cron` 트리거: 시간표 기반 예약
 
 `cron` 트리거는 "매주 금요일 오후 5시 30분" 또는 "매달 마지막 날 새벽 1시"와 같이 달력과 연관된 복잡한 시간표에 따라 작업을 실행할 때 사용합니다. 이는 강력한 **Cron 표현식**을 기반으로 동작하여 매우 유연하고 강력한 스케줄링을 제공합니다.
 
--   **주요 속성:**
-    -   `expression`: 실행 시간표를 정의하는 Cron 표현식 문자열.
+**주요 속성:**
 
--   **예제 (XML):** 매일 밤 11시 50분에 실행
-    ```xml
-    <trigger type="cron">
-        expression: 0 50 23 * * ?
-    </trigger>
-    ```
+| 속성명 | 설명 |
+| :--- | :--- |
+| `expression` | 실행 시간표를 정의하는 Cron 표현식 문자열 |
 
--   **예제 (어노테이션):** 매주 월요일부터 금요일까지, 오전 9시 30분에 실행
-    ```java
-    @Schedule(
-        // ...
-        cronTrigger = @CronTrigger(expression = "0 30 9 ? * MON-FRI")
-        // ...
-    )
-    ```
+- **예제 (XML):** 매일 밤 11시 50분에 실행
+  ```xml
+  <trigger type="cron">
+      expression: 0 50 23 * * ?
+  </trigger>
+  ```
+
+- **예제 (어노테이션):** 매주 월요일부터 금요일까지, 오전 9시 30분에 실행
+  ```java
+  @Schedule(
+      // ...
+      cronTrigger = @CronTrigger(expression = "0 30 9 ? * MON-FRI")
+      // ...
+  )
+  ```
 
 ### 오작동 정책(Misfire Policy): 누락된 실행 처리
 
@@ -175,8 +184,8 @@ public class AnnotatedScheduledTasks {
 
 트리거가 실제로 '오작동(misfire)'했는지 여부는 `org.quartz.jobStore.misfireThreshold` 속성(밀리초 단위)에 의해 결정됩니다. 이 임계값은 스케줄러가 트리거의 실행 지연을 허용하는 **'유예 기간'**을 의미합니다.
 
--   **임계값 이내:** 현재 시간이 예정된 실행 시간으로부터 임계값 이내라면, 스케줄러는 오작동 정책을 적용하지 않고 가능한 한 빨리 트리거를 실행합니다.
--   **임계값 초과:** 지연 시간이 임계값을 초과하면 트리거는 공식적으로 '오작동'으로 간주되며, 이때 설정된 `misfirePolicy`가 적용됩니다.
+- **임계값 이내:** 현재 시간이 예정된 실행 시간으로부터 임계값 이내라면, 스케줄러는 오작동 정책을 적용하지 않고 가능한 한 빨리 트리거를 실행합니다.
+- **임계값 초과:** 지연 시간이 임계값을 초과하면 트리거는 공식적으로 '오작동'으로 간주되며, 이때 설정된 `misfirePolicy`가 적용됩니다.
 
 Quartz의 기본값은 60,000밀리초(1분)입니다. 스케줄러 빈 설정의 `quartzProperties`에서 이 값을 조정할 수 있습니다:
 
@@ -192,38 +201,42 @@ Quartz의 기본값은 60,000밀리초(1분)입니다. 스케줄러 빈 설정�
 
 #### `cron` 트리거에서 사용 가능한 정책
 
--   `ignoreMisfires`: 누락된 모든 실행을 즉시 실행합니다.
--   `smartPolicy` (기본값): 누락된 실행 중 첫 번째 것만 즉시 실행하고 나머지는 폐기합니다. (`fireOnceNow`와 동일)
--   `fireOnceNow`: 누락된 실행 중 첫 번째 것만 즉시 실행하고 나머지는 폐기합니다.
--   `doNothing`: 누락된 모든 실행을 폐기하고 다음 예정된 시간까지 대기합니다.
+| 정책명 | 기본 여부 | 동작 설명 |
+| :--- | :---: | :--- |
+| `smartPolicy` | **기본값** | 누락된 실행 중 첫 번째 것만 즉시 실행하고 나머지는 폐기합니다 (`fireOnceNow`와 동일). |
+| `fireOnceNow` | - | 누락된 실행 중 첫 번째 것만 즉시 실행하고 나머지는 폐기합니다. |
+| `doNothing` | - | 누락된 모든 실행을 폐기하고 다음 예정된 시간까지 대기합니다. |
+| `ignoreMisfires` | - | 누락된 모든 실행을 즉시 실행합니다. |
 
 #### `simple` 트리거에서 사용 가능한 정책
 
--   `ignoreMisfires`: 누락된 모든 실행을 가능한 한 빨리 실행합니다.
--   `smartPolicy` (기본값):
-    -   고정 반복(Fixed Repeat)인 경우: `rescheduleNowWithExistingRepeatCount`와 동일.
-    -   무한 반복(Infinite Repeat)인 경우: `rescheduleNextWithRemainingCount`와 동일.
--   `fireNow`: 누락된 첫 번째 실행을 즉시 수행하고 나머지는 폐기합니다.
--   `rescheduleNowWithExistingRepeatCount`: 즉시 재실행하며, 남은 반복 횟수는 유지됩니다.
--   `rescheduleNowWithRemainingRepeatCount`: 즉시 재실행하지만, 첫 번째 누락분이 반복 횟수에 포함됩니다.
--   `rescheduleNextWithExistingCount`: 다음 예정된 시간까지 대기하며, 남은 반복 횟수는 유지됩니다.
--   `rescheduleNextWithRemainingCount`: 누락된 실행을 모두 폐기하고 다음 예정된 시간까지 대기합니다.
+| 정책명 | 기본 여부 | 동작 설명 |
+| :--- | :---: | :--- |
+| `smartPolicy` | **기본값** | 반복 유형에 따라 자동 결정됩니다.<br>• **고정 반복(Fixed Repeat)**: `rescheduleNowWithExistingRepeatCount`와 동일<br>• **무한 반복(Infinite Repeat)**: `rescheduleNextWithRemainingCount`와 동일 |
+| `fireNow` | - | 누락된 첫 번째 실행을 즉시 수행하고 나머지는 폐기합니다. |
+| `rescheduleNowWithExistingRepeatCount` | - | 즉시 재실행하며, 남은 반복 횟수는 유지됩니다. |
+| `rescheduleNowWithRemainingRepeatCount` | - | 즉시 재실행하지만, 첫 번째 누락분이 반복 횟수에 포함됩니다. |
+| `rescheduleNextWithExistingCount` | - | 다음 예정된 시간까지 대기하며, 남은 반복 횟수는 유지됩니다. |
+| `rescheduleNextWithRemainingCount` | - | 누락된 실행을 모두 폐기하고 다음 예정된 시간까지 대기합니다. |
+| `ignoreMisfires` | - | 누락된 모든 실행을 가능한 한 빨리 실행합니다. |
 
 #### 설정 예제
-    ```xml
-    <trigger type="cron">
-        expression: 0 0 2 * * ?
-        misfirePolicy: doNothing
-    </trigger>
-    ```
 
--   **예제 (어노테이션):**
-    ```java
-    @CronTrigger(
-        expression = "0 0 2 * * ?",
-        misfirePolicy = MisfirePolicy.DO_NOTHING
-    )
-    ```
+- **예제 (XML):**
+  ```xml
+  <trigger type="cron">
+      expression: 0 0 2 * * ?
+      misfirePolicy: doNothing
+  </trigger>
+  ```
+
+- **예제 (어노테이션):**
+  ```java
+  @CronTrigger(
+      expression = "0 0 2 * * ?",
+      misfirePolicy = MisfirePolicy.DO_NOTHING
+  )
+  ```
 
 ## 3. 스케줄 잡 로깅 및 모니터링
 
@@ -249,9 +262,13 @@ public String count() {
 ```
 
 성공 로그에는 다음과 같이 `response` 필드가 포함됩니다:
-`DEBUG ... SUCCESS {group=countSchedule, name=test/schedule/count.job, ..., response=Count: 1}`
 
-> 💡 **로그 가독성을 위한 팁**\
+```log
+DEBUG ... SUCCESS {group=countSchedule, name=test/schedule/count.job, ..., response=Count: 1}
+```
+
+> 💡 **로그 가독성을 위한 팁**
+>
 > Translet은 다양한 응답 형식을 지원하지만, 로그 메시지의 가독성을 유지하고 효율적인 로그 관리를 위해 **`FormatType.TEXT`**와 같은 간결한 텍스트 형식을 사용하는 것이 좋습니다.
 
 ### Logback 설정 예제
@@ -306,17 +323,19 @@ public String count() {
 
 Aspectran은 스케줄 작업 실행 직전, Redis에 아주 짧은 시간(TTL) 동안 해당 스케줄 고유의 락 키(Lock Key)를 생성하여 선점권을 확인합니다.
 
-1.  **락 획득 시도**: 작업을 수행하려는 노드는 Redis의 `SET NX` 기능을 사용하여 락 획득을 시도합니다.
-2.  **작업 실행**: 가장 먼저 실행 시점에 도달하여 락을 획득한 노드만 실제 작업을 수행합니다.
-3.  **실행 스킵**: 락 획득에 실패한 나머지 노드들은 해당 주기에서 작업을 자동으로 건너뜁니다.
-4.  **안전성 보장**: 작업 도중 노드가 비정상 종료되더라도, 락에 설정된 만료 시간(Expiration)이 지나면 자동으로 해제되어 다음 주기에서 다른 노드가 작업을 이어받을 수 있습니다.
+1. **락 획득 시도**: 작업을 수행하려는 노드는 Redis의 `SET NX` 기능을 사용하여 락 획득을 시도합니다.
+2. **작업 실행**: 가장 먼저 실행 시점에 도달하여 락을 획득한 노드만 실제 작업을 수행합니다.
+3. **실행 스킵**: 락 획득에 실패한 나머지 노드들은 해당 주기에서 작업을 자동으로 건너뜁니다.
+4. **안전성 보장**: 작업 도중 노드가 비정상 종료되더라도, 락에 설정된 만료 시간(Expiration)이 지나면 자동으로 해제되어 다음 주기에서 다른 노드가 작업을 이어받을 수 있습니다.
 
 ### `isolated` 속성을 통한 실행 제어
 
 스케줄링 규칙에는 해당 작업이 분산 대상인지, 아니면 각 노드마다 독립적으로 항상 실행되어야 하는지를 결정하는 `isolated` 속성이 있습니다.
 
--   **`isolated="false"` (기본값)**: 클러스터 전역에서 **단 하나의 노드**만 작업을 수행합니다. (분산 락 적용 대상)
--   **`isolated="true"`**: 클러스터 상태와 관계없이 **모든 노드**가 각자 정해진 시간에 작업을 수행합니다. 시스템 로그 수집이나 로컬 캐시 갱신과 같은 작업에 적합합니다.
+| 설정값 | 모드 | 동작 방식 | 권장 용도 |
+| :--- | :---: | :--- | :--- |
+| `isolated="false"` | 분산 모드<br>*(기본값)* | 클러스터 전역에서 **단 하나의 노드**만 작업을 선점하여 실행 (분산 락 적용) | 일배치, 리포트 생성, DB 동기화 |
+| `isolated="true"` | 격리 모드 | 클러스터 상태와 무관하게 **모든 노드**가 각자 정해진 시간에 독립 실행 | 로컬 캐시 갱신, 노드별 로그 수집 |
 
 > ⚠️ **분산 락 적용 시 트리거 유형별 제약사항 (중요)**
 >
@@ -330,15 +349,15 @@ Aspectran은 스케줄 작업 실행 직전, Redis에 아주 짧은 시간(TTL) 
 
 Aspectran Console은 클러스터 전역의 스케줄러를 한눈에 파악하고 조작할 수 있는 **Scheduler Manager** 화면을 제공합니다.
 
--   **통합 뷰**: 클러스터 내 모든 노드의 스케줄러 상태와 활성 잡 목록을 실시간으로 확인합니다.
--   **동적 스위칭**: 애플리케이션 재배포 없이 특정 스케줄이나 개별 잡을 즉시 활성화(Enable)하거나 비활성화(Disable)할 수 있습니다.
--   **상태 가시성**: 분산 락 기능이 정상적으로 작동하고 있는지, 어떤 노드에 연결되어 있는지를 시각적으로 보여줍니다.
+- **통합 뷰**: 클러스터 내 모든 노드의 스케줄러 상태와 활성 잡 목록을 실시간으로 확인합니다.
+- **동적 스위칭**: 애플리케이션 재배포 없이 특정 스케줄이나 개별 잡을 즉시 활성화(Enable)하거나 비활성화(Disable)할 수 있습니다.
+- **상태 가시성**: 분산 락 기능이 정상적으로 작동하고 있는지, 어떤 노드에 연결되어 있는지를 시각적으로 보여줍니다.
 
 ## 5. 전체 설정 예제 및 참고 자료
 
 Aspectran 스케줄러를 실제로 어떻게 구성하고 사용하는지에 대한 완전한 예제는 다음 GitHub 프로젝트에서 확인하실 수 있습니다. 이 프로젝트는 이 문서에서 설명한 모든 개념을 실제로 구현한 좋은 참고 자료입니다.
 
--   **Aspectran Scheduler 예제 프로젝트**: [https://github.com/aspectran/gs-scheduler](https://github.com/aspectran/gs-scheduler)
+- **Aspectran Scheduler 예제 프로젝트**: [https://github.com/aspectran/gs-scheduler](https://github.com/aspectran/gs-scheduler)
 
 ## 6. 결론
 

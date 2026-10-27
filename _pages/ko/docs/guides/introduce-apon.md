@@ -111,7 +111,7 @@ city: New York
 
 ### 배열 (Array)
 
-배열은 대괄호(`[ ]`) 안에 여러 값을 넣어 표현합니다. 
+배열은 대괄호(`[ ]`) 안에 여러 값을 넣어 표현합니다.
 
 배열 요소의 구분자는 매우 유연합니다. 줄바꿈이나 쉼표(`,`) 중 하나를 사용하거나, 두 가지를 혼용하여 사용할 수도 있습니다. 이러한 유연성 덕분에 항목을 추가하거나 삭제할 때 구분자 처리에 대한 고민을 덜어주어 매우 편리합니다.
 
@@ -178,7 +178,8 @@ description(text): (
 )
 ```
 
-**참고:** `text` 타입 데이터를 `SINGLE_LINE`이나 `COMPACT` 스타일로 출력하면, 자동으로 개행 문자가 포함된 이스케이프 문자열(`"line1\nline2"`)로 변환되어 한 줄로 작성됩니다.
+> 💡 **참고**\
+> `text` 타입 데이터를 `SINGLE_LINE`이나 `COMPACT` 스타일로 출력하면, 자동으로 개행 문자가 포함된 이스케이프 문자열(`"line1\nline2"`)로 변환되어 한 줄로 작성됩니다.
 
 ## 4. APON 활용하기
 
@@ -285,7 +286,7 @@ public class TransletParameters extends DefaultParameters {
         action = new ParameterKey("action", new String[] {"echo", "headers", "include", "choose"},
                 ActionParameters.class, true, true);
     }
-    
+
     // ...
 }
 ```

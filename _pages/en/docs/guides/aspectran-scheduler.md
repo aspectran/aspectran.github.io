@@ -15,8 +15,8 @@ The core is the **`SchedulerService`** interface, and Aspectran provides `Defaul
 
 Aspectran provides two main ways to configure the scheduler.
 
-1.  **XML/APON-based Configuration**: A traditional and explicit method where all rules are defined in a configuration file.
-2.  **Annotation-based Configuration**: A modern method of defining scheduling rules directly in a Java class using annotations.
+1. **XML/APON-based Configuration**: A traditional and explicit method where all rules are defined in a configuration file.
+2. **Annotation-based Configuration**: A modern method of defining scheduling rules directly in a Java class using annotations.
 
 ### Method 1: XML/APON-based Configuration
 
@@ -36,8 +36,9 @@ Define a bean that creates the scheduler instance. Using the `QuartzSchedulerFac
 </bean>
 ```
 
-> **Quartz Property Settings**
-> The detailed behavior of the Quartz scheduler, such as the threadPool and jobStore, can be controlled through a wide variety of properties. For detailed information on all properties, please refer to the **[Quartz Official Configuration Documentation](http://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/)**.
+> 💡 **Quartz Property Settings**
+>
+> The detailed behavior of the Quartz scheduler, such as the threadPool and jobStore, can be controlled through a wide variety of properties. For detailed information on all properties, please refer to the [Quartz Official Configuration Documentation](http://www.quartz-scheduler.org/documentation/quartz-2.3.0/configuration/).
 
 #### Step 2: Define the `<schedule>` Rule
 
@@ -103,10 +104,10 @@ public class AnnotatedScheduledTasks {
 }
 ```
 
--   **`@Schedule`**: Attached at the class level to define a schedule rule. It has attributes for the `id`, the `scheduler` bean name, a trigger (`cronTrigger` or `simpleTrigger`), and an array of `jobs` to execute.
--   **`@Job`**: Specifies the Translet to be executed within the `jobs` attribute of `@Schedule`.
--   **`@Request`**: Defines the actual method that handles the `translet` name specified in `@Job`. In other words, this method becomes the body of the scheduled task.
--   **`@Bean` Method**: Creates and registers as a bean the Quartz `Scheduler` instance that will be referenced by the `scheduler` attribute of `@Schedule`.
+- **`@Schedule`**: Attached at the class level to define a schedule rule. It has attributes for the `id`, the `scheduler` bean name, a trigger (`cronTrigger` or `simpleTrigger`), and an array of `jobs` to execute.
+- **`@Job`**: Specifies the Translet to be executed within the `jobs` attribute of `@Schedule`.
+- **`@Request`**: Defines the actual method that handles the `translet` name specified in `@Job`. In other words, this method becomes the body of the scheduled task.
+- **`@Bean` Method**: Creates and registers as a bean the Quartz `Scheduler` instance that will be referenced by the `scheduler` attribute of `@Schedule`.
 
 ### Trigger Type Detailed Description
 
@@ -116,56 +117,64 @@ Triggers precisely control when a job group is executed. They can be configured 
 
 The `simple` trigger is used to repeat a task at simple intervals, such as "start 10 seconds from now, and run every hour, for a total of 5 times." It is best suited for repeating a task a set number of times or indefinitely at a specific interval.
 
--   **Main Attributes:**
-    -   `startDelaySeconds`: The time to delay the first execution after the scheduler has started (in seconds)
-    -   `intervalInSeconds`, `intervalInMinutes`, `intervalInHours`: The time interval for repetition
-    -   `repeatCount`: The number of times to repeat after the first execution (`-1` for infinite repeat)
-    -   `repeatForever`: If set to `true`, repeats indefinitely
+**Main Attributes:**
 
--   **Example (XML):** Repeat indefinitely every hour
-    ```xml
-    <trigger type="simple">
-        startDelaySeconds: 10
-        intervalInHours: 1
-        repeatForever: true
-    </trigger>
-    ```
+| Attribute | Description |
+| :--- | :--- |
+| `startDelaySeconds` | The time to delay the first execution after the scheduler has started (in seconds) |
+| `intervalInSeconds` | Repetition interval in seconds |
+| `intervalInMinutes` | Repetition interval in minutes |
+| `intervalInHours` | Repetition interval in hours |
+| `repeatCount` | The number of times to repeat after the first execution (`-1` for infinite repeat) |
+| `repeatForever` | If set to `true`, repeats indefinitely |
 
--   **Example (Annotation):** Start after 5 minutes, and run a total of 10 times at 30-second intervals
-    ```java
-    @Schedule(
-        // ...
-        simpleTrigger = @SimpleTrigger(
-            startDelaySeconds = 300,
-            intervalInSeconds = 30,
-            repeatCount = 9 // 1 initial execution + 9 repeats = 10 total executions
-        )
-        // ...
-    )
-    ```
+- **Example (XML):** Repeat indefinitely every hour
+  ```xml
+  <trigger type="simple">
+      startDelaySeconds: 10
+      intervalInHours: 1
+      repeatForever: true
+  </trigger>
+  ```
+
+- **Example (Annotation):** Start after 5 minutes, and run a total of 10 times at 30-second intervals
+  ```java
+  @Schedule(
+      // ...
+      simpleTrigger = @SimpleTrigger(
+          startDelaySeconds = 300,
+          intervalInSeconds = 30,
+          repeatCount = 9 // 1 initial execution + 9 repeats = 10 total executions
+      )
+      // ...
+  )
+  ```
 
 #### `cron` Trigger: Schedule-based Reservation
 
 The `cron` trigger is used to execute tasks according to a complex calendar-related schedule, such as "every Friday at 5:30 PM" or "at 1 AM on the last day of every month." It operates based on the powerful **Cron expression**, providing very flexible and powerful scheduling.
 
--   **Main Attribute:**
-    -   `expression`: A Cron expression string that defines the execution schedule.
+**Main Attribute:**
 
--   **Example (XML):** Run every night at 11:50 PM
-    ```xml
-    <trigger type="cron">
-        expression: 0 50 23 * * ?
-    </trigger>
-    ```
+| Attribute | Description |
+| :--- | :--- |
+| `expression` | A Cron expression string that defines the execution schedule |
 
--   **Example (Annotation):** Run every week from Monday to Friday, at 9:30 AM
-    ```java
-    @Schedule(
-        // ...
-        cronTrigger = @CronTrigger(expression = "0 30 9 ? * MON-FRI")
-        // ...
-    )
-    ```
+- **Example (XML):** Run every night at 11:50 PM
+  ```xml
+  <trigger type="cron">
+      expression: 0 50 23 * * ?
+  </trigger>
+  ```
+
+- **Example (Annotation):** Run every week from Monday to Friday, at 9:30 AM
+  ```java
+  @Schedule(
+      // ...
+      cronTrigger = @CronTrigger(expression = "0 30 9 ? * MON-FRI")
+      // ...
+  )
+  ```
 
 ### Misfire Policies: Handling Missed Executions
 
@@ -192,38 +201,42 @@ By default, Quartz sets this to 60,000 milliseconds (1 minute). You can adjust t
 
 #### Available Policies for `cron` Trigger
 
--   `ignoreMisfires`: Executes all missed firings immediately.
--   `smartPolicy` (Default): Executes the first missed firing immediately and discards others. (Same as `fireOnceNow`)
--   `fireOnceNow`: Executes the first missed firing immediately and discards others.
--   `doNothing`: Discards all missed firings and waits for the next scheduled time.
+| Policy | Default | Description |
+| :--- | :---: | :--- |
+| `smartPolicy` | **Default** | Executes the first missed firing immediately and discards others (same as `fireOnceNow`). |
+| `fireOnceNow` | - | Executes the first missed firing immediately and discards others. |
+| `doNothing` | - | Discards all missed firings and waits for the next scheduled time. |
+| `ignoreMisfires` | - | Executes all missed firings immediately. |
 
 #### Available Policies for `simple` Trigger
 
--   `ignoreMisfires`: Executes all missed firings as soon as possible.
--   `smartPolicy` (Default):
-    -   Fixed Repeat: Same as `rescheduleNowWithExistingRepeatCount`.
-    -   Infinite Repeat: Same as `rescheduleNextWithRemainingCount`.
--   `fireNow`: Executes the first missed firing immediately and discards others.
--   `rescheduleNowWithExistingRepeatCount`: Reschedules to fire immediately, keeping the repeat count unchanged.
--   `rescheduleNowWithRemainingRepeatCount`: Reschedules to fire immediately, but the first missed firing counts as one of the repeat counts.
--   `rescheduleNextWithExistingCount`: Waits for the next scheduled time, keeping the repeat count unchanged.
--   `rescheduleNextWithRemainingCount`: Waits for the next scheduled time, discarding all missed firings.
+| Policy | Default | Description |
+| :--- | :---: | :--- |
+| `smartPolicy` | **Default** | Automatically determined based on repetition type:<br>• **Fixed Repeat**: Same as `rescheduleNowWithExistingRepeatCount`<br>• **Infinite Repeat**: Same as `rescheduleNextWithRemainingCount` |
+| `fireNow` | - | Executes the first missed firing immediately and discards others. |
+| `rescheduleNowWithExistingRepeatCount` | - | Reschedules to fire immediately, keeping the remaining repeat count unchanged. |
+| `rescheduleNowWithRemainingRepeatCount` | - | Reschedules to fire immediately, but the first missed firing counts toward the repeat count. |
+| `rescheduleNextWithExistingCount` | - | Waits for the next scheduled time, keeping the remaining repeat count unchanged. |
+| `rescheduleNextWithRemainingCount` | - | Waits for the next scheduled time, discarding all missed firings. |
+| `ignoreMisfires` | - | Executes all missed firings as soon as possible. |
 
 #### Configuration Examples
-    ```xml
-    <trigger type="cron">
-        expression: 0 0 2 * * ?
-        misfirePolicy: doNothing
-    </trigger>
-    ```
 
--   **Example (Annotation):**
-    ```java
-    @CronTrigger(
-        expression = "0 0 2 * * ?",
-        misfirePolicy = MisfirePolicy.DO_NOTHING
-    )
-    ```
+- **Example (XML):**
+  ```xml
+  <trigger type="cron">
+      expression: 0 0 2 * * ?
+      misfirePolicy: doNothing
+  </trigger>
+  ```
+
+- **Example (Annotation):**
+  ```java
+  @CronTrigger(
+      expression = "0 0 2 * * ?",
+      misfirePolicy = MisfirePolicy.DO_NOTHING
+  )
+  ```
 
 ## 3. Schedule Job Logging and Monitoring
 
@@ -249,9 +262,13 @@ public String count() {
 ```
 
 The success log will include the `response` field:
-`DEBUG ... SUCCESS {group=countSchedule, name=test/schedule/count.job, ..., response=Count: 1}`
 
-> 💡 **Tip for Log Readability**\
+```log
+DEBUG ... SUCCESS {group=countSchedule, name=test/schedule/count.job, ..., response=Count: 1}
+```
+
+> 💡 **Tip for Log Readability**
+>
 > While Translets support various response formats, using a concise format like **`FormatType.TEXT`** is highly recommended for log messages to ensure the logs remain readable and efficient.
 
 ### Logback Configuration Example
@@ -306,17 +323,19 @@ In an environment where multiple nodes operate as a single cluster, it is crucia
 
 Just before a scheduled task is executed, Aspectran attempts to acquire a unique lock key for that schedule in Redis for a very short time (TTL).
 
-1.  **Acquire Lock**: The node attempting to perform the task tries to acquire the lock using Redis's `SET NX` feature.
-2.  **Execute Task**: Only the node that first reaches the execution time and acquires the lock performs the actual task.
-3.  **Skip Execution**: Other nodes that fail to acquire the lock automatically skip the task for that cycle.
-4.  **Safety Guarantee**: Even if a node terminates abnormally during a task, the lock is automatically released after the expiration time set on the lock, allowing another node to take over in the next cycle.
+1. **Acquire Lock**: The node attempting to perform the task tries to acquire the lock using Redis's `SET NX` feature.
+2. **Execute Task**: Only the node that first reaches the execution time and acquires the lock performs the actual task.
+3. **Skip Execution**: Other nodes that fail to acquire the lock automatically skip the task for that cycle.
+4. **Safety Guarantee**: Even if a node terminates abnormally during a task, the lock is automatically released after the expiration time set on the lock, allowing another node to take over in the next cycle.
 
 ### Execution Control via the `isolated` Attribute
 
 Scheduling rules have an `isolated` attribute that determines whether the task is a target for distribution or should always run independently on each node.
 
--   **`isolated="false"` (Default)**: Only **one node** in the entire cluster performs the task. (Distributed lock applied)
--   **`isolated="true"`**: **Every node** performs the task at its scheduled time, regardless of the cluster state. This is suitable for tasks like system log collection or refreshing local caches.
+| Value | Mode | Behavior | Recommended Use Case |
+| :--- | :---: | :--- | :--- |
+| `isolated="false"` | Distributed Mode<br>*(Default)* | Only **one node** across the cluster acquires the lock and executes the task (Distributed Lock applied) | Batch jobs, report generation, DB synchronization |
+| `isolated="true"` | Isolated Mode | **Every node** executes the task independently at its scheduled time, regardless of cluster state | Local cache refresh, node-specific log collection |
 
 > ⚠️ **Trigger Type Constraints with Distributed Locking (Important)**
 >
@@ -330,15 +349,15 @@ Scheduling rules have an `isolated` attribute that determines whether the task i
 
 The Aspectran Console provides a **Scheduler Manager** screen that allows you to grasp and manipulate the schedulers of the entire cluster at a glance.
 
--   **Unified View**: Real-time checking of scheduler status and active job lists for all nodes in the cluster.
--   **Dynamic Switching**: Instantly enable or disable specific schedules or individual jobs without redeploying the application.
--   **Status Visibility**: Visually shows whether the distributed lock feature is working normally and which node you are connected to.
+- **Unified View**: Real-time checking of scheduler status and active job lists for all nodes in the cluster.
+- **Dynamic Switching**: Instantly enable or disable specific schedules or individual jobs without redeploying the application.
+- **Status Visibility**: Visually shows whether the distributed lock feature is working normally and which node you are connected to.
 
 ## 5. Full Configuration Example and References
 
 A complete example of how to actually configure and use the Aspectran Scheduler can be found in the following GitHub project. This project is a good reference that actually implements all the concepts described in this document.
 
--   **Aspectran Scheduler Example Project**: [https://github.com/aspectran/gs-scheduler](https://github.com/aspectran/gs-scheduler)
+- **Aspectran Scheduler Example Project**: [https://github.com/aspectran/gs-scheduler](https://github.com/aspectran/gs-scheduler)
 
 ## 6. Conclusion
 
