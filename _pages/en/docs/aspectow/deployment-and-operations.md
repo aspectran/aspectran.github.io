@@ -30,7 +30,8 @@ Before proceeding with the deployment, the following software must be installed 
     *   **Ubuntu/Debian**: `sudo apt install jsvc`
     *   **RHEL/CentOS**: `sudo yum install jsvc`
 
-> **Tip**: If it is difficult to install `jsvc` system-wide, you can directly include the `jsvc` executable binary built for your OS and CPU architecture in the application's `app/bin/` directory. Aspectow prioritizes referencing the `app/bin/jsvc` file over the system path.
+> 💡 **Tip**\
+> If it is difficult to install `jsvc` system-wide, you can directly include the `jsvc` executable binary built for your OS and CPU architecture in the application's `app/bin/` directory. Aspectow prioritizes referencing the `app/bin/jsvc` file over the system path.
 
 ## 2. Automated Deployment and Service Management (Using `setup` Scripts)
 
@@ -110,7 +111,8 @@ If you have registered the application as a service via `setup/install-service.s
 *   **Stop Service**: `./service.sh stop`
 *   **Restart Service**: `./service.sh restart`
 
-> **Warning**: Do not run `daemon.sh` directly while managing the application as a service. This could lead to inconsistency between the service state managed by `systemd` and the actual process state, potentially resulting in unintended automatic restarts or duplicate execution issues.
+> ⚠️ **Warning**\
+> Do not run `daemon.sh` directly while managing the application as a service. This could lead to inconsistency between the service state managed by `systemd` and the actual process state, potentially resulting in unintended automatic restarts or duplicate execution issues.
 
 #### Method 2: Direct Execution Mode (Manual Management)
 
@@ -134,7 +136,8 @@ All logs of the application are stored in the `app/logs` directory.
 *   **Check Scheduler Logs**: `./logtail.sh scheduler`
     *   Check the execution records of scheduled jobs.
 
-> **Tip**: Use the format `./logtail.sh [filename]` and omit the `.log` extension.
+> 💡 **Tip**\
+> Use the format `./logtail.sh [filename]` and omit the `.log` extension.
 
 **In Windows environments**, you can check logs as follows:
 

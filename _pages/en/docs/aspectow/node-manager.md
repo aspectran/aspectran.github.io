@@ -78,7 +78,7 @@ location /console/nodes/node2/ {
 }
 ```
 
-> 💡 **TIP**\
+> 💡 **Tip**\
 > In an edge Nginx reverse proxy environment, setting `X-Forwarded-For $remote_addr;` instead of `$proxy_add_x_forwarded_for` is recommended to prevent IP spoofing attacks from untrusted external clients. Redundant, non-standard headers like `X-Real-IP` are eliminated in favor of the industry-standard `X-Forwarded-For`. For comprehensive reverse proxy configuration and security best practices, refer to the [Nginx Reverse Proxy Guide](nginx-reverse-proxy-guide_en.md).
 
 ## 4. Cluster Node Messaging Protocol & Architecture
