@@ -723,8 +723,8 @@ package com.aspectran.example.support;
 
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.bean.ability.InitializableBean;
+import com.aspectran.core.component.bean.ability.DisposableBean;
 import com.aspectran.core.component.session.DefaultSessionListenerRegistration;
 import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.example.listener.UserSessionTrackingListener;
@@ -775,8 +775,8 @@ package com.aspectran.example.support;
 
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.bean.ability.InitializableBean;
+import com.aspectran.core.component.bean.ability.DisposableBean;
 import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.component.session.SessionManagerProvider;
@@ -819,6 +819,53 @@ public class DirectSessionListenerRegistrar implements InitializableBean, Dispos
 
 }
 ```
+
+### 7.3. 세션 리스너 및 활성 세션 순회 시 동시성 주의사항
+
+대규모 트래픽이나 봇/크롤러 유입으로 인해 수천 개의 세션이 동시에 생성되거나 만료(`invalidate`)되는 환경에서는, `SessionListener` 콜백이나 활성 세션 순회 API(`forEachActiveSession`)를 사용할 때 **스레드 락 경합 및 데드락(Deadlock)을 방지하기 위한 내부 동작 원리와 주의사항**을 반드시 숙지해야 합니다.
+
+#### 1) `SessionListener` 콜백은 세션 락(`AutoLock`) 보유 상태에서 실행됨
+
+* `sessionDestroyed`, `sessionEvicted`, `sessionResided`, `attributeAdded`, `attributeUpdated`, `attributeRemoved` 등 대부분의 `SessionListener` 이벤트 콜백은 **해당 세션 객체(`ManagedSession`)의 내부 락을 획득한 상태에서 동기적으로 호출**됩니다.
+* 특히 백그라운드 만료 타이머(`SessionInactivityTimer`)는 단일 스레드 스케줄러(`SessionScheduler`)에서 동작하므로, 리스너 내부에서 시간이 오래 걸리는 블로킹 I/O를 수행하거나 외부 `synchronized` 모니터 락을 대기하면 전체 세션 스케줄러와 클라이언트 요청 스레드가 연쇄적으로 블로킹될 수 있습니다.
+* **권장 수칙**:
+  * 리스너 콜백 내부에서는 무거운 동기화 블록(`synchronized`) 진입이나 다른 세션의 락을 직접 획득하는 작업을 피해야 합니다.
+  * 리스너 내부에서 집계가 필요한 경우 `AtomicBoolean.compareAndSet()` 등을 활용한 논블로킹(Non-blocking) 가드 패턴을 사용하여, 이미 다른 스레드가 집계 중이면 대기하지 않고 캐시된 값을 즉시 반환하도록 구현하십시오.
+
+#### 2) `forEachActiveSession()`과 `SessionSnapshot`을 활용한 안전한 조회
+
+* `SessionManager.forEachActiveSession(Consumer<Session>)`은 메모리 캐시에 상주하는 활성 세션들을 순회하며 작업을 수행합니다.
+* **논블로킹 `tryLock()` 기반 데드락 방지**:
+  * `DefaultSessionCache.forEachActiveSession()`은 개별 세션에 접근할 때 블로킹 `lock()` 대신 **`tryLock()`**을 사용합니다.
+  * 현재 다른 스레드에 의해 무효화(`invalidate`), 축출(`evict`), 또는 요청 처리 중이어서 락이 점유된(Busy) 세션은 대기하지 않고 즉시 건너뜁니다(Best-effort 스캔).
+  * 이 설계 덕분에 한 세션의 리스너 콜백(세션 A 락 보유) 도중에 `forEachActiveSession()`이 호출되고 동시에 다른 스레드에서 반대 순서로 세션이 무효화되더라도 **락 순서 역전(Lock-Order Inversion)에 의한 데드락이 원천적으로 발생하지 않습니다.**
+* **스냅샷(`SessionSnapshot`) 선추출 후처리 패턴**:
+  * `forEachActiveSession()`에 전달된 `Consumer` 액션은 방문 중인 세션의 락을 쥔 상태에서 실행됩니다.
+  * 따라서 루프 내부에서는 [`session.getSnapshot()`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionSnapshot.java)만 호출하여 불변(Read-only) 스냅샷 객체만 빠르게 수집하고, 사용자명 해석(Reflection/Bean 프로퍼티 조회)이나 JSON 직렬화 같은 후속 처리는 **루프 바깥(세션 락 해제 이후)**에서 수행하는 것이 권장됩니다.
+
+```java
+// 권장 패턴: 루프 안에서는 SessionSnapshot만 수집하고, 무거운 처리는 락 해제 후 수행
+List<SessionSnapshot> snapshots = new ArrayList<>();
+sessionManager.forEachActiveSession(session -> {
+    SessionSnapshot snapshot = session.getSnapshot();
+    if (snapshot != null) {
+        snapshots.add(snapshot);
+    }
+});
+
+for (SessionSnapshot snapshot : snapshots) {
+    if (!snapshot.isTempResident()) {
+        // 세션 락이 이미 해제된 상태이므로 안전하게 속성 조회 및 직렬화 수행
+        String username = resolveUsername(snapshot);
+    }
+}
+```
+
+#### 3) 임시 세션(`isTempResident()`) 필터링을 통한 불필요한 집계 생략
+
+* `maxIdleSecondsForNew`가 설정된 환경에서 처음 생성된 신규 세션은 두 번째 요청이 들어와 일반 세션으로 승격(`sessionResided`)되기 전까지 **임시 상주 세션(`session.isTempResident() == true`)** 상태를 가집니다.
+* 이러한 임시 세션이 한 번의 요청만 남기고 만료되어 파괴(`sessionDestroyed`)되거나 캐시에서 축출(`sessionEvicted`)될 때도 `session.isTempResident()`는 여전히 `true`를 유지합니다.
+* 따라서 실사용 접속자 수(Active Users) 등을 계산하는 리스너에서는 `if (!session.isTempResident())` 조건으로 임시 세션 이벤트를 필터링하면, 크롤러나 봇이 대량의 일회성 세션을 생성·만료시킬 때 발생하는 불필요한 전체 세션 스캔 부하를 완벽하게 제거할 수 있습니다.
 
 ## 8. 다중 컨텍스트 환경에서의 세션 격리 전략
 

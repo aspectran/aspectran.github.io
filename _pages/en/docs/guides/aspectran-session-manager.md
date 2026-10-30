@@ -721,8 +721,8 @@ package com.aspectran.example.support;
 
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.bean.ability.InitializableBean;
+import com.aspectran.core.component.bean.ability.DisposableBean;
 import com.aspectran.core.component.session.DefaultSessionListenerRegistration;
 import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.example.listener.UserSessionTrackingListener;
@@ -773,8 +773,8 @@ package com.aspectran.example.support;
 
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.component.bean.ablility.DisposableBean;
+import com.aspectran.core.component.bean.ability.InitializableBean;
+import com.aspectran.core.component.bean.ability.DisposableBean;
 import com.aspectran.core.component.session.SessionListener;
 import com.aspectran.core.component.session.SessionManager;
 import com.aspectran.core.component.session.SessionManagerProvider;
@@ -817,6 +817,54 @@ public class DirectSessionListenerRegistrar implements InitializableBean, Dispos
 
 }
 ```
+
+### 7.3. Concurrency Precautions for Session Listeners and Active Session Iteration
+
+In environments where thousands of sessions are concurrently created or invalidated due to heavy traffic or automated bot/crawler activity, developers implementing `SessionListener` callbacks or invoking the active session iteration API (`forEachActiveSession`) must understand **the internal locking semantics and concurrency precautions** to prevent lock contention and thread deadlocks.
+
+#### 1) `SessionListener` Callbacks Execute While Holding the Session Lock (`AutoLock`)
+
+* Most `SessionListener` event callbacks—including `sessionDestroyed`, `sessionEvicted`, `sessionResided`, `attributeAdded`, `attributeUpdated`, and `attributeRemoved`—are invoked **synchronously while holding the internal lock of the notifying session (`ManagedSession`)**.
+* Notably, because the background expiration timer (`SessionInactivityTimer`) runs on a single-threaded scheduler (`SessionScheduler`), performing slow blocking I/O or waiting on external `synchronized` monitors inside a listener callback can block the session scheduler and trigger a cascading stall across client request threads.
+* **Recommended Practices**:
+  * Avoid entering contested `synchronized` blocks or directly acquiring locks on other sessions from within a listener callback.
+  * When periodic aggregation is needed inside a listener, use a non-blocking guard pattern (such as `AtomicBoolean.compareAndSet(false, true)`) so that if another thread is already computing the metric, the caller immediately returns the most recently cached value instead of blocking.
+
+#### 2) Safe Inspection Using `forEachActiveSession()` and `SessionSnapshot`
+
+* `SessionManager.forEachActiveSession(Consumer<Session>)` iterates over active sessions currently residing in the in-memory cache.
+* **Non-Blocking `tryLock()` Deadlock Prevention**:
+  * `DefaultSessionCache.forEachActiveSession()` acquires each visited session's lock using **`tryLock()`** rather than a blocking `lock()`.
+  * Any session whose lock is currently held by another thread (for example, while being invalidated, evicted, or actively accessed by a request) is immediately skipped rather than waited on, providing a best-effort view of active sessions.
+  * This design guarantees that even if `forEachActiveSession()` is invoked from inside a `SessionListener` callback (which already holds Session A's lock) while another thread invalidates sessions in the opposite order, **deadlocks caused by lock-order inversion cannot occur**.
+* **Snapshot-First, Process-Later Pattern**:
+  * Because the `Consumer` action passed to `forEachActiveSession()` executes while the visited session's lock is held, keep the action body as short as possible.
+  * Inside the loop, simply take an immutable read-only [`session.getSnapshot()`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/SessionSnapshot.java) and perform any heavier work—such as reflection/bean property resolution for usernames or JSON serialization—**after the iteration completes (once all session locks have been released)**.
+
+```java
+// Recommended pattern: only collect SessionSnapshot instances inside the loop,
+// and perform heavier processing after session locks are released.
+List<SessionSnapshot> snapshots = new ArrayList<>();
+sessionManager.forEachActiveSession(session -> {
+    SessionSnapshot snapshot = session.getSnapshot();
+    if (snapshot != null) {
+        snapshots.add(snapshot);
+    }
+});
+
+for (SessionSnapshot snapshot : snapshots) {
+    if (!snapshot.isTempResident()) {
+        // Session locks are already released; safely resolve attributes or serialize
+        String username = resolveUsername(snapshot);
+    }
+}
+```
+
+#### 3) Skipping Redundant Aggregations by Filtering Temporary Sessions (`isTempResident()`)
+
+* When `maxIdleSecondsForNew` is configured, newly created sessions remain in a **temporary resident state (`session.isTempResident() == true`)** until a second request arrives and promotes them to normal sessions (`sessionResided`).
+* When such one-shot temporary sessions expire and are destroyed (`sessionDestroyed`) or evicted from cache (`sessionEvicted`), `session.isTempResident()` continues to return `true`.
+* Consequently, listeners that compute active user metrics can check `if (!session.isTempResident())` to ignore lifecycle events originating from ephemeral sessions—completely eliminating unnecessary full-session scans when crawlers or bots generate and expire thousands of one-off sessions.
 
 ## 8. Multi-Context Session Isolation Architecture
 
