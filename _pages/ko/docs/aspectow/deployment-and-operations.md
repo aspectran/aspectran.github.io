@@ -89,8 +89,8 @@ Aspectow의 배포 및 운영 아키텍처는 운영 목적과 제어 수준에 
     **Linux/macOS**
     ```bash
     ./5-pull_build_deploy.sh
-
     ```
+
     **Windows**
     ```shell
     5-pull_build_deploy.bat
