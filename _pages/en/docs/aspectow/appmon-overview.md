@@ -343,9 +343,9 @@ AppMon provides tailored dual security mechanisms depending on its operational m
 Active when running AppMon independently without Aspectow Console:
 
 *   **`@Profile("appmon.standalone")` AOP Guard**:
-    *   [`AppMonAuthCheckAspect`](file:///Users/Aspectran/Projects/workspace/aspectow/appmon/src/main/java/com/aspectran/aspectow/appmon/common/auth/aspect/AppMonAuthCheckAspect.java) intercepts requests (`+: /**`, `-: /auth-expired`) to verify credentials prior to execution.
+    *   [`AppMonAuthCheckAspect`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/common/auth/aspect/AppMonAuthCheckAspect.java) intercepts requests (`+: /**`, `-: /auth-expired`) to verify credentials prior to execution.
 *   **Time-Limited PBToken Authentication (`TimeLimitedPBTokenIssuer`)**:
-    *   [`AppMonTokenIssuer`](file:///Users/Aspectran/Projects/workspace/aspectow/appmon/src/main/java/com/aspectran/aspectow/appmon/common/auth/AppMonTokenIssuer.java) signs and generates encrypted password-based tokens encapsulating expiration windows (default: 30 minutes) and demo flags.
+    *   [`AppMonTokenIssuer`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/common/auth/AppMonTokenIssuer.java) signs and generates encrypted password-based tokens encapsulating expiration windows (default: 30 minutes) and demo flags.
     *   Tokens are transmitted as secure HTTP cookies (`HttpOnly`, `Path: /`) via `AppMonCookieIssuer`.
 *   **Sliding Session Expiration**:
     *   Valid incoming requests automatically refresh and slide the token expiration window, enabling uninterrupted monitoring sessions during active operation.

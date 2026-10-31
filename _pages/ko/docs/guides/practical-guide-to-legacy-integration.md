@@ -11,7 +11,7 @@ subheadline: 기타 프로젝트 및 라이브러리
 
 `aspectran-utils-legacy` 모듈은 JDK 1.6부터 JDK 17까지의 Java 버전을 사용하는 레거시 시스템과 JDK 21 이상을 사용하는 최신 Aspectran 애플리케이션 서버 간의 원활한 API 호출 및 응답 처리를 지원하기 위한 호환성 계층(Compatibility Layer) 역할을 합니다. 이 모듈은 레거시 환경에서 최신 Aspectran 서버와 통신하는 데 필요한 유틸리티 기능을 제공하여, 기존 코드의 대대적인 수정 없이도 연동이 가능하도록 돕습니다.
 
-> **참고**\
+> 💡 **참고**\
 > JDK 21 이상을 사용하는 시스템의 경우, 별도의 `aspectran-utils-legacy` 모듈을 사용할 필요 없이 표준 `aspectran-utils` 모듈을 직접 사용하시면 됩니다.
 
 ## 주요 기능 및 이점

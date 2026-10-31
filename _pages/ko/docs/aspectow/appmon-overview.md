@@ -343,9 +343,9 @@ AppMon은 구동 환경에 따라 최적화된 이중화 보안 체계를 제공
 Console 없이 AppMon을 단독으로 구동할 때 활성화되는 자체 보안 아키텍처입니다:
 
 *   **`@Profile("appmon.standalone")` 기반 AOP 가드**:
-    *   [`AppMonAuthCheckAspect`](file:///Users/Aspectran/Projects/workspace/aspectow/appmon/src/main/java/com/aspectran/aspectow/appmon/common/auth/aspect/AppMonAuthCheckAspect.java)가 모든 요청(`+: /**`, `-: /auth-expired`)을 가로채어 인증 여부를 선행 검증합니다.
+    *   [`AppMonAuthCheckAspect`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/common/auth/aspect/AppMonAuthCheckAspect.java)가 모든 요청(`+: /**`, `-: /auth-expired`)을 가로채어 인증 여부를 선행 검증합니다.
 *   **시간 제한형 PBToken 암호화 토큰 (`TimeLimitedPBTokenIssuer`)**:
-    *   [`AppMonTokenIssuer`](file:///Users/Aspectran/Projects/workspace/aspectow/appmon/src/main/java/com/aspectran/aspectow/appmon/common/auth/AppMonTokenIssuer.java)는 만료 시간(기본 30분)과 데모 모드 플래그를 암호화 서명하여 고유 토큰을 생성합니다.
+    *   [`AppMonTokenIssuer`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/common/auth/AppMonTokenIssuer.java)는 만료 시간(기본 30분)과 데모 모드 플래그를 암호화 서명하여 고유 토큰을 생성합니다.
     *   생성된 토큰은 `AppMonCookieIssuer`를 통해 보안 세션 쿠키(`HttpOnly`, `Path: /`)로 브라우저에 안전하게 주입됩니다.
 *   **슬라이딩 세션 갱신 (Sliding Session Expiration)**:
     *   유효한 토큰을 가진 사용자가 요청을 보낼 때마다 `AppMonAuthCheckAspect`가 잔여 시간을 검증하고, 유효한 경우 만료 시한을 자동으로 연장하여 지속적인 관제 편의성을 보장합니다.
