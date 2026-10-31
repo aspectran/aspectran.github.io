@@ -59,13 +59,13 @@ The scripts in the `setup` directory automate most of the tasks required for ope
 #### Windows Environment
 
 1.  Create a `setup` directory in your desired location on the server and navigate into it.
-    ```cmd
+    ```shell
     mkdir setup && cd /d setup
     ```
 2.  Copy the `setenv.bat` and `install-app.bat` files from the `setup` directory of the original source repository.
 3.  Open the `setenv.bat` file and modify the variable values such as `APP_NAME` and `BASE_DIR` to match your server environment. (`BASE_DIR` should be in a Windows path format, like `C:\Aspectran\aspectow`).
 4.  Run the installation script.
-    ```cmd
+    ```shell
     install-app.bat
     ```
 
@@ -74,21 +74,25 @@ The scripts in the `setup` directory automate most of the tasks required for ope
 The initial installation using `install-app.sh` or `install-app.bat` is a process that only prepares the directory structure and operational scripts required to run the application. After the installation is complete, a first deployment process to build the source code and deploy libraries, configuration files, etc., is essential to actually run the application.
 
 1.  Once the `install-app` script is complete, navigate to the `BASE_DIR` you set in `app.conf` or `setenv.bat`.
+
+    **Linux/macOS**
     ```bash
-    # Linux/Unix
     cd /path/to/your/BASE_DIR
     ```
-    ```cmd
-    # Windows
+
+    **Windows**
+    ```shell
     cd /d D:\path\to\your\BASE_DIR
     ```
 2.  Run the full deployment script to proceed with the first build and deployment.
+
+    **Linux/macOS**
     ```bash
-    # Linux/Unix
     ./5-pull_build_deploy.sh
     ```
-    ```cmd
-    # Windows
+
+    **Windows**
+    ```shell
     5-pull_build_deploy.bat
     ```
 

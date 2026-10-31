@@ -198,7 +198,7 @@ public class App {
    ```
 
    애플리케이션이 시작되면 다음과 같은 환영 메시지와 함께 Aspectran 셸 프롬프트가 나타납니다.
-   ```text
+   ```shell
    Welcome to Hello Aspectran!
    To see a list of commands, type 'help'.
    To run the 'hello' command, type 'hello'.
@@ -207,7 +207,7 @@ public class App {
    hello-aspectran>
    ```
    * `translet -l` 명령어를 사용하면 현재 애플리케이션에 정의된 모든 Translet의 목록을 확인할 수 있습니다.
-     ```text
+     ```shell
      ------+-------------------------------------------------------------+-------
        No. | Translet Name                                               | Async
      ------+-------------------------------------------------------------+-------

@@ -267,8 +267,7 @@ The success log will include the `response` field:
 DEBUG ... SUCCESS {group=countSchedule, name=test/schedule/count.job, ..., response=Count: 1}
 ```
 
-> 💡 **Tip for Log Readability**
->
+> 💡 **Tip for Log Readability**\
 > While Translets support various response formats, using a concise format like **`FormatType.TEXT`** is highly recommended for log messages to ensure the logs remain readable and efficient.
 
 ### Logback Configuration Example

@@ -34,16 +34,17 @@ mvn clean package
 ```
 
 **Windows**
-```cmd
+```shell
 mvn clean package
 bin\shell.bat
 ```
 
 애플리케이션이 성공적으로 시작되면, 다음과 같은 그리팅 메시지와 함께 `aspectow` 프롬프트가 명령을 기다립니다.
 
+> 💡 **참고**\
 > `aspectow-todo-webapp` 샘플 애플리케이션은 동시에 여러 인스턴스가 실행되는 것을 방지하는 기능이 기본적으로 활성화되어 있습니다. 만약 `shell.sh`를 실행했을 때 애플리케이션이 시작되지 않고 멈춘다면, 다른 터미널에서 이미 애플리케이션이 실행 중인지 확인해 보세요.
 
-```
+```shell
 ---------------------------------------------------------------------------------
  Aspectran : 9.8.1
  JVM       : OpenJDK 64-Bit Server VM (build 23.0.2+7, mixed mode, sharing)
@@ -89,7 +90,7 @@ http://localhost:8080/todos
 
 `aspectow` 프롬프트에 `quit` 명령을 입력하면 애플리케이션을 종료할 수 있습니다.
 
-```
+```shell
 aspectow> quit
 Are you sure you want to quit [Y/n]?
 ```

@@ -34,16 +34,17 @@ mvn clean package
 ```
 
 **Windows**
-```cmd
+```batchfile
 mvn clean package
 bin\shell.bat
 ```
 
 Once the application starts successfully, you will see a greeting message and the `aspectow` prompt awaiting your command.
 
+> 💡 **Note**\
 > The `aspectow-todo-webapp` sample application has a feature enabled by default that prevents multiple instances from running simultaneously. If the application seems to hang and does not start when you run `shell.sh`, check if it is already running in another terminal.
 
-```
+```shell
 ---------------------------------------------------------------------------------
  Aspectran : 9.8.1
  JVM       : OpenJDK 64-Bit Server VM (build 23.0.2+7, mixed mode, sharing)
@@ -89,7 +90,7 @@ If the ToDo list management page appears in your browser, you have successfully 
 
 You can shut down the application by typing the `quit` command at the `aspectow` prompt.
 
-```
+```shell
 aspectow> quit
 Are you sure you want to quit [Y/n]?
 ```

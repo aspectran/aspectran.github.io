@@ -59,13 +59,13 @@ Aspectow의 배포 및 운영 아키텍처는 운영 목적과 제어 수준에 
 #### Windows 환경
 
 1.  서버의 원하는 위치에 `setup` 디렉터리를 만들고, 그 안으로 이동합니다.
-    ```cmd
+    ```shell
     mkdir setup && cd /d setup
     ```
 2.  원본 소스 저장소의 `setup` 디렉터리에서 `setenv.bat`와 `install-app.bat` 파일을 복사해옵니다.
 3.  `setenv.bat` 파일을 열어 `APP_NAME`, `BASE_DIR` 등 자신의 서버 환경에 맞게 변수 값을 수정합니다. (`BASE_DIR`은 `C:\Aspectran\aspectow`와 같은 윈도우 경로 형식이어야 합니다.)
 4.  설치 스크립트를 실행합니다.
-    ```cmd
+    ```shell
     install-app.bat
     ```
 
@@ -74,21 +74,25 @@ Aspectow의 배포 및 운영 아키텍처는 운영 목적과 제어 수준에 
 `install-app.sh` 또는 `install-app.bat`를 이용한 최초 설치는 애플리케이션 실행에 필요한 디렉터리 구조와 운영 스크립트만 준비하는 과정입니다. 설치가 완료된 후, 실제 애플리케이션을 구동하기 위해서는 소스 코드를 빌드하고 라이브러리, 설정 파일 등을 배포하는 첫 배포 과정이 반드시 필요합니다.
 
 1.  `install-app` 스크립트가 완료되면, `app.conf` 또는 `setenv.bat`에 설정했던 `BASE_DIR`로 이동합니다.
+
+    **Linux/macOS**
     ```bash
-    # Linux/Unix
     cd /path/to/your/BASE_DIR
     ```
-    ```cmd
-    # Windows
+
+    **Windows**
+    ```shell
     cd /d D:\path\to\your\BASE_DIR
     ```
 2.  전체 배포 스크립트를 실행하여 첫 빌드 및 배포를 진행합니다.
+
+    **Linux/macOS**
     ```bash
-    # Linux/Unix
     ./5-pull_build_deploy.sh
+
     ```
-    ```cmd
-    # Windows
+    **Windows**
+    ```shell
     5-pull_build_deploy.bat
     ```
 

@@ -91,7 +91,8 @@ Aspectow는 소스 코드 동기화부터 컴파일, 설정 배포, 웹 애플�
 | **`8-pull_deploy_webapps_only.sh`** | 🛠️ Selective Deploy | **Pull & Deploy Webapps**: 최신 Git 변경 사항을 가져온 후 웹 애플리케이션(`app/webapps`)만 선별 배포합니다. |
 | **`9-pull_deploy_config_webapps_only.sh`** | 🛠️ Selective Deploy | **Pull & Deploy Config + Webapps**: 컴파일 없이 최신 소스 동기화 후 설정과 웹앱 파일만 함께 배포합니다. |
 
-> **Tip (Pipeline Flow Preview)**: Console 화면에서 스크립트를 선택하면 하단에 **Pipeline Flow** 카드가 활성화되어 해당 스크립트가 내부적으로 거치는 단계(예: `1. Git Pull` → `2. Maven Build` → `3. Config Deploy` → `4. Webapps Deploy`)를 시각적 배지로 미리 확인할 수 있습니다.
+> 💡 **Tip (Pipeline Flow Preview)**\
+> Console 화면에서 스크립트를 선택하면 하단에 **Pipeline Flow** 카드가 활성화되어 해당 스크립트가 내부적으로 거치는 단계(예: `1. Git Pull` → `2. Maven Build` → `3. Config Deploy` → `4. Webapps Deploy`)를 시각적 배지로 미리 확인할 수 있습니다.
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-build-pipeline-preview.png" alt="Script Selection & Pipeline Flow Preview" %}
 

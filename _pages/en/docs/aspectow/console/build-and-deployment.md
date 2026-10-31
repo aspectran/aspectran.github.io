@@ -91,7 +91,8 @@ Aspectow provides a modularized suite of 9 standardized deployment scripts cover
 | **`8-pull_deploy_webapps_only.sh`** | 🛠️ Selective Deploy | **Pull & Deploy Webapps**: Pulls latest Git changes and deploys web application assets only. |
 | **`9-pull_deploy_config_webapps_only.sh`** | 🛠️ Selective Deploy | **Pull & Deploy Config + Webapps**: Pulls latest Git changes and deploys both configurations and web assets (without build). |
 
-> **Tip (Pipeline Flow Preview)**: Selecting any script dynamically displays a **Pipeline Flow** card below the selector, visually previewing the step-by-step pipeline stages (e.g., `1. Git Pull` → `2. Maven Build` → `3. Config Deploy` → `4. Webapps Deploy`) with color-coded badges.
+> 💡 **Tip (Pipeline Flow Preview)**\
+> Selecting any script dynamically displays a **Pipeline Flow** card below the selector, visually previewing the step-by-step pipeline stages (e.g., `1. Git Pull` → `2. Maven Build` → `3. Config Deploy` → `4. Webapps Deploy`) with color-coded badges.
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-build-pipeline-preview.png" alt="Script Selection & Pipeline Flow Preview" %}
 

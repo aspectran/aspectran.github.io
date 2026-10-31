@@ -3,33 +3,33 @@ title: Introduction to AsEL (Aspectran Expression Language)
 subheadline: Core Guides
 ---
 
-AsEL (Aspectran Expression Language) is a powerful and lightweight expression language built into the Aspectran framework. The most significant feature of AsEL is its ability to dynamically evaluate the values of objects by combining Aspectran's own **Token Expressions** with the powerful **OGNL (Object-Graph Navigation Language) expressions**.
+AsEL (Aspectran Expression Language) is a powerful and lightweight expression language built into the Aspectran framework. The most significant feature of AsEL is its ability to dynamically evaluate values by combining Aspectran's core **Token Expressions** with the powerful **OGNL (Object-Graph Navigation Language)**.
 
-This guide will first explore 'Token Expressions', a basic feature of Aspectran, and then explain the complete form of 'AsEL Expressions', which combine 'Token Expressions' with OGNL.
+In Aspectran, Token Expressions are primarily used to access specific data. When multiple tokens are combined or complex operations are needed, OGNL evaluates the entire expression as AsEL.
 
-## 1. Token Expressions (Aspectran's Basic Feature)
+## 1. Token Expressions (Aspectran's Core Feature)
 
-Token expressions are simple yet powerful placeholders used to directly access specific data (Beans, attributes, parameters, etc.) within Aspectran's configuration. They act as bridges connecting your configuration to the runtime data.
+Token expressions are placeholders used to directly access specific data (Beans, attributes, parameters, etc.) within Aspectran's configuration. They act as bridges connecting your configuration to runtime data.
 
 | Token Type | Expression Syntax | Description | Usage Example |
 | :--- | :--- | :--- | :--- |
 | **Bean** | `#{beanId}` | References the Bean object with the ID `beanId`. | `#{userService}` |
-| **Attribute** | `@{attributeName}` | References the `attributeName` attribute of the current request context. Attributes are often used to pass data between actions. | `@{userInfo}` |
-| **Parameter** | `${parameterName}` | References the `parameterName` parameter of the current request (e.g., HTTP query parameter). | `${userId}` |
-| **Property** | `%{propertyName}` | References the `propertyName` environment property (e.g., from properties files or system properties). | `%{app.uploadDir}` |
-| **Template** | `~{templateId}` | Renders the template with the ID `templateId` and **includes the result**. | `~{emailTemplate}` |
+| **Attribute** | `@{attributeName}` | References an attribute in the current request context. | `@{userInfo}` |
+| **Parameter** | `${parameterName}` | References a request parameter (e.g., HTTP query parameter). | `${userId}` |
+| **Property** | `%{propertyName}` | References an environment property from properties files or system. | `%{app.uploadDir}` |
+| **Template** | `~{templateId}` | Renders the template with the ID `templateId` and includes the result. | `~{emailTemplate}` |
 
 ### 1.1. Property Accessor: `^`
 
-To access a specific property (Getter) of an object referenced by a token expression, use the `^` separator instead of `.`. This is a unique feature of Aspectran to distinguish between dot-delimited IDs and property access.
+To access a specific property (Getter) of an object referenced by a token expression, use the `^` separator instead of `.`. This distinguishes between dot-delimited IDs and property access.
 
 *   **Syntax**: `#{beanId^propertyName}`
 *   **Java Equivalent**: `getBean("beanId").getPropertyName()`
-*   **Explanation**: If you use `.`, Aspectran interprets `bean.property` as the full ID of the bean. Using `^` explicitly tells Aspectran to "get the bean first, then access its property".
+*   **Explanation**: Using `^` explicitly tells Aspectran to "get the data first, then access its property".
 
 ### 1.2. Setting Default Values
 
-You can use the `:` separator to specify a default value to be used if a parameter or attribute is null or missing. This prevents runtime errors and simplifies configuration.
+You can use the `:` separator within a token to specify a default value if the token resolves to null or is missing.
 
 ```xml
 <attributes>
@@ -43,100 +43,118 @@ You can use the `:` separator to specify a default value to be used if a paramet
 
 ### 1.3. Token Directives
 
-You can specify the source of a value within a token expression using a colon (`:`). These are called token directives.
+Directives provide explicit instructions on how to resolve a token's value. This is a crucial feature for accessing static members or specific resources.
 
 | Directive | Description | Example |
 | :--- | :--- | :--- |
 | **`field`** | References the value of a static field. | `#{field:java.awt.Color^RED}` |
 | **`method`** | Calls a static method and uses its return value. | `#{method:java.lang.System^currentTimeMillis}` |
 | **`class`** | References a static property (getter) of a class. | `#{class:java.io.File^separator}` |
-| **`classpath`** | References a property from a resource on the classpath. | `%{classpath:config/jdbc.properties^jdbc.url}` |
-| **`system`** | References a Java System Property value. | `%{system:user.home}` |
+| **`classpath`** | Loads properties from a classpath resource. | `%{classpath:config/jdbc.properties^jdbc.url}` |
+| **`system`** | Accesses a Java System Property. | `%{system:user.home}` |
 
-## 2. AsEL Expressions (Token Expressions + OGNL)
+## 2. AsEL Expressions (Token Integration + OGNL)
 
-AsEL expressions combine the simplicity of token expressions with the power of OGNL (Object-Graph Navigation Language). This enables dynamic data processing, mathematical operations, and complex conditional logic directly in your configuration.
+When multiple tokens are combined or used within the `@Value` annotation or Thymeleaf templates, they form an AsEL expression. If only one token is present, Aspectran simply retrieves that single value. If multiple tokens or operators are involved, the expression is evaluated using OGNL.
+
+### 2.1. Single Token Usage Example
 
 *   **Bean Property Reference**
     ```java
-    // Accessing a property using the getter method
+    // References a property using the getter method
     @Value("%{properties^serverPort}")
     public int port;
     ```
 
-*   **String Concatenation**
-    ```java
-    // Combining static strings with dynamic values
-    @Value("'User: ' + @{user^name} + ' (ID: ' + ${userId} + ')'")
-    public String userDescription;
+*   **Parameter Reference**
+    ```xml
+    <item name="userId">${userId}</item>
     ```
+
+### 2.2. Complex Expressions
 
 *   **Arithmetic & Logical Operations**
     ```java
-    // Calculating values dynamically
-    @Value("#{cart^totalPrice} * 1.1") // Adding 10% tax
-    public double totalWithTax;
+    @Value("#{cart^totalPrice} * 1.1") // 10% tax calculation
     ```
 
 *   **Conditional Logic (Ternary Operator)**
     ```java
-    // Switching values based on conditions
     @Value("%{app.mode} == 'dev' ? 'DEBUG' : 'INFO'")
-    public String logLevel;
     ```
 
 *   **List and Map Access**
     ```java
-    // Accessing elements in a List or Map
-    @Value("@{userList}[0]") // First user in the list
-    public User firstUser;
-
-    @Value("@{configMap}['timeout']") // Value for key 'timeout'
-    public int timeout;
+    @Value("@{userList}[0]") // First element in a list
     ```
 
-### 2.1. String Concatenation Rules
+### 2.3. String Concatenation Rules
 
-When an AsEL expression contains multiple tokens or a mix of literal text and tokens, the entire string is evaluated as a single OGNL expression. Therefore, you must strictly follow OGNL syntax, such as using single quotes (`'`) for literal text and the `+` operator for concatenation.
+When an AsEL expression contains multiple tokens or a mix of literal text and tokens, Aspectran substitutes each token with a temporary OGNL variable (e.g., `#__var1__`) and evaluates the entire string as a **single OGNL expression**. Therefore, you must follow strict OGNL/Java syntax for string concatenation.
 
 *   **Correct Example**:
     ```java
     @Value("'User: ' + @{user^name} + ' (ID: ' + ${userId} + ')'")
     ```
-    In this case, `@{user^name}` and `${userId}` are substituted with OGNL variables (e.g., `#__var1__`), and OGNL evaluates the combined string successfully.
+    *   **Why it works**: After token substitution, the expression becomes something like `'User: ' + #__var1__ + ' (ID: ' + #__var2__ + ')'`. This is a perfectly valid OGNL expression that concatenates strings using the `+` operator.
 
 *   **Incorrect Example**:
     ```java
     @Value("User: @{user^name} (ID: ${userId})")
     ```
-    This will cause an `ExpressionParserException` because `User:` and `(ID:` are not valid OGNL syntax when used without quotes and operators.
+    *   **Why it fails**: This is substituted as `User: #__var1__ (ID: #__var2__)`. OGNL cannot evaluate this because `User:` and `(ID:` are not enclosed in quotes and there are no `+` operators to join the segments. It results in an `ExpressionParserException`.
+
+### 2.4. Advanced Operators
+
+AsEL provides enhanced operators that go beyond native OGNL, offering a modern syntax similar to Spring Expression Language (SpEL).
+
+#### 2.4.1. Safe Navigation Operator: `?.`
+Avoids `NullPointerException` by returning `null` if any element in the chain is null.
+*   **Property Chaining**: `@{user}?.address?.city`
+*   **Method Call**: `@{user}?.getName()` (Returns null if user is null)
+*   **With Collection**: `@{members}?.size()`
+
+#### 2.4.2. Elvis Operator: `?:`
+A shorthand for the ternary operator to provide a default value when an expression evaluates to `null`.
+*   **Simple Fallback**: `@{user^nickname} ?: 'Anonymous'`
+*   **Nested Elvis**: `@{user^nickname} ?: ${guestName} ?: 'Stranger'`
+*   **With Safe Navigation**: `@{user}?.profile?.bio ?: 'No bio available'`
+
+#### 2.4.3. Type Operator: `T()`
+Accesses static classes, constants, and methods.
+*   **Constants**: `T(java.lang.Math).PI`
+*   **Static Methods**: `T(java.lang.System).currentTimeMillis()`
+*   **Utility Methods**: `T(com.aspectran.utils.StringUtils).hasText(@{user^name})`
+
+#### 2.4.4. Collection Selection & Projection
+Enables powerful SpEL-style processing for collections (List, Map, Set).
+*   **Selection (Filter)**: `@{members}.?[age > 20]` (Returns a list of members older than 20)
+*   **Projection (Transform)**: `@{members}.![name]` (Returns a list of just the names)
+*   **Combined**: `@{members}.?[role == 'ADMIN'].![email]` (Names of all admins)
+*   **First/Last Match**:
+    *   `@{members}.^[age > 18]` (First adult)
+    *   `@{members}.$[age > 18]` (Last adult)
+
+#### 2.4.5. Matches Operator
+Performs regular expression matching.
+*   **Email Validation**: `${email} matches '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$'`
+*   **Pattern Check**: `@{user^role} matches 'ADMIN|MANAGER'`
 
 ## 3. Template Usage
 
-Templates are a powerful feature for generating dynamic content using AsEL. Aspectran supports two methods: built-in templates and integration with external template engines.
+Templates generate dynamic content using AsEL. The `~{...}` token renders a template and includes its evaluated result.
 
-### 3.1. Template Processing Methods
-
-*   **Built-in Template**: Aspectran's `TokenEvaluator` directly parses and processes the AsEL token expressions and expressions contained in the template content to produce the final result. It is suitable for generating simple dynamic text.
-*   **External Template Engine**: You can delegate template processing by registering an external template engine like FreeMarker or Thymeleaf as a Bean. This is useful for creating complex views.
-
-### 3.2. `~{templateId}` Token Expression Usage Example
-
-The `~{...}` token is used to render the template with the specified ID at the current location and include its result.
+### 3.1. Built-in Template Example
 
 ```xml
-<!-- Built-in template rule definition -->
-<template id="welcomeMailTemplate" style="apon">
-    |Hello, @{user^name}! Welcome to our service.
-    |Your current point balance is #{pointBean^currentPoints}.
+<template id="welcomeMail" style="apon">
+    |Hello, @{user^name:Guest}!
+    |Your score is @{score^total:0}.
 </template>
-
-<!-- Use the template by transforming it elsewhere -->
-<transform format="text">
-  <template>~{welcomeMailTemplate}</template>
-</transform>
 ```
-*   **Explanation**: In the example above, the `~{welcomeMailTemplate}` token finds and renders the template with the ID `welcomeMailTemplate`. The `@{user^name}` and `#{pointBean^currentPoints}` tokens inside the template are evaluated first, and then the final completed text is included as the content of the `<transform>`.
+
+> ⚠️ **Note**\
+> The built-in template engine performs simple token substitution. It evaluates tokens individually and concatenates them with plain text. Therefore, complex AsEL operators like `?.` or `?:` cannot be used directly in the text body of a built-in template. To fully utilize advanced AsEL operators within templates, it is highly recommended to use an external engine like Thymeleaf.
 
 ## 4. Caution: No Nesting
 
@@ -153,7 +171,7 @@ In the Aspectran Shell environment, you can use the `evaluate` command to immedi
 
 *   **Basic Usage**: `evaluate "<expression>"`
 *   **Example**:
-    ```bash
+    ```shell
     default> evaluate "1 + 1"
     2
     default> evaluate "#{userService^getUserCount()}"
