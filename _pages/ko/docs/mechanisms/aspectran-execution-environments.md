@@ -27,7 +27,6 @@ Aspectran의 Netty 모듈(`with-netty`)은 Netty의 고성능 논블로킹 I/O(N
 
 ### 2.2. 주요 진입점
 *   `com.aspectran.netty.server.NettyServer` (구현체 `DefaultNettyServer`): Netty의 `ServerBootstrap`을 구성하고, Boss/Worker `EventLoopGroup` 스레드 풀 및 채널 파이프라인을 부트스트랩합니다.
-*   `com.aspectran.netty.service.DefaultNettyServiceBuilder`: Netty 서버 구성 설정(`NettyConfig`)을 파싱하여 `NettyService`를 빌드하고 초기화합니다.
 
 ### 2.3. 핵심 컴포넌트
 *   `NettyService` (구현체 `DefaultNettyService`): Netty 서버의 라이프사이클을 Aspectran의 `CoreService` 체계와 결합하는 특화 서비스입니다.
