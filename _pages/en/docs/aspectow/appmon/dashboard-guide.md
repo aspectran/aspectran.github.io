@@ -137,7 +137,33 @@ A charting engine that visualizes real-time request volume trends and active ses
 
 *   **Activities & Sessions Time-Series Charts**:
     *   Plots request processing throughput and active session counts concurrently on a unified temporal axis.
-    *   Supports zooming (Zoom-in) and panning (Pan) via mouse wheel or dragging across chart areas, with a `Reset Zoom` button to restore default bounds instantly.
+    *   Features a built-in live theme detection engine (`MutationObserver`) that automatically synchronizes tooltips, crosshairs, and grid line colors in real time when toggling between light and dark modes, reducing eye fatigue and optimizing legibility.
+*   **Native Zoom Controls and Gesture Interactions (Native Zoom & Gestures)**:
+    *   Eliminates external plugin dependencies in favor of a lightweight, high-performance native browser zoom engine.
+    *   **Mini Zoom Toolbar**: A compact zoom toolbar smoothly appears on hover or first tap at the top right of the chart, providing intuitive controls for zoom in (`+`), zoom out (`-`), and full view reset (`Fullscreen Exit`).
+    *   **Double-Click / Double-Tap Zoom**: Double-clicking (or double-tapping on mobile touchscreens) zooms in step-by-step centered precisely on the selected data point along the timeline.
+    *   **Smart Reset Toggle**: Double-clicking again when at maximum zoom instantly resets the view back to the original full range.
+    *   **Responsive Font Scaling (`getResponsiveFontSize`)**: Automatically senses chart container pixel width and dynamically scales X/Y-axis tick labels (9px to 12px), Y-axis title (10px to 12px), and tooltip body fonts to prevent text overlapping or clipping on mobile and narrow screens.
+*   **Chart Options Menu and Data Export (Chart Options Menu)**:
+    *   Clicking the more options (`...`) button at the top right of the chart opens a versatile dropdown menu for advanced data interactions.
+
+    {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/screenshots/appmon-chart-options-menu.png" alt="AppMon Chart Options Menu" %}
+
+    *   **View as table (Interactive Table View)**:
+        *   Instantly switches time-series chart data into an intuitive spreadsheet-style table view.
+        *   Equipped with a **Sticky Header** and top-right close (`×`) button, allowing smooth vertical scrolling through voluminous datasets while preserving column labels for effortless numerical cross-referencing.
+        *   Date/Time formats automatically adapt to the selected query unit (day, week, month, year, etc.), with thousand separators applied across all metrics for clean comparative analysis.
+
+    {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/screenshots/appmon-chart-table-view.png" alt="AppMon Chart Table View" %}
+
+    *   **Download CSV (Spreadsheet Data Export)**:
+        *   Instantly exports rendered time-series data (timestamp, request volume, active sessions) as a standard CSV file.
+        *   Applies UTF-8 BOM encoding (`\uFEFF`) by default to prevent character corruption when opened in Microsoft Excel and various spreadsheet tools.
+        *   File names automatically include the event ID and download timestamp (e.g., `activities-chart-20261101-152000.csv`) for immediate use in operational archiving and external reporting.
+    *   **Download PNG (Theme-Aware High-Resolution Image Export)**:
+        *   Saves the current chart canvas as a high-resolution PNG image.
+        *   Solves transparent background issues common in raw HTML5 canvas exports by compositing the active theme's background color (dark mode: black, light mode: white) on an off-screen canvas, ensuring crisp, professional graphic rendering anywhere.
+        *   Enables instant insertion of clean chart visuals into incident postmortems, weekly service reports, and executive presentations without manual screen capture or editing.
 *   **Flexible Time-Unit Presets (Date Unit Options)**:
     *   **`5m` (Live)**: A real-time 5-minute sliding window mode designed to observe immediate traffic swings second by second.
     *   **`1D` (Day)**: Analyzes hourly traffic distributions and peak periods across a 24-hour cycle.
