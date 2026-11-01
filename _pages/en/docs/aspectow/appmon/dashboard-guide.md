@@ -67,7 +67,7 @@ A high-precision resource monitoring area dedicated to observing system resource
 
 ## 4. Metric Trend Visualization (Inline Sparklines & Detail Popover Charts)
 
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/screenshots/appmon-metric-visualization.png" alt="AppMon Metric Trend Sparklines and Detail Popover" %}
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-metric-visualization.png" alt="AppMon Metric Trend Sparklines and Detail Popover" %}
 
 The Metrics Bar located at the top of the dashboard and on each application card goes beyond merely presenting static current numbers; it provides dynamic visualization capabilities that allow operators to intuitively observe the real-time trend of metrics (retaining the most recent 60 incoming data points) while the dashboard remains open.
 

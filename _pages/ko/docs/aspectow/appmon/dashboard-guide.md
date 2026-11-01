@@ -67,7 +67,7 @@ AppMon은 대규모 분산 환경과 마이크로서비스 아키텍처를 원�
 
 ## 4. 메트릭 변화 추이 시각화 (인라인 스파크라인 및 상세 팝오버 차트)
 
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/screenshots/appmon-metric-visualization.png" alt="AppMon Metric Trend Sparklines and Detail Popover" %}
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/appmon-metric-visualization.png" alt="AppMon Metric Trend Sparklines and Detail Popover" %}
 
 대시보드 상단 및 각 애플리케이션 카드에 배치된 메트릭 바(Metrics Bar)는 단순한 현재 수치 표시에 그치지 않고, 대시보드가 열려 있는 동안 수신된 최근 60개 시점의 실시간 변화 추이를 직관적으로 파악할 수 있는 동적 시각화 기능을 제공합니다.
 
