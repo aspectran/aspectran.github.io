@@ -148,17 +148,17 @@ graph TD
 
 AppMon provides a comprehensive suite of built-in readers spanning system hardware metrics, container worker threads, database connection pools, application activities, user sessions, and disk logs.
 
-| Exporter Type | Reader Class Full Name | Monitored Target & Key Metrics | Recommended Sampling Interval |
+| Exporter Type | Reader Class Name | Monitored Target & Key Metrics | Recommended Sampling Interval |
 | :--- | :--- | :--- | :--- |
-| **`metric`** | `com.aspectran.aspectow.appmon.engine.exporter.metric.jvm.CpuUsageReader` | JVM process CPU usage, host system CPU usage, available processor cores, system load average | 500ms ~ 1000ms |
-| **`metric`** | `com.aspectran.aspectow.appmon.engine.exporter.metric.jvm.HeapMemoryUsageReader` | JVM Heap memory used, maximum allocatable heap, committed heap | 500ms ~ 1000ms |
-| **`metric`** | `com.aspectran.aspectow.appmon.engine.exporter.metric.undertow.UndertowThreadPoolMetricsReader` | Undertow worker thread pool active threads, maximum threads, pool size, queued tasks | 500ms ~ 1000ms |
-| **`metric`** | `com.aspectran.aspectow.appmon.engine.exporter.metric.netty.NettyThreadPoolMetricsReader` | Netty EventLoop thread pool active threads, maximum capacity, task processing throughput | 500ms ~ 1000ms |
-| **`metric`** | `com.aspectran.aspectow.appmon.engine.exporter.metric.jdbc.HikariPoolMBeanReader` | HikariCP pool status (Active connections, Idle connections, Total connections, Threads awaiting connection) | 500ms ~ 2000ms |
-| **`event`** | `com.aspectran.aspectow.appmon.engine.exporter.event.activity.ActivityEventReader` | Aspectran Activity/Translet executions, response latency, success/failure counts, active in-flight requests | Instant on execution |
-| **`event`** | `com.aspectran.aspectow.appmon.engine.exporter.event.session.SessionEventReader` | Session creation/destruction, active session count, live authentication changes, client IP & geolocation | Instant on lifecycle event |
-| **`log`** | `com.aspectran.aspectow.appmon.engine.exporter.log.LogExporter` | Real-time tailing and reverse historical retrieval (`loadPrevious`) of application and access log files | 200ms ~ 500ms |
-| **`data`** | `com.aspectran.aspectow.appmon.engine.exporter.event.ChartDataExporter` | Pre-aggregated time-series statistical datasets (5min, hour, day, month, year) for dashboard charts | On-demand refresh |
+| **`metric`** | [`CpuUsageReader`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/engine/exporter/metric/jvm/CpuUsageReader.java) | JVM process CPU usage, host system CPU usage, available processor cores, system load average | 500ms ~ 1000ms |
+| **`metric`** | [`HeapMemoryUsageReader`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/engine/exporter/metric/jvm/HeapMemoryUsageReader.java) | JVM Heap memory used, maximum allocatable heap, committed heap | 500ms ~ 1000ms |
+| **`metric`** | [`UndertowThreadPoolMetricsReader`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/engine/exporter/metric/undertow/UndertowThreadPoolMetricsReader.java) | Undertow worker thread pool active threads, maximum threads, pool size, queued tasks | 500ms ~ 1000ms |
+| **`metric`** | [`NettyThreadPoolMetricsReader`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/engine/exporter/metric/netty/NettyThreadPoolMetricsReader.java) | Netty EventLoop thread pool active threads, maximum capacity, task processing throughput | 500ms ~ 1000ms |
+| **`metric`** | [`HikariPoolMBeanReader`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/engine/exporter/metric/jdbc/HikariPoolMBeanReader.java) | HikariCP pool status (Active connections, Idle connections, Total connections, Threads awaiting connection) | 500ms ~ 2000ms |
+| **`event`** | [`ActivityEventReader`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/engine/exporter/event/activity/ActivityEventReader.java) | Aspectran Activity/Translet executions, response latency, success/failure counts, active in-flight requests | Instant on execution |
+| **`event`** | [`SessionEventReader`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/engine/exporter/event/session/SessionEventReader.java) | Session creation/destruction, active session count, live authentication changes, client IP & geolocation | Instant on lifecycle event |
+| **`log`** | [`LogExporter`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/engine/exporter/log/LogExporter.java) | Real-time tailing and reverse historical retrieval (`loadPrevious`) of application and access log files | 200ms ~ 500ms |
+| **`data`** | [`ChartDataExporter`](https://github.com/aspectran/aspectow/blob/main/appmon/src/main/java/com/aspectran/aspectow/appmon/engine/exporter/event/ChartDataExporter.java) | Pre-aggregated time-series statistical datasets (5min, hour, day, month, year) for dashboard charts | On-demand refresh |
 
 ## 5. Real-Time Dashboard Visualization & UX Architecture
 
