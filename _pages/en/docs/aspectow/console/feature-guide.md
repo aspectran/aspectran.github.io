@@ -9,7 +9,7 @@ Aspectow Console is a comprehensive visual management system integrating applica
 
 ### Console Layout Structure
 
-*   **Left Sidebar**: A hierarchical navigation menu organized into Management, Utilities, and Governance sections. Menu items are dynamically enabled based on user account Roles and Permissions.
+*   **Left Sidebar**: A hierarchical navigation menu organized into Management, Security, Framework, Utilities, and Governance sections. Menu items are dynamically enabled based on user account Roles and Permissions.
 *   **Top Header (Top Bar)**: Displays the current page breadcrumb path, global search, and system environment profile information.
 *   **Bottom Right Profile & Logout**: Displays the logged-in user's nickname, account name, avatar, and logout button.
 
@@ -304,26 +304,167 @@ Interactive laboratory tool allowing developers to encrypt or decrypt sensitive 
 *   **Encryption/Decryption Execution Form**: Configure Algorithm, Password, Salt (optional), and Operation Mode (Encrypt/Decrypt) to execute text encryption or decryption.
 *   **Execution Result & History**: Provides result text clipboard copying and an execution history panel to inspect past runs (Timestamp, Mode, Algorithm) and easily restore them for re-execution.
 
-## 6. Framework Diagnostics & Developer Tools
+## 6. Framework Diagnostics
 
-A suite of tools for Aspectran framework runtime diagnostics and developer productivity.
+A comprehensive diagnostic suite designed to inspect the runtime execution environment, core engines, and infrastructure component specifications of the Aspectran framework, while providing architectural deep dives into its internal registries.
 
-### 6.1. Framework Configuration Viewer
+### 6.1. Framework Components Viewer
 
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-config.png" alt="Framework Configuration Viewer" %}
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-components.png" alt="Framework Components Viewer" %}
 
-Inspects runtime framework configurations, rule file hierarchy, and active profiles (`dev`, `prod`, `test`).
+A real-time diagnostic tool that explores and visualizes the runtime configuration, operational parameters, and connection specifications of core framework components registered in the `ActivityContext` and `BeanRegistry` of the running application.
+
+Powered by `ComponentInspectorService` in `aspectow-node`, it leverages runtime reflection and a safe component provider architecture (`ComponentInfoProvider`) to extract non-disruptive specification data without introducing rigid, compile-time dependencies on external modules.
+
+#### Top Control Bar & Target Selector
+
+*   **Target Group (Cluster Target Node Group Selector)**:
+    *   `Local Node`: Directly inspects the framework components of the local node where the management console is currently operating.
+    *   `Remote Target Group`: In a clustered environment (such as Gateway Mode), selecting a specific server group sends asynchronous commands via the remote command bus (`RemoteCommandManager`) to collect and centralize component specifications from across the cluster.
+*   **Refresh Button**: Instantly re-queries the component status of target nodes, invalidating cached data and updating the screen with the latest live specifications.
+*   **Status Pill Badge**: Visually conveys the current query and parsing status (`READY`, `LOADING`, `ERROR`) via color-coded LED badges.
+
+#### Multi-Context Tab Navigation (Context Tabs)
+
+Fully supports Aspectran's hierarchical and multi-context architectures. All loaded `ActivityContext` instances (e.g., `root`, derived sub-contexts) are automatically listed as tabs across the top bar. Clicking a tab instantly switches the diagnostic scope to the components and beans registered within that specific context.
+
+#### Left Component Catalog Panel
+
+*   **Real-time Component Filter**: The filter input box (`Filter components...`) enables instant fuzzy filtering by component name, bean ID, or category.
+*   **Component List Cards**:
+    *   **Component Type & Icon**: Each card displays an intuitive icon reflecting the component category (database, template engine, scheduler, session store, security processor, etc.).
+    *   **Display Name & Bean ID**: Shows the human-friendly display name alongside the registered bean ID in monospace font.
+    *   **Category Badge**: Displays categorized badges (`Core`, `Web`, `Data`, `Session`, `Schedule`, `Template`, etc.) for quick domain identification.
+    *   **Active Selection State**: The currently selected component is highlighted and synchronized with the right-hand specification panel.
+
+#### Right Detail Specification Panel & Specialized Component Views
+
+The panel header displays the component title, category badge, and a **Raw Data Toggle Button** to seamlessly switch between structured visual cards and raw JSON syntax.
+
+*   **General Properties**:
+    *   Provides standard bean lifecycle metadata in a clear tabular layout, including Component ID, fully qualified implementation class name (`className`), bean scope (`singleton`, `prototype`, `request`, `session`), Lazy Init flag, and factory method definitions.
+*   **Specialized Visualizations for 14 Core Components**:
+    1.  **Multipart Form Data Parser (`MultipartFormDataParser`)**:
+        *   Visualizes key upload processing parameters for web applications.
+        *   **Temporary Directory (`Temp File Dir`)**: The file system path used for spooling incoming file uploads.
+        *   **Capacity Limit Metrics**: Displays Maximum Request Size (`Max Request Size`), Maximum File Size (`Max File Size`), and In-Memory Buffer Threshold (`Max In-Memory Size`) with human-readable byte unit formatting (e.g., `10 MB`, `100 MB`, `256 KB`, or `Unlimited`).
+        *   **Extension Whitelist/Blacklist**: Renders allowed file extensions (`Allowed Extensions`) and blocked extensions (`Denied Extensions`) as green and red tag badges to verify upload security policies immediately.
+    2.  **MyBatis SQL Session Factory (`SqlSessionFactory`)**:
+        *   Inspects database persistence integration and MyBatis mapper configurations.
+        *   **Environment & DataSource**: MyBatis Environment ID, transaction factory, and datasource implementation class.
+        *   **Mapper Metrics Counters**: Displays summary counter cards for total Mapped Statements, registered Type Aliases, and Type Handlers.
+        *   **Engine Execution Flags**: Displays the default executor type (`Executor Type`: `SIMPLE`, `REUSE`, `BATCH`), secondary cache enablement (`Cache Enabled`), and lazy loading status (`Lazy Loading Enabled`) with toggle badges.
+    3.  **Template Renderer (`TemplateRenderer`)**:
+        *   Verifies template engine configurations (FreeMarker, Pebble, Thymeleaf, etc.).
+        *   **Engine Implementation**: Template renderer engine class and default character encoding (`Default Encoding`, e.g., `UTF-8`).
+        *   **Template Rules Statistics**: Total registered template rules count (`Template Rules Count`) and template caching flag.
+        *   **Registered Template Rules List**: Renders all defined template rule names as inline badge tags for immediate cataloging.
+    4.  **Scheduler Service (`SchedulerService`)**:
+        *   Monitors the background Quartz-based scheduling engine.
+        *   **Lifecycle Status Badge**: Reflects the real-time operational state of the scheduler (`ACTIVE`, `BUSY`, `PAUSED`).
+        *   **Threads & Storage**: Worker thread pool capacity (`Thread Pool Size`), JobStore implementation class, and cumulative executed jobs count (`Executed Jobs Count`).
+        *   **Registered Schedule Rules Table**: Summarizes all registered schedule rules in a detailed table showing Rule ID, trigger type (`Cron` vs `Simple Interval`), Cron expressions, and execution queue status.
+    5.  **Session Manager & Cache (`SessionManager` & `SessionCache`)**:
+        *   Audits session governance policies and real-time lifecycle statistics across standalone and clustered nodes.
+        *   **Session Expiration Policy**: Default idle timeout (`Default Max Idle Seconds`, automatically formatted into human-friendly time units like `30m`, `1h`), maximum active session limit (`Max Active Sessions`), and session eviction idle period.
+        *   **Storage & Clustering**: Clustered session replication flag (`Cluster Enabled`) and session persistence store implementation (`FileSessionStore`, `LettuceSessionStore`, etc.).
+        *   **SessionStatistics Live Metric Cards**: Visualizes live metrics via four key counter cards: Active Sessions (`Active Sessions`), peak concurrent sessions (`Highest Active / Peak`), cumulative created sessions (`Created Sessions`), and cumulative expired sessions (`Expired Sessions`).
+    6.  **Locale Resolver (`LocaleResolver`)**:
+        *   Inspects internationalization and timezone resolution strategies.
+        *   **Default Environment**: Default system locale (`Default Locale`, e.g., `ko_KR`, `en_US`) and default timezone (`Default TimeZone`).
+        *   **Supported Locales**: Lists officially supported application locales as tag badges.
+        *   **Cookie Resolver Attributes**: When using cookie-based resolution, provides an attribute table detailing Cookie Name, Max-Age, Path, Domain, and security flags (`Secure`, `HttpOnly`).
+    7.  **CORS Processor (`CorsProcessor`)**:
+        *   Verifies Cross-Origin Resource Sharing (CORS) security rules.
+        *   **Allowed Origins**: Lists permitted domains, protocols, and wildcard origin patterns.
+        *   **Allowed HTTP Methods**: Highlights permitted HTTP request methods (`GET`, `POST`, `PUT`, `DELETE`, `OPTIONS`, etc.) with color-coded badges.
+        *   **Header Policies**: Lists permitted client request headers (`Allowed Headers`) and exposed response headers (`Exposed Headers`).
+        *   **Credentials & Cache**: Indicates credential inclusion support (`Allow Credentials`: `true`/`false`) and browser Preflight cache duration (`Max Age`).
+    8.  **Redis Client & Connection Pool (`RedisConnectionPoolConfig` & `RedisURI`)**:
+        *   Inspects Lettuce-based Redis connectivity and connection pool infrastructure.
+        *   **Endpoint Configuration**: Host address, port number, and target database index.
+        *   **Connection Pool Sizing**: Maximum total connections (`Max Total`), minimum idle connections (`Min Idle`), and maximum idle connections (`Max Idle`).
+        *   **Security & Masked URI**: SSL/TLS encryption status and a cryptographically masked connection URI (`redis://:********@host:port/db`) ensuring sensitive passwords are never exposed.
+    9.  **Framework Core Registries (`ActivityContext`, `BeanRegistry`, `TransletRegistry`, `AspectRegistry`, etc.)**:
+        *   Summarizes core engine dimensions, active execution profiles, registered singleton/prototype bean totals, translet mappings, and aspect rule counts.
+*   **Raw Data Viewer Mode**:
+    *   Clicking the `Raw Data` button toggles the view into a syntax-highlighted JSON viewer containing the raw specification payload, allowing developers to inspect full attribute trees for deep debugging or automation scripts.
 
 ### 6.2. Framework Anatomy Viewer
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-anatomy.png" alt="Framework Anatomy Viewer" %}
 
-Inspects internal `ActivityContext` registries:
-*   **Bean Registry**: Registered bean IDs, class types, scopes (singleton, prototype, request, session), lazy-init settings, and dependencies.
-*   **Translet Registry**: Translet mappings, HTTP method bindings, Action execution pipelines, and View forwarding.
-*   **Aspect Registry**: AOP Pointcut patterns and Advice (Before/After/Around) definitions.
+An architectural diagnostic tool that conducts an anatomical analysis of the `ActivityContext`—the core heart of Aspectran—visualizing all loaded configuration parameters, beans, translets, AOP aspects, background schedules, templates, and type converter rules.
 
-### 6.3. Wildcard Tester
+Powered by `AnatomyDataService` in `aspectow-node`, it reverse-deserializes runtime rule objects (`*Rule`) held in memory into Aspectran's proprietary **APON (Aspectran Parameters Object Notation)** format, presenting an exact, transparent blueprint of how the application is wired and executing.
+
+#### Top Control Bar & Target Selector
+
+*   **Target Group (Cluster Target Node Group Selector)**:
+    *   `Local Node`: Inspects the internal `ActivityContext` anatomy of the local node running the console.
+    *   `Remote Target Group`: When operating in a cluster, selecting a target node group dispatches asynchronous inspection commands over the remote command bus (`RemoteCommandManager`), collecting and unifying remote context data centrally.
+*   **Refresh Button**: Re-gathers fresh anatomy data from target nodes to instantly update the UI.
+*   **Status Pill Badge**: Displays connection and parsing health (`READY`, `LOADING`, `ERROR`) via LED status pills.
+
+#### Multi-Context Tab Navigation (Context Tabs)
+
+Seamlessly accommodates environments where multiple `ActivityContext` instances run hierarchically or concurrently within a single JVM. All loaded context names appear dynamically as tabs across the top bar, allowing operators to switch between isolated rule definitions instantly.
+
+#### Left Hierarchical Rule Tree Panel
+
+*   **Real-time Rule Filter**: The top search input (`Filter items...`) filters rule names, bean IDs, class names, and translet paths in real time.
+*   **Collapsible Accordion Categories**: Anatomy data is organized into key framework domains. Each category header features a total item count badge and can be expanded or collapsed with a click, synchronizing selection with the right detail panel.
+
+#### 8 Core Anatomy Data Categories
+
+1.  **Configuration (Framework Environment Configuration)**:
+    *   Visualizes the complete and sub-modular Aspectran configuration hierarchy in structured APON format.
+    *   `Full Configuration`: Integrated system-wide configuration tree.
+    *   `System Config`: System-level infrastructure and global parameters.
+    *   `Context Config`: Base context, active profiles, and parameter rules.
+    *   `Scheduler Config`: Background scheduler service initialization and thread pool sizing.
+    *   `Web Config`: Web module settings, session managers, servlet/Netty bindings, and request handlers.
+    *   `Daemon Config` / `Shell Config` / `Embed Config`: Runtime-specific operational configurations.
+    *   Sensitive credentials (e.g., passwords, secret keys) are automatically sanitized via regex masking before display.
+2.  **Translet Rules (Translet Routing & Action Pipelines)**:
+    *   Audits request routing definitions registered in `TransletRuleRegistry`.
+    *   Request URL matching patterns, allowed HTTP request methods (`GET`, `POST`, etc.), and parameter mapping rules.
+    *   Action Execution Pipeline: Sequential execution orders, bean method invocation bindings, and argument injection.
+    *   Response & View Forwarding Rules: Template views (Thymeleaf, FreeMarker, Pebble), redirect targets, and REST transform rules.
+3.  **Bean Rules (Bean Definitions & Lifecycle)**:
+    *   Inspects all component beans and their lifecycles registered in `DefaultBeanRegistry`.
+    *   Encompasses ID-based beans (`id`), type-based beans (`type`), and dynamically configurable beans (`configurable`).
+    *   Bean identifiers, fully qualified class names (`className`), scopes (`singleton`, `prototype`, `request`, `session`), and Lazy Init flags.
+    *   Constructor arguments (`constructor`), property injection bindings (`property`), factory methods (`factoryMethod`), and Init/Destroy lifecycle callback methods.
+4.  **Event Listeners (Context & Bean Event Listeners)**:
+    *   Analyzes event listener registries maintained by `EventListenerRegistry`.
+    *   Displays listener method mappings (`ListenerMethod`) across target event classes triggered during context lifecycles and bean events.
+5.  **Aspect Rules (AOP Aspect Rules)**:
+    *   Dissects Aspect-Oriented Programming (AOP) aspect definitions in `AspectRuleRegistry`.
+    *   Pointcut target patterns, translet paths, and bean method matching criteria.
+    *   Advice execution triggers: `Before`, `After`, `Around`, and `Finally` lifecycle interception points.
+    *   Exception handling rules (`Exception Rule`) and pre/post-processing transaction flow controls.
+6.  **Schedule Rules (Scheduled Jobs & Triggers)**:
+    *   Audits batch and background jobs registered in `ScheduleRuleRegistry`.
+    *   Schedule Rule ID, trigger types (`Cron` vs `Simple Interval`), and Cron expression intervals.
+    *   Job lists executed upon trigger activation along with injected job parameter definitions.
+7.  **Template Rules (Template Definitions)**:
+    *   Inspects individual template definitions registered in `DefaultTemplateRenderer`.
+    *   Template identifier names, physical template resource paths, designated template engines, and inline template contents.
+8.  **Type Converters (Data Type Converters)**:
+    *   Inspects data type conversion rules in `TypeConverterRegistry`.
+    *   Displays custom `TypeConverter` implementations registered for converting string or object inputs into target Java types.
+
+#### Right APON Details Panel
+
+*   **APON Syntax-Highlighted Rendering**: Selecting any rule from the left navigation tree renders its complete internal definition formatted in Aspectran's readable, structured **APON (Aspectran Parameters Object Notation)** syntax with high-contrast syntax highlighting.
+*   **Copy to Clipboard Button**: The copy button in the header copies the entire APON text payload directly to the clipboard. Developers can instantly paste these runtime definitions into local configuration files (`.xml`, `.apon`) or test suites for reproduction and validation.
+
+## 7. Developer Tools
+
+A suite of interactive runtime tools designed to test expressions, validate pattern matchers, and convert data structures, significantly accelerating development productivity for Aspectran-based applications.
+
+### 7.1. Wildcard Tester
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-wildcard-tester.png" alt="Wildcard Pattern Tester Tool" %}
 
@@ -332,7 +473,7 @@ Tests Aspectran wildcard pattern matcher rules in real time. Clicking the **Wild
 *   **Test Paths**: Inject sample test paths.
 *   **Match Results**: Displays match success/mismatch status and extracted variable bindings in real time.
 
-### 6.4. AsEL Tester
+### 7.2. AsEL Tester
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-asel-tester.png" alt="AsEL Expression Tester Tool" %}
 
@@ -341,7 +482,7 @@ Evaluates Aspectran Expression Language (AsEL) expressions interactively. Clicki
 *   **Context Variables**: Sample context variable inputs.
 *   **Evaluation Result**: Displays evaluated result, return object data type, and execution duration (ms).
 
-### 6.5. APON Converter
+### 7.3. APON Converter
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-apon-converter.png" alt="APON Data Converter Tool" %}
 
@@ -350,11 +491,14 @@ Bi-directional converter between APON and JSON formats. Clicking the **APON Guid
 *   **JSON Panel**: Input JSON text, choose an APON output style (`PRETTY`, `SINGLE_LINE`, `COMPACT`), and click `APON` to convert it back to APON format.
 *   **Quick Tools**: Provides `Clear All` for resetting input text and `Load Sample` for loading sample APON data.
 
-## 7. Governance & Accounts
+> 💡 **Note**\
+> The interactive PBE encryption laboratory tool, **Vault Tool**, is detailed in [5.2. Vault Tool](#52-vault-tool) and can also be accessed directly via the Developer Tools menu in the top navigation.
+
+## 8. Governance & Accounts
 
 This section manages Console user accounts and security audit logs.
 
-### 7.1. User Management
+### 8.1. User Management
 
 #### User Accounts List
 
@@ -406,13 +550,13 @@ Opened by clicking the **Role Permissions** button on the top toolbar. It allows
 *   **Dynamic Permission Persistence (`Save Changes`)**:
     *   After adjusting permission checkboxes, clicking **Save Changes** immediately updates the `asc_role_permission` database mappings, applying changes to active sessions at runtime without restarting the server.
 
-### 7.2. Login History Audit
+### 8.2. Login History Audit
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-login-history.png" alt="Login History Audit Screen" %}
 
 Audits login timestamps, client IP addresses, IP Geo Location flag icons, success/failure statuses, error reasons, and User-Agent strings to verify system access security thoroughly.
 
-### 7.3. Security Audit Log
+### 8.3. Security Audit Log
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-audit-log.png" alt="Security Audit Log Screen" %}
 

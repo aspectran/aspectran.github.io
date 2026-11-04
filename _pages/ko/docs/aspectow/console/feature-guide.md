@@ -9,7 +9,7 @@ Aspectow Console은 Aspectran 프레임워크 기반 애플리케이션의 모�
 
 ### 콘솔 레이아웃 구조
 
-*   **좌측 사이드바 (Sidebar)**: Management, Utilities, Governance 섹션으로 구분된 계층형 내비게이션 메뉴입니다. 사용자의 계정 역할(Role) 및 권한(Permission)에 따라 접근 가능한 메뉴만 활성화됩니다.
+*   **좌측 사이드바 (Sidebar)**: Management, Security, Framework, Utilities, Governance 섹션으로 구분된 계층형 내비게이션 메뉴입니다. 사용자의 계정 역할(Role) 및 권한(Permission)에 따라 접근 가능한 메뉴만 활성화됩니다.
 *   **상단 헤더 (Top Bar)**: 현재 페이지의 위치 경로(Breadcrumb), 글로벌 검색 및 시스템 환경 프로필 정보가 위치합니다.
 *   **우측 하단 프로필 & 로그아웃**: 로그인한 사용자의 닉네임, 계정명, 아바타 및 로그아웃 버튼이 위치합니다.
 
@@ -306,26 +306,168 @@ Aspectran의 PBE 암호화 기반 보안 토큰을 안전하게 보관하는 전
 *   **암/복호화 실행 폼**: 알고리즘(Algorithm), 비밀번호(Password), Salt 값 및 모드(Encrypt/Decrypt)를 설정하고 텍스트 암/복호화를 실행합니다.
 *   **실행 결과 및 히스토리**: 연산된 결과 텍스트 복사 기능 및 과거 암/복호화 실행 이력(시간, 모드, 알고리즘)을 확인하고 손쉽게 재실행(Restore)할 수 있는 히스토리 목록을 제공합니다.
 
-## 6. 프레임워크 진단 및 개발자 도구
+## 6. 프레임워크 진단
 
-Aspectran 프레임워크 런타임 진단 및 개발 생산성을 극대화하기 위한 도구 모음입니다.
+Aspectran 프레임워크의 런타임 가동 환경, 코어 엔진 및 인프라 컴포넌트의 설정 스펙을 정밀 진단하고 내부 아키텍처 구조를 심층 분석하는 섹션입니다.
 
-### 6.1. 프레임워크 구성 뷰어
+### 6.1. 프레임워크 컴포넌트 뷰어
 
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-config.png" alt="Framework Configuration Viewer" %}
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-components.png" alt="Framework Components Viewer" %}
 
-현재 구동 중인 Aspectran 프레임워크의 런타임 구성 정보, 로딩된 규칙 파일(Rule Files)의 계층 구조 및 활성화된 환경 프로필(`dev`, `prod`, `test` 등)을 트립 뷰어로 조회합니다.
+현재 실행 중인 애플리케이션의 `ActivityContext` 및 `BeanRegistry`에 등록된 핵심 프레임워크 컴포넌트들의 런타임 설정 상태, 동작 파라미터 및 연결 사양을 실시간으로 탐색하고 시각화하는 진단 도구입니다.
+
+`aspectow-node`의 `ComponentInspectorService`를 기반으로 구동되며, 런타임 리플렉션과 안전한 컴포넌트 프로바이더(`ComponentInfoProvider`) 체계를 통해 외부 모듈에 대한 불필요한 하드 의존성 없이 무중단으로 스펙 데이터를 추출합니다.
+
+#### 상단 제어 바 및 대상 선택기
+
+*   **Target Group (클러스터 대상 노드 그룹 선택)**:
+    *   `Local Node`: 현재 관제 콘솔이 구동 중인 로컬 노드의 프레임워크 컴포넌트를 직접 검사합니다.
+    *   `원격 노드 그룹 (Target Group)`: 클러스터 환경(Gateway Mode 등)에서 특정 서버 그룹을 선택하면, 비동기 원격 명령 버스(`RemoteCommandManager`)를 통해 해당 노드들의 컴포넌트 스펙을 수집하여 중앙 콘솔에서 원격 진단할 수 있습니다.
+*   **Refresh 버튼**: 대상 노드의 컴포넌트 상태를 즉시 재조회하여 캐시를 무효화하고 최신 스펙으로 화면을 갱신합니다.
+*   **Status Pill 뱃지**: 데이터 조회 상태(`READY`, `LOADING`, `ERROR`)를 실시간으로 표시합니다.
+
+#### 다중 컨텍스트 탭 내비게이션 (Context Tabs)
+
+Aspectran의 계층형 또는 다중 컨텍스트 구성을 완벽히 지원합니다. 상단 탭 바에 로딩된 모든 `ActivityContext` 목록(예: `root`, 서브 컨텍스트)이 탭으로 자동 나열되며, 탭 클릭 시 해당 컨텍스트 범위에 등록된 빈과 컴포넌트들로 즉시 전환됩니다.
+
+#### 좌측 컴포넌트 카탈로그 패널
+
+*   **실시간 컴포넌트 필터**: 검색 입력창(`Filter components...`)에 컴포넌트 이름, 빈 ID, 카테고리를 입력하여 원하는 컴포넌트를 즉시 필터링합니다.
+*   **컴포넌트 리스트 카드**:
+    *   **Component Type & Icon**: 컴포넌트 유형에 매칭된 직관적인 아이콘(데이터베이스, 렌더러, 스케줄러, 세션, 보안 등)이 함께 표시됩니다.
+    *   **Display Name & Bean ID**: 컴포넌트의 식별 명칭과 빈 등록 ID가 고정폭 폰트로 표기됩니다.
+    *   **Category 뱃지**: 컴포넌트의 소속 카테고리(`Core`, `Web`, `Data`, `Session`, `Schedule`, `Template` 등)가 뱃지로 구분됩니다.
+    *   **활성 선택 상태**: 선택된 컴포넌트는 하이라이트 표시되어 우측 상세 스펙 패널과 동기화됩니다.
+
+#### 우측 상세 스펙 패널 및 유형별 전용 뷰
+
+상단 헤더에는 컴포넌트 제목, 카테고리 뱃지와 함께 **Raw Data 토글 버튼**이 위치하여 구조화된 시각 뷰와 원시 JSON 뷰를 손쉽게 오갈 수 있습니다.
+
+*   **공통 일반 속성 (General Properties)**:
+    *   컴포넌트 ID, 빈 구현 클래스 전체 경로(`className`), 빈 스코프(`singleton`, `prototype`, `request`, `session`), Lazy Init 활성화 여부, 팩토리 메서드 유무 등 기본적인 빈 라이프사이클 메타데이터를 테이블 형태로 제공합니다.
+*   **14종 핵심 컴포넌트 전용 시각화 뷰**:
+    1.  **Multipart Form Data Parser (`MultipartFormDataParser`)**:
+        *   웹 파일 업로드 처리기의 핵심 파라미터를 시각화합니다.
+        *   **임시 저장 디렉터리 (`Temp File Dir`)**: 파일 업로드 시 사용되는 디렉터리 경로.
+        *   **용량 제한 지표**: 최대 요청 크기(`Max Request Size`), 최대 단일 파일 크기(`Max File Size`), 인메모리 버퍼 임계 크기(`Max In-Memory Size`)를 인간 친화적인 바이트 포맷팅(예: `10 MB`, `100 MB`, `256 KB` 또는 `Unlimited`)으로 명확히 표기합니다.
+        *   **확장자 화이트리스트/블랙리스트**: 허용된 파일 확장자(`Allowed Extensions`) 및 차단된 파일 확장자(`Denied Extensions`)를 녹색/적색 태그 뱃지로 렌더링하여 보안 업로드 정책을 즉시 점검할 수 있습니다.
+    2.  **MyBatis SQL 세션 팩토리 (`SqlSessionFactory`)**:
+        *   MyBatis 매퍼 및 데이터베이스 연동 환경을 정밀 진단합니다.
+        *   **Environment & DataSource**: MyBatis 환경 ID(`Environment ID`), 트랜잭션 팩토리 및 데이터소스 클래스 정보.
+        *   **매퍼 지표 통계 카드**: 등록된 전체 Mapped Statements 개수, Type Aliases 개수, Type Handlers 개수를 카운터 카드로 출력합니다.
+        *   **엔진 실행 옵션**: 기본 실행자 모드(`Executor Type`: `SIMPLE`, `REUSE`, `BATCH`), 2차 캐시 활성화 여부(`Cache Enabled`), 지연 로딩 여부(`Lazy Loading Enabled`)를 토글 뱃지로 표시합니다.
+    3.  **템플릿 렌더러 (`TemplateRenderer`)**:
+        *   FreeMarker, Pebble, Thymeleaf 등 뷰 템플릿 엔진의 설정을 검증합니다.
+        *   **엔진 구현 정보**: 템플릿 렌더러 구현 클래스 및 기본 문자셋 인코딩(`Default Encoding`, 예: `UTF-8`).
+        *   **템플릿 규칙 통계**: 등록된 총 템플릿 규칙 수(`Template Rules Count`) 및 캐시 활성화 여부.
+        *   **등록 템플릿 규칙 목록**: 애플리케이션에 정의된 개별 템플릿 규칙 명칭들을 인라인 태그 뱃지 목록으로 한눈에 열람할 수 있습니다.
+    4.  **스케줄러 서비스 (`SchedulerService`)**:
+        *   Quartz 기반 백그라운드 스케줄링 엔진의 내부 가동 상태를 감시합니다.
+        *   **라이프사이클 뱃지**: 스케줄러의 실제 구동 상태(`ACTIVE`, `BUSY`, `PAUSED`)를 실시간 반영합니다.
+        *   **스레드 및 저장소**: 워커 스레드 풀 크기(`Thread Pool Size`), JobStore 클래스 타입, 누적 실행 완료 잡 수(`Executed Jobs Count`).
+        *   **등록된 스케줄 규칙 테이블**: 등록된 모든 스케줄 규칙(Schedule Rule)의 ID, 트리거 유형(`Cron` vs `Simple Interval`), Cron 표현식 및 실행 대기열 현황을 테이블로 요약합니다.
+    5.  **세션 매니저 및 캐시 (`SessionManager` & `SessionCache`)**:
+        *   클러스터 및 단일 노드의 세션 관리 정책과 실시간 수명 주기 통계를 추적합니다.
+        *   **세션 만료 정책**: 기본 세션 유휴 타임아웃(`Default Max Idle Seconds`, 초 단위를 `30m`, `1h` 등 가독성 높은 시간 단위로 변환 출력), 최대 활성 세션 한도(`Max Active Sessions`), 세션 Eviction 유휴 주기.
+        *   **스토리지 및 클러스터링**: 클러스터 세션 복제 활성화 여부(`Cluster Enabled`), 세션 영속화 저장소 구현체(`FileSessionStore`, `LettuceSessionStore` 등).
+        *   **SessionStatistics 실시간 메트릭 카드**: 현재 활성 세션 수(`Active Sessions`), 가동 중 최고 활성 세션 수(`Highest Active / Peak`), 누적 생성된 세션 수(`Created Sessions`), 누적 만료된 세션 수(`Expired Sessions`)를 4대 수치 카드로 시각화합니다.
+    6.  **로케일 리졸버 (`LocaleResolver`)**:
+        *   다국어 지원 및 타임존 결정 정책을 확인합니다.
+        *   **기본 환경**: 시스템 기본 로케일(`Default Locale`, 예: `ko_KR`, `en_US`) 및 기본 타임존(`Default TimeZone`).
+        *   **지원 로케일 목록**: 서비스에서 공식 지원하는 로케일 목록을 태그 뱃지로 나열합니다.
+        *   **쿠키 리졸버 상세 설정**: 쿠키 기반 로케일 리졸버 구동 시 쿠키 이름(`Cookie Name`), 최대 유효기간(`Max-Age`), 적용 경로(`Path`), 도메인(`Domain`), `Secure` 플래그 및 `HttpOnly` 보안 플래그 설정 테이블을 제공합니다.
+    7.  **CORS 프로세서 (`CorsProcessor`)**:
+        *   교차 출처 리소스 공유(CORS) 보안 규칙을 검증합니다.
+        *   **허용 오리진 (`Allowed Origins`)**: 허용된 도메인 및 와일드카드 패턴 목록.
+        *   **허용 HTTP 메서드 (`Allowed Methods`)**: 허용된 요청 메서드(`GET`, `POST`, `PUT`, `DELETE`, `OPTIONS` 등)를 색상 뱃지로 표기.
+        *   **헤더 정책**: 클라이언트 요청 허용 헤더(`Allowed Headers`) 및 브라우저에 노출할 응답 헤더(`Exposed Headers`) 목록.
+        *   **보안 자격증명**: 쿠키/인증 정보를 포함한 요청 허용 여부(`Allow Credentials`: `true`/`false`), 브라우저 Preflight 캐시 최대 유효시간(`Max Age`).
+    8.  **Redis 클라이언트 및 커넥션 풀 (`RedisConnectionPoolConfig` & `RedisURI`)**:
+        *   Lettuce 기반 Redis 연결 및 풀 인프라를 진단합니다.
+        *   **엔드포인트 정보**: 접속 호스트, 포트 번호, 타겟 데이터베이스 인덱스 번호.
+        *   **커넥션 풀 설정**: 최대 커넥션 수(`Max Total`), 최소 유휴 커넥션 수(`Min Idle`), 최대 유휴 커넥션 수(`Max Idle`).
+        *   **보안 및 마스킹된 URI**: SSL/TLS 보안 프로토콜 활성화 여부와 함께, 계정 비밀번호가 암호학적으로 마스킹된 접속 URI(`redis://:********@host:port/db`)를 안전하게 표출합니다.
+    9.  **프레임워크 코어 레지스트리 (`ActivityContext`, `BeanRegistry`, `TransletRegistry`, `AspectRegistry` 등)**:
+        *   컨텍스트의 기본 식별자, 활성화된 프로필 목록, 등록된 싱글톤/프로토타입 빈 개수, 트랜슬릿 총수, 어스펙트 룰 수 등 코어 엔진의 통계 데이터를 체계적으로 집계하여 제공합니다.
+*   **원시 데이터(Raw Data) 뷰어 모드**:
+    *   상단의 `Raw Data` 버튼을 클릭하면 파싱된 원시 스펙 JSON 데이터가 구문 강조 코드 블록으로 즉시 전환되어, 세부 디버깅이나 자동화 스크립트 연동 시 필요한 전체 속성 트리를 직접 점검할 수 있습니다.
 
 ### 6.2. 프레임워크 해부 뷰어
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-anatomy.png" alt="Framework Anatomy Viewer" %}
 
-Aspectran의 심장부인 `ActivityContext` 내부 구조를 해부학적으로 분석합니다.
-*   **Bean Registry**: 등록된 모든 빈(Bean)의 ID, 클래스 타입, 스코프(singleton, prototype, request, session), Lazy Init 여부 및 의존성 관계.
-*   **Translet Registry**: 정의된 모든 트랜슬릿(Translet)의 이름, HTTP 요청 매핑 방식, Action 실행 구조 및 View Forwarding 설정.
-*   **Aspect Registry**: AOP 어스펙트의 Pointcut 패턴 및 Before/After/Around Advice 동작 정의.
+Aspectran의 심장부인 `ActivityContext`에 로딩된 모든 프레임워크 설정, 빈(Bean), 트랜슬릿(Translet), AOP 어스펙트, 스케줄러, 템플릿 및 타입 변환 규칙을 해부학적(Anatomy) 관점에서 심층 분석하고 시각화하는 진단 도구입니다.
 
-### 6.3. Wildcard Tester
+`aspectow-node`의 `AnatomyDataService`를 통해 런타임에 메모리에 적재된 규칙 객체(`*Rule`)들을 프레임워크의 고유 데이터 포맷인 **APON(Aspectran Parameters Object Notation)** 구조로 완전하게 역직렬화하여, 애플리케이션의 실제 동작 청사진을 투명하게 관찰할 수 있도록 지원합니다.
+
+#### 상단 제어 바 및 대상 선택기
+
+*   **Target Group (클러스터 대상 노드 그룹 선택)**:
+    *   `Local Node`: 콘솔이 구동 중인 로컬 노드의 `ActivityContext` 내부 해부 데이터를 조회합니다.
+    *   `원격 노드 그룹 (Target Group)`: 클러스터에 참여 중인 원격 노드 그룹을 선택하면, 비동기 원격 명령 버스(`RemoteCommandManager`)를 통해 해당 노드로 해부 데이터 수집 명령을 발송하고 결과를 중앙에서 취합하여 원격 진단합니다.
+*   **Refresh 버튼**: 대상 노드의 해부 데이터를 실시간으로 재수집하여 화면을 즉시 갱신합니다.
+*   **Status Pill 뱃지**: 데이터 수신 및 파싱 상태(`READY`, `LOADING`, `ERROR`)를 직관적인 LED 색상 뱃지로 표기합니다.
+
+#### 다중 컨텍스트 탭 내비게이션 (Context Tabs)
+
+단일 JVM 내에서 여러 개의 `ActivityContext`가 계층적으로 구동되거나 독립적으로 공존하는 환경을 지원합니다. 로딩된 모든 컨텍스트 이름이 상단 탭으로 자동 생성되며, 탭을 클릭하여 각 컨텍스트에 격리된 규칙 집합으로 즉시 전환할 수 있습니다.
+
+#### 좌측 계층형 규칙 탐색 패널
+
+*   **실시간 규칙 필터**: 상단 검색창(`Filter items...`)을 통해 규칙 이름, 빈 ID, 클래스명, 트랜슬릿 경로 등을 실시간으로 필터링하여 원하는 대상을 신속하게 탐색할 수 있습니다.
+*   **카테고리별 아코디언 트리**: 해부 데이터는 다음과 같은 핵심 프레임워크 영역별로 그룹화되며, 각 카테고리 헤더 옆에는 등록된 규칙의 총개수가 뱃지로 표시됩니다.
+    *   클릭 시 해당 카테고리가 부드럽게 펼쳐지거나 접히며, 카테고리 내의 개별 규칙 아이템을 클릭하면 우측 상세 뷰어와 즉시 연동됩니다.
+
+#### 8대 핵심 해부 데이터 카테고리
+
+1.  **Configuration (프레임워크 환경 설정)**:
+    *   애플리케이션 구동에 사용된 Aspectran 설정 파일의 전체 및 서브 설정을 APON 구조로 시각화합니다.
+    *   `Full Configuration`: 시스템 전체 통합 구성 트리.
+    *   `System Config`: 시스템 레벨 인프라 및 전역 설정.
+    *   `Context Config`: 기본 컨텍스트, 프로필, 파라미터 규칙 설정.
+    *   `Scheduler Config`: 스케줄러 서비스 기동 및 워커 스레드풀 설정.
+    *   `Web Config`: 웹 모듈, 세션, 서블릿/네티 연동 및 요청 처리기 설정.
+    *   `Daemon Config` / `Shell Config` / `Embed Config`: 구동 런타임 환경별 전용 구성.
+    *   비밀번호, 시크릿 키 등 민감 데이터는 보안을 위해 정규표현식 기반의 자동 마스킹 처리가 적용되어 안전하게 표출됩니다.
+2.  **Translet Rules (트랜슬릿 규칙)**:
+    *   `TransletRuleRegistry`에 등록된 모든 트랜슬릿의 요청 라우팅 청사진을 검사합니다.
+    *   요청 경로 패턴(URL Pattern), 허용 HTTP 요청 메서드(`GET`, `POST` 등), 파라미터 매핑 규칙.
+    *   실행 액션(Action) 파이프라인: 액션 실행 순서, 메서드 호출 빈, 인자 전달 바인딩.
+    *   응답 및 뷰 포워딩 규칙: 템플릿 뷰(Thymeleaf, FreeMarker, Pebble), 리다이렉트 경로, REST 응답 변환기 정의.
+3.  **Bean Rules (빈 정의 규칙)**:
+    *   `DefaultBeanRegistry`에 등록된 모든 컴포넌트 빈의 생명주기와 구성 규칙을 분석합니다.
+    *   ID 기반 빈(`id`), 타입 기반 빈(`type`), 및 동적 설정 빈(`configurable`) 전체를 포함합니다.
+    *   빈 고유 식별자, 구현 클래스 풀네임(`className`), 스코프(`singleton`, `prototype`, `request`, `session`), Lazy Init 지연 초기화 플래그.
+    *   생성자 인자(`constructor`) 및 프로퍼티 주입(`property`) 명세, 팩토리 메서드(`factoryMethod`), Init/Destroy 라이프사이클 콜백 정의.
+4.  **Event Listeners (이벤트 리스너)**:
+    *   `EventListenerRegistry`에 등록된 이벤트 리스너 맵을 분석합니다.
+    *   프레임워크 컨텍스트 수명 주기 및 빈 이벤트 발생 시 반응하는 대상 클래스별 리스너 메서드(`ListenerMethod`) 매핑 목록을 제공합니다.
+5.  **Aspect Rules (AOP 어스펙트 규칙)**:
+    *   `AspectRuleRegistry`에 등록된 관점 지향 프로그래밍(AOP) 어스펙트의 동작 규칙을 해부합니다.
+    *   포인트컷(Pointcut) 대상 트랜슬릿 패턴 및 빈 메서드 실행 조건.
+    *   어드바이스(Advice) 실행 타이밍: `Before`, `After`, `Around`, `Finally` 실행 시점 정의.
+    *   예외 발생 시 처리기(`Exception Rule`) 및 전/후처리 트랜잭션 흐름 통제 규칙.
+6.  **Schedule Rules (스케줄링 규칙)**:
+    *   `ScheduleRuleRegistry`에 등록된 배치 및 백그라운드 잡(Job) 정의를 확인합니다.
+    *   스케줄 고유 ID, 트리거 유형(`Cron` vs `Simple Interval`), Cron 표현식 주기.
+    *   스케줄 트리거 발생 시 실행할 대상 잡(Job) 목록과 각 잡에 주입되는 파라미터 규칙.
+7.  **Template Rules (템플릿 규칙)**:
+    *   `DefaultTemplateRenderer`에 등록된 개별 템플릿 정의를 검토합니다.
+    *   템플릿 식별 이름, 템플릿 소스 파일 리소스 경로, 템플릿 엔진 지정 및 인라인 템플릿 내용.
+8.  **Type Converters (타입 변환기)**:
+    *   `TypeConverterRegistry`에 등록된 데이터 타입 변환 매핑을 점검합니다.
+    *   문자열 또는 다양한 객체 입력을 대상 자바 타입으로 변환하는 커스텀 `TypeConverter` 구현체와 타깃 클래스 바인딩 현황을 출력합니다.
+
+#### 우측 APON 상세 뷰어 패널
+
+*   **APON 구문 강조 렌더링**: 좌측 탐색 트리에서 특정 규칙을 선택하면, 해당 규칙의 원시 정의가 Aspectran 고유의 가독성 높은 구조적 객체 표기법인 **APON(Aspectran Parameters Object Notation)** 문법 강조(Syntax Highlighting)로 우측 패널에 즉시 렌더링됩니다.
+*   **Copy to Clipboard 버튼**: 상단 헤더의 복사 버튼을 누르면 우측에 표시된 전체 APON 텍스트가 운영자 PC의 클립보드로 즉시 복사됩니다. 개발자는 이를 활용하여 런타임에 적용된 정확한 규칙 설정을 로컬 설정 파일(`.xml`, `.apon`)이나 테스트 코드로 손쉽게 이식할 수 있습니다.
+
+## 7. 개발자 도구
+
+Aspectran 프레임워크 기반 애플리케이션 개발 시 표현식, 패턴 매칭 및 데이터 변환을 대화형으로 테스트하고 검증하여 개발 생산성을 극대화하는 런타임 개발 도구 모음입니다.
+
+### 7.1. Wildcard Tester
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-wildcard-tester.png" alt="Wildcard Pattern Tester Tool" %}
 
@@ -334,7 +476,7 @@ Aspectran의 와일드카드 패턴 매처 동작을 실시간 검증하는 도�
 *   **Test Paths**: 테스트할 여러 경로들을 입력창에 주입합니다.
 *   **Match Results**: 각 경로별 매칭 성공(Success) / 실패(Mismatch) 여부와 패턴 매칭 시 추출된 변수(Extracted Variables) 바인딩 결과를 실시간 시연합니다.
 
-### 6.4. AsEL Tester
+### 7.2. AsEL Tester
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-asel-tester.png" alt="AsEL Expression Tester Tool" %}
 
@@ -343,7 +485,7 @@ Aspectran Expression Language (AsEL) 문법을 대화형으로 실행하고 평�
 *   **Context Variables**: 평가 시 사용할 샘플 변수 데이터 입력.
 *   **Evaluation Result**: 평가된 결과값, 리턴 객체 데이터 타입, 실행 소요 시간(ms)을 출력합니다.
 
-### 6.5. APON Converter
+### 7.3. APON Converter
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-apon-converter.png" alt="APON Data Converter Tool" %}
 
@@ -352,11 +494,13 @@ APON(Aspectran Parameter Object Notation) 데이터와 JSON 형식 간의 양방
 *   **JSON 패널 (우측)**: JSON 데이터를 입력하고 APON 출력 스타일(`PRETTY`, `SINGLE_LINE`, `COMPACT`)을 선택한 뒤 `APON` 버튼을 통해 APON으로 변환합니다.
 *   **Quick Tools**: 데이터 초기화(`Clear All`) 및 샘플 데이터 로드(`Load Sample`) 유틸리티를 제공합니다.
 
-## 7. 계정 관리 및 감사
+> **참고**: PBE 암/복호화 실험실 도구인 **Vault Tool**은 [5.2. Vault Tool](#52-vault-tool)에 기술되어 있으며, 상단 내비게이션의 Developer Tools 메뉴를 통해서도 즉시 접근할 수 있습니다.
+
+## 8. 계정 관리 및 감사
 
 Console 사용자 계정과 보안 감사 로그를 관장하는 섹션입니다.
 
-### 7.1. 사용자 계정 관리
+### 8.1. 사용자 계정 관리
 
 #### 사용자 계정 목록
 
@@ -408,13 +552,13 @@ Console 사용자 계정과 보안 감사 로그를 관장하는 섹션입니다
 *   **동적 권한 저장**:
     *   역할별 권한 체크박스를 조정한 후 `Save Changes` 버튼을 클릭하면 `asc_role_permission` 매핑 정보가 데이터베이스에 즉시 업데이트되며, 서버 재기동 없이 런타임에 즉각 반영됩니다.
 
-### 7.2. 로그인 이력 탐색
+### 8.2. 로그인 이력 탐색
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-login-history.png" alt="Login History Audit Screen" %}
 
 콘솔에 로그인했던 사용자들의 접속 일시, 클라이언트 IP 주소, IP 기반 Geo Location(국가 국기 아이콘), 로그인 성공/실패 여부, 실패 사유 및 User-Agent 정보를 감사(Audit) 로그로 제공하여 시스템 접근 보안을 철저히 검증합니다.
 
-### 7.3. 보안 감사 로그
+### 8.3. 보안 감사 로그
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-audit-log.png" alt="Security Audit Log Screen" %}
 
