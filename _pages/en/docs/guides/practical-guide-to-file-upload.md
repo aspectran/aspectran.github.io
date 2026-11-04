@@ -73,7 +73,7 @@ Each parser provides granular security and operational properties:
 | `tempFileThreshold` / `maxInMemorySize` | String / Long / Integer | Maximum byte threshold retained in memory before creating a temporary file on disk | `"256K"`, `"1M"` |
 | `allowedFileExtensions` | String | Comma-delimited list of permitted file extensions (whitelist) | `"jpg,jpeg,png,gif"` |
 | `deniedFileExtensions` | String | Comma-delimited list of disallowed file extensions (blacklist) | `"exe,sh,jsp,bat"` |
-| `temporaryFilePath` / `tempFileDir` | String | Server directory path where temporary files are written (defaults to system temp dir if omitted) | `"/var/app/tmp"` |
+| `tempDir` | String | Server directory path where temporary files are written (defaults to system temp dir if omitted) | `"/var/app/tmp"` |
 
 > 💡 **Tip**\
 > Values for `maxRequestSize`, `maxFileSize`, and `tempFileThreshold` (or `maxInMemorySize`) accept intuitive unit suffixes such as `B`, `K`, `M`, and `G` (e.g., `10M` = 10 Megabytes).

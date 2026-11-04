@@ -73,7 +73,7 @@ Aspectran은 서블릿 기반 엔터프라이즈 환경뿐만 아니라 Netty �
 | `tempFileThreshold` / `maxInMemorySize` | String / Long / Integer | 디스크에 임시 파일을 생성하기 전까지 메모리에 유지할 최대 바이트 크기 | `"256K"`, `"1M"` |
 | `allowedFileExtensions` | String | 업로드를 허용할 파일 확장자 목록 (콤마 구분, 화이트리스트) | `"jpg,jpeg,png,gif"` |
 | `deniedFileExtensions` | String | 업로드를 차단할 파일 확장자 목록 (콤마 구분, 블랙리스트) | `"exe,sh,jsp,bat"` |
-| `temporaryFilePath` / `tempFileDir` | String | 임시 파일이 저장될 서버의 디렉토리 경로 (생략 시 시스템 임시 디렉토리) | `"/var/app/tmp"` |
+| `tempDir` | String | 임시 파일이 저장될 서버의 디렉토리 경로 (생략 시 시스템 임시 디렉토리) | `"/var/app/tmp"` |
 
 > 💡 **팁**\
 > `maxRequestSize`, `maxFileSize`, `tempFileThreshold`(또는 `maxInMemorySize`) 값에는 `B`, `K`, `M`, `G` 단위를 직관적인 문자열로 지정할 수 있습니다 (예: `10M` = 10 메가바이트).
@@ -179,7 +179,7 @@ Java 설정 코드를 선호하는 경우 `@Aspect`, `@Joinpoint`, `@Settings` �
     @Setting(name = "multipartFormDataParser", value = "standardFileUploader")
 })
 public class FileUploadPolicyAspect {
-    // 필요한 경우 @Before나 @After 어드바이스 메소드를 추가하여 
+    // 필요한 경우 @Before나 @After 어드바이스 메소드를 추가하여
     // 업로드 전후의 부가적인 로깅이나 인가 검증을 수행할 수도 있습니다.
 }
 ```
