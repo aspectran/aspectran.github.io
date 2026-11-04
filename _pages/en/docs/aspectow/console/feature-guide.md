@@ -252,63 +252,11 @@ Visualizes incoming user requests (Activity) as animated 'bullets' moving from l
 *   **Real-time Log Tailing**: Socket-based log streaming with Pause, Clear, and Full-screen options.
 *   **Reverse Log Scrolling**: Scrolling to the top activates 'Load Previous Logs' to fetch historical logs contextually.
 
-## 5. Security & Vault Management
-
-Centralized management for system encryption configurations and security tokens built upon Aspectran's built-in Password-Based Encryption (PBE) engine.
-
-### 5.1. Vault Management
-
-A dedicated vault management screen designed to securely store and govern Aspectran PBE-based security tokens. Rather than integrating an external third-party vault system, it provides a built-in cryptographic vault that encrypts and isolates sensitive assets (e.g., database credentials, API keys) into structured PBE tokens, completely eliminating plaintext exposure in configuration files.
-
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-management.png" alt="Vault Management Screen" %}
-
-#### Control Bar
-
-*   **Total Tokens Badge**: Displays total registered security token count.
-*   **Search Field**: Real-time search by token label or keyword.
-*   **Page Size Select**: Choose page size (Auto, 10, 20, 30, 50, 100).
-*   **Hide Expired Toggle**: Hide or show expired tokens in the list.
-*   **New Token Button**: Invokes the new security token issuance modal.
-
-#### System Encryption Configuration Card
-
-Header card validating current application system encryption configuration:
-*   **PBE Algorithm**: Applied encryption algorithm (e.g., `PBEWithHmacSHA256AndAES_256`).
-*   **Key Parameters**: Key Length, Iteration Count, and Salt Generator parameters.
-
-#### Token Details List
-
-Lists token Label, encrypted key/value preview, creation date, expiration date, and status badges (`Active`/`Expired`), with Copy Key, View Details, and Revoke actions.
-
-#### New Security Token Issuance Modal
-
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-new-token.png" alt="Vault Management New Token Modal" %}
-
-Issues new security tokens and encrypts payload data using PBE algorithms:
-*   **Label**: Unique token identifier (e.g., `DB_PASSWORD`, `API_SECRET_KEY`).
-*   **Token Type**:
-    *   `SIMPLE`: Raw string PBE encryption payload directly stored.
-    *   `PERSISTENT`: Persistent token payload formatted via APON.
-    *   `TIME_LIMITED`: Time-limited token payload with APON formatting and expiration limits.
-*   **Plain Text Value**: Plaintext data to be encrypted and stored (multi-line input field).
-*   **Description**: Description of token usage.
-*   **Expiration (Minutes)**: Validity period in minutes (`0` for non-expiring permanent tokens).
-*   **Security Restrictions**: Upon clicking `Save & Encrypt`, plaintext values are encrypted. For security integrity, token type, validity period, and plaintext values become **read-only** post-issuance.
-
-### 5.2. Vault Tool
-
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-tool.png" alt="Vault Interactive Tool Screen" %}
-
-Interactive laboratory tool allowing developers to encrypt or decrypt sensitive credentials (DB passwords, API keys, etc.).
-
-*   **Encryption/Decryption Execution Form**: Configure Algorithm, Password, Salt (optional), and Operation Mode (Encrypt/Decrypt) to execute text encryption or decryption.
-*   **Execution Result & History**: Provides result text clipboard copying and an execution history panel to inspect past runs (Timestamp, Mode, Algorithm) and easily restore them for re-execution.
-
-## 6. Framework Diagnostics
+## 5. Framework Diagnostics
 
 A comprehensive diagnostic suite designed to inspect the runtime execution environment, core engines, and infrastructure component specifications of the Aspectran framework, while providing architectural deep dives into its internal registries.
 
-### 6.1. Framework Components Viewer
+### 5.1. Framework Components Viewer
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-components.png" alt="Framework Components Viewer" %}
 
@@ -390,7 +338,7 @@ The panel header displays the component title, category badge, and a **Raw Data 
 *   **Raw Data Viewer Mode**:
     *   Clicking the `Raw Data` button toggles the view into a syntax-highlighted JSON viewer containing the raw specification payload, allowing developers to inspect full attribute trees for deep debugging or automation scripts.
 
-### 6.2. Framework Anatomy Viewer
+### 5.2. Framework Anatomy Viewer
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-anatomy.png" alt="Framework Anatomy Viewer" %}
 
@@ -459,6 +407,58 @@ Seamlessly accommodates environments where multiple `ActivityContext` instances 
 
 *   **APON Syntax-Highlighted Rendering**: Selecting any rule from the left navigation tree renders its complete internal definition formatted in Aspectran's readable, structured **APON (Aspectran Parameters Object Notation)** syntax with high-contrast syntax highlighting.
 *   **Copy to Clipboard Button**: The copy button in the header copies the entire APON text payload directly to the clipboard. Developers can instantly paste these runtime definitions into local configuration files (`.xml`, `.apon`) or test suites for reproduction and validation.
+
+## 6. Security & Vault Management
+
+Centralized management for system encryption configurations and security tokens built upon Aspectran's built-in Password-Based Encryption (PBE) engine.
+
+### 6.1. Vault Management
+
+A dedicated vault management screen designed to securely store and govern Aspectran PBE-based security tokens. Rather than integrating an external third-party vault system, it provides a built-in cryptographic vault that encrypts and isolates sensitive assets (e.g., database credentials, API keys) into structured PBE tokens, completely eliminating plaintext exposure in configuration files.
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-management.png" alt="Vault Management Screen" %}
+
+#### Control Bar
+
+*   **Total Tokens Badge**: Displays total registered security token count.
+*   **Search Field**: Real-time search by token label or keyword.
+*   **Page Size Select**: Choose page size (Auto, 10, 20, 30, 50, 100).
+*   **Hide Expired Toggle**: Hide or show expired tokens in the list.
+*   **New Token Button**: Invokes the new security token issuance modal.
+
+#### System Encryption Configuration Card
+
+Header card validating current application system encryption configuration:
+*   **PBE Algorithm**: Applied encryption algorithm (e.g., `PBEWithHmacSHA256AndAES_256`).
+*   **Key Parameters**: Key Length, Iteration Count, and Salt Generator parameters.
+
+#### Token Details List
+
+Lists token Label, encrypted key/value preview, creation date, expiration date, and status badges (`Active`/`Expired`), with Copy Key, View Details, and Revoke actions.
+
+#### New Security Token Issuance Modal
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-new-token.png" alt="Vault Management New Token Modal" %}
+
+Issues new security tokens and encrypts payload data using PBE algorithms:
+*   **Label**: Unique token identifier (e.g., `DB_PASSWORD`, `API_SECRET_KEY`).
+*   **Token Type**:
+    *   `SIMPLE`: Raw string PBE encryption payload directly stored.
+    *   `PERSISTENT`: Persistent token payload formatted via APON.
+    *   `TIME_LIMITED`: Time-limited token payload with APON formatting and expiration limits.
+*   **Plain Text Value**: Plaintext data to be encrypted and stored (multi-line input field).
+*   **Description**: Description of token usage.
+*   **Expiration (Minutes)**: Validity period in minutes (`0` for non-expiring permanent tokens).
+*   **Security Restrictions**: Upon clicking `Save & Encrypt`, plaintext values are encrypted. For security integrity, token type, validity period, and plaintext values become **read-only** post-issuance.
+
+### 6.2. Vault Tool
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-tool.png" alt="Vault Interactive Tool Screen" %}
+
+Interactive laboratory tool allowing developers to encrypt or decrypt sensitive credentials (DB passwords, API keys, etc.).
+
+*   **Encryption/Decryption Execution Form**: Configure Algorithm, Password, Salt (optional), and Operation Mode (Encrypt/Decrypt) to execute text encryption or decryption.
+*   **Execution Result & History**: Provides result text clipboard copying and an execution history panel to inspect past runs (Timestamp, Mode, Algorithm) and easily restore them for re-execution.
 
 ## 7. Developer Tools
 

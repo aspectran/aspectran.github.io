@@ -254,63 +254,11 @@ Console 내에 통합된 AppMon 엔진을 통해 애플리케이션의 실시간
 *   **실시간 로그 테일링**: 소켓 기반으로 서버 로그를 지연 없이 스트리밍하며 일시정지(Pause), 화면 지우기(Clear), 전체 화면(Full-screen)을 지원합니다.
 *   **역방향 무한 스크롤 (Previous Logs)**: 로그 박스 최상단으로 스크롤 시 '이전 로그 더 보기' 버튼이 활성화되어, 실시간 스트리밍 중에도 과거 로그 데이터로 거슬러 올라가 전후 맥락을 탐색할 수 있습니다.
 
-## 5. 보안 및 Vault 관리
-
-Aspectran 프레임워크의 내장 PBE(Password-Based Encryption) 암호화 엔진을 기반으로 보안 토큰을 안전하게 등록·보관하고, 시스템 암호화 구성을 중앙에서 통제하는 섹션입니다.
-
-### 5.1. Vault 관리
-
-Aspectran의 PBE 암호화 기반 보안 토큰을 안전하게 보관하는 전용 저장소(Vault)를 총괄 관리하는 화면입니다. 외부 별도 Vault 솔루션 연동이 아닌, 프레임워크 자체의 PBE 암호화 규격에 맞춰 민감 자산(DB 비밀번호, API 키 등)을 암호화 토큰 형태로 격리·저장하여 평문 노출 위험을 원천 차단합니다.
-
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-management.png" alt="Vault Management Screen" %}
-
-#### 상단 컨트롤 바
-
-*   **Total Tokens 뱃지**: 등록된 전체 보안 토큰 수를 표시합니다.
-*   **검색 필드**: 토큰 이름이나 키워드로 실시간 검색합니다.
-*   **Page Size Select**: 페이지당 표시할 토큰 수(Auto, 10, 20, 30, 50, 100)를 선택합니다.
-*   **Hide Expired 토글 스위치**: 만료된 토큰을 목록에서 숨기거나 표시합니다.
-*   **New Token 버튼**: 신규 보안 토큰 발급 모달을 호출합니다.
-
-#### System Encryption Configuration 카드
-
-현재 애플리케이션에 설정된 시스템 암호화 구성을 검증하는 헤더 카드입니다.
-*   **PBE Algorithm**: 적용된 암호화 알고리즘 (예: `PBEWithHmacSHA256AndAES_256`).
-*   **Key Parameters**: Key Length, Iteration Count 및 Salt 생성기 렌더링 상태 표시.
-
-#### 토큰 상세 목록
-
-각 토큰의 이름, 암호화된 키/값 미니 프리뷰, 생성 일자, 만료 일자 및 상태(Active/Expired 뱃지)가 표시되며, 키 복사(Copy Key), 상세 보기, 토큰 폐기(Revoke) 액션을 제공합니다.
-
-#### 신규 보안 토큰 발급 모달
-
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-new-token.png" alt="Vault Management New Token Modal" %}
-
-새로운 보안 토큰을 생성하고 대용량/단일 암호화 데이터를 PBE 알고리즘으로 안전하게 저장합니다.
-*   **Label**: 보안 토큰의 식별 이름을 입력합니다. (예: `DB_PASSWORD`, `API_SECRET_KEY`)
-*   **Token Type**:
-    *   `SIMPLE`: 단순 원시 암호화(Raw Encryption) 토큰으로 암호화 문자열을 직접 보관합니다.
-    *   `PERSISTENT`: APON 데이터 구조 기반의 지속성 보안 토큰으로 보관합니다.
-    *   `TIME_LIMITED`: APON 데이터 구조와 만료 시간이 함께 적용되는 시한성 토큰입니다.
-*   **Plain Text Value**: PBE 암호화하여 Vault 저장소에 기록할 평문(Plaintext) 데이터를 입력합니다. (다중 행 입력 필드)
-*   **Description**: 토큰의 사용 목적 및 비고 설명을 작성합니다.
-*   **Expiration (Minutes)**: 토큰의 유효 기간을 분 단위로 설정합니다. `0` 입력 시 만료 시간이 적용되지 않는 영구 토큰으로 발급됩니다.
-*   **보안 제약 및 수정 정책**: `Save & Encrypt` 버튼 클릭 시 평문 데이터가 즉시 PBE 암호화되어 기록됩니다. 보안 유지를 위해 발급 완료된 토큰은 **토큰 유형(Token Type), 유효 기간, 평문 데이터의 수정이 불가능(Read-only)**하며, 라벨 및 설명 수정만 허용됩니다.
-
-### 5.2. Vault Tool
-
-{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-tool.png" alt="Vault Interactive Tool Screen" %}
-
-개발자와 관리자가 민감한 데이터(DB 비밀번호, API 키 등)를 암호화하거나 복호화할 수 있는 대화형 실험실 도구입니다.
-
-*   **암/복호화 실행 폼**: 알고리즘(Algorithm), 비밀번호(Password), Salt 값 및 모드(Encrypt/Decrypt)를 설정하고 텍스트 암/복호화를 실행합니다.
-*   **실행 결과 및 히스토리**: 연산된 결과 텍스트 복사 기능 및 과거 암/복호화 실행 이력(시간, 모드, 알고리즘)을 확인하고 손쉽게 재실행(Restore)할 수 있는 히스토리 목록을 제공합니다.
-
-## 6. 프레임워크 진단
+## 5. 프레임워크 진단
 
 Aspectran 프레임워크의 런타임 가동 환경, 코어 엔진 및 인프라 컴포넌트의 설정 스펙을 정밀 진단하고 내부 아키텍처 구조를 심층 분석하는 섹션입니다.
 
-### 6.1. 프레임워크 컴포넌트 뷰어
+### 5.1. 프레임워크 컴포넌트 뷰어
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-components.png" alt="Framework Components Viewer" %}
 
@@ -392,7 +340,7 @@ Aspectran의 계층형 또는 다중 컨텍스트 구성을 완벽히 지원합�
 *   **원시 데이터(Raw Data) 뷰어 모드**:
     *   상단의 `Raw Data` 버튼을 클릭하면 파싱된 원시 스펙 JSON 데이터가 구문 강조 코드 블록으로 즉시 전환되어, 세부 디버깅이나 자동화 스크립트 연동 시 필요한 전체 속성 트리를 직접 점검할 수 있습니다.
 
-### 6.2. 프레임워크 해부 뷰어
+### 5.2. 프레임워크 해부 뷰어
 
 {% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-framework-anatomy.png" alt="Framework Anatomy Viewer" %}
 
@@ -462,6 +410,58 @@ Aspectran의 심장부인 `ActivityContext`에 로딩된 모든 프레임워크 
 
 *   **APON 구문 강조 렌더링**: 좌측 탐색 트리에서 특정 규칙을 선택하면, 해당 규칙의 원시 정의가 Aspectran 고유의 가독성 높은 구조적 객체 표기법인 **APON(Aspectran Parameters Object Notation)** 문법 강조(Syntax Highlighting)로 우측 패널에 즉시 렌더링됩니다.
 *   **Copy to Clipboard 버튼**: 상단 헤더의 복사 버튼을 누르면 우측에 표시된 전체 APON 텍스트가 운영자 PC의 클립보드로 즉시 복사됩니다. 개발자는 이를 활용하여 런타임에 적용된 정확한 규칙 설정을 로컬 설정 파일(`.xml`, `.apon`)이나 테스트 코드로 손쉽게 이식할 수 있습니다.
+
+## 6. 보안 및 Vault 관리
+
+Aspectran 프레임워크의 내장 PBE(Password-Based Encryption) 암호화 엔진을 기반으로 보안 토큰을 안전하게 등록·보관하고, 시스템 암호화 구성을 중앙에서 통제하는 섹션입니다.
+
+### 6.1. Vault 관리
+
+Aspectran의 PBE 암호화 기반 보안 토큰을 안전하게 보관하는 전용 저장소(Vault)를 총괄 관리하는 화면입니다. 외부 별도 Vault 솔루션 연동이 아닌, 프레임워크 자체의 PBE 암호화 규격에 맞춰 민감 자산(DB 비밀번호, API 키 등)을 암호화 토큰 형태로 격리·저장하여 평문 노출 위험을 원천 차단합니다.
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-management.png" alt="Vault Management Screen" %}
+
+#### 상단 컨트롤 바
+
+*   **Total Tokens 뱃지**: 등록된 전체 보안 토큰 수를 표시합니다.
+*   **검색 필드**: 토큰 이름이나 키워드로 실시간 검색합니다.
+*   **Page Size Select**: 페이지당 표시할 토큰 수(Auto, 10, 20, 30, 50, 100)를 선택합니다.
+*   **Hide Expired 토글 스위치**: 만료된 토큰을 목록에서 숨기거나 표시합니다.
+*   **New Token 버튼**: 신규 보안 토큰 발급 모달을 호출합니다.
+
+#### System Encryption Configuration 카드
+
+현재 애플리케이션에 설정된 시스템 암호화 구성을 검증하는 헤더 카드입니다.
+*   **PBE Algorithm**: 적용된 암호화 알고리즘 (예: `PBEWithHmacSHA256AndAES_256`).
+*   **Key Parameters**: Key Length, Iteration Count 및 Salt 생성기 렌더링 상태 표시.
+
+#### 토큰 상세 목록
+
+각 토큰의 이름, 암호화된 키/값 미니 프리뷰, 생성 일자, 만료 일자 및 상태(Active/Expired 뱃지)가 표시되며, 키 복사(Copy Key), 상세 보기, 토큰 폐기(Revoke) 액션을 제공합니다.
+
+#### 신규 보안 토큰 발급 모달
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-new-token.png" alt="Vault Management New Token Modal" %}
+
+새로운 보안 토큰을 생성하고 대용량/단일 암호화 데이터를 PBE 알고리즘으로 안전하게 저장합니다.
+*   **Label**: 보안 토큰의 식별 이름을 입력합니다. (예: `DB_PASSWORD`, `API_SECRET_KEY`)
+*   **Token Type**:
+    *   `SIMPLE`: 단순 원시 암호화(Raw Encryption) 토큰으로 암호화 문자열을 직접 보관합니다.
+    *   `PERSISTENT`: APON 데이터 구조 기반의 지속성 보안 토큰으로 보관합니다.
+    *   `TIME_LIMITED`: APON 데이터 구조와 만료 시간이 함께 적용되는 시한성 토큰입니다.
+*   **Plain Text Value**: PBE 암호화하여 Vault 저장소에 기록할 평문(Plaintext) 데이터를 입력합니다. (다중 행 입력 필드)
+*   **Description**: 토큰의 사용 목적 및 비고 설명을 작성합니다.
+*   **Expiration (Minutes)**: 토큰의 유효 기간을 분 단위로 설정합니다. `0` 입력 시 만료 시간이 적용되지 않는 영구 토큰으로 발급됩니다.
+*   **보안 제약 및 수정 정책**: `Save & Encrypt` 버튼 클릭 시 평문 데이터가 즉시 PBE 암호화되어 기록됩니다. 보안 유지를 위해 발급 완료된 토큰은 **토큰 유형(Token Type), 유효 기간, 평문 데이터의 수정이 불가능(Read-only)**하며, 라벨 및 설명 수정만 허용됩니다.
+
+### 6.2. Vault Tool
+
+{% include image.liquid src="https://cdn.jsdelivr.net/gh/aspectran/aspectow@main/assets/screenshots/console-vault-tool.png" alt="Vault Interactive Tool Screen" %}
+
+개발자와 관리자가 민감한 데이터(DB 비밀번호, API 키 등)를 암호화하거나 복호화할 수 있는 대화형 실험실 도구입니다.
+
+*   **암/복호화 실행 폼**: 알고리즘(Algorithm), 비밀번호(Password), Salt 값 및 모드(Encrypt/Decrypt)를 설정하고 텍스트 암/복호화를 실행합니다.
+*   **실행 결과 및 히스토리**: 연산된 결과 텍스트 복사 기능 및 과거 암/복호화 실행 이력(시간, 모드, 알고리즘)을 확인하고 손쉽게 재실행(Restore)할 수 있는 히스토리 목록을 제공합니다.
 
 ## 7. 개발자 도구
 
