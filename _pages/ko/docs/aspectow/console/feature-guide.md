@@ -315,10 +315,10 @@ Aspectran의 계층형 또는 다중 컨텍스트 구성을 완벽히 지원합�
         *   **스레드 및 저장소**: 워커 스레드 풀 크기(`Thread Pool Size`), JobStore 클래스 타입, 누적 실행 완료 잡 수(`Executed Jobs Count`).
         *   **등록된 스케줄 규칙 테이블**: 등록된 모든 스케줄 규칙(Schedule Rule)의 ID, 트리거 유형(`Cron` vs `Simple Interval`), Cron 표현식 및 실행 대기열 현황을 테이블로 요약합니다.
     5.  **세션 매니저 및 캐시 (`SessionManager` & `SessionCache`)**:
-        *   클러스터 및 단일 노드의 세션 관리 정책과 실시간 수명 주기 통계를 추적합니다.
-        *   **세션 만료 정책**: 기본 세션 유휴 타임아웃(`Default Max Idle Seconds`, 초 단위를 `30m`, `1h` 등 가독성 높은 시간 단위로 변환 출력), 최대 활성 세션 한도(`Max Active Sessions`), 세션 Eviction 유휴 주기.
-        *   **스토리지 및 클러스터링**: 클러스터 세션 복제 활성화 여부(`Cluster Enabled`), 세션 영속화 저장소 구현체(`FileSessionStore`, `LettuceSessionStore` 등).
-        *   **SessionStatistics 실시간 메트릭 카드**: 현재 활성 세션 수(`Active Sessions`), 가동 중 최고 활성 세션 수(`Highest Active / Peak`), 누적 생성된 세션 수(`Created Sessions`), 누적 만료된 세션 수(`Expired Sessions`)를 4대 수치 카드로 시각화합니다.
+        *   컨텍스트에 구성된 HTTP 및 웹 세션 관리의 핵심 정적 규격, 캐시 한도 및 영속 저장소 사양을 점검합니다. 실시간 동적 세션 모니터링은 `AppMon`에 일임하고, 컴포넌트 뷰어에서는 노드 그룹의 선언적 구성 규격에 집중합니다.
+        *   **핵심 규격 하이라이트**: 기본 세션 유휴 타임아웃(`Default Max Idle Seconds`, 초 단위를 `30m`, `1h` 등 가독성 높은 시간 단위로 변환 출력), 노드당 최대 활성 세션 허용 한도(`Max Active Sessions Limit`), 세션 클러스터링 모드(`Cluster` vs `Standalone`) 및 세션 저장소 유형을 상단 카드로 시각화합니다.
+        *   **세션 정책 및 캐시 스펙 그리드**: 세션 캐시 구현체(`DefaultSessionCache` 등), 세션 저장소 구현체(`FileSessionStore`, `RedisSessionStore`, `In-Memory`), 신규 미인증 세션 유휴 타임아웃(`Max Idle for New Sessions`), 백그라운드 만료 정리 주기(`Scavenging Interval`), 캐시 유휴 축출 주기(`Cache Eviction Idle Time`), 세션 생성 즉시 저장 여부(`Save On Create`), 로드 불가 세션 삭제 여부(`Remove Unloadable Sessions`)를 상세 그리드로 제공합니다.
+        *   **저장소 위치 및 연결 정보**: 파일 기반 저장소의 절대 경로(`Store Dir`) 또는 비밀번호가 안전하게 마스킹된 Redis 접속 URI(`Store URI`)를 명확히 표기합니다.
     6.  **로케일 리졸버 (`LocaleResolver`)**:
         *   다국어 지원 및 타임존 결정 정책을 확인합니다.
         *   **기본 환경**: 시스템 기본 로케일(`Default Locale`, 예: `ko_KR`, `en_US`) 및 기본 타임존(`Default TimeZone`).
