@@ -262,7 +262,7 @@ A comprehensive diagnostic suite designed to inspect the runtime execution envir
 
 A real-time diagnostic tool that explores and visualizes the runtime configuration, operational parameters, and connection specifications of core framework components registered in the `ActivityContext` and `BeanRegistry` of the running application.
 
-Powered by `ComponentInspectorService` in `aspectow-node`, it leverages runtime reflection and a safe component provider architecture (`ComponentInfoProvider`) to extract non-disruptive specification data without introducing rigid, compile-time dependencies on external modules.
+Powered by `ComponentInspectorService` in `aspectow-node`, it leverages runtime reflection and a safe component provider architecture (`ComponentInspector`) to extract non-disruptive specification data without introducing rigid, compile-time dependencies on external modules.
 
 #### Top Control Bar & Target Selector
 

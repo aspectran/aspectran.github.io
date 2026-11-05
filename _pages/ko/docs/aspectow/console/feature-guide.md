@@ -264,7 +264,7 @@ Aspectran 프레임워크의 런타임 가동 환경, 코어 엔진 및 인프�
 
 현재 실행 중인 애플리케이션의 `ActivityContext` 및 `BeanRegistry`에 등록된 핵심 프레임워크 컴포넌트들의 런타임 설정 상태, 동작 파라미터 및 연결 사양을 실시간으로 탐색하고 시각화하는 진단 도구입니다.
 
-`aspectow-node`의 `ComponentInspectorService`를 기반으로 구동되며, 런타임 리플렉션과 안전한 컴포넌트 프로바이더(`ComponentInfoProvider`) 체계를 통해 외부 모듈에 대한 불필요한 하드 의존성 없이 무중단으로 스펙 데이터를 추출합니다.
+`aspectow-node`의 `ComponentInspectorService`를 기반으로 구동되며, 런타임 리플렉션과 안전한 컴포넌트 프로바이더(`ComponentInspector`) 체계를 통해 외부 모듈에 대한 불필요한 하드 의존성 없이 무중단으로 스펙 데이터를 추출합니다.
 
 #### 상단 제어 바 및 대상 선택기
 
