@@ -393,11 +393,11 @@ Node managers and remote control managers are activated as Aspectran Beans via `
     <!-- Remote Node Control Manager -->
     <bean id="remoteNodeManager" class="com.aspectran.aspectow.node.management.nodes.RemoteNodeManager"/>
 
-    <!-- Remote Scheduler Control Manager -->
-    <bean id="remoteSchedulerManager" class="com.aspectran.aspectow.node.management.scheduler.RemoteSchedulerManager"/>
-
     <!-- Remote Command Control Manager -->
     <bean id="remoteCommandManager" class="com.aspectran.aspectow.node.management.commands.RemoteCommandManager"/>
+
+    <!-- Remote Scheduler Control Manager -->
+    <bean id="remoteSchedulerManager" class="com.aspectran.aspectow.node.management.scheduler.RemoteSchedulerManager"/>
 
 </aspectran>
 ```

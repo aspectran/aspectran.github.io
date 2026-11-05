@@ -393,11 +393,11 @@ Aspectow Console 환경에서는 모듈화된 규칙 구성을 위해 최상위 
     <!-- 원격 노드 제어 매니저 -->
     <bean id="remoteNodeManager" class="com.aspectran.aspectow.node.management.nodes.RemoteNodeManager"/>
 
-    <!-- 원격 스케줄러 제어 매니저 -->
-    <bean id="remoteSchedulerManager" class="com.aspectran.aspectow.node.management.scheduler.RemoteSchedulerManager"/>
-
     <!-- 원격 명령 제어 매니저 -->
     <bean id="remoteCommandManager" class="com.aspectran.aspectow.node.management.commands.RemoteCommandManager"/>
+
+    <!-- 원격 스케줄러 제어 매니저 -->
+    <bean id="remoteSchedulerManager" class="com.aspectran.aspectow.node.management.scheduler.RemoteSchedulerManager"/>
 
 </aspectran>
 ```
