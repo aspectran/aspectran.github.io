@@ -21,6 +21,12 @@
     height: auto;
     pointer-events: none;
   }
+  .mermaidTooltip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
   #mermaid-zoom-overlay {
     position: fixed;
     top: 0;
@@ -143,7 +149,7 @@
   }
 </style>
 <script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.2.0/+esm';
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.3.0/+esm';
   mermaid.initialize({
     startOnLoad: true,
     theme: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'redux-color',
