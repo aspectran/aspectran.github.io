@@ -75,7 +75,7 @@ graph TD
         SchedMgr["RemoteSchedulerManager (Distributed Jobs)"]
         AppMonEngine["AppMon Observability Engine (Traffic & Sessions)"]
         VaultMgr["Vault & System Encryption Manager"]
-        Diagnostics["Framework Anatomy & Asel/Apon Evaluator"]
+        Diagnostics["Framework Diagnostics & Developer Tools"]
     end
 
     subgraph Cluster ["4. Cluster Messaging & Communication Layer"]
