@@ -57,7 +57,7 @@ com.aspectran.core.activity.response.transform.CustomTransformer (Interface)
 
 *   **RestResponse**: RESTful HTTP 응답을 조작하기 위한 Fluent API 규격을 정의하는 핵심 인터페이스입니다. `CustomTransformer`를 상속하여 Aspectran의 자체 변환(Self-Transformation) 메커니즘과 완벽하게 통합됩니다.
 *   **AbstractRestResponse**: 상태 코드, 헤더 맵, 미디어 타입, 지능형 콘텐츠 협상 알고리즘(`determineAcceptContentType`)의 공통 기능을 구현한 추상 클래스입니다.
-*   **DefaultRestResponse**: JSON, APON, XML, Plain Text, HTML 형식으로의 직렬화 로직을 내장한 기본 구현체입니다. `ResponsePayload`를 전달받으면 `toEntity()`를 호출하여 표준 구조로 자동 변환합니다.
+*   **DefaultRestResponse**: JSON, APON, XML, Plain Text 형식으로의 직렬화 로직을 내장한 기본 구현체입니다. `ResponsePayload`를 전달받으면 `toEntity()`를 호출하여 표준 구조로 자동 변환합니다.
 *   **SuccessResponse**: 2xx 상태 코드와 함께 성공적인 결과를 반환할 때 사용합니다. 내부적으로 `ResponsePayload(true, data)`를 생성하며, 기본 상태 코드는 `200 OK`입니다.
 *   **FailureResponse**: 4xx 또는 5xx 상태 코드와 함께 실패 원인을 반환할 때 사용합니다. 내부적으로 `ResponsePayload(false)` 및 `ErrorPayload`를 생성하며, 체이닝 메서드로 에러 코드와 메시지를 설정할 수 있습니다.
 
@@ -165,22 +165,24 @@ Aspectran의 `DefaultRestResponse`는 별도의 서드파티 라이브러리 설
 
 | 미디어 타입 (Media Type) | 확장자 (Extension) | 설명 |
 | :--- | :--- | :--- |
-| `application/json` | `.json` | 가장 널리 쓰이는 표준 JSON 형식 (`JsonWriter`, JSONP callback 지원) |
+| `application/json` | `.json` | 가장 널리 쓰이는 표준 JSON 형식 (`JsonWriter`, JSONP callback 지원, 기본 미디어 타입) |
 | `application/apon` | `.apon` | Aspectran 고유의 객체 표기법 (APON, 간결한 텍스트 기반 객체 포맷) |
 | `application/xml` | `.xml` | 표준 XML 형식 (`XmlTransformResponse`, `name` 지정 시 루트 태그 적용) |
 | `text/plain` | `.txt` | 데이터의 문자열 표현(ToString) 출력 |
-| `text/html` | `.html`, `.htm` | HTML 형식의 문자열 출력 |
+
+> 💡 **참고**\
+> `DefaultRestResponse`는 RESTful API를 위한 구조화된 데이터(JSON, APON, XML) 및 순수 텍스트(`text/plain`) 직렬화에 집중합니다. HTML 화면 렌더링이 필요한 웹 애플리케이션의 경우에는 `RestResponse` 대신 Aspectran의 Template View Dispatcher(JSP, Pebble, FreeMarker, Thymeleaf 등)를 사용하십시오.
 
 ### 컨텐츠 결정 우선순위 (지능형 콘텐츠 협상 알고리즘)
 `AbstractRestResponse.determineAcceptContentType(Activity)`는 다음과 같은 4단계 우선순위로 최적의 미디어 타입을 결정합니다.
 
 1.  **URL 경로 확장자 (`favorPathExtension`)**:
-    *   요청 경로 끝에 `.json`, `.xml`, `.apon`, `.txt`, `.html`, `.htm` 등이 명시되어 있으면 해당 미디어 타입을 최우선으로 선택합니다. (기본값: `true`)
+    *   요청 경로 끝에 `.json`, `.apon`, `.xml`, `.txt` 등이 명시되어 있으면 해당 미디어 타입을 최우선으로 선택합니다. (기본값: `true`)
     *   알 수 없는 확장자가 요청되고 `ignoreUnknownPathExtensions`가 `false`인 경우 `406 Not Acceptable` 에러를 발생시킵니다.
 2.  **HTTP Accept 헤더 (`ignoreAcceptHeader`)**:
-    *   확장자가 없거나 확장자로 타입을 결정하지 못한 경우, 클라이언트가 전송한 `Accept` 헤더의 우선순위(Quality Value 등)를 분석하여 서버가 지원하는 미디어 타입 목록(`supportedContentTypes`)과 매칭합니다.
+    *   확장자가 없거나 확장자로 타입을 결정하지 못한 경우, 클라이언트가 전송한 `Accept` 헤더의 우선순위(Quality Value 등)를 분석하여 서버가 지원하는 미디어 타입 목록(`supportedContentTypes`)과 매칭합니다. 서버 지원 우선순위는 `application/json` -> `application/apon` -> `application/xml` -> `text/plain` 순서입니다.
 3.  **기본 미디어 타입 (`defaultContentType`)**:
-    *   `Accept` 헤더가 `*/*`이거나 매칭되는 미디어 타입이 없을 때, 인스턴스에 설정된 `defaultContentType` 또는 Translet 설정 키 `response.defaultContentType` (`RestResponse.RESPONSE_DEFAULT_CONTENT_TYPE`)에 정의된 기본값을 사용합니다.
+    *   `Accept` 헤더가 `*/*`이거나 매칭되는 미디어 타입이 없을 때, 인스턴스에 설정된 `defaultContentType` 또는 Translet 설정 키 `response.defaultContentType` (`RestResponse.RESPONSE_DEFAULT_CONTENT_TYPE`)에 정의된 기본값을 사용합니다. 별도로 지정되지 않은 경우 지원 목록의 최우선 순위인 `application/json`이 기본으로 적용됩니다.
 4.  **406 Not Acceptable**:
     *   위 모든 단계에서 적합한 미디어 타입을 찾지 못한 경우, HTTP 상태 코드 `406 Not Acceptable`을 반환합니다.
 

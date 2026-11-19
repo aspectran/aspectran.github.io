@@ -57,7 +57,7 @@ com.aspectran.core.activity.response.transform.CustomTransformer (Interface)
 
 *   **RestResponse**: The core interface defining the fluent API specification for manipulating RESTful HTTP responses. It extends `CustomTransformer` to seamlessly integrate with Aspectran's self-transformation mechanism.
 *   **AbstractRestResponse**: An abstract class providing common implementations for status codes, header maps, media types, and the intelligent content negotiation algorithm (`determineAcceptContentType`).
-*   **DefaultRestResponse**: The default implementation with built-in serialization logic for JSON, APON, XML, Plain Text, and HTML formats. When given a `ResponsePayload`, it calls `toEntity()` to automatically convert it into the standard payload structure.
+*   **DefaultRestResponse**: The default implementation with built-in serialization logic for JSON, APON, XML, and Plain Text formats. When given a `ResponsePayload`, it calls `toEntity()` to automatically convert it into the standard payload structure.
 *   **SuccessResponse**: Used for returning successful results with 2xx status codes. It internally instantiates `ResponsePayload(true, data)`, defaulting to HTTP status `200 OK`.
 *   **FailureResponse**: Used for returning error causes with 4xx or 5xx status codes. It internally instantiates `ResponsePayload(false)` and an `ErrorPayload`, providing fluent chaining methods to set error codes and messages.
 
@@ -165,22 +165,24 @@ Aspectran's `DefaultRestResponse` automatically transforms data into various med
 
 | Media Type | Extension | Description |
 | :--- | :--- | :--- |
-| `application/json` | `.json` | Standard JSON format (`JsonWriter`, JSONP callback support) |
+| `application/json` | `.json` | Standard JSON format (`JsonWriter`, JSONP callback support, default media type) |
 | `application/apon` | `.apon` | Aspectran Parameters Object Notation (APON, concise text-based format) |
 | `application/xml` | `.xml` | Standard XML format (`XmlTransformResponse`, root tag via `name`) |
 | `text/plain` | `.txt` | Plain text output of the data's string representation |
-| `text/html` | `.html`, `.htm` | HTML string output |
+
+> 💡 **Note**\
+> `DefaultRestResponse` focuses on serializing structured data (JSON, APON, XML) and plain text (`text/plain`) for RESTful APIs. When rendering HTML views or web pages, use Aspectran's Template View Dispatchers (JSP, Pebble, FreeMarker, Thymeleaf, etc.) instead of `RestResponse`.
 
 ### Content Negotiation Priority Algorithm
 `AbstractRestResponse.determineAcceptContentType(Activity)` resolves the optimal media type using a 4-step precedence order:
 
 1.  **URL Path Extension (`favorPathExtension`)**:
-    *   If the request path ends with an extension like `.json`, `.xml`, `.apon`, `.txt`, `.html`, or `.htm`, that media type is selected first. (Default: `true`)
+    *   If the request path ends with an extension like `.json`, `.apon`, `.xml`, or `.txt`, that media type is selected first. (Default: `true`)
     *   If an unknown extension is requested and `ignoreUnknownPathExtensions` is `false`, a `406 Not Acceptable` error is thrown.
 2.  **HTTP Accept Header (`ignoreAcceptHeader`)**:
-    *   If no extension is present or no type was resolved by extension, the client's `Accept` header quality values are analyzed and matched against the server's supported media types (`supportedContentTypes`).
+    *   If no extension is present or no type was resolved by extension, the client's `Accept` header quality values are analyzed and matched against the server's supported media types (`supportedContentTypes`). The server's evaluation precedence is `application/json` -> `application/apon` -> `application/xml` -> `text/plain`.
 3.  **Default Media Type (`defaultContentType`)**:
-    *   If the `Accept` header is `*/*` or no matching media type is found, the instance's `defaultContentType` or the Translet setting key `response.defaultContentType` (`RestResponse.RESPONSE_DEFAULT_CONTENT_TYPE`) is applied.
+    *   If the `Accept` header is `*/*` or no matching media type is found, the instance's `defaultContentType` or the Translet setting key `response.defaultContentType` (`RestResponse.RESPONSE_DEFAULT_CONTENT_TYPE`) is applied. If not explicitly specified, `application/json` (the first priority in the supported types) is applied by default.
 4.  **406 Not Acceptable**:
     *   If no compatible media type can be resolved through any of the above steps, HTTP status code `406 Not Acceptable` is returned.
 
