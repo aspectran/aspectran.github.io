@@ -1,5 +1,5 @@
 ---
-subheadline: Architecture
+subheadline: Case Study
 title: "대량 무상태 요청 환경에서의 세션 생성 폭풍 방지 및 Redis 세션 스토어 복원력 설계"
 teaser: "외부 봇 트래픽과 부하 테스트 상황에서 발생하는 세션 생성 폭풍(Session Creation Storm) 및 Redis 동기 연산 병목을 해결하고, 고성능 분산 세션 관리 체계를 완성한 아키텍처 개선기입니다."
 categories:

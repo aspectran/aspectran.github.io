@@ -1,5 +1,5 @@
 ---
-subheadline: Architecture
+subheadline: Case Study
 title: "Preventing Session Creation Storms and Architecting Redis Session Store Resilience Under Massive Stateless Traffic"
 teaser: "An architectural improvement story on resolving session creation storms and Redis synchronous operation bottlenecks caused by external bot traffic and load testing, completing a high-performance distributed session management system."
 categories:
