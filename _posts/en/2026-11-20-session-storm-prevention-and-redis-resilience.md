@@ -111,7 +111,7 @@ public void doSave(String id, SessionData data) {
 1. **`c.set(id, data)`**: Stores the serialized session binary data.
 2. **`c.zadd(expiryIndexKey, (double)expiry, SessionData.of(id))`**: Registers the session ID and expiration timestamp in a Sorted Set search index used by background scavengers to filter out expired sessions.
 
-Sorted Set `ZADD` operations operate at $O(\log N)$ time complexity. Under heavy concurrency where thousands of sessions were simultaneously updated, unconditionally re-executing `ZADD` on every request caused severe CPU contention in Redis.
+Sorted Set `ZADD` operations operate at O(log N) time complexity. Under heavy concurrency where thousands of sessions were simultaneously updated, unconditionally re-executing `ZADD` on every request caused severe CPU contention in Redis.
 
 ### 2.3. Chain Reaction in Low-Spec OCI VM Environment
 1. In a CPU-constrained environment, as dozens of threads performed concurrent I/O simultaneously, thread context switching overhead pushed CPU utilization to 100%.

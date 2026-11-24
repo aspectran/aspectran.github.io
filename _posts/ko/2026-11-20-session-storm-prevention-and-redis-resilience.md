@@ -111,7 +111,7 @@ public void doSave(String id, SessionData data) {
 1. **`c.set(id, data)`**: 직렬화된 세션 바이너리 데이터를 저장합니다.
 2. **`c.zadd(expiryIndexKey, (double)expiry, SessionData.of(id))`**: 백그라운드 스캐빈저가 만료된 세션을 솎아내기 위한 검색 색인용 Sorted Set에 세션 ID와 만료 시간을 등록합니다.
 
-Sorted Set에 대한 `ZADD` 연산은 $O(\log N)$의 시간 복잡도를 가집니다. 수천 개의 세션이 동시에 갱신되는 상황에서 매 요청마다 `ZADD`를 무조건 재실행하는 것은 심각한 Redis CPU 경합을 초래했습니다.
+Sorted Set에 대한 `ZADD` 연산은 O(log N)의 시간 복잡도를 가집니다. 수천 개의 세션이 동시에 갱신되는 상황에서 매 요청마다 `ZADD`를 무조건 재실행하는 것은 심각한 Redis CPU 경합을 초래했습니다.
 
 ### 2.3. 저사양 OCI VM 환경에서의 연쇄 반응
 1. 제한된 CPU 환경에서 수십 개의 스레드가 동시 I/O를 수행하자 컨텍스트 스위칭 오버헤드로 인해 CPU 점유율이 100%에 도달했습니다.
