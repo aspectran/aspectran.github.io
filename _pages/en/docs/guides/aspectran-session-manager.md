@@ -87,8 +87,13 @@ Aspectran Session Manager provides a flexible storage hierarchy adaptable to dis
 
 * **Operating Principle**: Persists session objects to individual binary files in a designated local directory using standard Java serialization.
 * **Advantages**: Runs without database or memory cache dependencies, making it ideal for standalone daemons, local development, and single-node instances.
-* **Reliability**: Seamlessly reloads valid session files upon application restarts.
-* **Constraint**: Because file systems cannot be readily shared across instances, it is not suitable for multi-node load-balanced deployments.
+* **Reliability**: Seamlessly reloads valid session files upon application restarts to preserve development continuity.
+* **Deployment & Cluster Operating Environments**:
+  * **Single-Node (Standalone) Environment**: Acts as the default persistence store to preserve session continuity across process restarts without external distributed infrastructure like Redis.
+  * **Clustered (Multi-Node) Environment with Sticky Sessions**: In infrastructure where an L4/L7 load balancer provides session affinity (Sticky Sessions), each WAS node can leverage an independent `FileSessionStore` to achieve lightweight, cost-effective session persistence and seamless rolling restarts without the operational overhead of a shared Redis cluster.
+* **Considerations & Constraints**:
+  * In the event of a physical node crash or hardware failure, the local file storage is not automatically shared with other nodes, meaning zero-loss failover to surviving nodes is unavailable (impacted users must re-authenticate).
+  * Cannot be used in round-robin or non-sticky load-balancing environments where requests for the same session alternate across multiple nodes.
 * **File Session Store Configuration Parameters ([`FileSessionStoreFactoryBean`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/FileSessionStoreFactoryBean.java))**:
   * `storeDir`: File directory path (e.g., `/work/_sessions/tow`, defaults to `java.io.tmpdir`)
   * `deleteUnrestorableFiles`: Whether to automatically delete corrupted or unreadable session files (default: `true`)
@@ -138,9 +143,25 @@ All persistent stores ([`FileSessionStore`](https://github.com/aspectran/aspectr
   * Safety buffer (in seconds, default: `60`) preventing premature eviction caused by clock skew or network lag across clustered nodes.
   * Initial pass targets sessions expired before `now - (gracePeriodSecs * 3)`, and subsequent sweeps evaluate against `now - gracePeriodSecs`.
 * **`savePeriodSecs`**:
-  * Minimum update interval (in seconds, default: `0`) for read-only requests (HTTP GET) that only update `lastAccessedTime` without attribute modifications.
-  * **`savePeriodSecs: 0` (default)**: Flushes updated access timestamps to the store on every request completion.
-  * **`savePeriodSecs > 0`**: Only flushes access timestamps if the elapsed time since the last persist exceeds `savePeriodSecs`. (Modified/dirty attributes are always persisted immediately).
+  * Minimum update interval (in seconds, default: `0`) for read-only requests (HTTP GET) that only update `lastAccessedTime` without attribute modifications, optimizing frequent store write I/O.
+  * **Default Behavior**:
+    * **`savePeriodSecs: 0` (default)**: Flushes updated access timestamps to the persistent store on every request completion, even if no session attributes were modified.
+    * **`savePeriodSecs > 0`**: Only flushes access timestamps if the elapsed time since the last persist exceeds or equals `savePeriodSecs`. (Modified/dirty attributes are always persisted immediately upon request completion regardless of this setting).
+  * **Trade-Off Analysis by Architecture (Sticky vs. Non-Sticky)**:
+    Operational characteristics differ significantly depending on the load balancer routing policy and store type:
+    | Dimension | Sticky Session (`FileSessionStore` or `Lettuce`) | Non-Sticky Session (`LettuceSessionStore`) |
+    | :--- | :--- | :--- |
+    | **Target Infrastructure** | Single-node or L4/L7 session affinity (Sticky) clusters | L4/L7 round-robin or least-connections distributed clusters |
+    | **Routing Policy** | Requests from the same client are always routed to the designated WAS node | Requests may be routed to any arbitrary WAS node per request |
+    | **Local Cache Role** | `DefaultSessionCache` perfectly preserves the latest state and `lastAccessedTime` | Local cache alone is insufficient as peer nodes may modify or access the session |
+    | **`savePeriodSecs` Requirement** | **`savePeriodSecs > 0` (e.g., 60–180s) strongly recommended**<br>- Immediate flush on attribute modifications only<br>- Read-only touches update in local memory and sync to store periodically | **`savePeriodSecs = 0` mandatory (default)**<br>- Must flush to Redis immediately on every request completion so peer nodes observe current access times and expiration thresholds |
+    | **Advantages** | Reduces store (file/Redis) write I/O by over 90%; extreme processing speed | 100% cross-node session consistency; maximizes load balancing efficiency |
+    | **Constraints** | `FileSessionStore` requires re-login on node crashes; setting `savePeriodSecs > 0` on Non-Sticky breaks consistency | High traffic can cause high Redis write I/O load |
+  * **Default Policy & Environment-Specific Tuning Guide**:
+    * **Rationale for the Defensive Default (`savePeriodSecs = 0`)**: The framework cannot dynamically determine whether external infrastructure (the load balancer) runs in Sticky or Non-Sticky mode. If the default were arbitrarily set to `savePeriodSecs > 0`, users in Non-Sticky environments would suffer from inconsistent access times, premature session expirations, and cache divergence when requests alternate across nodes. Therefore, **maintaining `0` as the framework's global default is the safest defensive default** to guarantee data integrity out of the box.
+    * **Single-Node or Sticky Cluster + `FileSessionStore`**: Setting `savePeriodSecs: 60` to `180` is recommended to reduce disk write I/O and extend SSD lifespan.
+    * **Sticky Cluster + `LettuceSessionStore`**: Setting `savePeriodSecs: 60` to `180` is recommended to minimize Redis network write operations and protect against session storms.
+    * **Non-Sticky Cluster + `LettuceSessionStore`**: Keeping `savePeriodSecs: 0` (default) is strictly required to synchronize access timestamps and expiration states across nodes immediately.
 * **`nonPersistentAttributes` and Marker Control**:
   * Supports excluding transient objects (sockets, DB connections) from persistence.
   * **Name-Based**: Array of attribute names to omit from serialization.
@@ -160,15 +181,37 @@ All persistent stores ([`FileSessionStore`](https://github.com/aspectran/aspectr
 
 ## 3. Session Lifecycle Control and Timeout Optimization
 
-Aspectran separates new sessions from established normal sessions to counter ghost sessions generated by web crawlers and health check probes.
+One of the most critical causes of performance degradation and memory/storage exhaustion in high-traffic web environments is the massive influx of "ghost sessions" or session creation storms triggered by search engine web crawlers, monitoring bots, L7 health-check probes, and stateless REST API clients.
 
-### 3.1. New vs. Normal Sessions
+Rather than relying on superficial timeout reductions, Aspectran provides an integrated **Three-Tier Defense-in-Depth Architecture** that protects the system across the entire request lifecycle—from initial entry and view rendering to proactive background cleanup.
+
+### 3.1. Three-Tier Defense-in-Depth Architecture for Stateless Requests and Crawlers
+
+```mermaid
+flowchart TD
+    Req["Incoming Client Request (Bot / Crawler / Anonymous Visitor)"] --> L1["Tier 1: API-Level Prevention (SessionAdapter)<br/>- Pure stateless getters for getId(), getCreationTime(), etc.<br/>- Returns null or 0L when no session exists, preventing forced creation"]
+    L1 --> Biz["Translet Action / Business Logic Execution"]
+    Biz --> L2["Tier 2: View-Rendering Lazy Evaluation (Lazy Session)<br/>- Handles JSP <%@ page session='true' %> default specification<br/>- Intercepted by ActivityRequestWrapper + LazyHttpSession<br/>- Defers physical session creation until actual state write (0 bytes)"]
+    L2 --> L3["Tier 3: Infrastructure Two-Tier Lifecycle (Timeout Purge)<br/>- Ultra-short timeout (30–60s) strictly applied to new sessions<br/>- HouseKeeper immediately purges single-visit ghost sessions from heap and Redis"]
+```
+
+1. **Tier 1 (API-Level Prevention - Stateless Getters)**:
+   * **Mechanism**: Eliminates the side effect where calling session identification (`sessionAdapter.getId()`) or metadata inspection methods forcibly created a new session when none existed.
+   * **Effect**: Framework-wide advice, logging filters, and monitoring agents (such as AppMon) perform pure idempotent lookups returning `null` when a session is absent, completely preventing premature session generation before and after business logic execution.
+2. **Tier 2 (View-Rendering Lazy Evaluation - Deferred Materialization)**:
+   * **Mechanism**: In servlet/JSP environments where `<%@ page session="true" %>` is the default specification and forces `request.getSession(true)` during view forwarding, `ActivityRequestWrapper` intercepts the call and returns a lightweight `LazyHttpSession` wrapper.
+   * **Effect**: Read-only operations (`getAttribute`, `getId`) in JSP views do not create a container session (retaining a 0-byte memory/store footprint). A physical container session is created (`getRealSession(true)`) and assigned a `Set-Cookie` header only when the application executes state-changing writes like `setAttribute(name, value)`.
+3. **Tier 3 (Infrastructure Two-Tier Lifecycle - Ultra-Short Timeout)**:
+   * **Mechanism**: When a first-time visitor triggers unavoidable session generation but leaves without a second request, a dedicated short expiration threshold (`maxIdleSecondsForNew: 30–60s`, `evictionIdleSecondsForNew: 15–30s`) is applied.
+   * **Effect**: Web crawlers and one-off bots that never return have their sessions purged within dozens of seconds from both heap memory and Redis, preventing resource exhaustion.
+
+### 3.2. New vs. Normal Sessions
 
 * **New Session**: Created on the first request; has not yet produced a second request.
 * **Normal Session**: Validated by returning the assigned session cookie on subsequent requests.
 * **Optimization**: Bots and crawlers never make a second request. Setting a very short `maxIdleSecondsForNew` purges these orphaned sessions before they consume Redis or heap capacity.
 
-### 3.2. `SessionManagerConfig` Core Parameters
+### 3.3. `SessionManagerConfig` Core Parameters
 
 ```xml
 <bean class="com.aspectran.core.context.config.SessionManagerConfig">
@@ -214,7 +257,7 @@ Aspectran separates new sessions from established normal sessions to counter gho
 * **`removeUnloadableSessions`**:
   * When `true`, automatically purges unreadable or deserialization-corrupted session records from storage (e.g., after application class refactorings) to prevent cascading errors.
 
-### 3.3. Best Practice Profiles by Deployment Scenario
+### 3.4. Best Practice Profiles by Deployment Scenario
 
 To eliminate guesswork when configuring session timeouts and cache thresholds, Aspectran provides four battle-tested configuration profiles tailored to typical enterprise deployment scenarios.
 
@@ -571,6 +614,22 @@ Aspectow Enterprise bridges Undertow's servlet specification (`io.undertow.serve
 </bean>
 ```
 
+#### Lazy Session Evaluation in Servlet/JSP Environments
+
+In traditional enterprise servlet web applications and environments adopting JSP as the view rendering technology (e.g., JPetStore), a structural dilemma previously existed where sessions were forcibly materialized during view rendering even if the backend business logic remained entirely stateless:
+
+* **Default Session Activation in JSP Specification (`session="true"`)**:
+  * According to the Jakarta Servlet and JSP specifications, all JSP pages default to `<%@ page session="true" %>` unless explicitly declared as `<%@ page session="false" %>`.
+  * JSP compilers (such as Jasper) inject `session = request.getSession(true);` at the entry point of the generated servlet service method to bind the implicit `session` object.
+  * Attempting to resolve this by declaring `<%@ page session="false" %>` across all JSP templates completely eliminates the `session` variable declaration, making it impossible for the JSP to reference sessions dynamically created by backend actions (e.g., user login, cart additions), introducing severe runtime defects.
+* **Resolution via `ActivityRequestWrapper` and `LazyHttpSession`**:
+  * Aspectran's web servlet layer resolves this architectural conflict through [`ActivityRequestWrapper`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/activity/ActivityRequestWrapper.java) and [`LazyHttpSession`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/activity/LazyHttpSession.java).
+  * Calls to `request.getSession(true)` do not immediately create a physical container session; instead, a lightweight virtual wrapper (`LazyHttpSession`) is returned.
+  * **Read-Only Operations (Pure Read)**: Inspecting session state via `getAttribute()`, `getAttributeNames()`, or `getId()` defers session creation, returning `null` or empty values without touching container storage.
+  * **State-Changing Operations (Write)**: A real container session is instantiated (`getRealSession(true)`) and assigned a `Set-Cookie: JSESSIONID=...` response header only when the application executes state-modifying calls such as `setAttribute(name, value)` (with `value != null`) or `setMaxInactiveInterval()`.
+* **Zero-Touch Statelessness**:
+  * There is no need to manually edit hundreds of legacy JSP files. Applications rendering views via JSP automatically maintain a **strict 0-byte memory and storage footprint** on anonymous page visits and crawler traffic, achieving modern stateless scalability with full backward compatibility.
+
 ### 6.3. Aspectow Edge Deployments (Netty Non-Servlet Binding)
 
 Aspectow Edge eliminates servlet container overhead by running [`NettySessionManager`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java) and [`NettySessionConfig`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java) directly within Netty's HTTP channel pipeline.
@@ -876,7 +935,9 @@ Aspectow server architectures enforce strict **Multi-Context Session Isolation**
 
 ## 9. Application Code: Unified Session API
 
-Application components (Translet actions, controllers, business services) interact with sessions using Aspectran's unified [`SessionAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) rather than tying business logic to `HttpServletRequest`, `HttpSession`, or Netty native channel buffers:
+Application components (Translet actions, controllers, business services) and cross-cutting concerns (Advice, Filters, interceptors) interact with sessions using Aspectran's unified [`SessionAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) rather than tying logic directly to `HttpServletRequest`, `HttpSession`, or Netty native channel buffers.
+
+### 9.1. Basic Session Operations Example
 
 ```java
 package com.aspectran.example.action;
@@ -898,10 +959,10 @@ public class LoginAction {
             // Retrieve container-agnostic SessionAdapter
             SessionAdapter sessionAdapter = translet.getSessionAdapter();
 
-            // Set session attributes (auto-synced to cache and persistent store)
+            // Set session attributes (materializes session, syncs to cache and persistent store)
             sessionAdapter.setAttribute("currentUser", username);
             sessionAdapter.setAttribute("loginTime", System.currentTimeMillis());
-
+            
             return "SUCCESS";
         }
         return "FAIL";
@@ -910,7 +971,7 @@ public class LoginAction {
     @Action("logout")
     public void logout(Translet translet) {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
-        if (sessionAdapter != null) {
+        if (sessionAdapter != null && sessionAdapter.getId() != null) {
             // Invalidate session immediately across cluster and storage
             sessionAdapter.invalidate();
         }
@@ -926,12 +987,53 @@ public class LoginAction {
 * **Zero-Modification Portability**: The Java action code above executes identically across Undertow servlet environments, Netty asynchronous pipelines, or standalone automated command-line testing without modifying a single line of source code.
 * **Thread Safety**: Attribute mutations within `SessionAdapter` are thread-safe and protected by `DefaultSessionManager` concurrency controls in multithreaded environments.
 
+### 9.2. Pure Stateless Getters and Side-Effect-Free API Specification
+
+Following strict object-oriented design principles (Separation of Concerns and Idempotency), all getter methods in Aspectran's `SessionAdapter` are **pure stateless queries that never modify system state as a side effect**:
+
+| Method Signature | Value When Session Exists | Value When No Session Exists | Notes |
+| :--- | :--- | :--- | :--- |
+| **`getId()`** | Unique identifier string of current session | **`null`** | **Never forcibly creates a new session (delegates to `getSession(false)`)** |
+| **`getId(boolean create)`** | Unique session ID string | If `create: true`, creates a new session and returns its ID<br>If `create: false`, returns `null` | Used strictly when explicit session creation is required |
+| **`getAttribute(name)`** | Stored session attribute object | `null` | Preserves stateless non-created state |
+| **`getCreationTime()`** | Session creation timestamp (ms) | `0L` | Safely returns 0 without creating a session |
+| **`getLastAccessedTime()`**| Session last-accessed timestamp (ms) | `0L` | Safely returns 0 without creating a session |
+| **`getMaxInactiveInterval()`**| Session maximum idle interval (seconds) | `0` | Safely returns 0 without creating a session |
+
+### 9.3. Stateless Safe Observation and Best Practices
+
+When observing session state from peripheral components—such as audit loggers, metrics collectors, or advice interceptors—applications should utilize the **safe inspection pattern checking whether `sessionAdapter.getId() != null`**:
+
+```java
+// Safe stateless observation example: Logging or monitoring Advice
+public void logAccess(Translet translet) {
+    SessionAdapter sessionAdapter = translet.getSessionAdapter();
+
+    // 1. Safely check for session presence without triggering session creation
+    String sessionId = (sessionAdapter != null ? sessionAdapter.getId() : null);
+
+    if (sessionId != null) {
+        // Authenticated or existing session visitor
+        logger.info("Authenticated access: session={}, user={}", 
+                sessionId, sessionAdapter.getAttribute("currentUser"));
+    } else {
+        // Search crawler, bot, or unauthenticated guest
+        // Remains completely stateless with zero bytes allocated on heap or Redis
+        logger.info("Stateless guest access: ip={}", translet.getRemoteAddr());
+    }
+}
+```
+
+* **Core Guidance**:
+  * Never pre-create sessions merely to obtain an identifier for audit logging (`getId()` no longer forces session creation).
+  * Only call `sessionAdapter.setAttribute(...)` when the user authenticates or requires persistent state storage. Mutating attributes transparently materializes the session and emits the `Set-Cookie` header to the client.
+
 ## 10. Conclusion
 
 Aspectran Session Manager is a comprehensive **enterprise-grade state management framework** that goes far beyond a simple key-value store:
 
 * **Infrastructure Agnostic**: Unifies state management semantics across Servlets, Netty, CLI shells, and daemons into a single developer and operations paradigm.
-* **Intelligent Resource Defense**: Safeguards system memory and Redis storage against crawlers via dual new/normal session timeout algorithms.
-* **Elastic Scalability**: Smoothly shifts from file-based local development to high-throughput Redis clustering purely via configuration without code modifications.
+* **Intelligent Defense-in-Depth Resource Protection**: Safeguards heap memory and distributed Redis storage against crawler-driven session creation storms through a 3-tier defense architecture spanning pure stateless getters (`getId()`), servlet/JSP lazy evaluation (`LazyHttpSession`), and dual new/normal session lifecycle algorithms.
+* **Elastic Scalability & I/O Optimization**: Smoothly shifts from file-based local development and cost-effective sticky session clusters (`FileSessionStore`) to high-throughput stateless Redis clustering (`LettuceSessionStore`), accompanied by architecture-aware `savePeriodSecs` tuning policies.
 * **High-Reliability Clustered Scavenging**: Maintains seamless cluster consistency with Sorted Set expiry indexes, ultra-lightweight magic byte codecs, distributed lock concurrency control, Silent Eviction, and Exactly-Once session destruction notifications.
 * **Enterprise Security**: Delivers multi-context isolation, `NonPersistent` and `NonPersistentValue` persistence boundary controls, and modern cookie security flags (`HttpOnly`, `SameSite`, `Secure`) to meet rigorous enterprise security requirements.

@@ -88,7 +88,12 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
 * **동작 원리**: Java 직렬화 메커니즘을 사용하여 세션 객체를 로컬 디스크의 지정된 디렉터리에 개별 파일로 안전하게 기록합니다.
 * **장점**: 외부 데이터베이스나 인메모리 캐시 서버 없이도 동작하므로 로컬 개발 환경, 독립형 데몬, 단일 노드 운영 환경에서 가볍고 빠르게 사용할 수 있습니다.
 * **안정성**: 애플리케이션 재시작 시 디스크에 남아있는 유효 세션 파일을 자동으로 복구하여 개발 편의성을 대폭 향상시킵니다.
-* **주의점**: 서버 인스턴스 간 파일시스템 공유가 어렵기 때문에 다중 노드 로드밸런싱 환경에서는 적합하지 않습니다.
+* **운영 및 클러스터 적용 환경**:
+  * **단일 노드(Standalone) 환경**: 별도의 Redis 등 분산 인프라 없이 프로세스 재시작 시 세션 연속성을 보존하기 위한 표준 영속화 스토어로 사용됩니다.
+  * **클러스터(다중 노드) 환경 (Sticky Session 방식)**: L4/L7 로드밸런서가 세션 고정(Sticky Session / Session Affinity)을 지원하는 인프라에서는, 고비용의 Redis 클러스터를 별도로 구축·운영하지 않고도 각 WAS 노드가 독립적인 `FileSessionStore`를 활용하여 서버 재기동 및 롤링 무중단 배포(Rolling Restart) 시 세션 보존을 매우 경제적이고 가볍게 구현할 수 있습니다.
+* **고려사항 및 한계**:
+  * 노드의 물리적 하드웨어 장애(Crash/Down) 시 해당 노드의 파일 스토리지가 타 노드로 자동 공유되지 않으므로, 다른 노드로의 즉각적인 무중단 세션 인계(Failover)는 지원되지 않습니다 (해당 노드에 접속했던 사용자는 재로그인 필요).
+  * 라운드로빈 등 Non-Sticky 분산 라우팅 환경에서는 노드 간 세션 동기화가 불가능하므로 적용할 수 없습니다.
 * **파일 세션 스토어 전용 설정 파라미터 ([`FileSessionStoreFactoryBean`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/component/session/FileSessionStoreFactoryBean.java))**:
   * `storeDir`: 세션 데이터 파일이 저장될 로컬 디렉터리 경로 (예: `/work/_sessions/tow`, 미지정 시 `java.io.tmpdir`)
   * `deleteUnrestorableFiles`: 손상되거나 역직렬화할 수 없는 유효하지 않은 세션 파일의 자동 삭제 여부 (기본값: `true`)
@@ -139,8 +144,24 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
   * 최초 만료 검사 시에는 `gracePeriodSecs * 3` 이전 만료 세션만 조회하고, 이후 정기 검사 시에는 `gracePeriodSecs` 이전 만료 세션을 조회하여 안전하게 정리합니다.
 * **`savePeriodSecs`**:
   * 세션 속성(`attributes`)의 변경(dirty) 없이 클라이언트의 단순 조회 요청(HTTP GET 등)으로 최종 접근 시간(`lastAccessedTime`)만 갱신될 때, 빈번한 영속 저장소 쓰기 네트워크/디스크 I/O를 최적화하기 위한 최소 저장 간격(초)입니다 (기본값: `0`).
-  * **`savePeriodSecs: 0` (기본값)**: 세션 데이터가 수정(dirty)되지 않은 단순 조회 요청이라도 세션 만료 시간 최신화를 위해 매 요청 종료 시 즉시 영속 저장소에 저장합니다.
-  * **`savePeriodSecs > 0`**: 세션 데이터가 수정(dirty)되지 않은 경우, 마지막으로 영속 저장소에 기록된 시각으로부터 `savePeriodSecs` 이상 경과했을 때만 저장소에 접근하여 최종 접근 시각과 만료 시간을 갱신합니다. (단, 세션 속성이 추가/수정/삭제되어 dirty 상태가 된 경우에는 `savePeriodSecs` 설정과 무관하게 요청 종료 즉시 저장소에 반영됩니다.)
+  * **기본 동작 방식**:
+    * **`savePeriodSecs: 0` (기본값)**: 세션 속성이 수정되지 않은 단순 조회 요청이라도 세션 만료 시간 최신화를 위해 매 요청 종료 시 즉시 영속 저장소에 저장합니다.
+    * **`savePeriodSecs > 0`**: 세션 속성이 수정되지 않은 경우, 마지막으로 영속 저장소에 기록된 시각으로부터 `savePeriodSecs` 이상 경과했을 때만 저장소에 접근하여 최종 접근 시각과 만료 시간을 갱신합니다. (단, 세션 속성이 추가/수정/삭제되어 dirty 상태가 된 경우에는 `savePeriodSecs` 설정과 무관하게 요청 종료 즉시 저장소에 반영됩니다.)
+  * **아키텍처 방식(Sticky vs Non-Sticky)에 따른 트레이드오프 분석**:
+    세션 저장 아키텍처는 로드밸런서의 라우팅 방식과 스토어 유형에 따라 다음과 같이 동작 특성이 달라집니다:
+    | 구분 | Sticky Session (`FileSessionStore` 또는 `Lettuce`) | Non-Sticky Session (`LettuceSessionStore`) |
+    | :--- | :--- | :--- |
+    | **적용 인프라** | 단일 노드 또는 L4/L7 세션 고정(Affinity) 클러스터 | L4/L7 라운드로빈 / 최소 연결 분산 클러스터 |
+    | **라우팅 방식** | 동일 클라이언트의 모든 요청이 항상 특정 WAS 노드로 전달 | 매 요청마다 임의의 WAS 노드로 라우팅 |
+    | **로컬 캐시 역할** | `DefaultSessionCache`가 최신 상태 및 `lastAccessedTime`을 완벽히 보존 | 타 노드가 세션을 변경하거나 접근할 수 있으므로 로컬 캐시만으로 불충분 |
+    | **`savePeriodSecs` 요구사항** | **`savePeriodSecs > 0` (예: 60~180초) 강력 권장**<br>- 속성 변경 시에만 즉시 저장<br>- 단순 조회는 로컬 메모리에서만 갱신 후 주기적 스토어 동기화 | **`savePeriodSecs = 0` 필수 (기존 기본값)**<br>- 매 요청 종료 시 Redis에 즉시 저장해야 타 노드가 최신 접근 시각 및 만료 시간을 즉시 반영 |
+    | **장점** | 스토어(파일/Redis) 쓰기 I/O 부하 90% 이상 절감, 극도의 처리 속도 | 노드 간 세션 정합성 100% 보장, 로드밸런서 부하 분산 극대화 |
+    | **주의점** | `FileSessionStore` 사용 시 노드 다운 시 재로그인 필요<br>`Lettuce` 사용 시에도 Non-Sticky 인프라에서 `savePeriodSecs > 0` 설정 시 정합성 깨짐 | 대규모 트래픽 시 Redis 쓰기 I/O 폭증 (Redis 부하 가중) |
+  * **기본값 정책 및 환경별 최적화 가이드**:
+    * **기존 기본값(`savePeriodSecs = 0`) 유지의 당위성**: 프레임워크 레벨에서는 외부 인프라(로드밸런서)가 Sticky 모드인지 Non-Sticky 모드인지 런타임에 사전에 판별할 수 없습니다. 만약 기본값을 임의로 `savePeriodSecs > 0`으로 설정하면, Non-Sticky 클러스터 환경 사용자의 경우 요청이 노드 A에서 노드 B로 번갈아 유입될 때 세션 접근 시각 미동기화로 인한 조기 세션 만료나 캐시 불일치 문제가 발생할 수 있습니다. 따라서 **데이터 정합성과 안전성을 최우선으로 하는 프레임워크의 글로벌 기본값은 `0`을 유지**하는 것이 가장 안전한 방어적 기본값(Defensive Default)입니다.
+    * **단일 노드 또는 Sticky 클러스터 + `FileSessionStore`**: 디스크 쓰기 I/O 절감 및 SSD 수명 보호를 위해 `savePeriodSecs: 60` ~ `180` 설정을 권장합니다.
+    * **Sticky 클러스터 + `LettuceSessionStore`**: Redis 네트워크 쓰기 I/O 최소화 및 세션 폭풍 방어를 위해 `savePeriodSecs: 60` ~ `180` 설정을 권장합니다.
+    * **Non-Sticky 클러스터 + `LettuceSessionStore`**: 노드 간 세션 정합성 및 접근 시각 즉시 동기화를 위해 `savePeriodSecs: 0` (기본값) 유지가 필수적입니다.
 * **`nonPersistentAttributes` 및 비영속 속성 제어**:
   * 세션 속성 중 영속 스토어(File, Redis 등)에 직렬화하여 저장하지 않고 로컬 힙 메모리(세션 캐시)에서만 유지할 속성을 지정하는 두 가지 방법을 지원합니다.
   * **속성 이름 기반 지정 (`nonPersistentAttributes`)**: 세션 스토어 설정 시 제외할 속성 키 이름들의 문자열 배열을 등록하여 영속화 대상에서 제외합니다 (예: 임시 인증 토큰 등).
@@ -160,15 +181,37 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
 
 ## 3. 세션 생명주기 제어 및 타임아웃 최적화
 
-웹 서비스 운영 중 발생하는 대표적인 성능 저하 요인 중 하나는 검색 엔진 크롤러, 봇, 헬스 체크 프로브 등이 남기고 가는 대량의 "유령 세션"입니다. Aspectran은 이를 방지하기 위해 신규 세션과 일반 세션을 이원화하여 관리하는 지능형 타임아웃 알고리즘을 내장하고 있습니다.
+웹 서비스 운영 중 발생하는 대표적인 성능 저하 및 메모리/스토리지 고갈 원인은 검색 엔진 크롤러, 모니터링 봇, L7 헬스 체크 프로브, 무상태 REST API 클라이언트 등이 남기고 가는 대량의 "유령 세션 폭풍(Session Creation Storm)"입니다.
 
-### 3.1. 신규 세션과 일반 세션의 분리 관리
+Aspectran은 단순히 타임아웃을 줄이는 단편적 대응에 그치지 않고, 요청 수명 주기의 진입부터 뷰 렌더링, 사후 정리까지 아우르는 **3단계 다계층 세션 방어 체계(Defense-in-Depth Architecture)**를 통해 시스템을 완벽하게 보호합니다.
+
+### 3.1. 무상태 요청과 검색 봇/크롤러에 대한 3단계 다계층 방어 체계
+
+```mermaid
+flowchart TD
+    Req["클라이언트 요청 유입 (봇 / 크롤러 / 일반 방문자)"] --> L1["1단계: API 레벨 원천 차단 (SessionAdapter)<br/>- getId(), getCreationTime() 등의 순수 무상태 Getter 전환<br/>- 세션 부재 시 null 또는 0L 반환으로 강제 생성 방지"]
+    L1 --> Biz["Translet Action / 비즈니스 로직 실행"]
+    Biz --> L2["2단계: 뷰 렌더링 레벨 지연 평가 (Lazy Session)<br/>- JSP <%@ page session='true' %> 기본 사양에 대응<br/>- ActivityRequestWrapper + LazyHttpSession 도입<br/>- 실제 속성 쓰기(setAttribute) 전까지 물리적 세션 생성 유보 (0 byte)"]
+    L2 --> L3["3단계: 인프라 레벨 초단기 자동 회수 (Two-Tier Lifecycle)<br/>- 신규 세션(New Session) 전용 초단기 타임아웃(30~60초) 적용<br/>- HouseKeeper를 통해 힙 메모리 및 Redis에서 즉각 회수"]
+```
+
+1. **1단계 (API 레벨 원천 차단 - Stateless Getter)**:
+   * **원리**: 프레임워크 전반의 어드바이스(Advice), 로깅 필터, 모니터링 에이전트(AppMon 등)에서 세션 식별자를 조회(`sessionAdapter.getId()`)하거나 메타데이터를 조회할 때, 세션이 없으면 신규 세션을 강제로 발급하던 부작용을 제거했습니다.
+   * **효과**: 세션이 존재하지 않는 요청에 대해 `null`을 반환하는 순수 무상태 조회를 수행하므로, 비즈니스 로직 진입 전후의 불필요한 세션 생성을 원천 차단합니다.
+2. **2단계 (뷰 렌더링 레벨 지연 실체화 - Lazy Session Evaluation)**:
+   * **원리**: 서블릿/JSP 표준 사양상 기본값(`<%@ page session="true" %>`)으로 인해 뷰 템플릿 포워딩 시 `request.getSession(true)`가 호출되더라도, `ActivityRequestWrapper`가 가상 세션 객체인 `LazyHttpSession`을 반환하여 컨테이너 세션 생성을 유보합니다.
+   * **효과**: JSP 뷰에서 단순 모델 조회나 세션 속성 읽기(`getAttribute`)만 일어나는 경우 실제 물리적 세션은 단 1바이트도 생성되지 않으며, 사용자가 로그인하거나 장바구니에 상품을 담는 등 실제 세션 속성 쓰기(`setAttribute(name, value)`)가 일어나는 시점에만 실제 세션으로 자동 승격(Promote)됩니다.
+3. **3단계 (인프라 레벨 초단기 유휴 회수 - Two-Tier Timeout)**:
+   * **원리**: 사용자가 첫 페이지를 방문하여 부득이 세션이 생성되었으나 추가 요청 없이 이탈하는 경우, 신규 세션 전용 초단기 만료 정책(`maxIdleSecondsForNew: 30~60초`, `evictionIdleSecondsForNew: 15~30초`)을 적용합니다.
+   * **효과**: 1회성 방문 후 재방문하지 않는 크롤러나 봇의 세션을 수십 초 이내에 힙 메모리와 중앙 Redis 저장소에서 즉각 회수하여 리소스 잠식을 방지합니다.
+
+### 3.2. 신규 세션과 일반 세션의 분리 관리
 
 * **신규 세션 (New Session)**: 클라이언트가 처음 방문하여 세션이 생성되었으나 아직 두 번째 요청을 발생시키지 않은 상태의 세션입니다.
 * **일반 세션 (Normal Session)**: 동일 세션 쿠키를 지참하고 두 번째 이상의 유효한 요청을 정상적으로 수행한 상태입니다.
 * **최적화 원리**: 웹 크롤러나 일회성 API 호출은 단 한 번의 요청 후 다시 방문하지 않습니다. Aspectran은 이러한 세션에 대해 `maxIdleSecondsForNew`를 매우 짧게 적용하여 메모리와 Redis 저장소를 잠식하기 전에 빠르게 회수합니다.
 
-### 3.2. `SessionManagerConfig` 핵심 설정 파라미터
+### 3.3. `SessionManagerConfig` 핵심 설정 파라미터
 
 XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerConfig`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/context/config/SessionManagerConfig.java)의 파라미터 명세는 다음과 같습니다.
 
@@ -216,7 +259,7 @@ XML Bean 정의 또는 APON 설정 블록에서 사용되는 [`SessionManagerCon
 * **`removeUnloadableSessions`**:
   * 애플리케이션 클래스 구조 변경 등으로 인해 저장소의 세션 바이너리를 역직렬화할 수 없을 때, 에러를 반복 발생시키지 않고 해당 세션 데이터를 저장소에서 즉시 삭제할 것인지 여부입니다.
 
-### 3.3. 대표 환경별 최적화 권장 설정 (Best Practice Profiles)
+### 3.4. 대표 환경별 최적화 권장 설정 (Best Practice Profiles)
 
 처음 Aspectran Session Manager를 도입할 때 각 타임아웃과 캐시 수치를 어떻게 조율해야 할지 고민하는 설계자를 위해, 실제 운영에서 검증된 대표적인 4가지 환경별 최적화 프로파일을 제시합니다.
 
@@ -573,6 +616,22 @@ Aspectow Enterprise에서는 [`TowSessionManager`](https://github.com/aspectran/
 </bean>
 ```
 
+#### 서블릿/JSP 환경의 지연 세션 평가 메커니즘 (Lazy Session Evaluation)
+
+전통적인 서블릿 웹 애플리케이션 및 JSP를 뷰 템플릿으로 사용하는 환경(예: JPetStore 등)에서는, 백엔드 비즈니스 로직이 완전히 무상태로 유지되더라도 뷰 렌더링 시점에 세션이 강제 발급되는 구조적 딜레마가 존재했습니다:
+
+* **JSP 표준 사양의 세션 기본 활성화 (`session="true"`)**:
+  * Jakarta Servlet 및 JSP 사양에 따라 모든 JSP 페이지는 별도로 `<%@ page session="false" %>`를 명시하지 않는 한 `<%@ page session="true" %>`가 기본 적용됩니다.
+  * JSP 서블릿 컴파일러(Jasper 등)는 컴파일 시 내장 객체(Implicit Object)인 `session` 변수를 바인딩하기 위해 서블릿 서비스 루틴 시작부에 반드시 `session = request.getSession(true);` 코드를 삽입합니다.
+  * 만약 이를 막고자 `<%@ page session="false" %>`를 선언하면 JSP 내에서 `session` 내장 변수 선언 자체가 제거되므로, 비즈니스 로직(로그인, 장바구니 등)에서 동적으로 생성한 세션을 JSP에서 참조할 수 없게 되는 치명적인 결함이 발생합니다.
+* **`ActivityRequestWrapper`와 `LazyHttpSession`을 통한 해결**:
+  * Aspectran의 웹 서블릿 계층은 이 문제를 근본적으로 해결하기 위해 [`ActivityRequestWrapper`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/activity/ActivityRequestWrapper.java)와 [`LazyHttpSession`](https://github.com/aspectran/aspectran/blob/master/web-servlet/src/main/java/com/aspectran/web/servlet/activity/LazyHttpSession.java)을 제공합니다.
+  * `request.getSession(true)`가 호출되더라도 실제 컨테이너 세션을 즉시 생성하지 않고 가상 세션 래퍼인 `LazyHttpSession`을 반환합니다.
+  * **읽기 연산 (Pure Read)**: `getAttribute()`, `getAttributeNames()`, `getId()` 등 세션 상태를 변경하지 않는 조회 연산은 실제 세션을 생성하지 않고 `null` 또는 빈 값을 반환하여 물리적 세션 생성을 유보합니다.
+  * **쓰기 연산 (State-Changing Write)**: 비즈니스 로직에서 `setAttribute(name, value)`(단, `value != null`)나 `setMaxInactiveInterval()`을 호출하여 실제 상태를 변경할 때만 비로소 원본 컨테이너 세션을 생성(`getRealSession(true)`)하여 속성을 저장하고 응답 헤더에 `Set-Cookie: JSESSIONID=...`를 발행합니다.
+* **투명한 무상태성 보장 (Zero-Touch Statelessness)**:
+  * JSP 파일 수백 개에 `<%@ page session="false" %>`를 추가할 필요가 전혀 없으며, JSP 뷰를 사용하는 애플리케이션에서도 단순 페이지 조회 및 검색 봇 요청 시 **세션 생성 0바이트(서버 메모리 및 스토어 부하 제로)**를 완벽하게 보장합니다.
+
 ### 6.3. Aspectow Edge 환경 구성 (Netty 논-서블릿 바인딩)
 
 Aspectow Edge에서는 서블릿 컨테이너 오버헤드를 배제하고 Netty 채널 파이프라인에서 직접 가동되는 [`NettySessionManager`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionManager.java)와 [`NettySessionConfig`](https://github.com/aspectran/aspectran/blob/master/with-netty/src/main/java/com/aspectran/netty/server/session/NettySessionConfig.java)를 사용합니다.
@@ -877,7 +936,9 @@ Aspectow 서버 아키텍처의 강력한 보안 특징 중 하나는 **다중 �
 
 ## 9. 코드 레벨의 일관된 세션 조작 (Session API)
 
-비즈니스 로직(Translet 액션, 컨트롤러, 서비스 Bean) 내부에서는 서블릿 API(`HttpServletRequest`, `HttpSession`)나 Netty 네이티브 객체에 종속되지 않고, Aspectran이 제공하는 통합 [`SessionAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) 인터페이스를 통해 세션을 다룹니다.
+비즈니스 로직(Translet 액션, 컨트롤러, 서비스 Bean) 및 가로채기 컴포넌트(Advice, Filter 등) 내부에서는 서블릿 API(`HttpServletRequest`, `HttpSession`)나 Netty 네이티브 객체에 종속되지 않고, Aspectran이 제공하는 통합 [`SessionAdapter`](https://github.com/aspectran/aspectran/blob/master/core/src/main/java/com/aspectran/core/adapter/SessionAdapter.java) 인터페이스를 통해 세션을 다룹니다.
+
+### 9.1. 기본 세션 조작 예제
 
 ```java
 package com.aspectran.example.action;
@@ -899,7 +960,7 @@ public class LoginAction {
             // 환경 독립적 SessionAdapter 획득
             SessionAdapter sessionAdapter = translet.getSessionAdapter();
 
-            // 세션 속성 저장 (자동 캐싱 및 영속 스토어 동기화)
+            // 세션 속성 저장 (세션 실체화, 자동 캐싱 및 영속 스토어 동기화)
             sessionAdapter.setAttribute("currentUser", username);
             sessionAdapter.setAttribute("loginTime", System.currentTimeMillis());
 
@@ -911,7 +972,7 @@ public class LoginAction {
     @Action("logout")
     public void logout(Translet translet) {
         SessionAdapter sessionAdapter = translet.getSessionAdapter();
-        if (sessionAdapter != null) {
+        if (sessionAdapter != null && sessionAdapter.getId() != null) {
             // 세션 즉시 무효화 및 스토리지 삭제
             sessionAdapter.invalidate();
         }
@@ -927,12 +988,53 @@ public class LoginAction {
 * **환경 이식성**: 위 Java 코드는 Undertow 서블릿 환경이든, Netty 비동기 환경이든, 또는 자동화 테스트 쉘 환경이든 **단 1줄의 코드 수정 없이 100% 동일하게 실행**됩니다.
 * **스레드 안전성**: `SessionAdapter` 내부의 속성 조작은 `DefaultSessionManager`에 의해 동시성 보호를 받으므로 멀티스레드 환경에서도 데이터 오염 없이 안전하게 작동합니다.
 
+### 9.2. 순수 무상태 Getter와 부작용 없는(Side-Effect Free) API 명세
+
+Aspectran의 `SessionAdapter`는 객체지향 설계 원칙(SRP 및 Idempotency)에 따라 **조회(Getter) 메서드가 시스템의 상태를 변경하지 않는 순수 무상태 조회**를 보장합니다:
+
+| 메서드 시그니처 | 세션 존재 시 반환값 | 세션 부재 시 반환값 | 비고 |
+| :--- | :--- | :--- | :--- |
+| **`getId()`** | 현재 세션의 고유 식별자 문자열 | **`null`** | **신규 세션을 강제로 생성하지 않음 (`getSession(false)` 기반)** |
+| **`getId(boolean create)`** | 현재 세션 ID | `create: true`인 경우 신규 세션 생성 후 ID 반환<br>`create: false`인 경우 `null` 반환 | 명시적 세션 강제 생성이 필요한 특수 상황에서 사용 |
+| **`getAttribute(name)`** | 저장된 세션 속성 객체 | `null` | 세션 미생성 상태 유지 |
+| **`getCreationTime()`** | 세션 생성 타임스탬프 (ms) | `0L` | 세션을 강제로 생성하지 않고 안전하게 0 반환 |
+| **`getLastAccessedTime()`**| 세션 최종 접근 타임스탬프 (ms) | `0L` | 세션을 강제로 생성하지 않고 안전하게 0 반환 |
+| **`getMaxInactiveInterval()`**| 세션 최대 유휴 시간 (초) | `0` | 세션을 강제로 생성하지 않고 0 반환 |
+
+### 9.3. 무상태(Stateless) 안전 관찰 및 개발 모범 사례
+
+로그 기록, 성능 측정 인터셉터, 감사 어드바이스(Advice) 등 비즈니스 로직 외곽에서 세션 정보를 관찰할 때는 **`sessionAdapter.getId()`가 `null`인지 검사하는 안전한 관찰 패턴**을 사용해야 합니다.
+
+```java
+// 안전한 무상태 관찰 예시: 로깅 또는 모니터링 Advice
+public void logAccess(Translet translet) {
+    SessionAdapter sessionAdapter = translet.getSessionAdapter();
+
+    // 1. 세션 존재 여부의 안전한 판별 (세션을 새로 만들지 않음)
+    String sessionId = (sessionAdapter != null ? sessionAdapter.getId() : null);
+
+    if (sessionId != null) {
+        // 이미 인증되었거나 세션을 소유한 사용자
+        logger.info("Authenticated user access: session={}, user={}", 
+                sessionId, sessionAdapter.getAttribute("currentUser"));
+    } else {
+        // 검색 봇, 크롤러, 또는 비로그인 방문자의 무상태 요청
+        // 서버 세션을 전혀 생성하지 않고 순수 클라이언트 IP/헤더만으로 로깅
+        logger.info("Stateless guest access: ip={}", translet.getRemoteAddr());
+    }
+}
+```
+
+* **핵심 권장 수칙**:
+  * 단순 조회나 감사 로깅을 위해 세션을 선제적으로 발급받을 필요가 없습니다 (`getId()` 호출만으로 세션이 생성되지 않음).
+  * 실제 사용자가 로그인하거나 상태를 영구 저장해야 하는 비즈니스 액션에서만 `sessionAdapter.setAttribute(...)`를 호출하십시오. 상태 변경 쓰기 호출 시점에 비로소 실제 세션이 투명하게 생성되고 클라이언트에 세션 쿠키가 발급됩니다.
+
 ## 10. 결론
 
 Aspectran Session Manager는 단순한 키-값 저장소를 넘어선 **차세대 엔터프라이즈 상태 관리 솔루션**입니다.
 
 * **인프라 독립성**: 서블릿, Netty, CLI, 데몬 전 영역에 걸친 단일한 개발 및 운영 패러다임을 확립합니다.
-* **지능형 리소스 보호**: 신규/일반 세션 분리 알고리즘을 통해 봇과 크롤러로부터 메모리와 스토리지를 완벽하게 방어합니다.
-* **유연한 확장성**: 설정 변경만으로 로컬 개발용 파일 스토리지에서 대규모 Redis 분산 세션 클러스터링으로 무중단 전환됩니다.
+* **지능형 다계층 리소스 보호**: 순수 무상태 Getter(`getId()`), 서블릿/JSP 지연 세션 평가(`LazyHttpSession`), 그리고 신규/일반 세션 이원화 생명주기 관리로 이어지는 3단계 다계층 방어 체계를 통해 검색 봇과 크롤러의 세션 폭풍(Session Creation Storm)으로부터 힙 메모리와 백엔드 스토리지를 완벽하게 보호합니다.
+* **유연한 확장성 및 I/O 최적화**: 설정 변경만으로 로컬 개발 및 Sticky 세션 클러스터 환경의 경제적인 파일 스토리지(`FileSessionStore`)부터 대규모 무상태 Redis 분산 세션 클러스터링(`LettuceSessionStore`)에 이르기까지 무중단 전환되며, L4/L7 라우팅 인프라 특성에 맞춘 `savePeriodSecs` 최적화 정책을 제공합니다.
 * **고신뢰 분산 스캐빈징**: Sorted Set 만료 인덱스, 초경량 매직 바이트 코덱, 분산 락 기반 경합 제어, Silent Eviction, Exactly-Once 소멸 이벤트 보장을 통해 대규모 클러스터 환경에서도 무결점 동기화를 유지합니다.
 * **보안과 성능의 양립**: `NonPersistent` 및 `NonPersistentValue`를 통한 선택적 영속화, 정교한 쿠키 보안 플래그(`HttpOnly`, `SameSite`, `Secure`), 다중 컨텍스트 완전 격리를 통해 엔터프라이즈 환경이 요구하는 엄격한 보안 요건을 충족합니다.
