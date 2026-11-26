@@ -148,15 +148,17 @@ All persistent stores ([`FileSessionStore`](https://github.com/aspectran/aspectr
     * **`savePeriodSecs: 0` (default)**: Flushes updated access timestamps to the persistent store on every request completion, even if no session attributes were modified.
     * **`savePeriodSecs > 0`**: Only flushes access timestamps if the elapsed time since the last persist exceeds or equals `savePeriodSecs`. (Modified/dirty attributes are always persisted immediately upon request completion regardless of this setting).
   * **Trade-Off Analysis by Architecture (Sticky vs. Non-Sticky)**:
-    Operational characteristics differ significantly depending on the load balancer routing policy and store type:
-    | Dimension | Sticky Session (`FileSessionStore` or `Lettuce`) | Non-Sticky Session (`LettuceSessionStore`) |
+    The operational characteristics of the session storage architecture vary significantly depending on the load balancer's routing strategy and the store type:
+
+    | Dimension | Sticky Session (`FileSessionStore` or `LettuceSessionStore`) | Non-Sticky Session (`LettuceSessionStore`) |
     | :--- | :--- | :--- |
     | **Target Infrastructure** | Single-node or L4/L7 session affinity (Sticky) clusters | L4/L7 round-robin or least-connections distributed clusters |
     | **Routing Policy** | Requests from the same client are always routed to the designated WAS node | Requests may be routed to any arbitrary WAS node per request |
     | **Local Cache Role** | `DefaultSessionCache` perfectly preserves the latest state and `lastAccessedTime` | Local cache alone is insufficient as peer nodes may modify or access the session |
     | **`savePeriodSecs` Requirement** | **`savePeriodSecs > 0` (e.g., 60–180s) strongly recommended**<br>- Immediate flush on attribute modifications only<br>- Read-only touches update in local memory and sync to store periodically | **`savePeriodSecs = 0` mandatory (default)**<br>- Must flush to Redis immediately on every request completion so peer nodes observe current access times and expiration thresholds |
     | **Advantages** | Reduces store (file/Redis) write I/O by over 90%; extreme processing speed | 100% cross-node session consistency; maximizes load balancing efficiency |
-    | **Constraints** | `FileSessionStore` requires re-login on node crashes; setting `savePeriodSecs > 0` on Non-Sticky breaks consistency | High traffic can cause high Redis write I/O load |
+    | **Constraints** | `FileSessionStore`: Requires re-login upon node crash<br>`LettuceSessionStore`: Setting `savePeriodSecs > 0` in Non-Sticky clusters breaks session consistency | High traffic can cause high Redis write I/O load |
+
   * **Default Policy & Environment-Specific Tuning Guide**:
     * **Rationale for the Defensive Default (`savePeriodSecs = 0`)**: The framework cannot dynamically determine whether external infrastructure (the load balancer) runs in Sticky or Non-Sticky mode. If the default were arbitrarily set to `savePeriodSecs > 0`, users in Non-Sticky environments would suffer from inconsistent access times, premature session expirations, and cache divergence when requests alternate across nodes. Therefore, **maintaining `0` as the framework's global default is the safest defensive default** to guarantee data integrity out of the box.
     * **Single-Node or Sticky Cluster + `FileSessionStore`**: Setting `savePeriodSecs: 60` to `180` is recommended to reduce disk write I/O and extend SSD lifespan.
@@ -962,7 +964,7 @@ public class LoginAction {
             // Set session attributes (materializes session, syncs to cache and persistent store)
             sessionAdapter.setAttribute("currentUser", username);
             sessionAdapter.setAttribute("loginTime", System.currentTimeMillis());
-            
+
             return "SUCCESS";
         }
         return "FAIL";
@@ -1014,7 +1016,7 @@ public void logAccess(Translet translet) {
 
     if (sessionId != null) {
         // Authenticated or existing session visitor
-        logger.info("Authenticated access: session={}, user={}", 
+        logger.info("Authenticated access: session={}, user={}",
                 sessionId, sessionAdapter.getAttribute("currentUser"));
     } else {
         // Search crawler, bot, or unauthenticated guest

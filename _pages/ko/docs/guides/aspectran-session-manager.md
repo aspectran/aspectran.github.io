@@ -148,15 +148,17 @@ Aspectran Session Manager는 비즈니스 환경의 규모와 영속성 요구�
     * **`savePeriodSecs: 0` (기본값)**: 세션 속성이 수정되지 않은 단순 조회 요청이라도 세션 만료 시간 최신화를 위해 매 요청 종료 시 즉시 영속 저장소에 저장합니다.
     * **`savePeriodSecs > 0`**: 세션 속성이 수정되지 않은 경우, 마지막으로 영속 저장소에 기록된 시각으로부터 `savePeriodSecs` 이상 경과했을 때만 저장소에 접근하여 최종 접근 시각과 만료 시간을 갱신합니다. (단, 세션 속성이 추가/수정/삭제되어 dirty 상태가 된 경우에는 `savePeriodSecs` 설정과 무관하게 요청 종료 즉시 저장소에 반영됩니다.)
   * **아키텍처 방식(Sticky vs Non-Sticky)에 따른 트레이드오프 분석**:
-    세션 저장 아키텍처는 로드밸런서의 라우팅 방식과 스토어 유형에 따라 다음과 같이 동작 특성이 달라집니다:
-    | 구분 | Sticky Session (`FileSessionStore` 또는 `Lettuce`) | Non-Sticky Session (`LettuceSessionStore`) |
+    세션 저장 아키텍처는 로드밸런서의 라우팅 방식과 스토어 유형에 따라 다음과 같이 동작 특성이 달라집니다.
+
+    | 구분 | Sticky Session (`FileSessionStore` 또는 `LettuceSessionStore`) | Non-Sticky Session (`LettuceSessionStore`) |
     | :--- | :--- | :--- |
     | **적용 인프라** | 단일 노드 또는 L4/L7 세션 고정(Affinity) 클러스터 | L4/L7 라운드로빈 / 최소 연결 분산 클러스터 |
     | **라우팅 방식** | 동일 클라이언트의 모든 요청이 항상 특정 WAS 노드로 전달 | 매 요청마다 임의의 WAS 노드로 라우팅 |
     | **로컬 캐시 역할** | `DefaultSessionCache`가 최신 상태 및 `lastAccessedTime`을 완벽히 보존 | 타 노드가 세션을 변경하거나 접근할 수 있으므로 로컬 캐시만으로 불충분 |
     | **`savePeriodSecs` 요구사항** | **`savePeriodSecs > 0` (예: 60~180초) 강력 권장**<br>- 속성 변경 시에만 즉시 저장<br>- 단순 조회는 로컬 메모리에서만 갱신 후 주기적 스토어 동기화 | **`savePeriodSecs = 0` 필수 (기존 기본값)**<br>- 매 요청 종료 시 Redis에 즉시 저장해야 타 노드가 최신 접근 시각 및 만료 시간을 즉시 반영 |
     | **장점** | 스토어(파일/Redis) 쓰기 I/O 부하 90% 이상 절감, 극도의 처리 속도 | 노드 간 세션 정합성 100% 보장, 로드밸런서 부하 분산 극대화 |
-    | **주의점** | `FileSessionStore` 사용 시 노드 다운 시 재로그인 필요<br>`Lettuce` 사용 시에도 Non-Sticky 인프라에서 `savePeriodSecs > 0` 설정 시 정합성 깨짐 | 대규모 트래픽 시 Redis 쓰기 I/O 폭증 (Redis 부하 가중) |
+    | **주의점** | `FileSessionStore`: 노드 다운 시 세션 유실로 재로그인 필요<br>`LettuceSessionStore`: Non-Sticky 인프라에서 `savePeriodSecs > 0` 설정 시 세션 정합성 훼손 | 대규모 트래픽 시 Redis 쓰기 I/O 폭증 (Redis 부하 가중) |
+
   * **기본값 정책 및 환경별 최적화 가이드**:
     * **기존 기본값(`savePeriodSecs = 0`) 유지의 당위성**: 프레임워크 레벨에서는 외부 인프라(로드밸런서)가 Sticky 모드인지 Non-Sticky 모드인지 런타임에 사전에 판별할 수 없습니다. 만약 기본값을 임의로 `savePeriodSecs > 0`으로 설정하면, Non-Sticky 클러스터 환경 사용자의 경우 요청이 노드 A에서 노드 B로 번갈아 유입될 때 세션 접근 시각 미동기화로 인한 조기 세션 만료나 캐시 불일치 문제가 발생할 수 있습니다. 따라서 **데이터 정합성과 안전성을 최우선으로 하는 프레임워크의 글로벌 기본값은 `0`을 유지**하는 것이 가장 안전한 방어적 기본값(Defensive Default)입니다.
     * **단일 노드 또는 Sticky 클러스터 + `FileSessionStore`**: 디스크 쓰기 I/O 절감 및 SSD 수명 보호를 위해 `savePeriodSecs: 60` ~ `180` 설정을 권장합니다.
@@ -1015,7 +1017,7 @@ public void logAccess(Translet translet) {
 
     if (sessionId != null) {
         // 이미 인증되었거나 세션을 소유한 사용자
-        logger.info("Authenticated user access: session={}, user={}", 
+        logger.info("Authenticated user access: session={}, user={}",
                 sessionId, sessionAdapter.getAttribute("currentUser"));
     } else {
         // 검색 봇, 크롤러, 또는 비로그인 방문자의 무상태 요청
