@@ -31,19 +31,43 @@ Run the application with both `prod` and `metrics` profiles active simultaneousl
 java -Daspectran.profiles.active=prod,metrics -jar my-application.jar
 ```
 
-### 1.3. Profile Isolation and Base Profiles in Multi-Context Environments
+### 1.3. Profile Inheritance and Base Profiles in Multi-Context Environments
 
-When working in a multi-context environment where parent (`root`) and child contexts coexist, you must be aware of the following:
+When working in a multi-context environment where parent (`root`) and child contexts coexist, it is essential to understand the resource boundary and profile inheritance mechanisms between contexts.
 
-*   **Profile Independence (No Inheritance)**: Profiles active in the parent context are not automatically inherited or propagated to child contexts. The environment of each context is completely isolated.
-*   **Independent Profile Injection**: If you want to enable a specific profile in a child context, you must specify it separately for that child context. You can either write it directly in the child context's configuration file or specify a context-specific JVM system property:
-    *   **Syntax**: `-Daspectran.profiles.base.{contextName}={profileName}`
-    *   **Example**: `-Daspectran.profiles.base.appmon=gateway` (Activates `gateway` as the base profile for the `appmon` context)
+#### 1.3.1. Field-Level Fallback for Profile Inheritance
+The `context` configuration (`rules`, `scan`, `resources`, etc.) of each context is strictly isolated to prevent component collisions and preserve clean resource boundaries. However, the `profiles` configuration automatically inherits settings from the parent context using a **field-level fallback** approach to ensure consistent runtime environments (such as dev, prod, etc.) across the entire application.
+
+*   **Field-Level Fallback Principles**:
+    *   **Full Inheritance When Omitted**: If the child context's configuration file (APON) does not define a `profiles` section at all, it inherits and uses the parent context's profile configurations (`base`, `default`, `active`) in their entirety.
+    *   **Selective Override and Fallback When Partially Defined**: If a child context defines only a specific setting (e.g., `base`), the explicitly defined setting takes precedence (overrides), while any omitted settings (e.g., `default`) automatically fall back to the parent context's configuration.
+    *   **No Blind Merging**: Rather than indiscriminately merging profile lists, Aspectran evaluates missing fields on an individual basis. This prevents unintended parent profiles from polluting the child context while seamlessly propagating global runtime environments.
+
+> 💡 **NOTE: Practical Examples**
+> *   **When the child context defines no profiles**: The parent context's `default: [ dev ]` setting applies directly to the child context, making `acceptsProfiles("dev")` evaluate to `true`.
+> *   **When the child context defines only `base`**: The child context's own `base: [ console.ui ]` profile is activated, while the omitted `default(dev)` profile is inherited from the parent context and remains active.
+> *   **When the child context explicitly specifies `default: [ prod ]`**: The child context's own `default` setting takes precedence and overrides the parent's `dev` profile.
+
+#### 1.3.2. Context-Specific Base Profiles
+When a specific child context requires dedicated base profiles, you can declare them directly under `profiles.base` in the child context's APON file or inject them dynamically via JVM system properties.
+
+*   **Syntax**: `-Daspectran.profiles.base.{contextName}={profileName}`
+*   **Example**: `-Daspectran.profiles.base.appmon=gateway` (Activates `gateway` as the base profile for the `appmon` context)
+*   **Configuration File Example** (`system.properties` in `aspectran-config.apon`):
+    ```apon
+    system: {
+        properties: {
+            aspectran.profiles.base.appmon: "h2,appmon.standalone"
+            aspectran.profiles.base.console: "mariadb,demo,console.ui"
+            aspectran.profiles.base.jpetstore: "oracle"
+        }
+    }
+    ```
 
 > ⚠️ **WARNING: Overriding Behavior via System Properties**
->
-> Even if base profiles are pre-configured in your `aspectran-config.apon`, injecting profiles via JVM system properties (`-Daspectran.profiles.base.{contextName}`) will **completely override (ignore and overwrite)** the pre-configured APON base profiles instead of appending to them.
->
+> 
+> Even if base profiles are pre-configured in the child context's APON (`context.profiles.base`) or inherited from a parent context, injecting profiles via JVM system properties (`-Daspectran.profiles.base.{contextName}`) will **completely override (ignore and overwrite)** the pre-configured base profiles instead of appending to them.
+> 
 > To use both existing and system property settings, you must specify all target profile names in the system property value. (e.g., `-Daspectran.profiles.base.appmon=appmon.standalone,mariadb`)
 
 ## 2. Profile Expression Syntax
@@ -182,14 +206,14 @@ The recommended approach is to use `PropertiesFactoryBean` to load different `.p
             <!-- Set to ignore errors if the file is missing -->
             <item name="ignoreInvalidResource" valueType="boolean">true</item>
         </properties>
-
+        
         <!-- Configuration file location for 'h2' profile -->
         <properties profile="h2">
             <item name="locations" type="array">
                 <value>classpath:config/db/db-h2.properties</value>
             </item>
         </properties>
-
+        
         <!-- Configuration file location for 'mysql' profile -->
         <properties profile="mysql">
             <item name="locations" type="array">
