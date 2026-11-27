@@ -364,6 +364,8 @@ public class ActivityRequestWrapper extends HttpServletRequestWrapper {
 ```java
 public class LazyHttpSession implements HttpSession {
 
+    private static final String JSTL_PREFIX = "jakarta.servlet.jsp.jstl.";
+
     private final ActivityRequestWrapper wrapper;
 
     @Nullable
@@ -416,6 +418,11 @@ public class LazyHttpSession implements HttpSession {
     @Override
     public void setAttribute(String name, Object value) {
         if (value != null) {
+            // JSTL fmt 태그 등이 응답 문자셋이나 로케일을 세션에 강제 캐싱하려 할 때,
+            // 실제 세션이 아직 없다면 신규 세션 생성을 유발하지 않고 안전하게 무시 (no-op)
+            if (name != null && name.startsWith(JSTL_PREFIX) && getSession(false) == null) {
+                return;
+            }
             // 실제 컨테이너 세션 실체화(Realization) 및 쿠키 발행
             HttpSession session = getSession(true);
             if (session != null) {
@@ -427,6 +434,15 @@ public class LazyHttpSession implements HttpSession {
     }
 }
 ```
+
+#### 실전에서의 결정적 복병: JSTL `<fmt:>` 태그의 암묵적 세션 캐싱 차단
+`LazyHttpSession`을 설계할 당시에는 "단순히 모델을 읽기만 하는 뷰는 `setAttribute()`를 부르지 않을 것"이라고 예상했습니다. 그러나 실전 테스트 중 JPetStore의 상품 상세 페이지(`Product.jsp`)에서 가격 포맷팅을 위해 사용한 **`<fmt:formatNumber>` 태그가 세션을 생성해 버리는 뜻밖의 복병**을 마주쳤습니다:
+
+* **20년 전 레거시 사양의 유산**: JSTL 1.0 표준 구현체(`SetLocaleSupport`)는 `<fmt:formatNumber>`, `<fmt:formatDate>`, `<fmt:setLocale>` 등이 호출될 때마다, 다음 폼 제출 시 인코딩이 깨지지 않도록 현재 응답의 문자셋을 세션(`jakarta.servlet.jsp.jstl.fmt.request.charset`)에 강제로 캐싱하도록 설계되어 있었습니다.
+* **조기 세션 생성의 유발**: 이로 인해 `pageContext.getSession() != null`이 참이 되면서 JSTL이 세션에 charset 저장을 시도했고, `LazyHttpSession.setAttribute()`가 이를 애플리케이션의 정상적인 상태 변경 쓰기로 오인하여 실제 세션을 실체화해버린 것입니다.
+* **완벽한 격리 방어**: Aspectran은 `LazyHttpSession.setAttribute()`에서 `jakarta.servlet.jsp.jstl.` 네임스페이스 속성에 대해, 물리적 세션이 아직 존재하지 않는 무상태 상태(`getSession(false) == null`)라면 세션 생성을 유보(no-op)하도록 방어벽을 세웠습니다. 반면 로그인 후 실제 세션이 만들어진 상태에서는 정상 저장되므로 JSTL 스펙과의 하위 호환성도 100% 유지됩니다.
+
+이로써 JSP 개발자가 `<fmt:formatNumber>`, `<fmt:formatDate>` 등 표준 JSTL 포맷팅 태그를 마음껏 사용하더라도 단 1바이트의 세션도 발급되지 않는 진정한 세션 제로(0-Byte)를 완성할 수 있었습니다.
 
 #### 지연 세션 메커니즘의 우아함
 1. **JSP 템플릿의 무수정(Zero-Touch) 유지**:

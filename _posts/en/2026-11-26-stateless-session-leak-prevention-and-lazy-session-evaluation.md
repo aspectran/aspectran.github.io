@@ -364,6 +364,8 @@ The underlying [LazyHttpSession.java](https://github.com/aspectran/aspectran/blo
 ```java
 public class LazyHttpSession implements HttpSession {
 
+    private static final String JSTL_PREFIX = "jakarta.servlet.jsp.jstl.";
+
     private final ActivityRequestWrapper wrapper;
 
     @Nullable
@@ -416,6 +418,11 @@ public class LazyHttpSession implements HttpSession {
     @Override
     public void setAttribute(String name, Object value) {
         if (value != null) {
+            // When JSTL fmt tags attempt to cache response charset or locale settings,
+            // ignore them if no underlying session exists yet to prevent premature creation
+            if (name != null && name.startsWith(JSTL_PREFIX) && getSession(false) == null) {
+                return;
+            }
             // Trigger actual container session creation and set-cookie header emission
             HttpSession session = getSession(true);
             if (session != null) {
@@ -427,6 +434,15 @@ public class LazyHttpSession implements HttpSession {
     }
 }
 ```
+
+#### An Unexpected Pitfall in Practice: Defending Against Implicit JSTL `<fmt:>` Session Caching
+During initial design, it was expected that read-only views would never invoke `setAttribute()`. However, practical testing with JPetStore's product details view (`Product.jsp`) exposed an unexpected pitfall: employing the standard **`<fmt:formatNumber>` tag inadvertently triggered session creation**:
+
+* **A Legacy Artifact from JSTL 1.0**: Standard JSTL implementations (`SetLocaleSupport`) were originally designed to automatically cache the response character encoding into an `HttpSession` attribute (`jakarta.servlet.jsp.jstl.fmt.request.charset`) whenever formatting tags (`<fmt:formatNumber>`, `<fmt:formatDate>`, `<fmt:setLocale>`) were executed, ensuring future form submissions could synchronize character sets.
+* **Forced Premature Realization**: Under standard JSP behavior, `pageContext.getSession() != null` evaluated to true due to `LazyHttpSession`, causing JSTL to invoke `setAttribute("jakarta.servlet.jsp.jstl.fmt.request.charset", "UTF-8")`. `LazyHttpSession` initially interpreted this as an authentic state-changing write, immediately realizing a container session.
+* **Seamless Namespace Isolation**: Aspectran hardened `LazyHttpSession.setAttribute()` to intercept the `jakarta.servlet.jsp.jstl.` namespace. When no underlying session exists (`getSession(false) == null`), these framework-internal caching writes are safely treated as no-ops. Once an authentic session is established (e.g., following login), JSTL can write to it normally, maintaining 100% backward compatibility with the Jakarta JSTL specification.
+
+This guarantees that JSP developers can freely employ standard JSTL formatting tags without risking premature session allocation, delivering true zero-byte stateless operations.
 
 #### Advantages of the Lazy Session Architecture
 1. **Zero-Touch Preservation of Existing JSP Templates**:
