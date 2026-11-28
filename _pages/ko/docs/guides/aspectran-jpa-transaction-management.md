@@ -206,7 +206,7 @@ Aspectran JPA 환경을 구축하기 위해 `pom.xml`에 포함해야 할 주요
 <dependency>
     <groupId>io.github.openfeign.querydsl</groupId>
     <artifactId>querydsl-jpa</artifactId>
-    <version>7.1</version>
+    <version>7.7</version>
 </dependency>
 ```
 

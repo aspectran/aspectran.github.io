@@ -206,7 +206,7 @@ Key module information to include in your `pom.xml` to build an Aspectran JPA en
 <dependency>
     <groupId>io.github.openfeign.querydsl</groupId>
     <artifactId>querydsl-jpa</artifactId>
-    <version>7.1</version>
+    <version>7.7</version>
 </dependency>
 ```
 
