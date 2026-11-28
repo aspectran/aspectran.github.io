@@ -5,7 +5,7 @@ subheadline: Practical Guides
 
 In web applications, file uploading is an essential feature that addresses diverse requirements such as user profile images, document attachments, and large media transfers. At the same time, file uploading is a sensitive area and a frequent target for security threats, including malicious file uploads, disk-filling Denial-of-Service (DoS) attacks, and memory exhaustion caused by oversized payloads.
 
-To help you manage file upload capabilities safely and flexibly, Aspectran provides a **security-focused whitelist architecture**, **diverse `MultipartFormDataParser` implementations**, and **centralized policy management based on AOP Aspects**.
+To help you manage file upload capabilities safely and flexibly, Aspectran provides a **security-focused whitelist architecture**, **optimized `MultipartFormDataParser` implementations for each runtime environment**, and **centralized policy management based on AOP Aspects**.
 
 This guide covers everything you need to know about file upload parsing in Aspectran: parser types and configuration, upload policy enforcement using Aspects, and hands-on development using the `@Multipart` annotation and `FileParameter`.
 
@@ -32,35 +32,23 @@ In Aspectran, you can define these upload policies (size limits, extension filte
 
 ## 2. MultipartFormDataParser Implementations and Configuration
 
-Aspectran supports both servlet-based enterprise environments and Netty-based non-blocking runtimes (Aspectow Edge), providing four standard parser implementations tailored to different deployment environments and requirements.
+Aspectran supports both servlet-based enterprise environments and Netty-based non-blocking runtimes (Aspectow Edge), providing two standard native parser implementations optimized for each runtime environment.
 
 ### 2.1. Parser Implementation Types
 
-1.  **`StandardServletMultipartFormDataParserFactoryBean` (Recommended for Servlet environments)**:
-    Operates on top of the standard Jakarta Servlet 3.0+ `Part` API. Because it leverages the high-performance multipart engine built directly into the servlet container (Tomcat, Jetty, Undertow, etc.), it is the standard and recommended parser in servlet-based web environments.
+1.  **`ServletMultipartFormDataParserFactoryBean` (Recommended for Servlet environments)**:
+    Operates on top of the standard Jakarta Servlet 3.0+ / 6.0 `Part` API. Because it leverages the high-performance multipart engine built directly into the servlet container (Tomcat, Jetty, Undertow, etc.), it is the recommended standard parser in servlet-based web environments.
+    *   Implementation class: `com.aspectran.web.servlet.support.multipart.ServletMultipartFormDataParser`
+    *   FactoryBean: `com.aspectran.web.servlet.support.multipart.ServletMultipartFormDataParserFactoryBean`
 2.  **`NettyMultipartFormDataParser` (Dedicated to Netty / Aspectow Edge environments)**:
     In non-servlet environments running on the Netty runtime (such as Aspectow Edge), the Netty-native parser is used. Powered by Netty's asynchronous `HttpPostRequestDecoder`, it provides high-performance, non-blocking file upload handling without servlet dependencies.
-3.  **`CommonsMultipartFormDataParserFactoryBean`**:
-    Powered by the time-tested Apache Commons FileUpload library. Useful when standalone parsing policies and temporary file buffering strategies independent of the servlet container are desired.
-4.  **`InMemoryMultipartFormDataParserFactoryBean`**:
-    Buffers uploaded file data **purely in memory** without writing temporary files to disk. Ideal for high-performance APIs that process lightweight assets—such as thumbnails, icons, or small text files—instantly in memory.
+    *   Implementation class: `com.aspectran.netty.support.multipart.NettyMultipartFormDataParser`
 
-### 2.2. Library Dependency Configuration
+### 2.2. Zero-Dependency Architecture
 
-Required dependencies vary depending on which parser implementation is chosen:
+Aspectran's multipart file upload processing directly utilizes the built-in Part API of the servlet container or Netty's built-in HTTP codecs. Consequently, **no external third-party library dependencies (such as Apache Commons FileUpload) are required.**
 
-*   **`StandardServlet` and `Netty` Parsers**:
-    Because they directly leverage the servlet container's built-in Part API or Netty's built-in HTTP codecs, **no additional external library dependencies are required.**
-*   **Apache Commons FileUpload-based Parsers (`Commons`, `InMemory`)**:
-    These two parsers internally rely on Apache Commons FileUpload. You must add the following dependency to your project's `pom.xml`:
-
-```xml
-<dependency>
-    <groupId>commons-fileupload</groupId>
-    <artifactId>commons-fileupload</artifactId>
-    <version>1.6.0</version>
-</dependency>
-```
+By relying solely on standard APIs and native high-performance codecs, Aspectran eliminates library conflicts and namespace mismatches (`javax` vs `jakarta`), ensuring seamless compatibility across modern Jakarta EE and Netty runtimes.
 
 ### 2.3. Key Configuration Properties
 
@@ -70,43 +58,52 @@ Each parser provides granular security and operational properties:
 | :--- | :--- | :--- | :--- |
 | `maxRequestSize` | String / Long | Maximum allowed size for the entire multipart request (sum of all files and form fields) | `"10M"`, `"100M"` |
 | `maxFileSize` | String / Long | Maximum allowed size per individual file | `"5M"`, `"20M"` |
-| `tempFileThreshold` / `maxInMemorySize` | String / Long / Integer | Maximum byte threshold retained in memory before creating a temporary file on disk | `"256K"`, `"1M"` |
+| `maxInMemorySize` | String / Long / Integer | Maximum byte threshold retained in memory before writing to a temporary file on disk (equivalent to `fileSizeThreshold` in the Servlet specification) | `"256K"`, `"1M"` |
 | `allowedFileExtensions` | String | Comma-delimited list of permitted file extensions (whitelist) | `"jpg,jpeg,png,gif"` |
 | `deniedFileExtensions` | String | Comma-delimited list of disallowed file extensions (blacklist) | `"exe,sh,jsp,bat"` |
 | `tempDir` | String | Server directory path where temporary files are written (defaults to system temp dir if omitted) | `"/var/app/tmp"` |
 
 > 💡 **Tip**\
-> Values for `maxRequestSize`, `maxFileSize`, and `tempFileThreshold` (or `maxInMemorySize`) accept intuitive unit suffixes such as `B`, `K`, `M`, and `G` (e.g., `10M` = 10 Megabytes).
+> Values for `maxRequestSize`, `maxFileSize`, and `maxInMemorySize` accept intuitive unit suffixes such as `B`, `K`, `M`, and `G` (e.g., `10M` = 10 Megabytes).
 
-### 2.4. Parser Bean Definition Examples
+### 2.4. In-Memory Processing Without Disk I/O
+
+If you want to bypass temporary disk file creation entirely and process files purely in memory at maximum speed, you do not need a separate in-memory parser. Simply **set `maxInMemorySize` equal to or greater than `maxFileSize`** to enable 100% in-memory uploading without disk I/O.
+
+> ⚠️ **Caution (Preventing Memory Exhaustion)**\
+> Bypassing disk I/O by setting a large `maxInMemorySize` should **only be applied safely to small files (hundreds of KB up to approximately 1–2 MB)**, such as thumbnails, avatar icons, signature images, or lightweight text/CSV files. Configuring this threshold to large values for heavy files can rapidly exhaust the JVM heap under concurrent upload requests, triggering catastrophic **Out Of Memory (OOM)** server crashes.
+
+### 2.5. Parser Bean Definition Examples
 
 Below are XML configuration examples registering parser beans tailored to different runtime environments and use cases:
 
 ```xml
 <!-- 1. Standard servlet-based multipart parser (Servlet environment, general files) -->
 <bean id="standardFileUploader"
-      class="com.aspectran.web.servlet.support.multipart.standard.StandardServletMultipartFormDataParserFactoryBean">
+      class="com.aspectran.web.servlet.support.multipart.ServletMultipartFormDataParserFactoryBean">
     <description>
         General-purpose file uploader leveraging the Jakarta Servlet standard Part API
     </description>
     <properties>
         <item name="maxRequestSize" value="20M"/>
         <item name="maxFileSize" value="10M"/>
-        <item name="tempFileThreshold" value="512K"/>
+        <item name="maxInMemorySize" value="512K"/>
         <item name="allowedFileExtensions" value="jpg,jpeg,png,gif,pdf,zip"/>
         <item name="deniedFileExtensions" value="jsp,sh,bat,exe"/>
     </properties>
 </bean>
 
-<!-- 2. In-memory multipart parser (Lightweight thumbnails/icons, requires commons-fileupload) -->
+<!-- 2. In-memory high-speed parser (Lightweight thumbnails/icons, small files only) -->
 <bean id="inMemoryFileUploader"
-      class="com.aspectran.web.servlet.support.multipart.inmemory.InMemoryMultipartFormDataParserFactoryBean">
+      class="com.aspectran.web.servlet.support.multipart.ServletMultipartFormDataParserFactoryBean">
     <description>
-        Lightweight uploader buffering directly in memory without disk temporary files
+        Lightweight uploader buffering small files directly in memory without disk I/O
     </description>
     <properties>
         <item name="maxRequestSize" value="1M"/>
         <item name="maxFileSize" value="500K"/>
+        <!-- Setting maxInMemorySize equal to maxFileSize completely avoids disk I/O -->
+        <item name="maxInMemorySize" value="500K"/>
         <item name="allowedFileExtensions" value="jpg,png,svg"/>
     </properties>
 </bean>
@@ -189,7 +186,7 @@ public class FileUploadPolicyAspect {
 As your application grows, different endpoints require different policies:
 *   `/members/*/profile-image`: A 2 MB limit uploader restricted strictly to image extensions
 *   `/admin/releases`: A high-capacity uploader allowing files up to 500 MB
-*   `/api/icons`: An `inMemoryFileUploader` that bypasses disk operations entirely
+*   `/api/icons`: An `inMemoryFileUploader` that buffers small icons directly in memory without disk writes
 
 By declaring individual parser beans and mapping them to distinct Pointcut rules, you achieve complete separation of concerns and robust security governance.
 

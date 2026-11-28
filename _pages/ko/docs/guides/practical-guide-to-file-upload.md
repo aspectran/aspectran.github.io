@@ -5,7 +5,7 @@ subheadline: 실용 가이드
 
 웹 애플리케이션에서 파일 업로드는 사용자 프로필 이미지, 문서 첨부, 대용량 미디어 전송 등 다양한 요구사항을 해결하는 필수 기능입니다. 동시에 파일 업로드는 악성 파일 업로드, 무단 디스크 채우기(DoS), 대용량 페이로드로 인한 메모리 고갈 등 보안 공격의 주요 표적이 되는 민감한 영역이기도 합니다.
 
-Aspectran은 이러한 파일 업로드 기능을 안전하고 유연하게 제어할 수 있도록 **보안 중심의 화이트리스트 아키텍처**, **다양한 `MultipartFormDataParser` 구현체**, 그리고 **AOP Aspect 기반의 중앙 집중식 정책 관리**를 제공합니다.
+Aspectran은 이러한 파일 업로드 기능을 안전하고 유연하게 제어할 수 있도록 **보안 중심의 화이트리스트 아키텍처**, **런타임 환경별 최적화된 `MultipartFormDataParser` 구현체**, 그리고 **AOP Aspect 기반의 중앙 집중식 정책 관리**를 제공합니다.
 
 이 가이드에서는 파일 업로드 파서의 종류와 설정, Aspect를 이용한 업로드 정책 통제, `@Multipart` 어노테이션 및 `FileParameter`를 활용한 실전 개발 방법까지 상세히 살펴봅니다.
 
@@ -32,35 +32,23 @@ Aspectran에서는 이러한 업로드 정책(크기 제한, 확장자 필터, �
 
 ## 2. MultipartFormDataParser 구현체와 설정
 
-Aspectran은 서블릿 기반 엔터프라이즈 환경뿐만 아니라 Netty 기반 논블로킹 런타임(Aspectow Edge)까지 폭넓게 지원하며, 개발 환경과 요구사항에 맞게 선택할 수 있는 4가지 표준 파서 구현체를 제공합니다.
+Aspectran은 서블릿 기반 엔터프라이즈 환경뿐만 아니라 Netty 기반 논블로킹 런타임(Aspectow Edge)까지 폭넓게 지원하며, 런타임 환경에 최적화된 2가지 표준 네이티브 파서 구현체를 제공합니다.
 
 ### 2.1. 파서 구현체 종류
 
-1.  **`StandardServletMultipartFormDataParserFactoryBean` (서블릿 환경 권장)**:
-    Jakarta Servlet 3.0+ 사양의 표준 `Part` API를 기반으로 동작합니다. 서블릿 컨테이너(Tomcat, Jetty, Undertow 등) 자체의 고성능 멀티파트 처리 엔진을 활용하므로 서블릿 환경에서 가장 권장되는 표준 파서입니다.
+1.  **`ServletMultipartFormDataParserFactoryBean` (서블릿 환경 권장)**:
+    Jakarta Servlet 3.0+ / 6.0 사양의 표준 `Part` API를 기반으로 동작합니다. 서블릿 컨테이너(Tomcat, Jetty, Undertow 등) 자체의 고성능 멀티파트 처리 엔진을 활용하므로 서블릿 환경에서 가장 권장되는 표준 파서입니다.
+    *   구현 클래스: `com.aspectran.web.servlet.support.multipart.ServletMultipartFormDataParser`
+    *   팩토리 빈: `com.aspectran.web.servlet.support.multipart.ServletMultipartFormDataParserFactoryBean`
 2.  **`NettyMultipartFormDataParser` (Netty / Aspectow Edge 환경 전용)**:
-    Jakarta Servlet 환경이 아닌 Netty 기반 논블로킹 서버(Aspectow Edge) 환경에서는 Netty 네이티브 파서를 사용합니다. Netty의 비동기 `HttpPostRequestDecoder`를 기반으로 동작하며, 외부 서블릿 의존성 없이 고성능 파일 업로드를 수행합니다.
-3.  **`CommonsMultipartFormDataParserFactoryBean`**:
-    오랫동안 검증된 Apache Commons FileUpload 라이브러리를 기반으로 동작합니다. 서블릿 사양과 무관하게 독자적인 파싱 및 임시 파일 버퍼링 정책이 필요할 때 유용합니다.
-4.  **`InMemoryMultipartFormDataParserFactoryBean`**:
-    업로드된 파일 데이터를 디스크에 임시 파일로 쓰지 않고 **순수하게 메모리 내에서만 버퍼링**합니다. 크기가 작은 썸네일, 아이콘, 텍스트 파일 등을 초고속으로 메모리 상에서 즉시 처리해야 하는 고성능 API에 이상적입니다.
+    Jakarta Servlet 환경이 아닌 Netty 기반 논블로킹 서버(Aspectow Edge) 환경에서는 Netty 네이티브 파서를 사용합니다. Netty의 비동기 `HttpPostRequestDecoder`를 기반으로 동작하며, 외부 서블릿 의존성 없이 비동기 논블로킹 환경에서 고성능 파일 업로드를 수행합니다.
+    *   구현 클래스: `com.aspectran.netty.support.multipart.NettyMultipartFormDataParser`
 
-### 2.2. 라이브러리 의존성 구성
+### 2.2. 외부 라이브러리 무의존성 (Zero-Dependency)
 
-사용하려는 파서 구현체에 따라 필요한 의존성이 다릅니다:
+Aspectran의 멀티파트 파일 업로드는 서블릿 컨테이너 내장 Part API 또는 Netty 내장 HTTP 코덱을 직접 활용합니다. 따라서 레거시 서드파티 라이브러리(Apache Commons FileUpload 등)에 대한 **외부 라이브러리 의존성이 전혀 필요하지 않습니다.**
 
-*   **`StandardServlet` 및 `Netty` 파서**:
-    서블릿 컨테이너 내장 Part API 또는 Netty 내장 HTTP 코덱을 직접 활용하므로, **별도의 외부 라이브러리 의존성이 전혀 필요하지 않습니다.**
-*   **Apache Commons FileUpload 기반 파서 (`Commons`, `InMemory`)**:
-    이 두 파서는 내부적으로 Apache Commons FileUpload 라이브러리를 사용하므로, 프로젝트의 `pom.xml`에 다음 의존성을 추가해야 합니다:
-
-```xml
-<dependency>
-    <groupId>commons-fileupload</groupId>
-    <artifactId>commons-fileupload</artifactId>
-    <version>1.6.0</version>
-</dependency>
-```
+순수 표준 API와 고성능 네이티브 코덱만을 사용하므로 라이브러리 충돌이나 네임스페이스(`javax` vs `jakarta`) 불일치 문제 없이 완벽한 Jakarta EE 및 Netty 런타임 호환성을 보장합니다.
 
 ### 2.3. 주요 설정 프로퍼티
 
@@ -70,43 +58,52 @@ Aspectran은 서블릿 기반 엔터프라이즈 환경뿐만 아니라 Netty �
 | :--- | :--- | :--- | :--- |
 | `maxRequestSize` | String / Long | 전체 멀티파트 요청(모든 파일과 폼 필드의 합)의 최대 허용 크기 | `"10M"`, `"100M"` |
 | `maxFileSize` | String / Long | 단일 파일당 최대 허용 크기 | `"5M"`, `"20M"` |
-| `tempFileThreshold` / `maxInMemorySize` | String / Long / Integer | 디스크에 임시 파일을 생성하기 전까지 메모리에 유지할 최대 바이트 크기 | `"256K"`, `"1M"` |
+| `maxInMemorySize` | String / Long / Integer | 디스크에 임시 파일을 생성하기 전까지 메모리에 유지할 최대 바이트 크기 (서블릿 표준의 `fileSizeThreshold`와 동일) | `"256K"`, `"1M"` |
 | `allowedFileExtensions` | String | 업로드를 허용할 파일 확장자 목록 (콤마 구분, 화이트리스트) | `"jpg,jpeg,png,gif"` |
 | `deniedFileExtensions` | String | 업로드를 차단할 파일 확장자 목록 (콤마 구분, 블랙리스트) | `"exe,sh,jsp,bat"` |
 | `tempDir` | String | 임시 파일이 저장될 서버의 디렉토리 경로 (생략 시 시스템 임시 디렉토리) | `"/var/app/tmp"` |
 
 > 💡 **팁**\
-> `maxRequestSize`, `maxFileSize`, `tempFileThreshold`(또는 `maxInMemorySize`) 값에는 `B`, `K`, `M`, `G` 단위를 직관적인 문자열로 지정할 수 있습니다 (예: `10M` = 10 메가바이트).
+> `maxRequestSize`, `maxFileSize`, `maxInMemorySize` 값에는 `B`, `K`, `M`, `G` 단위를 직관적인 문자열로 지정할 수 있습니다 (예: `10M` = 10 메가바이트).
 
-### 2.4. 파서 빈 정의 예제
+### 2.4. 디스크 I/O 없는 인메모리(In-Memory) 처리 가이드
+
+디스크 임시 파일 생성을 완전히 생략하고 메모리 상에서만 초고속으로 파일을 처리하고 싶은 경우, 별도의 외부 인메모리 파서 없이도 **`maxInMemorySize`를 `maxFileSize`와 동일하거나 크게 설정**하면 디스크 I/O 없는 100% 인메모리 업로드가 가능합니다.
+
+> ⚠️ **주의 (메모리 고갈 방지)**\
+> `maxInMemorySize`를 크게 설정하여 디스크 I/O 없이 메모리에서만 처리하는 방식은 썸네일, 아바타 아이콘, 서명 이미지, 경량 텍스트/CSV와 같은 **작은 크기의 파일(수백 KB ~ 최대 1~2MB 내외)에 대해서만 안전하게 적용**해야 합니다. 대용량 파일에 대해 이 값을 무리하게 크게 설정하면, 동시 다발적인 업로드 요청 시 JVM 힙 메모리가 급격히 잠식되어 전체 시스템이 다운되는 치명적인 **OOM(Out Of Memory)** 장애가 발생할 수 있습니다.
+
+### 2.5. 파서 빈 정의 예제
 
 다음은 런타임 환경과 용도에 따른 XML 파서 빈 등록 예제입니다.
 
 ```xml
 <!-- 1. 표준 서블릿 기반 멀티파트 파서 (서블릿 환경, 일반 파일용) -->
 <bean id="standardFileUploader"
-      class="com.aspectran.web.servlet.support.multipart.standard.StandardServletMultipartFormDataParserFactoryBean">
+      class="com.aspectran.web.servlet.support.multipart.ServletMultipartFormDataParserFactoryBean">
     <description>
         Jakarta Servlet 표준 Part API를 사용하는 일반 파일 업로더
     </description>
     <properties>
         <item name="maxRequestSize" value="20M"/>
         <item name="maxFileSize" value="10M"/>
-        <item name="tempFileThreshold" value="512K"/>
+        <item name="maxInMemorySize" value="512K"/>
         <item name="allowedFileExtensions" value="jpg,jpeg,png,gif,pdf,zip"/>
         <item name="deniedFileExtensions" value="jsp,sh,bat,exe"/>
     </properties>
 </bean>
 
-<!-- 2. 인메모리 멀티파트 파서 (경량 썸네일/아이콘 전용, commons-fileupload 의존성 필요) -->
+<!-- 2. 인메모리 고속 처리 전용 파서 (경량 썸네일/아이콘 전용, 작은 파일에만 권장) -->
 <bean id="inMemoryFileUploader"
-      class="com.aspectran.web.servlet.support.multipart.inmemory.InMemoryMultipartFormDataParserFactoryBean">
+      class="com.aspectran.web.servlet.support.multipart.ServletMultipartFormDataParserFactoryBean">
     <description>
-        임시 파일 생성 없이 메모리에서만 고속 처리하는 경량 업로더
+        소용량 파일에 대해 임시 파일 생성 없이 메모리에서만 초고속 처리하는 경량 업로더
     </description>
     <properties>
         <item name="maxRequestSize" value="1M"/>
         <item name="maxFileSize" value="500K"/>
+        <!-- maxInMemorySize를 maxFileSize와 동일하게 설정하여 디스크 I/O 원천 차단 -->
+        <item name="maxInMemorySize" value="500K"/>
         <item name="allowedFileExtensions" value="jpg,png,svg"/>
     </properties>
 </bean>
@@ -189,7 +186,7 @@ public class FileUploadPolicyAspect {
 서비스 규모가 커지면 용도별로 다른 파서 정책을 적용해야 합니다:
 *   `/members/*/profile-image`: 이미지 확장자만 허용하는 2MB 제한 파서
 *   `/admin/releases`: 500MB까지 허용하는 대용량 파서
-*   `/api/icons`: 디스크를 쓰지 않는 `inMemoryFileUploader`
+*   `/api/icons`: 작은 크기의 아이콘을 디스크 쓰기 없이 처리하는 `inMemoryFileUploader`
 
 각각의 파서 빈을 정의한 후, Pointcut을 나누어 각 URL에 맞는 파서를 매핑하면 업무별 업로드 정책을 완벽하게 분리할 수 있습니다.
 
